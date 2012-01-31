@@ -1,0 +1,16 @@
+{
+"factionDefinition":{
+  "enabledRanks":{
+    "grandmaster":{"x1":0,"y1":2.0,"x2":25,"y2":7.0},
+    "warmaster":{"x1":5,"y1":1.0,"x2":25,"y2":3.0},
+    "adept":{"x1":1,"y1":0.0,"x2":20,"y2":18.0}
+  }
+},
+"factionOnlyPvp":true,
+"pvpFactionOnlyMessage":"Only factions can take part in pvp.",
+"prefixNameSeparator":"-",
+"formationAmount":3,
+"factionDefaultRank":"novice",
+"factionOwnerRank":"grandmaster",
+"levelsPerActivePlayers":{"x1":0,"y1":0.0,"x2":20,"y2":25.0}
+}

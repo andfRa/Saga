@@ -1,0 +1,177 @@
+{
+
+"damageSkills":{
+  "blade":{
+    "name":"blade",
+    "type":"OFFENSE",
+    "attackerWeapons":["WOOD_SWORD","STONE_SWORD","IRON_SWORD","GOLD_SWORD","DIAMOND_SWORD"],
+    "defenderWeapons":[],
+    "attackerArmor":"ALL",
+    "defenderArmor":"ALL",
+    "attacker":"PLAYER",
+    "defender":"ALL",
+    "attack":"MELEE",
+    "modifier":{"x1":0,"y1":4.0,"x2":50,"y2":34.0},
+    "exp":{}
+  },
+
+  "waraxe":{
+    "name":"waraxe",
+    "type":"OFFENSE",
+    "attackerWeapons":["WOOD_AXE","STONE_AXE","IRON_AXE","GOLD_AXE","DIAMOND_AXE"],
+    "defenderWeapons":[],
+    "attackerArmor":"ALL",
+    "defenderArmor":"ALL",
+    "attacker":"PLAYER",
+    "defender":"ALL",
+    "attack":"MELEE",
+    "modifier":{"x1":0,"y1":0.0,"x2":10,"y2":14.0},
+    "exp":{}
+  },
+
+  "archery":{
+    "name":"archery",
+    "type":"OFFENSE",
+    "attackerWeapons":[],
+    "defenderWeapons":[],
+    "attackerArmor":"ALL",
+    "defenderArmor":"ALL",
+    "attacker":"PLAYER",
+    "defender":"ALL",
+    "attack":"RANGED",
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":30.0},
+    "exp":{}
+  },
+
+  "magic":{
+    "name":"magic",
+    "type":"OFFENSE",
+    "attackerWeapons":[],
+    "defenderWeapons":[],
+    "attackerArmor":"ALL",
+    "defenderArmor":"ALL",
+    "attacker":"PLAYER",
+    "defender":"ALL",
+    "attack":"MAGIC",
+    "modifier":{"x1":0,"y1":1.0,"x2":50,"y2":9.0},
+    "exp":{}
+  },
+
+  "heavy armour":{
+    "name":"heavy armour",
+    "type":"DEFENSE",
+    "attackerWeapons":[],
+    "defenderWeapons":[],
+    "attackerArmor":"ALL",
+    "defenderArmor":"HEAVY",
+    "attacker":"ALL",
+    "defender":"ALL",
+    "attack":"PHYSICAL",
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-30.0},
+    "exp":{}
+  },
+
+  "light armour":{
+    "name":"light armour",
+    "type":"DEFENSE",
+    "attackerWeapons":[],
+    "defenderWeapons":[],
+    "attackerArmor":"ALL",
+    "defenderArmor":"LIGHT",
+    "attacker":"ALL",
+    "defender":"ALL",
+    "attack":"PHYSICAL",
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-30.0},
+    "exp":{}
+  },
+
+  "unarmoured":{
+    "name":"unarmoured",
+    "type":"DEFENSE",
+    "attackerWeapons":[],
+    "defenderWeapons":[],
+    "attackerArmor":"ALL",
+    "defenderArmor":"UNARMOURED",
+    "attacker":"ALL",
+    "defender":"ALL",
+    "attack":"PHYSICAL",
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-30.0},
+    "exp":{}
+  },
+
+  "magic warding":{
+    "name":"magic warding",
+    "type":"DEFENSE",
+    "attackerWeapons":[],
+    "defenderWeapons":[],
+    "attackerArmor":"ALL",
+    "defenderArmor":"ALL",
+    "attacker":"ALL",
+    "defender":"ALL",
+    "attack":"MAGIC",
+    "modifier":{"x1":0,"y1":-1.0,"x2":50,"y2":-9.0},
+    "exp":{}
+  },
+
+  "woodcutting":{
+    "name":"woodcutting",
+    "type":"BLOCK",
+    "attackerWeapons":[],
+    "defenderWeapons":[],
+    "attackerArmor":"ALL",
+    "defenderArmor":"ALL",
+    "attacker":"ALL",
+    "defender":"ALL",
+    "attack":"NONE",
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "exp":{
+      "LOG":{
+	"0":{"x1":0,"y1":1.937,"x2":50,"y2":5.810},
+	"1":{"x1":0,"y1":1.937,"x2":50,"y2":5.810},
+	"2":{"x1":0,"y1":1.937,"x2":50,"y2":5.810},
+	"3":{"x1":0,"y1":1.937,"x2":50,"y2":5.810}
+      }
+    }
+  },
+
+  "mining":{
+    "name":"mining",
+    "type":"BLOCK",
+    "attackerWeapons":[],
+    "defenderWeapons":[],
+    "attackerArmor":"ALL",
+    "defenderArmor":"ALL",
+    "attacker":"ALL",
+    "defender":"ALL",
+    "attack":"NONE",
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "exp":{
+      "DIAMOND_ORE":{"0":{"x1":0,"y1":12.5,"x2":50,"y2":37.5}},
+      "LAPIS_ORE":{"0":{"x1":0,"y1":13.79,"x2":50,"y2":41.38}},
+      "GOLD_ORE":{"0":{"x1":0,"y1":5.08,"x2":50,"y2":15.25}},
+      "IRON_ORE":{"0":{"x1":0,"y1":0.81,"x2":50,"y2":2.44}},
+      "COAL_ORE":{"0":{"x1":0,"y1":0.65,"x2":50,"y2":1.96}},
+      "STONE":{"0":{"x1":0,"y1":0.017,"x2":50,"y2":0.050}}
+    }
+  },
+
+  "farming":{
+    "name":"farming",
+    "type":"BLOCK",
+    "attackerWeapons":[],
+    "defenderWeapons":[],
+    "attackerArmor":"ALL",
+    "defenderArmor":"ALL",
+    "attacker":"ALL",
+    "defender":"ALL",
+    "attack":"NONE",
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "exp":{
+      "SUGAR_CANE_BLOCK":{"0":{"x1":0,"y1":1.937,"x2":50,"y2":5.810}},
+      "LOG":{"7":{"x1":0,"y1":1.937,"x2":50,"y2":5.810}}
+    }
+  }
+
+}
+
+}

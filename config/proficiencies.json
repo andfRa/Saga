@@ -1,0 +1,263 @@
+{
+
+"initialProfession":"true",
+"initialClass":"true",
+
+"definitions":[
+  
+  {"name":"miner",
+    "type":"PROFESSION",
+    "hierarchyLevel":"1",
+    "abilities":["heavy swing"],
+    "bindMaterials":{"heavy swing":["IRON_PICKAXE","DIAMOND_PICKAXE"]},
+    "bindActions":{"heavy swing":"RIGHT_CLICK"},
+    "skillMax":{"mining":50},
+    "settlementPermissions":[],
+    "factionPermissions":[],
+    "currencyCost":500,
+    "levelsCost":5,
+    "properties":{}
+  },
+
+  {"name":"woodsman",
+    "type":"PROFESSION",
+    "hierarchyLevel":"1",
+    "abilities":["chop down"],
+    "bindMaterials":{"chop down":["IRON_AXE","DIAMOND_AXE"]},
+    "bindActions":{"chop down":"RIGHT_CLICK"},
+    "skillMax":{"woodcutting":50},
+    "settlementPermissions":[],
+    "factionPermissions":[],
+    "currencyCost":500,
+    "levelsCost":5,
+    "properties":{}
+  },
+
+  {"name":"farmer",
+    "type":"PROFESSION",
+    "hierarchyLevel":"1",
+    "abilities":["harvest"],
+    "bindMaterials":{"harvest":["IRON_HOE","DIAMOND_HOE"]},
+    "bindActions":{"harvest":"LEFT_CLICK"},
+    "skillMax":{"farming":50},
+    "settlementPermissions":[],
+    "factionPermissions":[],
+    "currencyCost":500,
+    "levelsCost":5,
+    "properties":{}
+  },
+
+  {"name":"warrior",
+    "type":"CLASS",
+    "hierarchyLevel":"1",
+    "abilities":["bash"],
+    "bindMaterials":{"bash":["IRON_SWORD","DIAMOND_SWORD","IRON_AXE","DIAMOND_AXE"]},
+    "bindActions":{"bash":"RIGHT_CLICK"},
+    "skillMax":{"blade":20,"waraxe":20,"heavy armour":30,"magic warding":20,"unarmoured":5},
+    "settlementPermissions":[],
+    "factionPermissions":[],
+    "currencyCost":500,
+    "levelsCost":5,
+    "properties":{}
+  },
+
+  {"name":"rogue",
+    "type":"CLASS",
+    "hierarchyLevel":"1",
+    "abilities":["exploding arrow","dart"],
+    "bindMaterials":{
+      "exploding arrow":["ARROW"],
+      "dart":["IRON_SWORD","DIAMOND_SWORD"]
+    },
+    "bindActions":{
+      "exploding arrow":"RIGHT_CLICK",
+      "dart":"RIGHT_CLICK"
+    },
+    "skillMax":{"archery":30,"blade":30,"light armour":15,"magic warding":20,"unarmoured":10},
+    "settlementPermissions":[],
+    "factionPermissions":[],
+    "currencyCost":500,
+    "levelsCost":5,
+    "properties":{}
+  },
+
+  {"name":"mage",
+    "type":"CLASS",
+    "hierarchyLevel":"2",
+    "abilities":["fireball","force"],
+    "bindMaterials":{
+      "fireball":["PAPER","BOOK"],
+      "force":["PAPER","BOOK"]
+    },
+    "bindActions":{
+      "fireball":"RIGHT_CLICK",
+      "force":"LEFT_CLICK"
+    },
+    "skillMax":{"magic":30,"light armour":15,"magic warding":30,"unarmoured":15},
+    "settlementPermissions":[],
+    "factionPermissions":[],
+    "currencyCost":500,
+    "levelsCost":5,
+    "properties":{}
+  },
+
+  {"name":"councilman",
+    "type":"ROLE",
+    "hierarchyLevel":"10",
+    "abilities":[],
+    "bindMaterials":{},
+    "bindActions":{},
+    "skillMax":{},
+    "settlementPermissions":["BUILD","CLAIM","INVITE","ABANDON","KICK","SET_BUILDING","REMOVE_BUILDING","RENAME"],
+    "factionPermissions":[],
+    "currencyCost":500,
+    "levelsCost":5,
+    "properties":{}
+  },
+
+  {"name":"noble",
+    "type":"ROLE",
+    "hierarchyLevel":"10",
+    "abilities":["claim"],
+    "bindMaterials":{"claim":["STICK","GOLD_SWORD"]},
+    "bindActions":{"claim":"RIGHT_CLICK"},
+    "skillMax":{},
+    "settlementPermissions":["BUILD","CLAIM","INVITE","ABANDON","KICK","SET_BUILDING","REMOVE_BUILDING","RENAME"],
+    "factionPermissions":[],
+    "currencyCost":500,
+    "levelsCost":5,
+    "properties":{}
+  },
+
+  {"name":"planner",
+    "type":"ROLE",
+    "hierarchyLevel":"2",
+    "abilities":[],
+    "bindMaterials":{},
+    "bindActions":{},
+    "skillMax":{},
+    "settlementPermissions":["BUILD"],
+    "factionPermissions":[],
+    "currencyCost":500,
+    "levelsCost":5,
+    "properties":{}
+  },
+
+  {"name":"commoner",
+    "type":"ROLE",
+    "hierarchyLevel":"1",
+    "abilities":[],
+    "bindMaterials":{},
+    "bindActions":{},
+    "skillMax":{},
+    "settlementPermissions":["BUILD"],
+    "factionPermissions":[],
+    "currencyCost":500,
+    "levelsCost":5,
+    "properties":{}
+  },
+
+  {"name":"master trader",
+    "type":"ROLE",
+    "hierarchyLevel":"4",
+    "abilities":[],
+    "bindMaterials":{},
+    "bindActions":{},
+    "skillMax":{},
+    "settlementPermissions":["BUILD"],
+    "factionPermissions":[],
+    "currencyCost":500,
+    "levelsCost":5,
+    "properties":{}
+  },
+
+  {"name":"trader journeyman",
+    "type":"ROLE",
+    "hierarchyLevel":"3",
+    "abilities":[],
+    "bindMaterials":{},
+    "bindActions":{},
+    "skillMax":{},
+    "settlementPermissions":["BUILD"],
+    "factionPermissions":[],
+    "currencyCost":500,
+    "levelsCost":5,
+    "properties":{}
+  },
+
+  {"name":"trader apprentice",
+    "type":"ROLE",
+    "hierarchyLevel":"2",
+    "abilities":[],
+    "bindMaterials":{},
+    "bindActions":{},
+    "skillMax":{},
+    "settlementPermissions":["BUILD"],
+    "factionPermissions":[],
+    "currencyCost":500,
+    "levelsCost":5,
+    "properties":{}
+  },
+
+  {"name":"grandmaster",
+    "type":"RANK",
+    "hierarchyLevel":"10",
+    "abilities":[],
+    "bindMaterials":{},
+    "bindActions":{},
+    "skillMax":{},
+    "settlementPermissions":[],
+    "factionPermissions":["INVITE","KICK","SET_COLOR","RALLY","RENAME"],
+    "currencyCost":500,
+    "levelsCost":5,
+    "properties":{}
+  },
+
+  {"name":"warmaster",
+    "type":"RANK",
+    "hierarchyLevel":"9",
+    "abilities":["mobilize"],
+    "bindMaterials":{
+      "mobilize":["GOLD_SWORD"]
+    },
+    "bindActions":{
+      "mobilize":"RIGHT_CLICK"
+    },
+    "skillMax":{},
+    "settlementPermissions":[],
+    "factionPermissions":["INVITE","KICK","RALLY"],
+    "currencyCost":500,
+    "levelsCost":5,
+    "properties":{}
+  },
+
+  {"name":"adept",
+    "type":"RANK",
+    "hierarchyLevel":"2",
+    "abilities":[],
+    "bindMaterials":{},
+    "bindActions":{},
+    "skillMax":{},
+    "settlementPermissions":[],
+    "factionPermissions":["RALLY"],
+    "currencyCost":500,
+    "levelsCost":5,
+    "properties":{}
+  },
+
+  {"name":"novice",
+    "type":"RANK",
+    "hierarchyLevel":"1",
+    "abilities":[],
+    "bindMaterials":{},
+    "bindActions":{},
+    "skillMax":{},
+    "settlementPermissions":[],
+    "factionPermissions":[],
+    "currencyCost":500,
+    "levelsCost":5,
+    "properties":{}
+  }
+]
+
+}
