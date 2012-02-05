@@ -2,16 +2,12 @@ package org.saga.abilities;
 
 import java.util.Random;
 
-import org.bukkit.EntityEffect;
 import org.bukkit.entity.Creature;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
-import org.saga.utility.TwoPointFunction;
 
 public class Dodge extends Ability{
 
@@ -148,6 +144,12 @@ public class Dodge extends Ability{
 		
 		// Dodge:
 		event.setDamage(0);
+		
+		// Award exp:
+		Integer awardedExp = awardExperience();
+		
+		// Statistics:
+		StatisticsManager.manager().onAbilityUse(getName(), awardedExp);
 		
 		return true;
 		
