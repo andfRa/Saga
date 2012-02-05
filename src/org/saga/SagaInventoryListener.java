@@ -1,8 +1,8 @@
 package org.saga;
 
-import org.bukkit.event.inventory.InventoryListener;
+import org.bukkit.event.Listener;
 
-public class SagaInventoryListener extends InventoryListener{
+public class SagaInventoryListener implements Listener{
 
 	public SagaInventoryListener(){
 	}

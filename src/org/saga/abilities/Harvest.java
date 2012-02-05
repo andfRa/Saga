@@ -7,18 +7,13 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
-import org.saga.economy.EconomyMessages;
-import org.saga.player.PlayerMessages;
-import org.saga.shape.BlockBottomFilter;
 import org.saga.shape.BlockFilter;
 import org.saga.shape.RelativeShape;
 import org.saga.statistics.StatisticsManager;
-import org.saga.utility.TextUtil;
 import org.saga.utility.TwoPointFunction;
 
 

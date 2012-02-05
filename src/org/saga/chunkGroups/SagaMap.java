@@ -5,12 +5,9 @@ import java.util.ArrayList;
 import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.World;
-import org.saga.chunkGroups.SagaChunk.ChunkVisual;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;
 import org.saga.utility.AsciiCompass;
-import org.saga.utility.TextUtil;
 
 public class SagaMap {
 	
@@ -29,7 +26,6 @@ public class SagaMap {
 		double inDegrees = location.getYaw();
 		
 		Chunk locationChunk = location.getWorld().getChunkAt(location);
-		World world = locationChunk.getWorld();
 		
 		int topLeftX = locationChunk.getX() - halfHeight;
 		int topLeftZ = locationChunk.getZ() + halfWidth;

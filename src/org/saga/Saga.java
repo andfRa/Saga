@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package org.saga;
 
 import java.util.ArrayList;
@@ -17,8 +12,6 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.Event.Priority;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -27,7 +20,6 @@ import org.saga.buildings.Building;
 import org.saga.chunkGroups.ChunkGroupCommands;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.config.AbilityConfiguration;
-import org.saga.config.SkillConfiguration;
 import org.saga.config.BalanceConfiguration;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.config.EconomyConfiguration;
@@ -35,6 +27,7 @@ import org.saga.config.ExperienceConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.GuildConfiguration;
 import org.saga.config.ProficiencyConfiguration;
+import org.saga.config.SkillConfiguration;
 import org.saga.economy.EconomyCommands;
 import org.saga.economy.EconomyManager;
 import org.saga.exceptions.NonExistantSagaPlayerException;
@@ -227,36 +220,12 @@ public class Saga extends JavaPlugin implements MinuteTicker{
       	blockListener = new SagaBlockListener();
       	serverListener = new SagaServerListener();
       	
-        // Register events
-        pluginManager.registerEvent(Event.Type.PLAYER_JOIN, playerListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.PLAYER_QUIT, playerListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.PLAYER_RESPAWN, playerListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.PLAYER_INTERACT, playerListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.PLAYER_COMMAND_PREPROCESS, playerListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.ENTITY_DAMAGE, entityListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.ENTITY_COMBUST, entityListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.ENTITY_EXPLODE, entityListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.CREATURE_SPAWN, entityListener, Priority.Normal, this);
-       
-        pluginManager.registerEvent(Event.Type.BLOCK_BREAK, blockListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.BLOCK_DAMAGE, blockListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.BLOCK_PLACE, blockListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.SIGN_CHANGE, blockListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.BLOCK_SPREAD, blockListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.BLOCK_FROMTO, blockListener, Priority.Normal, this);
+        // Register events:
+      	pluginManager.registerEvents(playerListener, this);
+      	pluginManager.registerEvents(entityListener, this);
+      	pluginManager.registerEvents(blockListener, this);
+      	pluginManager.registerEvents(serverListener, this);
         
-        pluginManager.registerEvent(Event.Type.ENDERMAN_PICKUP, entityListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.ENDERMAN_PLACE, entityListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.ENTITY_DEATH, entityListener, Priority.Normal, this);
-         
-        pluginManager.registerEvent(Event.Type.PLAYER_MOVE, playerListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.PLAYER_TELEPORT, playerListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.PLAYER_INTERACT_ENTITY, playerListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.PLAYER_CHAT, playerListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.PLAYER_PICKUP_ITEM, playerListener, Priority.Normal, this);
-        pluginManager.registerEvent(Event.Type.PLAYER_PORTAL, playerListener, Priority.Normal, this);
-        
-        pluginManager.registerEvent(Event.Type.SERVER_COMMAND, serverListener, Priority.Normal, this);
         
         //Register Command Classes to the command map
         commandMap.register(SagaCommands.class);
@@ -691,10 +660,8 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     	
-    	System.out.println("SENDER=" + sender.getName());
-    	
-    	// TODO Auto-generated method stub
     	return super.onCommand(sender, command, label, args);
+    	
     }
     
     /**

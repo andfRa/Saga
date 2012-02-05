@@ -47,6 +47,28 @@
     "properties":{}
   },
 
+  {"name":"blacksmith",
+    "type":"PROFESSION",
+    "hierarchyLevel":"1",
+    "abilities":["repair (leather)","repair (iron)","repair (diamond)"],
+    "bindMaterials":{
+      "repair (leather)":["LEATHER_HELMET","LEATHER_CHESTPLATE","LEATHER_LEGGINGS","LEATHER_BOOTS"],
+      "repair (iron)":["IRON_PICKAXE","IRON_SPADE","IRON_AXE","IRON_HOE","IRON_SWORD","IRON_HELMET","IRON_CHESTPLATE","IRON_LEGGINGS","IRON_BOOTS"],
+      "repair (diamond)":["DIAMOND_PICKAXE","DIAMOND_SPADE","DIAMOND_AXE","DIAMOND_HOE","DIAMOND_SWORD","DIAMOND_HELMET","DIAMOND_CHESTPLATE","DIAMOND_LEGGINGS","DIAMOND_BOOTS"]
+    },
+    "bindActions":{
+      "repair (leather)":"LEFT_CLICK",
+      "repair (iron)":"LEFT_CLICK",
+      "repair (diamond)":"LEFT_CLICK"
+    },
+    "skillMax":{"smithing":50},
+    "settlementPermissions":[],
+    "factionPermissions":[],
+    "currencyCost":500,
+    "levelsCost":5,
+    "properties":{}
+  },
+
   {"name":"warrior",
     "type":"CLASS",
     "hierarchyLevel":"1",
@@ -64,7 +86,7 @@
   {"name":"rogue",
     "type":"CLASS",
     "hierarchyLevel":"1",
-    "abilities":["exploding arrow","dart"],
+    "abilities":["exploding arrow","dart","dodge"],
     "bindMaterials":{
       "exploding arrow":["ARROW"],
       "dart":["IRON_SWORD","DIAMOND_SWORD"]

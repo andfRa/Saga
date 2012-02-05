@@ -3,14 +3,12 @@ package org.saga.buildings.signs;
 import org.bukkit.Effect;
 import org.bukkit.block.Sign;
 import org.saga.buildings.Building;
-import org.saga.buildings.BuildingMessages;
 import org.saga.config.EconomyConfiguration;
 import org.saga.economy.EconomyMessages;
 import org.saga.player.GuardianRune;
 import org.saga.player.PlayerMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
-import org.saga.utility.Cooldown;
 
 
 public class RepairStoneSign extends BuildingSign{
@@ -136,20 +134,7 @@ public class RepairStoneSign extends BuildingSign{
 			sagaPlayer.message(EconomyMessages.notEnoughCoins());
 			return;
 		}
-		
-		// Cooldown:
-		Building building = getBuilding();
-		Cooldown cBuilding = null;
-		if(building != null && building instanceof Cooldown){
-			
-			cBuilding = (Cooldown) getBuilding();
-			
-		}
-		if(cBuilding != null && cBuilding.isOnCooldown()){
-			sagaPlayer.message(BuildingMessages.cooldown(building.getName(), cBuilding.getCooldown()));
-			return;
-		}
-		
+
 		// Take coins:
 		if(price > 0){
 			sagaPlayer.removeCoins(price);

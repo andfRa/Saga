@@ -7,17 +7,13 @@ package org.saga;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashSet;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.saga.chunkGroups.ChunkGroupMessages;
-import org.saga.chunkGroups.SagaMap;
-import org.saga.config.SkillConfiguration;
 import org.saga.config.BalanceConfiguration;
+import org.saga.config.SkillConfiguration;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;
 import org.saga.player.PlayerMessages;
@@ -386,10 +382,11 @@ public class SagaCommands {
         )
     @CommandPermissions({"saga.admin.dcommand"})
     public static void debugCommand(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-    	
-    	sagaPlayer.message("LLL \u0446 LLL");
-    	sagaPlayer.message("LLL ± LLL");
-    	
+
+    
+//    	sagaPlayer.getItemInHand().setDurability((short) (sagaPlayer.getItemInHand().getType().getMaxDurability() -1));
+    	sagaPlayer.playEffect(Effect.STEP_SOUND, args.getInteger(0));
+    
     }
 
     

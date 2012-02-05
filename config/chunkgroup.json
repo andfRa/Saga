@@ -22,6 +22,7 @@
     "woodsman camp":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
     "mine shaft":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
     "farm":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
+    "forge":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
 
     "warehouse":{"x1":7,"y1":1.0,"x2":50,"y2":1.0},
 
@@ -87,7 +88,9 @@
 
   {"_className":"org.saga.buildings.MineShaft","level":0,"pointCost":1,"moneyCost":27,"signs":[]},
 
-  {"_className":"org.saga.buildings.Farm","level":0,"pointCost":1,"moneyCost":27,"signs":[]}
+  {"_className":"org.saga.buildings.Farm","level":0,"pointCost":1,"moneyCost":27,"signs":[]},
+
+  {"_className":"org.saga.buildings.Forge","level":0,"pointCost":1,"moneyCost":27,"signs":[]}
 
 ],
 
@@ -314,6 +317,21 @@
     "permissions":{"noble":"HIGH"},
     "enabledBuildings":{},
     "description":"Trains farmer related skills, prevents animals from being killed and soil from being trampled by outsiders."
+  },
+
+  "forge":{
+    "pointCost":{"x1":0,"y1":1,"x2":1,"y2":6},
+    "moneyCost":{"x1":0,"y1":0,"x2":5,"y2":0},
+    "levelFunction":{"x1":0,"y1":10.0,"x2":5,"y2":20.0},
+    "professions":["blacksmith"],
+    "classes":[],
+    "roles":[],
+    "ranks":[],
+    "roleAmounts":{},
+    "skills":["smithing"],
+    "permissions":{"noble":"HIGH"},
+    "enabledBuildings":{},
+    "description":"Trains blacksmith related skills."
   }
 
 },

@@ -1,6 +1,7 @@
 package org.saga.factions;
 
 import java.util.ArrayList;
+import java.util.Collection;
 
 import org.bukkit.ChatColor;
 import org.saga.Saga;
@@ -1272,6 +1273,12 @@ public class FactionCommands {
 	
 	// Inform:
 	selectedFaction.broadcast(message);
+	
+	// Inform allies:
+	Collection<SagaFaction> allyFactions = selectedFaction.getAllyFactions();
+	for (SagaFaction allyFaction : allyFactions) {
+		allyFaction.broadcast(message);
+	}
 	
 
 }

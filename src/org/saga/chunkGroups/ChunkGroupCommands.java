@@ -14,7 +14,6 @@ import org.saga.config.EconomyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
 import org.saga.economy.EconomyMessages;
 import org.saga.exceptions.NonExistantSagaPlayerException;
-import org.saga.factions.FactionCommands;
 import org.saga.factions.FactionMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;

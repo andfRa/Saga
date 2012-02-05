@@ -10,17 +10,17 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.saga.abilities.Ability;
 import org.saga.abilities.AbilityDefinition;
+import org.saga.buildings.signs.ProficiencySign;
 import org.saga.buildings.signs.RepairStoneSign;
 import org.saga.buildings.signs.SkillSign;
-import org.saga.buildings.signs.ProficiencySign;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.config.AbilityConfiguration;
-import org.saga.config.SkillConfiguration;
 import org.saga.config.BalanceConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.ProficiencyConfiguration;
+import org.saga.config.SkillConfiguration;
 import org.saga.economy.EconomyMessages;
 import org.saga.factions.FactionManager;
 import org.saga.factions.SagaFaction;
@@ -771,6 +771,12 @@ public class PlayerMessages {
 	public static String onCooldown(Ability ability) {
 		
 		return meterCooldown(ability.getName(), ability.getCooldown(), ability.getTotalCooldown(), normal2);
+		
+	}
+	
+	public static String cooldownEnd(Ability ability) {
+		
+		return positive + TextUtil.capitalize(ability.getName()) + " ready.";
 		
 	}
 	

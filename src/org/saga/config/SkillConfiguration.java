@@ -8,8 +8,8 @@ import java.util.Hashtable;
 
 import org.saga.Saga;
 import org.saga.constants.IOConstants.WriteReadType;
-import org.saga.player.SkillType;
 import org.saga.player.Skill;
+import org.saga.player.SkillType;
 import org.saga.utility.WriterReader;
 
 import com.google.gson.JsonParseException;

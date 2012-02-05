@@ -20,7 +20,6 @@ import org.saga.economy.TradeDeal.TradeDealType;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.WriterReader;
 
-
 import com.google.gson.JsonParseException;
 
 

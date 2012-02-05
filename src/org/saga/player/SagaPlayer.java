@@ -48,19 +48,19 @@ import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AbilityConfiguration.InvalidAbilityException;
-import org.saga.config.ProficiencyConfiguration;
-import org.saga.config.SkillConfiguration;
 import org.saga.config.BalanceConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
+import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
+import org.saga.config.SkillConfiguration;
 import org.saga.constants.BlockConstants;
 import org.saga.constants.PlayerDefaults;
+import org.saga.economy.EconomyManager.TransactionType;
 import org.saga.economy.InventoryUtil;
 import org.saga.economy.TradeDeal;
 import org.saga.economy.Trader;
 import org.saga.economy.Transaction;
-import org.saga.economy.EconomyManager.TransactionType;
 import org.saga.factions.SagaFaction;
 import org.saga.player.GuardianRune.GuardianRuneStatus;
 import org.saga.player.Proficiency.ProficiencyType;
@@ -68,7 +68,6 @@ import org.saga.player.Skill.ArmourType;
 import org.saga.shape.RelativeShape.Orientation;
 import org.saga.utility.TextUtil;
 import org.saga.utility.WriterReader;
-
 
 import com.google.gson.JsonParseException;
 
@@ -2240,6 +2239,22 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * @param effect effect
 	 * @param value effect value
 	 */
+	public void playEffect(Effect effect, int value) {
+
+		
+		if(!isOnline()) return;
+		
+		player.playEffect(getLocation(), effect, value);
+		
+		
+	}
+	
+	/**
+	 * Plays an effect.
+	 * 
+	 * @param effect effect
+	 * @param value effect value
+	 */
 	public void playGlobalEffect(Effect effect, int value) {
 
 		
@@ -2444,7 +2459,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 */
 	@Override
 	public Double getCoins() {
-		return currency;
+		return (double)currency.intValue();
 	}
 	
 	/**

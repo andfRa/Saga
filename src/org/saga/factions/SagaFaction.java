@@ -3,20 +3,18 @@ package org.saga.factions;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.Saga;
 import org.saga.abilities.Mobilize.RallyPoint;
-import org.saga.buildings.Building;
 import org.saga.chunkGroups.ChunkGroup;
-import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.ProficiencyConfiguration;
@@ -25,9 +23,9 @@ import org.saga.constants.IOConstants.WriteReadType;
 import org.saga.exceptions.InvalidLocationException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.player.Proficiency;
-import org.saga.player.SagaPlayer;
 import org.saga.player.SagaEntityDamageManager.SagaPvpEvent;
 import org.saga.player.SagaEntityDamageManager.SagaPvpEvent.PvpDenyReason;
+import org.saga.player.SagaPlayer;
 import org.saga.utility.WriterReader;
 
 import com.google.gson.JsonParseException;
@@ -1081,6 +1079,17 @@ public class SagaFaction implements SecondTicker{
 	 */
 	public HashSet<Integer> getAllies() {
 		return new HashSet<Integer>(allies);
+	}
+	
+	/**
+	 * Gets the ally factions.
+	 * 
+	 * @return the ally factions
+	 */
+	public Collection<SagaFaction> getAllyFactions() {
+		
+		return FactionManager.manager().getFactions(getAllies());
+		
 	}
 	
 	/**

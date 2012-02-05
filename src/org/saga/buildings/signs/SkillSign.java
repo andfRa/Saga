@@ -3,7 +3,6 @@ package org.saga.buildings.signs;
 import org.bukkit.block.Sign;
 import org.saga.SagaMessages;
 import org.saga.buildings.Building;
-import org.saga.chunkGroups.ChunkGroupMessages;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.player.PlayerMessages;

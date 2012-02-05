@@ -11,8 +11,6 @@ import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.WriterReader;
 
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
-
 
 public class FactionManager {
 

@@ -13,7 +13,6 @@ import org.saga.config.ChunkGroupConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.economy.EconomyMessages;
-import org.saga.factions.FactionCommands;
 import org.saga.factions.SagaFaction;
 import org.saga.player.PlayerMessages;
 import org.saga.player.PlayerMessages.ColorCircle;

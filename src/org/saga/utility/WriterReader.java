@@ -20,7 +20,6 @@ import org.saga.buildings.signs.BuildingSign;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupDeserializer;
 import org.saga.config.AbilityConfiguration;
-import org.saga.config.SkillConfiguration;
 import org.saga.config.BalanceConfiguration;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.config.EconomyConfiguration;
@@ -28,6 +27,7 @@ import org.saga.config.ExperienceConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.GuildConfiguration;
 import org.saga.config.ProficiencyConfiguration;
+import org.saga.config.SkillConfiguration;
 import org.saga.constants.IOConstants;
 import org.saga.constants.IOConstants.ConfigType;
 import org.saga.constants.IOConstants.WriteReadType;
@@ -36,7 +36,6 @@ import org.saga.factions.SagaFaction;
 import org.saga.guilds.SagaGuild;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
-
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

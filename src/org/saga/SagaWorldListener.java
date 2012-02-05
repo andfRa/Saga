@@ -1,8 +1,8 @@
 package org.saga;
 
-import org.bukkit.event.world.WorldListener;
+import org.bukkit.event.Listener;
 
-public class SagaWorldListener extends WorldListener{
+public class SagaWorldListener implements Listener{
 
 	
 	

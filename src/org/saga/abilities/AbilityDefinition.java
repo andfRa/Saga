@@ -251,7 +251,7 @@ public class AbilityDefinition{
 	 * @return amount of used material
 	 */
 	public Integer getUsedAmount(Integer level) {
-		return usedAmount.calculateValue(level.shortValue()).intValue();
+		return usedAmount.calculateRandomIntValue(level);
 	}
 
 	/**

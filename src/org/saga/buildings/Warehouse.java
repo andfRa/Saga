@@ -8,7 +8,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.SagaMessages;
 import org.saga.buildings.BuildingDefinition.BuildingPermission;
 import org.saga.chunkGroups.ChunkGroup;
-import org.saga.chunkGroups.ChunkGroupMessages;
 import org.saga.player.SagaPlayer;
 
 

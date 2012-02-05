@@ -11,6 +11,9 @@ import org.bukkit.entity.Fireball;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EndermanPickupEvent;
 import org.bukkit.event.entity.EndermanPlaceEvent;
@@ -18,10 +21,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityListener;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.inventory.ItemStack;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.BalanceConfiguration;
@@ -32,7 +33,7 @@ import org.saga.player.SagaEntityDamageManager;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
 
-public class SagaEntityListener extends EntityListener{
+public class SagaEntityListener implements Listener{
 
 	
 	/**
@@ -45,13 +46,8 @@ public class SagaEntityListener extends EntityListener{
 	
 	}
 
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.bukkit.event.entity.EntityListener#onEntityDamage(org.bukkit.event.entity.EntityDamageEvent)
-	 */
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityDamage(EntityDamageEvent event) {
-		
 		
 		
 		// Damaged by entity:
@@ -63,11 +59,6 @@ public class SagaEntityListener extends EntityListener{
 		
 	}
 	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.bukkit.event.entity.EntityListener#onEntityDamage(org.bukkit.event.entity.EntityDamageEvent)
-	 */
 	public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
 		
 		
@@ -133,25 +124,35 @@ public class SagaEntityListener extends EntityListener{
 			
 			// Close combat:
 			if(projectile == null){
-				sagaAttacker.getLevelManager().onHitPlayer(cEvent, sagaDefender);
-				sagaDefender.getLevelManager().onHitByPlayer(cEvent, sagaAttacker);
 
 				// Handle pvp:
 				SagaEntityDamageManager.handlePvp(sagaAttacker, sagaDefender, cEvent);
+
+				if(event.isCancelled()) return;
 				
+				sagaAttacker.getLevelManager().onHitPlayer(cEvent, sagaDefender);
+				sagaDefender.getLevelManager().onHitByPlayer(cEvent, sagaAttacker);
+
 			}
 			// Archery:
 			else if(projectile instanceof Arrow){
 				
-				sagaAttacker.getLevelManager().onShotPlayer(cEvent, sagaDefender, projectile);
-				sagaDefender.getLevelManager().onShotByPlayer(cEvent, sagaAttacker, projectile);
-
 				// Handle pvp:
 				SagaEntityDamageManager.handlePvp(sagaAttacker, sagaDefender, cEvent);
 			
+				if(event.isCancelled()) return;
+				
+				sagaAttacker.getLevelManager().onShotPlayer(cEvent, sagaDefender, projectile);
+				sagaDefender.getLevelManager().onShotByPlayer(cEvent, sagaAttacker, projectile);
+
 			}
 			// Magic:
 			else if(projectile instanceof Fireball){
+				
+				// Handle pvp:
+				SagaEntityDamageManager.handlePvp(sagaAttacker, sagaDefender, cEvent);
+
+				if(event.isCancelled()) return;
 				
 				// Set base damage:
 				cEvent.setDamage(BalanceConfiguration.config().pvpBaseFireballDamage);
@@ -159,9 +160,6 @@ public class SagaEntityListener extends EntityListener{
 				sagaAttacker.getLevelManager().onSpelledPlayer(cEvent, sagaDefender, projectile);
 				sagaDefender.getLevelManager().onSpelledByPlayer(cEvent, sagaAttacker, projectile);
 
-				// Handle pvp:
-				SagaEntityDamageManager.handlePvp(sagaAttacker, sagaDefender, cEvent);
-				
 				// Handle magic:
 				SagaEntityDamageManager.handleMagicDamage(cEvent, sagaAttacker, sagaDefender);
 				
@@ -172,6 +170,17 @@ public class SagaEntityListener extends EntityListener{
 		
 		// Player versus creature:
 		else if(defender instanceof Creature && sagaAttacker != null){
+			
+			// Get saga chunk:
+			SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(defender.getLocation());
+			if(sagaChunk == null){
+				return;
+			}
+			
+			// Forward to saga chunk group:
+			sagaChunk.onPlayerDamagedCreature(cEvent, sagaAttacker, (Creature)defender);
+			
+			if(event.isCancelled()) return;
 			
 			// Close combat:
 			if(projectile == null){
@@ -194,16 +203,6 @@ public class SagaEntityListener extends EntityListener{
 				
 			}
 			
-			// Get saga chunk:
-			SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(defender.getLocation());
-			if(sagaChunk == null){
-				return;
-			}
-			
-			// Forward to saga chunk group:
-			sagaChunk.onPlayerDamagedCreature(cEvent, sagaAttacker, (Creature)defender);
-			
-			
 		}
 		
 		// Defend from a creature:
@@ -223,22 +222,12 @@ public class SagaEntityListener extends EntityListener{
 		
 	}
 	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.bukkit.event.entity.EntityListener#onProjectileHit(org.bukkit.event.entity.ProjectileHitEvent)
-	 */
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onProjectileHit(ProjectileHitEvent event) {
 		
 	}
 
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.bukkit.event.entity.EntityListener#onEntityExplode(org.bukkit.event.entity.EntityExplodeEvent)
-	 */
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityExplode(EntityExplodeEvent event) {
 		
 		
@@ -261,12 +250,7 @@ public class SagaEntityListener extends EntityListener{
 		
 	}
 	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.bukkit.event.entity.EntityListener#onEndermanPickup(org.bukkit.event.entity.EndermanPickupEvent)
-	 */
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEndermanPickup(EndermanPickupEvent event) {
 		
 
@@ -284,12 +268,7 @@ public class SagaEntityListener extends EntityListener{
 		
 	}
 	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.bukkit.event.entity.EntityListener#onEndermanPlace(org.bukkit.event.entity.EndermanPlaceEvent)
-	 */
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEndermanPlace(EndermanPlaceEvent event) {
 
 
@@ -307,12 +286,7 @@ public class SagaEntityListener extends EntityListener{
 		
 	}
 	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.bukkit.event.entity.EntityListener#onCreatureSpawn(org.bukkit.event.entity.CreatureSpawnEvent)
-	 */
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onCreatureSpawn(CreatureSpawnEvent event) {
 		
 		
@@ -330,7 +304,7 @@ public class SagaEntityListener extends EntityListener{
 		
 	}
 	
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityDeath(EntityDeathEvent event) {
 
 		

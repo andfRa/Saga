@@ -5,7 +5,6 @@ import org.bukkit.Location;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.SignChangeEvent;
@@ -14,11 +13,14 @@ import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.BalanceConfiguration;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.XrayIndicator;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 
-public class SagaBlockListener extends BlockListener{
+public class SagaBlockListener implements Listener{
 	
 	
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockBreak(BlockBreakEvent event) {
 
 		
@@ -41,17 +43,21 @@ public class SagaBlockListener extends BlockListener{
     	if(sagaChunk != null){
     		sagaChunk.onBlockBreak(event, sagaPlayer);
     	}
-		
+
+    	if(event.isCancelled()){
+    		return;
+    	}
+    	
     	// X-ray:
     	XrayIndicator.handleMine(sagaPlayer, event);
-
+    	
     	// Forward to level manager:
     	sagaPlayer.getLevelManager().onBlockBrake(event);
 		
 		
 	}
 	
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockDamage(BlockDamageEvent event) {
 		
 
@@ -74,7 +80,7 @@ public class SagaBlockListener extends BlockListener{
 		
 	}
 	
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockPlace(BlockPlaceEvent event) {
 
 
@@ -104,7 +110,7 @@ public class SagaBlockListener extends BlockListener{
 	
 	}
 	
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onSignChange(SignChangeEvent event) {
 
 		
@@ -127,7 +133,7 @@ public class SagaBlockListener extends BlockListener{
     	
 	}
 	
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockSpread(BlockSpreadEvent event) {
 
 		
@@ -143,7 +149,7 @@ public class SagaBlockListener extends BlockListener{
 		
 	}
 	
-	@Override
+	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockFromTo(BlockFromToEvent event) {
 
 

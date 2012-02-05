@@ -3,6 +3,7 @@ package org.saga.abilities;
 
 import java.util.HashSet;
 
+import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Player;
@@ -191,20 +192,30 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	/**
 	 * Informs cooldown.
 	 * 
-	 * @param ability ability
-	 * @return true if the ability can be used
 	 */
 	protected void informCooldown() {
 
 		
-		// Stop cooldown inform spam:
+		// Stop cooldown inform spam and and for passive abilities:
 		Integer cooldown = getCooldown();
-		if(cooldown == this.triggeredCooldown) return;
+		if(cooldown == this.triggeredCooldown || getActivationType() == ActivationType.PASSIVE) return;
 		
 		triggeredCooldown = cooldown;
 		
 		sagaPlayer.message(PlayerMessages.onCooldown(this));
 
+		
+	}
+	
+	/**
+	 * Informs cooldown end.
+	 * 
+	 */
+	protected void informCooldownEnd() {
+
+		sagaPlayer.message(PlayerMessages.cooldownEnd(this));
+		
+		sagaPlayer.playEffect(Effect.CLICK1, 0);
 		
 	}
 	
@@ -253,7 +264,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		
 		
 		// Toggle:
-		if(definition.getActivationType().equals(ActivationType.TOGGLE) || definition.getActivationType().equals(ActivationType.PASSIVE)){
+		if(definition.getActivationType().equals(ActivationType.TOGGLE)){
 
 			// Cooldown:
 			if(cooldown > 0) cooldown --;
@@ -269,9 +280,18 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 			
 		}
 
-		
 		// Cooldown:
-		if(cooldown > 0) cooldown --;
+		if(cooldown > 0){
+			cooldown --;
+			
+			// Inform cooldown:
+			if(cooldown <= 0){
+				
+				informCooldownEnd();
+			
+			}
+			
+		}
 		
 		// Active:
 		if(active > 0){
@@ -679,7 +699,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 			
 		case PASSIVE:
 	
-			activation = false;
+			activation = true;
 			
 			break;
 	

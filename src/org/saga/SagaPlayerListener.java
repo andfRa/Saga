@@ -15,13 +15,15 @@ import org.bukkit.entity.Creature;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerChatEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerListener;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.player.PlayerPortalEvent;
@@ -39,7 +41,7 @@ import org.saga.player.SagaPlayer;
  *
  * @author Cory
  */
-public class SagaPlayerListener extends PlayerListener {
+public class SagaPlayerListener implements Listener {
 
     protected Saga plugin;
 
@@ -50,7 +52,7 @@ public class SagaPlayerListener extends PlayerListener {
         this.plugin = plugin;
     }
 
-    @Override
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
 
     	
@@ -78,7 +80,7 @@ public class SagaPlayerListener extends PlayerListener {
 
     }
     
-    @Override
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerJoin(PlayerJoinEvent event) {
 
     	
@@ -99,7 +101,7 @@ public class SagaPlayerListener extends PlayerListener {
         
     }
 
-    @Override
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerQuit(PlayerQuitEvent event) {
 
 
@@ -123,7 +125,7 @@ public class SagaPlayerListener extends PlayerListener {
         
     }
 
-    @Override
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
     	
 
@@ -145,7 +147,7 @@ public class SagaPlayerListener extends PlayerListener {
     	
     }
 
-    @Override
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerMove(PlayerMoveEvent event) {
 
     	
@@ -161,7 +163,7 @@ public class SagaPlayerListener extends PlayerListener {
         
     }
 
-    @Override
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerTeleport(PlayerTeleportEvent event) {
     	
     	
@@ -185,7 +187,7 @@ public class SagaPlayerListener extends PlayerListener {
 
     }
 
-    @Override
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerInteract(PlayerInteractEvent event) {
 
 
@@ -230,7 +232,7 @@ public class SagaPlayerListener extends PlayerListener {
 	
 	}
 	
-    @Override
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerChat(PlayerChatEvent event) {
 
 
@@ -265,12 +267,12 @@ public class SagaPlayerListener extends PlayerListener {
     	
     }
     
-    @Override
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerPickupItem(PlayerPickupItemEvent event) {
 
     }
     
-    @Override
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 
 
@@ -312,7 +314,7 @@ public class SagaPlayerListener extends PlayerListener {
     	
     }
     
-    @Override
+    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerPortal(PlayerPortalEvent event) {
     	
     	
@@ -440,7 +442,7 @@ public class SagaPlayerListener extends PlayerListener {
 		 * 
 		 * @see org.bukkit.event.Cancellable#isCancelled()
 		 */
-		@Override
+		@EventHandler(priority = EventPriority.NORMAL)
 		public boolean isCancelled() {
 			return isCanceled;
 		}
@@ -450,7 +452,7 @@ public class SagaPlayerListener extends PlayerListener {
 		 * 
 		 * @see org.bukkit.event.Cancellable#setCancelled(boolean)
 		 */
-		@Override
+		@EventHandler(priority = EventPriority.NORMAL)
 		public void setCancelled(boolean cancel) {
 			isCanceled = cancel;
 		}

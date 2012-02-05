@@ -15,7 +15,6 @@ import org.saga.economy.TradeDeal.TradeDealType;
 import org.saga.utility.TwoPointFunction;
 import org.saga.utility.WriterReader;
 
-
 import com.google.gson.JsonParseException;
 
 public class EconomyConfiguration {

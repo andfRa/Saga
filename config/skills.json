@@ -170,6 +170,20 @@
       "SUGAR_CANE_BLOCK":{"0":{"x1":0,"y1":1.937,"x2":50,"y2":5.810}},
       "LOG":{"7":{"x1":0,"y1":1.937,"x2":50,"y2":5.810}}
     }
+  },
+
+  "smithing":{
+    "name":"smithing",
+    "type":"BLOCK",
+    "attackerWeapons":[],
+    "defenderWeapons":[],
+    "attackerArmor":"ALL",
+    "defenderArmor":"ALL",
+    "attacker":"ALL",
+    "defender":"ALL",
+    "attack":"NONE",
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "exp":{}
   }
 
 }

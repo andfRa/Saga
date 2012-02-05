@@ -2,11 +2,8 @@ package org.saga.abilities;
 
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.Saga;
-import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupCommands;
-import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
-import org.saga.utility.TwoPointFunction;
 import org.sk89q.CommandContext;
 
 public class Claim extends Ability{
