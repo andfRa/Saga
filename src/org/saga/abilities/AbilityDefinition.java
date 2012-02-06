@@ -253,6 +253,16 @@ public class AbilityDefinition{
 	public Integer getUsedAmount(Integer level) {
 		return usedAmount.calculateRandomIntValue(level);
 	}
+	
+	/**
+	 * Gets the amount of used material.
+	 * 
+	 * @param level level
+	 * @return amount of used material
+	 */
+	public Integer getAbsoluteUsedAmount(Integer level) {
+		return (int)Math.ceil(usedAmount.calculateValue(level));
+	}
 
 	/**
 	 * Gets the cooldown.

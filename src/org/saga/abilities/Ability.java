@@ -332,7 +332,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		Player player = sagaPlayer.getPlayer();
 		PlayerInventory inventory = player.getInventory();
 		
-		Integer amount = definition.getUsedAmount(getSkillLevel());
+		Integer amount = definition.getAbsoluteUsedAmount(getSkillLevel());
 		Material material = definition.getUsedMaterial();
 		
 		return inventory.contains(material, amount);
@@ -557,12 +557,12 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	}
 
 	/**
-	 * Gets the amount of used material.
+	 * Gets the absolute amount of used material.
 	 * 
 	 * @return amount of used material
 	 */
-	public Integer getUsedAmount() {
-		return definition.getUsedAmount(getSkillLevel());
+	public Integer getAbsoluteUsedAmount() {
+		return definition.getAbsoluteUsedAmount(getSkillLevel());
 	}
 	
 	
@@ -576,7 +576,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		
 		
 		Material usedMaterial = getUsedMaterial();
-		Integer usedAmount = getUsedAmount();
+		Integer usedAmount = getAbsoluteUsedAmount();
 		
 		if(usedMaterial.equals(Material.AIR) || usedAmount == 0){
 			return true;
@@ -594,7 +594,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	protected void informNotEnoughMaterials() {
 		
 		Material usedMaterial = getUsedMaterial();
-		Integer usedAmount = getUsedAmount();
+		Integer usedAmount = getAbsoluteUsedAmount();
 		
 		sagaPlayer.message(PlayerMessages.insufficientMaterials(this, usedMaterial, usedAmount));
 		
@@ -650,6 +650,12 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 			activate();
 			
 			activation = true;
+
+			// Cooldown:
+			startCooldown();
+
+			// Use materials:
+			useMaterials();
 			
 			break;
 
@@ -721,18 +727,40 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	protected boolean handlePreUse() {
 
 		
-		if(!checkUsageMaterials()){
-			informNotEnoughMaterials();
-			return false;
-		}
+		ActivationType type = getDefinition().getActivationType();
 		
-		if(!isActive()){
-			return false;
-		}
-		
-		if(isOnCooldown()){
-			informCooldown();
-			return false;
+		// Materials:
+		switch (type) {
+		case TIMED:
+			
+			// Active:
+			if(!isActive()){
+				return false;
+			}
+			
+			break;
+
+		default:
+
+			// Active:
+			if(!isActive()){
+				return false;
+			}
+			
+			// Cooldown:
+			if(isOnCooldown()){
+				informCooldown();
+				return false;
+			}
+			
+			// Materials:
+			if(!checkUsageMaterials()){
+				informNotEnoughMaterials();
+				return false;
+			}
+			
+			break;
+			
 		}
 		
 		return true;
@@ -752,6 +780,12 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		
 		case INSTANT:
 			
+			// Cooldown:
+			startCooldown();
+
+			// Use materials:
+			useMaterials();
+			
 			break;
 
 		case TIMED:
@@ -760,11 +794,23 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 
 		case SINGLE_USE:
 			
+			// Cooldown:
+			startCooldown();
+
+			// Use materials:
+			useMaterials();
+			
 			deactivate(false);	
 			
 			break;
 		
 		case TOGGLE:
+
+			// Cooldown:
+			startCooldown();
+
+			// Use materials:
+			useMaterials();
 			
 			break;
 			
@@ -773,16 +819,16 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 			break;
 	
 		default:
+
+			// Cooldown:
+			startCooldown();
+
+			// Use materials:
+			useMaterials();
 			
 			break;
 			
 		}
-		
-		// Cooldown:
-		startCooldown();
-
-		// Use materials:
-		useMaterials();
 		
 		
 	}
