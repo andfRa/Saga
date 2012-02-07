@@ -70,7 +70,12 @@ public class SagaEntityListener implements Listener{
 		LivingEntity defender= (LivingEntity) event.getEntity();
 		
 		// Damage ticks:
-		if(defender.getNoDamageTicks() > defender.getMaximumNoDamageTicks()/2F) return;
+		if(defender.getNoDamageTicks() <= defender.getMaximumNoDamageTicks()/2F){
+
+		}else{
+			event.setCancelled(true);
+			return;
+		}
 		
 		// Dead:
 		if(defender.getHealth() <= 0) return;
@@ -79,11 +84,6 @@ public class SagaEntityListener implements Listener{
 		EntityDamageByEntityEvent cEvent = (EntityDamageByEntityEvent)event;
 		Projectile projectile = null;
 		Entity attacker = cEvent.getDamager();
-		
-		if(event.getEntity() instanceof CraftEnderDragon && cEvent.getDamager() instanceof CraftEnderDragon){
-			((LivingEntity)event.getEntity()).remove();
-			Saga.severe(getClass(), "dragon-dragon collision", "removed dragon");
-		}
 		
 		// Damaged by an arrow:
 		if(attacker instanceof Projectile){

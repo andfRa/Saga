@@ -13,8 +13,6 @@ import java.util.Calendar;
 import org.saga.Saga;
 import org.saga.abilities.Ability;
 import org.saga.abilities.AbilityDeserializer;
-import org.saga.attributes.Attribute;
-import org.saga.attributes.AttributeDeserializer;
 import org.saga.buildings.Building;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.chunkGroups.ChunkGroup;
@@ -276,7 +274,6 @@ public class WriterReader {
 
 		
 		GsonBuilder gsonBuilder= new GsonBuilder();
-        gsonBuilder.registerTypeAdapter(Attribute.class, new AttributeDeserializer());
         Gson gson = gsonBuilder.create();
         return gson.fromJson(readConfig(WriteReadType.CONFIG_NORMAL, ConfigType.SKILL.getFileName()).toString(), SkillConfiguration.class);
      

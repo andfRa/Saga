@@ -204,7 +204,7 @@ public class PlayerLevelManager{
 			ActivationType type = selectedAbility.getActivationType();
 			
 			// Activation:
-			selectedAbility.onActivate();
+			selectedAbility.handleActivate();
 			
 			// Instant:
 			if(type.equals(ActivationType.INSTANT)){
@@ -213,7 +213,7 @@ public class PlayerLevelManager{
 				boolean triggered = selectedAbility.instant(event);
 
 				// Notify usage:
-				if(triggered) selectedAbility.onUse();
+				if(triggered) selectedAbility.handleAfterUse();
 				
 			}
 			
@@ -283,7 +283,7 @@ public class PlayerLevelManager{
 			boolean triggered = ability.onPlayerInteractPlayer(event, tragetPlayer);
 			
 			// Notify usage:
-			if(triggered) ability.onUse();
+			if(triggered) ability.handleAfterUse();
 			
 		}
 		
@@ -308,7 +308,7 @@ public class PlayerLevelManager{
 			boolean triggered = ability.onPlayerInteractCreature(event, targetCreature);
 			
 			// Notify usage:
-			if(triggered) ability.onUse();
+			if(triggered) ability.handleAfterUse();
 			
 		}
 		
@@ -342,7 +342,7 @@ public class PlayerLevelManager{
 			boolean triggered = ability.onHitByCreature(event, creature);
 			
 			// Notify usage:
-			if(triggered) ability.onUse();
+			if(triggered) ability.handleAfterUse();
 			
 		}
 		
@@ -375,7 +375,7 @@ public class PlayerLevelManager{
 			boolean triggered = ability.onHitCreature(event, creature);
 			
 			// Notify usage:
-			if(triggered) ability.onUse();
+			if(triggered) ability.handleAfterUse();
 			
 		}
 		
@@ -408,7 +408,7 @@ public class PlayerLevelManager{
 			boolean triggered = ability.onHitByPlayer(event, attacker);
 			
 			// Notify usage:
-			if(triggered) ability.onUse();
+			if(triggered) ability.handleAfterUse();
 			
 		}
 		
@@ -441,7 +441,7 @@ public class PlayerLevelManager{
 			boolean triggered = ability.onHitPlayer(event, defender);
 			
 			// Notify usage:
-			if(triggered) ability.onUse();
+			if(triggered) ability.handleAfterUse();
 			
 		}
 		
@@ -475,7 +475,7 @@ public class PlayerLevelManager{
 			boolean triggered = ability.onShotByCreature(event, creature, projectile);
 
 			// Notify usage:
-			if(triggered) ability.onUse();
+			if(triggered) ability.handleAfterUse();
 			
 		}
 		
@@ -508,7 +508,7 @@ public class PlayerLevelManager{
 			boolean triggered = ability.onShotCreature(event, creature, projectile);
 
 			// Notify usage:
-			if(triggered) ability.onUse();
+			if(triggered) ability.handleAfterUse();
 			
 		}
 		
@@ -541,7 +541,7 @@ public class PlayerLevelManager{
 			boolean triggered = ability.onShotByPlayer(event, attacker, projectile);
 
 			// Notify usage:
-			if(triggered) ability.onUse();
+			if(triggered) ability.handleAfterUse();
 			
 		}
 		
@@ -574,7 +574,7 @@ public class PlayerLevelManager{
 			boolean triggered = ability.onShotPlayer(event, defender, projectile);
 
 			// Notify usage:
-			if(triggered) ability.onUse();
+			if(triggered) ability.handleAfterUse();
 			
 		}
 		
@@ -648,7 +648,7 @@ public class PlayerLevelManager{
 			boolean triggered = ability.onSpelledPlayer(event, defender, projectile);
 
 			// Notify usage:
-			if(triggered) ability.onUse();
+			if(triggered) ability.handleAfterUse();
 			
 		}
 		
@@ -682,7 +682,7 @@ public class PlayerLevelManager{
 			boolean triggered = ability.onSpelledByPlayer(event, attacker, projectile);
 
 			// Notify usage:
-			if(triggered) ability.onUse();
+			if(triggered) ability.handleAfterUse();
 			
 		}
 		

@@ -599,7 +599,7 @@ public class PlayerMessages {
 			line[0] = EconomyMessages.materialShort(definition.getUsedMaterial()) + " used";
 		
 			for (int i = 1; i < line.length; i++) {
-				line[i] = definition.getUsedAmount(levels[i-1]).toString();
+				line[i] = definition.getAbsoluteUsedAmount(levels[i-1]).toString();
 			}
 			
 			table.addLine(line);

@@ -6,14 +6,12 @@ import java.util.HashSet;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.entity.Creature;
-import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.Saga;
@@ -61,6 +59,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 * Last triggered cooldown.
 	 */
 	transient private Integer triggeredCooldown;
+	
 	
 	// Initialization:
 	/**
@@ -131,18 +130,63 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		
 
 	}
-
 	
-	// Cooldown:
+
+	// Activation:
+	/**
+	 * Starts activate.
+	 * 
+	 * @param active activate
+	 */
+	protected void activate() {
+		
+
+		this.active = getDefinition().getActiveFor(getSkillLevel());
+		
+		// Start clock:
+		if(!isClockEnabled() && active > 0){
+			startClock();
+		}
+
+		
+	}
+
+	/**
+	 * Deactivates the ability.
+	 * 
+	 */
+	public void deactivate() {
+
+		this.active = 0;
+
+	}
+
 	/**
 	 * Checks if the ability is on cooldown.
 	 * 
 	 * @return true if on cooldown
 	 */
-	public boolean isOnCooldown() {
-		return cooldown > 0;
+	public boolean isActive() {
+		
+		// Always active:
+		ActivationType type = getDefinition().getActivationType();
+		if(type.equals(ActivationType.INSTANT) || type.equals(ActivationType.PASSIVE)) return true;
+		
+		return active > 0;
+		
 	}
 	
+	/**
+	 * Gets the activation type.
+	 * 
+	 * @return activation type
+	 */
+	public ActivationType getActivationType() {
+		return definition.getActivationType();
+	}
+	
+	
+	// Cooldown:
 	/**
 	 * Starts cooldown.
 	 * 
@@ -158,7 +202,6 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		}
 		
 	}
-	
 
 	/**
 	 * Starts the cooldown.
@@ -167,7 +210,16 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	protected void startCooldown() {
 
 		startCooldown(definition.getCooldown(getSkillLevel()));
-		
+
+	}
+	
+	/**
+	 * Checks if the ability is on cooldown.
+	 * 
+	 * @return true if on cooldown
+	 */
+	public boolean isOnCooldown() {
+		return cooldown > 0;
 	}
 	
 	/**
@@ -187,8 +239,69 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	public Integer getTotalCooldown() {
 		return definition.getCooldown(getSkillLevel());
 	}
+
 	
+	// Material usage:
+	/**
+	 * Checks if there is enough materials to use the ability.
+	 * 
+	 * @return true can be used
+	 */
+	public boolean checkUsageMaterials() {
+		
+		
+		Material usedMaterial = getUsedMaterial();
+		Integer usedAmount = getAbsoluteUsedAmount();
+		
+		if(usedMaterial.equals(Material.AIR) || usedAmount == 0){
+			return true;
+		}
+		
+		return sagaPlayer.getItemCount(usedMaterial) >= usedAmount;
+		
+		
+	}
 	
+	/**
+	 * Uses the required materials.
+	 * 
+	 */
+	public void useMaterials() {
+
+		
+		Integer amount = definition.getUsedAmount(getSkillLevel());
+		Material material = definition.getUsedMaterial();
+		
+		// Nothing to remove.
+		if(material.equals(Material.AIR) || amount == 0){
+			return;
+		}
+		
+		getSagaPlayer().removeItem(new ItemStack(material, amount));
+		
+		
+	}
+
+	/**
+	 * Gets the usedMaterial.
+	 * 
+	 * @return the usedMaterial
+	 */
+	public Material getUsedMaterial() {
+		return definition.getUsedMaterial();
+	}
+
+	/**
+	 * Gets the absolute amount of used material.
+	 * 
+	 * @return amount of used material
+	 */
+	public Integer getAbsoluteUsedAmount() {
+		return definition.getAbsoluteUsedAmount(getSkillLevel());
+	}
+
+	
+	// Inform:
 	/**
 	 * Informs cooldown.
 	 * 
@@ -216,6 +329,51 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		sagaPlayer.message(PlayerMessages.cooldownEnd(this));
 		
 		sagaPlayer.playEffect(Effect.CLICK1, 0);
+		
+	}
+
+	/**
+	 * Informs that the ability is already activated.
+	 * 
+	 */
+	protected void informAlreadyActive() {
+
+		sagaPlayer.message(PlayerMessages.alreadyActive(this));
+		
+	}
+
+	/**
+	 * Informs that the ability was activated.
+	 * 
+	 */
+	protected void informActivated() {
+
+		sagaPlayer.message(PlayerMessages.activated(this));
+		
+	}
+	
+	/**
+	 * Informs that the ability was deactivated.
+	 * 
+	 */
+	protected void informDeactivated() {
+
+		sagaPlayer.message(PlayerMessages.deactivated(this));
+		
+		sagaPlayer.playEffect(Effect.CLICK2, 0);
+		
+	}
+	
+	/**
+	 * Informs that there isn't enough materials.
+	 * 
+	 */
+	protected void informNotEnoughMaterials() {
+		
+		Material usedMaterial = getUsedMaterial();
+		Integer usedAmount = getAbsoluteUsedAmount();
+		
+		sagaPlayer.message(PlayerMessages.insufficientMaterials(this, usedMaterial, usedAmount));
 		
 	}
 	
@@ -262,23 +420,6 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	@Override
 	public void clockSecondTick() {
 		
-		
-		// Toggle:
-		if(definition.getActivationType().equals(ActivationType.TOGGLE)){
-
-			// Cooldown:
-			if(cooldown > 0) cooldown --;
-			
-			// Stop clock:
-			if(cooldown <= 0){
-					
-				stopClock();
-				
-			}
-		
-			return;	
-			
-		}
 
 		// Cooldown:
 		if(cooldown > 0){
@@ -301,7 +442,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 			// Deactivate:
 			if(active <= 0){
 				
-				deactivate();
+				handleDeactivate();
 				
 			}
 			
@@ -317,50 +458,18 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		
 		
 	}
-	
-	
-	// Material usage:
-	/**
-	 * Checks if the player has enough material to be consumed.
-	 * 
-	 * @return true if enough.
-	 */
-	public boolean enoughMaterials() {
 
-		if(sagaPlayer == null || !sagaPlayer.isOnline()) return false;
-		
-		Player player = sagaPlayer.getPlayer();
-		PlayerInventory inventory = player.getInventory();
-		
-		Integer amount = definition.getAbsoluteUsedAmount(getSkillLevel());
-		Material material = definition.getUsedMaterial();
-		
-		return inventory.contains(material, amount);
-		
-	}
-	
-	/**
-	 * Uses the required materials.
-	 * 
-	 */
-	public void useMaterials() {
-
-		
-		Integer amount = definition.getUsedAmount(getSkillLevel());
-		Material material = definition.getUsedMaterial();
-		
-		// Nothing to remove.
-		if(material.equals(Material.AIR) || amount == 0){
-			return;
-		}
-		
-		getSagaPlayer().removeItem(new ItemStack(material, amount));
-		
-		
-	}
-	
 	
 	// Interaction:
+	/**
+	 * Gets the definition.
+	 * 
+	 * @return definition
+	 */
+	public AbilityDefinition getDefinition() {
+		return definition;
+	}
+	
 	/**
 	 * Gets the ability name
 	 * 
@@ -378,7 +487,6 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	public String getStaticName() {
 		return getClass().getSimpleName().replaceAll("(\\p{Ll})(\\p{Lu})","$1 $2").toLowerCase();
 	}
-	
 	
 	/**
 	 * Sets the player.
@@ -401,15 +509,6 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	}
 
 	/**
-	 * Gets the definition.
-	 * 
-	 * @return definition
-	 */
-	public AbilityDefinition getDefinition() {
-		return definition;
-	}
-	
-	/**
 	 * Returns the skill.
 	 * 
 	 * @return skill
@@ -418,64 +517,6 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		
 		HashSet<String> baseSkills = getDefinition().getBaseSkills();
 		return getSagaPlayer().getModifiedSkillMultiplier(baseSkills);
-		
-	}
-
-	
-	// Activation:
-	/**
-	 * Starts activate.
-	 * 
-	 * @param active activate
-	 */
-	protected void activate(Integer active) {
-		
-
-		this.active = active;
-		
-		// Start clock:
-		if(!isClockEnabled() && active > 0){
-			startClock();
-		}
-		
-		// Inform:
-		sagaPlayer.message(PlayerMessages.activated(this));
-		
-	}
-	
-	/**
-	 * Activates the ability.
-	 * 
-	 */
-	public void activate() {
-		
-		Integer active = definition.getActiveFor(getSkillLevel());
-		activate(active);
-		
-	}
-	
-	/**
-	 * Deactivates the ability.
-	 * 
-	 * @param sendMessage sends a message if true
-	 */
-	public void deactivate(boolean sendMessage) {
-
-		this.active = 0;
-
-		// Inform:
-		if(sendMessage) sagaPlayer.message(PlayerMessages.deactivated(this));
-		
-	}
-	
-
-	/**
-	 * Deactivates the ability.
-	 * 
-	 */
-	public void deactivate() {
-
-		deactivate(true);
 		
 	}
 
@@ -511,134 +552,29 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		
 	}
 
-	/**
-	 * Checks if the ability is on cooldown.
-	 * 
-	 * @return true if on cooldown
-	 */
-	public boolean isActive() {
-		
-		// Always active:
-		ActivationType type = getDefinition().getActivationType();
-		if(type.equals(ActivationType.INSTANT) || type.equals(ActivationType.PASSIVE)) return true;
-		
-		return active > 0;
-		
-	}
-	
-	/**
-	 * Handles cooldown.
-	 * 
-	 * @param ability ability
-	 * @return true if the ability can be used
-	 */
-	protected void informActive() {
-
-		sagaPlayer.message(PlayerMessages.alreadyActive(this));
-		
-	}
-	
-	/**
-	 * Gets the activation type.
-	 * 
-	 * @return activation type
-	 */
-	public ActivationType getActivationType() {
-		return definition.getActivationType();
-	}
-	
-	/**
-	 * Gets the usedMaterial.
-	 * 
-	 * @return the usedMaterial
-	 */
-	public Material getUsedMaterial() {
-		return definition.getUsedMaterial();
-	}
-
-	/**
-	 * Gets the absolute amount of used material.
-	 * 
-	 * @return amount of used material
-	 */
-	public Integer getAbsoluteUsedAmount() {
-		return definition.getAbsoluteUsedAmount(getSkillLevel());
-	}
-	
-	
-	// Material usage:
-	/**
-	 * Checks if there is enough materials to use the ability.
-	 * 
-	 * @return true can be used
-	 */
-	public boolean checkUsageMaterials() {
-		
-		
-		Material usedMaterial = getUsedMaterial();
-		Integer usedAmount = getAbsoluteUsedAmount();
-		
-		if(usedMaterial.equals(Material.AIR) || usedAmount == 0){
-			return true;
-		}
-		
-		return sagaPlayer.getItemCount(usedMaterial) >= usedAmount;
-		
-		
-	}
-	
-	/**
-	 * Informs that there isn't enough materials.
-	 * 
-	 */
-	protected void informNotEnoughMaterials() {
-		
-		Material usedMaterial = getUsedMaterial();
-		Integer usedAmount = getAbsoluteUsedAmount();
-		
-		sagaPlayer.message(PlayerMessages.insufficientMaterials(this, usedMaterial, usedAmount));
-		
-	}
-	
 	
 	// Ability usage:
 	/**
-	 * Triggers the ability.
-	 * 
-	 * @param event event
-	 * @return true of triggered
-	 */
-	public boolean instant(PlayerInteractEvent event) {
-		return false;
-	}
-	
-	
-	// Event:
-	/**
-	 * Called before activation.
+	 * Called on activation.
 	 * 
 	 * @return activated if true
 	 */
-	public boolean onActivate() {
+	public boolean handleActivate() {
 		
 		
-		boolean activation = false;
-
 		// Activate:
 		switch (definition.getActivationType()) {
 		
 		case INSTANT:
 			
-			activation = false;
+			return false;
 			
-			break;
-
 		case TIMED:
 			
 			// Already active:
 			if(isActive()){
-				informActive();
-				break;
+				informAlreadyActive();
+				return false;
 			}
 
 			// Cooldown:
@@ -646,13 +582,21 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 				informCooldown();
 				return false;
 			}
+
+			// Materials:
+			if(!checkUsageMaterials()){
+				informNotEnoughMaterials();
+				return false;
+			}
 			
+			// Activate event:
+			if(!onPreActivate()) return false;
+
+			// Activate:
 			activate();
 			
-			activation = true;
-
-			// Cooldown:
-			startCooldown();
+			// Inform:
+			informActivated();
 
 			// Use materials:
 			useMaterials();
@@ -663,19 +607,24 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 
 			// Already active:
 			if(isActive()){
-				informActive();
-				break;
+				informAlreadyActive();
+				return false;
 			}
-
+			
 			// Cooldown:
 			if(isOnCooldown()){
 				informCooldown();
 				return false;
 			}
+
+			// Activate event:
+			if(!onPreActivate()) return false;
+
+			// Activate:
+			activate();
 			
-			activate();	
-			
-			activation = true;
+			// Inform:
+			informActivated();
 			
 			break;
 		
@@ -689,32 +638,101 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 			
 			if(isActive()){
 				
-				deactivate();
+				// Deactivate:
+				handleDeactivate();
 				
-				activation = false;
+				return false;
 				
 			}else{
-				
+
+				// Activate event:
+				if(!onPreActivate()) return false;
+
+				// Activate:
 				activate();
 				
-				activation = true;
+				// Inform:
+				informActivated();
+				
+				return true;
 				
 			}
 			
-			break;
-			
 		case PASSIVE:
 	
-			activation = true;
-			
-			break;
+			return true;
 	
 		default:
 			
 			break;
 		}
 		
-		return activation;
+		return true;
+		
+		
+	}
+
+	/**
+	 * Called on deactivation.
+	 * 
+	 * @return deactivated if true
+	 */
+	public void handleDeactivate() {
+		
+		
+		// Activate:
+		switch (definition.getActivationType()) {
+		
+		case INSTANT:
+			
+			return;
+			
+		case TIMED:
+
+			// Cooldown:
+			startCooldown();
+
+			// Deactivate event:
+			if(!onPreDeactivate()) return;
+
+			// Deactivate:
+			deactivate();
+			
+			// Inform:
+			informDeactivated();
+			
+			return;
+			
+		case SINGLE_USE:
+
+			// Cooldown:
+			startCooldown();
+
+			// Deactivate event:
+			if(!onPreDeactivate()) return;
+
+			// Deactivate:
+			deactivate();
+			
+			// Inform:
+			informDeactivated();
+			
+			return;
+			
+		default:
+
+			// Deactivate event:
+			if(!onPreDeactivate()) return;
+
+			// Deactivate:
+			deactivate();
+			
+			// Inform:
+			informDeactivated();
+			
+			return;
+			
+		}
 		
 		
 	}
@@ -724,7 +742,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 * 
 	 * @return true if can proceed with use.
 	 */
-	protected boolean handlePreUse() {
+	public final boolean handlePreUse() {
 
 		
 		ActivationType type = getDefinition().getActivationType();
@@ -767,12 +785,12 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	
 		
 	}
-	
+
 	/**
 	 * Called when the ability was used.
 	 * 
 	 */
-	public final void onUse() {
+	public final void handleAfterUse() {
 
 		
 		// Deactivate
@@ -800,7 +818,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 			// Use materials:
 			useMaterials();
 			
-			deactivate(false);	
+			handleDeactivate();	
 			
 			break;
 		
@@ -815,7 +833,13 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 			break;
 			
 		case PASSIVE:
-	
+
+			// Cooldown:
+			startCooldown();
+
+			// Use materials:
+			useMaterials();
+			
 			break;
 	
 		default:
@@ -832,7 +856,37 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		
 		
 	}
+
 	
+	// Event:
+	/**
+	 * Called when the ability was activated.
+	 * 
+	 * @return true if activated
+	 */
+	public boolean onPreActivate() {
+		return true;
+	}
+
+	/**
+	 * Called when the ability was deactivated.
+	 * 
+	 * @return true if deactivated
+	 */
+	public boolean onPreDeactivate() {
+		return true;
+	}
+	
+	/**
+	 * Triggers the ability.
+	 * 
+	 * @param event event
+	 * @return true of triggered
+	 */
+	public boolean instant(PlayerInteractEvent event) {
+		return false;
+	}
+
 	/**
 	 * Called when the player interacts.
 	 * 
@@ -842,7 +896,6 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	public boolean onPlayerInteract(PlayerInteractEvent event) {
 		return true;
 	}
-
 	
 	/**
 	 * Called when the player gets damaged by a creature.
