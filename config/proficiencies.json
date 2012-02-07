@@ -106,14 +106,16 @@
   {"name":"mage",
     "type":"CLASS",
     "hierarchyLevel":"2",
-    "abilities":["fireball","force"],
+    "abilities":["fireball","force","stoneskin"],
     "bindMaterials":{
-      "fireball":["PAPER","BOOK"],
-      "force":["PAPER","BOOK"]
+      "fireball":["BOOK"],
+      "force":["BOOK"],
+      "stoneskin":["PAPER"]
     },
     "bindActions":{
       "fireball":"RIGHT_CLICK",
-      "force":"LEFT_CLICK"
+      "force":"LEFT_CLICK",
+      "stoneskin":"LEFT_CLICK"
     },
     "skillMax":{"magic":30,"light armour":15,"magic warding":30,"unarmoured":15},
     "settlementPermissions":[],
