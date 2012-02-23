@@ -114,21 +114,21 @@ public class BuildingDefinition {
 		boolean integrity=true;
 		
 		if(pointCost == null){
-			pointCost = new TwoPointFunction(Double.MAX_VALUE, Short.MAX_VALUE, Double.MAX_VALUE);
+			pointCost = new TwoPointFunction(10000.0);
 			Saga.severe(BuildingDefinition.class, "failed to initialize pointCost field", "setting default");
 			integrity = false;
 		}
 		integrity = pointCost.complete() && integrity;
 		
 		if(moneyCost == null){
-			moneyCost = new TwoPointFunction(Double.MAX_VALUE, Short.MAX_VALUE, Double.MAX_VALUE);
+			moneyCost = new TwoPointFunction(10000.0);
 			Saga.severe(BuildingDefinition.class, "failed to initialize moneyCost field", "setting default");
 			integrity = false;
 		}
 		integrity = moneyCost.complete() && integrity;
 		
 		if(levelFunction == null){
-			levelFunction = new TwoPointFunction(0.0, Short.MAX_VALUE, 0.0);
+			levelFunction = new TwoPointFunction(10000.0);
 			Saga.severe(BuildingDefinition.class, "failed to initialize levelFunction field", "setting default");
 			integrity = false;
 		}
@@ -253,7 +253,7 @@ public class BuildingDefinition {
 	 * @return the building point cost
 	 */
 	public Integer getPointCost(Short level) {
-		return pointCost.calculateValue(level).intValue();
+		return pointCost.value(level).intValue();
 	}
 
 	/**
@@ -263,7 +263,7 @@ public class BuildingDefinition {
 	 * @return the money cost
 	 */
 	public Integer getMoneyCost(Short level) {
-		return moneyCost.calculateValue(level).intValue();
+		return moneyCost.value(level).intValue();
 	}
 	
 	/**
@@ -284,9 +284,9 @@ public class BuildingDefinition {
 		
 		
 		BuildingDefinition requirements = new BuildingDefinition();
-		requirements.pointCost =  new TwoPointFunction(Double.MAX_VALUE, Short.MAX_VALUE, Double.MAX_VALUE);;
-		requirements.moneyCost = new TwoPointFunction(Double.MAX_VALUE, Short.MAX_VALUE, Double.MAX_VALUE);
-		requirements.levelFunction = new TwoPointFunction(0.0, Short.MAX_VALUE, 0.0);
+		requirements.pointCost =  new TwoPointFunction(10000.0);
+		requirements.moneyCost = new TwoPointFunction(10000.0);
+		requirements.levelFunction = new TwoPointFunction(10000.0);
 		requirements.complete();
 		return requirements;
 		
@@ -339,10 +339,10 @@ public class BuildingDefinition {
 		
 		
 		TwoPointFunction amount = roleAmounts.get(roleName);
-		if(amount == null || amount.getXRequired() > level){
+		if(amount == null || amount.getXMin() > level){
 			return 0;
 		}
-		return new Double(amount.calculateValue(level)).intValue();
+		return new Double(amount.value(level)).intValue();
 		
 		
 	}
@@ -358,10 +358,10 @@ public class BuildingDefinition {
 		
 		
 		TwoPointFunction amount = enabledBuildings.get(buildingName);
-		if(amount == null || amount.getXRequired() > level){
+		if(amount == null || amount.getXMin() > level){
 			return 0;
 		}
-		return new Double(amount.calculateValue(level)).intValue();
+		return new Double(amount.value(level)).intValue();
 		
 		
 	}

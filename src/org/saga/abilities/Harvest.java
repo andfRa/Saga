@@ -68,8 +68,8 @@ public class Harvest extends Ability{
 		Location location = event.getPlayer().getLocation();
 		
 		// Skill functions:
-		Integer size = getDefinition().getPrimaryFunction().calculateRandomIntValue(getSkillLevel());
-		Integer convenience = getDefinition().getSecondaryFunction().calculateRandomIntValue(getSkillLevel());
+		Integer size = getDefinition().getPrimaryFunction().randomIntValue(getSkillLevel());
+		Integer convenience = getDefinition().getSecondaryFunction().randomIntValue(getSkillLevel());
 		
 		// Exp reward:
 		int expval = 0;
@@ -178,9 +178,9 @@ public class Harvest extends Ability{
 			// Grown:
 			else{
 				
-				TwoPointFunction tpf = new TwoPointFunction((short)1, 0.0, (short)7, 3.0);
+				TwoPointFunction tpf = new TwoPointFunction((short)0, 0.0, (short)7, 3.0);
 				
-				Integer seeds = tpf.calculateRandomIntValue(data.intValue());
+				Integer seeds = tpf.randomIntValue(data.intValue());
 				
 				handleDrop(new ItemStack(Material.SEEDS, seeds), dropLocation);
 

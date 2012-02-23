@@ -307,13 +307,13 @@ public class EconomyConfiguration {
 		
 		if(dealsPerPlayer == null){
 			Saga.severe(getClass(), "dealsPerPlayer field not initialized", "setting default");
-			dealsPerPlayer = new TwoPointFunction(0.0, (short)30, 0.0);
+			dealsPerPlayer = new TwoPointFunction(0.5);
 			integrity=false;
 		}
 		
 		if(dealsGainPerPlayer == null){
 			Saga.severe(getClass(), "dealsGainPerPlayer field not initialized", "setting default");
-			dealsGainPerPlayer = new TwoPointFunction(0.0, (short)30, 0.0);
+			dealsGainPerPlayer = new TwoPointFunction(0.25);
 			integrity=false;
 		}
 		
@@ -331,7 +331,7 @@ public class EconomyConfiguration {
 		
 		if(skillUpgradeCoinCost == null){
 			Saga.severe(getClass(), "skillUpgradeCoinCost field failed to initialize", "setting default");
-			skillUpgradeCoinCost= new TwoPointFunction(100000.0, (short)50, 100000.0);
+			skillUpgradeCoinCost= new TwoPointFunction(10000.0);
 			integrity=false;
 		}
 		
@@ -373,10 +373,10 @@ public class EconomyConfiguration {
 	 */
 	public Integer calculateDealsPerPlayer(Integer playerCount) {
 
-		if(playerCount < dealsPerPlayer.getXRequired()){
+		if(playerCount < dealsPerPlayer.getXMin()){
 			return 0;
 		}
-		return dealsPerPlayer.calculateValue(playerCount.shortValue()).intValue();
+		return dealsPerPlayer.value(playerCount.shortValue()).intValue();
 		
 	}
 	
@@ -388,11 +388,11 @@ public class EconomyConfiguration {
 	 */
 	public Integer calculateDealsGainPerPlayer(Integer playerCount) {
 
-		if(playerCount < dealsGainPerPlayer.getXRequired()){
+		if(playerCount < dealsGainPerPlayer.getXMin()){
 			System.out.println("only " + playerCount + " players, returning zero gain");
 			return 0;
 		}
-		return dealsGainPerPlayer.calculateValue(playerCount.shortValue()).intValue();
+		return dealsGainPerPlayer.value(playerCount.shortValue()).intValue();
 		
 	}
 	
@@ -405,7 +405,7 @@ public class EconomyConfiguration {
 	 * @return coin cost
 	 */
 	public Double getSkillCoinCost(Integer currentMultiplier) {
-		return skillUpgradeCoinCost.calculateValue(currentMultiplier);
+		return skillUpgradeCoinCost.value(currentMultiplier);
 	}
 	
 	

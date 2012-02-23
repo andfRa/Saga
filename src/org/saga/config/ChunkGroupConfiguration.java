@@ -205,7 +205,7 @@ public class ChunkGroupConfiguration {
 		// Settlement claim:
 		if(settlementClaims == null){
 			Saga.severe("Failed to initialize settlementClaims field for " + config + ". Setting default.");
-			settlementClaims = new TwoPointFunction(1.0, settlementMaximumLevel, 1.0);
+			settlementClaims = new TwoPointFunction(1.0);
 			integrity=false;
 		}
 		integrity = settlementClaims.complete() && integrity;
@@ -213,14 +213,14 @@ public class ChunkGroupConfiguration {
 		// Proficiencies:
 		if(topProfieciencyAmount == null){
 			Saga.severe("Failed to initialize topProfieciencyAmount field for " + config + ". Setting default.");
-			topProfieciencyAmount = new TwoPointFunction(1.0, structureMaximumLevel, 1.0);
+			topProfieciencyAmount = new TwoPointFunction(1.0);
 			integrity=false;
 		}
 		integrity = topProfieciencyAmount.complete() && integrity;
 		
 		if(lowerProfieciencyScaling == null){
 			Saga.severe("Failed to initialize lowerProfieciencyScaling field for " + config + ". Setting default.");
-			lowerProfieciencyScaling = new TwoPointFunction(1.0, structureMaximumLevel, 1.0);
+			lowerProfieciencyScaling = new TwoPointFunction(1.0);
 			integrity=false;
 		}
 		integrity = lowerProfieciencyScaling.complete() && integrity;
@@ -240,14 +240,14 @@ public class ChunkGroupConfiguration {
 		// Leveling:
 		if(levelExperience == null){
 			Saga.severe("Failed to initialize levelExperience field for " + config + ". Setting default.");
-			levelExperience = new TwoPointFunction(1000.0, settlementMaximumLevel, 1000.0);
+			levelExperience = new TwoPointFunction(1000.0);
 			integrity=false;
 		}
 		integrity = levelExperience.complete() && integrity;
 		
 		if(experiencePerPlayer == null){
 			Saga.severe("Failed to initialize experiencePerPlayer field for " + config + ". Setting default.");
-			experiencePerPlayer = new TwoPointFunction(1.0, (short)5, 1.0);
+			experiencePerPlayer = new TwoPointFunction(1.0);
 			integrity=false;
 		}
 		integrity = experiencePerPlayer.complete() && integrity;
@@ -379,7 +379,7 @@ public class ChunkGroupConfiguration {
 	 */
 	public Double calculateSettlementClaims(Short level) {
 
-		return settlementClaims.calculateValue(level);
+		return settlementClaims.value(level);
 		
 	}
 
@@ -390,7 +390,7 @@ public class ChunkGroupConfiguration {
 	 * @return claims per minute
 	 */
 	public Double calculateLevelExperience(Short level) {
-		return levelExperience.calculateValue(level);
+		return levelExperience.value(level);
 	}
 
 	/**
@@ -400,8 +400,8 @@ public class ChunkGroupConfiguration {
 	 * @return experience bonus per minute
 	 */
 	public Double calculateExperiencePerPlayer(Integer players) {
-		if(experiencePerPlayer.getXRequired() > players) return 0.0;
-		return experiencePerPlayer.calculateValue(players.shortValue());
+		if(experiencePerPlayer.getXMin() > players) return 0.0;
+		return experiencePerPlayer.value(players.shortValue());
 	}
 
 	/**
@@ -411,7 +411,7 @@ public class ChunkGroupConfiguration {
 	 * @return top roles amount
 	 */
 	public Short calculateTopProfieciencyAmount(Short buildingLevel) {
-		return topProfieciencyAmount.calculateValue(buildingLevel.shortValue()).shortValue();
+		return topProfieciencyAmount.value(buildingLevel.shortValue()).shortValue();
 	}
 	
 	/**
@@ -421,7 +421,7 @@ public class ChunkGroupConfiguration {
 	 * @return lower roles amount
 	 */
 	public Double calculateLowerProfieciencyScaling(Integer profLevel) {
-		return lowerProfieciencyScaling.calculateValue(profLevel.shortValue());
+		return lowerProfieciencyScaling.value(profLevel.shortValue());
 	}
 	
 	/**

@@ -45,7 +45,7 @@ public class ExplodingArrow extends Ability{
 		Location location = defender.getLocation();
 		if(location == null) return false;
 		
-		Double strength = getDefinition().getPrimaryFunction().calculateValue(getSkillLevel());
+		Double strength = getDefinition().getPrimaryFunction().value(getSkillLevel());
 		
 		// Normalize:
 		if(strength < 0.0) strength = 0.0;
@@ -78,7 +78,7 @@ public class ExplodingArrow extends Ability{
 		Location location = creature.getLocation();
 		if(location == null) return false;
 		
-		Double fraction = getDefinition().getPrimaryFunction().calculateValue(getSkillLevel().shortValue());
+		Double fraction = getDefinition().getPrimaryFunction().value(getSkillLevel().shortValue());
 		
 		// Normalize:
 		if(fraction < 0.0) fraction = 0.0;

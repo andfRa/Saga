@@ -53,13 +53,13 @@ public class SettlementDefinition {
 		
 		if(activePlayers == null){
 			Saga.severe("SettlementDefinition failed to initialize activePlayers field. Setting default.");
-			activePlayers = new TwoPointFunction(Double.MAX_VALUE, Short.MAX_VALUE, Double.MAX_VALUE);
+			activePlayers = new TwoPointFunction(0.0);
 			integrity = false;
 		}
 		
 		if(buildingPoints == null){
 			Saga.severe("SettlementDefinition failed to initialize buildingPoints field. Setting default.");
-			buildingPoints = new TwoPointFunction(0.0, 0.0);
+			buildingPoints = new TwoPointFunction(0.0);
 			integrity=false;
 		}
 		
@@ -102,7 +102,7 @@ public class SettlementDefinition {
 
 		
 		// Active players:
-		if(settlement.getActivePlayerCount() < activePlayers.calculateValue(settlement.getLevel())){
+		if(settlement.getActivePlayerCount() < activePlayers.value(settlement.getLevel())){
 			return false;
 		}
 		
@@ -118,7 +118,7 @@ public class SettlementDefinition {
 	 * @return the activePlayers
 	 */
 	public Integer getActivePlayers(Short level) {
-		return activePlayers.calculateValue(level).intValue();
+		return activePlayers.value(level).intValue();
 	}
 
 	/**
@@ -128,7 +128,7 @@ public class SettlementDefinition {
 	 * @return building points
 	 */
 	public Integer getBuildingPoints(Short level) {
-		return buildingPoints.calculateValue(level).intValue();
+		return buildingPoints.value(level).intValue();
 	}
 
 	
@@ -153,10 +153,10 @@ public class SettlementDefinition {
 		
 		
 		TwoPointFunction amount = roles.get(roleName);
-		if(amount == null || amount.getXRequired() > level){
+		if(amount == null || amount.getXMin() > level){
 			return 0;
 		}
-		return new Double(amount.calculateValue(level)).intValue();
+		return new Double(amount.value(level)).intValue();
 		
 		
 	}
@@ -173,10 +173,10 @@ public class SettlementDefinition {
 	public Integer getTotalBuildings(String buildingName, Short level) {
 		
 		TwoPointFunction amount = enabledBuildings.get(buildingName);
-		if(amount == null || amount.getXRequired() > level){
+		if(amount == null || amount.getXMin() > level){
 			return 0;
 		}
-		return new Double(amount.calculateValue(level)).intValue();
+		return new Double(amount.value(level)).intValue();
 		
 		
 	}
@@ -209,21 +209,19 @@ public class SettlementDefinition {
 	
 	// Other:
 	/**
-	 * Returns the default definition.
-	 * 
-	 * @return default definition
-	 */
+	* Returns the default definition.
+	*
+	* @return default definition
+	*/
 	public static SettlementDefinition defaultDefinition(){
-		
-		
+
+
 		SettlementDefinition definition = new SettlementDefinition();
-		definition.activePlayers = new TwoPointFunction(Double.MAX_VALUE, Short.MAX_VALUE, Double.MAX_VALUE);
+		definition.activePlayers = new TwoPointFunction(0.0);
 		definition.enabledBuildings = new Hashtable<String, TwoPointFunction>();
 		definition.complete();
 		return definition;
-		
-		
+
+
 	}
-	
-	
 }

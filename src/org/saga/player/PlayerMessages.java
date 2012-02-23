@@ -628,7 +628,7 @@ public class PlayerMessages {
 		if(line[0].length() > 0){
 			
 			for (int i = 1; i < line.length; i++) {
-				line[i] = String.format("%.2g", definition.getPrimaryFunction().calculateValue(levels[i-1]));
+				line[i] = String.format("%.2g", definition.getPrimaryFunction().value(levels[i-1]));
 			}
 			
 			table.addLine(line);
@@ -640,7 +640,7 @@ public class PlayerMessages {
 		if(line[0].length() > 0){
 			
 			for (int i = 1; i < line.length; i++) {
-				line[i] = String.format("%.2g", definition.getSecondaryFunction().calculateValue(levels[i-1]));
+				line[i] = String.format("%.2g", definition.getSecondaryFunction().value(levels[i-1]));
 			}
 			
 			table.addLine(line);

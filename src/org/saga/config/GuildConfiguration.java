@@ -78,7 +78,7 @@ public class GuildConfiguration {
 		boolean integrity=true;
 
 		if(levelPay == null){
-			levelPay = new TwoPointFunction(0.0, 0.0);
+			levelPay = new TwoPointFunction(0.0);
 			Saga.severe(getClass(), "levelPay field failed to initalize", "setting default");
 			integrity=false;
 		}
@@ -124,11 +124,11 @@ public class GuildConfiguration {
 	public Double getPay(Integer level) {
 
 		
-		if(levelPay.getXRequired() > level){
+		if(levelPay.getXMin() > level){
 			return 0.0;
 		}
 		
-		return levelPay.calculateValue(level.shortValue());
+		return levelPay.value(level.shortValue());
 		
 		
 	}

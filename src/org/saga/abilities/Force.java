@@ -60,7 +60,7 @@ public class Force extends Ability{
 		}
 		
 		// Get entities:
-		double radius = primaryFunction.calculateRandomIntValue(skillLevel);
+		double radius = primaryFunction.randomIntValue(skillLevel);
 		double radiusSquared = radius*radius;
 		
 		List<Entity> entities = player.getNearbyEntities(radius, 4, radius);
@@ -92,7 +92,7 @@ public class Force extends Ability{
 		}
 		
 		// Push back:
-		double speed = secondaryFunction.calculateValue(skillLevel);
+		double speed = secondaryFunction.value(skillLevel);
 		Integer pushed = 0;
 		
 		for (LivingEntity entity : filteredEntities) {

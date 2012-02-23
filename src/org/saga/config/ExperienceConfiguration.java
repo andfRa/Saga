@@ -75,13 +75,13 @@ public class ExperienceConfiguration {
 
 		if(levelUpExp == null){
 			Saga.severe(getClass(), "levelUpExp field not initialized", "setting default");
-			levelUpExp = new TwoPointFunction(0.0, (short)50, 0.0);
+			levelUpExp = new TwoPointFunction(0.0);
 			integrity=false;
 		}
 		
 		if(skillPoints == null){
 			Saga.severe(getClass(), "skillPoints field not initialized", "setting default");
-			skillPoints = new TwoPointFunction(0.0, (short)50, 0.0);
+			skillPoints = new TwoPointFunction(0.0);
 			integrity=false;
 		}
 		
@@ -102,7 +102,7 @@ public class ExperienceConfiguration {
 	 * @return level cost
 	 */
 	public Integer getSkillLevelCost(Integer currentMultiplier) {
-		return skillUpgradeLevelCost.calculateValue(currentMultiplier).intValue();
+		return skillUpgradeLevelCost.value(currentMultiplier).intValue();
 	}
 	
 	
@@ -391,7 +391,7 @@ public class ExperienceConfiguration {
 	 */
 	public Integer getLevelExp(Integer level) {
 		
-		return levelUpExp.calculateValue(level).intValue();
+		return levelUpExp.value(level).intValue();
 
 	}
 	
@@ -402,7 +402,7 @@ public class ExperienceConfiguration {
 	 */
 	public Integer getMaxLevel() {
 		
-		return levelUpExp.getMaxValue().intValue();
+		return levelUpExp.getXMax().intValue();
 
 	}
 	
@@ -414,7 +414,7 @@ public class ExperienceConfiguration {
 	 */
 	public Integer getSkillPoints(Integer level) {
 		
-		return skillPoints.calculateValue(level).intValue();
+		return skillPoints.value(level).intValue();
 
 	}
 	

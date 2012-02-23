@@ -756,11 +756,11 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		TwoPointFunction tradeDeals = getDefinition().getLevelFunction();
 		
 		// Not high enough level:
-		if(tradeDeals.getXRequired() < getLevel()){
+		if(tradeDeals.getXMin() < getLevel()){
 			return 0;
 		}
 		
-		return tradeDeals.calculateValue(getLevel()).intValue();
+		return tradeDeals.value(getLevel()).intValue();
 				
 	}
 	

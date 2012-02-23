@@ -232,7 +232,7 @@ public class Stoneskin extends Ability{
 			return false;
 		}
 
-		Double damageMult = 1 - getDefinition().getPrimaryFunction().calculateValue(getSkillLevel());
+		Double damageMult = 1 - getDefinition().getPrimaryFunction().value(getSkillLevel());
 
 		// Normalize:
 		if(damageMult < 0){

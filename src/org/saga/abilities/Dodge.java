@@ -125,7 +125,7 @@ public class Dodge extends Ability{
 	private boolean handleAbility(EntityDamageByEntityEvent event) {
 
 
-		Double probability = getDefinition().getPrimaryFunction().calculateValue(getSkillLevel());
+		Double probability = getDefinition().getPrimaryFunction().value(getSkillLevel());
 		
 		Random random = new Random();
 		

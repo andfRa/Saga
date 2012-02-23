@@ -160,7 +160,7 @@ public class Skill {
 		}
 		
 		if(modifier == null){
-			modifier = new TwoPointFunction(0.0, (short)50, 0.0);
+			modifier = new TwoPointFunction(0.0);
 			Saga.severe(this, "failed to intialize modifier field", "setting default");
 			integrity = false;
 		}
@@ -189,7 +189,7 @@ public class Skill {
 		}
 		
 		// Calculate damage:
-		int damageMod = randomRound(modifier.calculateValue(multiplier.shortValue()));
+		int damageMod = randomRound(modifier.value(multiplier.shortValue()));
 		Integer damage = event.getDamage() + damageMod;
 		
 		// Only positive damage:
@@ -226,7 +226,7 @@ public class Skill {
 		}
 		
 		// Calculate damage:
-		int damageMod = randomRound(modifier.calculateValue(multiplier.shortValue()) * armor);
+		int damageMod = randomRound(modifier.value(multiplier.shortValue()) * armor);
 		Integer damage = event.getDamage() + damageMod;
 		
 		// Only positive damage:

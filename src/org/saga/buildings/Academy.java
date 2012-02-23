@@ -151,7 +151,7 @@ public class Academy extends Building implements SecondTicker, Cooldown{
 	 */
 	public void startCooldown() {
 		
-		this.cooldown = getDefinition().getLevelFunction().calculateValue(getLevel()).intValue();
+		this.cooldown = getDefinition().getLevelFunction().value(getLevel()).intValue();
 		
 		// Start clock:
 		if(!isClockActive()){

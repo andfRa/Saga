@@ -41,38 +41,18 @@ public class TwoPointFunction {
 	}
 	
 	/**
-	 * Sets function y values at min and max points.
+	 * Sets constant value.
 	 * 
-	 * @param name name
-	 * @param y1 y1
-	 * @param y2 y2
+	 * @param value value
 	 */
-	public TwoPointFunction(Double y1, Double y2){
+	public TwoPointFunction(Double value){
 
 		this.x1 = 0;
-		this.y1 = y1;
-		this.x2 = MAXIMUM_LEVEL;
-		this.y2 = y2;
+		this.y1 = value;
+		this.x2 = 1;
+		this.y2 = value;
 		
 	}
-	
-	/**
-	 * Sets function y values at min and max points.
-	 * 
-	 * @param name name
-	 * @param y1 y1
-	 * @param x2 x2
-	 * @param y2 y2
-	 */
-	public TwoPointFunction(Double y1, Short x2, Double y2){
-
-		this.x1 = 0;
-		this.y1 = y1;
-		this.x2 = x2;
-		this.y2 = y2;
-		
-	}
-	
 
 	/**
 	 * Sets function y values at min and max points.
@@ -91,7 +71,6 @@ public class TwoPointFunction {
 		this.y2 = y2;
 		
 	}
-	
 	
 	/**
 	 * Completes the function.
@@ -135,16 +114,20 @@ public class TwoPointFunction {
 	 * 
 	 * @param x x value
 	 */
-	public Double calculateValue(Short x) {
+	public Double value(Short x) {
 		
 		
 		if(x > x2){
 			x = x2;
 		}
 		
+		if(x < x1){
+			x = x1;
+		}
+		
 		if(x2 - x1 == 0){
-			Saga.severe(this + " level function has an infinite or undefined slope. Returning 1.0 value.");
-			return 1.0;
+			Saga.severe(getClass(), "infinite slope", "using 0.0 value");
+			return 0.0;
 		}
 		
 		double k= (y2 - y1)/(x2-x1);
@@ -159,9 +142,9 @@ public class TwoPointFunction {
 	 * 
 	 * @param x x value
 	 */
-	public Double calculateValue(Integer x) {
+	public Double value(Integer x) {
 		
-		return calculateValue(x.shortValue());
+		return value(x.shortValue());
 		
 	}
 	
@@ -170,28 +153,28 @@ public class TwoPointFunction {
 	 * 
 	 * @param x x value
 	 */
-	public Integer calculateRandomIntValue(Integer x) {
+	public Integer randomIntValue(Integer x) {
 		
-		return SagaEntityDamageManager.randomRound(calculateValue(x.intValue()));
+		return SagaEntityDamageManager.randomRound(value(x.intValue()));
 		
 	}
 	
 	/**
-	 * Gets the x requirement.
+	 * Gets the minimum x value.
 	 * 
 	 * @return x requirement
 	 */
-	public short getXRequired() {
+	public Short getXMin() {
 		return x1;
 	}
 	
 	/**
-	 * Gets the maximum value.
+	 * Gets the maximum x value.
 	 * 
 	 * @return maximum value
 	 */
-	public Double getMaxValue() {
-		return y2;
+	public Short getXMax() {
+		return x2;
 	}
 	
 	

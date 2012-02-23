@@ -137,7 +137,7 @@ public class Watchtower extends Building implements TimeOfDayTicker{
 	 */
 	private Integer getRadius() {
 
-		return getDefinition().getLevelFunction().calculateValue(getLevel()).intValue();
+		return getDefinition().getLevelFunction().value(getLevel()).intValue();
 
 	}
 	

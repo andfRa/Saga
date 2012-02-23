@@ -138,7 +138,7 @@ public class FactionConfiguration {
 		
 		if(levelsPerActivePlayers == null){
 			Saga.severe(getClass(), "levelsPerActivePlayers field not initialized", "setting default");
-			levelsPerActivePlayers = new TwoPointFunction(0.0, (short) 50, 0.0);
+			levelsPerActivePlayers = new TwoPointFunction(1.0);
 			integrity=false;
 		}
 		

@@ -225,7 +225,7 @@ public class ProficiencyDefinition{
 		}
 
 		if(playerExp == null){
-			playerExp = new TwoPointFunction(0.0, 0.0);
+			playerExp = new TwoPointFunction(0.0);
 			Saga.severe(this, "playerExp field failed to intialize", "setting default");
 			integrity = false;
 		}
@@ -435,7 +435,7 @@ public class ProficiencyDefinition{
 	public Double calcExp(SagaPlayer sagaPlayer) {
 
 		
-		Double exp = playerExp.calculateValue(sagaPlayer.getLevel());
+		Double exp = playerExp.value(sagaPlayer.getLevel());
 		if(exp == null) return 0.0;
 		
 		return exp;

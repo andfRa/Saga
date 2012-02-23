@@ -169,7 +169,7 @@ public class TownSquare extends Building implements SecondTicker{
 		
 		isOnCooldown = true;
 		
-		cooldownLeft = getDefinition().getLevelFunction().calculateValue(getLevel()).intValue();
+		cooldownLeft = getDefinition().getLevelFunction().value(getLevel()).intValue();
 		
 		Clock.clock().registerSecondTick(this);
 		

@@ -1677,11 +1677,11 @@ public class SagaFaction implements SecondTicker{
 		
 		Integer active = getActiveMemberCount();
 		
-		if(active < FactionConfiguration.config().levelsPerActivePlayers.getXRequired()){
+		if(active < FactionConfiguration.config().levelsPerActivePlayers.getXMin()){
 			return 0;
 		}
 		
-		return FactionConfiguration.config().levelsPerActivePlayers.calculateValue(active.shortValue()).shortValue();
+		return FactionConfiguration.config().levelsPerActivePlayers.value(active.shortValue()).shortValue();
 		
 	}
 

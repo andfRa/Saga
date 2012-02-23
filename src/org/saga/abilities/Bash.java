@@ -51,7 +51,7 @@ public class Bash extends Ability{
 		Player defender = (Player)event.getRightClicked();
 		
 		// Damage:
-		int damage = getDefinition().getPrimaryFunction().calculateRandomIntValue(getSkillLevel());
+		int damage = getDefinition().getPrimaryFunction().randomIntValue(getSkillLevel());
 		
 		// Pvp event:
 		EntityDamageByEntityEvent edbeevent = new EntityDamageByEntityEvent(event.getPlayer(), event.getRightClicked(), DamageCause.ENTITY_ATTACK, damage);
@@ -65,7 +65,7 @@ public class Bash extends Ability{
 		
 		// Determine disarm:
 		Random random = new Random();
-		int disarm = random.nextInt(getDefinition().getSecondaryFunction().calculateRandomIntValue(getSkillLevel())) +1;
+		int disarm = random.nextInt(getDefinition().getSecondaryFunction().randomIntValue(getSkillLevel())) +1;
 		
 		// Normalize disarm:
 		if(disarm < 1){

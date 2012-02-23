@@ -55,7 +55,7 @@ public class Repair extends Ability{
 		
 		// Repair amount:
 		Integer skillLevel = getSkillLevel();
-		Short repair = (short) ((double)getDefinition().getPrimaryFunction().calculateRandomIntValue(skillLevel) * (double)item.getType().getMaxDurability() / (double)getValueMaterials(item.getType()));
+		Short repair = (short) ((double)getDefinition().getPrimaryFunction().randomIntValue(skillLevel) * (double)item.getType().getMaxDurability() / (double)getValueMaterials(item.getType()));
 		if(item.getDurability() - repair < 0){
 			repair = item.getDurability();
 		}

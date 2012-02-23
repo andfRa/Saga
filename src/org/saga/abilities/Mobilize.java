@@ -54,7 +54,7 @@ public class Mobilize extends Ability{
 		}
 		
 		// Set mobilization point:
-		faction.setRallyPoint(location, getDefinition().getPrimaryFunction().calculateValue(getSkillLevel()).intValue());
+		faction.setRallyPoint(location, getDefinition().getPrimaryFunction().value(getSkillLevel()).intValue());
 
 		// Inform:
 		faction.broadcast(FactionMessages.mobilizationDeclare(faction, sagaPlayer));

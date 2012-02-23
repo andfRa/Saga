@@ -127,7 +127,7 @@ public class Temple extends Building implements SecondTicker{
 		if(countPlayers() == 0) disableClock();
 		
 		// Level too low:
-		if(getDefinition().getLevelFunction().getXRequired() > getLevel()){
+		if(getDefinition().getLevelFunction().getXMin() > getLevel()){
 			return;
 		}
 		
@@ -137,7 +137,7 @@ public class Temple extends Building implements SecondTicker{
 		
 		// Regenerate experience:
 		ArrayList<SagaPlayer> sagaPlayers = sagaChunk.getSagaPlayers();
-		Integer levelLimit = getDefinition().getLevelFunction().calculateValue(getLevel()).intValue();
+		Integer levelLimit = getDefinition().getLevelFunction().value(getLevel()).intValue();
 		for (SagaPlayer sagaPlayer : sagaPlayers) {
 			
 			if(sagaPlayer.getLevel() < levelLimit){

@@ -69,8 +69,8 @@ public class HeavySwing extends Ability{
 		Location targetLocation = event.getPlayer().getLocation();
 		
 		// Skill functions:
-		Integer size = getDefinition().getPrimaryFunction().calculateRandomIntValue(getSkillLevel());
-		Integer crumble = getDefinition().getSecondaryFunction().calculateRandomIntValue(getSkillLevel());
+		Integer size = getDefinition().getPrimaryFunction().randomIntValue(getSkillLevel());
+		Integer crumble = getDefinition().getSecondaryFunction().randomIntValue(getSkillLevel());
 		
 		// Cobble stacking:
 		int cobbleStack = 5;

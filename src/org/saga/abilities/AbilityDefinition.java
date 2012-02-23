@@ -144,32 +144,32 @@ public class AbilityDefinition{
 		}
 		
 		if(usedAmount == null){
-			usedAmount = new TwoPointFunction(0.0, 0.0);
+			usedAmount = new TwoPointFunction(0.0);
 			Saga.severe(this, "usedAmount field failed to initialize", "setting default");
 			integrity=false;
 		}
 		
 		if(cooldown == null){
-			cooldown = new TwoPointFunction(0.0, 0.0);
+			cooldown = new TwoPointFunction(0.0);
 			Saga.severe(this, "cooldown field failed to initialize", "setting default");
 			integrity=false;
 		}
 		
 		if(active == null){
-			active = new TwoPointFunction(0.0, 0.0);
+			active = new TwoPointFunction(0.0);
 			Saga.severe(this, "active field failed to initialize", "setting default");
 			integrity=false;
 		}
 		
 		if(primaryFunction == null){
-			primaryFunction = new TwoPointFunction(0.0, 0.0);
+			primaryFunction = new TwoPointFunction(0.0);
 			Saga.severe(this, "primaryFunction field failed to initialize", "setting default");
 			integrity=false;
 		}
 		integrity = primaryFunction.complete() && integrity;
 		
 		if(secondaryFunction == null){
-			secondaryFunction = new TwoPointFunction(0.0, 0.0);
+			secondaryFunction = new TwoPointFunction(0.0);
 			Saga.severe(this, "secondaryFunction field failed to initialize", "setting default");
 			integrity=false;
 		}
@@ -186,7 +186,7 @@ public class AbilityDefinition{
 		}
 		
 		if(expReward == null){
-			expReward = new TwoPointFunction(0.0, 0.0);
+			expReward = new TwoPointFunction(0.0);
 			Saga.severe(this, "expReward field failed to initialize", "setting default");
 			integrity=false;
 		}
@@ -251,7 +251,7 @@ public class AbilityDefinition{
 	 * @return amount of used material
 	 */
 	public Integer getUsedAmount(Integer level) {
-		return usedAmount.calculateRandomIntValue(level);
+		return usedAmount.randomIntValue(level);
 	}
 	
 	/**
@@ -261,7 +261,7 @@ public class AbilityDefinition{
 	 * @return amount of used material
 	 */
 	public Integer getAbsoluteUsedAmount(Integer level) {
-		return (int)Math.ceil(usedAmount.calculateValue(level));
+		return (int)Math.ceil(usedAmount.value(level));
 	}
 
 	/**
@@ -270,7 +270,7 @@ public class AbilityDefinition{
 	 * @return the cooldown
 	 */
 	public Integer getCooldown(Integer level) {
-		return cooldown.calculateValue(level.shortValue()).intValue();
+		return cooldown.value(level.shortValue()).intValue();
 	}
 	
 	/**
@@ -279,7 +279,7 @@ public class AbilityDefinition{
 	 * @return the active for
 	 */
 	public Integer getActiveFor(Integer level) {
-		return active.calculateValue(level.shortValue()).intValue();
+		return active.value(level.shortValue()).intValue();
 	}
 
 	/**
@@ -324,7 +324,7 @@ public class AbilityDefinition{
 	 * @return the expReward
 	 */
 	public Double getExpReward(Integer multiplier) {
-		return expReward.calculateValue(multiplier);
+		return expReward.value(multiplier);
 	}
 	
 	

@@ -78,7 +78,7 @@ public class ChopDown extends Ability{
 		
 		// Tree to big:
 		Integer skillLevel = getSkillLevel();
-		Integer chopSize = getDefinition().getPrimaryFunction().calculateValue(skillLevel).intValue();
+		Integer chopSize = getDefinition().getPrimaryFunction().value(skillLevel).intValue();
 		if(chopSize < logs.size()){
 			getSagaPlayer().message(notStroungEnough(logs.size(), chopSize));
 			return false;

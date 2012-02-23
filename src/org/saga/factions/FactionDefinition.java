@@ -71,10 +71,10 @@ public class FactionDefinition {
 	public Integer getTotalRanks(String rankName, Short level) {
 		
 		TwoPointFunction amount = enabledRanks.get(rankName);
-		if(amount == null || amount.getXRequired() > level){
+		if(amount == null || amount.getXMin() > level){
 			return 0;
 		}
-		return new Double(amount.calculateValue(level)).intValue();
+		return new Double(amount.value(level)).intValue();
 		
 		
 	}
