@@ -47,11 +47,6 @@ public class StatisticsManager implements HourTicker{
 	private Hashtable<String, Integer> skillUpgrades;
 
 	/**
-	 * Levels used for upgrades.
-	 */
-	private Hashtable<String, Integer> skillUpgradeLevels;
-
-	/**
 	 * Coins used for upgrades.
 	 */
 	private Hashtable<String, Double> skillUpgradeCoins;
@@ -138,12 +133,6 @@ public class StatisticsManager implements HourTicker{
 			integrity=false;
 		}
 		
-		if(skillUpgradeLevels == null){
-			Saga.severe(getClass(), "skillUpgradeLevels field failed to initialize", "setting default");
-			skillUpgradeLevels = new Hashtable<String, Integer>();
-			integrity=false;
-		}
-		
 		if(skillUpgradeCoins == null){
 			Saga.severe(getClass(), "skillUpgradeCoins field failed to initialize", "setting default");
 			skillUpgradeCoins = new Hashtable<String, Double>();
@@ -218,7 +207,6 @@ public class StatisticsManager implements HourTicker{
 		
 		classKills = new Hashtable<String, Hashtable<String,Integer>>();
 		skillUpgrades = new Hashtable<String, Integer>();
-		skillUpgradeLevels = new Hashtable<String, Integer>();
 		skillUpgradeCoins = new Hashtable<String, Double>();
 		guardRuneRestores = 0;
 		guardRuneRecharges = 0;
@@ -319,21 +307,6 @@ public class StatisticsManager implements HourTicker{
 	public Integer getSkillUpgrades(String skillName) {
 		
 		Integer value = skillUpgrades.get(skillName);
-		if(value == null) value = 0;
-		
-		return value;
-		
-	}
-	
-	/**
-	 * Gets skill upgrade level costs.
-	 * 
-	 * @param skillName skill name
-	 * @return upgrade level costs
-	 */
-	public Integer getSkillUpgradeLevels(String skillName) {
-		
-		Integer value = skillUpgradeLevels.get(skillName);
 		if(value == null) value = 0;
 		
 		return value;
@@ -495,18 +468,13 @@ public class StatisticsManager implements HourTicker{
 	 * @param levelCost level cost
 	 * @param coinCost coin cost
 	 */
-	public void onSkillUpgrade(String skillName, Integer levelCost, Double coinCost) {
+	public void onSkillUpgrade(String skillName, Double coinCost) {
 
 		
 		// Upgrades:
 		Integer upgrades = skillUpgrades.get(skillName);
 		if(upgrades == null) upgrades = 0;
 		skillUpgrades.put(skillName, upgrades + 1);
-		
-		// Upgrade level costs:
-		Integer upgradesLevels = skillUpgradeLevels.get(skillName);
-		if(upgradesLevels == null) upgradesLevels = 0;
-		skillUpgradeLevels.put(skillName, upgradesLevels + levelCost);
 		
 		// Upgrade coin costs:
 		Double upgradeCoins = skillUpgradeCoins.get(skillName);

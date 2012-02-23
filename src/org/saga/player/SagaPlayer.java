@@ -4,7 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -1143,8 +1145,20 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 */
 	public Integer getSkillPoints() {
 		
-		return 0;
+		
+		Integer skillsPoints = 0;
+		
+		Hashtable<String, Integer> skills = getSkills();
+		
+		Collection<Integer> multipliers = skills.values();
+		
+		for (Integer multiplier : multipliers) {
+			skillsPoints += multiplier;
+		}
+		
+		return skillsPoints;
 
+		
 	}
 	
 	/**

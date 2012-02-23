@@ -4,7 +4,6 @@ import org.bukkit.block.Sign;
 import org.saga.SagaMessages;
 import org.saga.buildings.Building;
 import org.saga.config.EconomyConfiguration;
-import org.saga.config.ExperienceConfiguration;
 import org.saga.player.PlayerMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
@@ -139,32 +138,31 @@ public class SkillSign extends BuildingSign{
 			return;
 		}
 		
-		// Enough levels:
-		Integer requiredLevels = ExperienceConfiguration.config().getSkillLevelCost(multiplier);
-		if(requiredLevels > sagaPlayer.getLevel()){
-			sagaPlayer.message(PlayerMessages.levelsNeeded(skillName, requiredLevels));
+		// Enough skill points:
+		Integer remainSkills = sagaPlayer.getRemainingSkillPoints();
+		if(remainSkills < 1){
+			sagaPlayer.message(PlayerMessages.skillPointsNeeded());
 			return;
 		}
 
-		// Enough currency:
+		// Enough coins:
 		Double requiredCoins = EconomyConfiguration.config().getSkillCoinCost(multiplier);
 		if(requiredCoins > sagaPlayer.getCoins()){
-			sagaPlayer.message(PlayerMessages.coinsNeeded(skillName, requiredCoins));
+			sagaPlayer.message(PlayerMessages.coinsNeeded(requiredCoins));
 			return;
 		}
 		
-		// Remove coins and levels:
+		// Remove coins:
 		sagaPlayer.removeCoins(requiredCoins);
-		sagaPlayer.decreaseLevel(requiredLevels);
 		
 		// Increase skill:
 		sagaPlayer.increaseSkill(skillName, 1);
 		
 		// Inform:
-		sagaPlayer.info(PlayerMessages.trained(skillName, sagaPlayer.getSkillMultiplier(skillName), requiredLevels, requiredCoins));
+		sagaPlayer.info(PlayerMessages.trained(skillName, sagaPlayer.getSkillMultiplier(skillName), requiredCoins));
 		
 		// Statistics:
-		StatisticsManager.manager().onSkillUpgrade(skillName, requiredLevels, requiredCoins);
+		StatisticsManager.manager().onSkillUpgrade(skillName, requiredCoins);
 		
 		
 	}

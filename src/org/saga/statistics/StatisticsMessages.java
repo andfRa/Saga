@@ -99,7 +99,7 @@ public class StatisticsMessages {
 		StringTable table = new StringTable(color);
 
 		// Add headings:
-		table.addLine(new String[]{"SKILL","UPGRADES", "LEVEL COST", "COIN COST"});
+		table.addLine(new String[]{"SKILL","UPGRADES", "COIN COST"});
 		
 		// Add data:
 		StatisticsManager manager = StatisticsManager.manager();
@@ -107,7 +107,7 @@ public class StatisticsMessages {
 			
 			String name = skills.get(i);
 			
-			String[] row = new String[]{name, manager.getSkillUpgrades(name).toString(), manager.getSkillUpgradeLevels(name).toString(), EconomyMessages.coins(manager.getSkillUpgradeCoins(name))};
+			String[] row = new String[]{name, manager.getSkillUpgrades(name).toString(), EconomyMessages.coins(manager.getSkillUpgradeCoins(name))};
 			
 			table.addLine(row);
 			

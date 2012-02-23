@@ -951,28 +951,33 @@ public class PlayerMessages {
 	}
 	
 	
+	public static String skillPointsNeeded() {
+		
+		return negative + "Not enough skill points.";
+		
+	}
+	
+	public static String coinsNeeded(Double required) {
+		
+		return negative + EconomyMessages.coins(required) + " coins required.";
+		
+	}
+	
 	// Skills:
-	public static String levelsNeeded(String skillName, Integer required) {
-		
-		return negative + "Training a " + skillName + " skill requires " + required + " level points.";
-		
-	}
-	
-	public static String coinsNeeded(String skillName, Double required) {
-		
-		return negative + "Training a " + skillName + " skill requires " + EconomyMessages.coins(required) + ".";
-		
-	}
-	
 	public static String limitReached(String skillName) {
 		
 		return negative + "Can't train " + skillName + " skill any farther.";
 		
 	}
 	
-	public static String trained(String skillName, Integer multiplier, Integer levels, Double coins) {
+	public static String trained(String skillName, Integer multiplier, Double coins) {
 		
-		return positive + "Trained " + skillName + " skill to " + multiplier + " for " + levels + " levels and " + EconomyMessages.coins(coins);
+		if(coins > 0){
+			return positive + "Trained " + skillName + " skill to " + multiplier + " for " + EconomyMessages.coins(coins);
+		}else{
+			return positive + "Trained " + skillName + " skill to " + multiplier + ".";
+		}
+		
 		
 	}
 	
