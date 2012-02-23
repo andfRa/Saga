@@ -16,7 +16,17 @@
     "factionPermissions":[],
     "currencyCost":500,
     "levelsCost":5,
-    "properties":{}
+    "properties":{},
+    "blockExp":{
+      "DIAMOND_ORE":{"0":12.5},
+      "LAPIS_ORE":{"0":13.79},
+      "GOLD_ORE":{"0":5.08},
+      "IRON_ORE":{"0":0.81},
+      "COAL_ORE":{"0":0.65},
+      "STONE":{"0":0.017}
+    },
+    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "creatureExp":{}
   },
 
   {"name":"woodsman",
@@ -30,7 +40,10 @@
     "factionPermissions":[],
     "currencyCost":500,
     "levelsCost":5,
-    "properties":{}
+    "properties":{},
+    "blockExp":{"LOG":{"0":1.937, "1":1.937, "2":1.937, "3":1.937}},
+    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "creatureExp":{"wolf":3, "bigslime":4, "smallslime":2, "blaze":10, "creeper":9, "zombie":5, "skeleton":5, "spider":5, "default":1}
   },
 
   {"name":"farmer",
@@ -44,7 +57,13 @@
     "factionPermissions":[],
     "currencyCost":500,
     "levelsCost":5,
-    "properties":{}
+    "properties":{},
+    "blockExp":{
+      "SUGAR_CANE_BLOCK":{"0":0.1937},
+      "CROPS":{"7":0.1937}
+    },
+    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "creatureExp":{"pig":7, "cow":7, "sheep":7}
   },
 
   {"name":"blacksmith",
@@ -66,7 +85,10 @@
     "factionPermissions":[],
     "currencyCost":500,
     "levelsCost":5,
-    "properties":{}
+    "properties":{},
+    "blockExp":{},
+    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "creatureExp":{}
   },
 
   {"name":"warrior",
@@ -80,7 +102,10 @@
     "factionPermissions":[],
     "currencyCost":500,
     "levelsCost":5,
-    "properties":{}
+    "properties":{},
+    "blockExp":{},
+    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "creatureExp":{}
   },
 
   {"name":"rogue",
@@ -100,7 +125,10 @@
     "factionPermissions":[],
     "currencyCost":500,
     "levelsCost":5,
-    "properties":{}
+    "properties":{},
+    "blockExp":{},
+    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "creatureExp":{}
   },
 
   {"name":"mage",
@@ -122,7 +150,10 @@
     "factionPermissions":[],
     "currencyCost":500,
     "levelsCost":5,
-    "properties":{}
+    "properties":{},
+    "blockExp":{},
+    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "creatureExp":{}
   },
 
   {"name":"councilman",
@@ -136,7 +167,10 @@
     "factionPermissions":[],
     "currencyCost":500,
     "levelsCost":5,
-    "properties":{}
+    "properties":{},
+    "blockExp":{},
+    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "creatureExp":{}
   },
 
   {"name":"noble",
@@ -150,7 +184,10 @@
     "factionPermissions":[],
     "currencyCost":500,
     "levelsCost":5,
-    "properties":{}
+    "properties":{},
+    "blockExp":{},
+    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "creatureExp":{}
   },
 
   {"name":"planner",
@@ -164,7 +201,10 @@
     "factionPermissions":[],
     "currencyCost":500,
     "levelsCost":5,
-    "properties":{}
+    "properties":{},
+    "blockExp":{},
+    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "creatureExp":{}
   },
 
   {"name":"commoner",
@@ -178,7 +218,10 @@
     "factionPermissions":[],
     "currencyCost":500,
     "levelsCost":5,
-    "properties":{}
+    "properties":{},
+    "blockExp":{},
+    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "creatureExp":{}
   },
 
   {"name":"master trader",
@@ -192,7 +235,10 @@
     "factionPermissions":[],
     "currencyCost":500,
     "levelsCost":5,
-    "properties":{}
+    "properties":{},
+    "blockExp":{},
+    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "creatureExp":{}
   },
 
   {"name":"trader journeyman",
@@ -206,7 +252,10 @@
     "factionPermissions":[],
     "currencyCost":500,
     "levelsCost":5,
-    "properties":{}
+    "properties":{},
+    "blockExp":{},
+    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "creatureExp":{}
   },
 
   {"name":"trader apprentice",
@@ -220,12 +269,16 @@
     "factionPermissions":[],
     "currencyCost":500,
     "levelsCost":5,
-    "properties":{}
+    "properties":{},
+    "blockExp":{},
+    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "creatureExp":{}
   },
 
   {"name":"grandmaster",
     "type":"RANK",
     "hierarchyLevel":"10",
+
     "abilities":[],
     "bindMaterials":{},
     "bindActions":{},
@@ -234,7 +287,10 @@
     "factionPermissions":["INVITE","KICK","SET_COLOR","RALLY","RENAME"],
     "currencyCost":500,
     "levelsCost":5,
-    "properties":{}
+    "properties":{},
+    "blockExp":{},
+    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "creatureExp":{}
   },
 
   {"name":"warmaster",
@@ -252,7 +308,10 @@
     "factionPermissions":["INVITE","KICK","RALLY"],
     "currencyCost":500,
     "levelsCost":5,
-    "properties":{}
+    "properties":{},
+    "blockExp":{},
+    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "creatureExp":{}
   },
 
   {"name":"adept",
@@ -266,7 +325,10 @@
     "factionPermissions":["RALLY"],
     "currencyCost":500,
     "levelsCost":5,
-    "properties":{}
+    "properties":{},
+    "blockExp":{},
+    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "creatureExp":{}
   },
 
   {"name":"novice",
@@ -280,7 +342,10 @@
     "factionPermissions":[],
     "currencyCost":500,
     "levelsCost":5,
-    "properties":{}
+    "properties":{},
+    "blockExp":{},
+    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "creatureExp":{}
   }
 ]
 

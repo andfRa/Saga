@@ -528,12 +528,12 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 * @param expval experience value
 	 * @return experience awarded
 	 */
-	public Integer awardExperience(Integer expval) {
+	public Double awardExperience(Integer expval) {
 	
-		Integer exp = getDefinition().getExpReward(expval);
+		Double exp = getDefinition().getExpReward(expval);
 		
 		// Normalize:
-		if(exp < 0) exp = 0;
+		if(exp < 0) exp = 0.0;
 		
 		getSagaPlayer().giveExperience(exp);
 		
@@ -546,7 +546,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 * 
 	 * @return experience awarded
 	 */
-	public Integer awardExperience() {
+	public Double awardExperience() {
 
 		return awardExperience(0);
 		

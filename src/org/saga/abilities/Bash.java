@@ -110,7 +110,7 @@ public class Bash extends Ability{
 		defender.damage(damage, event.getPlayer());
 
 		// Award exp:
-		Integer awardedExp = awardExperience();
+		Double awardedExp = awardExperience();
 		
 		// Statistics:
 		StatisticsManager.manager().onAbilityUse(getName(), awardedExp);

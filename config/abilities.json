@@ -234,7 +234,7 @@
     "active":{"x1":0,"y1":15.0,"x2":50,"y2":30.0},
     "primaryFunction":{"x1":0,"y1":0.7,"x2":50,"y2":0.95},
     "secondaryFunction":{"x1":0,"y1":0.0,"x2":50,"y2":0.9},
-    "baseSkills":["magic"],
+    "baseSkills":["magic warding"],
     "expReward":{"x1":0,"y1":0.0,"x2":50,"y2":10},
     "description":"Reduces physical damage.",
     "primaryStat":"damage reduced",

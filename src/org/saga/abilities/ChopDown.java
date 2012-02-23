@@ -123,7 +123,7 @@ public class ChopDown extends Ability{
 		
 		// Award exp:
 		Integer expval = logs.size();
-		Integer awardedExp = awardExperience(expval);
+		Double awardedExp = awardExperience(expval);
 		
 		// Statistics:
 		StatisticsManager.manager().onAbilityUse(getName(), awardedExp);

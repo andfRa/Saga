@@ -219,7 +219,7 @@ public class HeavySwing extends Ability{
 		getSagaPlayer().playGlobalEffect(Effect.STEP_SOUND, Material.STONE.getId());
 
 		// Award exp:
-		Integer awardedExp = awardExperience(expval);
+		Double awardedExp = awardExperience(expval);
 		
 		// Statistics:
 		StatisticsManager.manager().onAbilityUse(getName(), awardedExp);

@@ -7,12 +7,15 @@ import java.util.Hashtable;
 import java.util.Properties;
 
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Creature;
 import org.saga.Saga;
 import org.saga.abilities.AbilityDefinition;
 import org.saga.abilities.AbilityDefinition.ActivationAction;
 import org.saga.factions.SagaFaction.FactionPermission;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.settlements.Settlement.SettlementPermission;
+import org.saga.utility.TwoPointFunction;
 
 
 /**
@@ -84,6 +87,21 @@ public class ProficiencyDefinition{
 	 */
 	private Properties properties;
 
+	/**
+	 * Block break experience.
+	 */
+	private Hashtable<Material, Hashtable<Byte, Double>> blockExp;
+	
+	/**
+	 * Player kill experience.
+	 */
+	private TwoPointFunction playerExp;
+	
+	/**
+	 * Creature kill experience.
+	 */
+	private Hashtable<String, Double> creatureExp;
+	
 	
 	// Initialization:
 	/**
@@ -199,6 +217,25 @@ public class ProficiencyDefinition{
 			Saga.severe(this, "failed to initialize levelsCost field", "setting default");
 			integrity=false;
 		}
+		
+		if(blockExp == null){
+			blockExp = new Hashtable<Material, Hashtable<Byte,Double>>();
+			Saga.severe(this, "blockExp field failed to intialize", "setting default");
+			integrity = false;
+		}
+
+		if(playerExp == null){
+			playerExp = new TwoPointFunction(0.0, 0.0);
+			Saga.severe(this, "playerExp field failed to intialize", "setting default");
+			integrity = false;
+		}
+		
+		if(creatureExp == null){
+			creatureExp = new Hashtable<String, Double>();
+			Saga.severe(this, "creatureExp field failed to intialize", "setting default");
+			integrity = false;
+		}
+		
 		
 		// Transient:
 		
@@ -367,6 +404,64 @@ public class ProficiencyDefinition{
 		
 	}
 	
+	
+	// Experience:
+	/**
+	 * Calculates experience for a block break.
+	 * 
+	 * @param block block
+	 * @return experience
+	 */
+	public Double calcExp(Block block) {
+
+		
+		Hashtable<Byte, Double> bytes = blockExp.get(block.getType());
+		if(bytes == null) return 0.0;
+		
+		Double exp = bytes.get(new Byte(block.getData()));
+		if(exp == null) return 0.0;
+			
+		return exp;
+		
+		
+	}
+	
+	/**
+	 * Calculates experience for a creature kill.
+	 * 
+	 * @param sagaPlayer saga player
+	 * @return experience
+	 */
+	public Double calcExp(SagaPlayer sagaPlayer) {
+
+		
+		Double exp = playerExp.calculateValue(sagaPlayer.getLevel());
+		if(exp == null) return 0.0;
+		
+		return exp;
+		
+		
+	}
+	
+	/**
+	 * Calculates experience for a creature kill.
+	 * 
+	 * @param creature creature
+	 * @return experience
+	 */
+	public Double calcExp(Creature creature) {
+
+		
+		Double exp = creatureExp.get(creature.getClass().getSimpleName().toLowerCase().replace("craft", ""));
+		
+		if(exp == null) exp = creatureExp.get("default");
+		
+		if(exp == null) return 0.0;
+		
+		return exp;
+		
+		
+	}
 	
 	
 	// Permissions:

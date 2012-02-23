@@ -64,8 +64,14 @@ public class PlayerMessages {
 		StringBuffer result = new StringBuffer();
 		
 		// Skills:
-		StringTable skills = skills(sagaPlayer.getLevelManager());
+		StringTable skills = skills(sagaPlayer);
 		result.append(skills.createTable());
+
+		result.append("\n");
+
+		// Level:
+		StringTable level = level(sagaPlayer);
+		result.append(level.createTable());
 		
 		result.append("\n");
 		
@@ -101,9 +107,10 @@ public class PlayerMessages {
 		
 	}
 	
-	public static StringTable skills(PlayerLevelManager levelManager) {
+	public static StringTable skills(SagaPlayer sagaPlayer) {
 
 		
+		PlayerLevelManager levelManager = sagaPlayer.getLevelManager();
 		StringTable table = new StringTable(new ColorCircle().addColor(normal1).addColor(normal2));
 		
 		DecimalFormat format = new DecimalFormat("00");
@@ -179,11 +186,50 @@ public class PlayerMessages {
 			
 		}
 		
+		table.nextColumn();
+		
+		// Other:
+		table.addLine("");
+		table.addLine("current level");
+		table.addLine("remaining exp");
+		table.addLine("unspent skills");
+		
+		table.nextColumn();
+		
+		table.addLine("");
+		table.addLine(sagaPlayer.getLevel().toString());
+		table.addLine(sagaPlayer.getRemainingExp().intValue() + "");
+		table.addLine(sagaPlayer.getRemainingSkillPoints().toString());
+		
 		return table;
     	
 		
 	}
 
+	public static StringTable level(SagaPlayer sagaPlayer) {
+
+		
+		StringTable table = new StringTable(new ColorCircle().addColor(normal1).addColor(normal2));
+		
+    	// Table size:
+    	ArrayList<Double> widths = new ArrayList<Double>();
+    	widths.add(28.0);
+    	widths.add(32.0);
+    	table.setCustomWidths(widths);
+	
+    	String[] line = new String[]{};
+	
+    	line = new String[]{"level " + sagaPlayer.getLevel(), ""};
+    	table.addLine(line);
+
+    	line = new String[]{"required exp " + 0, "total exp " +  sagaPlayer.getTotalExperience()};
+    	table.addLine(line);
+    	
+    	return table;
+    	
+	
+	}	
+	
 	public static StringTable proficiencies(SagaPlayer sagaPlayer) {
 
 		
@@ -450,6 +496,14 @@ public class PlayerMessages {
 		
 		return chunkGroups;
 		
+		
+	}
+	
+	
+	// Level:
+	public static String levelup(Integer level) {
+		
+		return veryPositive + "Reached level " + level + ".";
 		
 	}
 	

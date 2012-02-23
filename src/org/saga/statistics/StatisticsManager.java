@@ -74,7 +74,7 @@ public class StatisticsManager implements HourTicker{
 	/**
 	 * Ability awarded experience.
 	 */
-	private Hashtable<String, Integer> abilityExp;
+	private Hashtable<String, Double> abilityExp;
 
 	/**
 	 * Ore mining.
@@ -176,7 +176,7 @@ public class StatisticsManager implements HourTicker{
 		
 		if(abilityExp == null){
 			Saga.severe(getClass(), "abilityExp field failed to initialize", "setting default");
-			abilityExp = new Hashtable<String, Integer>();
+			abilityExp = new Hashtable<String, Double>();
 			integrity=false;
 		}
 		
@@ -223,7 +223,7 @@ public class StatisticsManager implements HourTicker{
 		guardRuneRestores = 0;
 		guardRuneRecharges = 0;
 		startDate = System.currentTimeMillis();
-		abilityExp = new Hashtable<String, Integer>();
+		abilityExp = new Hashtable<String, Double>();
 		abilityUsage = new Hashtable<String, Integer>();
 		xrayStatistics = new Hashtable<String, Hashtable<Material,Integer>>();
 		blockDataChanges = 0;
@@ -378,10 +378,10 @@ public class StatisticsManager implements HourTicker{
 	 * @param abilityName ability name
 	 * @return experience
 	 */
-	public Integer getAbilityExp(String abilityName) {
+	public Double getAbilityExp(String abilityName) {
 
-		Integer value = abilityExp.get(abilityName);
-		if(value == null) value = 0;
+		Double value = abilityExp.get(abilityName);
+		if(value == null) value = 0.0;
 		
 		return value;
 		
@@ -543,7 +543,7 @@ public class StatisticsManager implements HourTicker{
 	 * @param abilityName ability name
 	 * @param rewardedExp exp rewarded
 	 */
-	public void onAbilityUse(String abilityName, Integer rewardedExp) {
+	public void onAbilityUse(String abilityName, Double rewardedExp) {
 
 		
 		// Upgrades:
@@ -552,8 +552,8 @@ public class StatisticsManager implements HourTicker{
 		abilityUsage.put(abilityName, uses + 1);
 		
 		// Upgrade level costs:
-		Integer expReward = abilityExp.get(abilityName);
-		if(expReward == null) expReward = 0;
+		Double expReward = abilityExp.get(abilityName);
+		if(expReward == null) expReward = 0.0;
 		abilityExp.put(abilityName, expReward + rewardedExp);
 
 		

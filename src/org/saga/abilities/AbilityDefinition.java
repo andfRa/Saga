@@ -323,8 +323,8 @@ public class AbilityDefinition{
 	 * 
 	 * @return the expReward
 	 */
-	public Integer getExpReward(Integer multiplier) {
-		return expReward.calculateRandomIntValue(multiplier);
+	public Double getExpReward(Integer multiplier) {
+		return expReward.calculateValue(multiplier);
 	}
 	
 	

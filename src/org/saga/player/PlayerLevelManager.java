@@ -704,7 +704,7 @@ public class PlayerLevelManager{
 	 * 
 	 * @param event event
 	 */
-	public void onBlockBrake(BlockBreakEvent event) {
+	public void onBlockBreak(BlockBreakEvent event) {
 
 		
 		ArrayList<Skill> skills = new ArrayList<Skill>(this.damageSkills);
@@ -713,7 +713,7 @@ public class PlayerLevelManager{
 		for (int i = 0; i < skills.size(); i++) {
 			skills.get(i).triggerBlockBrake(sagaPlayer, skillMultipliers.get(i) ,event);
 		}
-
+		
 		
 	}
 	

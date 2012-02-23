@@ -44,7 +44,7 @@ public class Dart extends Ability{
 		sagaPlayer.shootArrow(primaryFunction.calculateValue(skillLevel));
 
 		// Award exp:
-		Integer awardedExp = awardExperience();
+		Double awardedExp = awardExperience();
 		
 		// Statistics:
 		StatisticsManager.manager().onAbilityUse(getName(), awardedExp);

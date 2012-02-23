@@ -35,7 +35,7 @@ public class Fireball extends Ability{
 		sagaPlayer.shootFireball();
 
 		// Award exp:
-		Integer awardedExp = awardExperience();
+		Double awardedExp = awardExperience();
 		
 		// Statistics:
 		StatisticsManager.manager().onAbilityUse(getName(), awardedExp);

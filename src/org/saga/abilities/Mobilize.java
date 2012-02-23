@@ -63,7 +63,7 @@ public class Mobilize extends Ability{
 		faction.broadcast(FactionMessages.mobilizationDeclareInfo(faction));
 
 		// Award exp:
-		Integer awardedExp = awardExperience();
+		Double awardedExp = awardExperience();
 		
 		// Statistics:
 		StatisticsManager.manager().onAbilityUse(getName(), awardedExp);

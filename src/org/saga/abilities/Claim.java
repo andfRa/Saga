@@ -42,7 +42,7 @@ public class Claim extends Ability{
 		ChunkGroupCommands.claim(args, Saga.plugin(), getSagaPlayer());
 
 		// Statistics:
-		StatisticsManager.manager().onAbilityUse(getName(), 0);
+		StatisticsManager.manager().onAbilityUse(getName(), 0.0);
 		
 		return true;
 		

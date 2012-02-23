@@ -4,6 +4,9 @@ package org.saga.player;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import org.bukkit.entity.Creature;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.saga.Saga;
 import org.saga.abilities.Ability;
 import org.saga.config.AbilityConfiguration.InvalidAbilityException;
@@ -235,6 +238,7 @@ public class Proficiency {
 		return getDefinition().getSkillMaximum(skillName);
 		
 	}
+	
 	
 	// Abilities:
 	/**

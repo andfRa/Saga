@@ -1,20 +1,16 @@
 package org.saga.player;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Hashtable;
 import java.util.Random;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
-import org.saga.statistics.StatisticsManager;
 import org.saga.utility.TwoPointFunction;
 
 public class Skill {
@@ -76,11 +72,6 @@ public class Skill {
 	 */
 	private TwoPointFunction modifier;
 
-	/**
-	 * Experience.
-	 */
-	private Hashtable<Material, Hashtable<Byte, TwoPointFunction>> exp;
-	
 	
 	/**
 	 * Forwards the name and sets use materials.
@@ -100,7 +91,6 @@ public class Skill {
 		this.attacker = attackerType;
 		this.defender = attackerType;
 		this.attack = attackType;
-		exp = new Hashtable<Material, Hashtable<Byte,TwoPointFunction>>();
 		
 		
 	}
@@ -175,24 +165,6 @@ public class Skill {
 			integrity = false;
 		}
 		integrity = modifier.complete() && integrity;
-		
-		if(exp == null){
-			exp = new Hashtable<Material, Hashtable<Byte,TwoPointFunction>>();
-			Saga.severe(this, "exp field failed to intialize", "setting default");
-			integrity = false;
-		}
-		
-		Collection<Hashtable<Byte, TwoPointFunction>> expMaterials = exp.values();
-		for (Hashtable<Byte, TwoPointFunction> expDatas : expMaterials) {
-			
-			Collection<TwoPointFunction> twopoints = expDatas.values();
-			
-			for (TwoPointFunction exp : twopoints) {
-				integrity = exp.complete() && integrity;
-			}
-			
-			
-		}
 		
 		return integrity;
 		
@@ -272,29 +244,6 @@ public class Skill {
 		// Set damage:
 		event.setDamage(damage);
 
-		
-	}
-	
-	
-	// Experience:
-	/**
-	 * Calculates experience for a block
-	 * 
-	 * @param block block
-	 * @param multiplier skill multiplier
-	 * @return experience
-	 */
-	private Integer calcExperience(Block block, Integer multiplier) {
-
-		
-		Hashtable<Byte, TwoPointFunction> bytes = exp.get(block.getType());
-		if(bytes == null) return 0;
-		
-		TwoPointFunction exp = bytes.get(new Byte(block.getData()));
-		if(exp == null) return 0;
-			
-		return exp.calculateRandomIntValue(multiplier);
-		
 		
 	}
 	
@@ -819,18 +768,18 @@ public class Skill {
 	public void triggerBlockBrake(SagaPlayer sagaPlayer, Integer multiplier, BlockBreakEvent event) {
 		
 
-		// Experience:
-		Integer exp = calcExperience(event.getBlock(), multiplier);
-		
-		if(exp > 0){
-			
-			// Award:
-			sagaPlayer.giveExperience(exp);
-			
-			// Statistics:
-			StatisticsManager.manager().onSkillBlockExp(getName(), exp, sagaPlayer);
-			
-		}
+//		// Experience:
+//		Integer exp = calcExperience(event.getBlock(), multiplier);
+//		
+//		if(exp > 0){
+//			
+//			// Award:
+//			sagaPlayer.giveExperience(exp);
+//			
+//			// Statistics:
+//			StatisticsManager.manager().onSkillBlockExp(getName(), exp, sagaPlayer);
+//			
+//		}
 		
 		
 	}

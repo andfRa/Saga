@@ -108,7 +108,7 @@ public class Stoneskin extends Ability{
 		
 		
 		// Award exp:
-		Integer awardedExp = awardExperience(clearUses());
+		Double awardedExp = awardExperience(clearUses());
 		
 		// Statistics:
 		StatisticsManager.manager().onAbilityUse(getName(), awardedExp);

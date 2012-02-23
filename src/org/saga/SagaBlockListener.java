@@ -52,9 +52,12 @@ public class SagaBlockListener implements Listener{
     	XrayIndicator.handleMine(sagaPlayer, event);
     	
     	// Forward to level manager:
-    	sagaPlayer.getLevelManager().onBlockBrake(event);
+    	sagaPlayer.getLevelManager().onBlockBreak(event);
 		
-		
+    	// Experience:
+    	sagaPlayer.onBlockExp(event);
+    	
+    	
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)

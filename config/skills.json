@@ -11,8 +11,7 @@
     "attacker":"PLAYER",
     "defender":"ALL",
     "attack":"MELEE",
-    "modifier":{"x1":0,"y1":4.0,"x2":50,"y2":34.0},
-    "exp":{}
+    "modifier":{"x1":0,"y1":4.0,"x2":50,"y2":34.0}
   },
 
   "waraxe":{
@@ -25,8 +24,7 @@
     "attacker":"PLAYER",
     "defender":"ALL",
     "attack":"MELEE",
-    "modifier":{"x1":0,"y1":0.0,"x2":10,"y2":14.0},
-    "exp":{}
+    "modifier":{"x1":0,"y1":0.0,"x2":10,"y2":14.0}
   },
 
   "archery":{
@@ -39,8 +37,7 @@
     "attacker":"PLAYER",
     "defender":"ALL",
     "attack":"RANGED",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":30.0},
-    "exp":{}
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":30.0}
   },
 
   "magic":{
@@ -53,8 +50,7 @@
     "attacker":"PLAYER",
     "defender":"ALL",
     "attack":"MAGIC",
-    "modifier":{"x1":0,"y1":1.0,"x2":50,"y2":9.0},
-    "exp":{}
+    "modifier":{"x1":0,"y1":2.2,"x2":50,"y2":9.0}
   },
 
   "heavy armour":{
@@ -67,8 +63,7 @@
     "attacker":"ALL",
     "defender":"ALL",
     "attack":"PHYSICAL",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-30.0},
-    "exp":{}
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-30.0}
   },
 
   "light armour":{
@@ -81,8 +76,7 @@
     "attacker":"ALL",
     "defender":"ALL",
     "attack":"PHYSICAL",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-30.0},
-    "exp":{}
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-30.0}
   },
 
   "unarmoured":{
@@ -95,8 +89,7 @@
     "attacker":"ALL",
     "defender":"ALL",
     "attack":"PHYSICAL",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-30.0},
-    "exp":{}
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-30.0}
   },
 
   "magic warding":{
@@ -109,8 +102,7 @@
     "attacker":"ALL",
     "defender":"ALL",
     "attack":"MAGIC",
-    "modifier":{"x1":0,"y1":-1.0,"x2":50,"y2":-9.0},
-    "exp":{}
+    "modifier":{"x1":0,"y1":-2.2,"x2":50,"y2":-9.0}
   },
 
   "woodcutting":{
@@ -123,15 +115,7 @@
     "attacker":"ALL",
     "defender":"ALL",
     "attack":"NONE",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
-    "exp":{
-      "LOG":{
-	"0":{"x1":0,"y1":1.937,"x2":50,"y2":5.810},
-	"1":{"x1":0,"y1":1.937,"x2":50,"y2":5.810},
-	"2":{"x1":0,"y1":1.937,"x2":50,"y2":5.810},
-	"3":{"x1":0,"y1":1.937,"x2":50,"y2":5.810}
-      }
-    }
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}
   },
 
   "mining":{
@@ -144,15 +128,7 @@
     "attacker":"ALL",
     "defender":"ALL",
     "attack":"NONE",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
-    "exp":{
-      "DIAMOND_ORE":{"0":{"x1":0,"y1":12.5,"x2":50,"y2":37.5}},
-      "LAPIS_ORE":{"0":{"x1":0,"y1":13.79,"x2":50,"y2":41.38}},
-      "GOLD_ORE":{"0":{"x1":0,"y1":5.08,"x2":50,"y2":15.25}},
-      "IRON_ORE":{"0":{"x1":0,"y1":0.81,"x2":50,"y2":2.44}},
-      "COAL_ORE":{"0":{"x1":0,"y1":0.65,"x2":50,"y2":1.96}},
-      "STONE":{"0":{"x1":0,"y1":0.017,"x2":50,"y2":0.050}}
-    }
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}
   },
 
   "farming":{
@@ -165,11 +141,7 @@
     "attacker":"ALL",
     "defender":"ALL",
     "attack":"NONE",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
-    "exp":{
-      "SUGAR_CANE_BLOCK":{"0":{"x1":0,"y1":1.937,"x2":50,"y2":5.810}},
-      "LOG":{"7":{"x1":0,"y1":1.937,"x2":50,"y2":5.810}}
-    }
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}
   },
 
   "smithing":{
@@ -182,8 +154,7 @@
     "attacker":"ALL",
     "defender":"ALL",
     "attack":"NONE",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
-    "exp":{}
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}
   }
 
 }

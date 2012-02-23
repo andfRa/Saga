@@ -138,7 +138,7 @@ public class Harvest extends Ability{
 		}
 		
 		// Award exp:
-		Integer awardedExp = awardExperience(expval);
+		Double awardedExp = awardExperience(expval);
 		
 		// Statistics:
 		StatisticsManager.manager().onAbilityUse(getName(), awardedExp);

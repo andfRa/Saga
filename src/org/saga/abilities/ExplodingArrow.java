@@ -87,7 +87,7 @@ public class ExplodingArrow extends Ability{
 		location.getWorld().createExplosion(location, fraction.floatValue(), false);
 
 		// Award exp:
-		Integer awardedExp = awardExperience();
+		Double awardedExp = awardExperience();
 		
 		// Statistics:
 		StatisticsManager.manager().onAbilityUse(getName(), awardedExp);

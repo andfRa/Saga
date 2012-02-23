@@ -406,9 +406,9 @@ public class BalanceConfiguration {
 	 * @param reward reward
 	 * @return exp reward
 	 */
-	public Integer getExpReward(int reward) {
+	public Double getExpReward(int reward) {
 
-		return reward * expReward;
+		return (double)reward * expReward;
 		
 	}
 	

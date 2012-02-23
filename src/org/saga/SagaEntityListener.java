@@ -132,7 +132,7 @@ public class SagaEntityListener implements Listener{
 				
 				sagaAttacker.getLevelManager().onHitPlayer(cEvent, sagaDefender);
 				sagaDefender.getLevelManager().onHitByPlayer(cEvent, sagaAttacker);
-
+				
 			}
 			// Archery:
 			else if(projectile instanceof Arrow){
@@ -309,7 +309,7 @@ public class SagaEntityListener implements Listener{
 
 		
 		Entity deadEntity = event.getEntity();
-		Entity killerEntity = null;
+		Entity attackerEntity = null;
 		
 		Player deadPlayer = null;
 		Player attackerPlayer = null;
@@ -317,6 +317,12 @@ public class SagaEntityListener implements Listener{
 		SagaPlayer sagaDead = null;
 		SagaPlayer sagaAttacker = null;
 		
+		// Projectiles:
+		if(deadEntity instanceof Projectile){
+			deadEntity = ((Projectile) deadEntity).getShooter();
+		}
+		
+		// Defender:
 		if(deadEntity instanceof Player){
 			
 			deadPlayer = (Player) deadEntity;
@@ -329,24 +335,25 @@ public class SagaEntityListener implements Listener{
 	    		return;
 	    	}
 			
-			EntityDamageEvent damageEvent = deadPlayer.getLastDamageCause();
-			
-			if(damageEvent instanceof EntityDamageByEntityEvent){
-				killerEntity = ((EntityDamageByEntityEvent) damageEvent).getDamager();
-			}
-			
-			if(killerEntity instanceof Player){
-				attackerPlayer = (Player) killerEntity;
-				
-				sagaAttacker = Saga.plugin().getSagaPlayer( attackerPlayer.getName() );
+		}
 
-				// No player:
-		    	if(sagaAttacker == null){
-		    		Saga.warning("Can't continue with onEntityDeath, because saga player for " + attackerPlayer.getName() + " isn't loaded.");
-		    		return;
-		    	}
-				
-			}
+		// Attacker:
+		EntityDamageEvent damageEvent = deadEntity.getLastDamageCause();
+		
+		if(damageEvent instanceof EntityDamageByEntityEvent){
+			attackerEntity = ((EntityDamageByEntityEvent) damageEvent).getDamager();
+		}
+		
+		if(attackerEntity instanceof Player){
+			attackerPlayer = (Player) attackerEntity;
+			
+			sagaAttacker = Saga.plugin().getSagaPlayer( attackerPlayer.getName() );
+
+			// No player:
+	    	if(sagaAttacker == null){
+	    		Saga.warning("Can't continue with onEntityDeath, because saga player for " + attackerPlayer.getName() + " isn't loaded.");
+	    		return;
+	    	}
 			
 		}
 		
@@ -370,6 +377,18 @@ public class SagaEntityListener implements Listener{
 	    	// Send to guild manager:
 	    	GuildsManager.manager().onKilledPlayer(sagaAttacker, sagaDead);
 	    	
+	    	// Experience:
+	    	sagaAttacker.onPlayerExp(event, sagaDead);
+	    	
+	    	
+		}
+		
+		// Player versus creature:
+		else if(sagaAttacker != null && deadEntity instanceof Creature){
+			
+			// Experience:
+	    	sagaAttacker.onCreatureExp(event, (Creature) deadEntity);
+	    	
 		}
 		
 		// Modify experience:
@@ -382,6 +401,7 @@ public class SagaEntityListener implements Listener{
 			if(sagaDead.getGuardianRune().isEnabled()){
 				
 				runeAbsorb = GuardianRune.handleAbsorb(sagaDead, cEvent);
+//				GuardianRune.handleAbsorb(sagaDead, cEvent);
 				
 			}
 			

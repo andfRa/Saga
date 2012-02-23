@@ -115,7 +115,7 @@ public class Force extends Ability{
 		}
 		
 		// Award exp:
-		Integer awardedExp = awardExperience(pushed);
+		Double awardedExp = awardExperience(pushed);
 		
 		// Statistics:
 		StatisticsManager.manager().onAbilityUse(getName(), awardedExp);

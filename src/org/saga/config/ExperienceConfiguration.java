@@ -37,6 +37,16 @@ public class ExperienceConfiguration {
 	private TwoPointFunction skillUpgradeLevelCost;
 
 	/**
+	 * Experience needed to level up.
+	 */
+	private TwoPointFunction levelUpExp;
+
+	/**
+	 * Skill points.
+	 */
+	private TwoPointFunction skillPoints;
+	
+	/**
 	 * Experience table.
 	 */
 	transient private Hashtable<Integer, Integer> expTable;
@@ -62,13 +72,19 @@ public class ExperienceConfiguration {
 		
 		// Set instance:
 		instance = this;
-		
-		if(skillUpgradeLevelCost == null){
-			Saga.severe(getClass(), "skillUpgradeLevelCost field failed to initialize", "setting default");
-			skillUpgradeLevelCost= new TwoPointFunction(100000.0, (short)50, 100000.0);
+
+		if(levelUpExp == null){
+			Saga.severe(getClass(), "levelUpExp field not initialized", "setting default");
+			levelUpExp = new TwoPointFunction(0.0, (short)50, 0.0);
 			integrity=false;
 		}
-
+		
+		if(skillPoints == null){
+			Saga.severe(getClass(), "skillPoints field not initialized", "setting default");
+			skillPoints = new TwoPointFunction(0.0, (short)50, 0.0);
+			integrity=false;
+		}
+		
 		// Transient:
 		expTable = createExpTable();
 		
@@ -365,6 +381,41 @@ public class ExperienceConfiguration {
 		
 		return getLevelExperience(level) + getPartialExp(player.getExp(), level);
 		
+	}
+	
+	/**
+	 * Gets the experience required to level up.
+	 * 
+	 * @param level level
+	 * @return experience required
+	 */
+	public Integer getLevelExp(Integer level) {
+		
+		return levelUpExp.calculateValue(level).intValue();
+
+	}
+	
+	/**
+	 * Gets the maximum level.
+	 * 
+	 * @return maximum level
+	 */
+	public Integer getMaxLevel() {
+		
+		return levelUpExp.getMaxValue().intValue();
+
+	}
+	
+	/**
+	 * Gets the skill points for the given level.
+	 * 
+	 * @param level level
+	 * @return skill points
+	 */
+	public Integer getSkillPoints(Integer level) {
+		
+		return skillPoints.calculateValue(level).intValue();
+
 	}
 	
 	// Load unload:

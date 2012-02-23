@@ -181,9 +181,9 @@ public class SagaMessages {
 		
 	}
 	
-	public static String collectedReward(Integer exp, Double coins) {
+	public static String collectedReward(Double exp, Double coins) {
 
-		return positive + "Recieved " + exp + " exp and " + EconomyMessages.coins(coins) + ".";
+		return positive + "Recieved " + exp.intValue() + " exp and " + EconomyMessages.coins(coins) + ".";
 		
 	}
 

@@ -8,8 +8,15 @@ package org.saga;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
+import net.minecraft.server.EntityPlayer;
+import net.minecraft.server.ItemInWorldManager;
+import net.minecraft.server.World;
+
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
+import org.bukkit.Location;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Player;
 import org.saga.chunkGroups.ChunkGroupMessages;
 import org.saga.config.BalanceConfiguration;
@@ -340,7 +347,7 @@ public class SagaCommands {
     		}
     	
     		// Reward:
-    		Integer exp = BalanceConfiguration.config().getExpReward(sagaPlayer.getReward());
+    		Double exp = BalanceConfiguration.config().getExpReward(sagaPlayer.getReward());
     		Double coins = BalanceConfiguration.config().getCoinReward(sagaPlayer.getReward());
     		sagaPlayer.giveExperience(exp);
     		sagaPlayer.addCoins(coins);
@@ -384,8 +391,19 @@ public class SagaCommands {
     public static void debugCommand(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
     
-//    	sagaPlayer.getItemInHand().setDurability((short) (sagaPlayer.getItemInHand().getType().getMaxDurability() -1));
-    	sagaPlayer.playEffect(Effect.STEP_SOUND, args.getInteger(0));
+    	Location l = sagaPlayer.getLocation();
+    	CraftServer cserv = ((CraftServer)Saga.plugin().getServer());
+    	CraftWorld cworld = (CraftWorld) cserv.getWorld("world");
+    	World nworld = cworld.getHandle();
+    	
+    	
+    	ItemInWorldManager iiwm = new ItemInWorldManager(cworld.getHandle());
+    	
+    	EntityPlayer npcEntity = new EntityPlayer(cserv.getServer(), nworld, args.getString(0), iiwm);
+    	
+    	npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
+    	cworld.getHandle().addEntity(npcEntity);
+    	
     
     }
 

@@ -146,7 +146,7 @@ public class Dodge extends Ability{
 		event.setDamage(0);
 		
 		// Award exp:
-		Integer awardedExp = awardExperience();
+		Double awardedExp = awardExperience();
 		
 		// Statistics:
 		StatisticsManager.manager().onAbilityUse(getName(), awardedExp);

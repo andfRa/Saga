@@ -25,10 +25,13 @@ import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftFireball;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Arrow;
+import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -88,14 +91,19 @@ public class SagaPlayer implements SecondTicker, Trader{
 	private String name;
 	
 	/**
-	 * Stamina.
+	 * Level.
 	 */
-	private Double stamina;
+	private Integer level;
 
+	/**
+	 * Experience.
+	 */
+	private Double exp;
+	
 	/**
 	 * Amount of currency the player has.
 	 */
-	private Double currency;
+	private Double coins;
 
 	
 	// Proficiencies:
@@ -276,12 +284,13 @@ public class SagaPlayer implements SecondTicker, Trader{
 	private SagaPlayer(String name) {
 		
 		this.name = name;
-		this.stamina = PlayerDefaults.stamina;
+		this.level = 0;
+		this.exp = 0.0;
 		this.factionId = -1;
 		this.chunkGroupId = -1;
 		this.factionInvites = new ArrayList<Integer>();
 		this.chunkGroupInvites = new ArrayList<Integer>();
-		this.currency = EconomyConfiguration.config().playerInitialCurrency;
+		this.coins = EconomyConfiguration.config().playerInitialCurrency;
 		this.guardianStone = GuardianRune.newStone();
 		this.lastOnline = Calendar.getInstance().getTime();
 		this.levelManager = new PlayerLevelManager(this);
@@ -307,14 +316,19 @@ public class SagaPlayer implements SecondTicker, Trader{
 			name = PlayerDefaults.name;
 		}
 		
-		if(stamina == null){
-			stamina = PlayerDefaults.stamina;
-			Saga.severe(this, "stamina field not initialized", "setting default");
+		if(level == null){
+			level = 0;
+			Saga.severe(this, "level field not initialized", "setting default");
 		}
 		
-		if(currency == null){
-			currency = EconomyConfiguration.config().playerInitialCurrency;
-			Saga.severe(this, "currency field not initialized", "setting default");
+		if(exp == null){
+			exp = 0.0;
+			Saga.severe(this, "level field not initialized", "setting default");
+		}
+		
+		if(coins == null){
+			coins = EconomyConfiguration.config().playerInitialCurrency;
+			Saga.severe(this, "coins field not initialized", "setting default");
 		}
 		
 		if(factionId == null){
@@ -1121,6 +1135,31 @@ public class SagaPlayer implements SecondTicker, Trader{
 	}
 	
 	
+	// Skill points:
+	/**
+	 * Gets spent skill points.
+	 * 
+	 * @return spent skill points
+	 */
+	public Integer getSkillPoints() {
+		
+		return 0;
+
+	}
+	
+	/**
+	 * Gets remaining skill points.
+	 * 
+	 * @return spent skill points
+	 */
+	public Integer getRemainingSkillPoints() {
+		
+		return ExperienceConfiguration.config().getSkillPoints(getLevel()) - getSkillPoints();
+
+	}
+	
+	
+	
 	// Player:
 	/**
 	 * Returns player name.
@@ -1198,16 +1237,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * 
 	 * @return 0 if not online or nor a player
 	 */
-	public int getLevel() {
-		
-		if(!isOnline()) return 0;
-		
-		int level = player.getLevel();
-		
-		// Limit level:
-		if(level > BalanceConfiguration.config().maximumLevel){
-			level = BalanceConfiguration.config().maximumLevel;
-		}
+	public Integer getLevel() {
 		
 		return level;
 		
@@ -1220,12 +1250,22 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 */
 	public void setLevel(int level) {
 		
-		if(!isOnline()) return;
-		
-		player.setLevel(level);
+		this.level = level;
 		
 		// Update managers:
 		levelManager.update();
+		
+	}
+	
+	/**
+	 * Levels up the player.
+	 * 
+	 */
+	public void levelUp() {
+		
+		setLevel(level + 1);
+		
+		message(PlayerMessages.levelup(getLevel()));
 		
 	}
 
@@ -1249,7 +1289,30 @@ public class SagaPlayer implements SecondTicker, Trader{
 	/**
 	 * Gets player experience.
 	 * 
-	 * @return 0 if not online or nor a player
+	 * @return player experience
+	 */
+	public Double getExp() {
+		
+		return exp;
+		
+	}
+	
+	/**
+	 * Gets the remaining experience.
+	 * 
+	 * @return remaining experience
+	 */
+	public Double getRemainingExp() {
+		
+		return ExperienceConfiguration.config().getLevelExp(getLevel()).doubleValue() - getExp();
+		
+	}
+	
+	
+	/**
+	 * Gets player total experience.
+	 * 
+	 * @return player total experience
 	 */
 	public int getTotalExperience() {
 		
@@ -1266,28 +1329,27 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * 
 	 * @param experience experience
 	 */
-	public void setTotalExperience(int experience) {
+	public void setTotalExperience2(int experience) {
 		
-		if(!isOnline()) return;
 		
-		player.setTotalExperience(experience);
-		
-		// Update managers:
-		levelManager.update();
 		
 	}
 	
 	/**
 	 * Gives player experience.
 	 * 
-	 * @param exp experience
+	 * @param expAmount experience
 	 */
-	public void giveExperience(int exp) {
+	public void giveExperience(Double expAmount) {
 		
-		if(!isOnline()) return;
+		if(level >= ExperienceConfiguration.config().getMaxLevel()) return;
 		
-		for (int i = 0; i < exp; i++) {
-			player.giveExp(1);
+		this.exp += expAmount;
+		
+		if(this.exp >= ExperienceConfiguration.config().getLevelExp(getLevel())){
+			expAmount = 0.0;
+			levelUp();
+			
 		}
 		
 	}
@@ -2439,7 +2501,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 */
 	@Override
 	public void addCoins(Double amount) {
-		currency += amount;
+		coins += amount;
 	}
 	
 	/* 
@@ -2449,7 +2511,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 */
 	@Override
 	public void removeCoins(Double amount) {
-		currency -= amount;
+		coins -= amount;
 	}
 	
 	/* 
@@ -2459,7 +2521,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 */
 	@Override
 	public Double getCoins() {
-		return (double)currency.intValue();
+		return (double)coins.intValue();
 	}
 	
 	/**
@@ -2468,7 +2530,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * @param coins currency
 	 */
 	public void setCoins(Double coins) {
-		this.currency = coins;
+		this.coins = coins;
 	}
 
 	/* 
@@ -3016,6 +3078,103 @@ public class SagaPlayer implements SecondTicker, Trader{
 	public Integer getExpRegen() {
 		return expRegen;
 	}
+
+
+	// Experience events:
+	/**
+	 * Called when a block is broken by the player.
+	 * 
+	 * @param event event
+	 */
+	public void onBlockExp(BlockBreakEvent event) {
+
+		
+		// Profession:
+		if(profession != null){
+			Double expAmount = profession.getDefinition().calcExp(event.getBlock());
+			
+			if(expAmount != 0){
+				giveExperience(expAmount);
+			}
+			
+		}
+
+		// Class:
+		if(classs != null){
+			Double expAmount = classs.getDefinition().calcExp(event.getBlock());
+			
+			if(expAmount != 0){
+				giveExperience(expAmount);
+			}
+			
+		}
+		
+		
+	}
+	
+	/**
+	 * Called when a creature is killed.
+	 * 
+	 * @param event event
+	 * @param creature creature
+	 */
+	public void onCreatureExp(EntityDeathEvent event, Creature creature) {
+
+		
+		// Profession:
+		if(profession != null){
+			Double expAmount = profession.getDefinition().calcExp(creature);
+			
+			if(expAmount != 0){
+				giveExperience(expAmount);
+			}
+			
+		}
+
+		// Class:
+		if(classs != null){
+			Double expAmount = classs.getDefinition().calcExp(creature);
+			
+			if(expAmount != 0){
+				giveExperience(expAmount);
+			}
+			
+		}
+		
+		
+	}
+	
+	/**
+	 * Called when a creature is killed.
+	 * 
+	 * @param event event
+	 * @param killedPlayer killed saga player
+	 */
+	public void onPlayerExp(EntityDeathEvent event, SagaPlayer killedPlayer) {
+
+		
+		// Profession:
+		if(profession != null){
+			Double expAmount = profession.getDefinition().calcExp(killedPlayer);
+			
+			if(expAmount != 0){
+				giveExperience(expAmount);
+			}
+			
+		}
+
+		// Class:
+		if(classs != null){
+			Double expAmount = classs.getDefinition().calcExp(killedPlayer);
+			
+			if(expAmount != 0){
+				giveExperience(expAmount);
+			}
+			
+		}
+		
+		
+	}
 	
 	
 	// Mining history:
@@ -3061,7 +3220,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 		miningStatistics.remove(material);
 		
 	}
-	
+
 	
 	// Control:
 	/**

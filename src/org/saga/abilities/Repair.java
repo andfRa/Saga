@@ -76,7 +76,7 @@ public class Repair extends Ability{
 		}
 		
 		// Award exp:
-		Integer awardedExp = awardExperience(repair.intValue());
+		Double awardedExp = awardExperience(repair.intValue());
 		
 		// Statistics:
 		StatisticsManager.manager().onAbilityUse(getName(), awardedExp);
