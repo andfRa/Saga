@@ -274,11 +274,11 @@ public class ProficiencyDefinition{
 	}
 	
 	/**
-	 * Gets the required currency for training.
+	 * Gets the required coins for training.
 	 * 
-	 * @return the currency required
+	 * @return the coins required
 	 */
-	public Double getCurrencyCost() {
+	public Double getCoinCost() {
 		return currencyCost;
 	}
 

@@ -591,6 +591,24 @@ public abstract class Building extends SagaCustomSerialization{
 	}
 	
 	/**
+	 * Checks if the player can respec.
+	 * 
+	 * @param sagaPlayer saga player
+	 * @return true if the player can recpec
+	 */
+	public boolean canRespec(SagaPlayer sagaPlayer) {
+		
+		
+		ChunkGroup chunkGroup = getChunkGroup();
+		if(chunkGroup == null) return false;
+		
+		// Is member:
+//		return chunkGroup.isMember(sagaPlayer);
+		return true;
+		
+	}
+	
+	/**
 	 * Checks if the player can select abilities.
 	 * 
 	 * @param sagaPlayer saga player

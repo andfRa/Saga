@@ -154,6 +154,11 @@ public class EconomyConfiguration {
 	 */
 	private TwoPointFunction skillUpgradeCoinCost;
 
+	/**
+	 * Respecification cost.
+	 */
+	private TwoPointFunction respecCost;
+
 	
 	// Rename:
 	/**
@@ -335,6 +340,12 @@ public class EconomyConfiguration {
 			integrity=false;
 		}
 		
+		if(respecCost == null){
+			Saga.severe(getClass(), "respecCost field failed to initialize", "setting default");
+			respecCost= new TwoPointFunction(10000.0);
+			integrity=false;
+		}
+		
 		if(chunkGroupRenameCost == null){
 			Saga.severe(getClass(), "chunkGroupRenameCost field failed to initialize", "setting default");
 			chunkGroupRenameCost= 1000.0;
@@ -406,6 +417,16 @@ public class EconomyConfiguration {
 	 */
 	public Double getSkillCoinCost(Integer currentMultiplier) {
 		return skillUpgradeCoinCost.value(currentMultiplier);
+	}
+	
+	/**
+	 * Gets the skill coin cost.
+	 * 
+	 * @param level player level
+	 * @return coin cost
+	 */
+	public Double getRespecCost(Integer level) {
+		return respecCost.value(level);
 	}
 	
 	

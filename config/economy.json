@@ -213,7 +213,8 @@
 "dealsPerPlayer":{"x1":1,"y1":10.0,"x2":30,"y2":50.0},
 "dealsGainPerPlayer":{"x1":1,"y1":2.0,"x2":30,"y2":15.0},
 "guardianRuneRechargeCost":1000,
-"skillUpgradeCoinCost":{"x1":0,"y1":0,"x2":50,"y2":0},
+"skillUpgradeCost":{"x1":2,"y1":0,"x2":49,"y2":9000},
+"respecCost":{"x1":5,"y1":5000,"x2":49,"y2":35000},
 "chunkGroupRenameCost":1500,
 "factionRenameCost":1500
 }

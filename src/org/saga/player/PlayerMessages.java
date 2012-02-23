@@ -10,15 +10,15 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.saga.abilities.Ability;
 import org.saga.abilities.AbilityDefinition;
-import org.saga.buildings.signs.ProficiencySign;
 import org.saga.buildings.signs.GuardianRuneSign;
+import org.saga.buildings.signs.ProficiencySign;
+import org.saga.buildings.signs.RespecSign;
 import org.saga.buildings.signs.SkillSign;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.BalanceConfiguration;
 import org.saga.config.EconomyConfiguration;
-import org.saga.config.ExperienceConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SkillConfiguration;
 import org.saga.economy.EconomyMessages;
@@ -55,6 +55,14 @@ public class PlayerMessages {
 	public static ChatColor frame = normal1;
 	
 	public static ChatColor frameTitle = normal2;
+	
+	
+	// General:
+	public static String coinsNeeded(Double required) {
+		
+		return negative + EconomyMessages.coins(required) + " coins required.";
+		
+	}
 	
 	
 	// Stats:
@@ -787,24 +795,12 @@ public class PlayerMessages {
 		table.nextColumn();
 		
 		// Coin costs:
-		table.addLine(" TRAINING");
-		for (String skillName : skillNames) {
-
-			Integer multiplier = sagaPlayer.getSkillMultiplier(skillName);
-			
-			table.addLine(EconomyMessages.coins(EconomyConfiguration.config().getSkillCoinCost(multiplier)));
-			
-		}
-		
-		table.nextColumn();
-		
-		// Level costs:
 		table.addLine("COST");
 		for (String skillName : skillNames) {
 
 			Integer multiplier = sagaPlayer.getSkillMultiplier(skillName);
 			
-			table.addLine(ExperienceConfiguration.config().getSkillLevelCost(multiplier) + " lvls");
+			table.addLine(EconomyMessages.coins(EconomyConfiguration.config().getSkillCoinCost(multiplier)));
 			
 		}
 		
@@ -872,27 +868,11 @@ public class PlayerMessages {
 	
 	
 	// Proficiencies:
-	public static String proficiencySelected(Proficiency proficiency, Double currency, Integer levels) {
+	public static String proficiencySelected(Proficiency proficiency, Double coinCost) {
 		
 		
-		StringBuffer cost = new StringBuffer();
-		
-		if(!levels.equals(0)){
-			cost.append(levels + " level points");
-		}
-		
-		if(!currency.equals(0.0)){
-			
-			if(cost.length() > 0){
-				cost.append(" and ");
-			}
-			
-			cost.append(EconomyMessages.coins(currency));
-			
-		}
-		
-		if(cost.length() > 0){
-			return positive + "Selected " + proficiency.getName() + " " + proficiency.getType().getName() + " for " + cost.toString() + ".";
+		if(coinCost > 0){
+			return positive + "Selected " + proficiency.getName() + " " + proficiency.getType().getName() + " for " + EconomyMessages.coins(coinCost) + ".";
 		}else{
 			return positive + "Selected " + proficiency.getName() + " " + proficiency.getType().getName() + ".";
 		}
@@ -903,7 +883,7 @@ public class PlayerMessages {
 	public static String alreadySelected(Proficiency proficiency) {
 		
 		
-		return negative + TextUtil.capitalize(proficiency.getName()) + " " + proficiency.getType().getName() + " is already selected.";
+		return negative + "A " + proficiency.getName() + " " + proficiency.getType().getName() + " is already selected.";
 		
 		
 	}
@@ -914,9 +894,15 @@ public class PlayerMessages {
 		
 	}
 	
-	public static String oneProficiencyAllowed2(Proficiency proficiency) {
+	public static String oneProficAllowed(ProficiencyType proficType) {
 		
-		return negative + "Only one " + proficiency.getType().getName() + " is allowed.";
+		return negative + "Only one " + proficType.getName() + " is allowed.";
+		
+	}
+	
+	public static String oneProficAllowedInfo(ProficiencyType proficType) {
+		
+		return normal1 + "You need to reset your stats by using a " + RespecSign.SIGN_NAME + " sign to select a new " + proficType.getName() + ".";
 		
 	}
 	
@@ -950,19 +936,7 @@ public class PlayerMessages {
 		
 	}
 	
-	
-	public static String skillPointsNeeded() {
-		
-		return negative + "Not enough skill points.";
-		
-	}
-	
-	public static String coinsNeeded(Double required) {
-		
-		return negative + EconomyMessages.coins(required) + " coins required.";
-		
-	}
-	
+
 	// Skills:
 	public static String limitReached(String skillName) {
 		
@@ -980,6 +954,54 @@ public class PlayerMessages {
 		
 		
 	}
+	
+	public static String skillPointsNeeded() {
+		
+		return negative + "Not enough skill points.";
+		
+	}
+	
+	// Respec:
+	public static String respec(Boolean proffRespec, Boolean classRespec, Boolean skillRespec, Double coinCost) {
+		
+		
+		if(!proffRespec && !classRespec && !skillRespec){
+			return negative + "Nothing to reset.";
+		}
+		
+		StringBuffer rString = new StringBuffer();
+		
+		if(proffRespec){
+			rString.append(ProficiencyType.PROFESSION.getName());
+		}
+		
+		if(classRespec){
+			
+			if(rString.length() > 0) rString.append(", ");
+			
+			rString.append(ProficiencyType.CLASS.getName());
+			
+		}
+		
+		if(skillRespec){
+			
+			if(rString.length() > 0) rString.append(", ");
+			
+			rString.append("skills");
+			
+		}
+		
+		if(coinCost > 0){
+			rString.append(" reset for " + EconomyMessages.coins(coinCost) + ".");
+		}else{
+			rString.append(" reset.");
+		}
+		
+		return positive + TextUtil.capitalize(rString.toString());
+		
+		
+	}
+	
 	
 	
 	// Player versus player:
@@ -1146,6 +1168,65 @@ public class PlayerMessages {
 		
 		
 	}
+	
+	
+	// Stats info:
+	public static String trainInfo(String skillName, SagaPlayer sagaPlayer) {
+		
+		
+		ColorCircle color = new ColorCircle().addColor(normal1).addColor(normal2);
+		StringBook book = new StringBook(skillName + " skill info", color, 10);
+		
+		Double maxCoinCost = EconomyConfiguration.config().getSkillCoinCost(BalanceConfiguration.config().maximumSkillLevel);
+		Integer skillLevel = sagaPlayer.getSkillMultiplier(skillName);
+		Double coinCost = EconomyConfiguration.config().getSkillCoinCost(skillLevel);
+		
+		StringTable table = new StringTable(color);
+		DecimalFormat format = new DecimalFormat("00");
+		
+		// Skill level:
+		String sSkillLevel = format.format(sagaPlayer.getLevelManager().getSkillMultiplier(skillName));
+		String sSkillLevelMax = format.format(sagaPlayer.getLevelManager().getMaxSkillMultiplier(skillName));
+		table.addLine(new String[]{skillName + " skill", sSkillLevel + "/" + sSkillLevelMax});
+		
+		// Available points:
+		table.addLine(new String[]{"remaining points", sagaPlayer.getRemainingSkillPoints().toString()});
+		
+		if(maxCoinCost > 0.0){
+			
+			table.addLine(new String[]{"cost at lvl " + sagaPlayer.getLevel(), EconomyMessages.coins(coinCost)});
+			
+		}
+		
+		table.collapse();
+		book.addTable(table);
+		
+		return book.framed(0);
+		
+		
+	}
+	
+	public static String respecInfo(SagaPlayer sagaPlayer) {
+
+		
+		ColorCircle color = new ColorCircle().addColor(normal1).addColor(normal2);
+		StringBook book = new StringBook("reset info", color, 10);
+		
+		book.addLine(negative + "Resets profession, class and skills. Level remains unchanged.");
+		
+		Double maxCoinCost = EconomyConfiguration.config().getRespecCost(BalanceConfiguration.config().maximumSkillLevel);
+		Double coinCost = EconomyConfiguration.config().getRespecCost(sagaPlayer.getLevel());
+		if(maxCoinCost > 0){
+			
+			book.addLine("A reset costs " + EconomyMessages.coins(coinCost) + " at level " + + sagaPlayer.getLevel() + ".");
+			
+		}
+		
+		return book.framed(0);
+		
+		
+	}
+		
 	
 	
 	/**

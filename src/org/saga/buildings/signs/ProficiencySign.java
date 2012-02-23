@@ -79,38 +79,20 @@ public class ProficiencySign extends BuildingSign{
 		Sign sign = getSign();
 		ProficiencyDefinition profDefinition = ProficiencyConfiguration.config().getDefinition(getFirstParameter());
 		
-		if(profDefinition != null){
+		// Check, for correct class and profession:
+		ProficiencyType type = profDefinition.getType();
+		if( (type == ProficiencyType.PROFESSION || type == ProficiencyType.CLASS) && profDefinition != null){
+		
+			Double coinCost = profDefinition.getCoinCost();
 			
-			// Profession:
-			if(profDefinition.getType().equals(ProficiencyType.PROFESSION) && getBuilding().getDefinition().hasProfession(getFirstParameter())){
-				
-				// Name:
-				sign.setLine(1, sign.getLine(1) + " " + ProficiencyType.PROFESSION.getName());
+			// Name:
+			sign.setLine(1, sign.getLine(1) + " " + type.getName());
 
-				// Levels cost:
-				sign.setLine(2, "for " + profDefinition.getLevelsCost() + " levels");
-
-				// Currency cost:
-				sign.setLine(3, "and " + EconomyMessages.coins(profDefinition.getCurrencyCost()));
-				
-			}
-			// Class:
-			else if(profDefinition.getType().equals(ProficiencyType.CLASS) && getBuilding().getDefinition().hasClass(getFirstParameter())){
-				
-				// Name:
-				sign.setLine(1, sign.getLine(1) + " " + ProficiencyType.CLASS.getName());
-
-				// Levels cost:
-				sign.setLine(2, "for " + profDefinition.getLevelsCost() + " levels");
-
-				// Currency cost:
-				sign.setLine(3, "and " + EconomyMessages.coins(profDefinition.getCurrencyCost()));
-				
-				
+			// Coin cost:
+			if(coinCost > 0){
+				sign.setLine(2, "for " + EconomyMessages.coins(coinCost));
 			}else{
-				
-				invalidate();
-				
+				sign.setLine(2, "");
 			}
 			
 		}else{
@@ -138,9 +120,11 @@ public class ProficiencySign extends BuildingSign{
 		
 		Sign sign = getSign();
 
-		sign.setLine(2, "for " + "-" + " levels");
-
-		sign.setLine(3, "and " + "-" + EconomyMessages.coins());
+		sign.setLine(2, "-");
+		
+		sign.setLine(2, "-");
+		
+		sign.setLine(3, "");
 		
 		
 	}
@@ -173,24 +157,32 @@ public class ProficiencySign extends BuildingSign{
 		}
 		
 		// Only professions and classes:
-		if(!proficiency.getType().equals(ProficiencyType.CLASS) && !proficiency.getType().equals(ProficiencyType.PROFESSION)) return;
+		ProficiencyType type = proficiency.getType();
+		if(type != ProficiencyType.CLASS && type != ProficiencyType.PROFESSION) return;
 		
-		// Enough levels:
-		Integer requiredLevels = proficiency.getDefinition().getLevelsCost();
-		if(requiredLevels > sagaPlayer.getLevel()){
-			sagaPlayer.message(PlayerMessages.levelsNeeded(requiredLevels, proficiency));
+		// Already existing proficiency:
+		if(type == ProficiencyType.CLASS && sagaPlayer.getClazz() != null){
+			
+			sagaPlayer.message(PlayerMessages.oneProficAllowed(type));
+			sagaPlayer.message(PlayerMessages.oneProficAllowedInfo(type));
 			return;
+			
+		}
+		else if(type == ProficiencyType.PROFESSION && sagaPlayer.getProfession() != null){
+			
+			sagaPlayer.message(PlayerMessages.oneProficAllowed(type));
+			sagaPlayer.message(PlayerMessages.oneProficAllowedInfo(type));
+			return;
+			
 		}
 
 		// Enough coins:
-		Double requiredCoins = proficiency.getDefinition().getCurrencyCost();
+		Double requiredCoins = proficiency.getDefinition().getCoinCost();
 		if(requiredCoins > sagaPlayer.getCoins()){
 			sagaPlayer.message(PlayerMessages.coinsNeeded(requiredCoins, proficiency));
 			return;
 		}
 
-		// Target the same:
-		
 		// Already an existing proficiency:
 		if(proficiency.getType().equals(ProficiencyType.PROFESSION) && sagaPlayer.getProfession() != null){
 			
@@ -213,9 +205,8 @@ public class ProficiencySign extends BuildingSign{
 
 		}
 		
-		// Decrease coins and level:
+		// Decrease coins:
 		sagaPlayer.removeCoins(requiredCoins);
-		sagaPlayer.decreaseLevel(requiredLevels);
 		
 		// Set:
 		if(proficiency.getType().equals(ProficiencyType.PROFESSION)){
@@ -230,7 +221,7 @@ public class ProficiencySign extends BuildingSign{
 		}
 		
 		// Inform:
-		sagaPlayer.info(PlayerMessages.proficiencySelected(proficiency, requiredCoins, requiredLevels));
+		sagaPlayer.info(PlayerMessages.proficiencySelected(proficiency, requiredCoins));
 		
 		
 	}

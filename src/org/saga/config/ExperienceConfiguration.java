@@ -96,18 +96,6 @@ public class ExperienceConfiguration {
 	
 	// Interaction:
 	/**
-	 * Gets the skill level cost.
-	 * 
-	 * @param currentMultiplier current skill multiplier
-	 * @return level cost
-	 */
-	public Integer getSkillLevelCost(Integer currentMultiplier) {
-		return skillUpgradeLevelCost.value(currentMultiplier).intValue();
-	}
-	
-	
-	
-	/**
 	 * Creates the experience table.
 	 * 
 	 * @return experience table

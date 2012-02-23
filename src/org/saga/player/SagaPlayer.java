@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -33,8 +32,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
@@ -1084,6 +1083,21 @@ public class SagaPlayer implements SecondTicker, Trader{
 		levelManager.update();
 		
 		return value;
+		
+		
+	}
+	
+	/**
+	 * Clears all skills.
+	 * 
+	 */
+	public void clearSkills() {
+		
+		
+		skills = new Hashtable<String, Integer>();
+
+		// Update level manager:
+		levelManager.update();
 		
 		
 	}
@@ -2810,17 +2824,24 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
             // Try loading:
             SagaPlayer sagaPlayer;
-
+            
             // Try loading:
             try {
 
                 sagaPlayer = WriterReader.readPlayerInformation(playerName.toLowerCase());
 
+                // Complete:
+                sagaPlayer.complete();
+
+                
             } catch (FileNotFoundException e) {
 
                 Saga.info("Player information file not found for " + playerName + ". Loading default.");
                 sagaPlayer = new SagaPlayer(playerName);
 
+                // Create event:
+                sagaPlayer.onSagaPlayerCreation();
+                
             } catch (IOException e) {
 
                 Saga.severe(SagaPlayer.class, "player information file read failure for " + playerName + ":" + e.getClass().getSimpleName() + ":" + e.getMessage() ,"setting defaults");
@@ -2838,12 +2859,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 
             }
 
-            // Complete:
-            sagaPlayer.complete();
-
-            // Create event:
-            sagaPlayer.onSagaPlayerCreation();
-            
     		// Enable clock:
     		if(sagaPlayer.proceedClock()){
     			sagaPlayer.enableClock();

@@ -3,9 +3,14 @@ package org.saga.buildings;
 import java.util.ArrayList;
 
 import org.bukkit.Location;
+import org.bukkit.block.Sign;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
+import org.saga.buildings.signs.BuildingSign;
+import org.saga.buildings.signs.GuardianRuneSign;
+import org.saga.buildings.signs.RespecSign;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.player.SagaPlayer;
 
@@ -110,6 +115,40 @@ public class Temple extends Building implements SecondTicker{
 		}
 		
 		
+	}
+	
+	
+	// Signs:
+	@Override
+	protected boolean isBuildingSign(String firstLine) {
+	
+		if(firstLine.equalsIgnoreCase(RespecSign.SIGN_NAME)) return true;
+		
+		return super.isBuildingSign(firstLine);
+		
+	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.buildings.Building#createBuildingSign(org.bukkit.block.Sign, org.bukkit.event.block.SignChangeEvent)
+	 */
+	@Override
+	protected BuildingSign createBuildingSign(Sign sign, SignChangeEvent event) {
+	
+
+		// Respec sign:
+		if(event.getLine(0).equalsIgnoreCase(RespecSign.SIGN_NAME)){
+			
+			return RespecSign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
+			
+		}else{
+			
+		}
+		
+		return super.createBuildingSign(sign, event);
+		
+	
 	}
 	
 	

@@ -3,7 +3,9 @@ package org.saga.buildings.signs;
 import org.bukkit.block.Sign;
 import org.saga.SagaMessages;
 import org.saga.buildings.Building;
+import org.saga.config.BalanceConfiguration;
 import org.saga.config.EconomyConfiguration;
+import org.saga.economy.EconomyMessages;
 import org.saga.player.PlayerMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
@@ -77,9 +79,13 @@ public class SkillSign extends BuildingSign{
 			
 			sign.setLine(1, getFirstParameter());
 			
-			sign.setLine(2, "/trncost to");
+			if(EconomyConfiguration.config().getSkillCoinCost(BalanceConfiguration.config().maximumSkillLevel) > 0){
+				sign.setLine(2, "for ?" + EconomyMessages.coins());
+			}else{
+				sign.setLine(2, "");
+			}
 			
-			sign.setLine(3, "see cost");
+			sign.setLine(3, "lclick for info");
 			
 		}else{
 			
@@ -105,6 +111,8 @@ public class SkillSign extends BuildingSign{
 		
 		Sign sign = getSign();
 
+		sign.setLine(1, "-");
+		
 		sign.setLine(2, "-");
 
 		sign.setLine(3, "-");
@@ -165,6 +173,26 @@ public class SkillSign extends BuildingSign{
 		StatisticsManager.manager().onSkillUpgrade(skillName, requiredCoins);
 		
 		
+	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.buildings.signs.BuildingSign#onLeftClick(org.saga.player.SagaPlayer)
+	 */
+	@Override
+	protected void onLeftClick(SagaPlayer sagaPlayer) {
+	
+		
+		// Not enabled:
+		if(!isEnabled()) return;
+		
+		String skillName = getFirstParameter();
+		
+		// Inform:
+		sagaPlayer.message(PlayerMessages.trainInfo(skillName, sagaPlayer));
+		
+	
 	}
 	
 	
