@@ -7,11 +7,6 @@ public class TwoPointFunction {
 
 	
 	/**
-	 * Maximum level.
-	 */
-	transient public static final short MAXIMUM_LEVEL = 50;
-	
-	/**
 	 * Multiplier function x1.
 	 */
 	private Short x1;
@@ -93,7 +88,7 @@ public class TwoPointFunction {
 			integrity = false;
 		}
 		if(x2 == null){
-			x2 = MAXIMUM_LEVEL;
+			x2 = 1;
 			Saga.severe("Failed to initialize " + this + " level function x2. Setting default.");
 			integrity = false;
 		}
