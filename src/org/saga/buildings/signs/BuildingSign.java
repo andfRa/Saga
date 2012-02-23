@@ -265,7 +265,7 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 		sign.update();
 
 		this.enabled = false;
-		this.invalidated = false;
+		this.invalidated = true;
 		
 	}
 	
