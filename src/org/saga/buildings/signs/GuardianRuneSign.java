@@ -11,7 +11,7 @@ import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
 
 
-public class RepairStoneSign extends BuildingSign{
+public class GuardianRuneSign extends BuildingSign{
 
 	
 	/**
@@ -37,7 +37,7 @@ public class RepairStoneSign extends BuildingSign{
 	 * @param event event that created the sign
 	 * @param building building
 	 */
-	protected RepairStoneSign(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building){
+	private GuardianRuneSign(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building){
 	
 		super(sign, SIGN_NAME, secondLine, thirdLine, fourthLine, building);
 		
@@ -54,8 +54,8 @@ public class RepairStoneSign extends BuildingSign{
 	 * @param building building
 	 * @return training sign
 	 */
-	public static RepairStoneSign create(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building) {
-		return new RepairStoneSign(sign, secondLine, thirdLine, fourthLine, building);
+	public static GuardianRuneSign create(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building) {
+		return new GuardianRuneSign(sign, secondLine, thirdLine, fourthLine, building);
 	}
 
 	/* 
@@ -81,26 +81,15 @@ public class RepairStoneSign extends BuildingSign{
 		
 		Sign sign = getSign();
 
-		// Fix name:
-		if(getFirstParameter().equals("guardian stone")) setFirstParameter("guardian rune");
-		
 		// Check parameters:
-		if(getFirstParameter().equalsIgnoreCase(RUNE_TYPE)){
-			
-			sign.setLine(1, RUNE_TYPE);
-			
-			Double price = EconomyConfiguration.config().guardianRuneRechargeCost;
-			
-			if(price > 0.0){
-				sign.setLine(2, "for " + EconomyMessages.coins(price));
-			}else{
-				sign.setLine(2, "");
-			}
-			
+		sign.setLine(1, RUNE_TYPE);
+		
+		Double price = EconomyConfiguration.config().guardianRuneRechargeCost;
+		
+		if(price > 0.0){
+			sign.setLine(2, "for " + EconomyMessages.coins(price));
 		}else{
-			
-			invalidate();
-			
+			sign.setLine(2, "");
 		}
 		
 		// Update:

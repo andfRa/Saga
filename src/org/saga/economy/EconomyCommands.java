@@ -73,7 +73,7 @@ public class EconomyCommands {
 		selectedBuilding.addTransaction(transaction);
 		
 		// Inform:
-		SagaChunk sagaChunk = selectedBuilding.getOriginChunk();
+		SagaChunk sagaChunk = selectedBuilding.getSagaChunk();
 		ChunkGroup chunkGroup = null;
 		if(sagaChunk != null){
 			chunkGroup = sagaChunk.getChunkGroup();

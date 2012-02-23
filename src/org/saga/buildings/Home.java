@@ -264,7 +264,7 @@ public class Home extends Building {
 	public boolean canBuild(SagaPlayer sagaPlayer) {
 
 		
-		ChunkGroup chunkGroup = getOriginChunkGroup();
+		ChunkGroup chunkGroup = getChunkGroup();
 		if(chunkGroup != null && chunkGroup.isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()){
 			return true;
 		}
@@ -309,7 +309,7 @@ public class Home extends Building {
 		}
 		
 		// Not a member:
-		ChunkGroup chunkGroup = selectedBuilding.getOriginChunkGroup();
+		ChunkGroup chunkGroup = selectedBuilding.getChunkGroup();
 		if(chunkGroup == null){
 			sagaPlayer.message(SagaMessages.noPermission());
 			return;
@@ -369,7 +369,7 @@ public class Home extends Building {
 		}
 		
 		// Not a member:
-		ChunkGroup chunkGroup = selectedBuilding.getOriginChunkGroup();
+		ChunkGroup chunkGroup = selectedBuilding.getChunkGroup();
 		if(chunkGroup == null){
 			sagaPlayer.message(SagaMessages.noPermission());
 			return;

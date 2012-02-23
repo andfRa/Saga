@@ -220,7 +220,7 @@ public class TownSquare extends Building implements SecondTicker{
 	public Location getSpawnLocation() {
 
 		
-		SagaChunk sagaChunk = getOriginChunk();
+		SagaChunk sagaChunk = getSagaChunk();
 		if(sagaChunk == null){
 			return null;
 		}
@@ -254,7 +254,7 @@ public class TownSquare extends Building implements SecondTicker{
 	private void prepareChunk() {
 
 		
-		SagaChunk originChun = getOriginChunk();
+		SagaChunk originChun = getSagaChunk();
 		
 		if(originChun == null){
 			Saga.severe(this, "failed to retrieve origin chunk", "ignoring chunk refresh");
@@ -280,7 +280,7 @@ public class TownSquare extends Building implements SecondTicker{
 
 		
 		// Location chunk:
-		SagaChunk locationChunk = getOriginChunk();
+		SagaChunk locationChunk = getSagaChunk();
 		if(locationChunk == null){
 			Saga.severe(this + " building can't continue with memberRespawnEvent, because the location chunk isn't set.");
 			return;

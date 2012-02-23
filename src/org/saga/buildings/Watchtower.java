@@ -103,7 +103,7 @@ public class Watchtower extends Building implements TimeOfDayTicker{
 		Clock.clock().registerTimeOfDayTick(this);
 		
 		// Protect:
-		if(getOriginChunk() == null){
+		if(getSagaChunk() == null){
 			return;
 		}
 		ArrayList<SagaChunk> protectedChunks = originChunk.getAdjacent(getRadius());
@@ -248,7 +248,7 @@ public class Watchtower extends Building implements TimeOfDayTicker{
 	@Override
 	public boolean checkWorld(String worldName) {
 		
-		SagaChunk originChunk = getOriginChunk();
+		SagaChunk originChunk = getSagaChunk();
 		
 		if(originChunk == null) return false;
 		

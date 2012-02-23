@@ -132,7 +132,7 @@ public class Temple extends Building implements SecondTicker{
 		}
 		
 		// Get saga players:
-		SagaChunk sagaChunk = getOriginChunk();
+		SagaChunk sagaChunk = getSagaChunk();
 		if(sagaChunk == null) return;
 		
 		// Regenerate experience:
@@ -192,7 +192,7 @@ public class Temple extends Building implements SecondTicker{
 	private int countPlayers() {
 
 		
-		SagaChunk sagaChunk = getOriginChunk();
+		SagaChunk sagaChunk = getSagaChunk();
 		
 		if(sagaChunk == null){
 			return 0;
@@ -217,7 +217,7 @@ public class Temple extends Building implements SecondTicker{
 		super.onPlayerSagaChunkChange(sagaPlayer, fromChunk, toChunk, fromLocation, toLocation, event);
 		
 		// Pick related events:
-		if(toChunk != getOriginChunk()){
+		if(toChunk != getSagaChunk()){
 			return;
 		}
 		

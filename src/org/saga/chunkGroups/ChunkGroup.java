@@ -598,32 +598,6 @@ public class ChunkGroup{
 	}
 	
 	
-	// Clock:
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.Clock.TimeOfDayTicker#timeOfDayTick(org.saga.Clock.TimeOfDayTicker.TimeOfDay, java.lang.String)
-	 */
-	public void timeOfDayTick2(TimeOfDay timeOfDay, String worldName) {
-		
-		
-//		if(!timeOfDay.equals(TimeOfDay.SUNRISE)){
-//			return;
-//		}
-		
-		// Send new day to all buildings:
-		for (int i = 0; i < groupChunks.size(); i++) {
-			SagaChunk sagaChunk = groupChunks.get(i);
-			Building building = sagaChunk.getBuilding();
-			if(building != null && sagaChunk.getWorldName().equals(worldName)){
-				building.newDay();
-			}
-		}
-		
-		
-	}
-	
-	
 	// Buildings:
 	/**
 	 * Gets all settlement buildings.

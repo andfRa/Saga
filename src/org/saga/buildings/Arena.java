@@ -281,7 +281,7 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 	public boolean checkWorld(String worldName) {
 
 		
-		SagaChunk sagaChunk = getOriginChunk();		
+		SagaChunk sagaChunk = getSagaChunk();		
 		if(sagaChunk == null){
 			return false;
 		}
@@ -306,7 +306,7 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 		}
 		
 		// Inform:
-		SagaChunk sagaChunk = getOriginChunk();
+		SagaChunk sagaChunk = getSagaChunk();
 		if(sagaChunk != null) sagaChunk.broadcast(countdown(count));
 		
 		count--;
@@ -448,7 +448,7 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 		// Attack from outside of the arena:
 		SagaChunk attackerChunk = ChunkGroupManager.manager().getSagaChunk(event.getSagaAttacker().getLocation());
 		SagaChunk defenderChunk = ChunkGroupManager.manager().getSagaChunk(event.getSagaDefender().getLocation());
-		if(attackerChunk != getOriginChunk() || defenderChunk != getOriginChunk()){
+		if(attackerChunk != getSagaChunk() || defenderChunk != getSagaChunk()){
 			return;
 		}
 		

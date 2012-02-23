@@ -61,7 +61,7 @@ public class SagaMap {
 					
 					// Building:
 					if (sagaChunk.getBuilding() != null) {
-						symbol = sagaChunk.getBuilding().getMapLetter();
+						symbol = sagaChunk.getBuilding().getMapChar();
 						color = ChatColor.DARK_PURPLE;
 					}
 					

@@ -65,7 +65,7 @@ public class Warehouse extends Building{
 
 	
 		// Chunk group:
-		ChunkGroup chunkGroup = getOriginChunkGroup();
+		ChunkGroup chunkGroup = getChunkGroup();
 		if(chunkGroup == null){
 			
 			sagaPlayer.message(SagaMessages.noPermission(this));

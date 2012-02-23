@@ -1017,7 +1017,7 @@ public class ChunkGroupMessages {
 		ChatColor elementColor;
 		
 		// Chunk group:
-		SagaChunk sagaChunk = building.getOriginChunk();
+		SagaChunk sagaChunk = building.getSagaChunk();
 		elementColor = messageColor.nextColor();
 		rString.append(elementColor);
 		if(sagaChunk == null){

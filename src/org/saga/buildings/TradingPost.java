@@ -509,7 +509,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	public boolean checkWorld(String worldName) {
 
 		
-		SagaChunk sagaChunk = getOriginChunk();		
+		SagaChunk sagaChunk = getSagaChunk();		
 		if(sagaChunk == null){
 			return false;
 		}
@@ -691,7 +691,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		
 		// Inform:
 		if(originChunk != null){
-			originChunk.getChunkGroup().broadcast(EconomyMessages.reportTradeDealBroadcast(getDisplayName(originChunk.getChunkGroup()), currencyReport, importReport, exportReport));
+			originChunk.getChunkGroup().broadcast(EconomyMessages.reportTradeDealBroadcast(getName(), currencyReport, importReport, exportReport));
 		}
 		
 		
@@ -789,7 +789,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	private void automaticTradeDeals() {
 
 		
-		SagaChunk sagaChunk = getOriginChunk();
+		SagaChunk sagaChunk = getSagaChunk();
 		if(sagaChunk == null){
 			return;
 		}
@@ -848,7 +848,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 			addTradeDeal(tradeDeal);
 			
 			// Inform:
-			ChunkGroup chunkGroup = getOriginChunkGroup();
+			ChunkGroup chunkGroup = getChunkGroup();
 			if(chunkGroup != null) chunkGroup.broadcast(EconomyMessages.broadcastTradeDealFormation(tradeDeal));
 			
 			
@@ -896,7 +896,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 			addTradeDeal(tradeDeal);
 			
 			// Inform:
-			ChunkGroup chunkGroup = getOriginChunkGroup();
+			ChunkGroup chunkGroup = getChunkGroup();
 			if(chunkGroup != null) chunkGroup.broadcast(EconomyMessages.broadcastTradeDealFormation(tradeDeal));
 			
 			
@@ -1113,7 +1113,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		
 		String rString = getDisplayName();
 		
-		SagaChunk sagaChunk = getOriginChunk();
+		SagaChunk sagaChunk = getSagaChunk();
 		ChunkGroup chunkGroup = null;
 		if(sagaChunk != null){
 			chunkGroup = sagaChunk.getChunkGroup();
@@ -1501,7 +1501,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		selectedBuilding.addTransaction(transaction);
 		
 		// Inform:
-		SagaChunk sagaChunk = selectedBuilding.getOriginChunk();
+		SagaChunk sagaChunk = selectedBuilding.getSagaChunk();
 		ChunkGroup chunkGroup = null;
 		if(sagaChunk != null){
 			chunkGroup = sagaChunk.getChunkGroup();
@@ -1557,7 +1557,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		selectedBuilding.removeTransaction(TransactionType.SELL, material);
 		
 		// Inform:
-		SagaChunk sagaChunk = selectedBuilding.getOriginChunk();
+		SagaChunk sagaChunk = selectedBuilding.getSagaChunk();
 		ChunkGroup chunkGroup = null;
 		if(sagaChunk != null){
 			chunkGroup = sagaChunk.getChunkGroup();
@@ -1625,7 +1625,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		selectedBuilding.addTransaction(transaction);
 		
 		// Inform:
-		SagaChunk sagaChunk = selectedBuilding.getOriginChunk();
+		SagaChunk sagaChunk = selectedBuilding.getSagaChunk();
 		ChunkGroup chunkGroup = null;
 		if(sagaChunk != null){
 			chunkGroup = sagaChunk.getChunkGroup();
@@ -1681,7 +1681,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		selectedBuilding.removeTransaction(TransactionType.BUY, material);
 		
 		// Inform:
-		SagaChunk sagaChunk = selectedBuilding.getOriginChunk();
+		SagaChunk sagaChunk = selectedBuilding.getSagaChunk();
 		ChunkGroup chunkGroup = null;
 		if(sagaChunk != null){
 			chunkGroup = sagaChunk.getChunkGroup();
@@ -1747,7 +1747,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		selectedBuilding.addItem(item);
 		
 		// Inform:
-		SagaChunk sagaChunk = selectedBuilding.getOriginChunk();
+		SagaChunk sagaChunk = selectedBuilding.getSagaChunk();
 		if(sagaChunk != null){
 			sagaChunk.getChunkGroup().broadcast(EconomyMessages.donatedItemsBroadcast(item, selectedBuilding, sagaPlayer));
 		}
@@ -1806,7 +1806,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		}
 		
 		// Inform:
-		SagaChunk sagaChunk = selectedBuilding.getOriginChunk();
+		SagaChunk sagaChunk = selectedBuilding.getSagaChunk();
 		if(sagaChunk != null){
 			sagaChunk.getChunkGroup().broadcast(EconomyMessages.donatedItemsBroadcast(new ItemStack(material, amount), selectedBuilding, sagaPlayer));
 		}
@@ -1865,7 +1865,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		selectedBuilding.addCoins(amount);
 		
 		// Inform:
-		SagaChunk sagaChunk = selectedBuilding.getOriginChunk();
+		SagaChunk sagaChunk = selectedBuilding.getSagaChunk();
 		if(sagaChunk != null){
 			sagaChunk.getChunkGroup().broadcast(EconomyMessages.donatedCurrencyBroadcast(amount, selectedBuilding, sagaPlayer));
 		}
@@ -1964,7 +1964,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		selectedBuilding.addTradeDeal(tradeDeal);
 		
 		// Inform:
-		ChunkGroup originChunkGroup = selectedBuilding.getOriginChunkGroup();
+		ChunkGroup originChunkGroup = selectedBuilding.getChunkGroup();
 		if(originChunkGroup != null){
 			originChunkGroup.broadcast(EconomyMessages.formedTradeDealBroadcast(tradeDeal, sagaPlayer));
 		}
@@ -2019,8 +2019,8 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		selectedBuilding.setReserved(material, amount);
 		
 		// Inform:
-		if(selectedBuilding.getOriginChunkGroup() != null){
-			selectedBuilding.getOriginChunkGroup().broadcast(EconomyMessages.reservedBroadcast(material, amount, sagaPlayer, selectedBuilding));
+		if(selectedBuilding.getChunkGroup() != null){
+			selectedBuilding.getChunkGroup().broadcast(EconomyMessages.reservedBroadcast(material, amount, sagaPlayer, selectedBuilding));
 		}
 		
 		
@@ -2067,8 +2067,8 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		selectedBuilding.setReserved(amount);
 		
 		// Inform:
-		if(selectedBuilding.getOriginChunkGroup() != null){
-			selectedBuilding.getOriginChunkGroup().broadcast(EconomyMessages.reservedBroadcast(amount, sagaPlayer, selectedBuilding));
+		if(selectedBuilding.getChunkGroup() != null){
+			selectedBuilding.getChunkGroup().broadcast(EconomyMessages.reservedBroadcast(amount, sagaPlayer, selectedBuilding));
 		}
 		
 		

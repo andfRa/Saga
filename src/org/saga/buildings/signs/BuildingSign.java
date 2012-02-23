@@ -5,10 +5,8 @@ package org.saga.buildings.signs;
 import java.util.ArrayList;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Sign;
-import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -199,27 +197,12 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 		
 		
 	}	
-
-//	/**
-//	 * Creates the building sign.
-//	 * 
-//	 * @param sign bukkit sign
-//	 * @param firstLine first line
-//	 * @param secondLine second line
-//	 * @param thirdLine third line
-//	 * @param fourthLine fourth line
-//	 * @param building building
-//	 * @return building sign
-//	 */
-//	public static BuildingSign create(Sign sign, String firstLine, String secondLine, String thirdLine, String fourthLine, Building building) {
-//		return new BuildingSign(sign, firstLine, secondLine, thirdLine, fourthLine, building);
-//	}
 	
 	/**
 	 * Deletes the sign.
 	 * 
 	 */
-	public void delete(){
+	public void remove(){
 
 		
 		// Empty sign:
@@ -227,11 +210,6 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 		sign.setLine(1, "");
 		sign.setLine(2, "");
 		sign.setLine(3, "");
-
-		if(!location.getBlock().getType().equals(Material.SIGN_POST)){
-			Saga.severe(this, "tried to remove an non existant sign from the world", "ignoring remove from world request");
-			return;
-		}
 
 		
 	}
@@ -248,13 +226,8 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 		sign.setLine(2, thirdLine);
 		sign.setLine(3, fourthLine);
 		
-//		sign.update();
+		sign.update();
 		
-		// TODO: Hackish workaround for signs not updating. Fix when Bukkit fixes
-		// Author TheDgtl
-		CraftWorld cw = (CraftWorld)sign.getWorld();
-		cw.getHandle().notify(sign.getX(), sign.getY(), sign.getZ());
-
 		this.enabled = true;
 		
 		
@@ -272,12 +245,7 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 		sign.setLine(2, thirdLine);
 		sign.setLine(3, fourthLine);
 		
-//		sign.update();
-		
-		// TODO: Hackish workaround for signs not updating. Fix when Bukkit fixes
-		// Author TheDgtl
-		CraftWorld cw = (CraftWorld)sign.getWorld();
-		cw.getHandle().notify(sign.getX(), sign.getY(), sign.getZ());
+		sign.update();
 		
 		this.enabled = false;
 		
@@ -294,13 +262,8 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 		sign.setLine(2, thirdLine);
 		sign.setLine(3, fourthLine);
 		
-//		sign.update();
+		sign.update();
 
-		// TODO: Hackish workaround for signs not updating. Fix when Bukkit fixes
-		// Author TheDgtl
-		CraftWorld cw = (CraftWorld)sign.getWorld();
-		cw.getHandle().notify(sign.getX(), sign.getY(), sign.getZ());
-		
 		this.enabled = false;
 		this.invalidated = false;
 		
@@ -509,12 +472,6 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 		if(!isEnabled()){
 			return;
 		}
-
-		// Exempt empty hand:
-		if(event.getAction().equals(Action.LEFT_CLICK_BLOCK) && event.getPlayer().getItemInHand().getType().equals(Material.AIR)){
-			return;
-		}
-
 		
 		// Left click:
 		if(event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)){
@@ -531,9 +488,7 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 		}
 
 		// Take control:
-		event.setUseInteractedBlock(Result.DENY);
 		event.setUseItemInHand(Result.DENY);
-		event.setCancelled(true);
 		
 		
 	}

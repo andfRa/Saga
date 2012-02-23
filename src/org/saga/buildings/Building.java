@@ -3,7 +3,6 @@ package org.saga.buildings;
 import java.util.ArrayList;
 
 import org.bukkit.Location;
-import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Creature;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -19,10 +18,8 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.saga.Saga;
 import org.saga.SagaMessages;
 import org.saga.buildings.BuildingDefinition.BuildingPermission;
-import org.saga.buildings.signs.BindSign;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.BuildingSign.SignException;
-import org.saga.buildings.signs.LearningSign;
 import org.saga.buildings.signs.ProficiencySign;
 import org.saga.buildings.signs.SkillSign;
 import org.saga.chunkGroups.ChunkGroup;
@@ -38,12 +35,6 @@ import org.sk89q.CommandPermissions;
 
 public abstract class Building extends SagaCustomSerialization{
 
-
-//	/**
-//	 * Class name used by the loader.
-//	 */
-//	@SuppressWarnings("unused")
-//	private final String _className;
 
 	/**
 	 * Building level.
@@ -174,23 +165,23 @@ public abstract class Building extends SagaCustomSerialization{
 	 * 
 	 * @param originChunk origin chunk
 	 */
-	public void setOriginChunk(SagaChunk originChunk) {
+	public void setSagaChunk(SagaChunk originChunk) {
 		this.originChunk = originChunk;
 	}
 	
 	/**
-	 * Removes origin chunk.
+	 * Removes saga chunk.
 	 */
-	public void removeOriginChunk() {
+	public void removeSagaChunk() {
 		this.originChunk = null;
 	}
 	
 	/**
-	 * Returns the origin chunk.
+	 * Returns the saga chunk.
 	 * 
 	 * @return origin chunk, null if none
 	 */
-	public SagaChunk getOriginChunk() {
+	public SagaChunk getSagaChunk() {
 		return originChunk;
 	}
 	
@@ -199,7 +190,7 @@ public abstract class Building extends SagaCustomSerialization{
 	 * 
 	 * @return origin chunk group, null if not found
 	 */
-	public ChunkGroup getOriginChunkGroup() {
+	public ChunkGroup getChunkGroup() {
 		
 		if(originChunk == null){
 			return null;
@@ -209,7 +200,127 @@ public abstract class Building extends SagaCustomSerialization{
 	}
 	
 	
-	// Signs:
+	// Building signs:
+	/**
+	 * Handles sign placement.
+	 * 
+	 * @param sagaPlayer saga player
+	 * @param sign sign
+	 * @param event sign change event
+	 */
+	public final void handleSignPlace(SagaPlayer sagaPlayer, Sign sign, SignChangeEvent event) {
+
+
+		// Check sign:
+		if(!isBuildingSign(event.getLine(0))){
+			return;
+		}
+
+		// Permission
+		if(!canCreateSign(sagaPlayer, event)){
+			sagaPlayer.message(SagaMessages.noPermission(this));
+			return;
+		}
+		
+		// Create:
+		BuildingSign buildingSign = createBuildingSign(sign, event);
+		
+		// Invalid sign:
+		if(buildingSign == null) return;
+
+		// Add sign:
+		addBuildingSign(buildingSign);
+
+		// Enable:
+		buildingSign.enable();
+		
+		// Update event:
+		event.setLine(0, sign.getLine(0));
+		event.setLine(1, sign.getLine(1));
+		event.setLine(2, sign.getLine(2));
+		event.setLine(3, sign.getLine(3));
+		
+		
+	}
+
+	/**
+	 * Handles sign remove.
+	 * 
+	 * @param sagaPlayer saga player
+	 * @param sign sign
+	 * @param event sign remove event
+	 */
+	public void handleSignRemove(SagaPlayer sagaPlayer, Sign sign, BlockBreakEvent event) {
+
+
+		// Building sign:
+		BuildingSign buildingSign = buildingSignAt(event.getBlock().getLocation());
+		if(buildingSign == null) return;
+		
+		// Permission:
+		if(!canRemoveSign(sagaPlayer, buildingSign)){
+			
+			sagaPlayer.message(SagaMessages.noPermission(this));
+			event.setCancelled(true);
+			return;
+			
+		}
+		
+		// Remove:
+		removeBuildingSign(buildingSign);
+		
+		
+	}
+	
+	/**
+	 * Check if the sign is a building sign.
+	 * 
+	 * @param firstLine first line
+	 * @return true if a building sign
+	 */
+	protected boolean isBuildingSign(String firstLine) {
+		
+
+		if( firstLine.equalsIgnoreCase(ProficiencySign.SIGN_NAME) ||
+			firstLine.equalsIgnoreCase(SkillSign.SIGN_NAME)
+		) return true;
+		
+		return false;
+		
+		
+	}
+	
+	/**
+	 * Creates a building sign.
+	 * 
+	 * @param sign sign
+	 * @param event sign change event
+	 * @return building sign, null if none
+	 */
+	protected BuildingSign createBuildingSign(Sign sign, SignChangeEvent event) {
+
+		
+		BuildingSign buildingSign = null;
+		
+		// Proficiency sign:
+		if(event.getLine(0).equalsIgnoreCase(ProficiencySign.SIGN_NAME)){
+			
+			buildingSign = ProficiencySign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
+			
+		}
+		
+		// Skill sign:
+		else if(event.getLine(0).equalsIgnoreCase(SkillSign.SIGN_NAME)){
+			
+			buildingSign = SkillSign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
+			
+		}
+		
+		return buildingSign;
+		
+		
+	}
+
 	/**
 	 * Gets the signs.
 	 * 
@@ -233,7 +344,7 @@ public abstract class Building extends SagaCustomSerialization{
 		}
 		signs.add(buildingSign);
 
-		
+
 	}
 
 	/**
@@ -244,6 +355,16 @@ public abstract class Building extends SagaCustomSerialization{
 	protected void removeBuildingSign(BuildingSign buildingSign) {
 
 		
+		// No sign:
+		if(buildingSign == null) return;
+
+		// Disable:
+		buildingSign.disable();
+		
+		// Delete:
+		buildingSign.remove();
+
+		// Non-existent:
 		if(!signs.contains(buildingSign)){
 			Saga.severe(this, "tried to remove a non-existing building sign", "ignoring request");
 			return;
@@ -254,7 +375,6 @@ public abstract class Building extends SagaCustomSerialization{
 		
 		
 	}
-
 	
 	/**
 	 * Gets a building sign.
@@ -265,13 +385,14 @@ public abstract class Building extends SagaCustomSerialization{
 	protected BuildingSign buildingSignFor(Sign sign) {
 
 		
-		for (int i = 0; i < signs.size(); i++) {
-			if(signs.get(i).isWrapped(sign)){
-				return signs.get(i);
-			}
-		}
-		return null;
+		return buildingSignAt(sign.getBlock().getLocation());
 		
+//		for (int i = 0; i < signs.size(); i++) {
+//			if(signs.get(i).isWrapped(sign)){
+//				return signs.get(i);
+//			}
+//		}
+//		return null;
 		
 	}
 
@@ -293,63 +414,7 @@ public abstract class Building extends SagaCustomSerialization{
 		
 		
 	}
-	
-	/**
-	 * Used when a sign was removed.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @param sign sign
-	 * @param event sign remove event
-	 */
-	protected void removedSign(SagaPlayer sagaPlayer, Sign sign, BlockBreakEvent event) {
 
-
-		// Building sign:
-		BuildingSign buildingSign = buildingSignAt(event.getBlock().getLocation());
-		if(buildingSign == null){
-			return;
-		}	
-		
-		// Permission:
-		if(!canRemoveSign(sagaPlayer, buildingSign)){
-			
-			sagaPlayer.message(SagaMessages.noPermission(this));
-			event.setCancelled(true);
-			return;
-			
-		}
-		
-		// Remove:
-		deleteBuildingSign(buildingSign, event);
-		
-		
-	}
-
-	/**
-	 * Deletes and removes a sign.
-	 * 
-	 * @param buildingSign building sign
-	 * @param event block brake event
-	 */
-	protected void deleteBuildingSign(BuildingSign buildingSign, BlockBreakEvent event) {
-
-		
-		// No sign:
-		if(buildingSign == null) return;
-		
-		// Remove sign:
-		removeBuildingSign(buildingSign);
-
-		// Disable:
-		buildingSign.disable();
-		
-		// Delete:
-		buildingSign.delete();
-		
-		
-	}
-	
-	
 	/**
 	 * Gets the enabled signs with the given name.
 	 * 
@@ -358,164 +423,21 @@ public abstract class Building extends SagaCustomSerialization{
 	 */
 	public ArrayList<BuildingSign> getEnabledSigns(String name) {
 		
-		ArrayList<BuildingSign> rSigns = new ArrayList<BuildingSign>();
+		
+		ArrayList<BuildingSign> enabledSigns = new ArrayList<BuildingSign>();
 		
 		ArrayList<BuildingSign> buildingSigns = getSigns();
 		
 		for (BuildingSign buildingSign : buildingSigns) {
 			
 			if(buildingSign.getName().equals(name) && buildingSign.isEnabled()){
-				rSigns.add(buildingSign);
+				enabledSigns.add(buildingSign);
 			}
 			
 		}
 
-		return rSigns;
+		return enabledSigns;
 		
-	}
-	
-	
-	// Building sign creation:
-	/**
-	 * Used when a sign was placed.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @param sign sign
-	 * @param event sign change event
-	 */
-	protected void placedSign(SagaPlayer sagaPlayer, Sign sign, SignChangeEvent event) {
-
-
-		// Check sign:
-		if(!isBuildingSign(event.getLine(0))){
-			return;
-		}
-
-		// Permission
-		if(!canCreateSign(sagaPlayer, event)){
-			sagaPlayer.message(SagaMessages.noPermission(this));
-			return;
-		}
-		
-		// Create:
-		createBuildingSign(sign, event);
-		
-		
-	}
-
-	/**
-	 * Check if the sign is a building sign.
-	 * 
-	 * @param firstLine first line
-	 * @return true if a building sign
-	 */
-	private final boolean isBuildingSign(String firstLine) {
-		
-		if(isBuildingSignExtended(firstLine)) return true;
-		
-		if( firstLine.equalsIgnoreCase(ProficiencySign.SIGN_NAME) ||
-			firstLine.equalsIgnoreCase(LearningSign.SIGN_NAME) ||
-			firstLine.equalsIgnoreCase(BindSign.SIGN_NAME) ||
-			firstLine.equalsIgnoreCase(SkillSign.SIGN_NAME)
-		) return true;
-		
-		return false;
-		
-	}
-
-	/**
-	 * Check if the sign is a building sign.
-	 * Override of custom signs.
-	 * 
-	 * @param firstLine first line
-	 * @return true if a building sign
-	 */
-	protected boolean isBuildingSignExtended(String firstLine) {
-		
-		return false;
-		
-	}
-	
-	/**
-	 * Creates and adds a sign.
-	 * 
-	 * @param sign sign
-	 * @param event sign change event
-	 */
-	private final void createBuildingSign(Sign sign, SignChangeEvent event) {
-
-		
-		BuildingSign buildingSign = null;
-		
-		// Try extended:
-		buildingSign = createBuildingSignExtended(sign, event);
-		if(buildingSign != null){
-			
-			
-		}
-		
-		// Training sign:
-		else if(event.getLine(0).equalsIgnoreCase(ProficiencySign.SIGN_NAME)){
-			
-			buildingSign = ProficiencySign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
-			
-		}
-		
-		// Learning sign:
-		else if(event.getLine(0).equalsIgnoreCase(LearningSign.SIGN_NAME)){
-					
-			buildingSign = LearningSign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
-					
-		}
-				
-		// Selection sign:
-		else if(event.getLine(0).equalsIgnoreCase(BindSign.SIGN_NAME)){
-					
-			buildingSign = BindSign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
-					
-		}
-		// Skill sign:
-		else if(event.getLine(0).equalsIgnoreCase(SkillSign.SIGN_NAME)){
-			
-			buildingSign = SkillSign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
-			
-		}
-		// Other sign:
-		else{
-			
-//			buildingSign = BuildingSign.create(sign, event.getLine(0), event.getLine(1), event.getLine(2), event.getLine(3), this);
-			
-		}
-		
-		// Invalid sign:
-		if(buildingSign == null) return;
-		
-		// Add sign:
-		addBuildingSign(buildingSign);
-
-		// Enable:
-		buildingSign.enable();
-		
-		// Update event:
-		event.setLine(0, sign.getLine(0));
-		event.setLine(1, sign.getLine(1));
-		event.setLine(2, sign.getLine(2));
-		event.setLine(3, sign.getLine(3));
-		
-		
-	}
-	
-	/**
-	 * Creates and adds a building sign.
-	 * Override for custom signs.
-	 * 
-	 * @param sign sign
-	 * @param event event
-	 * @return created sign, null if none
-	 */
-	protected BuildingSign createBuildingSignExtended(Sign sign, SignChangeEvent event){
-		
-		return null;
 		
 	}
 	
@@ -532,20 +454,11 @@ public abstract class Building extends SagaCustomSerialization{
 	}
 
 	/**
-	 * Gets the letter for the building.
+	 * Gets the buildings character for the map.
 	 * 
-	 * @return
+	 * @return character for the map
 	 */
-	public static String getLetter() {
-		return "B";
-	}
-	
-	/**
-	 * Gets the buildings letter for the map.
-	 * 
-	 * @return letter for the map
-	 */
-	public String getMapLetter() {
+	public String getMapChar() {
 		
 		String letter = getClass().getSimpleName().substring(0, 1).toUpperCase();
 		
@@ -557,6 +470,7 @@ public abstract class Building extends SagaCustomSerialization{
 		return letter;
 		
 	}
+	
 	
 	// Permissions:
 	/**
@@ -570,13 +484,13 @@ public abstract class Building extends SagaCustomSerialization{
 		
 
 		// No origin chunk:
-		SagaChunk sagaChunk = getOriginChunk();
+		SagaChunk sagaChunk = getSagaChunk();
 		if(sagaChunk == null) {
 			return false;
 		}
 		
 		// Owner:
-		if(getOriginChunkGroup().isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
+		if(getChunkGroup().isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
 		
 		// Check profession permission:
 		if(requiredPermission.equals(BuildingPermission.NONE)){
@@ -667,7 +581,7 @@ public abstract class Building extends SagaCustomSerialization{
 	public boolean canTrain(SagaPlayer sagaPlayer) {
 		
 		
-		ChunkGroup chunkGroup = getOriginChunkGroup();
+		ChunkGroup chunkGroup = getChunkGroup();
 		if(chunkGroup == null) return false;
 		
 		// Is member:
@@ -685,7 +599,7 @@ public abstract class Building extends SagaCustomSerialization{
 	public boolean canSelect(SagaPlayer sagaPlayer) {
 		
 		
-		ChunkGroup chunkGroup = getOriginChunkGroup();
+		ChunkGroup chunkGroup = getChunkGroup();
 		if(chunkGroup == null) return false;
 		
 		// Is member:
@@ -703,7 +617,7 @@ public abstract class Building extends SagaCustomSerialization{
 	public boolean canLearn(SagaPlayer sagaPlayer) {
 		
 		
-		ChunkGroup chunkGroup = getOriginChunkGroup();
+		ChunkGroup chunkGroup = getChunkGroup();
 		if(chunkGroup == null) return false;
 		
 		// Is member:
@@ -741,17 +655,7 @@ public abstract class Building extends SagaCustomSerialization{
 	public static String getName(Class<? extends Building> buildingClass) {
 		return buildingClass.getSimpleName().replaceAll("(\\p{Ll})(\\p{Lu})","$1 $2").toLowerCase();
 	}
-	
-	/**
-	 * Gets the name. Includes chunk group name.
-	 * 
-	 * @param chunkGroup chunk group
-	 * @return name
-	 */
-	public String getDisplayName(ChunkGroup chunkGroup) {
-		return chunkGroup.getName() + " " + getName().replaceAll(SagaMessages.spaceSymbol, " ");
-	}
-	
+
 	/**
 	 * Gets the level.
 	 * 
@@ -769,43 +673,7 @@ public abstract class Building extends SagaCustomSerialization{
 	public Integer getPointCost() {
 		return buildingDefinition.getPointCost(getLevel());
 	}
-	
-	/**
-	 * Gets the building point cost for next level.
-	 * 
-	 * @return the building point cost for next level
-	 */
-	public Integer getNextPointCost() {
-		return buildingDefinition.getPointCost((short) (getLevel() +1));
-	}
 
-	/**
-	 * Gets the money cost.
-	 * 
-	 * @return the money cost
-	 */
-	public Integer getMoneyCost() {
-		return buildingDefinition.getMoneyCost(getLevel()).intValue();
-	}
-
-	/**
-	 * Gets the upgrade building point cost.
-	 * 
-	 * @return the building point cost
-	 */
-	public Integer getUpgradePointCost() {
-		return buildingDefinition.getPointCost((short) (getLevel() + 1)) -  buildingDefinition.getPointCost(getLevel());
-	}
-
-	/**
-	 * Gets the upgrade money cost.
-	 * 
-	 * @return the money cost
-	 */
-	public Integer getUpgradeMoneyCost() {
-		return buildingDefinition.getMoneyCost((short) (getLevel() + 1)) -  buildingDefinition.getMoneyCost(getLevel());
-	}
-	
 	/**
 	 * Gets building definition.
 	 * 
@@ -817,14 +685,6 @@ public abstract class Building extends SagaCustomSerialization{
 	
 
 	// Updates:
-	/**
-	 * Called by chunk groups on new day in the given world.
-	 * 
-	 */
-	public void newDay() {
-
-	}
-	
 	/**
 	 * Enables the building
 	 * 
@@ -869,9 +729,6 @@ public abstract class Building extends SagaCustomSerialization{
 	}
 	
 	
-	// Proficiencies:
-
-	
 	// Events:
 	 /**
      * Called when a player interacts with something in the building.
@@ -906,15 +763,6 @@ public abstract class Building extends SagaCustomSerialization{
 	 * @param sagaPlayer saga player
 	 */
 	public void onSignChange(SignChangeEvent event, SagaPlayer sagaPlayer) {
-		
-		
-		// Correct sign:
-		if((event.getBlock().getState() instanceof Sign)){
-			
-			Sign sign = (Sign) event.getBlock().getState();
-			placedSign(sagaPlayer, sign, event);
-			
-		}
 		
 		
 	}
@@ -960,16 +808,6 @@ public abstract class Building extends SagaCustomSerialization{
 			return;
 		}
 
-		Block targetBlock = event.getBlock();
-
-		// Sign:
-		if((targetBlock.getState() instanceof Sign)){
-			
-			removedSign(sagaPlayer, (Sign)targetBlock.getState(), event);
-			
-		}
-		
-		
 		
 	}
     
@@ -1016,7 +854,6 @@ public abstract class Building extends SagaCustomSerialization{
 	public void onPlayerDamagedByCreature(EntityDamageByEntityEvent event, Creature damager, SagaPlayer damaged){
 
 	}
-	
 	
 	/**
 	 * Called when a player is damaged by another player.
@@ -1082,7 +919,7 @@ public abstract class Building extends SagaCustomSerialization{
 		}
 		
 		// Enter:
-		if(toChunk == getOriginChunk()){
+		if(toChunk == getSagaChunk()){
 
 			// Get buildings:
 			Building fromBuilding = null;
@@ -1096,7 +933,7 @@ public abstract class Building extends SagaCustomSerialization{
 		}
 		
 		// Leave:
-		else if(fromChunk == getOriginChunk()){
+		else if(fromChunk == getSagaChunk()){
 
 			// Get buildings:
 			Building fromBuilding = null;

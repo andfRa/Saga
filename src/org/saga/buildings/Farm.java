@@ -69,7 +69,7 @@ public class Farm extends Building{
 		// Stop animal abuse:
 		if(damaged instanceof Animals){
 			
-			ChunkGroup chunkGroup = getOriginChunkGroup();
+			ChunkGroup chunkGroup = getChunkGroup();
 			
 			if(chunkGroup == null) return;
 			
@@ -93,7 +93,7 @@ public class Farm extends Building{
 		// Stop trampling:
 		if(event.getAction() == Action.PHYSICAL && event.getClickedBlock().getType() == Material.SOIL){
 			
-			ChunkGroup chunkGroup = getOriginChunkGroup();
+			ChunkGroup chunkGroup = getChunkGroup();
 			
 			if(chunkGroup == null) return;
 			

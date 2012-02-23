@@ -5,9 +5,8 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.Saga;
-import org.saga.buildings.signs.BreakStoneSign;
 import org.saga.buildings.signs.BuildingSign;
-import org.saga.buildings.signs.RepairStoneSign;
+import org.saga.buildings.signs.GuardianRuneSign;
 import org.saga.utility.Cooldown;
 
 
@@ -178,40 +177,33 @@ public class Academy extends Building implements SecondTicker, Cooldown{
 	 * @see org.saga.buildings.Building#isBuildingSign(java.lang.String)
 	 */
 	@Override
-	public boolean isBuildingSignExtended(String firstLine) {
+	public boolean isBuildingSign(String firstLine) {
 		
-		if(firstLine.equalsIgnoreCase(RepairStoneSign.SIGN_NAME)) return true;
+		if(firstLine.equalsIgnoreCase(GuardianRuneSign.SIGN_NAME)) return true;
 		
-		if(firstLine.equalsIgnoreCase(BreakStoneSign.SIGN_NAME)) return true;
-		
-		return false;
+		return super.isBuildingSign(firstLine);
 		
 	}
 	
 	/* 
 	 * (non-Javadoc)
 	 * 
-	 * @see org.saga.buildings.Building#createBuildingSignExtended(org.bukkit.block.Sign, org.bukkit.event.block.SignChangeEvent)
+	 * @see org.saga.buildings.Building#createBuildingSign2(org.bukkit.block.Sign, org.bukkit.event.block.SignChangeEvent)
 	 */
 	@Override
-	protected BuildingSign createBuildingSignExtended(Sign sign, SignChangeEvent event) {
+	protected BuildingSign createBuildingSign(Sign sign, SignChangeEvent event) {
 		
 		
 		// Stone fix sign:
-		if(event.getLine(0).equalsIgnoreCase(RepairStoneSign.SIGN_NAME)){
+		if(event.getLine(0).equalsIgnoreCase(GuardianRuneSign.SIGN_NAME)){
 			
-			return RepairStoneSign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
+			return GuardianRuneSign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
 			
-		}
-		
-		// Stone break sign:
-		if(event.getLine(0).equalsIgnoreCase(BreakStoneSign.SIGN_NAME)){
-			
-			return BreakStoneSign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
+		}else{
 			
 		}
 		
-		return null;
+		return super.createBuildingSign(sign, event);
 		
 		
 	}

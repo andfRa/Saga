@@ -7,6 +7,8 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -115,7 +117,7 @@ public class SagaChunk {
 		
 		// Set access for building:
 		if(bld != null){
-			bld.setOriginChunk(this);
+			bld.setSagaChunk(this);
 		}
 		
 		// Check chunk group:
@@ -397,7 +399,7 @@ public class SagaChunk {
 		
 		this.bld = building;
 		
-		this.bld.setOriginChunk(this);
+		this.bld.setSagaChunk(this);
 		
 		this.bld.enable();
 		
@@ -410,7 +412,7 @@ public class SagaChunk {
 	public void removeBuilding() {
 		
 		if(bld != null){
-			bld.removeOriginChunk();
+			bld.removeSagaChunk();
 			bld.disable();
 		}
 		
@@ -425,7 +427,7 @@ public class SagaChunk {
 	public void clearBuilding() {
 		
 		if(bld != null){
-			bld.removeOriginChunk();
+			bld.removeSagaChunk();
 		}
 		
 		this.bld = null;
@@ -596,7 +598,17 @@ public class SagaChunk {
     	// Forward to building:
     	Building building = getBuilding();
     	if(building != null){
+    		
     		building.onSignChange(event, sagaPlayer);
+
+			// Sign place:
+			if((event.getBlock().getState() instanceof Sign)){
+				
+				Sign sign = (Sign) event.getBlock().getState();
+				bld.handleSignPlace(sagaPlayer, sign, event);
+				
+			}
+    		
     	}
     	
 		
@@ -777,7 +789,7 @@ public class SagaChunk {
 		
 		// Forward to building:
 		if(bld != null) bld.onBlockPlace(event, sagaPlayer);
-    	
+
 		
 	}
 	
@@ -801,8 +813,22 @@ public class SagaChunk {
 		if(event.isCancelled()) return;
 
 		// Forward to building:
-		if(bld != null) bld.onBlockBreak(event, sagaPlayer);
+		if(bld != null){
+			
+			bld.onBlockBreak(event, sagaPlayer);
+			
+			// Sign:
+			Block targetBlock = event.getBlock();
+			if((targetBlock.getState() instanceof Sign)){
+						
+				bld.handleSignRemove(sagaPlayer, (Sign)targetBlock.getState(), event);
+						
+			}
+			
+		}
     	
+
+		
 		
 	}
 

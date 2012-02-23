@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 import org.saga.abilities.Ability;
 import org.saga.abilities.AbilityDefinition;
 import org.saga.buildings.signs.ProficiencySign;
-import org.saga.buildings.signs.RepairStoneSign;
+import org.saga.buildings.signs.GuardianRuneSign;
 import org.saga.buildings.signs.SkillSign;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupManager;
@@ -581,7 +581,7 @@ public class PlayerMessages {
 		book.addLine("Rune status can be seen under /stats.");
 		
 		// Recharge:
-		book.addLine("Rclick a " + RepairStoneSign.SIGN_NAME + " sign at an academy to recharge the rune for " + EconomyMessages.coins(EconomyConfiguration.config().guardianRuneRechargeCost) + ".");
+		book.addLine("Rclick a " + GuardianRuneSign.SIGN_NAME + " sign at an academy to recharge the rune for " + EconomyMessages.coins(EconomyConfiguration.config().guardianRuneRechargeCost) + ".");
 		
 		return book.framed(page);
 		
