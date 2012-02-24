@@ -181,8 +181,8 @@
     "attack":"NONE",
     "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
     "toolType":[
-      "IRON_PICKAXE","IRON_SPADE","IRON_AXE",
-      "DIAMOND_PICKAXE","DIAMOND_SPADE","DIAMOND_AXE"
+      "IRON_PICKAXE","IRON_SPADE","IRON_AXE","IRON_HOE",
+      "DIAMOND_PICKAXE","DIAMOND_SPADE","DIAMOND_AXE","DIAMOND_HOE"
     ],
     "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.4}
   }

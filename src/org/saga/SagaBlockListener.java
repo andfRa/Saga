@@ -1,8 +1,8 @@
 package org.saga;
 
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockFromToEvent;
@@ -17,6 +17,7 @@ import org.saga.statistics.XrayIndicator;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 
 public class SagaBlockListener implements Listener{
 	
@@ -57,6 +58,12 @@ public class SagaBlockListener implements Listener{
 		
     	// Experience:
     	sagaPlayer.onBlockExp(event);
+    	
+    	// TODO: Bug workaround(hoe takes no damage):
+    	ItemStack item = sagaPlayer.getItemInHand();
+    	if(item.getType() == Material.WOOD_HOE || item.getType() == Material.STONE_HOE || item.getType() == Material.IRON_HOE || item.getType() == Material.GOLD_HOE || item.getType() == Material.DIAMOND_HOE){
+    		sagaPlayer.damageTool();
+    	}
     	
     	
 	}
