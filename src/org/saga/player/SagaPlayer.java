@@ -3301,7 +3301,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 
 		// Statistics:
 		if(profession != null){
-			StatisticsManager.manager().onExp(this, profession.getName(), ability.getName(), expAmount);
+			StatisticsManager.manager().onExp(this, proficiency.getName(), ability.getName(), expAmount);
 		}else{
 			StatisticsManager.manager().onExp(this, "-", ability.getName(), expAmount);
 		}
