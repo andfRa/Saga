@@ -581,7 +581,7 @@ public class PlayerMessages {
 		book.addLine("Role is set by a settlement and rank is set by a faction.");
 		
 		// Skills and abilities:
-		book.addLine("Each class/prof enables skill training and provides abilities.");
+		book.addLine("Each class/prof can train crtain skills.");
 		
 		// Selection:
 		book.addLine("Rclick a " + ProficiencySign.SIGN_NAME + " sign to select a class/prof.");
@@ -589,11 +589,8 @@ public class PlayerMessages {
 		// Training:
 		book.addLine("Rclick a " + SkillSign.SIGN_NAME + " sign to train a skill.");
 
-		// Training cost:
-		book.addLine("/trainingcost to list skill training costs.");
-		
-		// Remove:
-		book.addLine("/removeclass or /removeprofession to remove a prof/class.");
+		// Respec:
+		book.addLine("Rclick a" + RespecSign.SIGN_NAME + " to reset prof, class and skills.");
 		
 		// Certain buildings:
 		book.addLine("Profs, classes and skills are only available at certain buildings. /binfo for details.");

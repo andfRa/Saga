@@ -54,13 +54,13 @@ public class PlayerCommands {
 
 	// Proficiencies:
 	@Command(
-            aliases = {"removeprofession","removeprof"},
+            aliases = {"aremoveprofession","aremoveprof"},
             usage = "",
             flags = "",
             desc = "Removes trained profession.",
             min = 0,
             max = 0)
-	@CommandPermissions({"saga.user.removeprofession"})
+	@CommandPermissions({"saga.admin.removeprofession"})
 	public static void removeProfession(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
@@ -81,13 +81,13 @@ public class PlayerCommands {
 	}
 
 	@Command(
-            aliases = {"removeclass"},
+            aliases = {"aremoveclass"},
             usage = "",
             flags = "",
             desc = "Removes trained class.",
             min = 0,
             max = 0)
-	@CommandPermissions({"saga.user.removeclass"})
+	@CommandPermissions({"saga.admin.removeclass"})
 	public static void removeClass(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
