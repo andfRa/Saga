@@ -629,7 +629,7 @@ public class PlayerMessages {
 		book.addLine("Rune status can be seen under /stats.");
 		
 		// Recharge:
-		book.addLine("Rclick a " + GuardianRuneSign.SIGN_NAME + " sign at an academy to recharge the rune for " + EconomyMessages.coins(EconomyConfiguration.config().guardianRuneRechargeCost) + ".");
+		book.addLine("Rclick a " + GuardianRuneSign.SIGN_NAME + " sign to recharge the rune for " + EconomyMessages.coins(EconomyConfiguration.config().guardianRuneRechargeCost) + ".");
 		
 		return book.framed(page);
 		
