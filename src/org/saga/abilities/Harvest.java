@@ -7,6 +7,7 @@ import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -59,6 +60,8 @@ public class Harvest extends Ability{
 			return false;
 		}
 
+		Player player = event.getPlayer();
+		
 		// Drops:
 		boolean reedDrop = false;
 		boolean wheatDrop = false;
@@ -83,22 +86,9 @@ public class Harvest extends Ability{
 			return false;
 		}
 		
-		// Check permissions:
-		for (Block block : blocks) {
-
-			BlockBreakEvent bbEvent = new BlockBreakEvent(block, event.getPlayer());
-			Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
-			
-			if(bbEvent.isCancelled()){
-				return false;
-			}
-			
-		}
-		
 		// Break and drop:
 		for (Block block : blocks) {
 
-			
 			// Convenience:
 			if(RANDOM.nextDouble() <= convenience){
 				
@@ -107,9 +97,7 @@ public class Harvest extends Ability{
 				location = event.getPlayer().getLocation();
 				
 			}else{
-				
 				location = block.getLocation();
-				
 			}
 			
 			// Drop indication:
@@ -120,9 +108,17 @@ public class Harvest extends Ability{
 				wheatDrop = true;
 			}
 			
+			// Damage tool:
+			getSagaPlayer().damageTool();
+			
+			// Call event:
+			BlockBreakEvent bbEvent = new BlockBreakEvent(block, player);
+			Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
+			if(bbEvent.isCancelled()) return false;
+			
 			// Break:
 			handleBreak(block, location);
-			
+
 			expval += 1;
 			
 		}

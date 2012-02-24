@@ -72,6 +72,16 @@ public class Skill {
 	 */
 	private TwoPointFunction modifier;
 
+
+	/**
+	 * Tool type.
+	 */
+	private ArrayList<Material> toolType;
+	
+	/**
+	 * The amount of damage the tool takes.
+	 */
+	private TwoPointFunction toolDurability;
 	
 	/**
 	 * Forwards the name and sets use materials.
@@ -161,10 +171,23 @@ public class Skill {
 		
 		if(modifier == null){
 			modifier = new TwoPointFunction(0.0);
-			Saga.severe(this, "failed to intialize modifier field", "setting default");
+			Saga.severe(this, "modifier field failed to intialize", "setting default");
 			integrity = false;
 		}
 		integrity = modifier.complete() && integrity;
+		
+		if(toolType == null){
+			toolType = new ArrayList<Material>();
+			Saga.severe(this, "toolType field failed to intialize", "setting default");
+			integrity = false;
+		}
+		
+		if(toolDurability == null){
+			toolDurability = new TwoPointFunction(0.0);
+			Saga.severe(this, "toolDurability field failed to intialize", "setting default");
+			integrity = false;
+		}
+		integrity = toolDurability.complete() && integrity;
 		
 		return integrity;
 		
@@ -765,21 +788,26 @@ public class Skill {
 	 * @param multiplier multiplier
 	 * @param event event
 	 */
+	@SuppressWarnings("deprecation")
 	public void triggerBlockBrake(SagaPlayer sagaPlayer, Integer multiplier, BlockBreakEvent event) {
 		
+		
+		// Item:
+		ItemStack item = event.getPlayer().getItemInHand();
+		if(item == null || item.getType() == Material.AIR) return;
+		
+		// Tool type:
+		if(!toolType.contains(item.getType())) return;
+		
+		// Tool durability:
+		Integer durability = toolDurability.randomIntValue(multiplier);
 
-//		// Experience:
-//		Integer exp = calcExperience(event.getBlock(), multiplier);
-//		
-//		if(exp > 0){
-//			
-//			// Award:
-//			sagaPlayer.giveExperience(exp);
-//			
-//			// Statistics:
-//			StatisticsManager.manager().onSkillBlockExp(getName(), exp, sagaPlayer);
-//			
-//		}
+		// Modify endurance:
+		if(durability != 0){
+			item.setDurability((short) (item.getDurability() - durability));
+			event.getPlayer().updateInventory();
+			sagaPlayer.message(ChatColor.GREEN + getName() + " repair! dam =" + item.getDurability());
+		}
 		
 		
 	}

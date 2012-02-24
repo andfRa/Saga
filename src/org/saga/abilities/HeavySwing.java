@@ -8,6 +8,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -62,6 +63,8 @@ public class HeavySwing extends Ability{
 			return false;
 		}
 
+		Player player = event.getPlayer();
+		
 		// Check blocks:
 		if(event.getClickedBlock() == null) return false;
 		
@@ -89,25 +92,21 @@ public class HeavySwing extends Ability{
 			return false;
 		}
 		
-		// Check permissions:
-		for (Block block : blocks) {
-
-			BlockBreakEvent bbEvent = new BlockBreakEvent(block, event.getPlayer());
-			Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
-			
-			if(bbEvent.isCancelled()){
-				return false;
-			}
-			
-		}
-		
 		// Break and drop:
 		for (Block block : blocks) {
 
 			
 			ItemStack item = handleBreak(block);
 			dropLocation = block.getLocation();
-				
+
+			// Damage tool:
+			getSagaPlayer().damageTool();
+			
+			// Call event:
+			BlockBreakEvent bbEvent = new BlockBreakEvent(block, player);
+			Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
+			if(bbEvent.isCancelled()) return false;
+			
 			// Drop normal items:
 			if(item.getType() != Material.COBBLESTONE){
 				
@@ -144,7 +143,6 @@ public class HeavySwing extends Ability{
 				expval += 12;
 			}
 			
-			
 		}
 		
 		Random random = new Random();
@@ -159,19 +157,6 @@ public class HeavySwing extends Ability{
 			
 		}
 
-		// Check permissions:
-		for (Block block : crumbleBlocks) {
-
-			BlockBreakEvent bbEvent = new BlockBreakEvent(block, event.getPlayer());
-			Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
-
-			if(bbEvent.isCancelled()){
-				crumble = 0;
-				break;
-			}
-			
-		}
-		
 		// Crumble:
 		while(crumble > 0 && crumbleBlocks.size() > 0){
 			
@@ -183,7 +168,12 @@ public class HeavySwing extends Ability{
 
 				ItemStack item = handleBreak(crumbleBlock);
 				dropLocation = crumbleBlock.getLocation();
-					
+				
+				// Call event:
+				BlockBreakEvent bbEvent = new BlockBreakEvent(crumbleBlock, player);
+				Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
+				if(bbEvent.isCancelled()) return false;
+				
 				// Drop normal items:
 				if(item.getType() != Material.COBBLESTONE){
 					

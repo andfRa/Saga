@@ -1605,6 +1605,26 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 	}
 
+	/**
+	 * Damages item in hand.
+	 * 
+	 */
+	@SuppressWarnings("deprecation")
+	public void damageTool() {
+
+		
+		if(!isOnline()) return;
+		
+		ItemStack item = getPlayer().getItemInHand();
+
+		if(item == null || item.getType().getMaxDurability() <= 0 ) return;
+			
+		item.setDurability((short) (item.getDurability() + 1));
+
+		getPlayer().updateInventory();
+		
+		
+	}
 	
 	// Faction:
 	/**

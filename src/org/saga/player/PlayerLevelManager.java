@@ -261,7 +261,7 @@ public class PlayerLevelManager{
 		
 		// Activate abilities:
 		activate(actAction, itemInhand.getType(), event);
-		
+
 		
 	}
 	

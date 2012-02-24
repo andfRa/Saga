@@ -91,24 +91,20 @@ public class ChopDown extends Ability{
 			return false;
 		}
 		
-		// Call events:
-		for (Block log : logs) {
-			
-			BlockBreakEvent bbEvent = new BlockBreakEvent(log, player);
-			Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
-			
-			if(bbEvent.isCancelled()){
-				return false;
-			}
-			
-		}
-		
 		// Chop down:
 		for (Block log : logs) {
 			
 			byte data = log.getData();
 			int type = log.getTypeId();
+
+			// Damage tool:
+			getSagaPlayer().damageTool();
 			
+			// Call event:
+			BlockBreakEvent bbEvent = new BlockBreakEvent(log, player);
+			Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
+			if(bbEvent.isCancelled()) return false;
+
 			// Remove:
 			log.setType(Material.AIR);
 			Location dropLocation = log.getLocation();
