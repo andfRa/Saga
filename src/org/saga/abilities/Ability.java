@@ -162,6 +162,15 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	}
 
 	/**
+	 * Gets the time the ability is active for.
+	 * 
+	 * @return ability active time
+	 */
+	public Integer getActive() {
+		return active;
+	}
+	
+	/**
 	 * Checks if the ability is on cooldown.
 	 * 
 	 * @return true if on cooldown

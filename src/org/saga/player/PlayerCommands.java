@@ -17,17 +17,38 @@ public class PlayerCommands {
 	// Info:
 	@Command(
 			aliases = {"stats"},
-			usage = "",
+			usage = "[page]",
 			flags = "",
 			desc = "Shows player stats.",
 			min = 0,
-			max = 0
+			max = 1
 	)
     @CommandPermissions({"saga.user.stats"})
 	public static void stats(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	
 		
-		sagaPlayer.message(PlayerMessages.stats(sagaPlayer));
+		Integer page = null;
+		
+		// Arguments:
+		if(args.argsLength() == 1){
+			
+			String sPage = args.getString(0);
+			
+			try {
+				page = Integer.parseInt(sPage);
+			}
+			catch (NumberFormatException e) {
+				sagaPlayer.message(ChunkGroupMessages.invalidInteger(sPage));
+				return;
+			}
+			
+		}else{
+			page = 1;
+		}
+		
+		sagaPlayer.message(PlayerMessages.stats(sagaPlayer, page-1));
     	
+		
 	}
 	
 

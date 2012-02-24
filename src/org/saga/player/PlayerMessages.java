@@ -4,6 +4,8 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Queue;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -66,51 +68,56 @@ public class PlayerMessages {
 	
 	
 	// Stats:
-	public static String stats(SagaPlayer sagaPlayer) {
+	public static String stats(SagaPlayer sagaPlayer, Integer page) {
 		
 		
 		StringBuffer result = new StringBuffer();
 		
-		// Skills:
-		StringTable skills = skills(sagaPlayer);
-		result.append(skills.createTable());
+		if(page > 2) page = 2;
+		if(page < 0) page = 0;
+		
+		switch (page) {
+			
+			// Abilities:
+			case 1:
+				
+				result.append(abilities(sagaPlayer).createTable());
+				
+				break;
 
-		result.append("\n");
+			// Invites:
+			case 2:
+				
+				result.append(invites(sagaPlayer).createTable());
+				
+				break;
+				
+			// Skills and proficiencies:
+			default:
+				
+				// Skills:
+				StringTable skills = skills(sagaPlayer);
+				result.append(skills.createTable());
 
-		// Level:
-		StringTable level = level(sagaPlayer);
-		result.append(level.createTable());
-		
-		result.append("\n");
-		
-		// Proficiencies:
-		result.append(proficiencies(sagaPlayer).createTable());
-		
-		// Abilities:
-		if(sagaPlayer.getLevelManager().getAllAbilities().size() > 0){
-			
-			result.append("\n");
-			
-			result.append(abilities(sagaPlayer).createTable());
-			
-		}
-		
-		result.append("\n");
+				result.append("\n");
+				result.append("\n");
 
-		// General:
-		result.append(general(sagaPlayer).createTable());
-		
-		// Invites:
-		if(sagaPlayer.getFactionInvites().size() > 0 || sagaPlayer.getChunkGroupInvites().size() > 0){
+				// Proficiencies:
+				result.append(proficiencies(sagaPlayer).createTable());
 
-			result.append("\n");
-			
-			result.append(invites(sagaPlayer).createTable());
-			
+				result.append("\n");
+				result.append("\n");
+
+				// General:
+				result.append(general(sagaPlayer).createTable());
+				
+				
+				break;
+				
 		}
 		
 		// Add frame:
-		return TextUtil.frame("player information", normal1, result.toString(), 57.0);
+		return TextUtil.frame("player info " + (page+1) + "/" + 3, normal1, result.toString(), 57.0);
 		
 		
 	}
@@ -207,37 +214,21 @@ public class PlayerMessages {
 		table.addLine("");
 		table.addLine(sagaPlayer.getLevel().toString());
 		table.addLine(sagaPlayer.getRemainingExp().intValue() + "");
-		table.addLine(sagaPlayer.getRemainingSkillPoints().toString());
+		
+		Integer remainingSkills = sagaPlayer.getRemainingSkillPoints();
+		if(remainingSkills < 0){
+			table.addLine(negative + remainingSkills.toString());
+		}else if(remainingSkills > 0){
+			table.addLine(positive + remainingSkills.toString());
+		}else{
+			table.addLine(remainingSkills.toString());
+		}
 		
 		return table;
     	
 		
 	}
 
-	public static StringTable level(SagaPlayer sagaPlayer) {
-
-		
-		StringTable table = new StringTable(new ColorCircle().addColor(normal1).addColor(normal2));
-		
-    	// Table size:
-    	ArrayList<Double> widths = new ArrayList<Double>();
-    	widths.add(28.0);
-    	widths.add(32.0);
-    	table.setCustomWidths(widths);
-	
-    	String[] line = new String[]{};
-	
-    	line = new String[]{"level " + sagaPlayer.getLevel(), ""};
-    	table.addLine(line);
-
-    	line = new String[]{"required exp " + 0, "total exp " +  sagaPlayer.getTotalExperience()};
-    	table.addLine(line);
-    	
-    	return table;
-    	
-	
-	}	
-	
 	public static StringTable proficiencies(SagaPlayer sagaPlayer) {
 
 		
@@ -246,49 +237,69 @@ public class PlayerMessages {
     	// Table size:
     	ArrayList<Double> widths = new ArrayList<Double>();
     	widths.add(7.75);
-    	widths.add(19.25);
+    	widths.add(20.25);
     	widths.add(7.75);
-    	widths.add(25.25);
+    	widths.add(24.25);
     	table.setCustomWidths(widths);
 		
-    	// Class and rank:
-    	table.addLine("class ");
-    	table.addLine("rank ");
+    	LinkedList<String> names = new LinkedList<String>();
+    	LinkedList<String> values = new LinkedList<String>();
     	
-    	table.nextColumn();
-
-    	if(sagaPlayer.getClazz() != null){
-    		table.addLine(sagaPlayer.getClazz().getName());
-    	}else{
-    		table.addLine("none");
-    	}
-
-    	if(sagaPlayer.getRank() != null){
-    		table.addLine(sagaPlayer.getRank().getName());
-    	}else{
-    		table.addLine("none");
-    	}
-    	
-    	table.nextColumn();
-    	
-    	// Profession and role:
-    	table.addLine("prof ");
-    	table.addLine("role ");
-    	
-    	table.nextColumn();
-
-    	// Profession and role:
+    	// Prof:
+    	names.add("prof");
     	if(sagaPlayer.getProfession() != null){
-    		table.addLine(sagaPlayer.getProfession().getName());
+    		values.add(sagaPlayer.getProfession().getName());
     	}else{
-    		table.addLine("none");
+    		values.add("none");
     	}
     	
-    	if(sagaPlayer.getRole() != null){
-    		table.addLine(sagaPlayer.getRole().getName());
+    	// Class:
+    	names.add("class");
+    	if(sagaPlayer.getClazz() != null){
+    		values.add(sagaPlayer.getClazz().getName());
     	}else{
-    		table.addLine("none");
+    		values.add("none");
     	}
+
+    	// Role:
+    	names.add("role");
+    	if(sagaPlayer.getRole() != null){
+    		values.add(sagaPlayer.getRole().getName());
+    	}else{
+    		values.add("none");
+    	}
+    	
+    	// Rank:
+    	names.add("rank");
+    	if(sagaPlayer.getRank() != null){
+    		values.add(sagaPlayer.getRank().getName());
+    	}else{
+    		values.add("none");
+    	}
+    	
+    	boolean first = true;
+    	while (!names.isEmpty()) {
+    		
+    		String name = names.remove();
+    		String value = values.remove();
+    		
+    		if(first){
+    			
+    			table.addLine(name, 0);
+    			table.addLine(value, 1);
+    			
+    			first = !first;
+    			
+    		}else{
+
+    			table.addLine(name, 2);
+    			table.addLine(value, 3);
+    			
+    			first = !first;
+    			
+    		}
+    		
+		}
     	
 		return table;
     	
@@ -299,57 +310,91 @@ public class PlayerMessages {
 
 		
 		StringTable table = new StringTable(new ColorCircle().addColor(normal1).addColor(normal2));
-		String[] line = new String[]{"","","",""};
     	
     	// Table size:
     	ArrayList<Double> widths = new ArrayList<Double>();
-    	widths.add(11.0);
-    	widths.add(14.0);
-    	widths.add(18.75);
-    	widths.add(16.25);
+    	widths.add(12.0);
+    	widths.add(16.0);
+    	widths.add(16.75);
+    	widths.add(15.25);
     	table.setCustomWidths(widths);
 		
-    	// Faction and settlement:
-    	line = new String[]{"faction","none","settlement","none"};
-    	
+
+    	LinkedList<String> names = new LinkedList<String>();
+    	LinkedList<String> values = new LinkedList<String>();
+
+    	// Faction:
+    	names.add("faction");
     	if(sagaPlayer.getRegisteredFaction() != null){
-    		line[1] = sagaPlayer.getRegisteredFaction().getName();
+    		values.add(sagaPlayer.getRegisteredFaction().getName());
+    	}else{
+    		values.add("none");
     	}
-    	
+
+    	// Settlement:
+    	names.add("settlement");
     	if(sagaPlayer.getRegisteredChunkGroup()  != null){
-    		line[3] = sagaPlayer.getRegisteredChunkGroup().getName();
+    		values.add(sagaPlayer.getRegisteredChunkGroup().getName());
+    	}else{
+    		values.add("none");
     	}
     	
-    	table.addLine(line);
+    	// Wallet:
+    	names.add("wallet");
+    	values.add(EconomyMessages.coins(sagaPlayer.getCoins()));
     	
-    	// Wallet value and guardian rune:
-    	line = new String[]{"wallet","","guard rune",""};
-    	
-    	line[1] = EconomyMessages.coins(sagaPlayer.getCoins());
-    	
-    	GuardianRune stone = sagaPlayer.getGuardianRune();
-		if(!stone.isEnabled()){
-			line[3] = "disabled";
+    	// Guard rune:
+    	names.add("guard rune");
+    	GuardianRune rune = sagaPlayer.getGuardianRune();
+		if(!rune.isEnabled()){
+			values.add("disabled");
 		}else{
 			
-			if(stone.isCharged()){
-				line[3] = "charged";
+			if(rune.isCharged()){
+				values.add("charged");
 			}else{
-				line[3] = "discharged";
+				values.add("discharged");
 			}
 			
 		}
-    	table.addLine(line);
-		
+
 		// Reward:
 		if(sagaPlayer.getReward() > 0){
 			
 			int reward = sagaPlayer.getReward();
-			table.addLine(new String[]{"reward", EconomyMessages.coins(BalanceConfiguration.config().getCoinReward(reward))});
-			table.addLine(new String[]{"", BalanceConfiguration.config().getExpReward(reward) + " exp"});
 			
+			names.add("reward");
+			values.add(EconomyMessages.coins(BalanceConfiguration.config().getCoinReward(reward)));
+			
+			names.add("reward");
+			values.add(BalanceConfiguration.config().getExpReward(reward) + " exp");
+
 		}
 		
+    	boolean first = true;
+    	while (!names.isEmpty()) {
+    		
+    		String name = names.remove();
+    		String value = values.remove();
+    		
+    		if(first){
+    			
+    			table.addLine(name, 0);
+    			table.addLine(value, 1);
+    			
+    			first = !first;
+    			
+    		}else{
+
+    			table.addLine(name, 2);
+    			table.addLine(value, 3);
+    			
+    			first = !first;
+    			
+    		}
+    		
+		}
+    	
 		return table;
     	
 		
@@ -367,7 +412,7 @@ public class PlayerMessages {
     	table.setCustomWidths(widths);
 		
     	// Factions:
-    	table.addLine("faction invites:");
+    	table.addLine("FACTION INVITES");
     	
     	ArrayList<SagaFaction> factions = getFactions(sagaPlayer.getFactionInvites());
     	
@@ -376,13 +421,13 @@ public class PlayerMessages {
 		}
     	
     	if(factions.size() == 0){
-    		table.addLine("none");
+    		table.addLine("-");
     	}
     	
     	table.nextColumn();
 
     	// Chunk groups:
-    	table.addLine("settlement invites:");
+    	table.addLine("SETTLEMENT INVITES");
     	
     	ArrayList<ChunkGroup> chunkGroups = getSettlements(sagaPlayer.getChunkGroupInvites());
     	
@@ -391,7 +436,7 @@ public class PlayerMessages {
 		}
     	
     	if(chunkGroups.size() == 0){
-    		table.addLine("none");
+    		table.addLine("-");
     	}
     	
 		return table;
@@ -407,50 +452,48 @@ public class PlayerMessages {
 		HashSet<Ability> allAbilities = levelManager.getAllAbilities();
 		
 		// Table size:
-    	ArrayList<Double> widths = new ArrayList<Double>();
-    	widths.add(23.0);
-    	widths.add(25.0);
-    	widths.add(12.0);
-    	table.setCustomWidths(widths);
+//    	ArrayList<Double> widths = new ArrayList<Double>();
+//    	widths.add(15.0);
+//    	widths.add(15.0);
+//    	widths.add(15.0);
+//    	widths.add(20.0);
+//    	table.setCustomWidths(widths);
 		
     	// Names:
-    	for (Ability ability : allAbilities) {
-			
-    		table.addLine(ability.getName());
+    	String[] line = new String[]{"ABILIY","COOLDOWN", "ACTIVE", "COST"};
+    	table.addLine(line);
+    	
+    	if(allAbilities.size() > 0){
     		
-		}
-    	
-//    	table.nextColumn();
-//    	
-//    	// Bindings:
-//    	for (Ability ability : allAbilities) {
-//			
-//    		ActivationAction action = levelManager.getAbilityAction2(ability.getName());
-//    		Material material = levelManager.getAbilityMaterial2(ability.getName());
-//    		
-//    		if(action == null || material == null){
-//    			table.addLine("not binded");
-//    		}else{
-//    			table.addLine(action.getShortName() + " " + EconomyMessages.material(material));
-//    		}
-//    		
-//		}
-    	
-    	table.nextColumn();
-    	
-    	// Cooldown:
-    	for (Ability ability : allAbilities) {
-			
-    		if(!ability.isOnCooldown()){
-    			table.addLine("ready");
-    		}else{
-    			table.addLine(ability.getCooldown() + " s");
+    		for (Ability ability : allAbilities) {
+    			
+    			line = new String[]{ability.getName(),"ready", "-", "-"};
+    			
+    			if(ability.isOnCooldown()){
+    				line[1] = ability.getCooldown() + "s";
+    			}
+    			
+    			if(ability.isActive() && ability.getActive() > 0){
+    				line[2] = ability.getActive() + "s";
+    			}
+
+    			Material material = ability.getDefinition().getUsedMaterial();
+    			Integer amount = ability.getDefinition().getAbsoluteUsedAmount(ability.getSkillLevel());
+    			if(material != Material.AIR){
+    				line[3] = amount + " " + EconomyMessages.materialShort(material);
+    			}
+    			
+        		table.addLine(line);
+        		
     		}
     		
-		}
+    	}else{
+    		
+    		table.addLine(line = new String[]{"-","-","-","-"});
+    		
+    	}
     	
-    	
-    	// Factions:
+    	table.collapse();
     	
 		return table;
     	

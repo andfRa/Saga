@@ -169,7 +169,7 @@ public class StringTable {
 		
 		
 	}
-	
+
 	/**
 	 * Adds a line to a column.
 	 * 
@@ -178,6 +178,24 @@ public class StringTable {
 	public void addLine(String line) {
 		
 		ArrayList<String> column = table.get(columnIndex);
+		
+		column.add(line);
+		
+	}
+
+	/**
+	 * Adds a line to a column.
+	 * 
+	 * @param line line
+	 * @param index column index
+	 */
+	public void addLine(String line, Integer index) {
+		
+		while(table.size() <= index){
+			table.add(new ArrayList<String>());
+		}
+		
+		ArrayList<String> column = table.get(index);
 		
 		column.add(line);
 		

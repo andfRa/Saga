@@ -82,14 +82,14 @@ public class StatisticsManager implements HourTicker{
 	private Integer blockDataChanges; 
 	
 	/**
-	 * Experience awarded by skills for breaking blocks.
+	 * Experience awarded by proficiencies.
 	 */
-	private Hashtable<String, Integer> blockSkillExp; 
+	private Hashtable<String, Integer> profExp; 
 	
 	/**
-	 * Players that were awarded with skill block experience.
+	 * Players that were awarded proficiency experience.
 	 */
-	private Hashtable<String, HashSet<String>> blockSkillExpPlayers; 
+	private Hashtable<String, HashSet<String>> profExpPlayers; 
 	
 	
 	/**
@@ -181,15 +181,15 @@ public class StatisticsManager implements HourTicker{
 			integrity=false;
 		}
 		
-		if(blockSkillExp == null){
-			Saga.severe(getClass(), "blockSkillExp field failed to initialize", "setting default");
-			blockSkillExp = new Hashtable<String, Integer>();
+		if(profExp == null){
+			Saga.severe(getClass(), "profExp field failed to initialize", "setting default");
+			profExp = new Hashtable<String, Integer>();
 			integrity=false;
 		}
 		
-		if(blockSkillExpPlayers == null){
-			Saga.severe(getClass(), "blockSkillExpPlayers field failed to initialize", "setting default");
-			blockSkillExpPlayers = new Hashtable<String, HashSet<String>>();
+		if(profExpPlayers == null){
+			Saga.severe(getClass(), "profExpPlayers field failed to initialize", "setting default");
+			profExpPlayers = new Hashtable<String, HashSet<String>>();
 			integrity=false;
 		}
 		
@@ -215,8 +215,8 @@ public class StatisticsManager implements HourTicker{
 		abilityUsage = new Hashtable<String, Integer>();
 		xrayStatistics = new Hashtable<String, Hashtable<Material,Integer>>();
 		blockDataChanges = 0;
-		blockSkillExp = new Hashtable<String, Integer>();
-		blockSkillExpPlayers = new Hashtable<String, HashSet<String>>();
+		profExp = new Hashtable<String, Integer>();
+		profExpPlayers = new Hashtable<String, HashSet<String>>();
 		
 		
 	}
@@ -559,11 +559,11 @@ public class StatisticsManager implements HourTicker{
 	 */
 	public void onSkillBlockExp(String skillName, Integer exp, SagaPlayer sagaPlayer) {
 
-		blockSkillExp.put(skillName, getBlockSkillExperience(skillName) + exp);
+		profExp.put(skillName, getBlockSkillExperience(skillName) + exp);
 		
 		HashSet<String> players = getBlockSkillPlayers(skillName);
 		players.add(sagaPlayer.getName());
-		blockSkillExpPlayers.put(skillName, players);
+		profExpPlayers.put(skillName, players);
 		
 	}
 
@@ -620,7 +620,7 @@ public class StatisticsManager implements HourTicker{
 	 */
 	public Integer getBlockSkillExperience(String name) {
 		
-		Integer exp = blockSkillExp.get(name);
+		Integer exp = profExp.get(name);
 		if(exp == null) exp = 0;
 		
 		return exp;
@@ -634,7 +634,7 @@ public class StatisticsManager implements HourTicker{
 	 */
 	public ArrayList<String> getBlockSkills() {
 
-		return new ArrayList<String>(blockSkillExp.keySet());
+		return new ArrayList<String>(profExp.keySet());
 		
 	}
 	
@@ -645,7 +645,7 @@ public class StatisticsManager implements HourTicker{
 	 */
 	public HashSet<String> getBlockSkillPlayers(String skillName) {
 
-		HashSet<String> players = blockSkillExpPlayers.get(skillName);
+		HashSet<String> players = profExpPlayers.get(skillName);
 		if(players == null) players = new HashSet<String>();
 		
 		return players;
@@ -659,7 +659,7 @@ public class StatisticsManager implements HourTicker{
 	 */
 	public Integer countBlockSkillPlayers(String skillName) {
 
-		HashSet<String> players = blockSkillExpPlayers.get(skillName);
+		HashSet<String> players = profExpPlayers.get(skillName);
 		if(players == null) return 0;
 		
 		return players.size();

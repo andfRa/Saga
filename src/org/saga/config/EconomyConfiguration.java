@@ -150,9 +150,9 @@ public class EconomyConfiguration {
 	
 	// Skills:
 	/**
-	 * Skill level costs.
+	 * Skill upgrade costs.
 	 */
-	private TwoPointFunction skillUpgradeCoinCost;
+	private TwoPointFunction skillUpgradeCost;
 
 	/**
 	 * Respecification cost.
@@ -334,9 +334,9 @@ public class EconomyConfiguration {
 			integrity=false;
 		}
 		
-		if(skillUpgradeCoinCost == null){
-			Saga.severe(getClass(), "skillUpgradeCoinCost field failed to initialize", "setting default");
-			skillUpgradeCoinCost= new TwoPointFunction(10000.0);
+		if(skillUpgradeCost == null){
+			Saga.severe(getClass(), "skillUpgradeCost field failed to initialize", "setting default");
+			skillUpgradeCost= new TwoPointFunction(10000.0);
 			integrity=false;
 		}
 		
@@ -416,7 +416,7 @@ public class EconomyConfiguration {
 	 * @return coin cost
 	 */
 	public Double getSkillCoinCost(Integer currentMultiplier) {
-		return skillUpgradeCoinCost.value(currentMultiplier);
+		return skillUpgradeCost.value(currentMultiplier);
 	}
 	
 	/**

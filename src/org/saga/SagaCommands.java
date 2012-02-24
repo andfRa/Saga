@@ -13,7 +13,6 @@ import net.minecraft.server.ItemInWorldManager;
 import net.minecraft.server.World;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.CraftWorld;
@@ -55,18 +54,41 @@ public class SagaCommands {
 
     @Command(
             aliases = {"astatsother","astatso"},
-            usage = "<name>",
+            usage = "<name> [page]",
             flags = "",
             desc = "Shows other player stats.",
             min = 1,
-            max = 1
+            max = 2
         )
     @CommandPermissions({"saga.admin.statsother"})
     public static void statsOther(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
     	
     	
-    	// Arguments:
-    	String name = args.getString(0);
+    	String name = null;
+    	Integer page = null;
+    	
+		// Arguments:
+		if(args.argsLength() == 2){
+			
+			name = args.getString(0);
+			
+			String sPage = args.getString(1);
+			
+			try {
+				page = Integer.parseInt(sPage);
+			}
+			catch (NumberFormatException e) {
+				sagaPlayer.message(ChunkGroupMessages.invalidInteger(sPage));
+				return;
+			}
+			
+		}else{
+			
+			name = args.getString(0);
+			
+			page = 1;
+			
+		}
     	
     	// Match:
     	SagaPlayer targetPlayer = null;
@@ -79,25 +101,50 @@ public class SagaCommands {
     	
     	// Inform:
     	sagaPlayer.message(SagaMessages.statsTargetName(targetPlayer));
-    	sagaPlayer.message(PlayerMessages.stats(targetPlayer));
+    	sagaPlayer.message(PlayerMessages.stats(targetPlayer, page-1));
     	
     	
     }
     
     @Command(
             aliases = {"astatsotheroffline","astatsof"},
-            usage = "<name>",
+            usage = "<name> [page]",
             flags = "",
             desc = "Shows other player stats.",
             min = 1,
-            max = 1
+            max = 2
         )
     @CommandPermissions({"saga.admin.statsother.offline"})
     public static void statsOffline(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
     	
+
+    	String name = null;
+    	Integer page = null;
     	
-    	// Arguments:
-    	String name = args.getString(0);
+		// Arguments:
+		if(args.argsLength() == 2){
+			
+			name = args.getString(0);
+			
+			String sPage = args.getString(1);
+			
+			try {
+				page = Integer.parseInt(sPage);
+			}
+			catch (NumberFormatException e) {
+				sagaPlayer.message(ChunkGroupMessages.invalidInteger(sPage));
+				return;
+			}
+			
+		}else{
+			
+			name = args.getString(0);
+			
+			page = 1;
+			
+		}
+    	
+		// Find player:
     	SagaPlayer targetPlayer = null;
     	try {
 		
@@ -112,7 +159,7 @@ public class SagaCommands {
 		}
     	
     	// Inform:
-    	sagaPlayer.message(PlayerMessages.stats(targetPlayer));
+    	sagaPlayer.message(PlayerMessages.stats(targetPlayer, page-1));
     	
     	// Unforce:
     	Saga.plugin().unforceSagaPlayer(name);
