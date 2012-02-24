@@ -1,6 +1,7 @@
 package org.saga.abilities;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Random;
 
 import org.bukkit.Effect;
@@ -23,11 +24,6 @@ import org.saga.utility.TextUtil;
 
 public class HeavySwing extends Ability{
 
-	
-	/**
-	 * Random.
-	 */
-	private static Random RANDOM = new Random();
 
 	/**
 	 * Shape for the ability.
@@ -94,53 +90,32 @@ public class HeavySwing extends Ability{
 		
 		// Break and drop:
 		for (Block block : blocks) {
+			
+			if(!handleEvent(block, player)) return true;
+			
+			Collection<ItemStack> drops = handleBreak(block, player);
+			
+			for (ItemStack drop : drops) {
+				
+				// Drop normal items:
+				if(drop.getType() != Material.COBBLESTONE){
+					handleDrop(drop, block.getLocation());
+				}
+				// Collect and drop cobble:
+				else{
+					cobbleCount ++;
 
-			
-			ItemStack item = handleBreak(block);
-			dropLocation = block.getLocation();
-
-			// Damage tool:
-			getSagaPlayer().damageTool();
-			
-			// Call event:
-			BlockBreakEvent bbEvent = new BlockBreakEvent(block, player);
-			Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
-			if(bbEvent.isCancelled()) return false;
-			
-			// Drop normal items:
-			if(item.getType() != Material.COBBLESTONE){
-				
-				handleDrop(item, dropLocation);
-				
-			}
-			
-			// Stack up cobble:
-			else{
-				
-				cobbleCount ++;
-				
-				if(cobbleCount >= cobbleStack){
+					if(cobbleCount >= cobbleStack){
+						handleDrop(new ItemStack(Material.COBBLESTONE, cobbleCount), block.getLocation());
+						cobbleCount = 0;
+					}
 					
-					handleDrop(new ItemStack(Material.COBBLESTONE, cobbleCount), dropLocation);
-					
-					cobbleCount = 0;
 					
 				}
-				
-			}
 
-			// Experience value:
-			if(item.getType() == Material.COAL){
+				// Experience:
 				expval += 1;
-			}
-			else if(item.getType() == Material.IRON_ORE){
-				expval += 3;
-			}
-			else if(item.getType() == Material.GOLD_ORE){
-				expval += 6;
-			}
-			else if(item.getType() == Material.DIAMOND){
-				expval += 12;
+				
 			}
 			
 		}
@@ -164,35 +139,30 @@ public class HeavySwing extends Ability{
 			crumble--;
 			
 			if(canCrumble(crumbleBlock)){
-				
 
-				ItemStack item = handleBreak(crumbleBlock);
-				dropLocation = crumbleBlock.getLocation();
+				if(!handleEvent(crumbleBlock, player)) return true;
 				
-				// Call event:
-				BlockBreakEvent bbEvent = new BlockBreakEvent(crumbleBlock, player);
-				Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
-				if(bbEvent.isCancelled()) return false;
+				Collection<ItemStack> drops = handleBreak(crumbleBlock, player);
 				
-				// Drop normal items:
-				if(item.getType() != Material.COBBLESTONE){
+				for (ItemStack drop : drops) {
 					
-					handleDrop(item, dropLocation);
-					
-				}
-				
-				// Stack up cobble:
-				else{
-					
-					cobbleCount ++;
-					
-					if(cobbleCount >= cobbleStack){
-						
-						handleDrop(new ItemStack(Material.COBBLESTONE, cobbleCount), dropLocation);
-						
-						cobbleCount = 0;
+					// Drop normal items:
+					if(drop.getType() != Material.COBBLESTONE){
+						handleDrop(drop, crumbleBlock.getLocation());
+					}
+					// Collect and drop cobble:
+					else{
+						cobbleCount ++;
+
+						if(cobbleCount >= cobbleStack){
+							handleDrop(new ItemStack(Material.COBBLESTONE, cobbleCount), crumbleBlock.getLocation());
+							cobbleCount = 0;
+						}
 						
 					}
+
+					// Experience:
+					expval += 2;
 					
 				}
 				
@@ -222,57 +192,51 @@ public class HeavySwing extends Ability{
 	
 	// Blocks:
 	/**
+	 * Handles block break event.
+	 * 
+	 * @param block block
+	 * @param player player
+	 * @return true if canceled
+	 */
+	private boolean handleEvent(Block block, Player player) {
+
+
+		// Call event:
+		BlockBreakEvent bbEvent = new BlockBreakEvent(block, player);
+		Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
+		if(bbEvent.isCancelled()) return false;
+
+		return true;
+		
+		
+	}
+	
+	/**
 	 * Handles block break.
 	 * 
 	 * @param block block
-	 * @param event event
+	 * @param player player
 	 */
-	public ItemStack handleBreak(Block block) {
+	private Collection<ItemStack> handleBreak(Block block, Player player) {
 
 		
-		if(block.getType() == Material.AIR) return new ItemStack(Material.AIR);
+		// Air:
+		if(block.getType() == Material.AIR) return new ArrayList<ItemStack>();
+
+		// Call event:
+		BlockBreakEvent bbEvent = new BlockBreakEvent(block, player);
+		Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
+		if(bbEvent.isCancelled()) return new ArrayList<ItemStack>();
 		
-		ItemStack item = new ItemStack(block.getType(), 1);
-		
-		// Stone:
-		if(block.getType() == Material.STONE){
-			
-			item.setType(Material.COBBLESTONE);
-			
-		}
-		
-		// Coal:
-		else if(block.getType() == Material.COAL_ORE){
-			
-			item.setType(Material.COAL);
-			
-		}
-		
-		// Diamond:
-		else if(block.getType() == Material.DIAMOND_ORE){
-			
-			item.setType(Material.DIAMOND);
-			
-		}
-		
-		// Redstone:
-		else if(block.getType() == Material.REDSTONE_ORE){
-			
-			item.setType(Material.REDSTONE);
-			
-			if(RANDOM.nextBoolean()){
-				item.setAmount(4);
-			}else{
-				item.setAmount(5);
-			}
-			
-			
-		}
+		Collection<ItemStack> drops = block.getDrops();
 
 		// Break:
 		block.setType(Material.AIR);
 		
-		return item;
+		// Damage tool:
+		getSagaPlayer().damageTool();
+		
+		return drops;
 		
 		
 	}
@@ -280,14 +244,14 @@ public class HeavySwing extends Ability{
 	/**
 	 * Handles drop.
 	 * 
-	 * @param item item
+	 * @param drop item
 	 * @param location location
 	 */
-	public void handleDrop(ItemStack item, Location location) {
+	private void handleDrop(ItemStack drop, Location location) {
 
-		if(item.getType() == Material.AIR) return;
+		if(drop.getType() == Material.AIR) return;
 		
-		location.getWorld().dropItemNaturally(location, item);
+		location.getWorld().dropItemNaturally(location, drop);
 		
 	}
 	
@@ -297,7 +261,7 @@ public class HeavySwing extends Ability{
 	 * @param block block
 	 * @return true if can crumble
 	 */
-	public boolean canCrumble(Block block) {
+	private boolean canCrumble(Block block) {
 
 		
 		if(block.getType() == Material.STONE) return true;
@@ -337,7 +301,7 @@ public class HeavySwing extends Ability{
 	 * 
 	 * @return shape
 	 */
-	public static RelativeShape createShape(){
+	private static RelativeShape createShape(){
 		
 		
 //		RelativeShape shape = new RelativeShape(new MiningFilter());
@@ -483,7 +447,7 @@ public class HeavySwing extends Ability{
 	 * 
 	 * @return filter
 	 */
-	public static BlockFilter createFilter(){
+	private static BlockFilter createFilter(){
 		
 		
 		BlockFilter filter = new BlockFilter();

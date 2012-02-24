@@ -1,6 +1,7 @@
 package org.saga.abilities;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Random;
 
 import org.bukkit.Effect;
@@ -15,7 +16,6 @@ import org.saga.Saga;
 import org.saga.shape.BlockFilter;
 import org.saga.shape.RelativeShape;
 import org.saga.statistics.StatisticsManager;
-import org.saga.utility.TwoPointFunction;
 
 
 public class Harvest extends Ability{
@@ -68,7 +68,7 @@ public class Harvest extends Ability{
 		
 		
 		// Target:
-		Location location = event.getPlayer().getLocation();
+		Location dropLocation = event.getPlayer().getLocation();
 		
 		// Skill functions:
 		Integer size = getDefinition().getPrimaryFunction().randomIntValue(getSkillLevel());
@@ -79,7 +79,7 @@ public class Harvest extends Ability{
 		
 		// Get shape:
 		RelativeShape shape = SPAHPE;
-		ArrayList<Block> blocks = shape.getBlocks(location, getSagaPlayer().getOrientation(), size);
+		ArrayList<Block> blocks = shape.getBlocks(dropLocation, getSagaPlayer().getOrientation(), size);
 		
 		// No blocks:
 		if(blocks.size() == 0){
@@ -93,11 +93,10 @@ public class Harvest extends Ability{
 			if(RANDOM.nextDouble() <= convenience){
 				
 				if(block.getType().equals(Material.CROPS) && block.getData() != 7) continue;
-				
-				location = event.getPlayer().getLocation();
+				dropLocation = event.getPlayer().getLocation();
 				
 			}else{
-				location = block.getLocation();
+				dropLocation = block.getLocation();
 			}
 			
 			// Drop indication:
@@ -108,17 +107,18 @@ public class Harvest extends Ability{
 				wheatDrop = true;
 			}
 			
-			// Damage tool:
-			getSagaPlayer().damageTool();
-			
-			// Call event:
-			BlockBreakEvent bbEvent = new BlockBreakEvent(block, player);
-			Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
-			if(bbEvent.isCancelled()) return false;
+			// Event:
+			if(!handleEvent(block, player)) return false;
 			
 			// Break:
-			handleBreak(block, location);
+			Collection<ItemStack> drops = handleBreak(block, player);
 
+			for (ItemStack drop : drops) {
+				
+				handleDrop(drop, dropLocation);
+				
+			}
+			
 			expval += 1;
 			
 		}
@@ -143,69 +143,55 @@ public class Harvest extends Ability{
 		
 		
 	}
-	
+
 	
 	// Blocks:
+	/**
+	 * Handles block break event.
+	 * 
+	 * @param block block
+	 * @param player player
+	 * @return true if canceled
+	 */
+	private boolean handleEvent(Block block, Player player) {
+
+
+		// Call event:
+		BlockBreakEvent bbEvent = new BlockBreakEvent(block, player);
+		Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
+		if(bbEvent.isCancelled()) return false;
+
+		return true;
+		
+		
+	}
+	
 	/**
 	 * Handles block break.
 	 * 
 	 * @param block block
-	 * @param event event
+	 * @param player player
 	 */
-	public void handleBreak(Block block, Location dropLocation) {
+	private Collection<ItemStack> handleBreak(Block block, Player player) {
 
 		
-		Byte data = block.getData();
-		
-		if(block.getType() == Material.AIR) return;
-		
-		// Crops:
-		if(block.getType() == Material.CROPS){
-			
-			block.setType(Material.AIR);
-			
-			// Not grown:
-			if(data == 0){
-				
-				handleDrop(new ItemStack(Material.SEEDS, 1), dropLocation);
-				
-			}
-			
-			// Grown:
-			else{
-				
-				TwoPointFunction tpf = new TwoPointFunction((short)0, 0.0, (short)7, 3.0);
-				
-				Integer seeds = tpf.randomIntValue(data.intValue());
-				
-				handleDrop(new ItemStack(Material.SEEDS, seeds), dropLocation);
+		// Air:
+		if(block.getType() == Material.AIR) return new ArrayList<ItemStack>();
 
-				// Wheat
-				if(data == 7){
-					
-					if(RANDOM.nextBoolean()){
-						handleDrop(new ItemStack(Material.WHEAT, 1), dropLocation);
-					}else{
-						handleDrop(new ItemStack(Material.WHEAT, 2), dropLocation);
-					}
-					
-				}
-				
-				
-			}
-			
-			block.setType(Material.AIR);
-			
-		}
+		// Call event:
+		BlockBreakEvent bbEvent = new BlockBreakEvent(block, player);
+		Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
+		if(bbEvent.isCancelled()) return new ArrayList<ItemStack>();
 		
-		// Sugar cane:
-		else if(block.getType() == Material.SUGAR_CANE_BLOCK){
-			
-			handleDrop(new ItemStack(Material.SUGAR_CANE, 1), dropLocation);
+		Collection<ItemStack> drops = block.getDrops();
 
-			block.setType(Material.AIR);
-			
-		}
+		// Break:
+		block.setType(Material.AIR);
+		
+		// Damage tool:
+		getSagaPlayer().damageTool();
+		
+		return drops;
 		
 		
 	}
@@ -213,16 +199,18 @@ public class Harvest extends Ability{
 	/**
 	 * Handles drop.
 	 * 
-	 * @param item item
+	 * @param drop item
 	 * @param location location
 	 */
-	public void handleDrop(ItemStack item, Location location) {
+	private void handleDrop(ItemStack drop, Location location) {
 
-		if(item.getType() == Material.AIR || item.getAmount() == 0) return;
+		if(drop.getType() == Material.AIR) return;
 		
-		location.getWorld().dropItemNaturally(location, item);
+		location.getWorld().dropItemNaturally(location, drop);
 		
 	}
+	
+	
 	
 	/**
 	 * Creates the shape for the ability.
