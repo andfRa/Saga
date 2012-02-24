@@ -160,9 +160,6 @@ public class SagaEntityListener implements Listener{
 				sagaAttacker.getLevelManager().onSpelledPlayer(cEvent, sagaDefender, projectile);
 				sagaDefender.getLevelManager().onSpelledByPlayer(cEvent, sagaAttacker, projectile);
 
-				// Handle magic:
-				SagaEntityDamageManager.handleMagicDamage(cEvent, sagaAttacker, sagaDefender);
-				
 			}
 			
 			
@@ -197,9 +194,6 @@ public class SagaEntityListener implements Listener{
 				cEvent.setDamage(BalanceConfiguration.config().pvcBaseFireballDamage);
 				
 				sagaAttacker.getLevelManager().onSpelledCreature(cEvent, (Creature)defender, projectile);
-				
-				// Handle magic:
-				SagaEntityDamageManager.handleMagicDamage(cEvent, sagaAttacker, (Creature)defender);
 				
 			}
 			

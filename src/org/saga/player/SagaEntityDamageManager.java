@@ -25,7 +25,7 @@ public class SagaEntityDamageManager {
 	 * @param attacker attacker
 	 * @param defender defender
 	 */
-	public static void handleMagicDamage(EntityDamageByEntityEvent event, SagaPlayer attacker, SagaPlayer defender) {
+	public static void handleMagicDamage2(EntityDamageByEntityEvent event, SagaPlayer attacker, SagaPlayer defender) {
 
 		
 		if(event.isCancelled()) return;
@@ -51,7 +51,7 @@ public class SagaEntityDamageManager {
 	 * @param attacker attacker
 	 * @param defender defender
 	 */
-	public static void handleMagicDamage(EntityDamageByEntityEvent event, SagaPlayer attacker, Creature defender) {
+	public static void handleMagicDamage2(EntityDamageByEntityEvent event, SagaPlayer attacker, Creature defender) {
 
 		
 		if(event.isCancelled()) return;

@@ -11,7 +11,7 @@
     "attacker":"PLAYER",
     "defender":"ALL",
     "attack":"MELEE",
-    "modifier":{"x1":0,"y1":4.0,"x2":50,"y2":34.0}
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":30.0}
   },
 
   "waraxe":{
@@ -24,7 +24,7 @@
     "attacker":"PLAYER",
     "defender":"ALL",
     "attack":"MELEE",
-    "modifier":{"x1":0,"y1":0.0,"x2":10,"y2":14.0}
+    "modifier":{"x1":0,"y1":4.0,"x2":10,"y2":34.0}
   },
 
   "archery":{
@@ -50,7 +50,7 @@
     "attacker":"PLAYER",
     "defender":"ALL",
     "attack":"MAGIC",
-    "modifier":{"x1":0,"y1":2.2,"x2":50,"y2":9.0}
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":40.0}
   },
 
   "heavy armour":{
@@ -102,7 +102,7 @@
     "attacker":"ALL",
     "defender":"ALL",
     "attack":"MAGIC",
-    "modifier":{"x1":0,"y1":-2.2,"x2":50,"y2":-9.0}
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-40.0}
   },
 
   "woodcutting":{
