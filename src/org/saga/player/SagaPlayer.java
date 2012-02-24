@@ -70,6 +70,7 @@ import org.saga.player.GuardianRune.GuardianRuneStatus;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.Skill.ArmourType;
 import org.saga.shape.RelativeShape.Orientation;
+import org.saga.statistics.StatisticsManager;
 import org.saga.utility.TextUtil;
 import org.saga.utility.WriterReader;
 
@@ -409,7 +410,9 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 		for (int i = 0; i < abilities.size(); i++) {
 			
-			if(abilities.get(i) == null){
+			Ability ability = abilities.get(i);
+			
+			if(ability == null){
 				Saga.severe(this, "abilities element field failed to initialize", "setting default");
 				abilities.remove(i);
 				i--;
@@ -418,9 +421,11 @@ public class SagaPlayer implements SecondTicker, Trader{
 			
 			try {
 				
-				abilities.get(i).complete();
+				ability.complete();
 				
-				abilities.get(i).setPlayer(this);
+				ability.setPlayer(this);
+				
+				ability.setProficiency(matchProficiency(ability));
 				
 			} catch (InvalidAbilityException e) {
 				Saga.severe(this, "abilities element invalid: " + e.getMessage(), "removing element");
@@ -818,6 +823,8 @@ public class SagaPlayer implements SecondTicker, Trader{
 					
 					ability.setPlayer(this);
 					
+					ability.setProficiency(matchProficiency(ability));
+					
 				} catch (InvalidAbilityException e) {
 					
 					Saga.severe(this, "failed to retrieve " + abilityName + " ability:" + expRegen.getClass().getSimpleName() + ":" + e.getMessage(), "ignoring ability");
@@ -931,6 +938,29 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 	}
 
+	/**
+	 * Matches an proficiency to the ability.
+	 * 
+	 * @param ability ability
+	 * @return proficiency, null if none
+	 */
+	private Proficiency matchProficiency(Ability ability) {
+
+
+		// Profession:
+		if(profession != null && profession.getDefinition().hasAbility(ability.getName())){
+			return profession;
+		}
+		
+		// Class:
+		if(classs != null && classs.getDefinition().hasAbility(ability.getName())){
+			return classs;
+		}
+		
+		return null;
+
+	}
+	
 	
 	// Skills:
 	/**
@@ -3143,7 +3173,12 @@ public class SagaPlayer implements SecondTicker, Trader{
 			Double expAmount = profession.getDefinition().calcExp(event.getBlock());
 			
 			if(expAmount != 0){
+				
 				giveExperience(expAmount);
+
+				// Statistics:
+				StatisticsManager.manager().onExp(this, profession.getName(), "block", expAmount);
+				
 			}
 			
 		}
@@ -3153,7 +3188,12 @@ public class SagaPlayer implements SecondTicker, Trader{
 			Double expAmount = classs.getDefinition().calcExp(event.getBlock());
 			
 			if(expAmount != 0){
+				
 				giveExperience(expAmount);
+
+				// Statistics:
+				StatisticsManager.manager().onExp(this, profession.getName(), "block", expAmount);
+				
 			}
 			
 		}
@@ -3175,7 +3215,12 @@ public class SagaPlayer implements SecondTicker, Trader{
 			Double expAmount = profession.getDefinition().calcExp(creature);
 			
 			if(expAmount != 0){
+				
 				giveExperience(expAmount);
+
+				// Statistics:
+				StatisticsManager.manager().onExp(this, profession.getName(), "creature", expAmount);
+				
 			}
 			
 		}
@@ -3185,7 +3230,12 @@ public class SagaPlayer implements SecondTicker, Trader{
 			Double expAmount = classs.getDefinition().calcExp(creature);
 			
 			if(expAmount != 0){
+				
 				giveExperience(expAmount);
+
+				// Statistics:
+				StatisticsManager.manager().onExp(this, profession.getName(), "creature", expAmount);
+				
 			}
 			
 		}
@@ -3207,7 +3257,12 @@ public class SagaPlayer implements SecondTicker, Trader{
 			Double expAmount = profession.getDefinition().calcExp(killedPlayer);
 			
 			if(expAmount != 0){
+				
 				giveExperience(expAmount);
+
+				// Statistics:
+				StatisticsManager.manager().onExp(this, profession.getName(), "player", expAmount);
+				
 			}
 			
 		}
@@ -3217,9 +3272,38 @@ public class SagaPlayer implements SecondTicker, Trader{
 			Double expAmount = classs.getDefinition().calcExp(killedPlayer);
 			
 			if(expAmount != 0){
+				
 				giveExperience(expAmount);
+
+				// Statistics:
+				StatisticsManager.manager().onExp(this, profession.getName(), "player", expAmount);
+				
 			}
 			
+		}
+		
+		
+	}
+	
+	/**
+	 * Called when an ability is used.
+	 * 
+	 * @param ability ability
+	 * @param proficiency proficiency, null if none
+	 * @param expAmount experience
+	 */
+	public void onAbilityExp(Ability ability, Proficiency proficiency, Double expAmount) {
+
+		
+		if(expAmount == 0) return;
+		
+		giveExperience(expAmount);
+
+		// Statistics:
+		if(profession != null){
+			StatisticsManager.manager().onExp(this, profession.getName(), ability.getName(), expAmount);
+		}else{
+			StatisticsManager.manager().onExp(this, "-", ability.getName(), expAmount);
 		}
 		
 		

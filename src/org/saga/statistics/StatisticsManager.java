@@ -3,6 +3,7 @@ package org.saga.statistics;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -90,6 +91,11 @@ public class StatisticsManager implements HourTicker{
 	 * Players that were awarded proficiency experience.
 	 */
 	private Hashtable<String, HashSet<String>> profExpPlayers; 
+
+	/**
+	 * Players experience.
+	 */
+	private Hashtable<String, Hashtable<String,Double>> exp; 
 	
 	
 	/**
@@ -192,6 +198,12 @@ public class StatisticsManager implements HourTicker{
 			profExpPlayers = new Hashtable<String, HashSet<String>>();
 			integrity=false;
 		}
+	
+		if(exp == null){
+			Saga.severe(getClass(), "exp field failed to initialize", "setting default");
+			exp = new Hashtable<String, Hashtable<String,Double>>();
+			integrity=false;
+		}
 		
 		return integrity;
 		
@@ -217,6 +229,7 @@ public class StatisticsManager implements HourTicker{
 		blockDataChanges = 0;
 		profExp = new Hashtable<String, Integer>();
 		profExpPlayers = new Hashtable<String, HashSet<String>>();
+		exp = new Hashtable<String, Hashtable<String,Double>>();
 		
 		
 	}
@@ -663,6 +676,120 @@ public class StatisticsManager implements HourTicker{
 		if(players == null) return 0;
 		
 		return players.size();
+		
+	}
+	
+	
+	// Experience:
+	/**
+	 * Called when a player receives experience from a source.
+	 * 
+	 * @param sagaPlayer saga player
+	 * @param source source
+	 * @param amount amount received
+	 */
+	public void onExp(SagaPlayer sagaPlayer, String source, Double amount) {
+
+		
+		Hashtable<String, Double> playerExp = exp.get(sagaPlayer.getName());
+		if(playerExp == null){
+			playerExp = new Hashtable<String, Double>();
+			exp.put(sagaPlayer.getName(), playerExp);
+		}
+		
+		Double sourceExp = playerExp.get(source);
+		if(sourceExp == null) sourceExp = 0.0; 
+		
+		sourceExp += amount;
+		playerExp.put(source, sourceExp);
+		
+		
+	}
+	
+	/**
+	 * Called when a player receives experience from a source.
+	 * 
+	 * @param sagaPlayer saga player
+	 * @param proficiency proficiency
+	 * @param source source
+	 * @param amount amount received
+	 */
+	public void onExp(SagaPlayer sagaPlayer, String proficiency, String source, Double amount) {
+		
+		onExp(sagaPlayer, proficiency + "(" + source + ")", amount);
+		
+	}
+
+	
+	/**
+	 * Gets the experience for the given source.
+	 * 
+	 * @param source source
+	 * @return experience
+	 */
+	public Double getSourceExp(String source) {
+
+		
+		Collection<Hashtable<String, Double>> souceExps = exp.values();
+		
+		Double exp = 0.0;
+		
+		for (Hashtable<String, Double> souceExp : souceExps) {
+			
+			Double expSinge = souceExp.get(source);
+			if(expSinge != null) exp += expSinge;
+			
+		}
+		
+		return exp;
+
+		
+	}
+	
+	/**
+	 * Counts the users for the given experience source.
+	 * 
+	 * @param source source
+	 * @return users count
+	 */
+	public Integer countExpUsers(String source) {
+
+		
+		Collection<Hashtable<String, Double>> souceExps = exp.values();
+		
+		Integer sources = 0;
+		
+		for (Hashtable<String, Double> souceExp : souceExps) {
+			
+			if(souceExp.get(source) != null) sources += 1;
+			
+		}
+		
+		return sources;
+
+		
+	}
+	
+	/**
+	 * Gets all experience sources.
+	 * 
+	 * @return all experience sources
+	 */
+	public HashSet<String> getExpSources() {
+
+		
+		HashSet<String> sources = new HashSet<String>();
+		
+		Collection<Hashtable<String, Double>> souceExps = exp.values();
+		
+		for (Hashtable<String, Double> souceExp : souceExps) {
+			
+			sources.addAll(new HashSet<String>(souceExp.keySet()));
+			
+		}
+		
+		return sources;
+		
 		
 	}
 	

@@ -1,6 +1,7 @@
 package org.saga.statistics;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 
 import org.bukkit.ChatColor;
@@ -17,6 +18,8 @@ import org.saga.utility.MathUtil;
 import org.saga.utility.StringBook;
 import org.saga.utility.StringTable;
 import org.saga.utility.TextUtil;
+
+import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 
 
@@ -281,20 +284,31 @@ public class StatisticsMessages {
 		StringTable table = new StringTable(color);
 
 		// Add headings:
-		table.addLine(new String[]{"SKILL","EXP PER USER","TOTAL EXP"});
+		table.addLine(new String[]{"SOURCE","EXP/USES","EXP","USERS"});
 		
-		ArrayList<String> skills = SkillConfiguration.config().getSkillNames();
-		for (String skill : skills) {
+		String[] sources = StatisticsManager.manager().getExpSources().toArray(new String[0]);
+		Arrays.sort(sources);
+		
+		
+		if(sources.length > 0){
 			
-			Double exp = StatisticsManager.manager().getBlockSkillExperience(skill).doubleValue();
-			Double players = StatisticsManager.manager().countBlockSkillPlayers(skill).doubleValue();
-			
-			if(players != 0){
-				table.addLine(new String[]{skill, MathUtil.round(exp/players).toString(), exp.toString()});
-			}else{
-				table.addLine(new String[]{skill, "none", "none"});
+			for (int i = 0; i < sources.length; i++) {
+				
+				String source = sources[i];
+				
+				Double exp = StatisticsManager.manager().getSourceExp(source);
+				Double users = StatisticsManager.manager().countExpUsers(source).doubleValue();
+				
+				if(users != 0){
+					table.addLine(new String[]{source, MathUtil.round(exp/users).toString(), MathUtil.round(exp).toString(), users.toString()});
+				}else{
+					table.addLine(new String[]{source, "-", "-", "-"});
+				}
+				
 			}
 			
+		}else{
+			table.addLine(new String[]{"-", "-", "-", "-"});
 		}
 		
 		table.collapse();
