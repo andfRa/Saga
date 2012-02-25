@@ -2,7 +2,6 @@ package org.saga;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.craftbukkit.entity.CraftEnderDragon;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Creeper;
@@ -430,7 +429,6 @@ public class SagaEntityListener implements Listener{
 		
 		
 	}
-	
 	
 	
 }

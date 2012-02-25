@@ -623,16 +623,11 @@ public class SagaChunk {
     public void onPlayerInteract(PlayerInteractEvent event, SagaPlayer sagaPlayer) {
     	
 
-		// Canceled:
-		if(event.isCancelled()){
-			return;
-		}
+		// Forward to chunk group:
+		getChunkGroup().onPlayerInteract(event, sagaPlayer, this);
 		
-    	// Forward to building:
-    	Building building = getBuilding();
-    	if(building != null){
-    		building.onPlayerInteract(event, sagaPlayer);
-    	}
+		// Forward to building:
+		if(bld != null) bld.onPlayerInteract(event, sagaPlayer);
     	
     	
     }

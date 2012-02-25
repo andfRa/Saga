@@ -5,6 +5,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 
+import org.bukkit.inventory.ItemStack;
 import org.saga.Clock;
 import org.saga.Clock.MinuteTicker;
 import org.saga.Saga;
@@ -12,6 +13,7 @@ import org.saga.buildings.Building;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupMessages;
 import org.saga.chunkGroups.SagaChunk;
+import org.saga.config.BalanceConfiguration;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
@@ -888,6 +890,19 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	
 	}
 	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.chunkGroups.ChunkGroup#canUseSplashPotion(org.saga.player.SagaPlayer, java.lang.Short)
+	 */
+	@Override
+	public boolean canUsePotion(SagaPlayer sagaPlayer, Short durability) {
+	
+		if(BalanceConfiguration.config().getHarmfulSplashPotions().contains(durability)) return false;
+
+		return true;
+	
+	}
 	
 	// Leveling:
 	/**

@@ -8,14 +8,7 @@ package org.saga;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
-import net.minecraft.server.EntityPlayer;
-import net.minecraft.server.ItemInWorldManager;
-import net.minecraft.server.World;
-
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.craftbukkit.CraftServer;
-import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.entity.Player;
 import org.saga.chunkGroups.ChunkGroupMessages;
 import org.saga.config.BalanceConfiguration;
@@ -23,10 +16,8 @@ import org.saga.config.SkillConfiguration;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;
 import org.saga.player.PlayerMessages;
-import org.saga.player.PlayerMessages.ColorCircle;
 import org.saga.player.SagaPlayer;
 import org.saga.player.Skill;
-import org.saga.utility.TextUtil;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
 import org.sk89q.CommandPermissions;
@@ -439,12 +430,7 @@ public class SagaCommands {
     @CommandPermissions({"saga.admin.dcommand"})
     public static void debugCommand(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
-    	ColorCircle cols = new ColorCircle().addColor(ChatColor.BLACK).addColor(ChatColor.RED);
     	
-    	Double[] data = new Double[]{0.0, 0.0, 0.9, 1.5, 3.0, 4.5, 5.0, 5.2, 6.0, 5.2, 5.0, 4.5, 3.0, 1.5, 0.9, 0.0, 0.0};
-    	
-    	sagaPlayer.message(TextUtil.histogram(data,cols));
-    
     }
 
     

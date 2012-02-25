@@ -71,7 +71,7 @@ public class SagaBlockListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockDamage(BlockDamageEvent event) {
 		
-
+		
     	// Get saga chunk:
     	Location location = event.getBlock().getLocation();
     	SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));

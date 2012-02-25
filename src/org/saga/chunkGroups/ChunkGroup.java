@@ -11,6 +11,8 @@ import java.util.Hashtable;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Creature;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
@@ -31,16 +33,12 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
-import org.saga.Clock.TimeOfDayTicker.TimeOfDay;
 import org.saga.Saga;
-import org.saga.SagaCommands;
 import org.saga.SagaMessages;
 import org.saga.buildings.Building;
 import org.saga.buildings.MissingBuildingDefinitionException;
-import org.saga.config.BalanceConfiguration;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.constants.IOConstants.WriteReadType;
-import org.saga.economy.EconomyMessages;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.factions.SagaFaction;
 import org.saga.player.SagaEntityDamageManager.SagaPvpEvent;
@@ -1488,6 +1486,18 @@ public class ChunkGroup{
 		
 	}
 
+	/**
+	 * Checks if the player has permission to use potions.
+	 * 
+	 * @param sagaPlayer saga player
+	 * @param durability durability
+	 * @return true if can use potion
+	 */
+	public boolean canUsePotion(SagaPlayer sagaPlayer, Short durability) {
+		
+		return false;
+		
+	}
 	
 	
 	// Bonuses:
@@ -1782,83 +1792,7 @@ public class ChunkGroup{
 		
 		
 	}
-	
-	/**
-     * Called when a player interacts with something on the chunk.
-     * 
-     * @param event event
-     * @param sagaPlayer saga player
-     * @param sagaChunk saga chunk
-     */
-    public void onPlayerInteract(PlayerInteractEvent event, SagaPlayer sagaPlayer, SagaChunk sagaChunk) {
-    	
 
-		// Canceled:
-		if(event.isCancelled()){
-			return;
-		}
-		
-    	// Forward to saga chunk:
-		sagaChunk.onPlayerInteract(event, sagaPlayer);
-    	
-		// Catch the griefers and exploiters:
-		if(!canBuild(sagaPlayer)){
-			
-			Material material = event.getMaterial();
-			
-			// Buckets and flint and steel:
-			if(material != null && event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
-				
-				if( ( material.equals(Material.LAVA_BUCKET) || material.equals(Material.BUCKET) || material.equals(Material.WATER_BUCKET) || material.equals(Material.FLINT_AND_STEEL) )){
-					
-					event.setUseInteractedBlock(Result.DENY);
-					event.setUseItemInHand(Result.DENY);
-					event.setCancelled(true);
-					
-					sagaPlayer.message(SagaMessages.noPermission(this));
-					
-					if(material.equals(Material.FLINT_AND_STEEL)){
-						SagaCommands.sendAdminWarning(sagaPlayer.getName() + " tried to use " + EconomyMessages.material(material) + " in " + getName() + ".");
-					}
-					
-					// Set item in hand:
-					if(material.equals(Material.LAVA_BUCKET) || material.equals(Material.BUCKET) || material.equals(Material.WATER_BUCKET)){
-						event.getPlayer().setItemInHand(new ItemStack(Material.BUCKET,1));
-					}
-					
-				}
-				
-			}
-			
-			// Stop harmful splash potions:
-			ItemStack itemInHand = sagaPlayer.getItemInHand();
-			if( (event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)) && itemInHand != null && itemInHand.getType().equals(Material.POTION)){
-				Short durability = itemInHand.getDurability();
-				
-				if(BalanceConfiguration.config().getHarmfulSplashPotions().contains(durability)){
-					
-					sagaPlayer.message(SagaMessages.noPermission(this));
-					
-					event.setUseInteractedBlock(Result.DENY);
-					event.setUseItemInHand(Result.DENY);
-					event.setCancelled(true);
-					
-					sagaPlayer.message(SagaMessages.noPermission(this));
-					
-//					PlayerCommands.sendAdminWarning(sagaPlayer.getName() + " tried to use a harmful potion " + itemInHand.getDurability() + " in " + getName() + ".");
-					
-				}
-				
-			}
-			
-			
-		}
-		
-		
-		
-		
-    }
-	
     /**
      * Called when a player performs a command.
      * 
@@ -1879,6 +1813,110 @@ public class ChunkGroup{
 
     }
     
+	
+	// Interact events:
+	/**
+	 * Called when a player interacts with something on the chunk.
+	 * 
+	 * @param event event
+	 * @param sagaPlayer saga player
+	 * @param sagaChunk saga chunk
+	 */
+    @SuppressWarnings("deprecation")
+	public void onPlayerInteract(PlayerInteractEvent event, SagaPlayer sagaPlayer, SagaChunk sagaChunk) {
+    	
+
+		// Canceled:
+		if(event.isCancelled()){
+			return;
+		}
+		
+		ItemStack item = event.getPlayer().getItemInHand();
+		Block block = event.getClickedBlock();
+		
+		// Buckets and flint steel:
+		if(!canBuild(sagaPlayer) && item != null && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)){
+
+			switch (item.getType()) {
+				
+				case LAVA_BUCKET:
+					
+					event.setCancelled(true);
+					event.setUseItemInHand(Result.DENY);
+					sagaPlayer.message(SagaMessages.noPermission(this));
+					event.getPlayer().updateInventory();
+					return;
+				
+				case FLINT_AND_STEEL:
+					
+					event.setCancelled(true);
+					event.setUseItemInHand(Result.DENY);
+					sagaPlayer.message(SagaMessages.noPermission(this));
+					return;
+				
+				case WATER_BUCKET:
+					
+					event.setCancelled(true);
+					event.setUseItemInHand(Result.DENY);
+					sagaPlayer.message(SagaMessages.noPermission(this));
+					event.getPlayer().updateInventory();
+					return;
+					
+				case BUCKET:
+	
+					event.setCancelled(true);
+					event.setUseItemInHand(Result.DENY);
+					sagaPlayer.message(SagaMessages.noPermission(this));
+					event.getPlayer().updateInventory();
+					return;
+
+				default:
+					break;
+				
+			}
+			
+		}
+		
+		// Potions:
+		if(item != null && item.getType() == Material.POTION){
+
+			Short durability = item.getDurability();
+			
+			if(!canUsePotion(sagaPlayer, durability)){
+				event.setUseItemInHand(Result.DENY);
+				sagaPlayer.message(SagaMessages.noPermission(this));
+				event.getPlayer().updateInventory();
+				return;
+			}
+			
+		}
+		
+		// Fire:
+		if(!canBuild(sagaPlayer) && block != null && block.getRelative(BlockFace.UP) != null && block.getRelative(BlockFace.UP).getType() == Material.FIRE){
+			
+			event.setCancelled(true);
+			event.setUseInteractedBlock(Result.DENY);
+			sagaPlayer.message(SagaMessages.noPermission(this));
+			event.getPlayer().updateInventory();
+			return;
+			
+		}
+		
+		
+    }
+
+    /**
+     * Called when a player interacts with an entity on the chunk.
+     * 
+     * @param event event
+     * @param sagaPlayer saga player
+     * @param sagaChunk saga chunk
+     */
+    public void onPlayerInteractEntity(PlayerInteractEntityEvent event, SagaPlayer sagaPlayer, SagaChunk locationChunk) {
+		
+		
+    }
+
     
     // Damage events:
 	/**
@@ -1991,78 +2029,7 @@ public class ChunkGroup{
 	}
 
 	
-	// Interact:
-	/**
-     * Called when a player interacts with an entity on the chunk.
-     * 
-     * @param event event
-     * @param sagaPlayer saga player
-     * @param sagaChunk saga chunk
-     */
-    public void onPlayerInteractEntity(PlayerInteractEntityEvent event, SagaPlayer sagaPlayer, SagaChunk locationChunk) {
-    	
-
-		// Canceled:
-		if(event.isCancelled()){
-			return;
-		}
-		
-		// Catch the griefers and exploiters:
-		if(!canBuild(sagaPlayer)){
-			
-			Material material = event.getPlayer().getItemInHand().getType();
-			
-			// Buckets and flint and steel:
-			if(material != null){
-				
-				if( ( material.equals(Material.LAVA_BUCKET) || material.equals(Material.BUCKET) || material.equals(Material.WATER_BUCKET) || material.equals(Material.FLINT_AND_STEEL) )){
-					
-					event.setCancelled(true);
-					sagaPlayer.message(SagaMessages.noPermission(this));
-					
-					SagaCommands.sendAdminWarning(sagaPlayer.getName() + " tried to use " + EconomyMessages.material(material) + " in " + getName() + " by interacting with " + event.getRightClicked() + ".");
-
-					Saga.info("griefing suspicion tag");
-
-					// Set item in hand:
-					if(material.equals(Material.LAVA_BUCKET) || material.equals(Material.BUCKET) || material.equals(Material.WATER_BUCKET)){
-						event.getPlayer().setItemInHand(new ItemStack(Material.BUCKET,1));
-					}
-					
-				}
-				
-			}
-			
-			// Stop harmful splash potions:
-			ItemStack itemInHand = sagaPlayer.getItemInHand();
-			if(material.equals(Material.POTION)){
-				Short durability = itemInHand.getDurability();
-				
-				if(BalanceConfiguration.config().getHarmfulSplashPotions().contains(durability)){
-					
-					sagaPlayer.message(SagaMessages.noPermission(this));
-					
-					event.setCancelled(true);
-					
-					SagaCommands.sendAdminWarning(sagaPlayer.getName() + " tried to use a harmful potion " + itemInHand.getDurability() + " in " + getName() + "." + " by interacting with " + event.getRightClicked() + ".");
-
-					Saga.info("griefing suspicion tag");
-					
-				}
-				
-			}
-			
-			
-		}
-		
-		
-		
-		
-    }
-
-
-    
-	// Other:
+    // Other:
 	/* 
 	 * (non-Javadoc)
 	 * 

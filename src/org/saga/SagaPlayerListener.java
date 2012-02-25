@@ -215,10 +215,8 @@ public class SagaPlayerListener implements Listener {
     		return;
     	}
     	
-    	// Forward to chunk group:
-    	if(sagaChunk != null){
-    		sagaChunk.getChunkGroup().onPlayerInteract(event, sagaPlayer, sagaChunk);
-    	}
+    	// Forward to saga chunk:
+    	if(sagaChunk != null) sagaChunk.onPlayerInteract(event, sagaPlayer);
     	
     	// Check if canceled:
     	if(event.isCancelled()){
@@ -316,16 +314,6 @@ public class SagaPlayerListener implements Listener {
     
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerPortal(PlayerPortalEvent event) {
-    	
-    	
-//    	if(event.getTo().getWorld().getName().equals("world_the_end") || event.getTo().getWorld().getName().equals("world_skylands")){
-//    		event.setCancelled(true);
-//    		event.getPlayer().sendMessage(ChatColor.DARK_RED  + "skylands is not accessible until bukkit is fully updated!");
-//    		Saga.warning(event.getPlayer().getName() + " tried to portal to world_the_end");
-//    		event.getPlayer().teleport(Saga.plugin().getServer().getWorld("world").getSpawnLocation());
-//    		return;
-//    	}
-    	
     	
     }
     
