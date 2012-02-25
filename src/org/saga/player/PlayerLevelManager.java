@@ -12,6 +12,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -315,6 +316,30 @@ public class PlayerLevelManager{
 		
 	}
 	
+	/**
+	 * Called when a projectile fired by the player hits a target.
+	 * 
+	 * @param event event
+	 */
+	public void onProjectileHit(ProjectileHitEvent event) {
+
+
+		// Trigger active abilities:
+		for (Ability ability : abilities) {
+
+			// Active:
+			if(!ability.isActive()) continue;
+			
+			// Trigger:
+			boolean triggered = ability.onProjectileHit(event);
+			
+			// Notify usage:
+			if(triggered) ability.handleAfterUse();
+			
+		}
+		
+		
+	}
 	
 	/**
 	 * Called when the player gets damaged by a creature.

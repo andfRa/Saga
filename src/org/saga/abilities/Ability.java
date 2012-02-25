@@ -9,6 +9,7 @@ import org.bukkit.entity.Creature;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -1069,6 +1070,16 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		
 	}
 	
+	/**
+	 * Called when a projectile fired by the player hits a target.
+	 * 
+	 * @param event event
+	 */
+	public boolean onProjectileHit(ProjectileHitEvent event) {
+		
+		return false;
+		
+	}
 
 	/**
 	 * Called when the player damages a block.

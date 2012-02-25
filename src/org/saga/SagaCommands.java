@@ -313,7 +313,7 @@ public class SagaCommands {
 		// Inform:
 		selectedPlayer.message(SagaMessages.skillSetTo(sagaPlayer, skillName));
 		if(selectedPlayer != sagaPlayer){
-			selectedPlayer.message(SagaMessages.skillSet(sagaPlayer, skillName));
+			sagaPlayer.message(SagaMessages.skillSet(sagaPlayer, skillName));
 		}
 		
 		// Unforce:

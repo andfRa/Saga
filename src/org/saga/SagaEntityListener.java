@@ -215,6 +215,24 @@ public class SagaEntityListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onProjectileHit(ProjectileHitEvent event) {
 		
+		
+		if(!(event.getEntity() instanceof Projectile)) return;
+		Projectile projectile = (Projectile) event.getEntity();
+		
+		if(!(projectile.getShooter() instanceof Player)) return;
+		Player player = (Player) projectile.getShooter();
+		
+		// Get player:
+    	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(player.getName());
+    	if(sagaPlayer == null){
+    		Saga.warning("Can't continue with onProjectileHit, because the saga player for "+ player.getName() + " isn't loaded.");
+    		return;
+    	}
+
+    	// Forward to level manager:
+    	sagaPlayer.getLevelManager().onProjectileHit(event);
+    	
+		
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
@@ -272,7 +290,7 @@ public class SagaEntityListener implements Listener{
 		
 		// Forward to saga chunk group:
 		sagaChunk.getChunkGroup().onEndermanPlace(event, sagaChunk);
-		
+
 		
 	}
 	

@@ -1,9 +1,16 @@
 package org.saga.abilities;
 
+import java.util.List;
+
 import org.bukkit.Location;
 import org.bukkit.entity.Creature;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.entity.ProjectileHitEvent;
+import org.saga.Saga;
 import org.saga.player.SagaEntityDamageManager;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
@@ -23,79 +30,56 @@ public class ExplodingArrow extends Ability{
 	
 	}
 
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.abilities.Ability#onShotPlayer(org.bukkit.event.entity.EntityDamageByEntityEvent, org.saga.player.SagaPlayer, org.bukkit.entity.Projectile)
-	 */
 	@Override
-	public boolean onShotPlayer(EntityDamageByEntityEvent event, SagaPlayer defender, Projectile projectile) {
-
+	public boolean onProjectileHit(ProjectileHitEvent event) {
 		
+
 		// Check pre use:
 		if(!handlePreUse()){
 			return false;
 		}
-		
-		// Handle pvp:
-		SagaEntityDamageManager.handlePvp(getSagaPlayer(), defender, event);
-		if(event.isCancelled()) return true;
-		
-		Location location = defender.getLocation();
-		if(location == null) return false;
-		
+
 		Double strength = getDefinition().getPrimaryFunction().value(getSkillLevel());
+		Double radius = getDefinition().getSecondaryFunction().value(getSkillLevel());
 		
-		// Normalize:
-		if(strength < 0.0) strength = 0.0;
-		if(strength > 1.0) strength = 1.0;
+		Double radiusSqr = radius * radius;
+		SagaPlayer sagaPlayer = getSagaPlayer();
 		
+		Location location = event.getEntity().getLocation();
+		List<Entity> entities = event.getEntity().getNearbyEntities(radius, radius, radius);
+	
+		// Call events:
+		for (Entity entity : entities) {
+			
+			if(entity.getLocation().distanceSquared(location) <= radiusSqr) continue;
+			
+			if(entity instanceof Player){
+				
+				SagaPlayer targetPlayer = Saga.plugin().getSagaPlayer(((Player) entity).getName());
+				
+				if(targetPlayer == sagaPlayer || targetPlayer == null) continue;
+				
+				EntityDamageByEntityEvent eeEvent = new EntityDamageByEntityEvent(sagaPlayer.getPlayer(), targetPlayer.getPlayer(), DamageCause.PROJECTILE, 1);
+				SagaEntityDamageManager.handlePvp(getSagaPlayer(), targetPlayer, eeEvent);
+				if(eeEvent.isCancelled()) return false;
+				
+			}
+			
+		}
+
+		// Create explosion:
 		location.getWorld().createExplosion(location, strength.floatValue(), false);
 
 		// Award exp:
-		awardExperience();
+		Double exp = awardExperience();
+
+		// Statistics:
+		StatisticsManager.manager().onAbilityUse(getName(), exp);
 		
 		return true;
-		
 		
 	}
 	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.abilities.Ability#onShotCreature(org.bukkit.event.entity.EntityDamageByEntityEvent, org.bukkit.entity.Creature, org.bukkit.entity.Projectile)
-	 */
-	@Override
-	public boolean onShotCreature(EntityDamageByEntityEvent event, Creature creature, Projectile projectile) {
-
-
-		// Check pre use:
-		if(!handlePreUse()){
-			return false;
-		}
-		
-		Location location = creature.getLocation();
-		if(location == null) return false;
-		
-		Double fraction = getDefinition().getPrimaryFunction().value(getSkillLevel().shortValue());
-		
-		// Normalize:
-		if(fraction < 0.0) fraction = 0.0;
-		if(fraction > 1.0) fraction = 1.0;
-		
-		location.getWorld().createExplosion(location, fraction.floatValue(), false);
-
-		// Award exp:
-		Double awardedExp = awardExperience();
-		
-		// Statistics:
-		StatisticsManager.manager().onAbilityUse(getName(), awardedExp);
-		
-		return true;
-		
-		
-	}
 	
 	
 }
