@@ -828,7 +828,7 @@ public class StatisticsManager implements HourTicker{
 		
 		if(width < 1) width = 1;
 		
-		Double step = width.doubleValue() / BalanceConfiguration.config().maximumLevel.doubleValue();
+		Double step = (width.doubleValue() - 1.0) / BalanceConfiguration.config().maximumLevel.doubleValue();
 
 		Double[] histogram = new Double[width];
 		for (int i = 0; i < histogram.length; i++) {
