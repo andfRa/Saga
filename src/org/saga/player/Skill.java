@@ -806,7 +806,6 @@ public class Skill {
 		if(durability != 0){
 			item.setDurability((short) (item.getDurability() - durability));
 			event.getPlayer().updateInventory();
-			sagaPlayer.message(ChatColor.GREEN + getName() + " repair! dam =" + item.getDurability());
 		}
 		
 		
