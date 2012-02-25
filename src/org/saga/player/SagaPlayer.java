@@ -1313,6 +1313,9 @@ public class SagaPlayer implements SecondTicker, Trader{
 		// Update managers:
 		levelManager.update();
 		
+		// Statistics:
+		StatisticsManager.manager().onLevelChange(this);
+		
 	}
 	
 	/**

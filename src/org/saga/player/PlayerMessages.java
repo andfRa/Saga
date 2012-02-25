@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.Queue;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -1301,7 +1300,15 @@ public class PlayerMessages {
 			return colors.get(index);
 		}
 		
-		
+		/**
+		 * Resets the loop.
+		 * 
+		 */
+		public void reset() {
+
+			index = 0;
+
+		}
 		
 	}
 	

@@ -23,8 +23,10 @@ import org.saga.config.SkillConfiguration;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;
 import org.saga.player.PlayerMessages;
+import org.saga.player.PlayerMessages.ColorCircle;
 import org.saga.player.SagaPlayer;
 import org.saga.player.Skill;
+import org.saga.utility.TextUtil;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
 import org.sk89q.CommandPermissions;
@@ -437,20 +439,11 @@ public class SagaCommands {
     @CommandPermissions({"saga.admin.dcommand"})
     public static void debugCommand(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
-    
-    	Location l = sagaPlayer.getLocation();
-    	CraftServer cserv = ((CraftServer)Saga.plugin().getServer());
-    	CraftWorld cworld = (CraftWorld) cserv.getWorld("world");
-    	World nworld = cworld.getHandle();
+    	ColorCircle cols = new ColorCircle().addColor(ChatColor.BLACK).addColor(ChatColor.RED);
     	
+    	Double[] data = new Double[]{0.0, 0.0, 0.9, 1.5, 3.0, 4.5, 5.0, 5.2, 6.0, 5.2, 5.0, 4.5, 3.0, 1.5, 0.9, 0.0, 0.0};
     	
-    	ItemInWorldManager iiwm = new ItemInWorldManager(cworld.getHandle());
-    	
-    	EntityPlayer npcEntity = new EntityPlayer(cserv.getServer(), nworld, args.getString(0), iiwm);
-    	
-    	npcEntity.setPositionRotation(l.getX(), l.getY(), l.getZ(), l.getYaw(), l.getPitch());
-    	cworld.getHandle().addEntity(npcEntity);
-    	
+    	sagaPlayer.message(TextUtil.histogram(data,cols));
     
     }
 

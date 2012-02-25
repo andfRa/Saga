@@ -96,6 +96,11 @@ public class StatisticsManager implements HourTicker{
 	 * Players experience.
 	 */
 	private Hashtable<String, Hashtable<String,Double>> exp; 
+
+	/**
+	 * Player levels.
+	 */
+	private Hashtable<String, Integer> playerLevels; 
 	
 	
 	/**
@@ -205,6 +210,12 @@ public class StatisticsManager implements HourTicker{
 			integrity=false;
 		}
 		
+		if(playerLevels == null){
+			Saga.severe(getClass(), "playerLevels field failed to initialize", "setting default");
+			playerLevels = new Hashtable<String, Integer>();
+			integrity=false;
+		}
+		
 		return integrity;
 		
 		
@@ -230,7 +241,7 @@ public class StatisticsManager implements HourTicker{
 		profExp = new Hashtable<String, Integer>();
 		profExpPlayers = new Hashtable<String, HashSet<String>>();
 		exp = new Hashtable<String, Hashtable<String,Double>>();
-		
+		playerLevels = new Hashtable<String, Integer>();
 		
 	}
 
@@ -719,7 +730,6 @@ public class StatisticsManager implements HourTicker{
 		onExp(sagaPlayer, proficiency + "(" + source + ")", amount);
 		
 	}
-
 	
 	/**
 	 * Gets the experience for the given source.
@@ -793,6 +803,67 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 	
+	// Levels:
+	/**
+	 * Called on level change.
+	 * 
+	 * @param sagaPlayer saga player
+	 */
+	public void onLevelChange(SagaPlayer sagaPlayer) {
+
+		playerLevels.put(sagaPlayer.getName(), sagaPlayer.getLevel());
+
+	}
+	
+	/**
+	 * Gets the histogram representing levels.
+	 * 
+	 * @param width width
+	 * @param normalize normalization
+	 * @param multiplier multiplier
+	 * @return histogram data
+	 */
+	public Double[] getLevelHistogram(Integer width, boolean normalize) {
+
+		
+		if(width < 1) width = 1;
+		
+		Double step = width.doubleValue() / BalanceConfiguration.config().maximumLevel.doubleValue();
+
+		Double[] histogram = new Double[width];
+		for (int i = 0; i < histogram.length; i++) {
+			histogram[i] = 0.0;
+		}
+		
+		Collection<Integer> levels = playerLevels.values();
+		for (Integer level : levels) {
+			
+			if(level > BalanceConfiguration.config().maximumLevel) continue;
+			
+			Integer index = new Double(level.doubleValue() * step).intValue();
+			histogram[index] = histogram[index] + 1;
+					
+		}
+		
+		if(normalize){
+			
+			Double sum = 0.0;
+			for (int i = 0; i < histogram.length; i++) {
+				sum += histogram[i];
+			}
+			
+			if(sum < 1) sum = 1.0;
+			
+			for (int i = 0; i < histogram.length; i++) {
+				histogram[i] = histogram[i] / sum;
+			}
+			
+		}
+		
+		return histogram;
+		
+		
+	}
 	
 	// Load unload:
 	/**

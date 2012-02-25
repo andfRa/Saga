@@ -3,7 +3,7 @@
 "saveInterval":120,
 "maximumStamina":100.0,
 "staminaPerSecond":30.0,
-"maximumLevel":150,
+"maximumLevel":50,
 "maximumSkillLevel":50,
 "abilitySelectedTime":3,
 "baseLightningDamage":5,

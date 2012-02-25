@@ -22,6 +22,30 @@ public class MathUtil {
 		return rounded.doubleValue();
 	    
 	}
+	
+	public static Double max(Double[] data){
+		
+		Double max = 0.0;
+		
+		for (int i = 0; i < data.length; i++) {
+			if(data[i] > max) max = data[i];
+		}
+		
+		return max;
+	    
+	}
+	
+	public static Double[] multiply(Double[] data, Double mult){
+		
+		for (int i = 0; i < data.length; i++) {
+			data[i] = data[i] * mult;
+		}
+		
+		return data;
+	    
+	}
+	
+	
 
 	
 }

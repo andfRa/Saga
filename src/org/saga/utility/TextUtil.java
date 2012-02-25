@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.saga.player.PlayerMessages.ColorCircle;
 
 public class TextUtil {
 	
@@ -412,6 +413,44 @@ public class TextUtil {
 		for (int i = 0; i < arrayMessage.length; i++) {
 			player.sendMessage(arrayMessage[i]);
 		}
+		
+		
+	}
+	
+	public static String histogram(Double[] data, ColorCircle colours) {
+
+		
+		StringBuffer result = new StringBuffer();
+		
+		Integer row = MathUtil.max(data).intValue();
+		
+		while (true) {
+			
+			colours.reset();
+			
+			for (int i = 0; i < data.length; i++) {
+				
+				if(i % 10 == 0) result.append(colours.nextColor());
+				
+				if(data[i] >= row){
+					result.append("||");
+				}else{
+					result.append(" ");
+				}
+				
+			}
+			
+			row --;
+			
+			if(row <= 0){
+				break;
+			}else{
+				result.append("\n");
+			}
+			
+		}
+		
+		return result.toString();
 		
 		
 	}
