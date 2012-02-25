@@ -168,14 +168,11 @@ public class SagaEntityListener implements Listener{
 		// Player versus creature:
 		else if(defender instanceof Creature && sagaAttacker != null){
 			
-			// Get saga chunk:
+			// Forward to saga chunk:
 			SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(defender.getLocation());
-			if(sagaChunk == null){
-				return;
-			}
+			if(sagaChunk != null) sagaChunk.onPlayerDamagedCreature(cEvent, sagaAttacker, (Creature)defender);
 			
 			// Forward to saga chunk group:
-			sagaChunk.onPlayerDamagedCreature(cEvent, sagaAttacker, (Creature)defender);
 			
 			if(event.isCancelled()) return;
 			
