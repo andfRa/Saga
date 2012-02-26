@@ -87,7 +87,7 @@
     "levelsCost":5,
     "properties":{},
     "blockExp":{},
-    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "playerExp":{"x1":0,"y1":1.0,"x2":50,"y2":0.0},
     "creatureExp":{}
   },
 
@@ -104,7 +104,7 @@
     "levelsCost":5,
     "properties":{},
     "blockExp":{},
-    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "playerExp":{"x1":0,"y1":1.0,"x2":50,"y2":30.0},
     "creatureExp":{}
   },
 
@@ -127,7 +127,7 @@
     "levelsCost":5,
     "properties":{},
     "blockExp":{},
-    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "playerExp":{"x1":0,"y1":1.0,"x2":50,"y2":30.0},
     "creatureExp":{}
   },
 
@@ -152,7 +152,7 @@
     "levelsCost":5,
     "properties":{},
     "blockExp":{},
-    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "playerExp":{"x1":0,"y1":1.0,"x2":50,"y2":30.0},
     "creatureExp":{}
   },
 

@@ -425,8 +425,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 				
 				ability.setPlayer(this);
 				
-				ability.setProficiency(matchProficiency(ability));
-				
 			} catch (InvalidAbilityException e) {
 				Saga.severe(this, "abilities element invalid: " + e.getMessage(), "removing element");
 				abilities.remove(i);
@@ -823,8 +821,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 					
 					ability.setPlayer(this);
 					
-					ability.setProficiency(matchProficiency(ability));
-					
 				} catch (InvalidAbilityException e) {
 					
 					Saga.severe(this, "failed to retrieve " + abilityName + " ability:" + expRegen.getClass().getSimpleName() + ":" + e.getMessage(), "ignoring ability");
@@ -944,7 +940,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * @param ability ability
 	 * @return proficiency, null if none
 	 */
-	private Proficiency matchProficiency(Ability ability) {
+	public Proficiency matchProficiency(Ability ability) {
 
 
 		// Profession:
@@ -3279,7 +3275,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 				giveExperience(expAmount);
 
 				// Statistics:
-				StatisticsManager.manager().onExp(this, profession.getName(), "player", expAmount);
+				StatisticsManager.manager().onExp(this, classs.getName(), "player", expAmount);
 				
 			}
 			

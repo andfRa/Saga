@@ -20,7 +20,6 @@ import org.saga.abilities.AbilityDefinition.ActivationType;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AbilityConfiguration.InvalidAbilityException;
 import org.saga.player.PlayerMessages;
-import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.SagaCustomSerialization;
 
@@ -56,12 +55,6 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 * Saga player.
 	 */
 	transient private SagaPlayer sagaPlayer = null;
-	
-	/**
-	 * Proficiency, null if none.
-	 */
-	transient private Proficiency proficiency = null;
-	
 	
 	/**
 	 * Last triggered cooldown.
@@ -536,28 +529,6 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		return getSagaPlayer().getModifiedSkillMultiplier(baseSkills);
 		
 	}
-
-	/**
-	 * Sets the proficiency.
-	 * 
-	 * @param proficiency proficiency
-	 */
-	public void setProficiency(Proficiency proficiency) {
-		
-		this.proficiency= proficiency;
-		
-	}
-
-	/**
-	 * Gets the proficiency.
-	 * 
-	 * @return proficiency, null if none
-	 */
-	public Proficiency getProficiency() {
-		
-		return proficiency;
-		
-	}
 	
 	
 	// Experience:
@@ -571,7 +542,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	
 		Double exp = getDefinition().getExpReward(expval);
 		
-		getSagaPlayer().onAbilityExp(this, getProficiency(), exp);
+		getSagaPlayer().onAbilityExp(this, sagaPlayer.matchProficiency(this), exp);
 		
 		return exp;
 		

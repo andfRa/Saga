@@ -141,7 +141,6 @@ public class Proficiency {
 		
 		for (Ability ability : abilities) {
 			ability.setPlayer(sagaPlayer);
-			ability.setProficiency(this);
 		}
 		
 	}
@@ -344,7 +343,6 @@ public class Proficiency {
 
 		// Set player:
 		ability.setPlayer(sagaPlayer);
-		ability.setProficiency(this);
 		
 		
 	}
