@@ -451,11 +451,11 @@ public class ChunkGroupMessages {
 		rString.append(messageColor.nextColor());
 		rString.append("Level: " + settlement.getLevel());
 		if(settlement.getLevel() < ChunkGroupConfiguration.config().settlementMaximumLevel){
-			rString.append(" Experience: " + settlement.getLevelProgress().intValue() + "/" + settlement.getExperienceRequirement().intValue());
+			rString.append(" Remaining exp: " + settlement.getRemainingExp().intValue());
 		}else{
-			rString.append(" Experience: " + settlement.getLevelProgress().intValue());
+			rString.append(" Remaining exp: -");
 		}
-		rString.append(" Experience speed: " + settlement.getExperienceAmount());
+		rString.append(" Exp speed: " + settlement.getExpSpeed());
 		
 		rString.append("\n");
 		

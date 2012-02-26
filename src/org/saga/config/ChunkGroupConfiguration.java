@@ -70,16 +70,6 @@ public class ChunkGroupConfiguration {
 
 	// Leveling:
 	/**
-	 * Levels experience.
-	 */
-	private TwoPointFunction levelExperience;
-	
-	/**
-	 * Experience per player.
-	 */
-	private TwoPointFunction experiencePerPlayer;
-	
-	/**
 	 * Settlement definition.
 	 */
 	private SettlementDefinition settlementDefinition;
@@ -238,20 +228,6 @@ public class ChunkGroupConfiguration {
 		}
 		
 		// Leveling:
-		if(levelExperience == null){
-			Saga.severe("Failed to initialize levelExperience field for " + config + ". Setting default.");
-			levelExperience = new TwoPointFunction(1000.0);
-			integrity=false;
-		}
-		integrity = levelExperience.complete() && integrity;
-		
-		if(experiencePerPlayer == null){
-			Saga.severe("Failed to initialize experiencePerPlayer field for " + config + ". Setting default.");
-			experiencePerPlayer = new TwoPointFunction(1.0);
-			integrity=false;
-		}
-		integrity = experiencePerPlayer.complete() && integrity;
-		
 		if(settlementDefinition == null){
 			Saga.severe("Failed to initialize settlementDefinitions field for " + config + ". Setting default.");
 			settlementDefinition = SettlementDefinition.defaultDefinition();
@@ -377,31 +353,10 @@ public class ChunkGroupConfiguration {
 	 * 
 	 * @param level level
 	 */
-	public Double calculateSettlementClaims(Short level) {
+	public Double calculateSettlementClaims(Integer level) {
 
 		return settlementClaims.value(level);
 		
-	}
-
-	/**
-	 * Calculates level experience requirement for the given settlement level.
-	 * 
-	 * @param level level
-	 * @return claims per minute
-	 */
-	public Double calculateLevelExperience(Short level) {
-		return levelExperience.value(level);
-	}
-
-	/**
-	 * Calculates experience gain per player.
-	 * 
-	 * @param players players
-	 * @return experience bonus per minute
-	 */
-	public Double calculateExperiencePerPlayer(Integer players) {
-		if(experiencePerPlayer.getXMin() > players) return 0.0;
-		return experiencePerPlayer.value(players.shortValue());
 	}
 
 	/**

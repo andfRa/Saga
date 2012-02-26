@@ -5,7 +5,6 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 
-import org.bukkit.inventory.ItemStack;
 import org.saga.Clock;
 import org.saga.Clock.MinuteTicker;
 import org.saga.Saga;
@@ -30,7 +29,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	/**
 	 * Settlement level.
 	 */
-	private Short level;
+	private Integer level;
 	
 	/**
 	 * Player roles.
@@ -38,14 +37,9 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	private Hashtable<String, Proficiency> playerRoles;
 	
 	/**
-	 * Level progress.
+	 * Experience.
 	 */
-	private Double levelProgress;
-	
-	/**
-	 * Experience requirement.
-	 */
-	transient private Double experienceRequirement; 
+	private Double exp;
 	
 	/**
 	 * True if the minute tick is registered.
@@ -65,9 +59,13 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	 * @param name name
 	 */
 	public Settlement(String name) {
+		
 		super(name);
 		level = 0;
+		exp = 0.0;
 		playerRoles = new Hashtable<String, Proficiency>();
+		definition = ChunkGroupConfiguration.config().getSettlementDefinition();
+		
 	}
 
 	/* 
@@ -87,9 +85,9 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 			integrity = false;
 		}
 		
-		if(levelProgress == null){
-			Saga.info("ChunkGroup "+ this +" levelProgress not initialized. Setting default.");
-			levelProgress = 0.0;
+		if(exp == null){
+			Saga.info("exp "+ this +" levelProgress not initialized. Setting default.");
+			exp = 0.0;
 			integrity = false;
 		}
 		
@@ -116,9 +114,6 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 				playerRoles.remove(playerName);
 			}
 		}
-		
-		// Calculated fields:
-		experienceRequirement = ChunkGroupConfiguration.config().calculateLevelExperience(getLevel());
 		
 		// Definition:
 		definition = ChunkGroupConfiguration.config().getSettlementDefinition();
@@ -267,7 +262,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	 * Gets settlement level.
 	 * 
 	 */
-	public Short getLevel() {
+	public Integer getLevel() {
 		return level;
 	}
 	
@@ -276,14 +271,10 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	 * 
 	 * @param level level
 	 */
-	public void setLevel(Short level) {
-		
+	public void setLevel(Integer level) {
 		
 		// Set related fields:
 		this.level = level;
-		this.levelProgress = 0.0;
-		experienceRequirement = ChunkGroupConfiguration.config().calculateLevelExperience(level);
-		
 		
 	}
 	
@@ -292,7 +283,34 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	 * 
 	 */
 	public void levelUp() {
-		setLevel((short) (getLevel()+1));
+		setLevel(getLevel() + 1);
+	}
+	
+	/**
+	 * Gets experience.
+	 * 
+	 * @return experience
+	 */
+	public Double getExp() {
+		return exp;
+	}
+
+	/**
+	 * Gets remaining experience.
+	 * 
+	 * @return remaining experience
+	 */
+	public Double getRemainingExp() {
+		return getDefinition().getExpRequired(getLevel()) - exp;
+	}
+
+	/**
+	 * Gets experience gain speed.
+	 * 
+	 * @return experience speed
+	 */
+	public Double getExpSpeed() {
+		return getDefinition().getExpSpeed(getActivePlayerCount());
 	}
 	
 	
@@ -904,34 +922,8 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	
 	}
 	
-	// Leveling:
-	/**
-	 * Gets the levelProgress.
-	 * 
-	 * @return the levelProgress
-	 */
-	public Double getLevelProgress() {
-		return levelProgress;
-	}
-
-	/**
-	 * Gets the experienceRequirement.
-	 * 
-	 * @return the experienceRequirement
-	 */
-	public Double getExperienceRequirement() {
-		return experienceRequirement;
-	}
 	
-	/**
-	 * Gets the experience amount the settlement is getting.
-	 * 
-	 * @return experience amount
-	 */
-	public Double getExperienceAmount() {
-		return ChunkGroupConfiguration.config().calculateExperiencePerPlayer(getRegisteredPlayerCount());
-	}
-
+	// Definition:
 	/**
 	 * Gets the definition for the settlement.
 	 * 
@@ -941,6 +933,8 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		return definition;
 	}
 
+	
+	// Clock:
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -949,18 +943,19 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	@Override
 	public void clockMinuteTick() {
 
-
+		
 		// Level progress:
 		if(level < ChunkGroupConfiguration.config().settlementMaximumLevel && definition.canLevelUp(this)){
-			levelProgress += getExperienceAmount();
-			if(levelProgress >= experienceRequirement){
-				
-				levelUp();
+			
+			exp += getExpSpeed();
+			
+			if(getRemainingExp() > 0) return;
+			
+			levelUp();
 
-				// Inform:
-				Saga.broadcast(ChunkGroupMessages.settlementLevel(this));
-				
-			}
+			// Inform:
+			Saga.broadcast(ChunkGroupMessages.settlementLevel(this));
+			
 		}
 		
 		

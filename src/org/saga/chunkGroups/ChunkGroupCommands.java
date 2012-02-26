@@ -1539,7 +1539,7 @@ public class ChunkGroupCommands {
 	public static void setlevel(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
-		Short level = null;
+		Integer level = null;
 		ChunkGroup selectedChunkGroup = null;
 
 		// Arguments:
@@ -1554,7 +1554,7 @@ public class ChunkGroupCommands {
 			}
 
 			try {
-				level = Short.parseShort(args.getString(1));
+				level = Integer.parseInt(args.getString(1));
 			} catch (NumberFormatException e) {
 				sagaPlayer.message(ChunkGroupMessages.invalidInteger(args.getString(1)));
 				return;
@@ -1570,7 +1570,7 @@ public class ChunkGroupCommands {
 			}
 
 			try {
-				level = Short.parseShort(args.getString(0));
+				level = Integer.parseInt(args.getString(0));
 			} catch (NumberFormatException e) {
 				sagaPlayer.message(ChunkGroupMessages.invalidInteger(args.getString(0)));
 				return;

@@ -3,6 +3,7 @@ package org.saga.buildings;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.event.Event.Result;
@@ -31,12 +32,23 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 	/**
 	 * Top sign.
 	 */
-	transient public static String TOP_SIGN = "=[top]=";
+	transient public static String TOP_SIGN = "=[TOP]=";
 	
 	/**
 	 * Count down sign.
 	 */
-	transient public static String COUNTDOWN_SIGN = "=[count]=";
+	transient public static String COUNTDOWN_SIGN = "=[COUNT]=";
+	
+	/**
+	 * KDR multiplier.
+	 */
+	transient public static Double KDR_MULTIPLIER = 0.4;
+
+	/**
+	 * Level multiplier.
+	 */
+	transient public static Double LEVEL_MULTIPLIER = 0.25;
+	
 	
 	/**
 	 * Arena players.
@@ -156,24 +168,53 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 		for (ArenaPlayer arenaPlayer : arenaPlayers) {
 		
 			if(arenaPlayer.getName().equals(name)){
-				
 				foundPlayer = arenaPlayer;
-				
-				arenaPlayers.remove(foundPlayer);
-				
 				break;
-				
 			}
 			
 		}
 		
 		if(foundPlayer == null){
-			foundPlayer = new ArenaPlayer(name, 0, 0);
+			
+			foundPlayer = new ArenaPlayer(name, 0, 0, 0.0);
+			arenaPlayers.add(foundPlayer);
+			
 		}
 		
 		foundPlayer.increaseKills();
 		
-		arenaPlayers.add(foundPlayer);
+		
+		
+	}
+	
+	/**
+	 * Adds points to a player.
+	 * 
+	 * @param name player name
+	 * @param sagaPlayer saga player
+	 */
+	private void addPoints(String name, Double points) {
+
+
+		ArenaPlayer foundPlayer = null;
+		
+		for (ArenaPlayer arenaPlayer : arenaPlayers) {
+		
+			if(arenaPlayer.getName().equals(name)){
+				foundPlayer = arenaPlayer;
+				break;
+			}
+			
+		}
+		
+		if(foundPlayer == null){
+			
+			foundPlayer = new ArenaPlayer(name, 0, 0, 0.0);
+			arenaPlayers.add(foundPlayer);
+			
+		}
+		
+		foundPlayer.increasePoints(points);
 		
 		
 	}
@@ -191,26 +232,21 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 		for (ArenaPlayer arenaPlayer : arenaPlayers) {
 		
 			if(arenaPlayer.getName().equals(name)){
-				
 				foundPlayer = arenaPlayer;
-				
-				foundPlayer.increaseDeaths();
-				
+				break;
 			}
 			
 		}
 		
 		if(foundPlayer == null){
 			
-			foundPlayer = new ArenaPlayer(name, 0, 0);
-			foundPlayer.increaseDeaths();
+			foundPlayer = new ArenaPlayer(name, 0, 0, 0.0);
 			arenaPlayers.add(foundPlayer);
 			
 		}
 		
-		
-		
-		
+		foundPlayer.increaseDeaths();
+			
 		
 	}
 
@@ -222,7 +258,7 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 	 */
 	public ArrayList<ArenaPlayer> getTop(Integer count) {
 
-		
+
 		ArrayList<ArenaPlayer> topPlayers = new ArrayList<Arena.ArenaPlayer>();
 		
 		Collections.sort(arenaPlayers);
@@ -349,7 +385,7 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 		Sign sign = (Sign) targetBlock.getState();
 
 		// Top sign:
-		if(sign.getLine(0).equals(ChunkGroupConfiguration.config().arenaTopSign)){
+		if(ChatColor.stripColor(sign.getLine(0)).equals(TOP_SIGN)){
 			
 			sagaPlayer.message(BuildingMessages.arenaTop(this, 10));
 			
@@ -359,7 +395,7 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 			
 		}
 		// Count down sign:
-		else if(sign.getLine(0).equals(ChunkGroupConfiguration.config().arenaCountdownSign)){
+		else if(ChatColor.stripColor(sign.getLine(0)).equals(COUNTDOWN_SIGN)){
 			
 			// Count:
 			Integer count = 3;
@@ -407,12 +443,12 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 		
 		// Top sign:
 		if(event.getLine(0).equalsIgnoreCase(TOP_SIGN)){
-			event.setLine(0, ChunkGroupConfiguration.config().arenaTopSign);
+			event.setLine(0, ChunkGroupConfiguration.config().enabledSignColor + TOP_SIGN);
 		}
 		
 		// Count down sign:
 		if(event.getLine(0).equalsIgnoreCase(COUNTDOWN_SIGN)){
-			event.setLine(0, ChunkGroupConfiguration.config().arenaCountdownSign);
+			event.setLine(0, ChunkGroupConfiguration.config().enabledSignColor + COUNTDOWN_SIGN);
 		}
 		
 		
@@ -464,9 +500,12 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 
 		
 		// Add kills:
-		addDeath(defender.getName());
 		addKill(attacker.getName());
-	
+		addDeath(defender.getName());
+		
+		// Points:
+		addPoints(attacker.getName(), defender.getLevel().doubleValue() * LEVEL_MULTIPLIER);
+		
 	
 	}
 	
@@ -525,6 +564,11 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 		 * Deaths.
 		 */
 		private Integer deaths;
+
+		/**
+		 * Points.
+		 */
+		private Double points;
 		
 		
 		/**
@@ -533,12 +577,14 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 		 * @param name name
 		 * @param kills kills
 		 * @param deaths deaths
+		 * @param points points
 		 */
-		public ArenaPlayer(String name, Integer kills, Integer deaths) {
+		public ArenaPlayer(String name, Integer kills, Integer deaths, Double points) {
 
 			this.name = name;
 			this.kills = kills;
 			this.deaths = deaths;
+			this.points = points;
 			
 		}
 		
@@ -554,19 +600,25 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 			
 			if(name == null){
 				name = "none";
-				Saga.severe(this.getClass(), "failed to initialize name field", "setting default");
+				Saga.severe(this.getClass(), "name field failed to initialize", "setting default");
 				integrity = false;
 			}
 			
 			if(kills == null){
 				kills = 0;
-				Saga.severe(this.getClass(), "failed to initialize kills field", "setting default");
+				Saga.severe(this.getClass(), "kills field failed to initialize", "setting default");
 				integrity = false;
 			}
 			
 			if(deaths == null){
 				deaths = 0;
-				Saga.severe(this.getClass(), "failed to initialize deaths field", "setting default");
+				Saga.severe(this.getClass(), "deaths field failed to initialize", "setting default");
+				integrity = false;
+			}
+			
+			if(points == null){
+				points = 0.0;
+				Saga.severe(this.getClass(), "points field failed to initialize", "setting default");
 				integrity = false;
 			}
 
@@ -581,33 +633,53 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 		 * @return score
 		 */
 		public Double calculateScore() {
-			return 2 * kills.doubleValue() - deaths;
+			
+			Integer kills = this.kills;
+			Integer deaths = this.deaths;
+			
+			if(kills == 0) kills = 1;
+			if(deaths == 0) deaths = 1;
+			
+			return points * (1 + KDR_MULTIPLIER * (kills / deaths));
+			
 		}
 		
 		/**
-		 * Gets the name.
+		 * Gets name.
 		 * 
-		 * @return the name
+		 * @return name
 		 */
 		public String getName() {
 			return name;
 		}
 
 		/**
-		 * Gets the kills.
+		 * Gets kills.
 		 * 
-		 * @return the kills
+		 * @return kills
 		 */
 		public Integer getKills() {
 			return kills;
 		}
 
 		/**
-		 * Increases the kills.
+		 * Increases kills.
 		 * 
 		 */
 		public void increaseKills() {
 			kills++;
+		}
+
+		/**
+		 * Increases points.
+		 * 
+		 */
+		public void increasePoints(Double points) {
+			
+			if(points < 1) points = 1.0;
+			
+			this.points += points;
+			
 		}
 
 		/**

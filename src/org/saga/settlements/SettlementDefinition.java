@@ -31,6 +31,16 @@ public class SettlementDefinition {
 	 */
 	private Hashtable<String, TwoPointFunction> enabledBuildings;
 
+	/**
+	 * Experience requirement.
+	 */
+	private TwoPointFunction expRequirement;
+
+	/**
+	 * Experience speed.
+	 */
+	private TwoPointFunction expSpeed;
+	
 
 	// Initialization:
 	/**
@@ -85,6 +95,20 @@ public class SettlementDefinition {
 			integrity = enabledBuildings.get(building).complete() && integrity;
 		}
 		
+		if(expRequirement == null){
+			expRequirement = new TwoPointFunction(10000.0);
+			Saga.severe(SettlementDefinition.class, "expRequirement field failed to initialize", "setting default");
+			integrity = false;
+		}
+		integrity = integrity && expRequirement.complete();
+		
+		if(expSpeed == null){
+			expSpeed = new TwoPointFunction(0.0);
+			Saga.severe(SettlementDefinition.class, "expSpeed field failed to initialize", "setting default");
+			integrity = false;
+		}
+		integrity = integrity && expSpeed.complete();
+		
 		return integrity;
 		
 		
@@ -117,7 +141,7 @@ public class SettlementDefinition {
 	 * @param level level
 	 * @return the activePlayers
 	 */
-	public Integer getActivePlayers(Short level) {
+	public Integer getActivePlayers(Integer level) {
 		return activePlayers.value(level).intValue();
 	}
 
@@ -127,7 +151,7 @@ public class SettlementDefinition {
 	 * @param level level
 	 * @return building points
 	 */
-	public Integer getBuildingPoints(Short level) {
+	public Integer getBuildingPoints(Integer level) {
 		return buildingPoints.value(level).intValue();
 	}
 
@@ -149,7 +173,7 @@ public class SettlementDefinition {
 	 * @param level level
 	 * @return amount of available roles
 	 */
-	public Integer getTotalRoles(String roleName, Short level) {
+	public Integer getTotalRoles(String roleName, Integer level) {
 		
 		
 		TwoPointFunction amount = roles.get(roleName);
@@ -170,7 +194,7 @@ public class SettlementDefinition {
 	 * @param level settlement level
 	 * @return amount of enabled buildings
 	 */
-	public Integer getTotalBuildings(String buildingName, Short level) {
+	public Integer getTotalBuildings(String buildingName, Integer level) {
 		
 		TwoPointFunction amount = enabledBuildings.get(buildingName);
 		if(amount == null || amount.getXMin() > level){
@@ -187,7 +211,7 @@ public class SettlementDefinition {
 	 * @param level settlement level
 	 * @return enabled building names
 	 */
-	public HashSet<String> getAllBuildings(Short level) {
+	public HashSet<String> getAllBuildings(Integer level) {
 		
 		
 		HashSet<String> buildings = new HashSet<String>();
@@ -204,6 +228,32 @@ public class SettlementDefinition {
 		return buildings;
 
 		
+	}
+	
+	
+	// Experience:
+	/**
+	 * Gets experience requirement.
+	 * 
+	 * @param level settlement level
+	 * @return requirement
+	 */
+	public Double getExpRequired(Integer level) {
+		
+		return expRequirement.value(level);
+
+	}
+	
+	/**
+	 * Gets experience speed.
+	 * 
+	 * @param players players online
+	 * @return speed
+	 */
+	public Double getExpSpeed(Integer players) {
+		
+		return expSpeed.value(players);
+
 	}
 	
 	
@@ -224,4 +274,6 @@ public class SettlementDefinition {
 
 
 	}
+	
+	
 }

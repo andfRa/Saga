@@ -11,6 +11,7 @@ import org.saga.config.ChunkGroupConfiguration;
 import org.saga.player.PlayerMessages.ColorCircle;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.StringBook;
+import org.saga.utility.StringTable;
 import org.saga.utility.TextUtil;
 
 public class BuildingMessages {
@@ -79,28 +80,32 @@ public class BuildingMessages {
 	public static String arenaTop(Arena arena, Integer count) {
 		
 		
-		StringBuffer rString = new StringBuffer();
 		ArrayList<ArenaPlayer> topPlayers = arena.getTop(count);
 		ColorCircle messageColor = new ColorCircle().addColor(normal1).addColor(normal2);
 		
+		StringTable table = new StringTable(messageColor);
+		
+		
+		Integer listLen = count;
+		
 		// Fix count:
-		if(count > topPlayers.size()) count = topPlayers.size();
+		if(listLen > topPlayers.size()) listLen = topPlayers.size();
+		
+		// Names:
+		table.addLine(new String[]{"NAME","SCORE","KILLS","DEATHS","KDR"});
 		
 		// Nobody:
 		if(topPlayers.size() == 0){
 			
-			rString.append(messageColor.nextColor());
-			
-			rString.append("none");
+			table.addLine(new String[]{"-","-","-","-","-"});
 			
 		}
 		
 		// Arena players:
 		for (ArenaPlayer arenaPlayer : topPlayers) {
-			
-			if(rString.length() > 0) rString.append("\n");
-			
-			rString.append(messageColor.nextColor());
+
+			listLen --;
+			if(listLen < 0) break;
 			
 			String kdr = "";
 			if(arenaPlayer.getDeaths() == 0){
@@ -109,13 +114,21 @@ public class BuildingMessages {
 				kdr = TextUtil.displayDouble(arenaPlayer.getKills().doubleValue() / arenaPlayer.getDeaths().doubleValue());
 			}
 			
-			rString.append(arenaPlayer.getName() + " with " + arenaPlayer.getKills() + " kills and " + kdr + " KDR.");
+			table.addLine(
+				new String[]{
+					arenaPlayer.getName(),
+					arenaPlayer.calculateScore().toString(),
+					arenaPlayer.getKills().toString(),
+					arenaPlayer.getDeaths().toString(),
+					kdr
+				});
+			
 			
 		}
 		
-		rString.insert(0, messageColor.nextColor());
+		table.collapse();
 		
-		return TextUtil.frame("Top " + count, rString.toString(), messageColor.nextColor());
+		return TextUtil.frame("Top " + count, table.createTable(), messageColor.nextColor());
 		
 		
 	}
