@@ -1834,7 +1834,7 @@ public class ChunkGroup{
 		ItemStack item = event.getPlayer().getItemInHand();
 		Block block = event.getClickedBlock();
 		
-		// Buckets and flint steel:
+		// Only builders:
 		if(!canBuild(sagaPlayer) && item != null && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)){
 
 			switch (item.getType()) {
@@ -1869,6 +1869,16 @@ public class ChunkGroup{
 					sagaPlayer.message(SagaMessages.noPermission(this));
 					event.getPlayer().updateInventory();
 					return;
+					
+				case INK_SACK:
+					
+					if(item.getData().getData() != 15) break;
+					
+					event.setCancelled(true);
+					event.setUseItemInHand(Result.DENY);
+					sagaPlayer.message(SagaMessages.noPermission(this));
+					event.getPlayer().updateInventory();
+					return;
 
 				default:
 					break;
@@ -1877,7 +1887,7 @@ public class ChunkGroup{
 			
 		}
 		
-		// Potions:
+		// Everyone:
 		if(item != null && item.getType() == Material.POTION){
 
 			Short durability = item.getDurability();
