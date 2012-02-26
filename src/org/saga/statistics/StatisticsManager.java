@@ -803,6 +803,7 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 	
+	
 	// Levels:
 	/**
 	 * Called on level change.
