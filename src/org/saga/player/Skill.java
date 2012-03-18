@@ -88,7 +88,7 @@ public class Skill {
 	/**
 	 * Fire tick ignore probability.
 	 */
-	private TwoPointFunction fireTickResistance2;
+	private TwoPointFunction fireTickResistance;
 
 	
 	
