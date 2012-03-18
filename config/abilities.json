@@ -24,13 +24,13 @@
     "usedAmount":{"x1":0,"y1":3.0,"x2":50,"y2":1.0},
     "cooldown":{"x1":0,"y1":10.0,"x2":50,"y2":5.0},
     "active":{"x1":0,"y1":12.0,"x2":50,"y2":20.0},
-    "primaryFunction":{"x1":0,"y1":0.1,"x2":50,"y2":0.9},
-    "secondaryFunction":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "primaryFunction":{"x1":0,"y1":2.0,"x2":50,"y2":2.8},
+    "secondaryFunction":{"x1":0,"y1":3.5,"x2":50,"y2":5.0},
     "baseSkills":["archery"],
-    "expReward":{"x1":0,"y1":6.0,"x2":50,"y2":6},
-    "description":"Arrow explodes when it hits a living entity when activated.",
+    "expReward":{"x1":0,"y1":6.0,"x2":50,"y2":4},
+    "description":"Arrow explodes on contact.",
     "primaryStat":"strength",
-    "secondaryStat":""
+    "secondaryStat":"radius"
   },
 
   {"className":"org.saga.abilities.Bash",
@@ -171,7 +171,7 @@
     "primaryFunction":{"x1":0,"y1":1.5,"x2":50,"y2":5.5},
     "secondaryFunction":{"x1":0,"y1":0.0,"x2":50,"y2":0.9},
     "baseSkills":["smithing"],
-    "expReward":{"x1":0,"y1":0.0,"x2":500,"y2":250},
+    "expReward":{"x1":0,"y1":0.0,"x2":500,"y2":50},
     "description":"Repairs leather items. Click an iron block to use.",
     "primaryStat":"efficiency",
     "secondaryStat":""
@@ -187,7 +187,7 @@
     "primaryFunction":{"x1":0,"y1":1.0,"x2":50,"y2":4.0},
     "secondaryFunction":{"x1":0,"y1":0.0,"x2":50,"y2":0.9},
     "baseSkills":["smithing"],
-    "expReward":{"x1":0,"y1":0.0,"x2":500,"y2":250},
+    "expReward":{"x1":0,"y1":0.0,"x2":500,"y2":50},
     "description":"Repairs iron items. Click an iron block to use.",
     "primaryStat":"efficiency",
     "secondaryStat":""
@@ -203,7 +203,7 @@
     "primaryFunction":{"x1":0,"y1":1.0,"x2":50,"y2":2.5},
     "secondaryFunction":{"x1":0,"y1":0.0,"x2":50,"y2":0.9},
     "baseSkills":["smithing"],
-    "expReward":{"x1":0,"y1":0.0,"x2":500,"y2":250},
+    "expReward":{"x1":0,"y1":0.0,"x2":500,"y2":50},
     "description":"Repairs diamond items. Click an iron block to use.",
     "primaryStat":"efficiency",
     "secondaryStat":""

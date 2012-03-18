@@ -1,5 +1,7 @@
 package org.saga.utility;
 
+import java.util.Random;
+
 import org.saga.Saga;
 import org.saga.player.SagaEntityDamageManager;
 
@@ -166,7 +168,7 @@ public class TwoPointFunction {
 	}
 	
 	/**
-	 * Calculates the random integer value for the given y value.
+	 * Calculates the random integer value for the given x value.
 	 * 
 	 * @param x x value
 	 */
@@ -175,6 +177,32 @@ public class TwoPointFunction {
 		return SagaEntityDamageManager.randomRound(value(x.intValue()));
 		
 	}
+
+	/**
+	 * Calculates the random boolean value for the given x value.
+	 * 
+	 * @param x x value
+	 */
+	public boolean randomBooleanValue(Double x) {
+		
+		Random random = new Random();
+		
+		return value(x) > random.nextDouble();
+		
+	}
+	
+	/**
+	 * Calculates the random boolean value for the given x value.
+	 * 
+	 * @param x x value
+	 */
+	public boolean randomBooleanValue(Integer x) {
+		
+		return randomBooleanValue(x.doubleValue());
+		
+	}
+	
+	
 	
 	/**
 	 * Gets the minimum x value.

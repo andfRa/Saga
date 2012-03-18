@@ -11,9 +11,10 @@
     "attacker":"PLAYER",
     "defender":"ALL",
     "attack":"MELEE",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":30.0},
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":23.0},
     "toolType":[],
-    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}
+    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "fireTickResistance":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}
   },
 
   "waraxe":{
@@ -26,9 +27,10 @@
     "attacker":"PLAYER",
     "defender":"ALL",
     "attack":"MELEE",
-    "modifier":{"x1":0,"y1":4.0,"x2":10,"y2":34.0},
+    "modifier":{"x1":0,"y1":4.0,"x2":10,"y2":27.0},
     "toolType":[],
-    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}
+    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "fireTickResistance":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}
   },
 
   "archery":{
@@ -41,9 +43,10 @@
     "attacker":"PLAYER",
     "defender":"ALL",
     "attack":"RANGED",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":30.0},
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":23.0},
     "toolType":[],
-    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}
+    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "fireTickResistance":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}
   },
 
   "magic":{
@@ -56,9 +59,10 @@
     "attacker":"PLAYER",
     "defender":"ALL",
     "attack":"MAGIC",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":40.0},
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":33.0},
     "toolType":[],
-    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}
+    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "fireTickResistance":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}
   },
 
   "heavy armour":{
@@ -71,9 +75,10 @@
     "attacker":"ALL",
     "defender":"ALL",
     "attack":"PHYSICAL",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-30.0},
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-23.0},
     "toolType":[],
-    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}
+    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "fireTickResistance":{"x1":0,"y1":0.0,"x2":50,"y2":0.5}
   },
 
   "light armour":{
@@ -86,9 +91,10 @@
     "attacker":"ALL",
     "defender":"ALL",
     "attack":"PHYSICAL",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-30.0},
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-23.0},
     "toolType":[],
-    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}
+    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "fireTickResistance":{"x1":0,"y1":0.0,"x2":50,"y2":0.10}
   },
 
   "unarmoured":{
@@ -101,9 +107,10 @@
     "attacker":"ALL",
     "defender":"ALL",
     "attack":"PHYSICAL",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-30.0},
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-23.0},
     "toolType":[],
-    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}
+    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "fireTickResistance":{"x1":0,"y1":0.0,"x2":50,"y2":0.15}
   },
 
   "magic warding":{
@@ -116,9 +123,10 @@
     "attacker":"ALL",
     "defender":"ALL",
     "attack":"MAGIC",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-40.0},
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-33.0},
     "toolType":[],
-    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}
+    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "fireTickResistance":{"x1":0,"y1":0.0,"x2":30,"y2":0.95}
   },
 
   "woodcutting":{
@@ -133,7 +141,8 @@
     "attack":"NONE",
     "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
     "toolType":["WOOD_AXE","STONE_AXE","IRON_AXE","GOLD_AXE","DIAMOND_AXE"],
-    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.8}
+    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.8},
+    "fireTickResistance":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}
   },
 
   "mining":{
@@ -151,7 +160,8 @@
       "WOOD_PICKAXE","STONE_PICKAXE","IRON_PICKAXE","GOLD_PICKAXE","DIAMOND_PICKAXE",
       "WOOD_SPADE","STONE_SPADE","IRON_SPADE","GOLD_SPADE","DIAMOND_SPADE"
     ],
-    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.6}
+    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.6},
+    "fireTickResistance":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}
   },
 
   "farming":{
@@ -166,7 +176,8 @@
     "attack":"NONE",
     "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
     "toolType":["WOOD_HOE","STONE_HOE","IRON_HOE","GOLD_HOE","DIAMOND_HOE"],
-    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}
+    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "fireTickResistance":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}
   },
 
   "smithing":{
@@ -184,7 +195,8 @@
       "IRON_PICKAXE","IRON_SPADE","IRON_AXE","IRON_HOE",
       "DIAMOND_PICKAXE","DIAMOND_SPADE","DIAMOND_AXE","DIAMOND_HOE"
     ],
-    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.4}
+    "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.4},
+    "fireTickResistance":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}
   }
 
 }

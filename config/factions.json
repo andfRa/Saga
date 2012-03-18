@@ -9,7 +9,7 @@
 "factionOnlyPvp":true,
 "pvpFactionOnlyMessage":"Only factions can take part in pvp.",
 "prefixNameSeparator":"-",
-"formationAmount":3,
+"formationAmount":10,
 "factionDefaultRank":"novice",
 "factionOwnerRank":"grandmaster",
 "levelsPerActivePlayers":{"x1":0,"y1":0.0,"x2":20,"y2":25.0}

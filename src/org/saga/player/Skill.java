@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
 import org.saga.utility.TwoPointFunction;
@@ -82,6 +84,13 @@ public class Skill {
 	 * The amount of damage the tool takes.
 	 */
 	private TwoPointFunction toolDurability;
+
+	/**
+	 * Fire tick ignore probability.
+	 */
+	private TwoPointFunction fireTickResistance2;
+
+	
 	
 	/**
 	 * Forwards the name and sets use materials.
@@ -181,13 +190,20 @@ public class Skill {
 			Saga.severe(this, "toolType field failed to intialize", "setting default");
 			integrity = false;
 		}
-		
+
 		if(toolDurability == null){
 			toolDurability = new TwoPointFunction(0.0);
 			Saga.severe(this, "toolDurability field failed to intialize", "setting default");
 			integrity = false;
 		}
 		integrity = toolDurability.complete() && integrity;
+
+		if(fireTickResistance == null){
+			fireTickResistance = new TwoPointFunction(0.0);
+			Saga.severe(this, "fireTickResistance field failed to intialize", "setting default");
+			integrity = false;
+		}
+		integrity = fireTickResistance.complete() && integrity;
 		
 		return integrity;
 		
@@ -811,6 +827,38 @@ public class Skill {
 		
 	}
 	
+	/**
+	 * Called when the player gets damaged.
+	 * 
+	 * @param sagaPlayer saga player
+	 * @param multiplier multiplier
+	 * @param event event
+	 */
+	public void triggerEntityDamage(SagaPlayer sagaPlayer, Integer multiplier, EntityDamageEvent event) {
+
+		
+		if(event.isCancelled()) return;
+		
+		switch (event.getCause()) {
+			case FIRE_TICK:
+				
+				if(fireTickResistance.randomBooleanValue(multiplier)){
+					playFireTickIgnore(sagaPlayer);
+					event.setDamage(0);
+				}
+				
+				break;
+
+			case BLOCK_EXPLOSION:
+				
+				break;
+				
+			default:
+				break;
+		}
+		
+		
+	}
 	
 	
 	// Checks:
@@ -900,6 +948,18 @@ public class Skill {
 		return type;
 	}
 	
+	
+	// Effects:
+	/**
+	 * Plays fire tick ignore effect.
+	 * 
+	 * @param sagaPlayer saga player
+	 */
+	protected void playFireTickIgnore(SagaPlayer sagaPlayer) {
+
+		sagaPlayer.playGlobalEffect(Effect.EXTINGUISH, 0);
+		
+	}
 	
 	// Util:
 	private static int randomRound(Double value) {

@@ -17,6 +17,7 @@ import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -51,7 +52,22 @@ public class SagaEntityListener implements Listener{
 		// Damaged by entity:
 		if(event instanceof EntityDamageByEntityEvent){
 			onEntityDamageByEntity((EntityDamageByEntityEvent)event);
-		}else{
+		}
+		
+		// Player damage:
+		else if(event.getCause() == DamageCause.FIRE_TICK && event.getEntity() instanceof Player){
+
+			Player player = (Player) event.getEntity();
+			SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(player.getName());
+			
+			// No player:
+	    	if(sagaPlayer == null){
+	    		Saga.warning("Can't continue with onEntityDamage, because saga player for " + player.getName() + " isn't loaded.");
+	    		return;
+	    	}
+
+	    	sagaPlayer.getLevelManager().onEntityDamage(event);
+	    	
 		}
 		
 		

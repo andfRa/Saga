@@ -742,6 +742,24 @@ public class PlayerLevelManager{
 		
 	}
 	
+	/**
+	 * Called when the player gets damaged.
+	 * 
+	 * @param event event
+	 */
+	public void onEntityDamage(EntityDamageEvent event) {
+
+		
+		ArrayList<Skill> skills = new ArrayList<Skill>(this.damageSkills);
+		
+		// Trigger skills:
+		for (int i = 0; i < skills.size(); i++) {
+			skills.get(i).triggerEntityDamage(sagaPlayer, skillMultipliers.get(i) ,event);
+		}
+		
+		
+	}
+	
 	
 	// Other:
 	/* 
