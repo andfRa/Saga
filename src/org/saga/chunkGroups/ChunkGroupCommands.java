@@ -1463,10 +1463,10 @@ public class ChunkGroupCommands {
 	
 	// Admin:
 	@Command(
-            aliases = {"sdisolve"},
+            aliases = {"sdissolve"},
             usage = "[settlement name]",
             flags = "",
-            desc = "Disolve the settlement.",
+            desc = "Dissolve the settlement.",
             min = 0,
             max = 1
         )

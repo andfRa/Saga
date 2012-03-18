@@ -3,21 +3,21 @@ package org.saga;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.SignChangeEvent;
+import org.bukkit.inventory.ItemStack;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.BalanceConfiguration;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.XrayIndicator;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.inventory.ItemStack;
 
 public class SagaBlockListener implements Listener{
 	
@@ -150,7 +150,7 @@ public class SagaBlockListener implements Listener{
 		
     	// Get saga chunk:
     	Location location = event.getBlock().getLocation();
-    	SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
+    	SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(location);
     	
     	// Forward to chunk:
     	if(sagaChunk != null){

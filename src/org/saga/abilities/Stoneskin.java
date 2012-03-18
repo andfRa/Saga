@@ -1,13 +1,10 @@
 package org.saga.abilities;
 
-import java.util.Random;
-
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.util.Vector;
 import org.saga.Saga;
 import org.saga.player.PlayerMessages;
 import org.saga.player.SagaEntityDamageManager;
@@ -197,17 +194,14 @@ public class Stoneskin extends Ability{
 	@Override
 	public boolean onSpelledByPlayer(EntityDamageByEntityEvent event, SagaPlayer defender, Projectile projectile) {
 
-//		
-//		// Check pre use:
-//		if(!handlePreUse()){
-//			return false;
-//		}
-//
-//		return handleAbility(event);
-//		
-	
 		
-		return false;
+		// Check pre use:
+		if(!handlePreUse()){
+			return false;
+		}
+
+		return handleAbility(event);
+
 		
 	}
 	

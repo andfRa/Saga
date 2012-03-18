@@ -2,6 +2,8 @@ package org.saga.statistics;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 
 import org.bukkit.ChatColor;
@@ -18,8 +20,6 @@ import org.saga.utility.MathUtil;
 import org.saga.utility.StringBook;
 import org.saga.utility.StringTable;
 import org.saga.utility.TextUtil;
-
-import com.sun.xml.internal.bind.v2.runtime.unmarshaller.XsiNilLoader.Array;
 
 
 
@@ -357,6 +357,62 @@ public class StatisticsMessages {
 		result.addLine("");
 		
 		return result.framed(page);
+		
+		
+	}
+	
+	public static String balance(int page) {
+
+		
+		StringBook book = new StringBook("economy statistics", new ColorCircle().addColor(normal1).addColor(normal2), 10);
+		StringTable table = new StringTable(new ColorCircle().addColor(normal1).addColor(normal2));
+		final StatisticsManager manager = StatisticsManager.manager();
+		
+		ArrayList<Material> materials = StatisticsManager.manager().getAllEcoMaterials();
+		
+		// Sort:
+		Comparator<Material> comp = new Comparator<Material>() {
+			@Override
+			public int compare(Material o1, Material o2) {
+			
+				return (int) ( (manager.getBuyCoins(o2) + manager.getSellCoins(o2)) - (manager.getBuyCoins(o1) + manager.getSellCoins(o1)) );
+			
+			}
+		};
+		Collections.sort(materials, comp);
+		
+		// Names:
+		table.addLine(new String[]{"ITEM","BUY/PL","AMOUNT","SELL/PL","AMOUNT"});
+		
+		// Materials:
+		if(materials.size() > 0){
+			
+			for (Material material : materials) {
+
+				String buyTotal = "-";
+				if(manager.getBuyCoins(material) != null) buyTotal = EconomyMessages.coins(manager.getBuyCoins(material) / manager.countBuyPlayers(material).doubleValue());
+
+				String buyAmount = "-";
+				if(manager.getBuyAmount(material) != null) buyAmount = manager.getBuyAmount(material).toString();
+
+				String sellTotal = "-";
+				if(manager.getSellCoins(material) != null) sellTotal = EconomyMessages.coins(manager.getSellCoins(material) / manager.countSellPlayers(material).doubleValue());
+
+				String sellAmount = "-";
+				if(manager.getSellAmount(material) != null) sellAmount = manager.getSellAmount(material).toString();
+				
+				table.addLine(new String[]{EconomyMessages.materialShort(material),buyTotal,buyAmount,sellTotal,sellAmount});
+				
+			}
+			
+		}else{
+			table.addLine(new String[]{"-","-","-","-","-"});
+		}
+			
+		table.collapse();
+		book.addTable(table);
+		
+		return book.framed(page);
 		
 		
 	}

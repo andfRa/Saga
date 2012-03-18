@@ -92,6 +92,21 @@ public class StringTable {
 	}
 	
 	/**
+	 * Sets custom widths.
+	 * 
+	 * @param customWidths custom widths
+	 */
+	public void setCustomWidths(Double[] customWidths) {
+		
+		this.customWidths = new ArrayList<Double>();
+		
+		for (int i = 0; i < customWidths.length; i++) {
+			this.customWidths.add(customWidths[i]);
+		}
+		
+	}
+	
+	/**
 	 * Calculates total width.
 	 * 
 	 * @return total width

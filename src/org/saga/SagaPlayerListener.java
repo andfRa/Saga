@@ -9,12 +9,9 @@ import java.util.HashSet;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Cancellable;
-import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -190,7 +187,7 @@ public class SagaPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerInteract(PlayerInteractEvent event) {
 
-
+    	
     	// Bukkit bug workaround: 
     	if(event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
     		event.setCancelled(false);
@@ -317,172 +314,6 @@ public class SagaPlayerListener implements Listener {
     	
     }
     
-    /**
-     * Used when a saga player uses its projectile shoot methods.
-     * 
-     * @author andf
-     *
-     */
-    public static class SagaPlayerProjectileShotEvent extends Event implements Cancellable{
-
-    	
-    	/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		
-		/**
-		 * Projectile type.
-		 */
-		private ProjectileType projectileType;
-		
-		/**
-    	 * Projectile speed.
-    	 */
-    	private double speed;
-    	
-    	/**
-    	 * Saga player.
-    	 */
-    	private final SagaPlayer shooter;
-    	
-    	/**
-    	 * If true, the event will be canceled.
-    	 */
-    	private boolean isCanceled = false;
-    	
-    	
-		/**
-		 * Sets a projectile and a saga player.
-		 * 
-		 * @param who saga player
-		 * @param projectileType projectile type
-		 * @param speed projectile speed
-		 */
-		public SagaPlayerProjectileShotEvent(SagaPlayer who, ProjectileType projectileType, double speed) {
-			
-			
-			super("saga player projectile shot");
-			this.speed = speed;
-			this.projectileType = projectileType;
-			this.shooter = who;
-			
-			
-		}
-		
-		
-		/**
-		 * Returns the projectile type.
-		 * 
-		 * @return projectile type
-		 */
-		public ProjectileType getProjectileType() {
-			return projectileType;
-		}
-		
-		/**
-		 * Gets projectile speed.
-		 * 
-		 * @return projectile speed
-		 */
-		public double getSpeed() {
-			return speed;
-		}
-		
-		/**
-		 * Sets projectile speed
-		 * 
-		 * @param speed projectile speed
-		 */
-		public void setSpeed(double speed) {
-			this.speed = speed;
-		}
-		
-		/**
-		 * Increases projectile speed
-		 * 
-		 * @param amount amount
-		 */
-		public void increaseSpeed(double amount) {
-			this.speed += amount;
-		}
-		
-		/**
-		 * Decrease projectile speed
-		 * 
-		 * @param amount amount
-		 */
-		public void decreaseSpeed(double amount) {
-			this.speed -= amount;
-		}
-
-		/**
-		 * Gets the saga player that shot the projectile.
-		 * 
-		 * @return saga player
-		 */
-		public SagaPlayer getShooter() {
-			return shooter;
-		}
-		
-		/* 
-		 * (non-Javadoc)
-		 * 
-		 * @see org.bukkit.event.Cancellable#isCancelled()
-		 */
-		@EventHandler(priority = EventPriority.NORMAL)
-		public boolean isCancelled() {
-			return isCanceled;
-		}
-
-		/* 
-		 * (non-Javadoc)
-		 * 
-		 * @see org.bukkit.event.Cancellable#setCancelled(boolean)
-		 */
-		@EventHandler(priority = EventPriority.NORMAL)
-		public void setCancelled(boolean cancel) {
-			isCanceled = cancel;
-		}
-    	
-		
-		 /**
-		 * Check if the event launches a projectile.
-		 * 
-		 * @param event
-		 * @return
-		 */
-		public static boolean checkIfProjectile(PlayerInteractEvent event){
-		    	
-		    	
-		    	Player player = event.getPlayer();
-		    	Material itemInHand = player.getItemInHand().getType();
-		    	if(itemInHand.equals(Material.BOW) && player.getInventory().contains(Material.ARROW)){
-		    		return true;
-		    	}
-		    	
-		    	return false;
-		    	
-		    	
-		    }
-		
-		
-		/**
-		 * Projectile type.
-		 * 
-		 * @author andf
-		 *
-		 */
-		public enum ProjectileType{
-			
-			NONE,
-			ARROW,
-			FIREBALL,
-			
-		}
-    	
-		
-    }
 
     
     public void enableBigBoot(String playerName) {

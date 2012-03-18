@@ -250,7 +250,7 @@ public abstract class Building extends SagaCustomSerialization{
 	 * @param sign sign
 	 * @param event sign remove event
 	 */
-	public void handleSignRemove(SagaPlayer sagaPlayer, Sign sign, BlockBreakEvent event) {
+	public final void handleSignRemove(SagaPlayer sagaPlayer, Sign sign, BlockBreakEvent event) {
 
 
 		// Building sign:
@@ -328,6 +328,37 @@ public abstract class Building extends SagaCustomSerialization{
 	 */
 	public ArrayList<BuildingSign> getSigns() {
 		return new ArrayList<BuildingSign>(signs);
+	}
+	
+	/**
+	 * Gets the signs.
+	 * 
+	 * @param signClass sign class
+	 * @return the signs
+	 */
+	public <T extends BuildingSign> ArrayList<T> getSigns(Class<T> signClass){
+		
+		
+		ArrayList<BuildingSign> allSigns = getSigns();
+		ArrayList<T> rSigns = new ArrayList<T>();
+		
+		for (BuildingSign buildingSign : allSigns) {
+
+			// Correct sign:
+			T rSign;
+			if(signClass.isInstance(buildingSign)){
+				try {
+					rSign = signClass.cast(buildingSign);
+					rSigns.add(rSign);
+				}catch (Throwable e) {}
+			}
+			
+			
+		}
+		
+		return rSigns;
+		
+		
 	}
 	
 	/**
@@ -418,7 +449,7 @@ public abstract class Building extends SagaCustomSerialization{
 	/**
 	 * Gets the enabled signs with the given name.
 	 * 
-	 * @param name name
+	 * @param name sign name
 	 * @return enabled signs with the given name
 	 */
 	public ArrayList<BuildingSign> getEnabledSigns(String name) {
@@ -437,6 +468,33 @@ public abstract class Building extends SagaCustomSerialization{
 		}
 
 		return enabledSigns;
+		
+		
+	}
+	
+
+	/**
+	 * Gets the valid signs with the given name.
+	 * 
+	 * @param name sign name
+	 * @return enabled signs with the given name
+	 */
+	public ArrayList<BuildingSign> getValidSigns(String name) {
+		
+		
+		ArrayList<BuildingSign> validSigns = new ArrayList<BuildingSign>();
+		
+		ArrayList<BuildingSign> buildingSigns = getSigns();
+		
+		for (BuildingSign buildingSign : buildingSigns) {
+			
+			if(buildingSign.getName().equals(name) && buildingSign.isValidated()){
+				validSigns.add(buildingSign);
+			}
+			
+		}
+
+		return validSigns;
 		
 		
 	}
@@ -758,9 +816,7 @@ public abstract class Building extends SagaCustomSerialization{
 
     	
     	// Clicked on invalid block:
-    	if(event.getClickedBlock() == null){
-    		return;
-    	}
+    	if(event.getClickedBlock() == null) return;
     	
     	// Left click:
     	if(event.getClickedBlock().getState() instanceof Sign){

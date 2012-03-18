@@ -64,26 +64,38 @@ public interface Trader{
 	/**
 	 * Gets item count.
 	 * 
-	 * @param material material
+	 * @param item material
 	 * @return 
 	 */
-	public Integer getItemCount(Material material);
-	
+	public Integer getAmount(Material material);
 	
 	/**
-	 * Gets all transactions.
+	 * Gets item price.
 	 * 
-	 * @return transactions, empty if none
+	 * @return item price, null if none
 	 */
-	public ArrayList<Transaction> getTransactions();
-
+	public Double getSellPrice(Material material);
+	
+	/**
+	 * Gets item price.
+	 * 
+	 * @return item price, null if none
+	 */
+	public Double getBuyPrice(Material material);
+	
 	/**
 	 * Gets all trade deals.
 	 * 
 	 * @return trade deals, empty if none
 	 */
-	public ArrayList<TradeDeal> getTradeDeals();
+	public ArrayList<TradeDeal> getDeals();
 
+	
+	/**
+	 * Notifies that a transaction has occurred.
+	 * 
+	 */
+	public void notifyTransaction();
 	
 	
 }

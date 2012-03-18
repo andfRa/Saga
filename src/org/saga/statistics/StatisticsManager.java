@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -101,7 +102,27 @@ public class StatisticsManager implements HourTicker{
 	 * Player levels.
 	 */
 	private Hashtable<String, Integer> playerLevels; 
-	
+
+	/**
+	 * Players sell coins.
+	 */
+	private Hashtable<String, Hashtable<Material,Double>> playerSellCoins; 
+
+	/**
+	 * Players buy coins.
+	 */
+	private Hashtable<String, Hashtable<Material,Double>> playerBuyCoins; 
+
+	/**
+	 * Players sell amount.
+	 */
+	private Hashtable<String, Hashtable<Material,Integer>> playerSellAmount; 
+
+	/**
+	 * Players buy coins.
+	 */
+	private Hashtable<String, Hashtable<Material,Integer>> playerBuyAmount; 
+
 	
 	/**
 	 * Last date.
@@ -215,6 +236,30 @@ public class StatisticsManager implements HourTicker{
 			playerLevels = new Hashtable<String, Integer>();
 			integrity=false;
 		}
+
+		if(playerSellCoins == null){
+			Saga.severe(getClass(), "playerSellCoins field failed to initialize", "setting default");
+			playerSellCoins = new Hashtable<String, Hashtable<Material,Double>>();
+			integrity=false;
+		}
+
+		if(playerBuyCoins == null){
+			Saga.severe(getClass(), "playerBuyCoins field failed to initialize", "setting default");
+			playerBuyCoins = new Hashtable<String, Hashtable<Material,Double>>();
+			integrity=false;
+		}
+
+		if(playerSellAmount == null){
+			Saga.severe(getClass(), "playerSellAmount field failed to initialize", "setting default");
+			playerSellAmount = new Hashtable<String, Hashtable<Material,Integer>>();
+			integrity=false;
+		}
+
+		if(playerBuyAmount == null){
+			Saga.severe(getClass(), "playerBuyAmount field failed to initialize", "setting default");
+			playerBuyAmount = new Hashtable<String, Hashtable<Material,Integer>>();
+			integrity=false;
+		}
 		
 		return integrity;
 		
@@ -242,6 +287,11 @@ public class StatisticsManager implements HourTicker{
 		profExpPlayers = new Hashtable<String, HashSet<String>>();
 		exp = new Hashtable<String, Hashtable<String,Double>>();
 		playerLevels = new Hashtable<String, Integer>();
+		playerBuyCoins = new Hashtable<String, Hashtable<Material,Double>>();
+		playerSellCoins = new Hashtable<String, Hashtable<Material,Double>>();
+		playerBuyAmount = new Hashtable<String, Hashtable<Material,Integer>>();
+		playerSellAmount = new Hashtable<String, Hashtable<Material,Integer>>();
+		
 		
 	}
 
@@ -865,6 +915,183 @@ public class StatisticsManager implements HourTicker{
 		
 		
 	}
+	
+	
+	// Economy:
+	public void onPlayerBuy(SagaPlayer sagaPlayer, Material material, Integer amount, Double cost) {
+
+		
+		// Coins:
+		Hashtable<Material, Double> cMaterials = playerBuyCoins.get(sagaPlayer.getName());
+		if(cMaterials == null){
+			cMaterials = new Hashtable<Material, Double>();
+			playerBuyCoins.put(sagaPlayer.getName(), cMaterials);
+		}
+		
+		Double coins = cMaterials.get(material);
+		if(coins == null) coins = 0.0;
+		
+		coins += cost;
+		cMaterials.put(material, coins);
+		
+
+		// Coins:
+		Hashtable<Material, Integer> aMaterials = playerBuyAmount.get(sagaPlayer.getName());
+		if(aMaterials == null){
+			aMaterials = new Hashtable<Material, Integer>();
+			playerBuyAmount.put(sagaPlayer.getName(), aMaterials);
+		}
+		
+		Integer amounts = aMaterials.get(material);
+		if(amounts == null) amounts = 0;
+		
+		amounts += amount;
+		aMaterials.put(material, amounts);
+		
+
+	}
+	
+	public void onPlayerSell(SagaPlayer sagaPlayer, Material material, Integer amount, Double cost) {
+
+		
+		// Coins:
+		Hashtable<Material, Double> cMaterials = playerSellCoins.get(sagaPlayer.getName());
+		if(cMaterials == null){
+			cMaterials = new Hashtable<Material, Double>();
+			playerSellCoins.put(sagaPlayer.getName(), cMaterials);
+		}
+		
+		Double coins = cMaterials.get(material);
+		if(coins == null) coins = 0.0;
+		
+		coins += cost;
+		cMaterials.put(material, coins);
+		
+
+		// Coins:
+		Hashtable<Material, Integer> aMaterials = playerSellAmount.get(sagaPlayer.getName());
+		if(aMaterials == null){
+			aMaterials = new Hashtable<Material, Integer>();
+			playerSellAmount.put(sagaPlayer.getName(), aMaterials);
+		}
+		
+		Integer amounts = aMaterials.get(material);
+		if(amounts == null) amounts = 0;
+		
+		amounts += amount;
+		aMaterials.put(material, amounts);
+		
+
+	}
+	
+	public Integer countBuyPlayers(Material material) {
+
+		return playerBuyCoins.size();
+		
+	}
+	
+	public Integer countSellPlayers(Material material) {
+
+		return playerSellCoins.size();
+		
+	}
+	
+	
+	public Double getBuyCoins(Material material) {
+
+		
+		Double coins = 0.0;
+		
+		Collection<Hashtable<Material, Double>> materials = playerBuyCoins.values();
+
+		for (Hashtable<Material, Double> hashtable : materials) {
+			Double matCoins = hashtable.get(material);
+			if(matCoins != null) coins += matCoins;
+		}
+		
+		return coins;
+		
+		
+	}
+	
+	public Integer getBuyAmount(Material material) {
+
+		
+		Integer amount = 0;
+		
+		Collection<Hashtable<Material, Integer>> materials = playerBuyAmount.values();
+
+		for (Hashtable<Material, Integer> hashtable : materials) {
+			Integer matAmount = hashtable.get(material);
+			if(matAmount != null) amount += matAmount;
+		}
+		
+		return amount;
+		
+		
+	}
+	
+	public Double getSellCoins(Material material) {
+
+		
+		Double coins = 0.0;
+		
+		Collection<Hashtable<Material, Double>> materials = playerSellCoins.values();
+
+		for (Hashtable<Material, Double> hashtable : materials) {
+			Double matCoins = hashtable.get(material);
+			if(matCoins != null) coins += matCoins;
+		}
+		
+		return coins;
+		
+		
+	}
+	
+	public Integer getSellAmount(Material material) {
+
+		
+		Integer amount = 0;
+		
+		Collection<Hashtable<Material, Integer>> materials = playerSellAmount.values();
+
+		for (Hashtable<Material, Integer> hashtable : materials) {
+			Integer matAmount = hashtable.get(material);
+			if(matAmount != null) amount += matAmount;
+		}
+		
+		return amount;
+		
+		
+	}
+	
+	public ArrayList<Material> getAllEcoMaterials() {
+
+
+		HashSet<Material> allMaterials = new HashSet<Material>();
+
+		// Buy materials:
+		Collection<Hashtable<Material, Double>> buyMaterials = playerBuyCoins.values();
+		for (Hashtable<Material, Double> hashtable : buyMaterials) {
+			allMaterials.addAll(hashtable.keySet());
+		}
+
+		// Sell materials:
+		Collection<Hashtable<Material, Double>> sellMaterials = playerSellCoins.values();
+		for (Hashtable<Material, Double> hashtable : sellMaterials) {
+			allMaterials.addAll(hashtable.keySet());
+		}
+		
+		ArrayList<Material> sortedMaterials = new ArrayList<Material>(allMaterials);
+		
+		// Sort:
+		Collections.sort(sortedMaterials);
+		
+		return sortedMaterials;
+		
+		
+	}
+	
 	
 	// Load unload:
 	/**

@@ -267,7 +267,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 			return true;
 		}
 		
-		return sagaPlayer.getItemCount(usedMaterial) >= usedAmount;
+		return sagaPlayer.getAmount(usedMaterial) >= usedAmount;
 		
 		
 	}

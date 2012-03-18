@@ -3,13 +3,15 @@ package org.saga.buildings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.Hashtable;
 
-import org.bukkit.Location;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.event.Event.Result;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
@@ -20,9 +22,14 @@ import org.saga.Clock.TimeOfDayTicker;
 import org.saga.Saga;
 import org.saga.SagaMessages;
 import org.saga.buildings.BuildingDefinition.BuildingPermission;
+import org.saga.buildings.signs.BuildingSign;
+import org.saga.buildings.signs.BuySign;
+import org.saga.buildings.signs.SellSign;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupMessages;
 import org.saga.chunkGroups.SagaChunk;
+import org.saga.config.ChunkGroupConfiguration;
+import org.saga.config.EconomyConfiguration;
 import org.saga.economy.EconomyCommands;
 import org.saga.economy.EconomyManager;
 import org.saga.economy.EconomyManager.InvalidWorldException;
@@ -30,14 +37,9 @@ import org.saga.economy.EconomyManager.TradeDealNotFoundException;
 import org.saga.economy.EconomyManager.TransactionType;
 import org.saga.economy.EconomyMessages;
 import org.saga.economy.TradeDeal;
-import org.saga.economy.TradeDeal.TradeDealException;
 import org.saga.economy.TradeDeal.TradeDealType;
-import org.saga.economy.TradeSign;
-import org.saga.economy.TradeSign.TradeSignException;
 import org.saga.economy.Trader;
-import org.saga.economy.Transaction;
 import org.saga.player.SagaPlayer;
-import org.saga.utility.TextUtil;
 import org.saga.utility.TwoPointFunction;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
@@ -46,46 +48,91 @@ import org.sk89q.CommandPermissions;
 
 public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 
+
+	/**
+	 * Name for goods the sign.
+	 */
+	transient public static String GOODS_SIGN = "=[GOODS]=";
+
+	/**
+	 * Name for goods the sign.
+	 */
+	transient public static String DEALS_SIGN = "=[DEALS]=";
+	
+	/**
+	 * Name for goods the sign.
+	 */
+	transient public static String REPORT_SIGN = "=[REPORT]=";
+
+	/**
+	 * Amount of materials considered at deal automation.
+	 */
+	transient public static Integer DEAL_AUTO_MATERIALS = 5;
+	
 	
 	/**
 	 * The currency the trade post owns.
 	 */
-	private Double currency;
+	private Double coins;
+
+	/**
+	 * Sell prices.
+	 */
+	private Hashtable<Material, Double> sellPrices;
+
+	/**
+	 * Buy prices.
+	 */
+	private Hashtable<Material, Double> buyPrices;
 	
 	/**
-	 * Stocked items.
+	 * Stored items.
 	 */
-	private Hashtable<Material, Integer> stockedItems;
-	
-	/**
-	 * Trade signs.
-	 */
-	private ArrayList<TradeSign> tradeSigns;
-	
-	/**
-	 * Transactions.
-	 */
-	private ArrayList<Transaction> tradeTransactions;
-	
+	private Hashtable<Material, Integer> stored;
+
 	/**
 	 * Trade deals.
 	 */
 	private ArrayList<TradeDeal> tradeDeals;
 	
-	/**
-	 * Amount of material to be kept.
-	 */
-	private Hashtable<Material, Integer> exportLimit;
 	
 	/**
-	 * Amount of money to be kept.
+	 * Coins imported.
 	 */
-	private Double importLimit;
+	private Double imported;
+	
+	/**
+	 * Coins exported.
+	 */
+	private Double exported;
+
+	/**
+	 * New deals.
+	 */
+	private ArrayList<TradeDeal> newDeals;
+
+	/**
+	 * Expired deals.
+	 */
+	private ArrayList<TradeDeal> expiredDeals;
+
+	/**
+	 * Completed deals.
+	 */
+	private ArrayList<TradeDeal> completedDeals;
+	
+	
+	// Automation:
+	/**
+	 * Amount of coins to be kept.
+	 */
+	private Double autoMinCoins;
 	
 	/**
 	 * Trading post is automated if true.
 	 */
 	private Boolean automated;
+	
 	
 	// Initialization:
 	/**
@@ -95,16 +142,25 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	 * @param moneyCost money cost
 	 * @param proficiencies proficiencies
 	 */
-	private TradingPost(Double currency, Hashtable<Material, Integer> stockedItems, ArrayList<TradeSign> tradeSigns, ArrayList<Transaction> tradeTransactions) {
+	private TradingPost(Double coins, Hashtable<Material, Integer> storedItems) {
+		
 		
 		super("");
-		this.currency = currency;
-		this.stockedItems = stockedItems;
-		this.tradeSigns = tradeSigns;
-		this.tradeTransactions = tradeTransactions;
+		this.coins = coins;
+		this.sellPrices = new Hashtable<Material, Double>();
+		this.buyPrices = new Hashtable<Material, Double>();
+		this.stored = storedItems;
 		this.tradeDeals = new ArrayList<TradeDeal>();
-		this.exportLimit = new Hashtable<Material, Integer>();
-		this.importLimit = 0.0;
+		
+		this.imported = 0.0;
+		this.exported = 0.0;
+		this.newDeals = new ArrayList<TradeDeal>();
+		this.expiredDeals = new ArrayList<TradeDeal>();
+		this.completedDeals = new ArrayList<TradeDeal>();
+		
+		this.autoMinCoins = 0.0;
+		this.automated = false;
+		
 		
 	}
 
@@ -119,52 +175,28 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 
 		boolean integrity = true;
 		
-		if(currency == null){
-			currency = 0.0;
-			Saga.severe(this, "failed to initialize currency field", "setting default");
+		if(coins == null){
+			coins = 0.0;
+			Saga.severe(this, "coins field failed to initialize", "setting default");
+			integrity = false;
+		}
+
+		if(sellPrices == null){
+			sellPrices = new Hashtable<Material, Double>();
+			Saga.severe(this, "sellPrices field failed to initialize", "setting default");
+			integrity = false;
+		}
+
+		if(buyPrices == null){
+			buyPrices = new Hashtable<Material, Double>();
+			Saga.severe(this, "buyPrices field failed to initialize", "setting default");
 			integrity = false;
 		}
 		
-		if(stockedItems == null){
-			stockedItems = new Hashtable<Material, Integer>();
-			Saga.severe(this, "failed to initialize stockedItems field", "setting default");
+		if(stored == null){
+			stored = new Hashtable<Material, Integer>();
+			Saga.severe(this, "stored field failed to initialize", "setting default");
 			integrity = false;
-		}
-		
-		if(tradeSigns == null){
-			tradeSigns = new ArrayList<TradeSign>();
-			Saga.severe(this, "failed to initialize tradeSigns field", "setting default");
-			integrity = false;
-		}
-		for (int i = 0; i < tradeSigns.size(); i++) {
-			if(tradeSigns.get(i) == null){
-				Saga.severe(this, "failed to initialize tradeSigns field element", "removing element");
-				tradeSigns.remove(i);
-				i--;
-			}
-			try {
-				integrity = tradeSigns.get(i).complete(this) && integrity;
-				tradeSigns.get(i).refresh();
-			} catch (TradeSignException e) {
-				Saga.severe(this, "failed to initialize tradeSigns field element: " + e.getMessage(), "removing element");
-				tradeSigns.remove(i);
-				i--;
-			}
-		}
-		
-		if(tradeTransactions == null){
-			tradeTransactions = new ArrayList<Transaction>();
-			Saga.severe(this, "failed to initialize tradeTransactions field", "setting default");
-			integrity = false;
-		}
-		for (int i = 0; i < tradeTransactions.size(); i++) {
-			if(tradeTransactions.get(i) == null){
-				Saga.severe(this, "failed to initialize tradeTransactions field element", "removing element");
-				tradeTransactions.remove(i);
-				i--;
-				continue;
-			}
-			integrity = tradeTransactions.get(i).complete() && integrity;
 		}
 		
 		if(tradeDeals == null){
@@ -179,25 +211,52 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 				i--;
 				continue;
 			}
-			try {
-				integrity = tradeDeals.get(i).complete() && integrity;
-			} catch (TradeDealException e) {
-				Saga.severe(this, "failed to initialize tradeDeals field element: " + e.getMessage(), "removing element");
-				tradeDeals.remove(i);
-				i--;
-				continue;
-			}
+			integrity = tradeDeals.get(i).complete() && integrity;
 		}
 		
-		if(exportLimit == null){
-			exportLimit = new Hashtable<Material, Integer>();
-			Saga.severe(this, "failed to initialize exportLimit field", "setting default");
+		
+		if(imported == null){
+			imported = 0.0;
+			Saga.severe(this, "imported field failed to initialize", "setting default");
 			integrity = false;
 		}
 		
-		if(importLimit == null){
-			importLimit = 0.0;
-			Saga.severe(this, "failed to initialize importLimit field", "setting default");
+		if(exported == null){
+			exported = 0.0;
+			Saga.severe(this, "exported field failed to initialize", "setting default");
+			integrity = false;
+		}
+		
+		if(newDeals == null){
+			newDeals = new ArrayList<TradeDeal>();
+			Saga.severe(this, "newDeals field failed to initialize", "setting default");
+			integrity = false;
+		}
+		for (TradeDeal deal : newDeals) {
+			integrity = deal.complete() && integrity;
+		}
+		
+		if(completedDeals == null){
+			completedDeals = new ArrayList<TradeDeal>();
+			Saga.severe(this, "completedDeals field failed to initialize", "setting default");
+			integrity = false;
+		}
+		for (TradeDeal deal : completedDeals) {
+			integrity = deal.complete() && integrity;
+		}
+
+		if(expiredDeals == null){
+			expiredDeals = new ArrayList<TradeDeal>();
+			Saga.severe(this, "expiredDeals field failed to initialize", "setting default");
+			integrity = false;
+		}
+		for (TradeDeal deal : expiredDeals) {
+			integrity = deal.complete() && integrity;
+		}
+		
+		if(autoMinCoins == null){
+			autoMinCoins = 0.0;
+			Saga.severe(this, "autoMinCoins field failed to initialize", "setting default");
 			integrity = false;
 		}
 		
@@ -220,12 +279,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	@Override
 	public Building blueprint() {
 		
-		ArrayList<Transaction> transactions = new ArrayList<Transaction>();
-		for (Transaction transaction : getTransactions()) {
-			transactions.add(transaction.duplicate());
-		}		
-		
-		return new TradingPost(currency, new Hashtable<Material, Integer>(stockedItems), new ArrayList<TradeSign>(), transactions);
+		return new TradingPost(coins, new Hashtable<Material, Integer>(stored));
 		
 	}
 
@@ -270,211 +324,132 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	public String getStaticName() {
 		return TradingPost.class.getSimpleName().replaceAll("(\\p{Ll})(\\p{Lu})","$1 $2").toLowerCase();
 	}
-	
-	/**
-	 * Adds a trade sign.
-	 * 
-	 * @param tradeSign trade sign
-	 */
-	private void addTradeSign(TradeSign tradeSign) {
 
+	
+	// Stored:
+	/**
+	 * Stored items.
+	 * 
+	 * @return stored items
+	 */
+	public Hashtable<Material, Integer> getStoredItems() {
+		return new Hashtable<Material, Integer>(stored);
+	}
+	
+	/**
+	 * Gets a sell price for a item.
+	 * 
+	 * @param material item material
+	 * @return price, null if none
+	 */
+	public Double getBuyPrice(Material material) {
 		
-		if(tradeSigns.contains(tradeSign)){
-			Saga.severe(this, "tried to add an already existing trade sign", "ignoring request");
-			return;
+		
+		// Automation:
+		if(isAutomated()){
+			
+			Double price = EconomyConfiguration.config().prices.get(material);
+			if(price == null) return null;
+			return price * EconomyConfiguration.config().automBuyMult;
+			
 		}
-		tradeSigns.add(tradeSign);
+		
+		return buyPrices.get(material);
 		
 		
 	}
 	
 	/**
-	 * Removes a trade sign.
+	 * Sets a buy price for a material.
 	 * 
-	 * @param tradeSign trade sign
+	 * @param material item material
+	 * @param buy price price
 	 */
-	private void removeTradeSign(TradeSign tradeSign) {
+	public void setBuyPrice(Material material, Double price) {
+		buyPrices.put(material, price);
+	}
+	
+	/**
+	 * Removes a buy price for a material.
+	 * 
+	 * @param material item material
+	 */
+	public void removeBuyPrice(Material material) {
+		buyPrices.remove(material);
+	}
 
+	/**
+	 * Gets a sell price for a item.
+	 * 
+	 * @param material item material
+	 * @return price, null if none
+	 */
+	public Double getSellPrice(Material material) {
 		
-		if(!tradeSigns.contains(tradeSign)){
-			Saga.severe(this, "tried to remove a non-existing trade sign", "ignoring request");
-			return;
+		
+		// Automation:
+		if(isAutomated()){
+			
+			Double price = EconomyConfiguration.config().prices.get(material);
+			if(price == null) return null;
+			return price * EconomyConfiguration.config().automSellMult;
+			
 		}
-		tradeSigns.remove(tradeSign);
+		
+		return sellPrices.get(material);
 		
 		
 	}
-	
-	/**
-	 * Gets a trade sign at given location.
-	 * 
-	 * @param location location
-	 * @return trade sign, null if not found
-	 */
-	private TradeSign tradeSignAt(Location location) {
 
-		
-		for (int i = 0; i < tradeSigns.size(); i++) {
-			if(tradeSigns.get(i).getLocation().equals(location)){
-				return tradeSigns.get(i);
-			}
-		}
-		return null;
-		
-		
+	/**
+	 * Sets a sell price for a material.
+	 * 
+	 * @param material item material
+	 * @param sell price price
+	 */
+	public void setSellPrice(Material material, Double price) {
+		sellPrices.put(material, price);
 	}
 	
 	/**
-	 * Gets all trade signs.
+	 * Removes a sell price for a material.
 	 * 
-	 * @return trade signs
+	 * @param material item material
 	 */
-	public ArrayList<TradeSign> getTradeSigns() {
-		return new ArrayList<TradeSign>(tradeSigns);
+	public void removeSellPrice(Material material) {
+		sellPrices.remove(material);
 	}
 	
 	/**
-	 * Cents the signs of the given type.
+	 * Gets a sorted list of all materials.
 	 * 
-	 * @param type type
-	 * @return sign count
+	 * @return sorted list of all materials
 	 */
-	public int tradeSignCount(TransactionType type) {
-		
-		int count = 0;
-		for (int i = 0; i < tradeSigns.size(); i++) {
-			if(tradeSigns.get(i).getType().equals(type)) count++;
-		}
-		return count;
-		
-	}
-	
-	/**
-	 * Adds a transaction.
-	 * 
-	 * @param transaction transaction
-	 */
-	public void addTransaction(Transaction transaction) {
-		
-		// Remove previous one:
-		for (int i = 0; i < tradeTransactions.size(); i++) {
-			Transaction oldTransaction = tradeTransactions.get(i);
-			if(oldTransaction.getMaterial().equals(transaction.getMaterial()) && oldTransaction.getType().equals(transaction.getType())){
-				tradeTransactions.remove(i);
-				i--;
-			}
-		}
-		tradeTransactions.add(transaction);
-		
-		// Refresh signs:
-		for (int i = 0; i < tradeSigns.size(); i++) {
-			tradeSigns.get(i).refresh();
-		}
-		
-	}
-	
-	/**
-	 * Removes a transaction.
-	 * 
-	 * @param type transaction type
-	 * @param material material
-	 */
-	public void removeTransaction(TransactionType type, Material material) {
-		
-		// Remove previous one:
-		for (int i = 0; i < tradeTransactions.size(); i++) {
-			Transaction oldTransaction = tradeTransactions.get(i);
-			if(oldTransaction.getMaterial().equals(material) && oldTransaction.getType().equals(type)){
-				tradeTransactions.remove(i);
-				i--;
-			}
-		}
-		
-		// Refresh signs:
-		for (int i = 0; i < tradeSigns.size(); i++) {
-			tradeSigns.get(i).refresh();
-		}
-		
-	}
-	
-	/**
-	 * Check if there is a transaction with given parameters.
-	 * 
-	 * @param type type
-	 * @param material material
-	 * @return true if there is a transaction with given parameters
-	 */
-	public boolean hasTransaction(TransactionType type, Material material) {
-		
-		for (int i = 0; i < tradeTransactions.size(); i++) {
-			if( tradeTransactions.get(i).getType().equals(type) && (tradeTransactions.get(i).getMaterial().equals(material)) ){
-				return true;
-			}
-		}
-		return false;
-		
-	}
-	
-	/**
-	 * Gets the transaction for the given sign.
-	 * 
-	 * @param type transaction type
-	 * @param material material
-	 * @return transaction, null if not found
-	 */
-	private Transaction findTransaction(TransactionType type, Material material) {
+	public ArrayList<Material> getAllMaterials() {
 
-		
-		ArrayList<Transaction> transactions = getTransactions();
-		for (int i = 0; i < transactions.size(); i++) {
-			if( transactions.get(i).getMaterial().equals(material) && transactions.get(i).getType().equals(type)){
-				return transactions.get(i);
-			}
-		}
-		return null;
-		
-		
-	}
-	
-	/**
-	 * Refreshes all signs.
-	 * 
-	 */
-	private void refreshSigns() {
 
-		for (int i = 0; i < tradeSigns.size(); i++) {
-			tradeSigns.get(i).refresh();
+		// Get all materials:
+		HashSet<Material> allMaterials = new HashSet<Material>();
+		allMaterials.addAll(stored.keySet());
+		allMaterials.addAll(sellPrices.keySet());
+		allMaterials.addAll(buyPrices.keySet());
+		
+		// Automation:
+		if(isAutomated()){
+			allMaterials.addAll(EconomyConfiguration.config().getAllDealMaterials());
 		}
 		
-	}
-	
-	/**
-	 * Checks if the sign is available.
-	 * 
-	 * @param type type
-	 * @param material material
-	 * @return true if available
-	 */
-	private boolean hasSign(TransactionType type, Material material) {
+		// Convert to list and sort:
+		ArrayList<Material> sortedItems = new ArrayList<Material>(allMaterials);
+		Collections.sort(sortedItems);
+
+		return sortedItems;
 		
-		for (int i = 0; i < tradeSigns.size(); i++) {
-			if(tradeSigns.get(i).getType().equals(type) && tradeSigns.get(i).getMaterial().equals(material)){
-				return true;
-			}
-		}
-		return false;
 		
 	}
 	
-	/**
-	 * Stocked items.
-	 * 
-	 * @return stocked items
-	 */
-	public Hashtable<Material, Integer> getStockedItems() {
-		return new Hashtable<Material, Integer>(stockedItems);
-	}
 	
+	// Time:
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -488,15 +463,21 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 			return;
 		}
 		
-		// Trade deals at sunrise:
+		// Reset report before sunrise:
 		if(timeOfDay.equals(TimeOfDay.SUNRISE)){
-			doTradeDeal();
+			restReport();
 		}
 		
-		// Automatic deals at midday:
-		if(isAutomated() && timeOfDay.equals(TimeOfDay.MIDDAY)){
-			automaticTradeDeals();
+		// Trade deals at sunrise:
+		if(timeOfDay.equals(TimeOfDay.SUNRISE)){
+			doDeals();
 		}
+		
+		// Select deals:
+		if(isAutomated() && timeOfDay.equals(TimeOfDay.MIDDAY)){
+			selectDeals();
+		}
+		
 		
 	}
 	
@@ -519,6 +500,51 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		
 	}
 	
+
+	// Signs:
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.buildings.Building#isBuildingSign(java.lang.String)
+	 */
+	@Override
+	protected boolean isBuildingSign(String firstLine) {
+		
+		if(firstLine.equalsIgnoreCase(SellSign.SIGN_NAME)) return true;
+		
+		if(firstLine.equalsIgnoreCase(BuySign.SIGN_NAME)) return true;
+		
+		return super.isBuildingSign(firstLine);
+		
+	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.buildings.Building#createBuildingSign2(org.bukkit.block.Sign, org.bukkit.event.block.SignChangeEvent)
+	 */
+	@Override
+	protected BuildingSign createBuildingSign(Sign sign, SignChangeEvent event) {
+		
+		
+		// Stone fix sign:
+		if(event.getLine(0).equalsIgnoreCase(SellSign.SIGN_NAME)){
+			
+			return SellSign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
+			
+		}else if(event.getLine(0).equalsIgnoreCase(BuySign.SIGN_NAME)){
+			
+			return BuySign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
+			
+		}
+		
+		return super.createBuildingSign(sign, event);
+		
+		
+	}
+	
+	
+	// Automation:
 	/**
 	 * Checks if the trading post is automated.
 	 * 
@@ -536,54 +562,6 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	public void setAutomated(Boolean automated) {
 		this.automated = automated;
 	}
-	
-	// Stocked:
-	/**
-	 * Gets the transactions sorted, based on the value of items stored.
-	 * 
-	 * @param type transaction type
-	 * @return transactions sorted, based on stored value
-	 */
-	private ArrayList<Transaction> getValueSortedTransactions(final TransactionType type) {
-
-		
-		// Custom comparator:
-		Comparator<Transaction> transacactionComparator = new Comparator<Transaction>() {
-			
-			@Override
-			public int compare(Transaction o1, Transaction o2) {
-				
-				Integer o1Amount= getItemCount(o1.getMaterial());
-				Integer o2Amount= getItemCount(o2.getMaterial());
-				
-				Double o1Value = o1.getValue();
-				Double o2Value = o2.getValue();
-				
-				if(type.equals(TransactionType.BUY)){
-					return new Double(o1Amount*o1Value - o2Amount*o2Value).intValue();
-				}else{
-					return new Double(o2Amount*o2Value - o1Amount*o1Value).intValue();
-				}
-				
-				
-
-			}
-			
-		};
-		
-		// Filter transactions:
-		ArrayList<Transaction> sorted = new ArrayList<Transaction>();
-		for (int i = 0; i < tradeTransactions.size(); i++) {
-			if(tradeTransactions.get(i).getType().equals(type)) sorted.add(tradeTransactions.get(i));
-		}
-		
-		// Sort:
-		Collections.sort(sorted, transacactionComparator);
-		
-		return sorted;
-		
-		
-	}
 
 	
 	// Trade deals:
@@ -591,15 +569,11 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	 * Does a trade deal.
 	 * 
 	 */
-	private void doTradeDeal() {
+	private void doDeals() {
 
 		
-		Double currencyReport = 0.0;
-		Hashtable<Material, Integer> importReport = new Hashtable<Material, Integer>();
-		Hashtable<Material, Integer> exportReport = new Hashtable<Material, Integer>();
-		boolean refreshSigns = false;
 		
-		ArrayList<TradeDeal> tradeDeals = getTradeDeals();
+		ArrayList<TradeDeal> tradeDeals = getDeals();
 		
 		// Trade deal transactions:
 		for (int i = 0; i < tradeDeals.size(); i++) {
@@ -612,146 +586,60 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 			// Export:
 			if(tradeDeal.getType().equals(TradeDealType.EXPORT)){
 				
-				if(canDoTradeDeal(tradeDeal)) {
-					
-					tradeDeal.doTransaction();
-					removeItem(new ItemStack(tradeDeal.getMaterial(), tradeDeal.getAmount()));
-					addCoins(tradeDeal.getTotalValue());
-					
-					Integer amount = exportReport.get(tradeDeal.getMaterial());
-					if(amount == null) amount = 0;
-					
-					amount += tradeDeal.getAmount();
-					exportReport.put(tradeDeal.getMaterial(), amount);
-					currencyReport += tradeDeal.getTotalValue();
-					
-					refreshSigns = true;
-					
-				}
+				// Do deal:
+				exported += tradeDeal.doDeal(this);
 				
 			}
 			
 			// Import:
 			else if(tradeDeal.getType().equals(TradeDealType.IMPORT)){
 				
-				if(canDoTradeDeal(tradeDeal)) {
-					
-					tradeDeal.doTransaction();
-					removeCoins(tradeDeal.getTotalValue());
-					addItem(new ItemStack(tradeDeal.getMaterial(), tradeDeal.getAmount()));
-
-					Integer amount = importReport.get(tradeDeal.getMaterial());
-					if(amount == null) amount = 0;
-					
-					amount += tradeDeal.getAmount();
-					importReport.put(tradeDeal.getMaterial(), amount);
-					currencyReport -= tradeDeal.getTotalValue();
-					
-					refreshSigns = true;
-					
-				}
+				// Do deal:
+				imported += tradeDeal.doDeal(this);
 				
 			}else{
 				Saga.warning(this, "found invalid trade deal type for " + tradeDeal + " trade deal for doTradeDeal()", "ignoring request");
 			}
 			
 			// Check for completion:
-			if(tradeDeal.getTransactionsLeft() <= 0){
+			if(tradeDeal.isCompleted()){
+				
 				try {
-					removeTradeDeal(tradeDeal.getId());
-					refreshSigns = true;
+					completedDeals.add(removeDeal(tradeDeal.getId()));
 				} catch (TradeDealNotFoundException e) {
 					Saga.severe(this, "failed to remove a non-existing trading deal with " + tradeDeal.getId(), "ignoring request");
 				}
-				if(originChunk != null){
-					originChunk.getChunkGroup().broadcast(EconomyMessages.completedTradeDealBroadcast(tradeDeal));
-				}
+				
 			}else 
 
 			// Check for expiration:
-			if(tradeDeal.getDaysLeft() <= 0){
+			if(tradeDeal.isExpired()){
+				
 				try {
-					removeTradeDeal(tradeDeal.getId());
-					refreshSigns = true;
+					expiredDeals.add(removeDeal(tradeDeal.getId()));
 				} catch (TradeDealNotFoundException e) {
 					Saga.severe(this, "failed to remove a non-existing trading deal with " + tradeDeal.getId(), "ignoring request");
 				}
-				if(originChunk != null){
-					originChunk.getChunkGroup().broadcast(EconomyMessages.expiredTradeDealBroadcast(tradeDeal));
-				}
+
 			}
-			
 			
 		}
 		
-		// Refresh signs:
-		if(refreshSigns){
-			refreshSigns();
-		}
+		// Notify transaction:
+		if(imported != 0 || exported != 0) notifyTransaction();
 		
 		// Inform:
-		if(originChunk != null){
-			originChunk.getChunkGroup().broadcast(EconomyMessages.reportTradeDealBroadcast(getName(), currencyReport, importReport, exportReport));
-		}
+		if(getChunkGroup() != null) getChunkGroup().broadcast(BuildingMessages.dealsBalance(this));
 		
 		
 	}
 
-	/**
-	 * Checks if the trade deal can be done.
-	 * 
-	 * @param tradeDeal trade deal
-	 * @return true if can be done
-	 */
-	private boolean canDoTradeDeal(TradeDeal tradeDeal){
-		
-		
-		// Export:
-		if(tradeDeal.getType().equals(TradeDealType.EXPORT)){
-			
-			// Not enough material:
-			if(tradeDeal.getAmount() > getItemCount(tradeDeal.getMaterial())){
-				return false;
-			}
-			
-			// Reserved:
-			if(getItemCount(tradeDeal.getMaterial()) - tradeDeal.getAmount() < getReservedAmount(tradeDeal.getMaterial())){
-				return false;
-			}
-			
-			return true;
-			
-		}
-		
-
-		// Import:
-		if(tradeDeal.getType().equals(TradeDealType.IMPORT)){
-			
-			// Not enough currency:
-			if(tradeDeal.getTotalValue() > getCoins()){
-				return false;
-			}
-			
-			// Reserved:
-			if( getCoins() - getReservedCurrency() < tradeDeal.getTotalValue() ){
-				return false;
-			}
-			
-			return true;
-			
-		}
-		
-		return false;
-		
-		
-	}
-	
 	/**
 	 * Gets the maximum allowed trade deal count.
 	 * 
 	 * @return allowed trade deals
 	 */
-	public Integer getTradeDealsMaximumAmount() {
+	public Integer getDealsMaxCount() {
 		
 		TwoPointFunction tradeDeals = getDefinition().getLevelFunction();
 		
@@ -763,200 +651,13 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		return tradeDeals.value(getLevel()).intValue();
 				
 	}
-	
-	/**
-	 * Gets the amount of trade deals.
-	 * 
-	 * @param type trade deal type
-	 * @return amount of trade deals
-	 */
-	public Integer getTradeDealsAmount(TradeDealType type) {
-		
-		int count = 0;
-		
-		for (int i = 0; i < tradeDeals.size(); i++) {
-			if(tradeDeals.get(i).getType().equals(type)) count++;
-		}
-		
-		return count;
-				
-	}
-	
-	/**
-	 * Does the automatic trade deals.
-	 * 
-	 */
-	private void automaticTradeDeals() {
 
-		
-		SagaChunk sagaChunk = getSagaChunk();
-		if(sagaChunk == null){
-			return;
-		}
-		String worldName = sagaChunk.getWorldName();
-		
-		int newImports = new Double(Math.floor(getTradeDealsMaximumAmount()/2.0) - getTradeDealsAmount(TradeDealType.IMPORT) ).intValue();
-		
-		ArrayList<Transaction> sortedExport = getValueSortedTransactions(TransactionType.SELL);
-		ArrayList<Transaction> sortedImport = getValueSortedTransactions(TransactionType.BUY);
-		
-		EconomyManager manager = null;
-		
-		try {
-			manager = EconomyManager.manager(worldName);
-		} catch (InvalidWorldException e) {
-			Saga.severe(this, "failed to proceed with a new trade deal, invalid world " + worldName, "ignoring trade deal");
-			return;
-		}
-		
-		// Import:
-		for (int i = 0; i < newImports; i++) {
-			
-			ArrayList<Transaction> sortedTransactions = sortedImport;
-			TradeDealType dealType = TradeDealType.IMPORT;
-			
-			TradeDeal tradeDeal = null;
-			
-			for (Transaction transaction : sortedTransactions) {
-				
-				tradeDeal = manager.findTradeDeal(dealType, transaction.getMaterial());
-				
-				// No trade deal:
-				if(tradeDeal == null) continue;
-				
-				// Check deal:
-				if(checkDeal(tradeDeal, transaction)){
-					break;
-				}else{
-					tradeDeal = null;
-				}
-				
-			}
-			
-			// Not found:
-			if(tradeDeal == null){
-				continue;
-			}
-			
-			// Form:
-			try {
-				tradeDeal = manager.takeTradeDeal(tradeDeal.getId());
-			} catch (TradeDealNotFoundException e) {
-				Saga.severe(this, "failed to form a trade deal, beacause the id wasn't found", "ignoring id");
-				continue;
-			}
-			addTradeDeal(tradeDeal);
-			
-			// Inform:
-			ChunkGroup chunkGroup = getChunkGroup();
-			if(chunkGroup != null) chunkGroup.broadcast(EconomyMessages.broadcastTradeDealFormation(tradeDeal));
-			
-			
-		}
-		
-		// Fill all remaining slots with exports:
-		int newExports = getTradeDealsMaximumAmount() - getTradeDealsAmount(TradeDealType.EXPORT);
-		
-		// Export:
-		for (int i = 0; i < newExports; i++) {
-			
-			ArrayList<Transaction> sortedTransactions = sortedExport;
-			TradeDealType dealType = TradeDealType.EXPORT;
-			
-			TradeDeal tradeDeal = null;
-			
-			for (Transaction transaction : sortedTransactions) {
-				
-				tradeDeal = manager.findTradeDeal(dealType, transaction.getMaterial());
-				
-				// No trade deal:
-				if(tradeDeal == null) continue;
-				
-				// Check deal:
-				if(checkDeal(tradeDeal, transaction)){
-					break;
-				}else{
-					tradeDeal = null;
-				}
-				
-			}
-			
-			// Not found:
-			if(tradeDeal == null){
-				continue;
-			}
-			
-			// Form:
-			try {
-				tradeDeal = manager.takeTradeDeal(tradeDeal.getId());
-			} catch (TradeDealNotFoundException e) {
-				Saga.severe(this, "failed to form a trade deal, beacause the id wasn't found", "ignoring id");
-				continue;
-			}
-			addTradeDeal(tradeDeal);
-			
-			// Inform:
-			ChunkGroup chunkGroup = getChunkGroup();
-			if(chunkGroup != null) chunkGroup.broadcast(EconomyMessages.broadcastTradeDealFormation(tradeDeal));
-			
-			
-		}
-		
-		
-		
-	}
-	
 	/**
-	 * Checks if the automatic deal is good enough.
+	 * Gets the count of trade deals.
 	 * 
-	 * @param tradeDeal trade deal
-	 * @param transaction transaction
-	 * @return true if good enough
+	 * @return count of trade deals
 	 */
-	private boolean checkDeal(TradeDeal tradeDeal, Transaction transaction) {
-
-		
-		// Export:
-		if(tradeDeal.getType().equals(TradeDealType.EXPORT)){
-			
-			// Enough materials:
-			if(tradeDeal.getAmount() + getReservedAmount(tradeDeal.getMaterial()) > getItemCount(tradeDeal.getMaterial())){
-				return false;
-			}
-			
-			// Bad deal:
-			if(tradeDeal.getValue() < transaction.getValue()){
-				return false;
-			}
-			
-			return true;
-			
-		}else if(tradeDeal.getType().equals(TradeDealType.IMPORT)){
-			
-			// Enough currency:
-			if(tradeDeal.getTotalValue() + getReservedCurrency() < getCoins()){
-				return false;
-			}
-
-			// Bad deal:
-			if(tradeDeal.getValue() > transaction.getValue()){
-				return false;
-			}
-			
-			return true;
-			
-		}
-		
-		return false;
-		
-	}
-	
-	/**
-	 * Gets the amount of trade deals.
-	 * 
-	 * @return amount of trade deals
-	 */
-	public Integer getTradeDealsAmount() {
+	public Integer getDealCount() {
 		return tradeDeals.size();
 	}
 
@@ -965,7 +666,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	 * 
 	 * @param deal trade deal
 	 */
-	public void addTradeDeal(TradeDeal deal) {
+	public void addDeal(TradeDeal deal) {
 
 
 		// Find the smallest available id:
@@ -999,7 +700,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	 * @return removed trade deal
 	 * @throws TradeDealNotFoundException if the deal with the given ID doesn't exist
 	 */
-	public TradeDeal removeTradeDeal(Integer id) throws TradeDealNotFoundException {
+	public TradeDeal removeDeal(Integer id) throws TradeDealNotFoundException {
 
 		for (int i = 0; i < tradeDeals.size(); i++) {
 			
@@ -1013,88 +714,334 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		throw new TradeDealNotFoundException(id);
 		
 	}
+	
+	/**
+	 * Calculates the profit for all deals.
+	 * 
+	 * @return profit
+	 */
+	private Double calcDealsProfit() {
 
-	
-	// Reserved:
-	/**
-	 * Sets the amount of reserved material.
-	 * 
-	 * @param material material
-	 * @param amount amount
-	 */
-	public void setReserved(Material material, Integer amount) {
 		
+		Double profit = 0.0;
 		
-		if(amount == 0){
-			exportLimit.remove(material);
-		}else{
-			exportLimit.put(material, amount);
+		ArrayList<TradeDeal> deals = getDeals();
+		for (TradeDeal tradeDeal : deals) {
+			
+			// Import:
+			if(tradeDeal.getType() == TradeDealType.IMPORT){
+				
+				Integer amount = getAmount(tradeDeal.getMaterial());
+				profit -= tradeDeal.getTotalCost(amount);
+				
+			}
+			
+			// Export:
+			else if(tradeDeal.getType() == TradeDealType.EXPORT){
+				
+				Integer amount = getAmount(tradeDeal.getMaterial());
+				profit += tradeDeal.getTotalCost(amount);
+				
+			}
+			
 		}
+		
+		return profit;
 		
 		
 	}
 	
 	/**
-	 * Sets the amount of reserved currency.
+	 * Gets sorted import materials. First elements have a higher priority.
 	 * 
-	 * @param material material
-	 * @param amount amount
+	 * @return sorted imports
 	 */
-	public void setReserved(Double amount) {
-		
-		
-		if(amount < 0){
-			importLimit = 0.0;
-		}else{
-			importLimit = amount;
-		}
-		
-		
-	}
-	
-	/**
-	 * Gets all the materials that are reserved.
-	 * 
-	 * @return reserved materials
-	 */
-	public ArrayList<Material> getReservedMaterials() {
+	private ArrayList<Material> getSortedImports() {
 
 		
 		ArrayList<Material> materials = new ArrayList<Material>();
-		Enumeration<Material> kMaterials = exportLimit.keys();
-		while (kMaterials.hasMoreElements()) {
-			Material material = (Material) kMaterials.nextElement();
-			materials.add(material);
+		ArrayList<BuySign> bSigns = getSigns(BuySign.class);
+		
+		for (BuySign bSign : bSigns) {
+			
+			if(bSign.getMaterial() == null) continue;
+			
+			materials.add(bSign.getMaterial());
+			
+		}
+		
+		Comparator<Material> comparator = new Comparator<Material>() {
+			@Override
+			public int compare(Material o1, Material o2) {
+
+				Double price1 = getBuyPrice(o1);
+				if(price1 == null) price1 = 0.0;
+
+				Integer amount1 = getAmount(o1);
+				if(amount1 == null) amount1 = 0;
+
+				Double price2 = getBuyPrice(o2);
+				if(price2 == null) price2 = 0.0;
+
+				Integer amount2 = getAmount(o2);
+				if(amount2 == null) amount1 = 2;
+
+				return (int) (price1 * amount1 - price2 * amount2);
+				
+			}
+		};
+		
+		Collections.sort(materials, comparator);
+
+		// Limit to top deals:
+		while(materials.size() > DEAL_AUTO_MATERIALS){
+			materials.remove(materials.size() -1);
 		}
 		
 		return materials;
 		
+
+	}
+	
+	/**
+	 * Gets sorted export materials. First elements have a higher priority.
+	 * 
+	 * @return sorted exports
+	 */
+	private ArrayList<Material> getSortedExports() {
+
+		
+		ArrayList<Material> materials = new ArrayList<Material>();
+		ArrayList<SellSign> bSigns = getSigns(SellSign.class);
+		
+		for (SellSign bSign : bSigns) {
+			
+			if(bSign.getMaterial() == null) continue;
+			
+			materials.add(bSign.getMaterial());
+			
+		}
+		
+		Comparator<Material> comparator = new Comparator<Material>() {
+			@Override
+			public int compare(Material o1, Material o2) {
+
+				Double price1 = getBuyPrice(o1);
+				if(price1 == null) price1 = 0.0;
+
+				Integer amount1 = getAmount(o1);
+				if(amount1 == null) amount1 = 0;
+
+				Double price2 = getBuyPrice(o2);
+				if(price2 == null) price2 = 0.0;
+
+				Integer amount2 = getAmount(o2);
+				if(amount2 == null) amount1 = 2;
+
+				return (int) (price2 * amount2 - price1 * amount1);
+				
+			}
+		};
+		
+		Collections.sort(materials, comparator);
+
+		// Limit to top deals:
+		while(materials.size() > DEAL_AUTO_MATERIALS){
+			materials.remove(materials.size() -1);
+		}
+		
+		return materials;
+		
+
+	}
+	
+	/**
+	 * Selects deals.
+	 * 
+	 */
+	private void selectDeals() {
+
+		
+		// Manager:
+		SagaChunk sagaChunk = getSagaChunk();
+		if(sagaChunk == null){
+			return;
+		}
+		String worldName = sagaChunk.getWorldName();
+		
+		EconomyManager manager = null;
+		try {
+			manager = EconomyManager.manager(worldName);
+		}
+		catch (InvalidWorldException e) {
+			Saga.severe(this,worldName + " is not a valid world name", "ignoring deal selection");
+			return;
+		}
+		
+		
+		// Deals:
+		int newDeals = getDealsMaxCount() - getDealCount();
+		TradeDeal newDeal = null;
+		
+		for (int i = 0; i < newDeals; i++) {
+			
+			newDeal = null;
+			
+			Double available = calcDealsProfit() + getCoins() - getMinimumCoins();
+			
+			// Import:
+			if(available > 0){
+				
+				ArrayList<Material> materials = getSortedImports();
+				
+				ArrayList<TradeDeal> deals = manager.findGoodTradeDeal(TradeDealType.IMPORT, materials, this);
+				
+				for (TradeDeal tradeDeal : deals) {
+					
+					if(tradeDeal.getTotalCost() <= available){
+						newDeal = tradeDeal;
+						break;
+					}
+					
+				}
+				
+			}
+			
+			// Export:
+			if (newDeal == null) {
+
+				ArrayList<Material> materials = getSortedExports();
+				
+				ArrayList<TradeDeal> deals = manager.findGoodTradeDeal(TradeDealType.EXPORT, materials, this);
+
+				for (TradeDeal tradeDeal : deals) {
+					
+					if(tradeDeal.getAmount() <= getAmount(tradeDeal.getMaterial())){
+						newDeal = tradeDeal;
+						break;
+					}
+					
+				}
+				
+				
+			}
+			
+			// No deal found:
+			if(newDeal == null) continue;
+			else{
+				
+				try {
+					
+					manager.takeTradeDeal(newDeal.getId());
+					addDeal(newDeal);
+					
+					this.newDeals.add(newDeal);
+					
+					// Inform:
+					if(getChunkGroup() != null) getChunkGroup().broadcast(BuildingMessages.formedDeal(this, newDeal));
+					
+				}
+				catch (TradeDealNotFoundException e) {
+					Saga.severe(this, "deal selection failed to retrieve a deal with id " + newDeal.getId(), "stopping deal selection");
+					return;
+				}
+				
+			}
+			
+			
+		}
+
+
+	}
+	
+	
+	// Report:
+	/**
+	 * Resets report.
+	 * 
+	 */
+	private void restReport() {
+
+		imported = 0.0;
+		exported = 0.0;
+		newDeals = new ArrayList<TradeDeal>();
+		expiredDeals = new ArrayList<TradeDeal>();
+		completedDeals = new ArrayList<TradeDeal>();
 		
 	}
 	
 	/**
-	 * Gets the reserved material amount.
+	 * Gets the imported.
 	 * 
-	 * @param material material
-	 * @return reserved amount, 0 if not reserved
+	 * @return the imported
 	 */
-	public Integer getReservedAmount(Material material) {
+	public Double getImported() {
+		return imported;
+	}
 
-		Integer amount = exportLimit.get(material);
-		if(amount == null) amount = 0;
+	/**
+	 * Gets the exported.
+	 * 
+	 * @return the exported
+	 */
+	public Double getExported() {
+		return exported;
+	}
+
+	/**
+	 * Gets the newDeals.
+	 * 
+	 * @return the newDeals
+	 */
+	public ArrayList<TradeDeal> getNewDeals() {
+		return newDeals;
+	}
+
+	/**
+	 * Gets the expiredDeals.
+	 * 
+	 * @return the expiredDeals
+	 */
+	public ArrayList<TradeDeal> getExpiredDeals() {
+		return expiredDeals;
+	}
+
+	/**
+	 * Gets the completedDeals.
+	 * 
+	 * @return the completedDeals
+	 */
+	public ArrayList<TradeDeal> getCompletedDeals() {
+		return completedDeals;
+	}
+
+	
+	// Reserved:
+	/**
+	 * Sets the amount of reserved coins.
+	 * 
+	 * @param amount amount
+	 */
+	public void setMinimumCoins(Double amount) {
 		
-		return amount;
+		
+		if(amount < 0){
+			autoMinCoins = 0.0;
+		}else{
+			autoMinCoins = amount;
+		}
+		
 		
 	}
 	
 	/**
-	 * Gets the reserved currency.
+	 * Gets the kept coins.
 	 * 
-	 * @return reserved currency, 0 if not reserved
+	 * @return kept coins, 0 if not reserved
 	 */
-	public Double getReservedCurrency() {
+	public Double getMinimumCoins() {
 
-		Double amount = importLimit;
+		Double amount = autoMinCoins;
 		if(amount < 0) amount = 0.0;
 		
 		return amount;
@@ -1133,21 +1080,21 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	@Override
 	public boolean isActive(TransactionType type, Material material) {
 		
-		Transaction transaction = findTransaction(type, material);
+//		Transaction transaction = findTransaction(type, material);
+//		
+//		if(!hasSign(type, material) || transaction == null){
+//			return false;
+//		}
 		
-		if(!hasSign(type, material) || transaction == null){
-			return false;
-		}
-		
-		if(type.equals(TransactionType.SELL)){
-			
-			return transaction.getTotalValue() <= getCoins();
-			
-		}else if(type.equals(TransactionType.BUY)){
-			
-			return transaction.getAmount() <= getItemCount(material);
-			
-		}
+//		if(type.equals(TransactionType.SELL)){
+//			
+//			return transaction.getTotalValue() <= getCoins();
+//			
+//		}else if(type.equals(TransactionType.BUY)){
+//			
+//			return transaction.getAmount() <= getAmount(material);
+//			
+//		}
 		
 		return  false;
 		
@@ -1161,9 +1108,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	@Override
 	public void addCoins(Double amount) {
 		
-		currency += amount;
-		
-		refreshSigns();
+		coins += amount;
 		
 	}
 
@@ -1175,9 +1120,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	@Override
 	public void removeCoins(Double amount) {
 		
-		currency -= amount;
-		
-		refreshSigns();
+		coins -= amount;
 		
 	}
 
@@ -1188,7 +1131,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	 */
 	@Override
 	public Double getCoins() {
-		return currency;
+		return coins;
 	}
 	
 	/* 
@@ -1197,9 +1140,9 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	 * @see saga.economy.Trader#getItemCount(org.bukkit.Material)
 	 */
 	@Override
-	public Integer getItemCount(Material material) {
+	public Integer getAmount(Material material) {
 		
-		Integer count = stockedItems.get(material);
+		Integer count = stored.get(material);
 		if(count == null) count = 0;
 		return count;
 		
@@ -1213,14 +1156,12 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	@Override
 	public void addItem(ItemStack itemStack) {
 		
-		Integer count = stockedItems.get(itemStack.getType());
+		Integer count = stored.get(itemStack.getType());
 		if(count == null) count = 0;
 		
 		count += itemStack.getAmount();
 		
-		stockedItems.put(itemStack.getType(), count);
-		
-		refreshSigns();
+		stored.put(itemStack.getType(), count);
 		
 	}
 	
@@ -1233,139 +1174,58 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	public void removeItem(ItemStack itemStack) {
 		
 
-		Integer count = stockedItems.get(itemStack.getType());
+		Integer count = stored.get(itemStack.getType());
 		if(count == null) count = 0;
 		
 		count -= itemStack.getAmount();
 		
 		if(count != 0){
-			stockedItems.put(itemStack.getType(), count);
+			stored.put(itemStack.getType(), count);
 		}else{
-			stockedItems.remove(itemStack.getType());
+			stored.remove(itemStack.getType());
 		}
-		
-		refreshSigns();
 		
 		
 	}
 	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see saga.economy.Trader#getBuyItemValues()
-	 */
-	@Override
-	public ArrayList<Transaction> getTransactions() {
-		return new ArrayList<Transaction>(tradeTransactions);
-	}
-
 	/* 
 	 * (non-Javadoc)
 	 * 
 	 * @see saga.economy.Trader#getTradeDeals()
 	 */
 	@Override
-	public ArrayList<TradeDeal> getTradeDeals() {
+	public ArrayList<TradeDeal> getDeals() {
 		return new ArrayList<TradeDeal>(tradeDeals);
+	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.economy.Trader#notifyTransaction()
+	 */
+	@Override
+	public void notifyTransaction() {
+	
+		
+		// Sell signs:
+		ArrayList<BuildingSign> sellSigns = getValidSigns(SellSign.SIGN_NAME);
+
+		for (BuildingSign buildingSign : sellSigns) {
+			buildingSign.refresh();
+		}
+
+		// Buy signs:
+		ArrayList<BuildingSign> buySigns = getValidSigns(BuySign.SIGN_NAME);
+
+		for (BuildingSign buildingSign : buySigns) {
+			buildingSign.refresh();
+		}
+		
+		
 	}
 
 	
 	// Events:
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#onPlayerInteract(org.bukkit.event.player.PlayerInteractEvent, org.saga.SagaPlayer)
-	 */
-	@Override
-	public void onPlayerInteract(PlayerInteractEvent event, SagaPlayer sagaPlayer) {
-		
-
-		// Canceled:
-		if(event.isCancelled()){
-			return;
-		}
-		
-		Block targetBlock = event.getClickedBlock();
-    	
-		// Invalid:
-		if(targetBlock == null){
-    		return;
-    	}
-		
-		// Find trade sign:
-		TradeSign tradeSign = tradeSignAt(targetBlock.getLocation());
-		
-		// Not a trade sign:
-		if(tradeSign == null){
-			return;
-		}
-//		
-//		// Permission:
-//		if(!canUse(sagaPlayer)){
-//			sagaPlayer.sendMessage(SagaMessages.noPermission());
-//			return;
-//		}
-//		
-		
-		// Forward to sign:
-		tradeSign.onPlayerInteract(sagaPlayer, event);
-		
-		
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#onSignChange(org.bukkit.event.block.SignChangeEvent, org.saga.SagaPlayer)
-	 */
-	@Override
-	public void onSignChange(SignChangeEvent event, SagaPlayer sagaPlayer) {
-		
-
-		// Canceled:
-		if(event.isCancelled()){
-			return;
-		}
-		
-		// Permission:
-		if(!checkBuildingPermission(sagaPlayer, BuildingPermission.LOW)){
-			sagaPlayer.message(SagaMessages.noPermission(this));
-			event.setCancelled(true);
-			return;
-		}
-		
-		// Valid sign:
-		TransactionType transactionType = null;
-		if(TradeSign.isSellSign(event.getLine(0))){
-			transactionType = TransactionType.SELL;
-		}
-		
-		if(TradeSign.isBuySign(event.getLine(0))){
-			transactionType = TransactionType.BUY;
-		}
-		
-		if(transactionType == null){
-			return;
-		}
-		
-		Block targetBlock = event.getBlock();
-
-		// Sign:
-		if(!(targetBlock.getState() instanceof Sign)){
-			return;
-		}
-		Sign sign = (Sign) targetBlock.getState();
-
-		// Take control of the event:
-		event.setCancelled(true);
-		
-		// Create and add sign:
-		TradeSign tradeSign = TradeSign.create(transactionType, sign, this, event);
-		addTradeSign(tradeSign);
-		
-		
-	}
-	
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -1417,20 +1277,140 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		if(!(targetBlock.getState() instanceof Sign)){
 			return;
 		}
+//		
+//		// Trade sign:
+//		TradeSign tradeSign = tradeSignAt(targetBlock.getLocation());
+//		if(tradeSign == null){
+//			return;
+//		}
+//
+//		// Delete and remove sign:
+//		tradeSign.remove();
+//		removeTradeSign(tradeSign);
+//		
+//		
+	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.buildings.Building#onSignChange(org.bukkit.event.block.SignChangeEvent, org.saga.player.SagaPlayer)
+	 */
+	@Override
+	public void onSignChange(SignChangeEvent event, SagaPlayer sagaPlayer) {
+	
 		
-		// Trade sign:
-		TradeSign tradeSign = tradeSignAt(targetBlock.getLocation());
-		if(tradeSign == null){
-			return;
+		// Goods sign:
+		if(event.getLine(0).equalsIgnoreCase(GOODS_SIGN)){
+			event.setLine(0, ChunkGroupConfiguration.config().enabledSignColor + GOODS_SIGN);
 		}
 
-		// Delete and remove sign:
-		tradeSign.remove();
-		removeTradeSign(tradeSign);
-		
+		// Goods sign:
+		else if(event.getLine(0).equalsIgnoreCase(DEALS_SIGN)){
+			event.setLine(0, ChunkGroupConfiguration.config().enabledSignColor + DEALS_SIGN);
+		}
+	
+		// Report sign:
+		else if(event.getLine(0).equalsIgnoreCase(REPORT_SIGN)){
+			event.setLine(0, ChunkGroupConfiguration.config().enabledSignColor + REPORT_SIGN);
+		}
+	
 		
 	}
 	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.buildings.Building#onPlayerInteract(org.bukkit.event.player.PlayerInteractEvent, org.saga.player.SagaPlayer)
+	 */
+	@Override
+	public void onPlayerInteract(PlayerInteractEvent event, SagaPlayer sagaPlayer) {
+
+		
+		super.onPlayerInteract(event, sagaPlayer);
+
+		// Canceled:
+		if(event.isCancelled()){
+			return;
+		}
+		
+		Block targetBlock = event.getClickedBlock();
+    	
+		// Right click:
+		if(!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+			return;
+		}
+		
+		// Invalid:
+		if(targetBlock == null){
+    		return;
+    	}
+    	
+		// Sign:
+		if(!(targetBlock.getState() instanceof Sign)){
+			return;
+		}
+		Sign sign = (Sign) targetBlock.getState();
+
+		// Top sign:
+		if(ChatColor.stripColor(sign.getLine(0)).equals(GOODS_SIGN)){
+			
+			Integer page = 1;
+			if(sign.getLine(1).length() > 0){
+				try {
+					page = Integer.parseInt(sign.getLine(1));
+				}
+				catch (NumberFormatException e) { }
+			}
+			
+			sagaPlayer.message(BuildingMessages.goods(this, page - 1));
+			
+			// Take control:
+			event.setUseInteractedBlock(Result.DENY);
+			event.setUseItemInHand(Result.DENY);
+			
+		}
+		
+		// Deals sign:
+		else if(ChatColor.stripColor(sign.getLine(0)).equals(DEALS_SIGN)){
+			
+			Integer page = 1;
+			if(sign.getLine(1).length() > 0){
+				try {
+					page = Integer.parseInt(sign.getLine(1));
+				}
+				catch (NumberFormatException e) { }
+			}
+			
+			sagaPlayer.message(BuildingMessages.deals(this, page - 1));
+			
+			// Take control:
+			event.setUseInteractedBlock(Result.DENY);
+			event.setUseItemInHand(Result.DENY);
+			
+		}
+
+		// Report sign:
+		else if(ChatColor.stripColor(sign.getLine(0)).equals(REPORT_SIGN)){
+			
+			Integer page = 1;
+			if(sign.getLine(1).length() > 0){
+				try {
+					page = Integer.parseInt(sign.getLine(1));
+				}
+				catch (NumberFormatException e) { }
+			}
+			
+			sagaPlayer.message(BuildingMessages.report(this, page - 1));
+			
+			// Take control:
+			event.setUseInteractedBlock(Result.DENY);
+			event.setUseItemInHand(Result.DENY);
+			
+		}
+		
+		
+	}
 	
 	// Other:
 	/* 
@@ -1447,11 +1427,11 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	// Commands:
 	@Command(
 			aliases = {"bsetsell", "setsell"},
-			usage = "<item> <amount> <value>",
+			usage = "[item] <price>",
 			flags = "",
-			desc = "Sets up an item for sell in a tradin post building.",
-			min = 3,
-			max = 3
+			desc = "Sets item sell price. Item in hand if no item is given.",
+			min = 1,
+			max = 2
 	)
 	@CommandPermissions({"saga.user.building.tradingpost.economy.setsell"})
 	public static void setSell(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
@@ -1466,64 +1446,83 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 			return;
 		}
 		
+		Material material = null;
+		Double price = null;
+		
 		// Permission:
 		if(!selectedBuilding.checkBuildingPermission(sagaPlayer, BuildingPermission.HIGH)){
 			sagaPlayer.message(SagaMessages.noPermission(selectedBuilding));
 			return;
 		}
 		
-		// Material:
-		Material material = Material.matchMaterial(args.getString(0));
-		if(material == null){
-			sagaPlayer.message( EconomyMessages.invalidMaterial(args.getString(0)) );
-			return;
+		// Arguments:
+		if(args.argsLength() == 2){
+			
+			String sMaterial = args.getString(0);
+			material = Material.matchMaterial(sMaterial);
+			if(material == null){
+				try {
+					material = Material.getMaterial(Integer.parseInt(sMaterial));
+				} catch (NumberFormatException e) { }
+			}
+			if(material == null){
+				sagaPlayer.message(EconomyMessages.invalidMaterial(sMaterial));
+				return;
+			}
+			
+			// Price:
+			String sValue = args.getString(1);
+			try {
+				price = Double.parseDouble(sValue);
+			} catch (NumberFormatException e) {
+				sagaPlayer.message(EconomyMessages.invalidPrice(sValue));
+				return;
+			}
+			
+		}else{
+			
+			// Material:
+			ItemStack item = sagaPlayer.getItemInHand();
+			if(item != null && item.getType() != Material.AIR) material = item.getType();
+			if(material == null){
+				sagaPlayer.message(EconomyMessages.invalidItemHand());
+				return;
+			}
+			
+			// Price:
+			String sValue = args.getString(0);
+			try {
+				price = Double.parseDouble(sValue);
+			} catch (NumberFormatException e) {
+				sagaPlayer.message(EconomyMessages.invalidPrice(sValue));
+				return;
+			}
+			
 		}
 		
-		// Amount and value:
-		Integer amount;
-		Double value;
-		try {
-			amount = Integer.parseInt(args.getString(1));
-		} catch (NumberFormatException e) {
-			sagaPlayer.message(EconomyMessages.invalidAmount(args.getString(1)));
-			return;
-		}
-		try {
-			value = Double.parseDouble(args.getString(2));
-		} catch (NumberFormatException e) {
-			sagaPlayer.message(EconomyMessages.invalidAmount(args.getString(2)));
-			return;
-		}
-		
-		Transaction transaction = new Transaction(TransactionType.SELL, material, amount, value);
-		
-		// Add transaction:
-		selectedBuilding.addTransaction(transaction);
+		// Add price:
+		selectedBuilding.setSellPrice(material, price);
 		
 		// Inform:
-		SagaChunk sagaChunk = selectedBuilding.getSagaChunk();
-		ChunkGroup chunkGroup = null;
-		if(sagaChunk != null){
-			chunkGroup = sagaChunk.getChunkGroup();
-		}
-		if(chunkGroup != null){
-			chunkGroup.broadcast(EconomyMessages.addedTransactionBroadcast(transaction, chunkGroup, sagaPlayer));
-		}
+		sagaPlayer.message(EconomyMessages.setSell(material, price));
+		
+		// Notify transaction:
+		selectedBuilding.notifyTransaction();
 		
 		
 	}
 
 	@Command(
 			aliases = {"bremovesell", "removesell"},
-			usage = "<item> <amount> <value>",
+			usage = "[item]",
 			flags = "",
-			desc = "Removes an item for sell in a tradin post building.",
+			desc = "Removes item sell price. Item in hand if no item is given.",
 			min = 1,
-			max = 1
+			max = 0
 	)
 	@CommandPermissions({"saga.user.building.tradingpost.economy.removesell"})
 	public static void removeSell(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
+
 		
 		// Retrieve building:
 		TradingPost selectedBuilding = null;
@@ -1534,50 +1533,62 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 			return;
 		}
 		
+		Material material = null;
+		
 		// Permission:
 		if(!selectedBuilding.checkBuildingPermission(sagaPlayer, BuildingPermission.HIGH)){
 			sagaPlayer.message(SagaMessages.noPermission(selectedBuilding));
 			return;
 		}
 		
-		// Material:
-		Material material = Material.matchMaterial(args.getString(0));
-		if(material == null){
-			sagaPlayer.message(EconomyMessages.invalidMaterial(args.getString(0)));
-			return;
+		// Arguments:
+		if(args.argsLength() == 1){
+			
+			String sMaterial = args.getString(0);
+			material = Material.matchMaterial(sMaterial);
+			if(material == null){
+				try {
+					material = Material.getMaterial(Integer.parseInt(sMaterial));
+				} catch (NumberFormatException e) { }
+			}
+			if(material == null){
+				sagaPlayer.message(EconomyMessages.invalidMaterial(sMaterial));
+				return;
+			}
+			
+		}else{
+			
+			// Material:
+			ItemStack item = sagaPlayer.getItemInHand();
+			if(item != null && item.getType() != Material.AIR) material = item.getType();
+			if(material == null){
+				sagaPlayer.message(EconomyMessages.invalidItemHand());
+				return;
+			}
+			
 		}
 		
-		// Check if exists:
-		if(!selectedBuilding.hasTransaction(TransactionType.SELL, material)){
-			sagaPlayer.message(EconomyMessages.nonexistantTransaction(TransactionType.SELL, material));
-			return;
-		}
-		
-		// Remove:
-		selectedBuilding.removeTransaction(TransactionType.SELL, material);
+		// Remove price:
+		selectedBuilding.removeSellPrice(material);
 		
 		// Inform:
-		SagaChunk sagaChunk = selectedBuilding.getSagaChunk();
-		ChunkGroup chunkGroup = null;
-		if(sagaChunk != null){
-			chunkGroup = sagaChunk.getChunkGroup();
-		}
-		if(chunkGroup != null){
-			chunkGroup.broadcast(EconomyMessages.removedTransactionBroadcast(TransactionType.SELL, material, chunkGroup, sagaPlayer));
-		}
+		sagaPlayer.message(EconomyMessages.removeSell(material));
+		
+		// Notify transaction:
+		selectedBuilding.notifyTransaction();
 		
 		
 	}
-
+	
 	@Command(
 			aliases = {"bsetbuy", "setbuy"},
-			usage = "<item> <amount> <value>",
+			usage = "[item] <price>",
 			flags = "",
-			desc = "Sets up an item to buy in a tradin post building.",
-			min = 3,
-			max = 3
+			desc = "Sets item buy price. Item in hand if no item is given.",
+			min = 1,
+			max = 2
 	)
-	@CommandPermissions({"saga.user.building.tradingpost.economy.setbuy"})
+	@CommandPermissions({"saga.user.building.tradingpost.economy.setsell"})
 	public static void setBuy(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
@@ -1590,64 +1601,83 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 			return;
 		}
 		
+		Material material = null;
+		Double price = null;
+		
 		// Permission:
 		if(!selectedBuilding.checkBuildingPermission(sagaPlayer, BuildingPermission.HIGH)){
 			sagaPlayer.message(SagaMessages.noPermission(selectedBuilding));
 			return;
 		}
 		
-		// Material:
-		Material material = Material.matchMaterial(args.getString(0));
-		if(material == null){
-			sagaPlayer.message( EconomyMessages.invalidMaterial(args.getString(0)) );
-			return;
+		// Arguments:
+		if(args.argsLength() == 2){
+			
+			String sMaterial = args.getString(0);
+			material = Material.matchMaterial(sMaterial);
+			if(material == null){
+				try {
+					material = Material.getMaterial(Integer.parseInt(sMaterial));
+				} catch (NumberFormatException e) { }
+			}
+			if(material == null){
+				sagaPlayer.message(EconomyMessages.invalidMaterial(sMaterial));
+				return;
+			}
+			
+			// Price:
+			String sValue = args.getString(1);
+			try {
+				price = Double.parseDouble(sValue);
+			} catch (NumberFormatException e) {
+				sagaPlayer.message(EconomyMessages.invalidPrice(sValue));
+				return;
+			}
+			
+		}else{
+			
+			// Material:
+			ItemStack item = sagaPlayer.getItemInHand();
+			if(item != null && item.getType() != Material.AIR) material = item.getType();
+			if(material == null){
+				sagaPlayer.message(EconomyMessages.invalidItemHand());
+				return;
+			}
+			
+			// Price:
+			String sValue = args.getString(0);
+			try {
+				price = Double.parseDouble(sValue);
+			} catch (NumberFormatException e) {
+				sagaPlayer.message(EconomyMessages.invalidPrice(sValue));
+				return;
+			}
+			
 		}
 		
-		// Amount and value:
-		Integer amount;
-		Double value;
-		try {
-			amount = Integer.parseInt(args.getString(1));
-		} catch (NumberFormatException e) {
-			sagaPlayer.message(EconomyMessages.invalidAmount(args.getString(1)));
-			return;
-		}
-		try {
-			value = Double.parseDouble(args.getString(2));
-		} catch (NumberFormatException e) {
-			sagaPlayer.message(EconomyMessages.invalidAmount(args.getString(2)));
-			return;
-		}
-		
-		Transaction transaction = new Transaction(TransactionType.BUY, material, amount, value);
-		
-		// Add transaction:
-		selectedBuilding.addTransaction(transaction);
+		// Add price:
+		selectedBuilding.setBuyPrice(material, price);
 		
 		// Inform:
-		SagaChunk sagaChunk = selectedBuilding.getSagaChunk();
-		ChunkGroup chunkGroup = null;
-		if(sagaChunk != null){
-			chunkGroup = sagaChunk.getChunkGroup();
-		}
-		if(chunkGroup != null){
-			chunkGroup.broadcast(EconomyMessages.addedTransactionBroadcast(transaction, chunkGroup, sagaPlayer));
-		}
+		sagaPlayer.message(EconomyMessages.setBuy(material, price));
+		
+		// Notify transaction:
+		selectedBuilding.notifyTransaction();
 		
 		
 	}
 
 	@Command(
 			aliases = {"bremovebuy", "removebuy"},
-			usage = "<item> <amount> <value>",
+			usage = "[item]",
 			flags = "",
-			desc = "Removes an item to buy in a tradin post building.",
+			desc = "Removes item buy price. Item in hand if no item is given.",
 			min = 1,
-			max = 1
+			max = 0
 	)
-	@CommandPermissions({"saga.user.building.tradingpost.economy.removebuy"})
+	@CommandPermissions({"saga.user.building.tradingpost.economy.removesell"})
 	public static void removeBuy(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
+
 		
 		// Retrieve building:
 		TradingPost selectedBuilding = null;
@@ -1658,40 +1688,53 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 			return;
 		}
 		
+		Material material = null;
+		
 		// Permission:
 		if(!selectedBuilding.checkBuildingPermission(sagaPlayer, BuildingPermission.HIGH)){
 			sagaPlayer.message(SagaMessages.noPermission(selectedBuilding));
 			return;
 		}
 		
-		// Material:
-		Material material = Material.matchMaterial(args.getString(0));
-		if(material == null){
-			sagaPlayer.message(EconomyMessages.invalidMaterial(args.getString(0)));
-			return;
+		// Arguments:
+		if(args.argsLength() == 1){
+			
+			String sMaterial = args.getString(0);
+			material = Material.matchMaterial(sMaterial);
+			if(material == null){
+				try {
+					material = Material.getMaterial(Integer.parseInt(sMaterial));
+				} catch (NumberFormatException e) { }
+			}
+			if(material == null){
+				sagaPlayer.message(EconomyMessages.invalidMaterial(sMaterial));
+				return;
+			}
+			
+		}else{
+			
+			// Material:
+			ItemStack item = sagaPlayer.getItemInHand();
+			if(item != null && item.getType() != Material.AIR) material = item.getType();
+			if(material == null){
+				sagaPlayer.message(EconomyMessages.invalidItemHand());
+				return;
+			}
+			
 		}
 		
-		// Check if exists:
-		if(!selectedBuilding.hasTransaction(TransactionType.BUY, material)){
-			sagaPlayer.message(EconomyMessages.nonexistantTransaction(TransactionType.BUY, material));
-			return;
-		}
-		
-		// Remove:
-		selectedBuilding.removeTransaction(TransactionType.BUY, material);
+		// Remove price:
+		selectedBuilding.removeBuyPrice(material);
 		
 		// Inform:
-		SagaChunk sagaChunk = selectedBuilding.getSagaChunk();
-		ChunkGroup chunkGroup = null;
-		if(sagaChunk != null){
-			chunkGroup = sagaChunk.getChunkGroup();
-		}
-		if(chunkGroup != null){
-			chunkGroup.broadcast(EconomyMessages.removedTransactionBroadcast(TransactionType.BUY, material, chunkGroup, sagaPlayer));
-		}
+		sagaPlayer.message(EconomyMessages.removeSell(material));
+		
+		// Notify transaction:
+		selectedBuilding.notifyTransaction();
 		
 		
 	}
+	
 	
 	@Command(
 			aliases = {"bdonate", "donate"},
@@ -1726,13 +1769,13 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 
 		// Damaged:
 		if(item.getDurability() > 0){
-			sagaPlayer.message(cantDonateDamaged());
+			sagaPlayer.message(BuildingMessages.cantDonateDamaged());
 			return;
 		}
 		
 		// Enchanted:
 		if(item.getEnchantments().size() > 0){
-			sagaPlayer.message(cantDonateEnchanted());
+			sagaPlayer.message(BuildingMessages.cantDonateEnchanted());
 			return;
 		}
 		
@@ -1751,6 +1794,9 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		if(sagaChunk != null){
 			sagaChunk.getChunkGroup().broadcast(EconomyMessages.donatedItemsBroadcast(item, selectedBuilding, sagaPlayer));
 		}
+		
+		// Notify transaction:
+		selectedBuilding.notifyTransaction();
 		
 		
 	}
@@ -1795,7 +1841,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 			
 			ItemStack item = sagaPlayer.getInventoryItem(i);
 			
-			if(item.getType().equals(material) && item.getDurability() == 0 && item.getEnchantments().size() == 0){
+			if(item != null && item.getType().equals(material) && item.getDurability() == 0 && item.getEnchantments().size() == 0){
 
 				amount += item.getAmount();
 				selectedBuilding.addItem(item);
@@ -1811,8 +1857,8 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 			sagaChunk.getChunkGroup().broadcast(EconomyMessages.donatedItemsBroadcast(new ItemStack(material, amount), selectedBuilding, sagaPlayer));
 		}
 		
-		// Refresh signs:
-		selectedBuilding.refreshSigns();
+		// Notify transactions:
+		selectedBuilding.notifyTransaction();
 		
 	}
 	
@@ -1825,7 +1871,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 			max = 1
 	)
 	@CommandPermissions({"saga.user.building.tradingpost.economy.donate"})
-	public static void donateCurrency(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	public static void donateCoins(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
 		// Retrieve building:
@@ -1869,6 +1915,9 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		if(sagaChunk != null){
 			sagaChunk.getChunkGroup().broadcast(EconomyMessages.donatedCurrencyBroadcast(amount, selectedBuilding, sagaPlayer));
 		}
+
+		// Notify transaction:
+		selectedBuilding.notifyTransaction();
 		
 		
 	}
@@ -1901,15 +1950,15 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	}
 
 	@Command(
-			aliases = {"bnewdeal", "newdeal"},
+			aliases = {"bnewdeal","bnewimport","bnewexport", "newdeal","newimport","newexport"},
 			usage = "<trade deal ID>",
 			flags = "",
-			desc = "Forms a new trading deal for the settlement.",
+			desc = "Form a new trading deal.",
 			min = 1,
 			max = 1
 	)
 	@CommandPermissions({"saga.user.building.tradingpost.economy.formdeal"})
-	public static void formTradeDeal(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	public static void newdeal(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
 		// Retrieve building:
@@ -1937,7 +1986,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		}
 		
 		// Check existing trade deals:
-		if(selectedBuilding.getTradeDealsAmount() >= selectedBuilding.getTradeDealsMaximumAmount()){
+		if(selectedBuilding.getDealCount() >= selectedBuilding.getDealsMaxCount()){
 			sagaPlayer.message(EconomyMessages.tradeDealLimitReached(selectedBuilding));
 			return;
 		}
@@ -1961,81 +2010,29 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		}
 		
 		// Add trade deal:
-		selectedBuilding.addTradeDeal(tradeDeal);
-		
-		// Inform:
-		ChunkGroup originChunkGroup = selectedBuilding.getChunkGroup();
-		if(originChunkGroup != null){
-			originChunkGroup.broadcast(EconomyMessages.formedTradeDealBroadcast(tradeDeal, sagaPlayer));
-		}
-		
-		
-	}
-
-	@Command(
-			aliases = {"bexportlimit"},
-			usage = "<material> <amount>",
-			flags = "",
-			desc = "Sets the amount for material that will not get exported.",
-			min = 2,
-			max = 2
-	)
-	@CommandPermissions({"saga.user.building.tradingpost.economy.reserve"})
-	public static void exportLimit(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-		
-		Material material = null;
-		Integer amount = null;
-
-		// Retrieve building:
-		TradingPost selectedBuilding = null;
-		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-		} catch (Throwable e) {
-			sagaPlayer.message(e.getMessage());
-			return;
-		}
-		
-		// Permission:
-		if(!selectedBuilding.checkBuildingPermission(sagaPlayer, BuildingPermission.MEDIUM)){
-			sagaPlayer.message(SagaMessages.noPermission(selectedBuilding));
-			return;
-		}
-		
-		// Arguments:
-		material = Material.matchMaterial(args.getString(0));
-		if(material == null || material.equals(Material.AIR)){
-			sagaPlayer.message(EconomyMessages.invalidMaterial(args.getString(0)));
-			return;
-		}
-		try {
-			amount = Integer.parseInt(args.getString(1));
-		} catch (NumberFormatException e) {
-			sagaPlayer.message(EconomyMessages.invalidAmount(args.getString(1)));
-			return;
-		}
-		
-		// Reserve:
-		selectedBuilding.setReserved(material, amount);
+		selectedBuilding.addDeal(tradeDeal);
 		
 		// Inform:
 		if(selectedBuilding.getChunkGroup() != null){
-			selectedBuilding.getChunkGroup().broadcast(EconomyMessages.reservedBroadcast(material, amount, sagaPlayer, selectedBuilding));
+			selectedBuilding.getChunkGroup().broadcast(BuildingMessages.formedDealBrdc(tradeDeal, sagaPlayer));
 		}
+		
+		// Report:
+		selectedBuilding.newDeals.add(tradeDeal);
 		
 		
 	}
-	
+
 	@Command(
-			aliases = {"bimportlimit"},
+			aliases = {"bsetminimumcoins","bsetminc"},
 			usage = "<amount>",
 			flags = "",
-			desc = "Sets the currency that cant be used to import.",
+			desc = "Sets the coins that can't be used for imports.",
 			min = 1,
 			max = 1
 	)
 	@CommandPermissions({"saga.user.building.tradingpost.economy.reserve"})
-	public static void importLimit(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	public static void setMinCoins(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
 		Double amount = null;
@@ -2064,7 +2061,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		}
 		
 		// Reserve:
-		selectedBuilding.setReserved(amount);
+		selectedBuilding.setMinimumCoins(amount);
 		
 		// Inform:
 		if(selectedBuilding.getChunkGroup() != null){
@@ -2076,7 +2073,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	
 
 	@Command(
-			aliases = {"atpostautomatic"},
+			aliases = {"atpostautomatic","asetautomatic"},
 			usage = "",
 			flags = "",
 			desc = "Sets the trading post to automatic.",
@@ -2098,7 +2095,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		
 		// Already automatic:
 		if(selectedBuilding.isAutomated()){
-			sagaPlayer.message(alreadyAutomatic(selectedBuilding));
+			sagaPlayer.message(BuildingMessages.alreadyAutomatic(selectedBuilding));
 			return;
 		}
 		
@@ -2106,13 +2103,13 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		selectedBuilding.setAutomated(true);
 		
 		// Inform:
-		sagaPlayer.message(setAutomate(selectedBuilding));
+		sagaPlayer.message(BuildingMessages.setAutomate(selectedBuilding));
 		
 		
 	}
 	
 	@Command(
-			aliases = {"atpostmanual"},
+			aliases = {"atpostmanual","asetmanual"},
 			usage = "",
 			flags = "",
 			desc = "Sets the trading post to manual.",
@@ -2134,7 +2131,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		
 		// Already manual:
 		if(!selectedBuilding.isAutomated()){
-			sagaPlayer.message(alreadyAutomatic(selectedBuilding));
+			sagaPlayer.message(BuildingMessages.alreadyAutomatic(selectedBuilding));
 			return;
 		}
 		
@@ -2142,46 +2139,100 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		selectedBuilding.setAutomated(false);
 		
 		// Inform:
-		sagaPlayer.message(setAutomate(selectedBuilding));
+		sagaPlayer.message(BuildingMessages.setAutomate(selectedBuilding));
 		
 		
 	}
 	
 	
-	// Messages:
-	public static String setAutomate(TradingPost tradingPost){
-		
-		if(tradingPost.isAutomated()){
-			return ChunkGroupMessages.positive + "Set " + tradingPost.getDisplayName() + " to automatic.";
-		}else{
-			return ChunkGroupMessages.positive + "Set " + tradingPost.getDisplayName() + " to manual.";
+	@Command(
+			aliases = {"bgoods","goods"},
+			usage = "",
+			flags = "",
+			desc = "Shows trading post goods.",
+			min = 0,
+			max = 1
+	)
+	@CommandPermissions({"saga.user.building.tradingpost.economy.goods"})
+	public static void levels(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+
+		// Retrieve building:
+		TradingPost selectedBuilding = null;
+		try {
+			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
+		} catch (Throwable e) {
+			sagaPlayer.message(e.getMessage());
+			return;
 		}
 		
+    	// Arguments:
+		Integer page = null;
+    	if(args.argsLength() == 1){
+    		
+        	try {
+    			page = Integer.parseInt(args.getString(0));
+    		} catch (NumberFormatException e) {
+    			sagaPlayer.message(ChunkGroupMessages.invalidPage(args.getString(0)));
+    			return;
+    		}
+    		
+    	}else{
+    		
+    		page = 1;
+        	
+    	}
+		
+	    // Inform:
+	    sagaPlayer.message(BuildingMessages.goods(selectedBuilding, page - 1));
+	      
+	    
 	}
 	
-	public static String alreadyAutomatic(TradingPost tradingPost){
+	@Command(
+			aliases = {"breport","report"},
+			usage = "",
+			flags = "",
+			desc = "Shows trading post report.",
+			min = 0,
+			max = 1
+	)
+	@CommandPermissions({"saga.user.building.tradingpost.economy.report"})
+	public static void report(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+
+		// Retrieve building:
+		TradingPost selectedBuilding = null;
+		try {
+			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
+		} catch (Throwable e) {
+			sagaPlayer.message(e.getMessage());
+			return;
+		}
 		
-		return ChunkGroupMessages.negative + "" + TextUtil.capitalize(tradingPost.getDisplayName()) + " is already automatic.";
+    	// Arguments:
+		Integer page = null;
+    	if(args.argsLength() == 1){
+    		
+        	try {
+    			page = Integer.parseInt(args.getString(0));
+    		} catch (NumberFormatException e) {
+    			sagaPlayer.message(ChunkGroupMessages.invalidPage(args.getString(0)));
+    			return;
+    		}
+    		
+    	}else{
+    		
+    		page = 1;
+        	
+    	}
 		
+	    // Inform:
+	    sagaPlayer.message(BuildingMessages.report(selectedBuilding, page - 1));
+	      
+	    
 	}
 	
-	public static String alreadyManual(TradingPost tradingPost){
-		
-		return ChunkGroupMessages.negative + "" + TextUtil.capitalize(tradingPost.getDisplayName()) + " is already manual.";
-		
-	}
-	
-	public static String cantDonateEnchanted(){
-		
-		return ChunkGroupMessages.negative + "Enchanted items can't be donated.";
-		
-	}
-	
-	public static String cantDonateDamaged(){
-		
-		return ChunkGroupMessages.negative + "Damaged items can't be donated.";
-		
-	}
 	
 	
 }

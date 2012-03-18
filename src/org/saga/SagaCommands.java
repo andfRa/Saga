@@ -10,6 +10,7 @@ import java.util.Enumeration;
 
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.saga.Clock.TimeOfDayTicker.TimeOfDay;
 import org.saga.chunkGroups.ChunkGroupMessages;
 import org.saga.config.BalanceConfiguration;
 import org.saga.config.SkillConfiguration;
@@ -430,6 +431,23 @@ public class SagaCommands {
     @CommandPermissions({"saga.admin.dcommand"})
     public static void debugCommand(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
+    	
+    }
+
+    
+    // Time of day:
+    @Command(
+            aliases = {"asunt","asunrisetick"},
+            usage = "",
+            flags = "",
+            desc = "Forces a sunrise tick.",
+            min = 0,
+            max = 0
+        )
+    @CommandPermissions({"saga.admin.forcetick"})
+    public static void forceSunriseTick(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+    	Clock.clock().forceTick(TimeOfDay.SUNRISE);
     	
     }
 

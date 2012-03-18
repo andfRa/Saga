@@ -1,8 +1,8 @@
 package org.saga.economy;
 
 import org.bukkit.Material;
+import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
-import org.saga.config.EconomyConfiguration;
 
 public class TradeDeal implements Comparable<TradeDeal>{
 
@@ -26,21 +26,16 @@ public class TradeDeal implements Comparable<TradeDeal>{
 	 * Amount per transaction.
 	 */
 	private Integer amount;
-	
+
 	/**
-	 * Total transactions left before expiration.
+	 * Price.
 	 */
-	private Integer trnscLeft;
-	
-	/**
-	 * Value.
-	 */
-	private Double value;
+	private Double price;
 	
 	/**
 	 * Time left until expiration in days.
 	 */
-	private Integer daysLeft;
+	private Integer days;
 	
 	
 	// Initialization:
@@ -53,16 +48,15 @@ public class TradeDeal implements Comparable<TradeDeal>{
 	}
 	
 	/**
-	 * Initializes.
+	 * Creates a trade deal.
 	 * 
-	 * @param type type
+	 * @param type deal type
 	 * @param material material
+	 * @param value value
 	 * @param amount amount
-	 * @param transactionsLeft total transactions before expiration
-	 * @param totalValue value
-	 * @param daysLeft days before expiration
+	 * @param days days
 	 */
-	public TradeDeal(TradeDealType type, Material material, Integer amount, Integer transactionsLeft, Double totalValue, Integer daysLeft) {
+	public TradeDeal(TradeDealType type, Material material, Double value, Integer amount, Integer days) {
 		
 		
 		super();
@@ -70,82 +64,58 @@ public class TradeDeal implements Comparable<TradeDeal>{
 		this.id = -1;
 		this.type = type;
 		this.material = material;
+		this.price = Math.abs(value);
 		this.amount = Math.abs(amount);
-		this.trnscLeft = Math.abs(transactionsLeft);
-		this.daysLeft = Math.abs(daysLeft);
-		this.value = Math.abs(totalValue);
+		this.days = Math.abs(days);
 		
 		
 	}
 
 	/**
 	 * Completes.
-	 * 
-	 * @throws TradeDealException when type is null
 	 */
-	public boolean complete() throws TradeDealException{
+	public boolean complete(){
 		
 		
 		boolean integrity = true;
 		
 		if(id == null){
-			Saga.severe(TradeDeal.class, "failed to initialize id field", "setting default");
 			id = -1;
+			Saga.severe(TradeDeal.class, "id field failed to initialize", "setting default");
+			integrity = false;
 		}
 		
 		if(type == null){
-			Saga.severe(TradeDeal.class, "failed to initialize type field", "stopping complete");
-			throw new TradeDealException("type null");
+			type = TradeDealType.EXPORT;
+			Saga.severe(TradeDeal.class, "type field failed to initialize", "setting default");
+			integrity = false;
 		}
 	
 		if(material == null){
 			material = Material.AIR;
-			Saga.severe(TradeDeal.class, "failed to initialize material field", "setting default");
+			Saga.severe(TradeDeal.class, "material field failed to initialize", "setting default");
 			integrity = false;
 		}
 		
 		if(amount == null){
 			amount = Integer.MAX_VALUE;
-			Saga.severe(TradeDeal.class, "failed to initialize amount field", "setting default");
+			Saga.severe(TradeDeal.class, "amount field failed to initialize", "setting default");
 			integrity = false;
 		}
 		
-		if(trnscLeft == null){
-			trnscLeft = 0;
-			Saga.severe(TradeDeal.class, "failed to initialize trnscLeft field", "setting default");
+		if(price == null){
+			price = 0.0;
+			Saga.severe(TradeDeal.class, "price field failed to initialize", "setting default");
 			integrity = false;
 		}
 		
-		if(value == null){
-			value = 0.0;
-			Saga.severe(TradeDeal.class, "failed to initialize value field", "setting default");
-			integrity = false;
-		}
-		
-		if(daysLeft == null){
-			daysLeft = 0;
-			Saga.severe(TradeDeal.class, "failed to initialize daysLeft field", "setting default");
+		if(days == null){
+			days = 0;
+			Saga.severe(TradeDeal.class, "daysLeft field failed to initialize", "setting default");
 			integrity = false;
 		}
 		
 		return integrity;
-		
-		
-	}
-	
-	/**
-	 * Returns a random normal distributed trade deal based on the previous one.
-	 * 
-	 * @return random trade deal
-	 */
-	public TradeDeal createRandomTradeDeal() {
-
-		
-		return new TradeDeal(this.type, this.material,
-				EconomyConfiguration.nextGaussian(this.amount, EconomyConfiguration.config().dealAmountSpread),
-				EconomyConfiguration.nextGaussian(this.trnscLeft, EconomyConfiguration.config().dealTransactionsSpread),
-				EconomyConfiguration.nextGaussian(this.value, EconomyConfiguration.config().dealValueSpread),
-				EconomyConfiguration.nextGaussian(this.daysLeft, EconomyConfiguration.config().dealDaysLeftSpread));
 		
 		
 	}
@@ -157,15 +127,7 @@ public class TradeDeal implements Comparable<TradeDeal>{
 	 * 
 	 */
 	public void nextDay() {
-		daysLeft --;
-	}
-	
-	/**
-	 * Decreases left transactions.
-	 * 
-	 */
-	public void doTransaction() {
-		trnscLeft --;
+		days --;
 	}
 	
 	/**
@@ -187,6 +149,40 @@ public class TradeDeal implements Comparable<TradeDeal>{
 	}
 
 	/**
+	 * Gets the cost of the deal.
+	 * 
+	 * @return the total value
+	 */
+	public Double getPrice() {
+		return price;
+	}
+	
+	/**
+	 * Gets the total cost of the deal. Uses decreased amount if it is too big.
+	 * 
+	 * @return total cost
+	 */
+	public Double getTotalCost() {
+		
+		return price*amount;
+		
+	}
+
+	/**
+	 * Gets the total cost of the deal. Uses decreased amount if it is too big.
+	 * 
+	 * @param amount amount of items
+	 * @return total cost
+	 */
+	public Double getTotalCost(Integer amount) {
+		
+		if(amount > this.amount) amount = this.amount;
+		return price*amount;
+		
+	}
+	
+	
+	/**
 	 * Gets the amount.
 	 * 
 	 * @return the amount
@@ -196,30 +192,12 @@ public class TradeDeal implements Comparable<TradeDeal>{
 	}
 
 	/**
-	 * Gets the transactionsLeft.
-	 * 
-	 * @return the transactionsLeft
-	 */
-	public Integer getTransactionsLeft() {
-		return trnscLeft;
-	}
-
-	/**
-	 * Gets the value of the transaction.
-	 * 
-	 * @return the total value
-	 */
-	public Double getValue() {
-		return value;
-	}
-	
-	/**
 	 * Gets the total value of the transaction.
 	 * 
 	 * @return the total value
 	 */
 	public Double getTotalValue() {
-		return value * amount;
+		return price * amount;
 	}
 
 	/**
@@ -228,7 +206,7 @@ public class TradeDeal implements Comparable<TradeDeal>{
 	 * @return the daysLeft
 	 */
 	public Integer getDaysLeft() {
-		return daysLeft;
+		return days;
 	}
 
 	/**
@@ -239,7 +217,6 @@ public class TradeDeal implements Comparable<TradeDeal>{
 	public Integer getId() {
 		return id;
 	}
-	
 
 	/**
 	 * Sets the ID.
@@ -250,6 +227,89 @@ public class TradeDeal implements Comparable<TradeDeal>{
 		this.id = id;
 	}
 	
+	
+	// Deal:
+	/**
+	 * Does a trade deal.
+	 * 
+	 * @param trader trader
+	 * @return price of items exchanged
+	 */
+	public Double doDeal(Trader trader) {
+
+		
+		if(amount < 1) return 0.0;
+		
+		ItemStack item = null;
+		Integer usedAmount = null;
+		
+		switch (type) {
+			case IMPORT:
+				
+				usedAmount = amount;
+				
+				while(usedAmount * price > trader.getCoins()){
+					usedAmount --;
+				}
+				
+				if(usedAmount < 1) return 0.0;
+				
+				item = new ItemStack(material, usedAmount);
+				
+				// Do deal:
+				trader.removeCoins(usedAmount * price);
+				trader.addItem(item);
+				amount -= usedAmount;
+				
+				return usedAmount * price;
+				
+			case EXPORT:
+
+				usedAmount = amount;
+				
+				if(usedAmount > trader.getAmount(material)) usedAmount = trader.getAmount(material);
+				
+				if(usedAmount < 1) return 0.0;
+				
+				item = new ItemStack(material, usedAmount);
+				
+				// Do deal:
+				trader.addCoins(usedAmount * price);
+				trader.removeItem(item);
+				amount -= usedAmount;
+				
+				return usedAmount*price;
+				
+			default:
+
+				return 0.0;
+		
+		}
+		
+		
+	}
+	
+	/**
+	 * Checks if the deal is completed.
+	 * 
+	 * @return true if completed
+	 */
+	public boolean isCompleted() {
+
+		return amount < 1;
+
+	}
+	
+	/**
+	 * Checks if the deal is expired.
+	 * 
+	 * @return true if expired
+	 */
+	public boolean isExpired() {
+		
+		return days < 1;
+
+	}
 
 	// Other:
 	/* 
@@ -260,11 +320,6 @@ public class TradeDeal implements Comparable<TradeDeal>{
 	@Override
 	public int compareTo(TradeDeal o) {
 		return new Double(getTotalValue() - o.getTotalValue()).intValue();
-	}
-
-	@Override
-	public String toString() {
-		return id + ": " + type + " " + amount + " " + material + " for " + value;
 	}
 
 	/**
@@ -288,21 +343,6 @@ public class TradeDeal implements Comparable<TradeDeal>{
 		}
 		
 	}
-	
-	public static class TradeDealException extends Exception{
-		
-		
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
 
-		
-		
-		public TradeDealException(String message) {
-			super(message);
-		}
-		
-	}
 	
 }

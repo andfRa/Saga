@@ -112,17 +112,22 @@ public class WriterReader {
 	private static void writeConfig(String config, WriteReadType writeType,  String fileName) throws IOException {
 		
 		
+		if(config == null || config.equals("null")){
+			Saga.severe(WriterReader.class, writeType.name() + "(" + fileName + ")" + " config null", "ignoring save");
+			return;
+		}
+		
 		File directory = new File(writeType.getDirectory());
 		File file = new File(writeType.getDirectory() + fileName);
 
 		if(!directory.exists()){
 			directory.mkdirs();
-			Saga.info("Creating "+directory+" directory.");
+			Saga.info("Creating " + directory + " directory.");
 		}
 			
          if(!file.exists()){
          	file.createNewFile();
-         	Saga.info("Creating "+file+" file.");
+         	Saga.info("Creating " + file + " file.");
          }
          
          BufferedWriter out = new BufferedWriter(new FileWriter(file));
@@ -160,8 +165,8 @@ public class WriterReader {
         fin.close();
 
         
-        if(strContent.length() == 0){
-        	strContent.append("{ }");
+        if(strContent.length() == 0 || strContent.toString().equals("null")){
+        	strContent = new StringBuffer("{ }");
         }
         
         return strContent.toString();

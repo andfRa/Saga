@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -145,7 +146,6 @@ public class SagaChunk {
 	
 	
 	// Interaction:
-	
 	/**
 	 * Gets the x.
 	 * 
@@ -673,6 +673,17 @@ public class SagaChunk {
 		
 	}
 
+	/**
+	 * Called when an entity forms blocks.
+	 * 
+	 * @param event event
+	 */
+	public void onEntityBlockForm(EntityBlockFormEvent event) {
+		
+		// Forward to chunk group:
+		getChunkGroup().onEntityBlockForm(event, this);
+		
+	}
 	
 	// Damage events:
 	/**

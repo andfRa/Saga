@@ -79,6 +79,12 @@ public class ProficiencySign extends BuildingSign{
 		Sign sign = getSign();
 		ProficiencyDefinition profDefinition = ProficiencyConfiguration.config().getDefinition(getFirstParameter());
 		
+		// Invalidate:
+		if(profDefinition == null){
+			invalidate();
+			return;
+		}
+		
 		// Check, for correct class and profession:
 		ProficiencyType type = profDefinition.getType();
 		if( (type == ProficiencyType.PROFESSION || type == ProficiencyType.CLASS) && profDefinition != null){

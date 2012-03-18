@@ -13,9 +13,8 @@ import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EndermanPickupEvent;
-import org.bukkit.event.entity.EndermanPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
@@ -259,38 +258,18 @@ public class SagaEntityListener implements Listener{
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)
-	public void onEndermanPickup(EndermanPickupEvent event) {
+	public void onEntityBlockForm(EntityBlockFormEvent event) {
 		
 
 		// Get saga chunk:
-		Location location = event.getBlock().getLocation();
-		Chunk chunk = location.getWorld().getChunkAt(location);
-		SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(chunk);
+		SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(event.getBlock().getLocation());
 		if(sagaChunk == null){
 			return;
 		}
 		
-		// Forward to saga chunk group:
-		sagaChunk.getChunkGroup().onEndermanPickup(event, sagaChunk);
+		// Forward to saga chunk:
+		sagaChunk.onEntityBlockForm(event);
 		
-		
-	}
-	
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onEndermanPlace(EndermanPlaceEvent event) {
-
-
-		// Get saga chunk:
-		Location location = event.getLocation();
-		Chunk chunk = location.getWorld().getChunkAt(location);
-		SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(chunk);
-		if(sagaChunk == null){
-			return;
-		}
-		
-		// Forward to saga chunk group:
-		sagaChunk.getChunkGroup().onEndermanPlace(event, sagaChunk);
-
 		
 	}
 	

@@ -6,6 +6,10 @@
 
 "settlementClaims":{"x1":0,"y1":4.0,"x2":25,"y2":150.0},
 
+"levelExperience":{"x1":0,"y1":30.0,"x2":50,"y2":4200.0},
+
+"experiencePerPlayer":{"x1":1,"y1":1.0,"x2":10,"y2":5.5},
+
 "settlementDefinition":{
   "activePlayers":{"x1":0,"y1":0,"x2":49,"y2":25.0},
   "buildingPoints":{"x1":0,"y1":1.0,"x2":50,"y2":25.0},
@@ -32,9 +36,7 @@
 
     "home":{"x1":0,"y1":1.0,"x2":50,"y2":250.0},
     "watchtower":{"x1":5,"y1":1.0,"x2":50,"y2":8.0}
-  },
-  "expRequirement":{"x1":0,"y1":30.0,"x2":50,"y2":100000.0},
-  "expSpeed":{"x1":1,"y1":1.0,"x2":10,"y2":5.5}
+  }
 },
 
 "noDeleteLevel":5,

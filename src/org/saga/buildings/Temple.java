@@ -9,7 +9,6 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.buildings.signs.BuildingSign;
-import org.saga.buildings.signs.GuardianRuneSign;
 import org.saga.buildings.signs.RespecSign;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.player.SagaPlayer;

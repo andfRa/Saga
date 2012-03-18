@@ -42,8 +42,6 @@ import org.bukkit.util.Vector;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.Saga;
-import org.saga.SagaPlayerListener.SagaPlayerProjectileShotEvent;
-import org.saga.SagaPlayerListener.SagaPlayerProjectileShotEvent.ProjectileType;
 import org.saga.abilities.Ability;
 import org.saga.abilities.AbilityDefinition;
 import org.saga.abilities.AbilityDefinition.ActivationAction;
@@ -64,7 +62,6 @@ import org.saga.economy.EconomyManager.TransactionType;
 import org.saga.economy.InventoryUtil;
 import org.saga.economy.TradeDeal;
 import org.saga.economy.Trader;
-import org.saga.economy.Transaction;
 import org.saga.factions.SagaFaction;
 import org.saga.player.GuardianRune.GuardianRuneStatus;
 import org.saga.player.Proficiency.ProficiencyType;
@@ -292,7 +289,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 		this.chunkGroupId = -1;
 		this.factionInvites = new ArrayList<Integer>();
 		this.chunkGroupInvites = new ArrayList<Integer>();
-		this.coins = EconomyConfiguration.config().playerInitialCurrency;
+		this.coins = EconomyConfiguration.config().playerCoins;
 		this.guardianStone = GuardianRune.newStone();
 		this.lastOnline = Calendar.getInstance().getTime();
 		this.levelManager = new PlayerLevelManager(this);
@@ -329,7 +326,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 		}
 		
 		if(coins == null){
-			coins = EconomyConfiguration.config().playerInitialCurrency;
+			coins = EconomyConfiguration.config().playerCoins;
 			Saga.severe(this, "coins field not initialized", "setting default");
 		}
 		
@@ -2223,16 +2220,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 		// Remove fire:
 		((CraftFireball)fireball.getBukkitEntity()).setIsIncendiary(false);
 		
-		// Send the event:
-		SagaPlayerProjectileShotEvent event = new SagaPlayerProjectileShotEvent(this, ProjectileType.FIREBALL, 0);
-//		Saga.playerListener().onSagaPlayerProjectileShot(event);
-		
-		// Cancel the event if needed:
-		if(event.isCancelled()){
-			fireball.getBukkitEntity().remove();
-			return;
-		}
-		
 		// Velocity vector:
 		Vector velocityVector = directionVector.clone().multiply(1.5);
 		
@@ -2332,7 +2319,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 			return;
 		}
 		
-		Arrow arrow = player.shootArrow();
+		Arrow arrow = player.launchProjectile(Arrow.class);
 		
 		// Velocity vector:
 		Vector velocity = arrow.getVelocity().clone();
@@ -2658,11 +2645,11 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * @see saga.economy.Trader#getItemCount(org.bukkit.Material)
 	 */
 	@Override
-	public Integer getItemCount(Material material) {
+	public Integer getAmount(Material item) {
 		
 		if(isOnline()){
 			
-			return InventoryUtil.getItemCount(material, player.getInventory().getContents());
+			return InventoryUtil.getItemCount(item, player.getInventory().getContents());
 			
 		}
 		return 0;
@@ -2672,11 +2659,21 @@ public class SagaPlayer implements SecondTicker, Trader{
 	/* 
 	 * (non-Javadoc)
 	 * 
-	 * @see saga.economy.Trader#getBuyItemValues()
+	 * @see org.saga.economy.Trader#getSellPrice(org.bukkit.Material)
 	 */
 	@Override
-	public ArrayList<Transaction> getTransactions() {
-		return new ArrayList<Transaction>();
+	public Double getSellPrice(Material material) {
+		return 100000.0;
+	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.economy.Trader#getBuyPrice(org.bukkit.Material)
+	 */
+	@Override
+	public Double getBuyPrice(Material material) {
+		return 100000.0;
 	}
 	
 	/* 
@@ -2685,8 +2682,21 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * @see saga.economy.Trader#getTradeDeals()
 	 */
 	@Override
-	public ArrayList<TradeDeal> getTradeDeals() {
+	public ArrayList<TradeDeal> getDeals() {
 		return new ArrayList<TradeDeal>();
+	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.economy.Trader#notifyTransaction()
+	 */
+	@Override
+	public void notifyTransaction() {
+	
+	
+		// TODO Auto-generated method stub
+		
 	}
 	
 	

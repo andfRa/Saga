@@ -2,15 +2,15 @@ package org.saga.config;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.saga.Saga;
 import org.saga.constants.IOConstants.WriteReadType;
 import org.saga.economy.TradeDeal;
-import org.saga.economy.TradeDeal.TradeDealException;
 import org.saga.economy.TradeDeal.TradeDealType;
 import org.saga.utility.TwoPointFunction;
 import org.saga.utility.WriterReader;
@@ -41,100 +41,84 @@ public class EconomyConfiguration {
 	
 	
 	/**
-	 * Player initial currency.
+	 * Player initial coins.
 	 */
-	public Double playerInitialCurrency;
-	
-	/**
-	 * Currency material.
-	 */
-	public Material currencyItem;
+	public Double playerCoins;
 
 	/**
-	 * Currency item worth.
+	 * Coin name.
 	 */
-	public Double currencyItemWorth;
+	public String coinName;
 
-	/**
-	 * Currency name.
-	 */
-	public String currencyName;
 
+	// Trade deals:
 	/**
-	 * Currency decimal name.
+	 * Item trade deal weights.
 	 */
-	public String currencyDecimalName;
-
+	public Hashtable<Material, Double> itemWeights;
 	
 	/**
-	 * Open buy sign title.
+	 * Weight items.
 	 */
-	public String openBuySignTitle;
+	transient public Material[] items;
 	
 	/**
-	 * Closed buy sign title.
+	 * Weights for items.
 	 */
-	public String closedBuySignTitle;
+	transient public Double[] weights;
 	
 	/**
-	 * Open sell sign title.
+	 * Material prices.
 	 */
-	public String openSellSignTitle;
+	public Hashtable<Material, Double> prices;
 	
 	/**
-	 * Closed sell sign title.
+	 * Deal price spread.
 	 */
-	public String closedSellSignTitle;
+	public TwoPointFunction priceSpread;
 	
 	/**
-	 * Invalid sign title.
+	 * Deal amount.
 	 */
-	public String invalidSignTitle;
+	public TwoPointFunction amount;
 	
 	/**
-	 * Invalid material.
+	 * Deal amount spread.
 	 */
-	public String invalidMaterial;
-	
-	
-	// Trading deals:
-	/**
-	 * Trading deals.
-	 */
-	public ArrayList<TradeDeal> tradingDeals;
+	public TwoPointFunction amountSpread;
 	
 	/**
-	 * Trade deal relative amount spread.
+	 * Deal days.
 	 */
-	public Double dealAmountSpread;
+	public TwoPointFunction days;
 	
 	/**
-	 * Trade deal relative transactions spread.
+	 * Deal day spread.
 	 */
-	public Double dealTransactionsSpread;
-	
-	/**
-	 * Trade deal relative value spread.
-	 */
-	public Double dealValueSpread;
-	
-	/**
-	 * Trade deal relative days left spread.
-	 */
-	public Double dealDaysLeftSpread;
+	public TwoPointFunction daysSpread;
 	
 	/**
 	 * Deals per player.
 	 */
-	private TwoPointFunction dealsPerPlayer;
+	public TwoPointFunction dealsPerPlayer;
 	
 	/**
-	 * Deals gain per player.
+	 * Deals speed per player.
 	 */
-	private TwoPointFunction dealsGainPerPlayer;
+	public TwoPointFunction dealsCreatePerPlayer;
 
+	/**
+	 * Automation sell multiplier.
+	 */
+	public Double automSellMult;
+
+	/**
+	 * Automation buy multiplier.
+	 */
+	public Double automBuyMult;
 	
-	// Exchange:
+	
+	// Player:
 	/**
 	 * Exchange distance.
 	 */
@@ -190,124 +174,61 @@ public class EconomyConfiguration {
 		
 		boolean integrity = true;
 		
-		if(currencyItem == null){
-			Saga.severe(getClass(), "currencyItem field not initialized", "setting default");
-			currencyItem = Material.GOLD_INGOT;
+		
+		if(playerCoins == null){
+			Saga.severe(getClass(), "playerCoins field not initialized", "setting default");
+			playerCoins = 0.0;
 			integrity = false;
 		}
 		
-		if(playerInitialCurrency == null){
-			Saga.severe(getClass(), "playerInitialCurrency field not initialized", "setting default");
-			playerInitialCurrency = 0.0;
+		if(coinName == null){
+			Saga.severe(getClass(), "coinName field not initialized", "setting default");
+			coinName = "coins";
 			integrity = false;
-		}
-		
-//		if(tradingPostInitialCurrency == null){
-//			Saga.severe(this, "tradingPostInitialCurrency field not initialized", "setting default");
-//			tradingPostInitialCurrency = 0.0;
-//			integrity = false;
-//		}
-		
-		if(currencyItemWorth == null){
-			Saga.severe(getClass(), "currencyItemWorth field not initialized", "setting default");
-			currencyItemWorth = 0.1;
-			integrity = false;
-		}
-		
-		if(currencyName == null){
-			Saga.severe(getClass(), "currencyName field not initialized", "setting default");
-			currencyName = "coins";
-			integrity = false;
-		}
-		
-		if(currencyDecimalName == null){
-			Saga.severe(getClass(), "currencyDecimalName field not initialized", "setting default");
-			currencyDecimalName = "cents";
-			integrity = false;
-		}
-		
-		if(openSellSignTitle == null){
-			Saga.severe(getClass(), "openSellSignTitle field not initialized", "setting default");
-			openSellSignTitle = "=[" + ChatColor.DARK_GREEN + "SELL" + ChatColor.BLACK + "]=";
-			integrity=false;
-		}
-		
-		if(closedSellSignTitle == null){
-			Saga.severe(getClass(), "closedSellSignTitle field not initialized", "setting default");
-			closedSellSignTitle = "=[" + ChatColor.DARK_GRAY + "SELL" + ChatColor.BLACK + "]=";
-			integrity=false;
-		}
-		
-		if(invalidSignTitle == null){
-			Saga.severe(getClass(), "invalidSignTitle field not initialized", "setting default");
-			invalidSignTitle = "=[" + ChatColor.DARK_RED + "INVALID" + ChatColor.BLACK + "]=";
-			integrity=false;
 		}
 
-		if(openBuySignTitle == null){
-			Saga.severe(getClass(), "openBuySignTitle field not initialized", "setting default");
-			openBuySignTitle = "=[" + ChatColor.DARK_GREEN + "BUY" + ChatColor.BLACK + "]=";
+		if(prices == null){
+			Saga.severe(getClass(), "prices field not initialized", "setting default");
+			prices = new Hashtable<Material, Double>();
 			integrity=false;
 		}
 		
-		if(closedBuySignTitle == null){
-			Saga.severe(getClass(), "closedBuySignTitle field not initialized", "setting default");
-			closedBuySignTitle = "=[" + ChatColor.DARK_GRAY + "BUY" + ChatColor.BLACK + "]=";
+		if(priceSpread == null){
+			Saga.severe(getClass(), "priceSpreads field not initialized", "setting default");
+			priceSpread = new TwoPointFunction(0.0);
+			integrity = false;
+		}
+		
+		if(itemWeights == null){
+			Saga.severe(getClass(), "itemWeights field not initialized", "setting default");
+			itemWeights = new Hashtable<Material, Double>();
 			integrity=false;
 		}
 		
-		if(invalidMaterial == null){
-			Saga.severe(getClass(), "invalidMaterial field not initialized", "setting default");
-			invalidMaterial = ChatColor.DARK_RED + "invalid material";
-			integrity=false;
+		createWeights();
+		
+		if(amount == null){
+			Saga.severe(getClass(), "amount field not initialized", "setting default");
+			amount = new TwoPointFunction(0.0);
+			integrity = false;
+		}
+
+		if(amountSpread == null){
+			Saga.severe(getClass(), "amountSpread field not initialized", "setting default");
+			amountSpread = new TwoPointFunction(0.0);
+			integrity = false;
 		}
 		
-		if(tradingDeals == null){
-			Saga.severe(getClass(), "tradingDeals field not initialized", "adding two examples");
-			tradingDeals = new ArrayList<TradeDeal>();
-			tradingDeals.add(new TradeDeal(TradeDealType.EXPORT, Material.WOOD, 10, 100, 1.2, 4));
-			tradingDeals.add(new TradeDeal(TradeDealType.IMPORT, Material.STONE, 64, 200, 10.4, 5));
-			integrity=false;
+		if(days == null){
+			Saga.severe(getClass(), "days field not initialized", "setting default");
+			days = new TwoPointFunction(0.0);
+			integrity = false;
 		}
-		for (int i = 0; i < tradingDeals.size(); i++) {
-			if(tradingDeals.get(i) == null){
-				Saga.severe(getClass(), "tradingDeals field element not initialized", "removing element");
-				tradingDeals.remove(i);
-				i--;
-				continue;
-			}
-			try {
-				tradingDeals.get(i).complete();
-			} catch (TradeDealException e) {
-				Saga.severe(getClass(), "exception for tradingDeals field element: "+e.getClass().getSimpleName() + ":" + e.getMessage(), "removing element");
-				tradingDeals.remove(i);
-				i--;
-				continue;
-			}
-		}
-		
-		if(dealAmountSpread == null){
-			Saga.severe(getClass(), "dealAmountSpread field not initialized", "setting default");
-			dealAmountSpread = 0.0;
-			integrity=false;
-		}
-		
-		if(dealTransactionsSpread == null){
-			Saga.severe(getClass(), "dealTransactionsSpread field not initialized", "setting default");
-			dealTransactionsSpread = 0.0;
-			integrity=false;
-		}
-		
-		if(dealValueSpread == null){
-			Saga.severe(getClass(), "dealValueSpread field not initialized", "setting default");
-			dealValueSpread = 0.0;
-			integrity=false;
-		}
-		
-		if(dealDaysLeftSpread == null){
-			Saga.severe(getClass(), "dealDaysLeftSpread field not initialized", "setting default");
-			dealDaysLeftSpread = 0.0;
-			integrity=false;
+
+		if(daysSpread == null){
+			Saga.severe(getClass(), "daysSpread field not initialized", "setting default");
+			daysSpread = new TwoPointFunction(0.0);
+			integrity = false;
 		}
 		
 		if(dealsPerPlayer == null){
@@ -315,10 +236,22 @@ public class EconomyConfiguration {
 			dealsPerPlayer = new TwoPointFunction(0.5);
 			integrity=false;
 		}
-		
-		if(dealsGainPerPlayer == null){
-			Saga.severe(getClass(), "dealsGainPerPlayer field not initialized", "setting default");
-			dealsGainPerPlayer = new TwoPointFunction(0.25);
+
+		if(dealsCreatePerPlayer == null){
+			Saga.severe(getClass(), "dealsCreatePerPlayer field not initialized", "setting default");
+			dealsCreatePerPlayer = new TwoPointFunction(0.5);
+			integrity=false;
+		}
+
+		if(automBuyMult == null){
+			Saga.severe(getClass(), "automBuyMult field not initialized", "setting default");
+			automBuyMult = 1.0;
+			integrity=false;
+		}
+
+		if(automSellMult == null){
+			Saga.severe(getClass(), "automSellMult field not initialized", "setting default");
+			automSellMult = 1.0;
 			integrity=false;
 		}
 		
@@ -363,50 +296,96 @@ public class EconomyConfiguration {
 		
 	}
 
-	
-	// Interaction:
 	/**
-	 * Gets a random trade deal with uniform distribution.
+	 * Fills in the transient weight tables.
 	 * 
-	 * @return random trade deal
 	 */
-	public TradeDeal nextTradeDeal() {
-		return tradingDeals.get(random.nextInt(tradingDeals.size()));
+	private void createWeights() {
+
+		
+		// Fill tables:
+		Set<Entry<Material, Double>> sweights = itemWeights.entrySet();
+		
+		weights = new Double[sweights.size()];
+		items = new Material[sweights.size()];
+		
+		int i = 0;
+		Double sum = 0.0;
+		for (Entry<Material, Double> entry : sweights) {
+			
+			items[i] = entry.getKey();
+			weights[i] = entry.getValue();
+			
+			sum += weights[i];
+			
+			i++;
+			
+		}
+		
+		// Normalize:
+		for (int j = 0; j < weights.length; j++) {
+			weights[j] = weights[j] / sum;
+		}
+		
+		// Combine:
+		for (int j = 1; j < weights.length; j++) {
+			weights[j] = weights[j - 1] + weights[j];
+		}
+		
+		
+		
 	}
 	
 	
-	// Calculations:
+	// Trade deals:
 	/**
-	 * Calculates trade deals per player.
+	 * Creates a random trade deal.
 	 * 
-	 * @param playerCount player count
-	 * @return deals gain per player
+	 * @return random trade deal, null if none
 	 */
-	public Integer calculateDealsPerPlayer(Integer playerCount) {
-
-		if(playerCount < dealsPerPlayer.getXMin()){
-			return 0;
+	public TradeDeal createTradeDeal() {
+		
+		
+		Double rand = random.nextDouble();
+		Material tdMaterial = null;
+		
+		for (int i = 0; i < weights.length; i++) {
+			
+			if(weights[i] >= rand){
+				tdMaterial = items[i];
+				break;
+			}
+					
 		}
-		return dealsPerPlayer.value(playerCount.shortValue()).intValue();
+		
+		if(tdMaterial == null) return null;		
+		
+		// Type:
+		TradeDealType type = TradeDealType.EXPORT;
+		if(random.nextBoolean()) type = TradeDealType.IMPORT;
+		
+		Double price = prices.get(tdMaterial);
+		if(price == null) return null;
+		
+		Double tdPrice = nextGaussian(price, priceSpread.value(price));
+		Integer tdAmount = nextGaussian(amount.value(tdPrice).intValue(), amountSpread.value(tdPrice));
+		Integer tdDays = nextGaussian(days.value(tdPrice).intValue(), daysSpread.value(tdPrice));
+		
+		return new TradeDeal(type, tdMaterial, tdPrice, tdAmount, tdDays);
+		
 		
 	}
 	
 	/**
-	 * Calculates trade deals gain per player.
+	 * Gets all materials available for trade deals.
 	 * 
-	 * @param playerCount player count
-	 * @return deals gain per player
+	 * @return available trade deal materials
 	 */
-	public Integer calculateDealsGainPerPlayer(Integer playerCount) {
+	public Set<Material> getAllDealMaterials() {
 
-		if(playerCount < dealsGainPerPlayer.getXMin()){
-			System.out.println("only " + playerCount + " players, returning zero gain");
-			return 0;
-		}
-		return dealsGainPerPlayer.value(playerCount.shortValue()).intValue();
-		
+		return itemWeights.keySet();
+
 	}
-	
 	
 	// Skills:
 	/**
@@ -433,39 +412,32 @@ public class EconomyConfiguration {
 
 	// Util:
 	/**
-	 * Returns a normal distribution value with maximum on the value and with spread less or equal to value * spreadRelative.
+	 * Returns a random normal distributed value.
 	 * 
-	 * @param value
-	 * @param spreadRelative
-	 * @return
+	 * @param value value
+	 * @param spread spread
+	 * @return random value with normal distribution
 	 */
-	public static Double nextGaussian(Double value, Double spreadRelative) {
+	public static Double nextGaussian(Double value, Double spread) {
 
 		
 		Double nextRandom = random.nextGaussian();
-		while(nextRandom > 1.0){
-			nextRandom--;
-		}
-		while(nextRandom < -1.0){
-			nextRandom++;
+		
+		while(nextRandom > 2.0 || nextRandom < -2.0){
+			nextRandom = random.nextGaussian();
 		}
 		
-//		if(nextRandom > 1){
-//			nextRandom = 1.0;
-//		}else if(nextRandom < -1){
-//			nextRandom = -1.0;
-//		}
-		return value * ( 1 + spreadRelative * nextRandom);
+		return value  + nextRandom * spread / 2;
 		
 		
 	}
 	
 	/**
-	 * Returns a normal distribution integer value with maximum on the value and with spread less or equal to value * spreadRelative.
+	 * Returns a random normal distributed value.
 	 * 
-	 * @param value
-	 * @param spreadRelative
-	 * @return
+	 * @param value value
+	 * @param spread spread
+	 * @return random value with normal distribution
 	 */
 	public static Integer nextGaussian(Integer value, Double spreadRelative) {
 
@@ -534,6 +506,14 @@ public class EconomyConfiguration {
 		instance = null;
 	}
 	
-	
+	public static void main(String[] args) {
+
+
+		for (int i = 0; i < 100; i++) {
+			System.out.println(nextGaussian(20.0, 4.0));
+		}
+		
+		
+	}
 	
 }

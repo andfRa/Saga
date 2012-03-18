@@ -43,13 +43,24 @@ public class StringBook {
 	}
 	
 	/**
-	 * Adds a page.
+	 * Adds a line.
 	 * 
 	 * @param page page
 	 */
 	public void addLine(String page) {
 
 		lines.add(page);
+		
+	}
+	
+	/**
+	 * Adds a page break.
+	 */
+	public void nextPage() {
+
+		while(lines.size() % pageSize != 0){
+			addLine("");
+		}
 		
 	}
 	

@@ -24,13 +24,13 @@
     "usedAmount":{"x1":0,"y1":3.0,"x2":50,"y2":1.0},
     "cooldown":{"x1":0,"y1":10.0,"x2":50,"y2":5.0},
     "active":{"x1":0,"y1":12.0,"x2":50,"y2":20.0},
-    "primaryFunction":{"x1":0,"y1":2.0,"x2":50,"y2":2.8},
-    "secondaryFunction":{"x1":0,"y1":3.5,"x2":50,"y2":5.0},
+    "primaryFunction":{"x1":0,"y1":0.1,"x2":50,"y2":0.9},
+    "secondaryFunction":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
     "baseSkills":["archery"],
-    "expReward":{"x1":0,"y1":6.0,"x2":50,"y2":4},
-    "description":"Arrow explodes on contact.",
+    "expReward":{"x1":0,"y1":6.0,"x2":50,"y2":6},
+    "description":"Arrow explodes when it hits a living entity when activated.",
     "primaryStat":"strength",
-    "secondaryStat":"radius"
+    "secondaryStat":""
   },
 
   {"className":"org.saga.abilities.Bash",

@@ -83,7 +83,7 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 	/**
 	 * True if the sign is invalidated.
 	 */
-	transient boolean invalidated;
+	transient private boolean invalidated;
 
 	// Initialization:
 	/**
@@ -287,12 +287,21 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 	public abstract String getName();
 	
 	/**
-	 * Gets the enabled.
+	 * Gets if enabled.
 	 * 
-	 * @return the enabled
+	 * @return true if enabled
 	 */
 	public Boolean isEnabled() {
 		return enabled;
+	}
+
+	/**
+	 * Gets if valid.
+	 * 
+	 * @return true if valid
+	 */
+	public boolean isValidated() {
+		return !invalidated;
 	}
 
 	/**
@@ -468,26 +477,29 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 	 */
 	public final void onPlayerInteract(SagaPlayer sagaPlayer, PlayerInteractEvent event) {
 
-		
-		if(!isEnabled()){
-			return;
-		}
+
+		if(!isEnabled()) return;
 		
 		// Left click:
-		if(event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.LEFT_CLICK_BLOCK)){
+		if(event.getAction().equals(Action.LEFT_CLICK_BLOCK)){
 			
 			onLeftClick(sagaPlayer);
 			
 		}
 		
 		// Right click:
-		else if(event.getAction().equals(Action.RIGHT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+		else if(event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
 			
 			onRightClick(sagaPlayer);
+			
+		}else{
+			
+			return;
 			
 		}
 
 		// Take control:
+		if(event.hasBlock() && event.getAction() == Action.RIGHT_CLICK_BLOCK) event.setCancelled(true);
 		event.setUseItemInHand(Result.DENY);
 		
 		

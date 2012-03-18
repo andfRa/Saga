@@ -7,9 +7,7 @@ import org.saga.config.BalanceConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.economy.EconomyMessages;
 import org.saga.player.PlayerMessages;
-import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.SagaPlayer;
-import org.saga.statistics.StatisticsManager;
 
 
 public class RespecSign extends BuildingSign{
@@ -91,6 +89,7 @@ public class RespecSign extends BuildingSign{
 		
 		
 	}
+	
 	/* 
 	 * (non-Javadoc)
 	 * 

@@ -30,12 +30,6 @@ public class ExperienceConfiguration {
 		return instance;
 	}
 	
-	
-	/**
-	 * Skill level costs.
-	 */
-	private TwoPointFunction skillUpgradeLevelCost;
-
 	/**
 	 * Experience needed to level up.
 	 */

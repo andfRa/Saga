@@ -11,10 +11,10 @@ import org.saga.buildings.BuildingDefinition.BuildingPermission;
 import org.saga.buildings.TradingPost;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupMessages;
-import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.EconomyConfiguration;
 import org.saga.economy.EconomyManager.InvalidWorldException;
 import org.saga.economy.EconomyManager.TransactionType;
+import org.saga.economy.TradeDeal.TradeDealType;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.player.SagaPlayer;
 import org.sk89q.Command;
@@ -70,14 +70,10 @@ public class EconomyCommands {
 		Transaction transaction = new Transaction(TransactionType.SELL, material, amount, value);
 		
 		// Add transaction:
-		selectedBuilding.addTransaction(transaction);
+//		selectedBuilding.addTransaction(transaction);
 		
 		// Inform:
-		SagaChunk sagaChunk = selectedBuilding.getSagaChunk();
-		ChunkGroup chunkGroup = null;
-		if(sagaChunk != null){
-			chunkGroup = sagaChunk.getChunkGroup();
-		}
+		ChunkGroup chunkGroup = selectedBuilding.getChunkGroup();
 		if(chunkGroup != null){
 			chunkGroup.broadcast(EconomyMessages.addedTransactionBroadcast(transaction, chunkGroup, sagaPlayer));
 		}
@@ -88,15 +84,15 @@ public class EconomyCommands {
 	
 	// Trade deals:
 	@Command(
-			aliases = {"exportimport", "edeals", "elistdeals"},
+			aliases = {"eimports", "imports"},
 			usage = "[page]",
 			flags = "",
-			desc = "List all available trade deals.",
+			desc = "List all available import deals.",
 			min = 0,
 			max = 1
 	)
 	@CommandPermissions({"saga.user.building.tradingpost.economy.tradedeals"})
-	public static void listDeals(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	public static void importDeals(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
 		Integer page;
@@ -134,7 +130,59 @@ public class EconomyCommands {
 		}
 		
 		// Inform:
-		sagaPlayer.message(EconomyMessages.listDeals(tradeDeals, page - 1));
+		sagaPlayer.message(EconomyMessages.deals(tradeDeals,TradeDealType.IMPORT, page - 1));
+		
+		
+	}
+	
+	@Command(
+			aliases = {"eexports", "exports"},
+			usage = "[page]",
+			flags = "",
+			desc = "List all available export deals.",
+			min = 0,
+			max = 1
+	)
+	@CommandPermissions({"saga.user.building.tradingpost.economy.tradedeals"})
+	public static void exportDeals(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+		
+		Integer page;
+		
+		// Retrieve location:
+		Location location = sagaPlayer.getLocation();
+		if(location == null){
+			sagaPlayer.error("failed to retrieve location");
+			Saga.severe(EconomyCommands.class, "failed to retrieve location for " + sagaPlayer + " saga player", "ignoring command");
+			return;
+		}
+		
+		// Retrieve trade deals:
+		ArrayList<TradeDeal> tradeDeals;
+		try {
+			tradeDeals = EconomyManager.manager(location.getWorld().getName()).getTradingDeals();
+		} catch (InvalidWorldException e) {
+			sagaPlayer.error("failed to retrieve " + EconomyManager.class.getSimpleName() + " for " + location.getWorld().getName() + " world.");
+			Saga.severe(EconomyCommands.class, "failed to retrieve " + EconomyManager.class.getSimpleName() + " for " + location.getWorld().getName() + " world", "ignoring command");
+			return;
+		}
+		
+		// Arguments:
+		if(args.argsLength() == 1){
+			
+			try {
+				page = Integer.parseInt(args.getString(0));
+			} catch (NumberFormatException e) {
+				sagaPlayer.message(EconomyMessages.invalidAmount(args.getString(1)));
+				return;
+			}
+			
+		}else{
+			page = 0;
+		}
+		
+		// Inform:
+		sagaPlayer.message(EconomyMessages.deals(tradeDeals,TradeDealType.EXPORT, page - 1));
 		
 		
 	}

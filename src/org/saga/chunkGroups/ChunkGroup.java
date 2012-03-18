@@ -14,15 +14,15 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Creature;
+import org.bukkit.entity.Enderman;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
+import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EndermanPickupEvent;
-import org.bukkit.event.entity.EndermanPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -1717,31 +1717,21 @@ public class ChunkGroup{
 		
 		
 	}
-	
+
 	/**
-	 * Called when Enderman pickups an item.
+	 * Called when an entity forms blocks.
 	 * 
 	 * @param event event
 	 * @param sagaChunk saga chunk
 	 */
-	public void onEndermanPickup(EndermanPickupEvent event, SagaChunk sagaChunk) {
+	public void onEntityBlockForm(EntityBlockFormEvent event, SagaChunk sagaChunk) {
 		
-		// Effers:
-		event.setCancelled(true);
 		
-	}
-	
-	/**
-	 * Called when Enderman pickups an item.
-	 * 
-	 * @param event event
-	 * @param sagaChunk saga chunk
-	 */
-	public void onEndermanPlace(EndermanPlaceEvent event, SagaChunk sagaChunk) {
+		if(event.getEntity() instanceof Enderman){
+			event.setCancelled(true);
+		}
 		
-		// Worse than creepers:
-		event.setCancelled(true);
-				
+		
 	}
 	
 	/**
@@ -1779,11 +1769,11 @@ public class ChunkGroup{
 		// Cancel lava spread:
 		if(!lavaSpread){
 			
-			if(event.getBlock().getType().equals(Material.STATIONARY_LAVA)){
+			if(event.getToBlock().getType().equals(Material.STATIONARY_LAVA) && event.getBlock().getLocation().getY() > 10){
 				event.setCancelled(true);
 				return;
 			}
-			if(event.getBlock().getType().equals(Material.LAVA)){
+			if(event.getToBlock().getType().equals(Material.LAVA) && event.getBlock().getLocation().getY() > 10){
 				event.setCancelled(true);
 				return;
 			}
@@ -1853,7 +1843,14 @@ public class ChunkGroup{
 					event.setUseItemInHand(Result.DENY);
 					sagaPlayer.message(SagaMessages.noPermission(this));
 					return;
-				
+					
+				case FIREBALL:
+					
+					event.setCancelled(true);
+					event.setUseItemInHand(Result.DENY);
+					sagaPlayer.message(SagaMessages.noPermission(this));
+					return;
+
 				case WATER_BUCKET:
 					
 					event.setCancelled(true);

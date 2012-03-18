@@ -98,6 +98,28 @@ public class GuardianRuneSign extends BuildingSign{
 		
 	}
 	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.buildings.signs.BuildingSign#invalidate()
+	 */
+	@Override
+	public void invalidate() {
+		
+		
+		super.invalidate();
+		
+		Sign sign = getSign();
+
+		sign.setLine(2, "-");
+		
+		sign.setLine(3, "");
+
+		sign.setLine(4, "");
+		
+		
+	}
+	
 	
 	// Events:
 	/* 

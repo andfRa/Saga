@@ -13,9 +13,9 @@ import org.bukkit.inventory.ItemStack;
 import org.saga.Clock;
 import org.saga.Clock.TimeOfDayTicker;
 import org.saga.Saga;
+import org.saga.buildings.TradingPost;
 import org.saga.config.EconomyConfiguration;
 import org.saga.constants.IOConstants.WriteReadType;
-import org.saga.economy.TradeDeal.TradeDealException;
 import org.saga.economy.TradeDeal.TradeDealType;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.WriterReader;
@@ -40,12 +40,15 @@ public class EconomyManager implements TimeOfDayTicker{
 	 */
 	public static EconomyManager manager(String worldName) throws InvalidWorldException {
 		
+		
 		for (EconomyManager instance : instances) {
-			if(instance.worldName.equals(worldName)){
-				return instance;
-			}
+			
+			if(instance.worldName.equals(worldName)) return instance;
+			
 		}
+		
 		throw new InvalidWorldException(worldName);
+		
 		
 	}
 	
@@ -58,12 +61,13 @@ public class EconomyManager implements TimeOfDayTicker{
 	 */
 	public static EconomyManager manager(Location location) throws InvalidWorldException {
 		
-		if(location == null){
-			throw new InvalidWorldException("null location");
-		}
+		
+		if(location == null) throw new InvalidWorldException("null location");
+
 		String worldName = location.getWorld().getName();
 		
 		return manager(worldName);
+		
 		
 	}
 	
@@ -123,7 +127,7 @@ public class EconomyManager implements TimeOfDayTicker{
 		int playerCount = world.getPlayers().size();
 		
 		// Deal amount:
-		Integer dealsAmount = EconomyConfiguration.config().calculateDealsPerPlayer(playerCount);
+		Integer dealsAmount = EconomyConfiguration.config().dealsPerPlayer.intValue(playerCount);
 		
 		
 		// Check if new deals are needed:
@@ -132,18 +136,19 @@ public class EconomyManager implements TimeOfDayTicker{
 		}
 		
 		// Calculate how much to add:
-		int newDeals = EconomyConfiguration.config().calculateDealsGainPerPlayer(playerCount);
-		if(newDeals < 0){
-			Saga.severe(getClass(), "negative new deals amount", "ignoring tick");
-			return;
-		}
+		int newDeals = EconomyConfiguration.config().dealsCreatePerPlayer.intValue(playerCount);
+		
 		if(tradeDeals.size() + newDeals > dealsAmount){
 			newDeals = dealsAmount - tradeDeals.size();
 		}
 		
 		// Add deals:
 		for (int i = 1; i <= newDeals; i++) {
-			addTradeDeal(EconomyConfiguration.config().nextTradeDeal().createRandomTradeDeal());
+			
+			TradeDeal newDeal = EconomyConfiguration.config().createTradeDeal();
+			
+			if(newDeal != null) addTradeDeal(newDeal);
+			
 		}
 
 		
@@ -196,7 +201,7 @@ public class EconomyManager implements TimeOfDayTicker{
 			}
 			
 			// Enough items:
-			if(targeter.getItemCount(material) < amount){
+			if(targeter.getAmount(material) < amount){
 				if(targeter instanceof SagaPlayer){
 					((SagaPlayer) targeter).message(EconomyMessages.notEnoughMaterial(material));
 				}
@@ -235,7 +240,7 @@ public class EconomyManager implements TimeOfDayTicker{
 			}
 			
 			// Enough items:
-			if(targeted.getItemCount(material) < amount){
+			if(targeted.getAmount(material) < amount){
 				if(targeter instanceof SagaPlayer){
 					((SagaPlayer) targeter).message(EconomyMessages.notEnoughStoredMaterial(material));
 				}
@@ -325,6 +330,8 @@ public class EconomyManager implements TimeOfDayTicker{
 		
 	}
 	
+	
+	
 	/**
 	 * Gets all trade deals.
 	 * 
@@ -359,6 +366,50 @@ public class EconomyManager implements TimeOfDayTicker{
 		
 		
 	}
+	
+	/**
+	 * Finds all good deals for the given materials.
+	 * 
+	 * @param type deal type
+	 * @param materials materials
+	 * @param tpost trading post
+	 * @return all good deals
+	 */
+	public ArrayList<TradeDeal> findGoodTradeDeal(TradeDealType type, ArrayList<Material> materials, TradingPost tpost) {
+
+		
+		ArrayList<TradeDeal> goodDeals = new ArrayList<TradeDeal>();
+		
+		ArrayList<TradeDeal> tDeals = getTradingDeals();
+		for (Material material : materials) {
+			
+			for (TradeDeal tradeDeal : tDeals) {
+				
+				if(!tradeDeal.getType().equals(type)) continue;
+				
+				if(!tradeDeal.getMaterial().equals(material)) continue;
+				
+				// Good deal:
+				if(type == TradeDealType.IMPORT && tpost.getBuyPrice(material) < tradeDeal.getPrice()){
+					continue;
+				}
+				
+				else if(type == TradeDealType.EXPORT && tpost.getSellPrice(material) > tradeDeal.getPrice()){
+					continue;
+				}
+				
+				goodDeals.add(tradeDeal);
+				
+			}
+			
+		}
+		
+		return goodDeals;
+		
+		
+	}
+	
+	
 	
 	// Load unload:
 	/**
@@ -414,23 +465,17 @@ public class EconomyManager implements TimeOfDayTicker{
 			reTradingDeals = new TradeDeal[0];
 			
 		}
+		
 		for (int i = 0; i < reTradingDeals.length; i++) {
 			
-			TradeDeal tradingDeal;
-			try {
-				tradingDeal = reTradingDeals[i];
-				tradingDeal.complete();
-			} catch (TradeDealException e) {
-				Saga.severe(EconomyManager.class, "failed to complete trading deals element: " + e.getClass().getSimpleName() + ": " + e.getMessage(), "ignoring element");
-				continue;
-			}
+			TradeDeal tradingDeal = reTradingDeals[i];
+			tradingDeal.complete();
 			instance.tradeDeals.add(tradingDeal);
 			
 		}
 		
 		// Enable clock:
 		Clock.clock().registerTimeOfDayTick(instance);
-		
 		
 		instances.add(instance);
 		
@@ -527,7 +572,7 @@ public class EconomyManager implements TimeOfDayTicker{
 		
 		
 	}
-		
+	
 
 	// Types:
 	/**

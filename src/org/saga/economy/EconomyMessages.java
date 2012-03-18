@@ -11,10 +11,12 @@ import org.bukkit.inventory.ItemStack;
 import org.saga.SagaMessages;
 import org.saga.buildings.Building;
 import org.saga.buildings.TradingPost;
+import org.saga.buildings.signs.SellSign;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.economy.EconomyManager.TransactionType;
+import org.saga.economy.TradeDeal.TradeDealType;
 import org.saga.player.PlayerMessages.ColorCircle;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.StringBook;
@@ -75,7 +77,13 @@ public class EconomyMessages {
 	
 	public static String invalidMaterial(String material) {
 
-		return negative + material + " isn't a valid material.";
+		return negative + material + " isn't a valid item.";
+		
+	}
+	
+	public static String invalidItemHand(){
+		
+		return negative + "Item in hand is invalid.";
 		
 	}
 	
@@ -85,15 +93,33 @@ public class EconomyMessages {
 		
 	}
 	
-	public static String invalidValue(String value) {
+	public static String invalidPrice(String amount) {
 
-		return negative + value + " isn't a valid value.";
+		return negative + amount + " isn't a valid price.";
 		
 	}
 	
-	public static String nonexistantTransaction(TransactionType transactionType, Material material) {
+	public static String setSell(Material material, Double price) {
 
-		return negative + transactionType.name() + " transaction for " + EconomyMessages.material(material) + " doesen't exist.";
+		return positive + TextUtil.capitalize(material(material)) + " sell price set to " +  coins(price) + ".";
+		
+	}
+
+	public static String removeSell(Material material) {
+
+		return positive + TextUtil.capitalize(material(material)) + " sell removed.";
+		
+	}
+	
+	public static String setBuy(Material material, Double price) {
+
+		return positive + TextUtil.capitalize(material(material)) + " buy price set to " +  coins(price) + ".";
+		
+	}
+
+	public static String removeBuy(Material material) {
+
+		return positive + TextUtil.capitalize(material(material)) + " buy removed.";
 		
 	}
 	
@@ -178,173 +204,67 @@ public class EconomyMessages {
 	public static String tradingpost(TradingPost tradingPost){
 		
 
-		StringBuffer rString = new StringBuffer();
-		ColorCircle messageColor = new ColorCircle().addColor(normal1).addColor(normal2);
-		ChatColor elementColor = null;
-//		
-//		// Signs:
-//		rString.append(tradingSignsElement(tradingPost, messageColor.nextColor()));
+//		StringBuffer rString = new StringBuffer();
+//		ColorCircle messageColor = new ColorCircle().addColor(normal1).addColor(normal2);
+//		ChatColor elementColor = null;
+////		
+////		// Signs:
+////		rString.append(tradingSignsElement(tradingPost, messageColor.nextColor()));
+////		
+////		rString.append("\n");
+////		
+//		// Info:
+//		elementColor = messageColor.nextColor();
+//		rString.append(elementColor);
+//		rString.append("Sell signs: " + tradingPost.tradeSignCount(TransactionType.SELL));
+//		rString.append(" Buy signs: " + tradingPost.tradeSignCount(TransactionType.BUY));
+//		int invalidSigns = tradingPost.tradeSignCount(TransactionType.INVALID);
+//		if(invalidSigns > 0){
+//			rString.append(veryNegative + " Invalid signs: " + invalidSigns + elementColor);
+//		}
+//		rString.append(" Trade deals: " + tradingPost.getTradeDealsAmount() + "/" + tradingPost.getTradeDealsMaximumAmount());
 //		
 //		rString.append("\n");
 //		
-		// Info:
-		elementColor = messageColor.nextColor();
-		rString.append(elementColor);
-		rString.append("Sell signs: " + tradingPost.tradeSignCount(TransactionType.SELL));
-		rString.append(" Buy signs: " + tradingPost.tradeSignCount(TransactionType.BUY));
-		int invalidSigns = tradingPost.tradeSignCount(TransactionType.INVALID);
-		if(invalidSigns > 0){
-			rString.append(veryNegative + " Invalid signs: " + invalidSigns + elementColor);
-		}
-		rString.append(" Trade deals: " + tradingPost.getTradeDealsAmount() + "/" + tradingPost.getTradeDealsMaximumAmount());
+//		// Sell buy:
+//		rString.append(sellbuyElement(tradingPost, messageColor.nextColor()));
+//		
+//		// Trade deals:
+//		ArrayList<TradeDeal> tradeDeals = tradingPost.getDeals();
+//		if(tradeDeals.size() > 0){
+//			
+//			rString.append("\n");
+//			
+//			rString.append(tradeDealsElement(tradeDeals, messageColor.nextColor(), messageColor.nextColor(), positive ));
+//			
+//		}
+//		
+//		rString.append("\n");
+//		
+//		// Stored:
+//		elementColor = messageColor.nextColor();
+//		rString.append(elementColor);
+//		rString.append("Stock: ");
+//		rString.append(storedElement(tradingPost, elementColor));
+//
+//		// Reserved:
+//		if(tradingPost.getReservedCurrency() > 0.0 || tradingPost.getReservedMaterials().size() > 0){
+//			
+//			rString.append("\n");
+//			
+//			rString.append(reservedElement(tradingPost, messageColor.nextColor()));
+//			
+//		}
+//		
+//		return TextUtil.frame(tradingPost.getTradingName(), rString.toString(), messageColor.nextColor());
 		
-		rString.append("\n");
-		
-		// Sell buy:
-		rString.append(sellbuyElement(tradingPost, messageColor.nextColor()));
-		
-		// Trade deals:
-		ArrayList<TradeDeal> tradeDeals = tradingPost.getTradeDeals();
-		if(tradeDeals.size() > 0){
-			
-			rString.append("\n");
-			
-			rString.append(tradeDealsElement(tradeDeals, messageColor.nextColor(), messageColor.nextColor(), positive ));
-			
-		}
-		
-		rString.append("\n");
-		
-		// Stored:
-		elementColor = messageColor.nextColor();
-		rString.append(elementColor);
-		rString.append("Stock: ");
-		rString.append(storedElement(tradingPost, elementColor));
-
-		// Reserved:
-		if(tradingPost.getReservedCurrency() > 0.0 || tradingPost.getReservedMaterials().size() > 0){
-			
-			rString.append("\n");
-			
-			rString.append(reservedElement(tradingPost, messageColor.nextColor()));
-			
-		}
-		
-		return TextUtil.frame(tradingPost.getTradingName(), rString.toString(), messageColor.nextColor());
-		
+		return "";
 		
 	}
 	
-	private static String storedElement(TradingPost tradingPost, ChatColor messageColor){
-		
-		
-		StringBuffer rString = new StringBuffer();
-		Hashtable<Material, Integer> stock = tradingPost.getStockedItems();
-		
-		Enumeration<Material> materials = stock.keys();
-		
-		// Currency:
-		rString.append(coins(tradingPost.getCoins()));
-		
-		// Resources:
-		while (materials.hasMoreElements()) {
-			
-			Material material = (Material) materials.nextElement();
-			
-			rString.append(", ");
-			
-			rString.append( stock.get(material) + " " + material(material));
-			
-		}
-		
-		rString.insert(0, messageColor);
-		
-		return rString.toString();
-		
-		
-	}
 	
 	
 	// Economy general:
-	public static String sellbuyElement(Trader trader, ChatColor messageColor){
-		
-		
-		StringBuffer rString = new StringBuffer();
-		
-		ArrayList<Transaction> transactions = trader.getTransactions();
-		ArrayList<Transaction> sellTransactons = new ArrayList<Transaction>();
-		ArrayList<Transaction> buyTransactons = new ArrayList<Transaction>();
-		
-		for (Transaction transaction : transactions) {
-			if(transaction.getType().equals(TransactionType.SELL)){
-				sellTransactons.add(transaction);
-			}else if(transaction.getType().equals(TransactionType.BUY)){
-				buyTransactons.add(transaction);
-			}
-		}
-		
-			
-		// Sell:
-		rString.append("Sell: ");
-		if(sellTransactons.size() > 0){
-			
-			for (int i = 0; i < sellTransactons.size(); i++) {
-				
-				if(i != 0) rString.append(", ");
-				
-				Transaction transaction = sellTransactons.get(i);
-				
-				String element = transaction.getAmount() + " " +material(transaction.getMaterial()) + " for " + coins(transaction.getValue()) + " each"; 
-				
-				if( !trader.isActive(transaction.getType(), transaction.getMaterial()) ){
-					rString.append( unavailable + element + messageColor);
-				}else{
-					rString.append(element);
-				}
-				
-			}
-			
-		}else{
-			rString.append("nothing");
-		}
-		
-		rString.append("\n");
-		
-		// Buy:
-		rString.append("Buy: ");
-		if(buyTransactons.size() > 0){
-			
-			if(rString.length() > 0){
-				
-			}
-			
-			for (int i = 0; i < buyTransactons.size(); i++) {
-				
-				if(i != 0) rString.append(", ");
-				
-				Transaction transaction = buyTransactons.get(i);
-				
-				String element = transaction.getAmount() + " " +material(transaction.getMaterial()) + " for " + transaction.getValue() + " each"; 
-				
-				if( !trader.isActive(transaction.getType(), transaction.getMaterial()) ){
-					rString.append( unavailable + element + messageColor);
-				}else{
-					rString.append(element);
-				}
-				
-			}
-			
-		}else{
-			rString.append("nothing");
-		}
-		
-		rString.insert(0, messageColor);
-		
-		return rString.toString();
-		
-		
-	}
-
 	public static String notEnoughCoins() {
 
 		return negative + "You don't have enough " + EconomyMessages.coins() + ".";
@@ -389,66 +309,28 @@ public class EconomyMessages {
 	// Trade deals:
 	private static String tradeDealElement(TradeDeal tradeDeal, ChatColor messageColor) {
 
-		return messageColor + tradeDeal.getId().toString() + "| " + tradeDeal.getType().getName() + " " + tradeDeal.getTransactionsLeft() + "x" + tradeDeal.getAmount() + " " + material(tradeDeal.getMaterial()) + " for " + coins(tradeDeal.getValue()) + " each," + " expires in " + tradeDeal.getDaysLeft() + " days" ;
+		return "";
+		
+//		return messageColor + tradeDeal.getId().toString() + "| " + tradeDeal.getType().getName() + " " + tradeDeal.getTransactionsLeft() + "x" + tradeDeal.getAmount() + " " + material(tradeDeal.getMaterial()) + " for " + coins(tradeDeal.getValue()) + " each," + " expires in " + tradeDeal.getDaysLeft() + " days" ;
 		
 	}
 	
 	private static String dealElement(TradeDeal tradeDeal) {
 
-		return tradeDeal.getId().toString() + "| " + tradeDeal.getType().getName() + " " + tradeDeal.getTransactionsLeft() + "x" + tradeDeal.getAmount() + " " + materialShort(tradeDeal.getMaterial()) + " for " + coins(tradeDeal.getValue()) + " each, " + tradeDeal.getDaysLeft() + " days left" ;
+		return "";
+		
+//		return tradeDeal.getId().toString() + "| " + tradeDeal.getType().getName() + " " + tradeDeal.getTransactionsLeft() + "x" + tradeDeal.getAmount() + " " + materialShort(tradeDeal.getMaterial()) + " for " + coins(tradeDeal.getValue()) + " each, " + tradeDeal.getDaysLeft() + " days left" ;
 		
 	}
 	
 	private static String shortTradeDealElement(TradeDeal tradeDeal, ChatColor messageColor) {
 
-		return messageColor + tradeDeal.getId().toString() + "| " + tradeDeal.getType().getName() + " " + tradeDeal.getAmount() + " " + material(tradeDeal.getMaterial()) + " for " + coins(tradeDeal.getValue()) + " each";
+//		return messageColor + tradeDeal.getId().toString() + "| " + tradeDeal.getType().getName() + " " + tradeDeal.getAmount() + " " + material(tradeDeal.getMaterial()) + " for " + coins(tradeDeal.getValue()) + " each";
+		
+		return "";
 		
 	}
 
-	private static String reservedElement(TradingPost tradingPost, ChatColor messageColor) {
-
-		
-		StringBuffer rString = new StringBuffer();
-		
-		ArrayList<Material> reserved = tradingPost.getReservedMaterials();
-		
-		if(reserved.size() == 0 && tradingPost.getReservedCurrency() <= 0){
-			rString.append("Reserved: none");
-		}else{
-			rString.append("Reserved: ");
-		}
-		
-		boolean first = true;
-		
-		// Currency:
-		if(tradingPost.getReservedCurrency() > 0){
-			
-			rString.append(coins(tradingPost.getReservedCurrency()));
-			
-			first = false;
-			
-		}
-		
-		// Materials:
-		for (int i = 0; i < reserved.size(); i++) {
-			
-			if(!first){
-				rString.append(", ");
-			}else{
-				first = false;
-			}
-			
-			rString.append(tradingPost.getReservedAmount(reserved.get(i)) + " " + material(reserved.get(i)));
-			
-		}
-		
-		rString.insert(0, messageColor);
-		
-		return rString.toString();
-		
-		
-	}
-	
 	public static String tradeDealsElement(ArrayList<TradeDeal> tradeDeals, ChatColor messageColor1, ChatColor messageColor2, ChatColor highlightColor){
 		
 		
@@ -611,7 +493,7 @@ public class EconomyMessages {
 	
 	public static String tradeDealLimitReached(TradingPost tradingPost){
 		
-		return negative + "The trading post can't support more than " +tradingPost.getTradeDealsMaximumAmount() + " trading deals.";
+		return negative + "The trading post can't support more than " +tradingPost.getDealsMaxCount() + " trading deals.";
 		
 	}
 	
@@ -621,7 +503,7 @@ public class EconomyMessages {
 	
 	public static String reservedBroadcast(Double amount, SagaPlayer sagaPlayer, TradingPost tradingPost) {
 		
-		return anouncment + sagaPlayer.getName() + " reserved " + tradingPost.getDisplayName() + " currency to " + coins(amount) + ".";
+		return anouncment + sagaPlayer.getName() + " reserved " + tradingPost.getDisplayName() + " cois to " + coins(amount) + ".";
 		
 	}
 	
@@ -636,14 +518,68 @@ public class EconomyMessages {
 	public static String tradeDeals(ArrayList<TradeDeal> tradeDeals, Integer page){
 		
 
-		int pageSize = 10;
-		ColorCircle color = new ColorCircle().addColor(normal1).addColor(normal2);
-		StringBook book = new StringBook("Trade deals", color, pageSize);
-		StringTable table = new StringTable(color);
+		return "";
 		
+//		int pageSize = 10;
+//		ColorCircle color = new ColorCircle().addColor(normal1).addColor(normal2);
+//		StringBook book = new StringBook("Trade deals", color, pageSize);
+//		StringTable table = new StringTable(color);
+//		
+//		
+//		// Names:
+//		String[] titles = new String[]{"ID", "TYPE", "ITEM", "VALUE", "DAYS", "TRANSACTIONS"};
+//		int titleLines = 0;
+//		
+//		// Create the book:
+//		if(tradeDeals.size() > 0){
+//			
+//			for (int i = 0; i < tradeDeals.size(); i++) {
+//				
+//				if(titleLines == 0){
+//					table.addLine(titles);
+//					titleLines = pageSize - 1;
+//					i--;
+//					continue;
+//				}else{
+//					titleLines --;
+//				}
+//				
+//				TradeDeal deal = tradeDeals.get(i);
+//				
+//				String[] lines = new String[]{deal.getId().toString(), deal.getType().getName(), materialShort(deal.getMaterial()), EconomyMessages.coins(deal.getValue()), deal.getDaysLeft().toString(), deal.getAmount().toString() + "x" + deal.getTransactionsLeft().toString()};
+//				
+//				table.addLine(lines);
+//				
+//			}
+//			
+//		}
+//		
+//		table.collapse();
+//		
+//		book.addTable(table);
+//		
+//		return book.framed(page);
+		
+		
+	}
+	
+	public static String deals(ArrayList<TradeDeal> tradeDeals, TradeDealType type, Integer page){
+		
+
+		int pageSize = 10;
+		ColorCircle colour = new ColorCircle().addColor(normal1).addColor(normal2);
+		StringBook book = new StringBook(type.getName(), colour, pageSize);
+		StringTable table = new StringTable(colour);
+		
+		// Filter out correct deals:
+		ArrayList<TradeDeal> correctDeals = new ArrayList<TradeDeal>();
+		for (TradeDeal tradeDeal : tradeDeals) {
+			if(tradeDeal.getType() == type) correctDeals.add(tradeDeal);
+		}
+		tradeDeals = correctDeals;
 		
 		// Names:
-		String[] titles = new String[]{"ID", "TYPE", "ITEM", "VALUE", "DAYS", "TRANSACTIONS"};
+		String[] titles = new String[]{"ID", "ITEM", "PRICE", "DAYS", "AMOUNT"};
 		int titleLines = 0;
 		
 		// Create the book:
@@ -651,6 +587,7 @@ public class EconomyMessages {
 			
 			for (int i = 0; i < tradeDeals.size(); i++) {
 				
+				// Names:
 				if(titleLines == 0){
 					table.addLine(titles);
 					titleLines = pageSize - 1;
@@ -662,12 +599,15 @@ public class EconomyMessages {
 				
 				TradeDeal deal = tradeDeals.get(i);
 				
-				String[] lines = new String[]{deal.getId().toString(), deal.getType().getName(), materialShort(deal.getMaterial()), EconomyMessages.coins(deal.getValue()), deal.getDaysLeft().toString(), deal.getAmount().toString() + "x" + deal.getTransactionsLeft().toString()};
+				String[] lines = new String[]{deal.getId().toString(), materialShort(deal.getMaterial()), EconomyMessages.coins(deal.getPrice()), deal.getDaysLeft().toString(), deal.getAmount().toString()};
 				
 				table.addLine(lines);
 				
 			}
 			
+		}else{
+			table.addLine(new String[]{"ID", "ITEM", "PRICE", "DAYS", "AMOUNT"});
+			table.addLine(new String[]{"-", "-", "-", "-", "-"});
 		}
 		
 		table.collapse();
@@ -678,6 +618,7 @@ public class EconomyMessages {
 		
 		
 	}
+	
 	
 	// User:
 	public static String wallet(SagaPlayer sagaPlayer) {
@@ -721,7 +662,7 @@ public class EconomyMessages {
 		book.addLine("/bsetbuy <item> <amount> <value> to set the minimum amount and value of a bought item");
 		
 		// Signs:
-		book.addLine("Place \"=[sell]= | item\" and \"=[buy]= | item\" signs to sell and buy items.");
+		book.addLine("Place \"=[sell]= | amount" + SellSign.MATERIAL_VALUE_DIV + "item\" and \"=[buy]= | amount" + SellSign.MATERIAL_VALUE_DIV + "item\" signs to sell and buy items.");
 
 		// Donate:
 		book.addLine("To get the trading post running, you will need to donate items or coins.");
@@ -732,8 +673,8 @@ public class EconomyMessages {
 		// Export import:
 		book.addLine("A deal needs to be formed to export or import items.");
 
-		// Deals:
-		book.addLine("/edeals to list all deals.");
+		// Imports:
+		book.addLine("/eimports and /eexports to list all deals.");
 
 		// Expiration:
 		book.addLine("/bnewdeal <ID> to form a deal. Deal will expire after certain amout of items or time.");
@@ -741,12 +682,54 @@ public class EconomyMessages {
 		// Timing:
 		book.addLine("After a deal is formed, the goods will get exported/imported each sunrise.");
 
-		
-		return book.framed(page, 76.0);
+		// Goods sign:
+		book.addLine("" + TradingPost.GOODS_SIGN + " sign displays goods list.");
+
+		// Deals sign:
+		book.addLine("" + TradingPost.DEALS_SIGN + " sign displays deals list.");
+
+		return book.framed(page);
 		
 		
 	}
 	
+	
+	// Sell/buy signs:
+	public static String insufItems(Material items) {
+		
+		return negative + "You don't have enough " + material(items) + ".";
+		
+	}
+	
+	public static String insufItems(Trader trader, Material items) {
+		
+		return negative + TextUtil.capitalize(trader.getTradingName()) + " doesn't have enough " + material(items) + ".";
+		
+	}
+	
+	public static String insufCoins() {
+		
+		return negative + "You don't have enough " + coins() + ".";
+		
+	}
+	
+	public static String insufCoins(Trader trader) {
+		
+		return negative + TextUtil.capitalize(trader.getTradingName()) + " doesn't have enough " + coins() + ".";
+		
+	}
+	
+	public static String sold(Material item, Integer amount, Double price) {
+		
+		return positive + "Sold " + amount + " " + material(item) + " for " + coins(price * amount) + ".";
+		
+	}
+	
+	public static String bought(Material item, Integer amount, Double price) {
+	
+	return positive + "Bought " + amount + " " + material(item) + " for " + coins(price * amount) + ".";
+	
+}
 	
 	
 	// Naming:
@@ -758,7 +741,7 @@ public class EconomyMessages {
 	 */
 	public static String coins(Double amount) {
 
-		return TextUtil.displayDouble(amount) + "" + EconomyConfiguration.config().currencyName;
+		return TextUtil.displayDouble(amount) + "" + EconomyConfiguration.config().coinName;
 		
 	}
 	
@@ -768,7 +751,7 @@ public class EconomyMessages {
 	 * @return currency name
 	 */
 	public static String coins(){
-		return EconomyConfiguration.config().currencyName;
+		return EconomyConfiguration.config().coinName;
 	}
 	
 	/**
@@ -796,6 +779,9 @@ public class EconomyMessages {
 		}
 		else if(result.startsWith("diamond ")){
 			result = result.replace("diamond ", "di. ");
+		}
+		else if(result.startsWith("cobblestone")){
+			result = result.replace("cobblestone", "cobble");
 		}
 		
 		return result;

@@ -314,6 +314,10 @@ public class Clock implements Runnable{
 		
 	}
 	
+	/**
+	 * Sends time of day ticks.
+	 * 
+	 */
 	private void sendTimeOfDayTicks() {
 
 		
@@ -380,6 +384,28 @@ public class Clock implements Runnable{
 		
 	}
 	
+	/**
+	 * Forces a time of day tick.
+	 * 
+	 * @param timeOfDay time of day tick
+	 */
+	public void forceTick(TimeOfDay timeOfDay) {
+
+		
+		for (TimeOfDayTicker ticker : timeOfDays) {
+			
+			List<World> worlds = Saga.plugin().getServer().getWorlds();
+			for (World world : worlds) {
+				
+				if(ticker.checkWorld(world.getName())) ticker.timeOfDayTick(timeOfDay);
+				
+			}
+			
+			
+		}
+
+		
+	}
 	
 	/**
 	 * Loads the clock.

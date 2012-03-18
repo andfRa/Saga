@@ -1,0 +1,123 @@
+{
+
+"damageSkills":{
+  "blade":{
+    "name":"blade",
+    "type":"OFFENSE",
+    "attackerWeapons":["WOOD_SWORD","STONE_SWORD","IRON_SWORD","GOLD_SWORD","DIAMOND_SWORD"],
+    "defenderWeapons":[],
+    "attackerArmor":"ALL",
+    "defenderArmor":"ALL",
+    "attacker":"PLAYER",
+    "defender":"ALL",
+    "attack":"MELEE",
+    "modifier":{"x1":0,"y1":4.0,"x2":50,"y2":34.0}
+  },
+
+  "waraxe":{
+    "name":"waraxe",
+    "type":"OFFENSE",
+    "attackerWeapons":["WOOD_AXE","STONE_AXE","IRON_AXE","GOLD_AXE","DIAMOND_AXE"],
+    "defenderWeapons":[],
+    "attackerArmor":"ALL",
+    "defenderArmor":"ALL",
+    "attacker":"PLAYER",
+    "defender":"ALL",
+    "attack":"MELEE",
+    "modifier":{"x1":0,"y1":0.0,"x2":10,"y2":14.0}
+  },
+
+  "archery":{
+    "name":"archery",
+    "type":"OFFENSE",
+    "attackerWeapons":["BOW"],
+    "defenderWeapons":[],
+    "attackerArmor":"ALL",
+    "defenderArmor":"ALL",
+    "attacker":"PLAYER",
+    "defender":"ALL",
+    "attack":"RANGED",
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":30.0}
+  },
+
+  "magic":{
+    "name":"magic",
+    "type":"OFFENSE",
+    "attackerWeapons":[],
+    "defenderWeapons":[],
+    "attackerArmor":"ALL",
+    "defenderArmor":"ALL",
+    "attacker":"PLAYER",
+    "defender":"ALL",
+    "attack":"MAGIC",
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":30.0}
+  },
+
+  "heavy armour":{
+    "name":"heavy armour",
+    "type":"DEFENSE",
+    "attackerWeapons":[],
+    "defenderWeapons":[],
+    "attackerArmor":"ALL",
+    "defenderArmor":"HEAVY",
+    "attacker":"ALL",
+    "defender":"ALL",
+    "attack":"PHYSICAL",
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-30.0}
+  },
+
+  "light armour":{
+    "name":"light armour",
+    "type":"DEFENSE",
+    "attackerWeapons":[],
+    "defenderWeapons":[],
+    "attackerArmor":"ALL",
+    "defenderArmor":"LIGHT",
+    "attacker":"ALL",
+    "defender":"ALL",
+    "attack":"PHYSICAL",
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-30.0}
+  },
+
+  "unarmoured":{
+    "name":"unarmoured",
+    "type":"DEFENSE",
+    "attackerWeapons":[],
+    "defenderWeapons":[],
+    "attackerArmor":"ALL",
+    "defenderArmor":"UNARMOURED",
+    "attacker":"ALL",
+    "defender":"ALL",
+    "attack":"MELEE",
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-30.0}
+  },
+
+  "magic warding":{
+    "name":"magic warding",
+    "type":"DEFENSE",
+    "attackerWeapons":[],
+    "defenderWeapons":[],
+    "attackerArmor":"ALL",
+    "defenderArmor":"ALL",
+    "attacker":"ALL",
+    "defender":"ALL",
+    "attack":"MAGIC",
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-30.0}
+  },
+
+  "woodcutting":{
+    "name":"woodcutting",
+    "type":"OFFENSE",
+    "attackerWeapons":[],
+    "defenderWeapons":[],
+    "attackerArmor":"ALL",
+    "defenderArmor":"ALL",
+    "attacker":"ALL",
+    "defender":"ALL",
+    "attack":"NONE",
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-30.0}
+  }
+
+}
+
+}

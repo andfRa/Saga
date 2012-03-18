@@ -144,6 +144,28 @@ public class TwoPointFunction {
 	}
 	
 	/**
+	 * Calculates the value for the given y value.
+	 * 
+	 * @param x x value
+	 */
+	public Integer intValue(Integer x) {
+		
+		return value(x.shortValue()).intValue();
+		
+	}
+	
+	/**
+	 * Calculates the value for the given y value.
+	 * 
+	 * @param x x value
+	 */
+	public Double value(Double x) {
+		
+		return value(x.shortValue());
+		
+	}
+	
+	/**
 	 * Calculates the random integer value for the given y value.
 	 * 
 	 * @param x x value
