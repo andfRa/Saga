@@ -2421,7 +2421,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 		}
 		
 		// Sound:
-		playGlobalEffect(Effect.BLAZE_SHOOT, 0);
+		playGlobalEffect(Effect.GHAST_SHOOT, 0);
 		
 		
 	}

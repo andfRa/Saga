@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Effect;
 import org.bukkit.entity.Player;
 import org.saga.Clock.TimeOfDayTicker.TimeOfDay;
 import org.saga.chunkGroups.ChunkGroupMessages;
@@ -431,6 +432,19 @@ public class SagaCommands {
     @CommandPermissions({"saga.admin.dcommand"})
     public static void debugCommand(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
+    	
+    	try {
+			
+    		Integer data = args.getInteger(0);
+    		
+    		sagaPlayer.playEffect(Effect.GHAST_SHOOT, data);
+    		
+    		
+		}
+		catch (Exception e) {
+			System.out.println("e:" + e);
+		}
+    	
     	
     }
 

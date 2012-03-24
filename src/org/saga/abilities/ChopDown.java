@@ -1,7 +1,7 @@
 package org.saga.abilities;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -92,18 +92,19 @@ public class ChopDown extends Ability{
 			return false;
 		}
 		
+		ArrayList<ItemStack> remainDrops = new ArrayList<ItemStack>();
+		
 		// Chop down:
 		for (Block log : logs) {
 			
-			// Call event:
-			if(!handleEvent(log, player)) return true;
+			// Break:
+			if(!handleBreak(log, player, remainDrops)) return true;
 			
-			Collection<ItemStack> drops = handleBreak(log, player);
-			
-			for (ItemStack drop : drops) {
-				handleDrop(drop, log.getLocation());
-			}
-			
+		}
+		
+		// Remaining drops:
+		for (ItemStack drop : remainDrops) {
+			handleDrop(drop, player.getLocation());
 		}
 		
 		// Play effect:
@@ -121,54 +122,40 @@ public class ChopDown extends Ability{
 		
 	}
 	
-
-	// Blocks:
-	/**
-	 * Handles block break event.
-	 * 
-	 * @param block block
-	 * @param player player
-	 * @return true if canceled
-	 */
-	private boolean handleEvent(Block block, Player player) {
-
-
-		// Call event:
-		BlockBreakEvent bbEvent = new BlockBreakEvent(block, player);
-		Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
-		if(bbEvent.isCancelled()) return false;
-
-		return true;
-		
-		
-	}
-	
 	/**
 	 * Handles block break.
 	 * 
 	 * @param block block
 	 * @param player player
+	 * @param dropCache remaining drops
+	 * @return true if continue
 	 */
-	private Collection<ItemStack> handleBreak(Block block, Player player) {
+	private boolean handleBreak(Block block, Player player, ArrayList<ItemStack> dropCache) {
 
 		
 		// Air:
-		if(block.getType() == Material.AIR) return new ArrayList<ItemStack>();
+		if(block.getType() == Material.AIR) return true;
 
 		// Call event:
-		BlockBreakEvent bbEvent = new BlockBreakEvent(block, player);
+		BlockBreakEvent bbEvent = new BlockBreakEvent(block, player, new ArrayList<ItemStack>(block.getDrops()));
 		Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
-		if(bbEvent.isCancelled()) return new ArrayList<ItemStack>();
+		if(bbEvent.isCancelled()) return false;
 		
-		Collection<ItemStack> drops = block.getDrops();
-
 		// Break:
 		block.setType(Material.AIR);
+		
+		// Drop:
+		List<ItemStack> drops = bbEvent.getDrops();
+		for (ItemStack drop : drops) {
+
+			handleDrop(drop, block.getLocation());
+			
+		}
 		
 		// Damage tool:
 		getSagaPlayer().damageTool();
 		
-		return drops;
+		return true;
 		
 		
 	}

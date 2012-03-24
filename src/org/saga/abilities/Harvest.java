@@ -1,8 +1,7 @@
 package org.saga.abilities;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Random;
+import java.util.List;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -20,11 +19,6 @@ import org.saga.statistics.StatisticsManager;
 
 public class Harvest extends Ability{
 
-	
-	/**
-	 * Random.
-	 */
-	private static Random RANDOM = new Random();
 
 	/**
 	 * Shape for the ability.
@@ -72,7 +66,6 @@ public class Harvest extends Ability{
 		
 		// Skill functions:
 		Integer size = getDefinition().getPrimaryFunction().randomIntValue(getSkillLevel());
-		Integer convenience = getDefinition().getSecondaryFunction().randomIntValue(getSkillLevel());
 		
 		// Exp reward:
 		int expval = 0;
@@ -86,19 +79,11 @@ public class Harvest extends Ability{
 			return false;
 		}
 		
+		ArrayList<ItemStack> remainDrops = new ArrayList<ItemStack>();
+		
 		// Break and drop:
 		for (Block block : blocks) {
 
-			// Convenience:
-			if(RANDOM.nextDouble() <= convenience){
-				
-				if(block.getType().equals(Material.CROPS) && block.getData() != 7) continue;
-				dropLocation = event.getPlayer().getLocation();
-				
-			}else{
-				dropLocation = block.getLocation();
-			}
-			
 			// Drop indication:
 			if(block.getType() == Material.SUGAR_CANE_BLOCK){
 				reedDrop = true;
@@ -106,23 +91,18 @@ public class Harvest extends Ability{
 			else if(block.getType() == Material.CROPS){
 				wheatDrop = true;
 			}
-			
-			// Event:
-			if(!handleEvent(block, player)) return false;
-			
-			// Break:
-			Collection<ItemStack> drops = handleBreak(block, player);
 
-			for (ItemStack drop : drops) {
-				
-				handleDrop(drop, dropLocation);
-				
-			}
+			// Break:
+			if(!handleBreak(block, player, remainDrops)) return false;
 			
 			expval += 1;
 			
 		}
-		
+
+		// Remaining drops:
+		for (ItemStack drop : remainDrops) {
+			handleDrop(drop, player.getLocation());
+		}
 		
 		// Effect:
 		if(reedDrop){
@@ -147,51 +127,49 @@ public class Harvest extends Ability{
 	
 	// Blocks:
 	/**
-	 * Handles block break event.
-	 * 
-	 * @param block block
-	 * @param player player
-	 * @return true if canceled
-	 */
-	private boolean handleEvent(Block block, Player player) {
-
-
-		// Call event:
-		BlockBreakEvent bbEvent = new BlockBreakEvent(block, player);
-		Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
-		if(bbEvent.isCancelled()) return false;
-
-		return true;
-		
-		
-	}
-	
-	/**
 	 * Handles block break.
 	 * 
 	 * @param block block
 	 * @param player player
+	 * @param dropCache remaining drops
+	 * @return true if continue
 	 */
-	private Collection<ItemStack> handleBreak(Block block, Player player) {
+	private boolean handleBreak(Block block, Player player, ArrayList<ItemStack> dropCache) {
 
 		
 		// Air:
-		if(block.getType() == Material.AIR) return new ArrayList<ItemStack>();
+		if(block.getType() == Material.AIR) return true;
 
 		// Call event:
-		BlockBreakEvent bbEvent = new BlockBreakEvent(block, player);
+		BlockBreakEvent bbEvent = new BlockBreakEvent(block, player, new ArrayList<ItemStack>(block.getDrops()));
 		Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
-		if(bbEvent.isCancelled()) return new ArrayList<ItemStack>();
+		if(bbEvent.isCancelled()) return false;
 		
-		Collection<ItemStack> drops = block.getDrops();
-
+		// Only developed:
+		if(block.getType().equals(Material.CROPS) && block.getData() != 7) return true;
+		
 		// Break:
 		block.setType(Material.AIR);
+		
+		// Drop:
+		List<ItemStack> drops = bbEvent.getDrops();
+		for (ItemStack drop : drops) {
+
+			Boolean convenience = getDefinition().getSecondaryFunction().randomBooleanValue(getSkillLevel());
+			
+			// Convenience:
+			if(convenience){
+				handleDrop(drop, player.getLocation());
+			}else{
+				dropCache.add(drop);
+			}
+			
+		}
 		
 		// Damage tool:
 		getSagaPlayer().damageTool();
 		
-		return drops;
+		return true;
 		
 		
 	}
@@ -209,8 +187,7 @@ public class Harvest extends Ability{
 		location.getWorld().dropItemNaturally(location, drop);
 		
 	}
-	
-	
+
 	
 	/**
 	 * Creates the shape for the ability.
