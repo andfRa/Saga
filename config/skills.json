@@ -59,7 +59,7 @@
     "attacker":"PLAYER",
     "defender":"ALL",
     "attack":"MAGIC",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":33.0},
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":36.0},
     "toolType":[],
     "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
     "fireTickResistance":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}
@@ -123,7 +123,7 @@
     "attacker":"ALL",
     "defender":"ALL",
     "attack":"MAGIC",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-33.0},
+    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-36.0},
     "toolType":[],
     "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
     "fireTickResistance":{"x1":0,"y1":0.0,"x2":30,"y2":0.95}

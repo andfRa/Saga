@@ -95,7 +95,7 @@
     "type":"CLASS",
     "hierarchyLevel":"1",
     "abilities":["bash"],
-    "bindMaterials":{"bash":["IRON_SWORD","DIAMOND_SWORD","IRON_AXE","DIAMOND_AXE"]},
+    "bindMaterials":{"bash":["IRON_SWORD","DIAMOND_SWORD"]},
     "bindActions":{"bash":"RIGHT_CLICK"},
     "skillMax":{"blade":20,"waraxe":20,"heavy armour":30,"magic warding":20,"unarmoured":5},
     "settlementPermissions":[],
