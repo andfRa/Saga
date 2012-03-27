@@ -35,6 +35,10 @@ import org.saga.exceptions.SagaPlayerNotLoadedException;
 import org.saga.factions.FactionCommands;
 import org.saga.factions.FactionManager;
 import org.saga.guilds.GuildsManager;
+import org.saga.listeners.BlockListener;
+import org.saga.listeners.EntityListener;
+import org.saga.listeners.PlayerListener;
+import org.saga.listeners.ServerListener;
 import org.saga.player.PlayerCommands;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsCommands;
@@ -69,13 +73,13 @@ public class Saga extends JavaPlugin implements MinuteTicker{
 
     private Hashtable<String,SagaPlayer> loadedPlayers;
     
-    private static SagaPlayerListener playerListener;
+    private static PlayerListener playerListener;
     
-    private static SagaEntityListener entityListener;
+    private static EntityListener entityListener;
     
-    private static SagaBlockListener blockListener;
+    private static BlockListener blockListener;
     
-    private static SagaServerListener serverListener;
+    private static ServerListener serverListener;
 
     
     // Saving:
@@ -215,10 +219,10 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         StatisticsManager.load(); // Needs access to clock.
         
         //Create listeners:
-      	playerListener = new SagaPlayerListener(this);
-      	entityListener = new SagaEntityListener();
-      	blockListener = new SagaBlockListener();
-      	serverListener = new SagaServerListener();
+      	playerListener = new PlayerListener(this);
+      	entityListener = new EntityListener();
+      	blockListener = new BlockListener();
+      	serverListener = new ServerListener();
       	
         // Register events:
       	pluginManager.registerEvents(playerListener, this);

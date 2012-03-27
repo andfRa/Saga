@@ -1,4 +1,4 @@
-package org.saga;
+package org.saga.listeners;
 
 
 import org.bukkit.Location;
@@ -13,13 +13,14 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
+import org.saga.Saga;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.BalanceConfiguration;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.XrayIndicator;
 
-public class SagaBlockListener implements Listener{
+public class BlockListener implements Listener{
 	
 	
 	@EventHandler(priority = EventPriority.NORMAL)
@@ -33,22 +34,22 @@ public class SagaBlockListener implements Listener{
 		// Get player:
     	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
     	if(sagaPlayer == null){
+    		
     		Saga.warning("Can't continue with onBlockBreak, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
+    		
     		if(sagaChunk != null){
     			Saga.info("Found saga chunk. Canceling event.");
     			event.setCancelled(true);
     		}
+    		
     		return;
+    		
     	}
     	
     	// Forward to chunk:
-    	if(sagaChunk != null){
-    		sagaChunk.onBlockBreak(event, sagaPlayer);
-    	}
+    	if(sagaChunk != null) sagaChunk.onBlockBreak(event, sagaPlayer);
 
-    	if(event.isCancelled()){
-    		return;
-    	}
+    	if(event.isCancelled()) return;
     	
     	// X-ray:
     	XrayIndicator.handleMine(sagaPlayer, event);
@@ -84,9 +85,7 @@ public class SagaBlockListener implements Listener{
     	}
     	
     	// Forward to chunk:
-    	if(sagaChunk != null){
-    		sagaChunk.onBlockDamage(event, sagaPlayer);
-    	}
+    	if(sagaChunk != null) sagaChunk.onBlockDamage(event, sagaPlayer);
     	
 		
 	}
@@ -102,18 +101,20 @@ public class SagaBlockListener implements Listener{
 		// Get player:
     	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
     	if(sagaPlayer == null){
+    		
     		Saga.warning("Can't continue with onBlockPlace, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
+    		
     		if(sagaChunk != null){
     			Saga.info("Found saga chunk. Canceling event.");
     			event.setCancelled(true);
     		}
+    		
     		return;
+    		
     	}
     	
     	// Forward to chunk:
-    	if(sagaChunk != null){
-    		sagaChunk.onBlockPlace(event, sagaPlayer);
-    	}
+    	if(sagaChunk != null) sagaChunk.onBlockPlace(event, sagaPlayer);
     	
     	// Handle data change:
     	BalanceConfiguration.config().handleDataChange(event.getBlock());
@@ -136,11 +137,9 @@ public class SagaBlockListener implements Listener{
     		return;
     	}
     	
-    	
     	// Forward to chunk:
-    	if(sagaChunk != null){
-    		sagaChunk.onSignChange(event, sagaPlayer);
-    	}
+    	if(sagaChunk != null) sagaChunk.onSignChange(event, sagaPlayer);
+    	
     	
 	}
 	
@@ -153,9 +152,7 @@ public class SagaBlockListener implements Listener{
     	SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(location);
     	
     	// Forward to chunk:
-    	if(sagaChunk != null){
-    		sagaChunk.getChunkGroup().onBlockSpread(event, sagaChunk);
-    	}
+    	if(sagaChunk != null) sagaChunk.getChunkGroup().onBlockSpread(event, sagaChunk);
     	
 		
 	}
@@ -169,9 +166,7 @@ public class SagaBlockListener implements Listener{
     	SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
     	
     	// Forward to chunk:
-    	if(sagaChunk != null){
-    		sagaChunk.getChunkGroup().onBlockFromTo(event, sagaChunk);
-    	}
+    	if(sagaChunk != null) sagaChunk.getChunkGroup().onBlockFromTo(event, sagaChunk);
     	
 		
 	}

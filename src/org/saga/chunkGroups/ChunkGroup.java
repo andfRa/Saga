@@ -26,7 +26,6 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -1908,18 +1907,6 @@ public class ChunkGroup{
 			return;
 			
 		}
-		
-		
-    }
-
-    /**
-     * Called when a player interacts with an entity on the chunk.
-     * 
-     * @param event event
-     * @param sagaPlayer saga player
-     * @param sagaChunk saga chunk
-     */
-    public void onPlayerInteractEntity(PlayerInteractEntityEvent event, SagaPlayer sagaPlayer, SagaChunk locationChunk) {
 		
 		
     }

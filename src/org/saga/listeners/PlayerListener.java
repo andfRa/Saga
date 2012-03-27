@@ -3,9 +3,7 @@
  * and open the template in the editor.
  */
 
-package org.saga;
-
-import java.util.HashSet;
+package org.saga.listeners;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -22,11 +20,10 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerPickupItemEvent;
-import org.bukkit.event.player.PlayerPortalEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.saga.Saga;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
@@ -34,27 +31,16 @@ import org.saga.config.FactionConfiguration;
 import org.saga.factions.SagaFaction;
 import org.saga.player.SagaPlayer;
 
-/**
- *
- * @author Cory
- */
-public class SagaPlayerListener implements Listener {
+public class PlayerListener implements Listener {
 
-    protected Saga plugin;
-
-    private HashSet<String> bigBoots = new HashSet<String>();
-    
-    
-    public SagaPlayerListener(Saga plugin) {
-        this.plugin = plugin;
-    }
-
+	
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
 
     	
-    	// Get player:
-    	SagaPlayer sagaPlayer = plugin.getSagaPlayer(event.getPlayer().getName());
+    	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
+    	
+    	// Invalid player:
     	if(sagaPlayer == null){
     		Saga.warning("Can't continue with onPlayerCommandPreprocess, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
     		return;
@@ -71,7 +57,7 @@ public class SagaPlayerListener implements Listener {
     	
         String[] split = event.getMessage().split(" ");
 
-        if (plugin.handleCommand(event.getPlayer(), split, event.getMessage())) {
+        if (Saga.plugin().handleCommand(event.getPlayer(), split, event.getMessage())) {
             event.setCancelled(true);
         }
 
@@ -83,10 +69,9 @@ public class SagaPlayerListener implements Listener {
     	
     	Player player = event.getPlayer();
 
-    	// Load saga player:
     	SagaPlayer sagaPlayer = Saga.plugin().loadSagaPlayer(player.getName());
     	
-    	// No player:
+    	// Invalid player:
     	if(sagaPlayer == null){
     		Saga.warning("Can't continue with onPlayerJoin, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
     		return;
@@ -104,10 +89,10 @@ public class SagaPlayerListener implements Listener {
 
     	Player player = event.getPlayer();
 
-    	// Unload saga player:
+    	// Forward to Saga:
     	SagaPlayer sagaPlayer = Saga.plugin().unloadSagaPlayer(player.getName());
     	
-    	// No player:
+    	// Invalid player:
     	if(sagaPlayer == null){
     		Saga.warning("Can't continue with onPlayerQuit, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
     		return;
@@ -126,7 +111,9 @@ public class SagaPlayerListener implements Listener {
     public void onPlayerRespawn(PlayerRespawnEvent event) {
     	
 
-    	SagaPlayer sagaPlayer = plugin.getSagaPlayer(event.getPlayer().getName());
+    	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
+    	
+    	// Invalid player:
     	if(sagaPlayer == null){
     		Saga.warning("Can't continue with onPlayerRespawn, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
     		return;
@@ -134,12 +121,9 @@ public class SagaPlayerListener implements Listener {
 
     	// Get chunk group:
     	ChunkGroup chunkGroup = sagaPlayer.getRegisteredChunkGroup();
-    	if(chunkGroup != null){
-    		chunkGroup.onMemberRespawn(sagaPlayer, event);
-    	}
-//    	
-//    	// Guardian rune:
-//    	GuardianRune.handleRestore(sagaPlayer, event);
+    	
+    	// Forward to chunk group:
+    	if(chunkGroup != null) chunkGroup.onMemberRespawn(sagaPlayer, event);
 
     	
     }
@@ -148,7 +132,9 @@ public class SagaPlayerListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
 
     	
-    	SagaPlayer sagaPlayer = plugin.getSagaPlayer(event.getPlayer().getName());
+    	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
+    	
+    	// Invalid player:
     	if(sagaPlayer == null){
     		Saga.warning("Can't continue with onPlayerMove, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
     		return;
@@ -163,16 +149,10 @@ public class SagaPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerTeleport(PlayerTeleportEvent event) {
     	
+
+    	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
     	
-//    	if(event.getTo().getWorld().getName().equals("world_the_end") || event.getTo().getWorld().getName().equals("world_skylands")){
-//    		event.setCancelled(true);
-//    		event.getPlayer().sendMessage(ChatColor.DARK_RED  + "skylands is not accessible until bukkit is fully updated!");
-//    		Saga.warning(event.getPlayer().getName() + " tried to teleport to world_the_end");
-//    		event.getPlayer().teleport(Saga.plugin().getServer().getWorld("world").getSpawnLocation());
-//    		return;
-//    	}
-    	
-    	SagaPlayer sagaPlayer = plugin.getSagaPlayer(event.getPlayer().getName());
+    	// Invalid player:
     	if(sagaPlayer == null){
     		Saga.warning("Can't continue with onPlayerTeleport, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
     		return;
@@ -188,41 +168,41 @@ public class SagaPlayerListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
 
     	
+    	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
+    	
     	// Bukkit bug workaround: 
     	if(event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
     		event.setCancelled(false);
     	}
 
-    	// Get saga chunk:
+    	// Get Saga chunk:
     	Block clickedBlock = event.getClickedBlock();
     	Location location = event.getPlayer().getLocation();
-    	if(clickedBlock != null){
-    		location = clickedBlock.getLocation();
-    	}
+    	if(clickedBlock != null) location = clickedBlock.getLocation();
     	SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
 
-		// Get player:
-    	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
+    	
+    	// Invalid player:
     	if(sagaPlayer == null){
+    		
     		Saga.warning("Can't continue with onPlayerInteract, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
+    		
     		if(sagaChunk != null){
     			Saga.info("Found saga chunk. Canceling event.");
     			event.setCancelled(true);
     		}
+    		
     		return;
+    		
     	}
     	
     	// Forward to saga chunk:
     	if(sagaChunk != null) sagaChunk.onPlayerInteract(event, sagaPlayer);
     	
-    	// Check if canceled:
-    	if(event.isCancelled()){
-    		return;
-    	}
+    	if(event.isCancelled()) return;
     	
     	// Forward to level manager:
     	sagaPlayer.getLevelManager().onPlayerInteract(event);
-    	
     	
 	
 	}
@@ -230,9 +210,10 @@ public class SagaPlayerListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerChat(PlayerChatEvent event) {
 
-
-		// Get player:
+    	
     	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
+    	
+    	// Invalid player:
     	if(sagaPlayer == null){
     		Saga.warning("Can't continue with onPlayerChat, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
     		return;
@@ -240,9 +221,7 @@ public class SagaPlayerListener implements Listener {
     	
     	// No faction or not formed yet:
     	SagaFaction sagaFaction = sagaPlayer.getRegisteredFaction();
-    	if(sagaFaction == null || !sagaFaction.isFormed()){
-    		return;
-    	}
+    	if(sagaFaction == null || !sagaFaction.isFormed()) return;
     	
     	ChatColor primaryColor = sagaFaction.getPrimaryColor();
     	ChatColor secondaryColor = sagaFaction.getSecondaryColor();
@@ -263,22 +242,18 @@ public class SagaPlayerListener implements Listener {
     }
     
     @EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerPickupItem(PlayerPickupItemEvent event) {
-
-    }
-    
-    @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 
-
-		// Get player:
+    	
     	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
+    	
+    	// Invalid player:
     	if(sagaPlayer == null){
     		Saga.warning("Can't continue with onPlayerInteractEntity, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
     		return;
     	}
     	
-    	// Target is a player:
+    	// Target player:
     	if(event.getRightClicked() instanceof Player){
     		
     		SagaPlayer targetSagaPlayer = Saga.plugin().getSagaPlayer(((Player) event.getRightClicked()).getName());
@@ -297,43 +272,10 @@ public class SagaPlayerListener implements Listener {
     		
     	}
     	
-    	// Get saga chunk:
-    	Location location = event.getRightClicked().getLocation();
-    	SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
-    	
-    	// Forward to chunk group:
-    	if(sagaChunk != null){
-    		sagaChunk.getChunkGroup().onPlayerInteractEntity(event, sagaPlayer, sagaChunk);
-    	}
-    	
     	
     }
     
-    @EventHandler(priority = EventPriority.NORMAL)
-    public void onPlayerPortal(PlayerPortalEvent event) {
-    	
-    }
     
-
-    
-    public void enableBigBoot(String playerName) {
-    	bigBoots.add(playerName);
-	}
-    
-    public void disableBigBoot(String playerName) {
-    	bigBoots.remove(playerName);
-	}
-    
-    public boolean isBigBoot(String playerName) {
-    	return bigBoots.contains(playerName);
-	}
-    
-    /**
-     * Handles a chunk change.
-     * 
-     * @param sagaPlayer saga player
-     * @param event event
-     */
     private void handleChunkChange(SagaPlayer sagaPlayer, PlayerMoveEvent event){
     	
 
@@ -370,5 +312,6 @@ public class SagaPlayerListener implements Listener {
     	
     	
     }
+    
     
 }

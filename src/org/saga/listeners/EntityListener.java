@@ -1,4 +1,4 @@
-package org.saga;
+package org.saga.listeners;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
@@ -22,6 +22,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
+import org.saga.Saga;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.BalanceConfiguration;
@@ -32,26 +33,18 @@ import org.saga.player.SagaEntityDamageManager;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
 
-public class SagaEntityListener implements Listener{
+public class EntityListener implements Listener{
 
 	
-	/**
-	 * Constructs the listener.
-	 * 
-	 * @param pMainPlugin Main plugin.
-	 */
-	public SagaEntityListener() {
-
-	
-	}
-
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityDamage(EntityDamageEvent event) {
 		
 		
 		// Damaged by entity:
 		if(event instanceof EntityDamageByEntityEvent){
+			
 			onEntityDamageByEntity((EntityDamageByEntityEvent)event);
+			
 		}
 		
 		// Player damage:
@@ -84,9 +77,7 @@ public class SagaEntityListener implements Listener{
 		LivingEntity defender= (LivingEntity) event.getEntity();
 		
 		// Damage ticks:
-		if(defender.getNoDamageTicks() <= defender.getMaximumNoDamageTicks()/2F){
-
-		}else{
+		if(defender.getNoDamageTicks() > defender.getMaximumNoDamageTicks()/2F){
 			event.setCancelled(true);
 			return;
 		}
@@ -95,9 +86,8 @@ public class SagaEntityListener implements Listener{
 		if(defender.getHealth() <= 0) return;
 		
 		// Damaged by another entity:
-		EntityDamageByEntityEvent cEvent = (EntityDamageByEntityEvent)event;
 		Projectile projectile = null;
-		Entity attacker = cEvent.getDamager();
+		Entity attacker = event.getDamager();
 		
 		// Damaged by an arrow:
 		if(attacker instanceof Projectile){
@@ -140,39 +130,39 @@ public class SagaEntityListener implements Listener{
 			if(projectile == null){
 
 				// Handle pvp:
-				SagaEntityDamageManager.handlePvp(sagaAttacker, sagaDefender, cEvent);
+				SagaEntityDamageManager.handlePvp(sagaAttacker, sagaDefender, event);
 
 				if(event.isCancelled()) return;
 				
-				sagaAttacker.getLevelManager().onHitPlayer(cEvent, sagaDefender);
-				sagaDefender.getLevelManager().onHitByPlayer(cEvent, sagaAttacker);
+				sagaAttacker.getLevelManager().onHitPlayer(event, sagaDefender);
+				sagaDefender.getLevelManager().onHitByPlayer(event, sagaAttacker);
 				
 			}
 			// Archery:
 			else if(projectile instanceof Arrow){
 				
 				// Handle pvp:
-				SagaEntityDamageManager.handlePvp(sagaAttacker, sagaDefender, cEvent);
+				SagaEntityDamageManager.handlePvp(sagaAttacker, sagaDefender, event);
 			
 				if(event.isCancelled()) return;
 				
-				sagaAttacker.getLevelManager().onShotPlayer(cEvent, sagaDefender, projectile);
-				sagaDefender.getLevelManager().onShotByPlayer(cEvent, sagaAttacker, projectile);
+				sagaAttacker.getLevelManager().onShotPlayer(event, sagaDefender, projectile);
+				sagaDefender.getLevelManager().onShotByPlayer(event, sagaAttacker, projectile);
 
 			}
 			// Magic:
 			else if(projectile instanceof Fireball){
 				
 				// Handle pvp:
-				SagaEntityDamageManager.handlePvp(sagaAttacker, sagaDefender, cEvent);
+				SagaEntityDamageManager.handlePvp(sagaAttacker, sagaDefender, event);
 
 				if(event.isCancelled()) return;
 				
 				// Set base damage:
-				cEvent.setDamage(BalanceConfiguration.config().pvpBaseFireballDamage);
+				event.setDamage(BalanceConfiguration.config().pvpBaseFireballDamage);
 				
-				sagaAttacker.getLevelManager().onSpelledPlayer(cEvent, sagaDefender, projectile);
-				sagaDefender.getLevelManager().onSpelledByPlayer(cEvent, sagaAttacker, projectile);
+				sagaAttacker.getLevelManager().onSpelledPlayer(event, sagaDefender, projectile);
+				sagaDefender.getLevelManager().onSpelledByPlayer(event, sagaAttacker, projectile);
 
 			}
 			
@@ -184,7 +174,7 @@ public class SagaEntityListener implements Listener{
 			
 			// Forward to saga chunk:
 			SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(defender.getLocation());
-			if(sagaChunk != null) sagaChunk.onPlayerDamagedCreature(cEvent, sagaAttacker, (Creature)defender);
+			if(sagaChunk != null) sagaChunk.onPlayerDamagedCreature(event, sagaAttacker, (Creature)defender);
 			
 			// Forward to saga chunk group:
 			
@@ -192,19 +182,19 @@ public class SagaEntityListener implements Listener{
 			
 			// Close combat:
 			if(projectile == null){
-				sagaAttacker.getLevelManager().onHitCreature(cEvent, (Creature)defender);
+				sagaAttacker.getLevelManager().onHitCreature(event, (Creature)defender);
 			}
 			// Archery:
 			else if(projectile instanceof Arrow){
-				sagaAttacker.getLevelManager().onShotCreature(cEvent, (Creature)defender, projectile);
+				sagaAttacker.getLevelManager().onShotCreature(event, (Creature)defender, projectile);
 			}
 			// Magic:
 			else if(projectile instanceof Fireball){
 				
 				// Set base damage:
-				cEvent.setDamage(BalanceConfiguration.config().pvcBaseFireballDamage);
+				event.setDamage(BalanceConfiguration.config().pvcBaseFireballDamage);
 				
-				sagaAttacker.getLevelManager().onSpelledCreature(cEvent, (Creature)defender, projectile);
+				sagaAttacker.getLevelManager().onSpelledCreature(event, (Creature)defender, projectile);
 				
 			}
 			
@@ -215,11 +205,11 @@ public class SagaEntityListener implements Listener{
 
 			// Close combat:
 			if(projectile == null){
-				sagaDefender.getLevelManager().onHitByCreature(cEvent, (Creature)attacker);
+				sagaDefender.getLevelManager().onHitByCreature(event, (Creature)attacker);
 			}
 			// Archery:
 			else{
-				sagaDefender.getLevelManager().onShotByCreature(cEvent, (Creature)attacker, projectile);
+				sagaDefender.getLevelManager().onShotByCreature(event, (Creature)attacker, projectile);
 			}
 			
 		}
@@ -254,21 +244,16 @@ public class SagaEntityListener implements Listener{
 	public void onEntityExplode(EntityExplodeEvent event) {
 		
 		
-		// Stop creeper land damage.
+		// Stop creeper terrain damage.
 		if(BalanceConfiguration.config().stopCreeperExplosions && event.getEntity() instanceof Creeper){
 			event.blockList().clear();
 		}
 		
 		// Get saga chunk:
-		Location location = event.getLocation();
-		Chunk chunk = location.getWorld().getChunkAt(location);
-		SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(chunk);
-		if(sagaChunk == null){
-			return;
-		}
+		SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(event.getLocation());
 		
 		// Forward to saga chunk:
-		sagaChunk.onEntityExplode(event);
+		if(sagaChunk != null) sagaChunk.onEntityExplode(event);
 		
 		
 	}
@@ -279,12 +264,9 @@ public class SagaEntityListener implements Listener{
 
 		// Get saga chunk:
 		SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(event.getBlock().getLocation());
-		if(sagaChunk == null){
-			return;
-		}
 		
 		// Forward to saga chunk:
-		sagaChunk.onEntityBlockForm(event);
+		if(sagaChunk != null) sagaChunk.onEntityBlockForm(event);
 		
 		
 	}
@@ -294,15 +276,10 @@ public class SagaEntityListener implements Listener{
 		
 		
 		// Get saga chunk:
-		Location location = event.getLocation();
-		Chunk chunk = location.getWorld().getChunkAt(location);
-		SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(chunk);
-		if(sagaChunk == null){
-			return;
-		}
+		SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(event.getLocation());
 		
 		// Forward to saga chunk:
-		sagaChunk.onCreatureSpawn(event);
+		if(sagaChunk != null) sagaChunk.onCreatureSpawn(event);
 		
 		
 	}
@@ -320,12 +297,7 @@ public class SagaEntityListener implements Listener{
 		SagaPlayer sagaDead = null;
 		SagaPlayer sagaAttacker = null;
 		
-		// Projectiles:
-		if(deadEntity instanceof Projectile){
-			deadEntity = ((Projectile) deadEntity).getShooter();
-		}
-		
-		// Defender:
+		// Defender player:
 		if(deadEntity instanceof Player){
 			
 			deadPlayer = (Player) deadEntity;
@@ -340,14 +312,23 @@ public class SagaEntityListener implements Listener{
 			
 		}
 
-		// Attacker:
+		// Attacker entity:
 		EntityDamageEvent damageEvent = deadEntity.getLastDamageCause();
 		
 		if(damageEvent instanceof EntityDamageByEntityEvent){
+			
 			attackerEntity = ((EntityDamageByEntityEvent) damageEvent).getDamager();
+
+			// Projectiles:
+			if(attackerEntity instanceof Projectile){
+				attackerEntity = ((Projectile) attackerEntity).getShooter();
+			}
+			
 		}
 		
+		// Attacker player:
 		if(attackerEntity instanceof Player){
+		
 			attackerPlayer = (Player) attackerEntity;
 			
 			sagaAttacker = Saga.plugin().getSagaPlayer( attackerPlayer.getName() );
@@ -404,7 +385,6 @@ public class SagaEntityListener implements Listener{
 			if(sagaDead.getGuardianRune().isEnabled()){
 				
 				runeAbsorb = GuardianRune.handleAbsorb(sagaDead, cEvent);
-//				GuardianRune.handleAbsorb(sagaDead, cEvent);
 				
 			}
 			
@@ -435,8 +415,6 @@ public class SagaEntityListener implements Listener{
 			if(sagaDead.getExpRegen() >= 7){
 				sagaDead.message(PlayerMessages.deathExpInfo());
 			}
-			
-			
 			
 		}
 		
