@@ -50,8 +50,6 @@ import org.sk89q.MissingNestedCommandException;
 import org.sk89q.UnhandledCommandException;
 import org.sk89q.WrappedCommandException;
 
-
-
 /**
  *
  * @author Cory
@@ -67,19 +65,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     
     private WorldsHolder worldsHolder;
     
-    private boolean playerInformationLoadingDisabled;
-    
-    private boolean playerInformationSavingDisabled;
-
     private Hashtable<String,SagaPlayer> loadedPlayers;
-    
-    private static PlayerListener playerListener;
-    
-    private static EntityListener entityListener;
-    
-    private static BlockListener blockListener;
-    
-    private static ServerListener serverListener;
 
     
     // Saving:
@@ -111,12 +97,6 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     	// Remove instances:
     	loadedPlayers = null;
     	
-    	// Listeners:
-        Saga.playerListener = null;
-        Saga.blockListener = null;
-        Saga.serverListener = null;
-        Saga.entityListener = null;
-        
         // Managers:
         StatisticsManager.unload(); // Needs access to clock.
         ChunkGroupManager.unload(); // Needs building manager.
@@ -182,21 +162,30 @@ public class Saga extends JavaPlugin implements MinuteTicker{
 
         //Setup Command Manager
         commandMap = new CommandsManager<Player>() {
-            @Override
+          
+        	
+        	@Override
             public boolean hasPermission(Player player, String perm) {
             	
             	
                 if ( worldsHolder != null ) {
-                    OverloadedWorldHolder world = worldsHolder.getWorldData(player);
+                   
+                	OverloadedWorldHolder world = worldsHolder.getWorldData(player);
                     User user = world.getUser(player.getName());
-                    return world.getPermissionsHandler().checkUserPermission(user, perm);
+                    return world.getPermissionsHandler().checkUserPermission(user, perm) || player.isOp();
+                    
                 } else  {
+                	
+                	if(perm.startsWith("saga.user")) return true;
+                	
                     return player.isOp();
+                    
                 }
                 
                 
             }
             
+        	
         };
 
         // Configuration:
@@ -218,18 +207,11 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         EconomyManager.load(); // Needs access to clock.
         StatisticsManager.load(); // Needs access to clock.
         
-        //Create listeners:
-      	playerListener = new PlayerListener();
-      	entityListener = new EntityListener();
-      	blockListener = new BlockListener();
-      	serverListener = new ServerListener();
-      	
         // Register events:
-      	pluginManager.registerEvents(playerListener, this);
-      	pluginManager.registerEvents(entityListener, this);
-      	pluginManager.registerEvents(blockListener, this);
-      	pluginManager.registerEvents(serverListener, this);
-        
+      	pluginManager.registerEvents(new PlayerListener(), this);
+      	pluginManager.registerEvents(new EntityListener(), this);
+      	pluginManager.registerEvents(new BlockListener(), this);
+      	pluginManager.registerEvents(new ServerListener(), this);
         
         //Register Command Classes to the command map
         commandMap.register(SagaCommands.class);
@@ -465,31 +447,6 @@ public class Saga extends JavaPlugin implements MinuteTicker{
 	}
     
     /**
-     * Gets a loaded saga player.
-     * 
-     * @param player player
-     * @return saga player
-     * @throws SagaPlayerNotLoadedException  if saga player is not loaded
-     */
-    @Deprecated
-    public SagaPlayer getLoadedSagaPlayer(String name) throws SagaPlayerNotLoadedException {
-    	
-    	
-    	// Search from loaded list:
-    	SagaPlayer sagaPlayer = getSagaPlayer(name);
-    	
-    	// Throw an exception if player not loaded:
-    	if(sagaPlayer == null){
-    		throw new SagaPlayerNotLoadedException(name);
-    	}
-    	
-        return sagaPlayer;
-        
-        
-    }
-    
-    
-    /**
      * Forces the player to get loaded in the forced list.
      * Loads if necessary.
      * 
@@ -556,7 +513,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
      * Gets a saga player from the loaded list.
      * 
      * @param name name
-     * @return saga player. null if not loaded
+     * @return saga player, null if not loaded
      */
     public SagaPlayer getSagaPlayer(String name) {
     	return loadedPlayers.get(name.toLowerCase());
@@ -639,6 +596,8 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     	
 	}
     
+    
+    // Clock:
     /* 
      * (non-Javadoc)
      * 
@@ -661,6 +620,11 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     
     
     // Commands:
+    /* 
+     * (non-Javadoc)
+     * 
+     * @see org.bukkit.plugin.java.JavaPlugin#onCommand(org.bukkit.command.CommandSender, org.bukkit.command.Command, java.lang.String, java.lang.String[])
+     */
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     	
@@ -683,87 +647,64 @@ public class Saga extends JavaPlugin implements MinuteTicker{
 
             split[0] = split[0].substring(1);
 
-            // Quick script shortcut
+            // Quick script shortcut:
             if (split[0].matches("^[^/].*\\.js$")) {
+            	
                 String[] newSplit = new String[split.length + 1];
                 System.arraycopy(split, 0, newSplit, 1, split.length);
                 newSplit[0] = "cs";
                 newSplit[1] = newSplit[1];
                 split = newSplit;
+                
             }
 
-            // No command found!
-            if (!commandMap.hasCommand(split[0])) {
-                return false;
-            }
+            // Check for command:
+            if (!commandMap.hasCommand(split[0]))  return false;
 
             try {
-                commandMap.execute(split, player, this, getLoadedSagaPlayer(player.getName()));
-                String logString = "[Saga Command] " + player.getName() + ": " + command;
-                Saga.info(logString);
+            	
+                commandMap.execute(split, player, this, getSagaPlayer(player.getName()));
+                Saga.info("[Saga Command] " + player.getName() + ": " + command);
+                
             } catch (CommandPermissionsException e) {
-                player.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+               
+            	player.sendMessage(ChatColor.RED + "You don't have permission to do that!");
+            	
             } catch (MissingNestedCommandException e) {
-                player.sendMessage(e.getUsage());
+                
+            	player.sendMessage(e.getUsage());
+            	
             } catch (CommandUsageException e) {
-                player.sendMessage(e.getMessage());
+                
+            	player.sendMessage(e.getMessage());
                 player.sendMessage(e.getUsage());
+                
             } catch (WrappedCommandException e) {
-                player.sendMessage(ChatColor.RED + e.getMessage());
+                
+            	player.sendMessage(ChatColor.RED + e.getMessage());
                 throw e;
+                
             } catch (UnhandledCommandException e) {
-                player.sendMessage(ChatColor.RED + "Unhandled command exception");
+               
+            	player.sendMessage(ChatColor.RED + "Unhandled command exception");
                 return false;
+                
             } finally {
 
             }
 
-        } catch (Throwable excp) {
+        } catch (Throwable t) {
 
-            player.sendMessage("Problem handling command: " + command);
-            player.sendMessage(excp.getMessage());
-            excp.printStackTrace();
+            player.sendMessage("Failed to handle command: " + command);
+            player.sendMessage(t.getMessage());
+            t.printStackTrace();
             return false;
 
         }
 
         return true;
 
-    }
-
-    /**
-     * True, if player information loading is disabled.
-     *
-     * @return the playerInformationLoadingDisabled
-     */
-    public boolean isPlayerInformationLoadingDisabled() {
-            return playerInformationLoadingDisabled;
-    }
-
-    /**
-     * True, if player information saving is disabled.
-     *
-     * @return the playerInformationSavingDisabled
-     */
-    public boolean isPlayerInformationSavingDisabled() {
-            return playerInformationSavingDisabled;
-    }
-
-    /**
-     * Disables the loading and saving of player information.
-     *
-     */
-    public void disablePlayerInformationSavingLoading() {
-
-            if( playerInformationLoadingDisabled && playerInformationSavingDisabled ){
-                    return;
-            }
-
-            playerInformationLoadingDisabled = true;
-            playerInformationSavingDisabled = true;
-
-            Saga.warning("Disabling player information saving and loading.");
-
+        
     }
 
     
@@ -889,7 +830,6 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     static public void warning(Class<?> tClass, String message, String result) {
         warning(tClass.getSimpleName() + ": " + message + ". " + result + ".");
     }
-
     
     
 }
