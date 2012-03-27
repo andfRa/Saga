@@ -855,9 +855,6 @@ public class SagaChunk {
 			return;
 		}
 
-		// Forward to chunk group:
-		getChunkGroup().onPlayerInteractEntity(event, sagaPlayer, this);
-
 		// Canceled:
 		if(event.isCancelled()) return;
 

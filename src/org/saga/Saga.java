@@ -219,7 +219,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         StatisticsManager.load(); // Needs access to clock.
         
         //Create listeners:
-      	playerListener = new PlayerListener(this);
+      	playerListener = new PlayerListener();
       	entityListener = new EntityListener();
       	blockListener = new BlockListener();
       	serverListener = new ServerListener();
