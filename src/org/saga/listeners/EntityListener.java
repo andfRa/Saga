@@ -396,13 +396,6 @@ public class EntityListener implements Listener{
 				int droppedExp = new Double(sagaDead.getTotalExperience() * BalanceConfiguration.config().experienceDrop).intValue();
 				int remainExp = new Double(sagaDead.getTotalExperience() * BalanceConfiguration.config().experienceRemain).intValue();
 				
-				// TODO Workaround for bukkit not doping correct experience:
-				if(sagaDead.getLevel() > 0){
-					droppedExp = 1;
-				}else{
-					droppedExp = 0;
-				}
-
 				// Modify dropped experience:
 				cEvent.setDroppedExp(droppedExp);
 				

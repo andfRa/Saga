@@ -110,13 +110,13 @@ public class PlayerCommands {
 	
 	// Guardian stone:
 	@Command(
-			aliases = {"disableguardianstone","gsdisable"},
+			aliases = {"disableguardianrune","grdisable"},
             usage = "",
             flags = "",
-            desc = "Disables the guardian stone.",
+            desc = "Disables the guardian rune.",
             min = 0,
             max = 0)
-	@CommandPermissions({"saga.user.guardianstone.disable"})
+	@CommandPermissions({"saga.user.guardianrune.disable"})
 	public static void disableGuardianStone(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
@@ -138,13 +138,13 @@ public class PlayerCommands {
 	}
 	
 	@Command(
-            aliases = {"enableguardianstone","gsenable"},
+            aliases = {"enableguardianrune","grenable"},
             usage = "",
             flags = "",
-            desc = "Enables the guardian stone.",
+            desc = "Enables the guardian rune.",
             min = 0,
             max = 0)
-	@CommandPermissions({"saga.user.guardianstone.enable"})
+	@CommandPermissions({"saga.user.guardianrune.enable"})
 	public static void enableGuardianStone(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
