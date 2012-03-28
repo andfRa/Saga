@@ -203,6 +203,45 @@ public class StatisticsCommands {
     	
     }
 	
+
+	@Command(
+			aliases = {"stxraydistr","stxraytable"},
+			usage = "",
+			flags = "",
+			desc = "Shows x-ray distribution statistics.",
+			min = 0,
+			max = 1
+	)
+	@CommandPermissions({"saga.admin.statistics.xraydistributions"})
+	public static void xrayDistr(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		
+    	// Arguments:
+		Integer page = null;
+    	if(args.argsLength() == 1){
+    		
+        	try {
+    			page = Integer.parseInt(args.getString(0));
+    		} catch (NumberFormatException e) {
+    			sagaPlayer.message(ChunkGroupMessages.invalidPage(args.getString(0)));
+    			return;
+    		}
+    		
+    	}else{
+    		
+    		page = 1;
+        	
+    	}
+		
+	    	// Inform:
+	    sagaPlayer.message(StatisticsMessages.xrayDistrib(page - 1));
+	        	
+	    sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+	      
+	    
+	}
+	
+	
 	@Command(
 			aliases = {"stexp"},
 			usage = "",

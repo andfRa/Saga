@@ -277,6 +277,45 @@ public class StatisticsMessages {
 		
 	}
 
+	public static String levels(int page) {
+	
+		
+		ColorCircle colour = new ColorCircle().addColor(normal1).addColor(normal2);
+		StringBook result = new StringBook("Level statistics", colour, 10);
+		
+		// Histogram data:
+		Double[] data = StatisticsManager.manager().getLevelHistogram(BalanceConfiguration.config().maximumLevel, false);
+		Double maxVal = MathUtil.max(data);
+		
+		// No data:
+		if(maxVal <= 0.0){
+			
+			maxVal = 1.0;
+			
+			for (int i = 0; i < data.length; i++) {
+				data[i] = 1.0;
+			}
+			
+		}
+		
+		int height = 10;
+		MathUtil.multiply(data, height / maxVal);
+		
+		// Histogram:
+		ChatColor frameColor = ChatColor.DARK_GRAY;
+		ColorCircle histColours = new ColorCircle().addColor(ChatColor.LIGHT_PURPLE).addColor(ChatColor.DARK_AQUA);
+		result.addLine("");
+		result.addLine("LEVEL DISTRIBUTION");
+		result.addLine("  " + frameColor + TextUtil.repeat("..", BalanceConfiguration.config().maximumLevel));
+		result.addLine(frameColor + "  |" + TextUtil.histogram(data, histColours).replaceAll("\n", frameColor + "|\n  |") + frameColor + "|");
+		result.addLine("  " + frameColor + TextUtil.repeat("..", BalanceConfiguration.config().maximumLevel));
+		result.addLine("");
+		
+		return result.framed(page);
+		
+		
+	}
+	
 	public static String exp(int page) {
 	
 		
@@ -322,14 +361,14 @@ public class StatisticsMessages {
 		
 	}
 
-	public static String levels(int page) {
+	public static String xrayDistrib(int page) {
 	
 		
 		ColorCircle colour = new ColorCircle().addColor(normal1).addColor(normal2);
-		StringBook result = new StringBook("Level statistics", colour, 10);
+		StringBook result = new StringBook("X-ray distributions", colour, 10);
 		
 		// Histogram data:
-		Double[] data = StatisticsManager.manager().getLevelHistogram(BalanceConfiguration.config().maximumLevel, false);
+		Double[] data = StatisticsManager.manager().getVeinHistogram(Material.DIAMOND_ORE, BalanceConfiguration.config().maximumLevel, false);
 		Double maxVal = MathUtil.max(data);
 		
 		// No data:
@@ -350,11 +389,13 @@ public class StatisticsMessages {
 		ChatColor frameColor = ChatColor.DARK_GRAY;
 		ColorCircle histColours = new ColorCircle().addColor(ChatColor.LIGHT_PURPLE).addColor(ChatColor.DARK_AQUA);
 		result.addLine("");
-		result.addLine("LEVEL DISTRIBUTION");
+		result.addLine("DIAMOND RATIO DISTRIBUTION");
 		result.addLine("  " + frameColor + TextUtil.repeat("..", BalanceConfiguration.config().maximumLevel));
 		result.addLine(frameColor + "  |" + TextUtil.histogram(data, histColours).replaceAll("\n", frameColor + "|\n  |") + frameColor + "|");
 		result.addLine("  " + frameColor + TextUtil.repeat("..", BalanceConfiguration.config().maximumLevel));
 		result.addLine("");
+		
+		if(data.length > 0) result.addLine("Maximum: " + maxVal);
 		
 		return result.framed(page);
 		

@@ -52,7 +52,8 @@ public class BlockListener implements Listener{
     	if(event.isCancelled()) return;
     	
     	// X-ray:
-    	XrayIndicator.handleMine(sagaPlayer, event);
+    	XrayIndicator.handleMine(sagaPlayer, event); // TODO: Remove old x-ray indication.
+    	XrayIndicator.onBlockBreak(sagaPlayer, event);
     	
     	// Forward to level manager:
     	sagaPlayer.getLevelManager().onBlockBreak(event);

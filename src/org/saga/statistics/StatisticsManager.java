@@ -16,6 +16,7 @@ import org.saga.Clock.HourTicker;
 import org.saga.Saga;
 import org.saga.config.BalanceConfiguration;
 import org.saga.player.SagaPlayer;
+import org.saga.utility.MathUtil;
 import org.saga.utility.WriterReader;
 
 import com.google.gson.JsonParseException;
@@ -123,6 +124,11 @@ public class StatisticsManager implements HourTicker{
 	 */
 	private Hashtable<String, Hashtable<Material,Integer>> playerBuyAmount; 
 
+	/**
+	 * Found veins.
+	 */
+	private Hashtable<String, Hashtable<Material, Integer>> foundVeins;
+
 	
 	/**
 	 * Last date.
@@ -202,7 +208,7 @@ public class StatisticsManager implements HourTicker{
 		}
 		
 		if(xrayStatistics == null){
-			Saga.severe(getClass(), "oreMining field failed to initialize", "setting default");
+			Saga.severe(getClass(), "xrayStatistics field failed to initialize", "setting default");
 			xrayStatistics = new Hashtable<String, Hashtable<Material,Integer>>();
 			integrity=false;
 		}
@@ -261,6 +267,12 @@ public class StatisticsManager implements HourTicker{
 			integrity=false;
 		}
 		
+		if(foundVeins == null){
+			Saga.severe(getClass(), "foundVeins field failed to initialize", "setting default");
+			foundVeins = new Hashtable<String, Hashtable<Material,Integer>>();
+			integrity=false;
+		}
+		
 		return integrity;
 		
 		
@@ -291,6 +303,7 @@ public class StatisticsManager implements HourTicker{
 		playerSellCoins = new Hashtable<String, Hashtable<Material,Double>>();
 		playerBuyAmount = new Hashtable<String, Hashtable<Material,Integer>>();
 		playerSellAmount = new Hashtable<String, Hashtable<Material,Integer>>();
+		foundVeins = new Hashtable<String, Hashtable<Material,Integer>>();
 		
 		
 	}
@@ -1088,6 +1101,115 @@ public class StatisticsManager implements HourTicker{
 		Collections.sort(sortedMaterials);
 		
 		return sortedMaterials;
+		
+		
+	}
+	
+	
+	// X-ray indicator:
+	public void addFoundVein(String name, Material material) {
+
+		
+		Hashtable<Material, Integer> blocks = foundVeins.get(name);
+		if(blocks == null) blocks = new Hashtable<Material, Integer>();
+	
+		Integer oldAmount = blocks.get(material);
+		if(oldAmount == null) oldAmount = 0;
+		
+		blocks.put(material, oldAmount + 1);
+		foundVeins.put(name, blocks);
+		
+		
+	}
+	
+	public Integer getFoundVeins(String name, Material material) {
+
+		Hashtable<Material, Integer> blocks = foundVeins.get(name);
+		if(blocks == null) return 0;
+	
+		Integer amount = blocks.get(material);
+		if(amount == null) return 0;
+		
+		return amount;
+		
+	}
+	
+	public ArrayList<String> getVeinFoundPlayers() {
+		
+		return new ArrayList<String>(foundVeins.keySet());
+		
+	}
+	
+	public Double getVeinRatio(String name, Material material) {
+
+		
+		Double materialAmount = getFoundVeins(name, material).doubleValue();
+		Double stoneAmount = getFoundVeins(name, Material.STONE).doubleValue();
+		
+		// Avoid infinity:
+		if(stoneAmount == 0.0) stoneAmount = 1.0;
+		
+		return materialAmount / stoneAmount;
+		
+		
+	}
+	
+	private Collection<Double> getAllVeinRatios(Material material) {
+
+		
+		Collection<Double> ratios = new ArrayList<Double>();
+		ArrayList<String> names = getVeinFoundPlayers();
+		
+		for (String name : names) {
+			ratios.add(getVeinRatio(name, material));
+		}
+		
+		return ratios;
+		
+		
+	}
+	
+	public Double[] getVeinHistogram(Material material, Integer width, boolean normalize) {
+
+		
+		if(width < 1) width = 1;
+		
+		Collection<Double> ratios = getAllVeinRatios(material);
+		Double maxRatio = MathUtil.max(ratios);
+		if(maxRatio < 0.00001) maxRatio = 0.00001;
+		
+		Double step = (width.doubleValue() - 1.0) / maxRatio;
+
+		Double[] histogram = new Double[width];
+		for (int i = 0; i < histogram.length; i++) {
+			histogram[i] = 0.0;
+		}
+		
+		for (Double ratio : ratios) {
+			
+			System.out.println("adding value:" + ratio + " to " + new Double(ratio * step).intValue());
+			
+			Integer index = new Double(ratio * step).intValue();
+			histogram[index] = histogram[index] + 1;
+					
+		}
+		
+		if(normalize){
+			
+			Double sum = 0.0;
+			for (int i = 0; i < histogram.length; i++) {
+				sum += histogram[i];
+			}
+			
+			if(sum < 1) sum = 1.0;
+			
+			for (int i = 0; i < histogram.length; i++) {
+				histogram[i] = histogram[i] / sum;
+			}
+			
+		}
+		
+		return histogram;
 		
 		
 	}
