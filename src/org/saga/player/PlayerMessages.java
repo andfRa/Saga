@@ -25,9 +25,9 @@ import org.saga.config.SkillConfiguration;
 import org.saga.economy.EconomyMessages;
 import org.saga.factions.FactionManager;
 import org.saga.factions.SagaFaction;
+import org.saga.listeners.events.SagaPvpEvent;
+import org.saga.listeners.events.SagaPvpEvent.PvpDenyReason;
 import org.saga.player.Proficiency.ProficiencyType;
-import org.saga.player.SagaEntityDamageManager.SagaPvpEvent;
-import org.saga.player.SagaEntityDamageManager.SagaPvpEvent.PvpDenyReason;
 import org.saga.utility.StringBook;
 import org.saga.utility.StringTable;
 import org.saga.utility.TextUtil;
@@ -1041,22 +1041,21 @@ public class PlayerMessages {
 		
 	}
 	
-	
-	
+
 	// Player versus player:
-	public static String pvpDeny(SagaPvpEvent event){
+	public static String pvpDenied(SagaPvpEvent event){
 		
 		
-		PvpDenyReason cause = event.getReason();
+		PvpDenyReason cause = event.getDenyReason();
 		
 		switch (cause) {
 		case SAME_FACTION:
 			
-			return negative + event.getSagaDefender().getName() + " is from the same faction.";
+			return negative + event.getDefender().getName() + " is from the same faction.";
 			
 		case ALLY:
 	
-		return negative + event.getSagaDefender().getName() + " is an ally.";
+		return negative + event.getDefender().getName() + " is an ally.";
 	
 		case ATTACKER_NO_FACTION:
 			
@@ -1064,7 +1063,7 @@ public class PlayerMessages {
 			
 		case DEFENDER_NO_FACTION:
 			
-			return negative + event.getSagaDefender().getName() + " must be in a faction.";
+			return negative + event.getDefender().getName() + " must be in a faction.";
 			
 		case SAFE_AREA:
 			

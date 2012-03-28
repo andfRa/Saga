@@ -15,11 +15,11 @@ import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.Clock.TimeOfDayTicker;
 import org.saga.Saga;
-import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.ChunkGroupMessages;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.ChunkGroupConfiguration;
-import org.saga.player.SagaEntityDamageManager.SagaPvpEvent;
+import org.saga.listeners.events.SagaPvpEvent;
+import org.saga.listeners.events.SagaPvpEvent.PvpAllowReason;
 import org.saga.player.SagaPlayer;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
@@ -478,18 +478,18 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 	 * @see org.saga.buildings.Building#onPlayerDamagedByPlayer(org.bukkit.event.entity.EntityDamageByEntityEvent, org.saga.SagaPlayer, org.saga.SagaPlayer)
 	 */
 	@Override
-	public void onPlayerVersusPlayer(SagaPvpEvent event){
+	public void onPvP(SagaPvpEvent event){
 		
 		
 		// Attack from outside of the arena:
-		SagaChunk attackerChunk = ChunkGroupManager.manager().getSagaChunk(event.getSagaAttacker().getLocation());
-		SagaChunk defenderChunk = ChunkGroupManager.manager().getSagaChunk(event.getSagaDefender().getLocation());
+		SagaChunk attackerChunk = event.getAttackerChunk();
+		SagaChunk defenderChunk = event.getDefenderChunk();
 		if(attackerChunk != getSagaChunk() || defenderChunk != getSagaChunk()){
 			return;
 		}
 		
 		// Force allow:
-		event.forceAllow();
+		event.setAllowReason(PvpAllowReason.ARENA);
 		
 		
 	}

@@ -9,7 +9,8 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.saga.Saga;
-import org.saga.player.SagaEntityDamageManager;
+import org.saga.listeners.events.SagaEventHandler;
+import org.saga.listeners.events.SagaPvpEvent;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
 
@@ -57,9 +58,9 @@ public class ExplodingArrow extends Ability{
 				
 				if(targetPlayer == sagaPlayer || targetPlayer == null) continue;
 				
-				EntityDamageByEntityEvent eeEvent = new EntityDamageByEntityEvent(sagaPlayer.getPlayer(), targetPlayer.getPlayer(), DamageCause.PROJECTILE, 1);
-				SagaEntityDamageManager.handlePvp(getSagaPlayer(), targetPlayer, eeEvent);
-				if(eeEvent.isCancelled()) return false;
+				EntityDamageByEntityEvent edbeEvent = new EntityDamageByEntityEvent(sagaPlayer.getPlayer(), targetPlayer.getPlayer(), DamageCause.PROJECTILE, 1);
+				SagaEventHandler.handlePvp(new SagaPvpEvent(getSagaPlayer(), targetPlayer, getSagaPlayer().getSagaChunk(), targetPlayer.getSagaChunk(), edbeEvent));
+				if(edbeEvent.isCancelled()) return false;
 				
 			}
 			

@@ -9,7 +9,8 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
-import org.saga.player.SagaEntityDamageManager;
+import org.saga.listeners.events.SagaEventHandler;
+import org.saga.listeners.events.SagaPvpEvent;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
 
@@ -36,7 +37,7 @@ public class Bash extends Ability{
 	 */
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean onPlayerInteractPlayer(PlayerInteractEntityEvent event, SagaPlayer taragetPlayer) {
+	public boolean onPlayerInteractPlayer(PlayerInteractEntityEvent event, SagaPlayer targetPlayer) {
 
 		
 		// Check preuse:
@@ -57,8 +58,8 @@ public class Bash extends Ability{
 		EntityDamageByEntityEvent edbeevent = new EntityDamageByEntityEvent(event.getPlayer(), event.getRightClicked(), DamageCause.ENTITY_ATTACK, damage);
 		
 		// Handle pvp:
-		SagaEntityDamageManager.handlePvp(getSagaPlayer(), taragetPlayer, edbeevent);
-		
+		SagaEventHandler.handlePvp(new SagaPvpEvent(getSagaPlayer(), targetPlayer, getSagaPlayer().getSagaChunk(), targetPlayer.getSagaChunk(), edbeevent));
+
 		if(edbeevent.isCancelled()){
 			return false;
 		}

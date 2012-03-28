@@ -9,8 +9,8 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupMessages;
 import org.saga.chunkGroups.SagaChunk;
-import org.saga.player.SagaEntityDamageManager.SagaPvpEvent;
-import org.saga.player.SagaEntityDamageManager.SagaPvpEvent.PvpDenyReason;
+import org.saga.listeners.events.SagaPvpEvent;
+import org.saga.listeners.events.SagaPvpEvent.PvpDenyReason;
 import org.saga.player.SagaPlayer;
 
 public class TownHall extends Building{
@@ -121,10 +121,10 @@ public class TownHall extends Building{
 	 * @see org.saga.buildings.Building#onPlayerDamagedByPlayer(org.bukkit.event.entity.EntityDamageByEntityEvent, org.saga.SagaPlayer, org.saga.SagaPlayer)
 	 */
 	@Override
-	public void onPlayerVersusPlayer(SagaPvpEvent event){
-			
-		// Disable pvp:
-		event.deny(PvpDenyReason.SAFE_AREA);
+	public void onPvP(SagaPvpEvent event){
+		
+		// Deny pvp:
+		event.setDenyReason(PvpDenyReason.SAFE_AREA);
 		
 	}
 	

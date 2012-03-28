@@ -22,9 +22,9 @@ import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
 import org.saga.constants.IOConstants.WriteReadType;
 import org.saga.exceptions.InvalidLocationException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
+import org.saga.listeners.events.SagaPvpEvent;
+import org.saga.listeners.events.SagaPvpEvent.PvpDenyReason;
 import org.saga.player.Proficiency;
-import org.saga.player.SagaEntityDamageManager.SagaPvpEvent;
-import org.saga.player.SagaEntityDamageManager.SagaPvpEvent.PvpDenyReason;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.WriterReader;
 
@@ -1789,17 +1789,17 @@ public class SagaFaction implements SecondTicker{
 	public void onMemberAttack(SagaPvpEvent event){
 		
 		
-		// From faction:
-		if(isMember(event.getSagaDefender().getName())){
+		// Same faction:
+		if(isMember(event.getDefender().getName())){
 			
-			event.deny(PvpDenyReason.SAME_FACTION);
+			event.setDenyReason(PvpDenyReason.SAME_FACTION);
 			
 		}
 
 		// Ally:
-		if(isAlly(event.getSagaDefender().getFactionId())){
+		if(isAlly(event.getDefender().getFactionId())){
 
-			event.deny(PvpDenyReason.ALLY);
+			event.setDenyReason(PvpDenyReason.ALLY);
 			
 		}
 
@@ -1815,9 +1815,9 @@ public class SagaFaction implements SecondTicker{
 		
 
 		// Ally:
-		if(isAlly(event.getSagaAttacker().getFactionId())){
+		if(isAlly(event.getAttacker().getFactionId())){
 			
-			event.deny(PvpDenyReason.ALLY);
+			event.setDenyReason(PvpDenyReason.ALLY);
 			
 		}
 

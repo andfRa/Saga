@@ -27,7 +27,7 @@ import org.bukkit.util.Vector;
 import org.saga.Saga;
 import org.saga.SagaMessages;
 import org.saga.buildings.Building;
-import org.saga.player.SagaEntityDamageManager.SagaPvpEvent;
+import org.saga.listeners.events.SagaPvpEvent;
 import org.saga.player.SagaPlayer;
 
 public class SagaChunk {
@@ -690,18 +690,15 @@ public class SagaChunk {
 	 * Called when a player is damaged by another player.
 	 * 
 	 * @param event event
-	 * @param damager damager saga player
-	 * @param damaged damaged saga player
-	 * @param locationChunk chunk where the pvp occured
 	 */
-	public  void onPlayerVersusPlayer(SagaPvpEvent event){
+	public void onPvP(SagaPvpEvent event){
 		
 
 		// Forward to chunk group:
-		getChunkGroup().onPlayerVersusPlayer(event, this);
+		getChunkGroup().onPvp(event, this);
 		
 		// Forward to building:
-		if(bld != null) bld.onPlayerVersusPlayer(event);
+		if(bld != null) bld.onPvP(event);
 
 		
 	}

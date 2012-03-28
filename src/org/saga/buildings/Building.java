@@ -26,7 +26,7 @@ import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupMessages;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.ChunkGroupConfiguration;
-import org.saga.player.SagaEntityDamageManager.SagaPvpEvent;
+import org.saga.listeners.events.SagaPvpEvent;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.SagaCustomSerialization;
 import org.sk89q.Command;
@@ -901,9 +901,8 @@ public abstract class Building extends SagaCustomSerialization{
 	 * Called when a player is damaged by another player.
 	 * 
 	 * @param event event
-	 * @param locationChunk location chunk
 	 */
-	public void onPlayerVersusPlayer(SagaPvpEvent event){
+	public void onPvP(SagaPvpEvent event){
 		
 	}
 	

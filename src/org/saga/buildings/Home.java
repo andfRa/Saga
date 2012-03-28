@@ -9,8 +9,8 @@ import org.saga.SagaMessages;
 import org.saga.buildings.BuildingDefinition.BuildingPermission;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupMessages;
-import org.saga.player.SagaEntityDamageManager.SagaPvpEvent;
-import org.saga.player.SagaEntityDamageManager.SagaPvpEvent.PvpDenyReason;
+import org.saga.listeners.events.SagaPvpEvent;
+import org.saga.listeners.events.SagaPvpEvent.PvpDenyReason;
 import org.saga.player.SagaPlayer;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
@@ -182,10 +182,10 @@ public class Home extends Building {
 	 * @see org.saga.buildings.Building#onPlayerDamagedByPlayer(org.bukkit.event.entity.EntityDamageByEntityEvent, org.saga.SagaPlayer, org.saga.SagaPlayer)
 	 */
 	@Override
-	public void onPlayerVersusPlayer(SagaPvpEvent event){
+	public void onPvP(SagaPvpEvent event){
 			
-		// Disable pvp:
-		event.deny(PvpDenyReason.SAFE_AREA);
+		// Deny pvp:
+		event.setDenyReason(PvpDenyReason.SAFE_AREA);
 		
 	}
 	

@@ -2471,9 +2471,9 @@ public class SagaPlayer implements SecondTicker, Trader{
 	
 	// Saga chunk:
 	/**
-	 * Gets the saga chunk the player is standing on.
+	 * Gets the Saga chunk the player is in.
 	 * 
-	 * @return saga chunk. null if not found
+	 * @return Saga chunk, null if not found
 	 */
 	public SagaChunk getSagaChunk(){
 		

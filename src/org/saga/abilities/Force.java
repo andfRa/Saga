@@ -11,7 +11,8 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 import org.saga.Saga;
-import org.saga.player.SagaEntityDamageManager;
+import org.saga.listeners.events.SagaEventHandler;
+import org.saga.listeners.events.SagaPvpEvent;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
 import org.saga.utility.TwoPointFunction;
@@ -78,10 +79,10 @@ public class Force extends Ability{
 					return false;
 				}
 				
-				EntityDamageByEntityEvent edbeevent = new EntityDamageByEntityEvent(event.getPlayer(), entity, DamageCause.ENTITY_ATTACK, 0);
-				SagaEntityDamageManager.handlePvp(sagaPlayer, targetPlayer, edbeevent);
-				
-				if(edbeevent.isCancelled()) continue;
+				EntityDamageByEntityEvent edbeEvent = new EntityDamageByEntityEvent(event.getPlayer(), entity, DamageCause.ENTITY_ATTACK, 0);
+				SagaEventHandler.handlePvp(new SagaPvpEvent(sagaPlayer, targetPlayer, sagaPlayer.getSagaChunk(), targetPlayer.getSagaChunk(), edbeEvent));
+
+				if(edbeEvent.isCancelled()) continue;
 				
 			}
 			

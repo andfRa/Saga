@@ -27,9 +27,10 @@ import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.BalanceConfiguration;
 import org.saga.guilds.GuildsManager;
+import org.saga.listeners.events.SagaEventHandler;
+import org.saga.listeners.events.SagaPvpEvent;
 import org.saga.player.GuardianRune;
 import org.saga.player.PlayerMessages;
-import org.saga.player.SagaEntityDamageManager;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
 
@@ -130,7 +131,7 @@ public class EntityListener implements Listener{
 			if(projectile == null){
 
 				// Handle pvp:
-				SagaEntityDamageManager.handlePvp(sagaAttacker, sagaDefender, event);
+				SagaEventHandler.handlePvp(new SagaPvpEvent(sagaAttacker, sagaDefender, sagaAttacker.getSagaChunk(), sagaDefender.getSagaChunk(), event));
 
 				if(event.isCancelled()) return;
 				
@@ -142,8 +143,8 @@ public class EntityListener implements Listener{
 			else if(projectile instanceof Arrow){
 				
 				// Handle pvp:
-				SagaEntityDamageManager.handlePvp(sagaAttacker, sagaDefender, event);
-			
+				SagaEventHandler.handlePvp(new SagaPvpEvent(sagaAttacker, sagaDefender, sagaAttacker.getSagaChunk(), sagaDefender.getSagaChunk(), event));
+
 				if(event.isCancelled()) return;
 				
 				sagaAttacker.getLevelManager().onShotPlayer(event, sagaDefender, projectile);
@@ -154,7 +155,7 @@ public class EntityListener implements Listener{
 			else if(projectile instanceof Fireball){
 				
 				// Handle pvp:
-				SagaEntityDamageManager.handlePvp(sagaAttacker, sagaDefender, event);
+				SagaEventHandler.handlePvp(new SagaPvpEvent(sagaAttacker, sagaDefender, sagaAttacker.getSagaChunk(), sagaDefender.getSagaChunk(), event));
 
 				if(event.isCancelled()) return;
 				

@@ -40,8 +40,8 @@ import org.saga.config.ChunkGroupConfiguration;
 import org.saga.constants.IOConstants.WriteReadType;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.factions.SagaFaction;
-import org.saga.player.SagaEntityDamageManager.SagaPvpEvent;
-import org.saga.player.SagaEntityDamageManager.SagaPvpEvent.PvpDenyReason;
+import org.saga.listeners.events.SagaPvpEvent;
+import org.saga.listeners.events.SagaPvpEvent.PvpDenyReason;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.WriterReader;
 
@@ -1914,26 +1914,21 @@ public class ChunkGroup{
     
     // Damage events:
 	/**
-	 * Called when a player is damaged by another player.
+	 * Called when a player damages other player.
 	 * 
 	 * @param event event
-	 * @param damager damager saga player
-	 * @param damaged damaged saga player
-	 * @param locationChunk chunk where the pvp occured
 	 */
-	void onPlayerVersusPlayer(SagaPvpEvent event, SagaChunk locationChunk){
+	void onPvp(SagaPvpEvent event, SagaChunk locationChunk){
 		
 
 		// Safe area:
-		if(hasPvpProtectionBonus()){
-			event.deny(PvpDenyReason.SAFE_AREA);
-		}
+		if(hasPvpProtectionBonus()) event.setDenyReason(PvpDenyReason.SAFE_AREA);
 		
-		// Forward to all buildings:
-		for (int i = 0; i < groupChunks.size(); i++) {
-			Building building = groupChunks.get(i).getBuilding();
-			if(building != null) building.onPlayerVersusPlayer(event, locationChunk);
-		}
+//		// Forward to all buildings:
+//		for (int i = 0; i < groupChunks.size(); i++) {
+//			Building building = groupChunks.get(i).getBuilding();
+//			if(building != null) building.onPlayerVersusPlayer(event, locationChunk);
+//		}
 
 		
 	}
