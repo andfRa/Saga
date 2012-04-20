@@ -2,8 +2,8 @@ package org.saga.utility;
 
 import java.util.ArrayList;
 
-import org.saga.player.PlayerMessages;
-import org.saga.player.PlayerMessages.ColorCircle;
+import org.saga.messages.PlayerMessages;
+import org.saga.messages.PlayerMessages.ColorCircle;
 
 public class StringBook {
 

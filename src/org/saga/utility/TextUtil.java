@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.saga.player.PlayerMessages.ColorCircle;
+import org.saga.messages.PlayerMessages.ColorCircle;
 
 public class TextUtil {
 	

@@ -5,8 +5,8 @@ import org.bukkit.World;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.Saga;
 import org.saga.exceptions.InvalidLocationException;
-import org.saga.factions.FactionMessages;
 import org.saga.factions.SagaFaction;
+import org.saga.messages.FactionMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
 

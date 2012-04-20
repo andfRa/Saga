@@ -1,11 +1,12 @@
 package org.saga.player;
 
 import org.saga.Saga;
-import org.saga.SagaMessages;
 import org.saga.abilities.AbilityDefinition;
-import org.saga.chunkGroups.ChunkGroupMessages;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.ProficiencyConfiguration;
+import org.saga.messages.ChunkGroupMessages;
+import org.saga.messages.PlayerMessages;
+import org.saga.messages.SagaMessages;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;

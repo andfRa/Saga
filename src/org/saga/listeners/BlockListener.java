@@ -14,10 +14,10 @@ import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
-import org.saga.SagaMessages;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.BalanceConfiguration;
+import org.saga.messages.SagaMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.XrayIndicator;
 

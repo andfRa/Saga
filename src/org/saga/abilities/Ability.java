@@ -19,7 +19,7 @@ import org.saga.Saga;
 import org.saga.abilities.AbilityDefinition.ActivationType;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AbilityConfiguration.InvalidAbilityException;
-import org.saga.player.PlayerMessages;
+import org.saga.messages.PlayerMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.SagaCustomSerialization;
 

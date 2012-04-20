@@ -5,14 +5,14 @@ import java.util.HashSet;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.saga.SagaMessages;
 import org.saga.buildings.Arena.ArenaPlayer;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.economy.EconomyMessages;
 import org.saga.economy.TradeDeal;
 import org.saga.economy.TradeDeal.TradeDealType;
-import org.saga.player.PlayerMessages.ColorCircle;
+import org.saga.messages.SagaMessages;
+import org.saga.messages.PlayerMessages.ColorCircle;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.StringBook;
 import org.saga.utility.StringTable;

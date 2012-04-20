@@ -6,7 +6,7 @@ import org.bukkit.entity.Creature;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.saga.Saga;
-import org.saga.player.PlayerMessages;
+import org.saga.messages.PlayerMessages;
 import org.saga.player.SagaEntityDamageManager;
 import org.saga.player.SagaPlayer;
 import org.saga.player.Skill.ArmourType;

@@ -25,9 +25,9 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 import org.saga.Saga;
-import org.saga.SagaMessages;
 import org.saga.buildings.Building;
 import org.saga.listeners.events.SagaPvpEvent;
+import org.saga.messages.SagaMessages;
 import org.saga.player.SagaPlayer;
 
 public class SagaChunk {

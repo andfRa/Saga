@@ -29,8 +29,8 @@ import org.saga.config.BalanceConfiguration;
 import org.saga.guilds.GuildsManager;
 import org.saga.listeners.events.SagaEventHandler;
 import org.saga.listeners.events.SagaPvpEvent;
+import org.saga.messages.PlayerMessages;
 import org.saga.player.GuardianRune;
-import org.saga.player.PlayerMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
 

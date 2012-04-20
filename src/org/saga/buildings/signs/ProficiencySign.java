@@ -1,12 +1,12 @@
 package org.saga.buildings.signs;
 
 import org.bukkit.block.Sign;
-import org.saga.SagaMessages;
 import org.saga.buildings.Building;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
 import org.saga.economy.EconomyMessages;
-import org.saga.player.PlayerMessages;
+import org.saga.messages.PlayerMessages;
+import org.saga.messages.SagaMessages;
 import org.saga.player.Proficiency;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.ProficiencyDefinition;

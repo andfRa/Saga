@@ -6,8 +6,8 @@ import org.bukkit.entity.Creature;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.saga.SagaMessages;
 import org.saga.chunkGroups.ChunkGroup;
+import org.saga.messages.SagaMessages;
 import org.saga.player.SagaPlayer;
 
 

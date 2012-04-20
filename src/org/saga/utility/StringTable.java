@@ -3,7 +3,7 @@ package org.saga.utility;
 import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
-import org.saga.player.PlayerMessages.ColorCircle;
+import org.saga.messages.PlayerMessages.ColorCircle;
 
 
 

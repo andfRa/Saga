@@ -5,8 +5,8 @@ import org.bukkit.block.Sign;
 import org.saga.buildings.Building;
 import org.saga.config.EconomyConfiguration;
 import org.saga.economy.EconomyMessages;
+import org.saga.messages.PlayerMessages;
 import org.saga.player.GuardianRune;
-import org.saga.player.PlayerMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
 

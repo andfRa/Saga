@@ -10,12 +10,12 @@ import org.saga.Clock.MinuteTicker;
 import org.saga.Saga;
 import org.saga.buildings.Building;
 import org.saga.chunkGroups.ChunkGroup;
-import org.saga.chunkGroups.ChunkGroupMessages;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.BalanceConfiguration;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
+import org.saga.messages.ChunkGroupMessages;
 import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
 

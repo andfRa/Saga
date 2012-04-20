@@ -5,9 +5,9 @@ import org.bukkit.block.Block;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.saga.SagaMessages;
 import org.saga.buildings.BuildingDefinition.BuildingPermission;
 import org.saga.chunkGroups.ChunkGroup;
+import org.saga.messages.SagaMessages;
 import org.saga.player.SagaPlayer;
 
 

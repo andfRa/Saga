@@ -5,7 +5,7 @@ import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.FactionConfiguration;
 import org.saga.listeners.events.SagaPvpEvent.PvpAllowReason;
 import org.saga.listeners.events.SagaPvpEvent.PvpDenyReason;
-import org.saga.player.PlayerMessages;
+import org.saga.messages.PlayerMessages;
 import org.saga.player.SagaPlayer;
 
 public class SagaEventHandler {

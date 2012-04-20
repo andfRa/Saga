@@ -15,7 +15,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
 import org.saga.economy.EconomyMessages;
-import org.saga.player.PlayerMessages;
+import org.saga.messages.PlayerMessages;
 import org.saga.shape.BlockFilter;
 import org.saga.shape.RelativeShape;
 import org.saga.statistics.StatisticsManager;

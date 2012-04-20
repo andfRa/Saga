@@ -33,7 +33,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
-import org.saga.SagaMessages;
 import org.saga.buildings.Building;
 import org.saga.buildings.MissingBuildingDefinitionException;
 import org.saga.config.ChunkGroupConfiguration;
@@ -42,6 +41,8 @@ import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.factions.SagaFaction;
 import org.saga.listeners.events.SagaPvpEvent;
 import org.saga.listeners.events.SagaPvpEvent.PvpDenyReason;
+import org.saga.messages.ChunkGroupMessages;
+import org.saga.messages.SagaMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.WriterReader;
 
