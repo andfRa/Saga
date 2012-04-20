@@ -249,15 +249,8 @@ public class Temple extends Building implements SecondTicker{
 	 * @see org.saga.buildings.Building#onPlayerSagaChunkChange(org.saga.player.SagaPlayer, org.saga.chunkGroups.SagaChunk, org.saga.chunkGroups.SagaChunk, org.bukkit.Location, org.bukkit.Location, org.bukkit.event.player.PlayerMoveEvent)
 	 */
 	@Override
-	public void onPlayerSagaChunkChange(SagaPlayer sagaPlayer, SagaChunk fromChunk, SagaChunk toChunk, Location fromLocation, Location toLocation, PlayerMoveEvent event) {
+	public void onPlayerEnter(SagaPlayer sagaPlayer, Building last) {
 	
-		
-		super.onPlayerSagaChunkChange(sagaPlayer, fromChunk, toChunk, fromLocation, toLocation, event);
-		
-		// Pick related events:
-		if(toChunk != getSagaChunk()){
-			return;
-		}
 		
 		// Enable clock:
 		if(!isClockEnabled()) enableClock();

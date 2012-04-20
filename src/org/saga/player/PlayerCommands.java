@@ -7,6 +7,7 @@ import org.saga.config.ProficiencyConfiguration;
 import org.saga.messages.ChunkGroupMessages;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.SagaMessages;
+import org.saga.messages.StatsMessages;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
@@ -47,7 +48,7 @@ public class PlayerCommands {
 			page = 1;
 		}
 		
-		sagaPlayer.message(PlayerMessages.stats(sagaPlayer, page-1));
+		sagaPlayer.message(StatsMessages.stats(sagaPlayer, page-1));
     	
 		
 	}
@@ -237,7 +238,7 @@ public class PlayerCommands {
 			String name = args.getString(0).replace(SagaMessages.spaceSymbol, " ");
 			definition = AbilityConfiguration.config().getDefinition(name);
 			if(definition == null){
-				sagaPlayer.message(PlayerMessages.invalidAbility(name));
+				sagaPlayer.message(StatsMessages.invalidAbility(name));
 				return;
 			}
 			
@@ -253,7 +254,7 @@ public class PlayerCommands {
 			String name = args.getString(0).replace(SagaMessages.spaceSymbol, " ");
 			definition = AbilityConfiguration.config().getDefinition(name);
 			if(definition == null){
-				sagaPlayer.message(PlayerMessages.invalidAbility(name));
+				sagaPlayer.message(StatsMessages.invalidAbility(name));
 				return;
 			}
 			

@@ -25,6 +25,7 @@ import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.listeners.events.SagaPvpEvent;
+import org.saga.messages.BuildingMessages;
 import org.saga.messages.ChunkGroupMessages;
 import org.saga.messages.SagaMessages;
 import org.saga.player.SagaPlayer;
@@ -831,7 +832,7 @@ public abstract class Building extends SagaCustomSerialization{
     		
     		BuildingSign sign = buildingSignAt(event.getClickedBlock().getLocation());
     		if(sign != null) sign.onPlayerInteract(sagaPlayer, event);
-    				
+    		
     	}
     	
     	
@@ -983,56 +984,25 @@ public abstract class Building extends SagaCustomSerialization{
 	
 	// Move events:
 	/**
-	 * Called when a player moves to another saga chunk.
+	 * Called when a player enters the building.
 	 * 
 	 * @param sagaPlayer saga player
-	 * @param fromChunk from saga chunk, null if none
-	 * @param toChunk to saga chunk, null if none
-	 * @param fromLocation from location, null if none
-	 * @param toLocation to location, null if none
-	 * @param event event
+	 * @param last last building, null if none
 	 */
-	public void onPlayerSagaChunkChange(SagaPlayer sagaPlayer, SagaChunk fromChunk, SagaChunk toChunk, Location fromLocation, Location toLocation, PlayerMoveEvent event) {
-		
+	public void onPlayerEnter(SagaPlayer sagaPlayer, Building last) {
 
-		if(event.isCancelled()){
-			return;
-		}
-		
-		// Enter:
-		if(toChunk == getSagaChunk()){
 
-			// Get buildings:
-			Building fromBuilding = null;
-			Building toBuilding = null;
+	}
+	
+	/**
+	 * Called when a player enters the building.
+	 * 
+	 * @param sagaPlayer saga player
+	 * @param next next building, null if none
+	 */
+	public void onPlayerLeave(SagaPlayer sagaPlayer, Building next) {
 
-			if(fromChunk != null) fromBuilding = fromChunk.getBuilding();
-			if(toChunk != null) toBuilding = toChunk.getBuilding();
-			
-			sagaPlayer.message(ChunkGroupMessages.moved(fromBuilding, toBuilding));
-			
-		}
-		
-		// Leave:
-		else if(fromChunk == getSagaChunk()){
 
-			// Get buildings:
-			Building fromBuilding = null;
-			Building toBuilding = null;
-
-			if(fromChunk != null) fromBuilding = fromChunk.getBuilding();
-			if(toChunk != null) toBuilding = toChunk.getBuilding();
-			
-			// Only if not entering a building:
-			if(toBuilding == null){
-				
-				sagaPlayer.message(ChunkGroupMessages.moved(fromBuilding, toBuilding));
-				
-			}
-			
-		}
-		
-		
 	}
 
 

@@ -8,8 +8,6 @@ import org.bukkit.Location;
 import org.saga.buildings.Building;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.SagaMap;
-import org.saga.config.BalanceConfiguration;
-import org.saga.economy.EconomyMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;
 import org.saga.utility.TextUtil;
@@ -46,70 +44,13 @@ public class SagaMessages {
 	
 	// Player retrieval:
 	public static String invalidPlayer(String playerName){
-		return "" + playerName +" player doesn't exist.";
+		return negative + "Player " + playerName +" doesn't exist.";
 	}
 
 	public static String notOnline(String name) {
-		return negative + name + " isn't online.";
+		return negative + "Player " + name + " isn't online.";
 	}
 	
-
-	// Levels:
-	public static String levelSet(SagaPlayer sagaPlayer){
-		return positive + sagaPlayer.getName() + " level set to " + sagaPlayer.getLevel() + ".";
-	}
-	
-	public static String levelSetTo(SagaPlayer sagaPlayer){
-		return positive + "Level was set to " + sagaPlayer.getLevel() + ".";
-	}
-
-	public static String levelOutOfRange(String level){
-		return negative + level + " is out of range. Level must be a in the range of 0 - " + BalanceConfiguration.config().maximumLevel + ".";
-	}
-
-	
-	// Skills:
-	public static String skillSet(SagaPlayer sagaPlayer, String skill){
-		return positive + sagaPlayer.getName() + " " + skill + " skill set to " + sagaPlayer.getSkillMultiplier(skill) + ".";
-	}
-	
-	public static String skillSetTo(SagaPlayer sagaPlayer, String skill){
-		return positive + TextUtil.capitalize(skill) + " skill was set to " + sagaPlayer.getSkillMultiplier(skill) + ".";
-	}
-
-	public static String skillOutOfRange(String skill){
-		return negative + skill + " is out of range. Skill must be a in the range of 0 - " + BalanceConfiguration.config().maximumSkillLevel + ".";
-	}
-	
-	public static String invalidSkill(String skill){
-		return negative + skill + " isn't a valid skill.";
-	}
-	
-	
-	// Administrator mode:
-	public static String adminMode(SagaPlayer sagaPlayer) {
-		
-		
-		if(sagaPlayer.isAdminMode()){
-			return positive + "Admin mode enabled.";
-		}else{
-			return positive + "Admin mode disabled.";
-		}
-		
-		
-	}
-	
-	public static String adminModeAlreadyEnabled() {
-		
-		return negative + "Admin mode already enabled.";
-		
-	}
-	
-	public static String adminModeAlreadyDisabled() {
-		
-		return negative + "Admin mode already disabled.";
-		
-	}
 
 	
 	// Permission:
@@ -136,6 +77,7 @@ public class SagaMessages {
 	public static String noPermissionWilderness(){
 		return negative + "You don't have permission to do that (Wilderness).";
 	}
+	
 	
 	// Map:
 	public static String map(SagaPlayer sagaPlayer, Location location){
@@ -164,47 +106,54 @@ public class SagaMessages {
 		
 	}
 	
-	
-	// Reward:
-	public static String rewarded(ArrayList<String> players) {
 
-		return positive + "Rewarded " + players.size() + " players.";
+	// Meter:
+	public static String meter(String name, Integer value, Integer maxValue, String unit, ChatColor messageColor, ChatColor barColor, ChatColor enclosingColor) {
+
+		
+		// Tnx Heroes RPG for the good idea.
+		
+		Integer barLength = 20;
+		StringBuffer rString = new StringBuffer();
+		
+		// Normalize:
+		if(value > maxValue){
+			value = maxValue;
+		}
+		
+		Integer normValue = new Double(barLength.doubleValue() * value/maxValue).intValue();
+
+		// Add bar name:
+		rString.append(messageColor);
+		rString.append(TextUtil.capitalize(name));
+		rString.append(": ");
+		
+		// Add enclosing element:
+		rString.append(enclosingColor);
+		rString.append("{]");
+		
+		// Add bar:
+		rString.append(barColor);
+		rString.append(TextUtil.repeat("||", normValue));
+		rString.append(TextUtil.repeat(" ", barLength - normValue));
+		
+		// Add enclosing element:
+		rString.append(enclosingColor);
+		rString.append("[}");
+		
+		// Add value:
+		rString.append(messageColor);
+		rString.append(" - " + value + "" + unit);
+		
+		return rString.toString();
+		
 		
 	}
 	
-	public static String playersNotFound(ArrayList<String> players) {
-
-		return negative + "Failed to find players: " + TextUtil.flatten(players) + ".";
-		
+	public static String meterCooldown(String cooldownName, int value, int maxValue, ChatColor messageColor) {
+		return meter(cooldownName + " cooldown", value, maxValue, "s", messageColor, ChatColor.RED, ChatColor.DARK_GRAY);
 	}
 	
-	public static String noReward() {
-
-		return negative + "No reward available.";
-		
-	}
-	
-	public static String collectedReward(Double exp, Double coins) {
-
-		return positive + "Recieved " + exp.intValue() + " exp and " + EconomyMessages.coins(coins) + ".";
-		
-	}
-
-
-	// Saving loading:
-	public static String saving() {
-		return veryPositive + "Saving Saga information.";
-	}
-	
-	public static String saved() {
-		return veryPositive + "Saving complete.";
-	}
-	
-	
-	// Additional info:
-	public static String statsTargetName(SagaPlayer sagaPlayer) {
-		return positive + "Stats for " + sagaPlayer.getName() + ".";
-	}
 	
 	
 }

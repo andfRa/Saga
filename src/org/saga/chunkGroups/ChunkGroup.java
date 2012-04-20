@@ -9,7 +9,6 @@ import java.util.HashSet;
 import java.util.Hashtable;
 
 import org.bukkit.Chunk;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -28,7 +27,6 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
@@ -1629,48 +1627,6 @@ public class ChunkGroup{
 		
 		
 	}
-	/**
-	 * Called when a player moves to another saga chunk.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @param fromChunk from saga chunk, null if none
-	 * @param toChunk to saga chunk, null if none
-	 * @param fromLocation from location, null if none
-	 * @param toLocation to location, null if none
-	 * @param event event
-	 */
-	public void onPlayerSagaChunkChange(SagaPlayer sagaPlayer, SagaChunk fromChunk, SagaChunk toChunk, Location fromLocation, Location toLocation, PlayerMoveEvent event) {
-
-
-		// Forward to all buildings:
-		for (int i = 0; i < groupChunks.size() && !event.isCancelled(); i++) {
-			
-			SagaChunk sagaChunk = groupChunks.get(i);
-			Building building = sagaChunk.getBuilding();
-			
-			if(building == null) continue;
-			
-			// Forward:
-			building.onPlayerSagaChunkChange(sagaPlayer, fromChunk, toChunk, fromLocation, toLocation, event);
-			
-		}
-		
-		if(event.isCancelled()){
-			return;
-		}
-		
-		// Enter:
-		if(fromChunk == null && toChunk != null){
-			sagaPlayer.message(ChunkGroupMessages.entered(this));
-		}
-		
-		// Leave:
-		if(toChunk == null && fromChunk != null){
-			sagaPlayer.message(ChunkGroupMessages.left(this));
-		}
-
-		
-	}
 	
 	
 	// Member events:
@@ -1700,6 +1656,7 @@ public class ChunkGroup{
 	 */
 	public void onMemberJoin(SagaPlayer sagaPlayer, PlayerJoinEvent event) {
 
+		// TODO: Remove event.
 		
 		// Send to all buildings:
 		for (int i = 0; i < groupChunks.size(); i++) {
@@ -1718,6 +1675,7 @@ public class ChunkGroup{
 	 */
 	public void onMemberQuit(SagaPlayer sagaPlayer, PlayerQuitEvent event) {
 
+		// TODO: Remove event.
 		
 		// Send to all buildings:
 		for (int i = 0; i < groupChunks.size(); i++) {
@@ -1728,6 +1686,8 @@ public class ChunkGroup{
 		
 	}
 
+	
+	// Block events:
 	/**
 	 * Called when an entity forms blocks.
 	 * 
@@ -1952,7 +1912,7 @@ public class ChunkGroup{
 	 * @param damaged damaged saga player
 	 * @param locationChunk chunk where the pvp occured
 	 */
-	void onPlayerKillPlayer(SagaPlayer attacker, SagaPlayer defender, SagaChunk locationChunk){
+	void onPvpKill(SagaPlayer attacker, SagaPlayer defender, SagaChunk locationChunk){
 		
 		
 		// Forward to all buildings:
@@ -1986,6 +1946,33 @@ public class ChunkGroup{
 		}
 		
 		
+	}
+	
+	
+	// Move events:
+	/**
+	 * Called when a player enters the chunk group.
+	 * 
+	 * @param sagaPlayer saga player
+	 * @param last last chunk group, null if none
+	 */
+	void onPlayerEnter(SagaPlayer sagaPlayer, ChunkGroup last) {
+
+		sagaPlayer.message(ChunkGroupMessages.entered(this));
+
+	}
+	
+	/**
+	 * Called when a player enters the chunk group.
+	 * 
+	 * @param sagaPlayer saga player
+	 * @param next next chunk group, null if none
+	 */
+	void onPlayerLeave(SagaPlayer sagaPlayer, ChunkGroup next) {
+
+		if(next == null) sagaPlayer.message(ChunkGroupMessages.left(this));
+
+
 	}
 	
 	

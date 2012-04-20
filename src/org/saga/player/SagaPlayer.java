@@ -43,7 +43,6 @@ import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.Saga;
 import org.saga.abilities.Ability;
-import org.saga.abilities.AbilityDefinition;
 import org.saga.abilities.AbilityDefinition.ActivationAction;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupManager;
@@ -64,6 +63,7 @@ import org.saga.economy.TradeDeal;
 import org.saga.economy.Trader;
 import org.saga.factions.SagaFaction;
 import org.saga.messages.PlayerMessages;
+import org.saga.messages.StatsMessages;
 import org.saga.player.GuardianRune.GuardianRuneStatus;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.Skill.ArmourType;
@@ -137,16 +137,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 	
 	// Abilities:
 	/**
-	 * Ability activation map.
-	 */
-	private Hashtable<String, ActivationAction> abilityActions;
-	
-	/**
-	 * Ability material map.
-	 */
-	private Hashtable<String, Material> abilityMaterials;
-	
-	/**
 	 * All abilities.
 	 */
 	private ArrayList<Ability> abilities;
@@ -194,12 +184,12 @@ public class SagaPlayer implements SecondTicker, Trader{
 	/**
 	 * Last chunk the player was on.
 	 */
-	transient private SagaChunk lastSagaChunk = null;
+	transient public SagaChunk lastSagaChunk = null;
 	
 	/**
 	 * Last player location.
 	 */
-	transient private Location lastLocation = null;
+	transient private Location lastLocation2 = null;
 
 	
 	// Invites:
@@ -296,8 +286,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 		this.levelManager = new PlayerLevelManager(this);
 		this.expRegen = 0;
 		this.abilities = new ArrayList<Ability>();
-		this.abilityActions = new Hashtable<String, AbilityDefinition.ActivationAction>();
-		this.abilityMaterials = new Hashtable<String, Material>();
 		this.reward = 0;
 		this.skills = new Hashtable<String, Integer>();
 		this.miningStatistics = new Hashtable<Material, Integer>();
@@ -391,16 +379,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 		}
 
 		// Abilities:
-		if(abilityActions == null){
-			abilityActions = new Hashtable<String, AbilityDefinition.ActivationAction>();
-			Saga.severe(this, "abilityActions field failed to initialize", "setting default");
-		}
-		
-		if(abilityMaterials == null){
-			abilityMaterials = new Hashtable<String, Material>();
-			Saga.severe(this, "abilityMaterials field failed to initialize", "setting default");
-		}
-		
 		if(abilities == null){
 			abilities = new ArrayList<Ability>();
 			Saga.severe(this, "abilities field failed", "setting default");
@@ -1231,8 +1209,8 @@ public class SagaPlayer implements SecondTicker, Trader{
 	public void setPlayer(Player player) {
 		
 		this.player = player;
-		this.lastLocation = player.getLocation();
-		this.lastSagaChunk = ChunkGroupManager.manager().getSagaChunk(lastLocation);
+		this.lastLocation2 = player.getLocation();
+		this.lastSagaChunk = ChunkGroupManager.manager().getSagaChunk(lastLocation2);
 		this.lastOnline = Calendar.getInstance().getTime();
 		
 		// Update managers:
@@ -1266,7 +1244,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 		}
 		
 		this.player = null;
-		this.lastLocation = null;
+		this.lastLocation2 = null;
 		lastSagaChunk = null;
 		this.lastOnline = Calendar.getInstance().getTime();
 
@@ -1320,7 +1298,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 		setLevel(level + 1);
 		
-		message(PlayerMessages.levelup(getLevel()));
+		message(StatsMessages.levelup(getLevel()));
 		
 	}
 
@@ -2027,6 +2005,22 @@ public class SagaPlayer implements SecondTicker, Trader{
 	}
 
 	
+	/**
+	 * Forces a refresh on the last location.
+	 * 
+	 */
+	public void refreshLocation() {
+		
+		
+		if(!isOnline()){
+			return;
+		}
+		
+		lastSagaChunk = ChunkGroupManager.manager().getSagaChunk(player.getLocation());
+		
+		
+	}
+	
 	// Messages:
 	/**
 	 * Sends the player a message.
@@ -2054,61 +2048,6 @@ public class SagaPlayer implements SecondTicker, Trader{
           
 	}
 
-	
-	// Last location:
-	/**
-	 * Gets the last saga chunk.
-	 * 
-	 * @return last saga chunk, null if none
-	 */
-	public SagaChunk getLastSagaChunk() {
-		return lastSagaChunk;
-	}
-	
-	/**
-	 * Sets last saga chunk.
-	 * 
-	 * @param lastSagaChunk last saga chunk, null if none
-	 */
-	public void setLastSagaChunk(SagaChunk lastSagaChunk) {
-		this.lastSagaChunk = lastSagaChunk;
-	}
-	
-	/**
-	 * Gets the last location of the player.
-	 * 
-	 * @return player last location, null if none
-	 */
-	public Location getLastLocation() {
-		return lastLocation;
-	}
-	
-	/**
-	 * Sets the last location.
-	 * 
-	 * @param lastLocation last location, null if none
-	 */
-	public void setLastLocation(Location lastLocation) {
-		this.lastLocation = lastLocation;
-	}
-	
-	/**
-	 * Forces a refresh on the last location.
-	 * 
-	 */
-	public void refreshLocation() {
-		
-		
-		if(!isOnline()){
-			return;
-		}
-		
-		lastLocation = player.getLocation();
-		lastSagaChunk = ChunkGroupManager.manager().getSagaChunk(lastLocation);
-		
-		
-	}
-	
 	
 	// Teleport:
 	/**

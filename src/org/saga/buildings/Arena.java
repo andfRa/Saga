@@ -19,6 +19,7 @@ import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.listeners.events.SagaPvpEvent;
 import org.saga.listeners.events.SagaPvpEvent.PvpAllowReason;
+import org.saga.messages.BuildingMessages;
 import org.saga.messages.ChunkGroupMessages;
 import org.saga.player.SagaPlayer;
 import org.sk89q.Command;

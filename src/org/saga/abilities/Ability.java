@@ -19,7 +19,7 @@ import org.saga.Saga;
 import org.saga.abilities.AbilityDefinition.ActivationType;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AbilityConfiguration.InvalidAbilityException;
-import org.saga.messages.PlayerMessages;
+import org.saga.messages.StatsMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.SagaCustomSerialization;
 
@@ -325,7 +325,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		
 		triggeredCooldown = cooldown;
 		
-		sagaPlayer.message(PlayerMessages.onCooldown(this));
+		sagaPlayer.message(StatsMessages.onCooldown(this));
 
 		
 	}
@@ -336,7 +336,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 */
 	protected void informCooldownEnd() {
 
-		sagaPlayer.message(PlayerMessages.cooldownEnd(this));
+		sagaPlayer.message(StatsMessages.cooldownEnd(this));
 		
 		sagaPlayer.playEffect(Effect.CLICK1, 0);
 		
@@ -348,7 +348,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 */
 	protected void informAlreadyActive() {
 
-		sagaPlayer.message(PlayerMessages.alreadyActive(this));
+		sagaPlayer.message(StatsMessages.alreadyActive(this));
 		
 	}
 
@@ -358,7 +358,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 */
 	protected void informActivated() {
 
-		sagaPlayer.message(PlayerMessages.activated(this));
+		sagaPlayer.message(StatsMessages.activated(this));
 		
 	}
 	
@@ -368,7 +368,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 */
 	protected void informDeactivated() {
 
-		sagaPlayer.message(PlayerMessages.deactivated(this));
+		sagaPlayer.message(StatsMessages.deactivated(this));
 		
 		sagaPlayer.playEffect(Effect.CLICK2, 0);
 		
@@ -383,7 +383,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		Material usedMaterial = getUsedMaterial();
 		Integer usedAmount = getAbsoluteUsedAmount();
 		
-		sagaPlayer.message(PlayerMessages.insufficientMaterials(this, usedMaterial, usedAmount));
+		sagaPlayer.message(StatsMessages.insufficientMaterials(this, usedMaterial, usedAmount));
 		
 	}
 	

@@ -16,9 +16,10 @@ import org.saga.config.BalanceConfiguration;
 import org.saga.config.SkillConfiguration;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;
+import org.saga.messages.AdminMessages;
 import org.saga.messages.ChunkGroupMessages;
-import org.saga.messages.PlayerMessages;
 import org.saga.messages.SagaMessages;
+import org.saga.messages.StatsMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.player.Skill;
 import org.sk89q.Command;
@@ -96,8 +97,8 @@ public class SagaCommands {
 		}
     	
     	// Inform:
-    	sagaPlayer.message(SagaMessages.statsTargetName(targetPlayer));
-    	sagaPlayer.message(PlayerMessages.stats(targetPlayer, page-1));
+    	sagaPlayer.message(AdminMessages.statsTargetName(targetPlayer));
+    	sagaPlayer.message(StatsMessages.stats(targetPlayer, page-1));
     	
     	
     }
@@ -155,7 +156,7 @@ public class SagaCommands {
 		}
     	
     	// Inform:
-    	sagaPlayer.message(PlayerMessages.stats(targetPlayer, page-1));
+    	sagaPlayer.message(StatsMessages.stats(targetPlayer, page-1));
     	
     	// Unforce:
     	Saga.plugin().unforceSagaPlayer(name);
@@ -224,7 +225,7 @@ public class SagaCommands {
 		// Invalid level:
 		if(level < 0 || level > BalanceConfiguration.config().maximumLevel){
 			
-			sagaPlayer.message(SagaMessages.levelOutOfRange(level + ""));
+			sagaPlayer.message(AdminMessages.levelOutOfRange(level + ""));
 			// Unforce:
 			Saga.plugin().unforceSagaPlayer(playerName);
 			return;
@@ -235,9 +236,9 @@ public class SagaCommands {
 		selectedPlayer.setLevel(level);
 		
 		// Inform:
-		selectedPlayer.message(SagaMessages.levelSetTo(selectedPlayer));
+		selectedPlayer.message(AdminMessages.levelSetTo(selectedPlayer));
 		if(selectedPlayer != sagaPlayer){
-			sagaPlayer.message(SagaMessages.levelSet(selectedPlayer));
+			sagaPlayer.message(AdminMessages.levelSet(selectedPlayer));
 		}
 		
 		// Unforce:
@@ -279,7 +280,7 @@ public class SagaCommands {
 		Skill skill = SkillConfiguration.config().getSkill(skillName);
 		if(skill == null){
 			
-			sagaPlayer.message(SagaMessages.invalidSkill(skillName));
+			sagaPlayer.message(AdminMessages.invalidSkill(skillName));
 			
 			// Unforce:
 			Saga.plugin().unforceSagaPlayer(playerName);
@@ -303,7 +304,7 @@ public class SagaCommands {
 		// Invalid level:
 		if(multiplier < 0 || multiplier > BalanceConfiguration.config().maximumSkillLevel){
 			
-			sagaPlayer.message(SagaMessages.skillOutOfRange(multiplier + ""));
+			sagaPlayer.message(AdminMessages.skillOutOfRange(multiplier + ""));
 			// Unforce:
 			Saga.plugin().unforceSagaPlayer(playerName);
 			return;
@@ -314,9 +315,9 @@ public class SagaCommands {
 		selectedPlayer.setSkillMultiplier(skillName, multiplier);
 		
 		// Inform:
-		selectedPlayer.message(SagaMessages.skillSetTo(sagaPlayer, skillName));
+		selectedPlayer.message(AdminMessages.skillSetTo(sagaPlayer, skillName));
 		if(selectedPlayer != sagaPlayer){
-			sagaPlayer.message(SagaMessages.skillSet(sagaPlayer, skillName));
+			sagaPlayer.message(AdminMessages.skillSet(sagaPlayer, skillName));
 		}
 		
 		// Unforce:
@@ -366,8 +367,8 @@ public class SagaCommands {
     	ArrayList<String> remaining = reward(names);
     	
     	// Inform:
-    	sagaPlayer.message(SagaMessages.rewarded(names));
-    	if(remaining.size() > 0) sagaPlayer.message(SagaMessages.playersNotFound(remaining));
+    	sagaPlayer.message(AdminMessages.rewarded(names));
+    	if(remaining.size() > 0) sagaPlayer.message(AdminMessages.playersNotFound(remaining));
     	
     	
     }
@@ -385,7 +386,7 @@ public class SagaCommands {
         	
     		// Check reward:
     		if(sagaPlayer.getReward() <= 0){
-    			sagaPlayer.message(SagaMessages.noReward());
+    			sagaPlayer.message(AdminMessages.noReward());
     			return;
     		}
     	
@@ -397,7 +398,7 @@ public class SagaCommands {
     		sagaPlayer.clearReward();
     		
     		// Inform:
-    		sagaPlayer.message(SagaMessages.collectedReward(exp, coins));
+    		sagaPlayer.message(AdminMessages.collectedReward(exp, coins));
     		
     		
 	}
@@ -481,7 +482,7 @@ public class SagaCommands {
 		
 		// Already enabled:
 		if(sagaPlayer.isAdminMode()){
-			sagaPlayer.message(SagaMessages.adminModeAlreadyEnabled());
+			sagaPlayer.message(AdminMessages.adminModeAlreadyEnabled());
 			return;
 		}
 		
@@ -489,7 +490,7 @@ public class SagaCommands {
 		sagaPlayer.enableAdminMode();
 		
 		// Inform:
-		sagaPlayer.message(SagaMessages.adminMode(sagaPlayer));
+		sagaPlayer.message(AdminMessages.adminMode(sagaPlayer));
 		
 		
 	}
@@ -507,7 +508,7 @@ public class SagaCommands {
 		
 		// Already disabled:
 		if(!sagaPlayer.isAdminMode()){
-			sagaPlayer.message(SagaMessages.adminModeAlreadyDisabled());
+			sagaPlayer.message(AdminMessages.adminModeAlreadyDisabled());
 			return;
 		}
 		
@@ -515,7 +516,7 @@ public class SagaCommands {
 		sagaPlayer.disableAdminMode();
 		
 		// Inform:
-		sagaPlayer.message(SagaMessages.adminMode(sagaPlayer));
+		sagaPlayer.message(AdminMessages.adminMode(sagaPlayer));
 		
 		
 	}
@@ -534,13 +535,13 @@ public class SagaCommands {
     public static void admin(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
     		// Inform:
-    		sagaPlayer.message(SagaMessages.saving());
+    		sagaPlayer.message(AdminMessages.saving());
     		
     		// Save:
     		Saga.plugin().save();
     		
     		// Inform:
-    		sagaPlayer.message(SagaMessages.saved());
+    		sagaPlayer.message(AdminMessages.saved());
 
         }
 

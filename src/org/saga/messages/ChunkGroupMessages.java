@@ -162,50 +162,6 @@ public class ChunkGroupMessages {
 	}
 	
 	
-	
-	// Enter leave messages:
-	public static String enterChunkGroup(SagaChunk sagaChunk) {
-		
-		
-		ChatColor messageColor = normal1;
-		
-		// Wilderness:
-		if(sagaChunk == null){
-			return messageColor + "Wilderness";
-		}
-		ChunkGroup chunkGroup = sagaChunk.getChunkGroup();
-		if(chunkGroup == null){
-			Saga.severe("Missing chunk group for " + sagaChunk + " saga chunk.");
-			return PlayerMessages.veryNegative + "Missing chunk group!";
-		}
-		
-		StringBuffer rString = new StringBuffer();
-//		ArrayList<String> owners = chunkGroup.getOwners();
-		
-		// Chunk group name:
-		rString.append(chunkGroup.getName());
-		
-		// Building name:
-		Building building = sagaChunk.getBuilding();
-		if(building != null){
-			rString.append(" " + building.getDisplayName() + "");
-		}
-//		
-//		// Owners:
-//		if(owners.size() != 0){
-//			rString.append(", owned by ");
-//			for (int i = 0; i < owners.size(); i++) {
-//				if(i != 0) rString.append(", ");
-//				rString.append(owners.get(i));
-//			}
-//		}
-//		
-		return messageColor + rString.toString();
-		
-		
-	}
-	
-	
 	// Found delete claim abandon messages:
 	public static String foundedChunkGroupBroadcast(SagaPlayer sagaPlayer, ChunkGroup settlement) {
 		return anouncment + sagaPlayer.getName() + " has founded the new settlement " + settlement.getName() + ".";
@@ -1191,44 +1147,13 @@ public class ChunkGroupMessages {
 	// Move:
 	public static String entered(ChunkGroup chunkGroup) {
 		
-		return normal1 + "Entered " + chunkGroup.getName() + " settlement.";
+		return normal1 + "" + ChatColor.ITALIC + "Entered " + chunkGroup.getName() + " settlement.";
 		
 	}
 	
 	public static String left(ChunkGroup chunkGroup) {
 		
-		return normal1 + "Left " + chunkGroup.getName() + " settlement.";
-		
-	}
-	
-	public static String entered2(Building building) {
-		
-		return normal2 + "Entered " + building.getDisplayName() + ".";
-		
-	}
-	
-	public static String left2(Building building) {
-		
-		return normal2 + "Left " + building.getDisplayName() + ".";
-		
-	}
-	
-	public static String moved(Building fromBuilding, Building toBuilding) {
-		
-		
-		if(toBuilding != null){
-			return normal2 + "Entered " + toBuilding.getDisplayName() + ".";
-		}else if(fromBuilding != null){
-			return normal2 + "Left " + fromBuilding.getDisplayName() + ".";
-		}else{
-			return "Invalid building.";
-		}
-		
-	}
-	
-	public static String left2(Building fromBuilding, Building toBuilding) {
-		
-		return "";
+		return normal1 + "" + ChatColor.ITALIC + "Left " + chunkGroup.getName() + " settlement.";
 		
 	}
 	

@@ -37,6 +37,7 @@ import org.saga.economy.EconomyMessages;
 import org.saga.economy.TradeDeal;
 import org.saga.economy.TradeDeal.TradeDealType;
 import org.saga.economy.Trader;
+import org.saga.messages.BuildingMessages;
 import org.saga.messages.ChunkGroupMessages;
 import org.saga.messages.SagaMessages;
 import org.saga.player.SagaPlayer;

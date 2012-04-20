@@ -27,7 +27,7 @@
     "attacker":"PLAYER",
     "defender":"ALL",
     "attack":"MELEE",
-    "modifier":{"x1":0,"y1":4.0,"x2":10,"y2":27.0},
+    "modifier":{"x1":0,"y1":4.0,"x2":50,"y2":30.0},
     "toolType":[],
     "toolDurability":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
     "fireTickResistance":{"x1":0,"y1":0.0,"x2":50,"y2":0.0}

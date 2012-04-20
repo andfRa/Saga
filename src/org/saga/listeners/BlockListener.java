@@ -27,8 +27,8 @@ public class BlockListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockBreak(BlockBreakEvent event) {
 
-		
-    	// Get saga chunk:
+
+		// Get saga chunk:
     	Location location = event.getBlock().getLocation();
     	SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(location);
     	
@@ -82,27 +82,6 @@ public class BlockListener implements Listener{
     	}
     	
     	
-	}
-	
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onBlockDamage(BlockDamageEvent event) {
-		
-		
-    	// Get saga chunk:
-    	Location location = event.getBlock().getLocation();
-    	SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
-    	
-		// Get player:
-    	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
-    	if(sagaPlayer == null){
-    		Saga.warning("Can't continue with onBlockDamage, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
-    		return;
-    	}
-    	
-    	// Forward to chunk:
-    	if(sagaChunk != null) sagaChunk.onBlockDamage(event, sagaPlayer);
-    	
-		
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)

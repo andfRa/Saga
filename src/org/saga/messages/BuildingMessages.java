@@ -1,17 +1,20 @@
-package org.saga.buildings;
+package org.saga.messages;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.saga.buildings.Arena;
+import org.saga.buildings.Building;
+import org.saga.buildings.BuildingDefinition;
+import org.saga.buildings.TradingPost;
 import org.saga.buildings.Arena.ArenaPlayer;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.economy.EconomyMessages;
 import org.saga.economy.TradeDeal;
 import org.saga.economy.TradeDeal.TradeDealType;
-import org.saga.messages.SagaMessages;
 import org.saga.messages.PlayerMessages.ColorCircle;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.StringBook;
@@ -344,6 +347,20 @@ public class BuildingMessages {
 	public static String formedDealBrdc(TradeDeal deal, SagaPlayer sagaPlayer) {
 
 		return anouncment + "New deal was formed by " + sagaPlayer.getName() + ": " + deal.getType().getName() + " " + EconomyMessages.material(deal.getMaterial()) + " for " + EconomyMessages.coins(deal.getPrice()) + ".";
+		
+	}
+	
+	
+	// Moving:
+	public static String entered(Building building) {
+		
+		return normal1 + "" + ChatColor.ITALIC + "Entered " + building.getName() + ".";
+		
+	}
+	
+	public static String left(Building building) {
+		
+		return normal1 + "" + ChatColor.ITALIC + "Left " + building.getName() + ".";
 		
 	}
 	

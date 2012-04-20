@@ -27,6 +27,7 @@ import org.bukkit.util.Vector;
 import org.saga.Saga;
 import org.saga.buildings.Building;
 import org.saga.listeners.events.SagaPvpEvent;
+import org.saga.messages.BuildingMessages;
 import org.saga.messages.SagaMessages;
 import org.saga.player.SagaPlayer;
 
@@ -359,21 +360,21 @@ public class SagaChunk {
 	public void refresh() {
 		
 		
-		Entity[] entities = getBukkitChunk().getEntities();
-		ArrayList<SagaPlayer> sagaPlayers = new ArrayList<SagaPlayer>();
-		for (int i = 0; i < entities.length; i++) {
-			if(!(entities[i] instanceof Player)){
-				continue;
-			}
-			SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(((Player) entities[i]).getName());
-			if(sagaPlayer != null){
-				sagaPlayers.add(sagaPlayer);
-			}
-		}
-		for (SagaPlayer sagaPlayer : sagaPlayers) {
-			sagaPlayer.refreshLocation();
-		}
-		
+//		Entity[] entities = getBukkitChunk().getEntities();
+//		ArrayList<SagaPlayer> sagaPlayers = new ArrayList<SagaPlayer>();
+//		for (int i = 0; i < entities.length; i++) {
+//			if(!(entities[i] instanceof Player)){
+//				continue;
+//			}
+//			SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(((Player) entities[i]).getName());
+//			if(sagaPlayer != null){
+//				sagaPlayers.add(sagaPlayer);
+//			}
+//		}
+//		for (SagaPlayer sagaPlayer : sagaPlayers) {
+//			sagaPlayer.refreshLocation2();
+//		}
+//		
 		
 	}
 
@@ -556,19 +557,6 @@ public class SagaChunk {
 	
 	// Events:
 	/**
-	 * Called when a block is damaged in the chunk.
-	 * 
-	 * @param event event
-	 * @param sagaPlayer saga player
-	 */
-	public void onBlockDamage(BlockDamageEvent event, SagaPlayer sagaPlayer) {
-		
-		
-		
-		
-	}
-	
-	/**
 	 * Called when a sign changes
 	 * 
 	 * @param event event
@@ -685,6 +673,7 @@ public class SagaChunk {
 		
 	}
 	
+	
 	// Damage events:
 	/**
 	 * Called when a player is damaged by another player.
@@ -715,7 +704,7 @@ public class SagaChunk {
 		
 
 		// Forward to chunk group:
-		getChunkGroup().onPlayerKillPlayer(attacker, defender, this);
+		getChunkGroup().onPvpKill(attacker, defender, this);
 		
 		// Forward to building:
 		if(bld != null) bld.onPlayerKillPlayer(attacker, defender);
@@ -879,7 +868,7 @@ public class SagaChunk {
 	}
 
 	
-	// Interact:
+	// Interact events:
 	/**
      * Called when a player interacts with an entity on the chunk.
      * 
@@ -901,7 +890,79 @@ public class SagaChunk {
 		
     }
 	
-    
+
+	// Move events:
+	/**
+	 * Called when a player enters the chunk.
+	 * 
+	 * @param sagaPlayer saga player
+	 * @param last last chunk, null if none
+	 */
+	public void onPlayerEnter(SagaPlayer sagaPlayer, SagaChunk last) {
+
+		
+		ChunkGroup lastChunkGroup = null;
+		ChunkGroup thisChunkGroup = getChunkGroup();
+		Building lastBuilding = null;
+		Building thisBuilding = bld;
+		if(last != null){
+			lastChunkGroup = last.getChunkGroup();
+			lastBuilding = last.bld;
+		}
+		
+		// Forward to chunk group:
+		if(lastChunkGroup != thisChunkGroup) getChunkGroup().onPlayerEnter(sagaPlayer, lastChunkGroup);
+		
+		// Forward to building:
+		if(bld != null && lastBuilding != thisBuilding){
+			
+			bld.onPlayerEnter(sagaPlayer, lastBuilding);
+			
+			if(lastBuilding == null || !lastBuilding.getName().equalsIgnoreCase(thisBuilding.getName())){
+				sagaPlayer.message(BuildingMessages.entered(thisBuilding));
+			}
+			
+		}
+
+		
+	}
+	
+	/**
+	 * Called when a player enters the chunk.
+	 * 
+	 * @param sagaPlayer saga player
+	 * @param next next chunk, null if none
+	 */
+	public void onPlayerLeave(SagaPlayer sagaPlayer, SagaChunk next) {
+
+		
+		ChunkGroup nextChunkGroup = null;
+		ChunkGroup thisChunkGroup = getChunkGroup();
+		Building nextBuilding = null;
+		Building thisBuilding = bld;
+		if(next != null){
+			nextChunkGroup = next.getChunkGroup();
+			nextBuilding = next.bld;
+		}
+		
+		// Forward to chunk group:
+		if(nextChunkGroup != thisChunkGroup) getChunkGroup().onPlayerLeave(sagaPlayer, nextChunkGroup);
+		
+		// Forward to building:
+		if(bld != null && nextBuilding != thisBuilding){
+			
+			bld.onPlayerLeave(sagaPlayer, nextBuilding);
+			
+			if(nextBuilding == null){
+				sagaPlayer.message(BuildingMessages.left(thisBuilding));
+			}
+			
+		}
+
+		
+	}
+
+	
     // Commands:
     /**
      * Called when a player performs a command.
@@ -923,6 +984,8 @@ public class SagaChunk {
 
     }
 	
+    
+    // Other:
 	/* 
 	 * (non-Javadoc)
 	 * 

@@ -204,7 +204,7 @@ public class PlayerListener implements Listener {
     	// Forward to level manager:
     	sagaPlayer.getLevelManager().onPlayerInteract(event);
     	
-	
+    	
 	}
 	
     @EventHandler(priority = EventPriority.NORMAL)
@@ -278,37 +278,32 @@ public class PlayerListener implements Listener {
     
     private void handleChunkChange(SagaPlayer sagaPlayer, PlayerMoveEvent event){
     	
-
-    	SagaChunk previousSagaChunk = sagaPlayer.getLastSagaChunk();
-    	Location previousLocation = sagaPlayer.getLastLocation();
-    	SagaChunk nextSagaChunk = null;
-    	Location nextLocation = event.getTo();
     	
-    	// Check if the saga chunk changed:
-    	if(previousSagaChunk != null && previousSagaChunk.represents(nextLocation)){
-    		nextSagaChunk = previousSagaChunk;
-    	}else{
-    		nextSagaChunk = ChunkGroupManager.manager().getSagaChunk(nextLocation);
-    	}
+    	Location l1 = event.getFrom();
+    	Location l2 = event.getTo();
     	
-    	// Forward chunk move on chunk change:
-    	if(previousSagaChunk != nextSagaChunk){
-    		
-    		if(nextSagaChunk != null){
-    			nextSagaChunk.getChunkGroup().onPlayerSagaChunkChange(sagaPlayer, previousSagaChunk, nextSagaChunk, previousLocation, nextLocation, event);
-    		}else if(previousSagaChunk != null){
-    			previousSagaChunk.getChunkGroup().onPlayerSagaChunkChange(sagaPlayer, previousSagaChunk, nextSagaChunk, previousLocation, nextLocation, event);
-    		}
-    		
-    	}
+    	int x1 = (int)l1.getX();
+    	int y1 = (int)l1.getY();
+    	int z1 = (int)l1.getZ();
     	
-    	// Don't update if canceled:
-    	if(event.isCancelled()){
-    		return;
-    	}
+    	int x2 = (int)l2.getX();
+    	int y2 = (int)l2.getY();
+    	int z2 = (int)l2.getZ();
     	
-    	sagaPlayer.setLastSagaChunk(nextSagaChunk);
-    	sagaPlayer.setLastLocation(nextLocation);
+    	// Coordinates didn't change much:
+    	if(x1 == x2 && y1 == y2 && z1 == z2) return;
+    	
+    	SagaChunk sagaChunk1 = sagaPlayer.lastSagaChunk;
+    	SagaChunk sagaChunk2 = ChunkGroupManager.manager().getSagaChunk(l2);
+    	
+    	// No chunk change:
+    	if(sagaChunk1 == sagaChunk2) return;
+    	
+    	sagaPlayer.lastSagaChunk = sagaChunk2;
+    	
+    	// Forward to chunk:
+    	if(sagaChunk2 != null) sagaChunk2.onPlayerEnter(sagaPlayer, sagaChunk1);
+    	if(sagaChunk1 != null) sagaChunk1.onPlayerLeave(sagaPlayer, sagaChunk2);
     	
     	
     }

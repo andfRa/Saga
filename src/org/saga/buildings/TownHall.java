@@ -1,16 +1,9 @@
 package org.saga.buildings;
 
-import java.util.ArrayList;
-
-import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.saga.chunkGroups.ChunkGroup;
-import org.saga.chunkGroups.SagaChunk;
 import org.saga.listeners.events.SagaPvpEvent;
 import org.saga.listeners.events.SagaPvpEvent.PvpDenyReason;
-import org.saga.messages.ChunkGroupMessages;
 import org.saga.player.SagaPlayer;
 
 public class TownHall extends Building{
@@ -87,34 +80,6 @@ public class TownHall extends Building{
 
 	
 	// Events:
-	@Override
-	public void onPlayerSagaChunkChange(SagaPlayer sagaPlayer, SagaChunk fromChunk, SagaChunk toChunk, Location fromLocation, Location toLocation, PlayerMoveEvent event) {
-
-//		
-//		// Deny entrance:
-//		if(fromChunk == null && toChunk != null){
-//			
-//			if(isBlacklisted(sagaPlayer.getName())){
-//				
-//				// Cancel move:
-//				event.setCancelled(true);
-//				
-//				// Inform:
-//				if(!blackListMessageCooldown.isOnCooldown(sagaPlayer.getName())){
-//					sagaPlayer.sendMessage(notAllowed(toChunk.getChunkGroup()));
-//					blackListMessageCooldown.addCooldown(sagaPlayer.getName(), 10);
-//				}
-//				
-//				
-//			}
-//			
-//		}
-		
-		super.onPlayerSagaChunkChange(sagaPlayer, fromChunk, toChunk, fromLocation, toLocation, event);
-		
-		
-	}
-
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -141,44 +106,6 @@ public class TownHall extends Building{
 		
 	}
 
-	// Messages:
-	
-
-	public static String alreadyBlacklisted(String name) {
-		return ChunkGroupMessages.negative + name + " is already blacklisted.";
-	}
-	
-	public static String alreadyBlacklisted(ArrayList<String> names){
-		
-		
-		String rString = "";
-		
-		for (int i = 0; i < names.size(); i++) {
-			
-			if(i != 0) rString += ", ";
-			
-			rString += names.get(i);
-			
-		}
-		
-		if(names.size() == 0){
-			return ChunkGroupMessages.negative + "Player is already blacklisted.";
-		}else if(names.size() == 1){
-			return ChunkGroupMessages.negative + rString + " is already blacklisted.";
-		}else{
-			return ChunkGroupMessages.negative + rString + "  are already blacklisted.";
-		}
-		
-		
-	}
-	
-	public static String notAllowed(ChunkGroup chunkGroup) {
-		return ChunkGroupMessages.negative + "You are not allowed in " + chunkGroup.getName() + ".";
-	}
-
-
-	// Messages:
-	
 	
 	
 	

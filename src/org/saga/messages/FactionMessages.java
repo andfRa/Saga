@@ -7,7 +7,6 @@ import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.saga.abilities.Mobilize.RallyPoint;
 import org.saga.config.BalanceConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.FactionConfiguration;
@@ -378,25 +377,6 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		
 		rString.append("\n");
 		
-		// Mobilization:
-		RallyPoint rallyPoint = faction.getRallyPoint();
-		if(rallyPoint == null){
-			rString.append("Rally point: none");
-		}else{
-			
-			Location loc = rallyPoint.getLocation();
-			
-			rString.append("Rally point: " + "" + ((int)loc.getX()) + ", " + ((int)loc.getY()) + ", " + ((int)loc.getZ()));
-			if(!loc.getWorld().getName().equalsIgnoreCase("world")){
-				rString.append(" at" + loc.getWorld().getName() + "");
-			}
-			
-			rString.append(" Remaining: " + rallyPoint.getTimeRemaining() + "s");
-			
-		}
-		
-		rString.append("\n");
-		
 		// Ranks:
 		rString.append(ranks(faction, messageColor));
 		
@@ -472,40 +452,16 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	}
 	
 	
-	// Mobilization:
-	public static String mobilizationDeclare(SagaFaction faction, SagaPlayer sagaPlayer) {
+	// Spawn:
+	public static String noSpawn(SagaFaction faction) {
 		
-		return faction.getPrimaryColor() + "A mobilization order was given by " + rankedPlayer(sagaPlayer) + ".";
-		
-	}
-
-	public static String mobilizationDeclareInfo(SagaFaction faction) {
-		
-		return faction.getSecondaryColor() + "Use /frally to teleport to the rally point.";
+		return negative + "The faction spawn point hasn't been set.";
 		
 	}
 	
-	public static String mobilizationRemind(SagaFaction faction, Integer time) {
+	public static String newSpawn(SagaFaction faction) {
 		
-		return faction.getPrimaryColor() + "A mobilization order was given! " + time + "s remaining.";
-		
-	}
-
-	public static String mobilizationExpired(SagaFaction faction) {
-		
-		return faction.getPrimaryColor() + "The mobilization order expired.";
-		
-	}
-
-	public static String noRally(SagaFaction faction) {
-		
-		return negative + "The rally point hasn't been set.";
-		
-	}
-
-	public static String teleportedToRally(SagaFaction faction, SagaPlayer sagaPlayer) {
-		
-		return faction.getSecondaryColor() + TextUtil.capitalize(rankedPlayer(sagaPlayer)) + faction.getSecondaryColor() + " teleported to the rally point.";
+		return faction.getSecondaryColor() + "New faction spawn point has been set.";
 		
 	}
 

@@ -5,6 +5,7 @@ package org.saga.buildings.signs;
 import java.util.ArrayList;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Sign;
 import org.bukkit.event.Event.Result;
@@ -167,9 +168,20 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 		}
 		
 		location = new Location(serverWorld, x, y, z);
+		
+		if(location.getBlock().getType() != Material.SIGN_POST && location.getBlock().getType() != Material.WALL_SIGN){
+			
+			location.getBlock().setType(Material.SIGN_POST);
+			if(location.getBlock().getType() == Material.AIR) location.getBlock().setType(Material.WALL_SIGN);
+			
+			Saga.severe(this, "failed to find a sign at " + location, "setting WALL_SIGN/SIGN_POST");
+			
+		}
+		
 		try {
 			sign = (Sign) location.getBlock().getState();
 		} catch (Exception e) {
+			location.getBlock().setType(Material.SIGN_POST);
 			throw new SignException(e.getClass().getSimpleName() + ":" + e.getMessage() + " for sign retrieve");
 		}
 		
@@ -499,8 +511,10 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 		}
 
 		// Take control:
-		if(event.hasBlock() && event.getAction() == Action.RIGHT_CLICK_BLOCK) event.setCancelled(true);
-		event.setUseItemInHand(Result.DENY);
+		if(event.hasBlock() && event.getAction() == Action.RIGHT_CLICK_BLOCK){
+			event.setCancelled(true);
+			event.setUseItemInHand(Result.DENY);
+		}
 		
 		
 	}

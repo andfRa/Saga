@@ -5,7 +5,6 @@ import java.util.Collection;
 
 import org.bukkit.ChatColor;
 import org.saga.Saga;
-import org.saga.abilities.Mobilize.RallyPoint;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
 import org.saga.economy.EconomyMessages;
@@ -14,6 +13,7 @@ import org.saga.messages.ChunkGroupMessages;
 import org.saga.messages.FactionMessages;
 import org.saga.messages.SagaMessages;
 import org.saga.player.SagaPlayer;
+import org.saga.utility.SagaLocation;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
 import org.sk89q.CommandPermissions;
@@ -1175,17 +1175,77 @@ public class FactionCommands {
 	}
 	
 	
-	// Abilities:
+	// Spawn:
 	@Command(
-            aliases = {"frally"},
+            aliases = {"fspawn"},
             usage = "[faction]",
             flags = "",
-            desc = "Teleports to a faction rally point.",
+            desc = "Teleports to a faction spawn point.",
             min = 0,
             max = 1
 		)
-	@CommandPermissions({"saga.user.faction.rally"})
-	public static void rally(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	@CommandPermissions({"saga.user.faction.spawn"})
+	public static void spawn(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+		
+		// Part of a faction:
+		SagaFaction selectedFaction = sagaPlayer.getRegisteredFaction();
+		if(selectedFaction == null){
+			sagaPlayer.message(FactionMessages.noFaction());
+			return;
+		}
+
+		// Arguments:
+		 if(args.argsLength() == 1){
+			
+			selectedFaction = FactionManager.manager().getFaction(args.getString(0));
+			
+			if(selectedFaction == null){
+				sagaPlayer.message(FactionMessages.nonExistentFaction(args.getString(0)));
+				return;
+			}
+			
+			
+		}else{
+			 
+			selectedFaction = sagaPlayer.getRegisteredFaction();
+			
+			if(selectedFaction == null){
+				sagaPlayer.message(FactionMessages.noFaction());
+				return;
+			}
+			
+		}
+		
+//		// Permission:
+//		if(!selectedFaction.canRally(sagaPlayer)){
+//			sagaPlayer.message(FactionMessages.noPermission(selectedFaction));
+//			return;
+//		}
+
+		// Spawn point:
+		SagaLocation spawnPoint = selectedFaction.getSpawn();
+		if(spawnPoint == null){
+			sagaPlayer.message(FactionMessages.noSpawn(selectedFaction));
+			return;
+		}
+		
+		// Teleport:
+		sagaPlayer.teleport(spawnPoint.getLocation());
+		
+		
+	}
+	
+	@Command(
+            aliases = {"fsetspawn"},
+            usage = "[faction]",
+            flags = "",
+            desc = "Sets a faction spawn point.",
+            min = 0,
+            max = 1
+		)
+	@CommandPermissions({"saga.user.faction.setspawn"})
+	public static void setspawn(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
 		// Part of a faction:
@@ -1218,23 +1278,17 @@ public class FactionCommands {
 		}
 		
 		// Permission:
-		if(!selectedFaction.canRally(sagaPlayer)){
+		if(!selectedFaction.canSetSpawn(sagaPlayer)){
 			sagaPlayer.message(FactionMessages.noPermission(selectedFaction));
 			return;
 		}
 
-		// Rally point:
-		RallyPoint rallyPoint = selectedFaction.getRallyPoint();
-		if(rallyPoint == null){
-			sagaPlayer.message(FactionMessages.noRally(selectedFaction));
-			return;
-		}
-		
-		// Teleport:
-		sagaPlayer.teleport(rallyPoint.getLocation());
+		// Set spawn point:
+		selectedFaction.setSpawn(sagaPlayer.getLocation());
 		
 		// Inform:
-		selectedFaction.broadcast(FactionMessages.teleportedToRally(selectedFaction, sagaPlayer));
+		selectedFaction.broadcast(FactionMessages.newSpawn(selectedFaction));
+		
 		
 		
 	}

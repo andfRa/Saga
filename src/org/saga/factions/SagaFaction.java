@@ -13,7 +13,6 @@ import org.bukkit.Location;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.Saga;
-import org.saga.abilities.Mobilize.RallyPoint;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.config.FactionConfiguration;
@@ -27,6 +26,7 @@ import org.saga.listeners.events.SagaPvpEvent.PvpDenyReason;
 import org.saga.messages.FactionMessages;
 import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
+import org.saga.utility.SagaLocation;
 import org.saga.utility.WriterReader;
 
 import com.google.gson.JsonParseException;
@@ -127,11 +127,11 @@ public class SagaFaction implements SecondTicker{
 	transient private boolean isSavingEnabled = true;
 	
 	
-	// Rally:
+	// Spawn:
 	/**
-	 * Mobilization point, null if none.
+	 * Spawn point, null if none.
 	 */
-	private RallyPoint rallyPoint;
+	private SagaLocation spawn;
 	
 	
 	// Initialization:
@@ -268,13 +268,13 @@ public class SagaFaction implements SecondTicker{
 		clockEnabled = false;
 		
 		// Rally:
-		if(rallyPoint != null){
+		if(spawn != null){
 			
 			try {
-				integrity = rallyPoint.complete() && integrity;
+				integrity = spawn.complete() && integrity;
 				startClock();
 			} catch (InvalidLocationException e) {
-				Saga.severe(this, "invalid rally point " + rallyPoint, "removing mobilization point");
+				Saga.severe(this, "invalid rally point " + spawn, "removing mobilization point");
 				removeRallyPoint();
 			}
 			
@@ -1359,7 +1359,7 @@ public class SagaFaction implements SecondTicker{
 	 * @param sagaPlayer saga player
 	 * @return true if can rally
 	 */
-	public boolean canRally(SagaPlayer sagaPlayer) {
+	public boolean canSetSpawn(SagaPlayer sagaPlayer) {
 
 		// Owner:
 		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
@@ -1371,7 +1371,7 @@ public class SagaFaction implements SecondTicker{
 		}
 		
 		// Check permission:
-		return role.hasFactionPermission(FactionPermission.RALLY);
+		return role.hasFactionPermission(FactionPermission.SET_SPAWN);
 		
 	}
 	
@@ -1597,33 +1597,6 @@ public class SagaFaction implements SecondTicker{
 		
 		boolean nextTick = false;
 		
-		// Mobilization point:
-		if(rallyPoint != null && rallyPoint.getTimeRemaining() > 0){
-			
-			rallyPoint.decreaseTime();
-			
-			Integer time = rallyPoint.getTimeRemaining();
-			
-			// Expired inform:
-			if(time == 0){
-				broadcast(FactionMessages.mobilizationExpired(this));
-			}
-			// General inform:
-			else if(time % 30 == 0){
-			    broadcast(FactionMessages.mobilizationRemind(this, time));
-			}
-			// Last seconds inform:
-			else if(time < 10 && (time == 5 || time == 3 || time == 2 || time == 1) ){
-				broadcast(FactionMessages.mobilizationRemind(this, time));
-			}
-			
-			if(rallyPoint.getTimeRemaining() > 0){
-				nextTick = true;
-			}else{
-				removeRallyPoint();
-			}
-			
-		}
 		
 		// Stop clock if last tick:
 		if(!nextTick){
@@ -1640,21 +1613,17 @@ public class SagaFaction implements SecondTicker{
 	 * 
 	 */
 	public void removeRallyPoint() {
-		rallyPoint = null;
+		spawn = null;
 	}
 	
 	/**
-	 * Sets the rally point.
+	 * Sets the faction spawn.
 	 * 
 	 * @param location location
-	 * @param time time
 	 */
-	public void setRallyPoint(Location location, Integer time) {
+	public void setSpawn(Location location) {
 		
-		rallyPoint = new RallyPoint(location, time);
-		
-		// Start clock:
-		if(!isClockEnabled()) startClock();
+		spawn = new SagaLocation(location);
 		
 	}
 	
@@ -1663,8 +1632,8 @@ public class SagaFaction implements SecondTicker{
 	 * 
 	 * @return rally point, null if none
 	 */
-	public RallyPoint getRallyPoint() {
-		return rallyPoint;
+	public SagaLocation getSpawn() {
+		return spawn;
 	}
 	
 	
@@ -1841,7 +1810,9 @@ public class SagaFaction implements SecondTicker{
 		KICK,
 		SET_RANK,
 		SET_COLOR,
+		@Deprecated
 		RALLY,
+		SET_SPAWN,
 		RENAME,
 		FORM_ALLIANCE,
 		DECLINE_ALLIANCE,
