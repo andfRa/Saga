@@ -133,6 +133,9 @@ public class SagaMessages {
 		return negative + "You don't have permission use " + command + " command (" + chunkGroup.getName() + " settlement).";
 	}
 	
+	public static String noPermissionWilderness(){
+		return negative + "You don't have permission to do that (Wilderness).";
+	}
 	
 	// Map:
 	public static String map(SagaPlayer sagaPlayer, Location location){

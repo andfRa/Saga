@@ -1327,6 +1327,16 @@ public class ChunkGroup{
 	}
 	
 	/**
+	 * Checks if the player can build everywhere.
+	 * 
+	 * @param sagaPlayer saga player
+	 * @return true if the player can build
+	 */
+	public boolean canBuildBuildings(SagaPlayer sagaPlayer) {
+		return false;
+	}
+	
+	/**
 	 * Checks if the player can claim a chunk.
 	 * 
 	 * @param sagaPlayer saga player
@@ -1988,12 +1998,12 @@ public class ChunkGroup{
 	void onBlockPlace(BlockPlaceEvent event, SagaPlayer sagaPlayer, SagaChunk locationChunk) {
 		
 
-		// Check permission:
-		if(!canBuild(sagaPlayer)){
-			event.setCancelled(true);
-			sagaPlayer.message(SagaMessages.noPermission(this));
-			return;
-		}
+//		// Check permission:
+//		if(!canBuild(sagaPlayer)){
+//			event.setCancelled(true);
+//			sagaPlayer.message(SagaMessages.noPermission(this));
+//			return;
+//		}
 		
 		
 	}
@@ -2004,16 +2014,16 @@ public class ChunkGroup{
 	 * @param event event
 	 * @param sagaPlayer saga player
 	 */
-	public void onBlockBreak(BlockBreakEvent event, SagaPlayer sagaPlayer, SagaChunk locationChunk) {
+	protected void onBlockBreak(BlockBreakEvent event, SagaPlayer sagaPlayer, SagaChunk locationChunk) {
 		
-
-		// Check permission:
-		if(!canBuild(sagaPlayer)){
-			event.setCancelled(true);
-			sagaPlayer.message(SagaMessages.noPermission(this));
-			return;
-		}
-		
+//
+//		// Check permission:
+//		if(!canBuild(sagaPlayer)){
+//			event.setCancelled(true);
+//			sagaPlayer.message(SagaMessages.noPermission(this));
+//			return;
+//		}
+//		
 		
 	}
 

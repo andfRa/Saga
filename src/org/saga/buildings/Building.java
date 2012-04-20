@@ -596,7 +596,15 @@ public abstract class Building extends SagaCustomSerialization{
 	 */
 	public boolean canBuild(SagaPlayer sagaPlayer) {
 		
-		return checkBuildingPermission(sagaPlayer, BuildingPermission.LOW);
+
+		// Owner:
+		if( 
+			(originChunk != null && originChunk.getChunkGroup().isOwner(sagaPlayer.getName()))
+			|| sagaPlayer.isAdminMode()
+		) return true;
+		
+		return getChunkGroup().canBuildBuildings(sagaPlayer);
+		
 		
 	}
 	
@@ -850,15 +858,15 @@ public abstract class Building extends SagaCustomSerialization{
 	public void onBlockPlace(BlockPlaceEvent event, SagaPlayer sagaPlayer) {
 
 		
-		if(event.isCancelled()){
-			return;
-		}
+//		if(event.isCancelled()){
+//			return;
+//		}
 		
-		if(!canBuild(sagaPlayer)){
-			event.setCancelled(true);
-			sagaPlayer.message(SagaMessages.noPermission(this));
-			return;
-		}
+//		if(!canBuild(sagaPlayer)){
+//			event.setCancelled(true);
+//			sagaPlayer.message(SagaMessages.noPermission(this));
+//			return;
+//		}
 		
 		
 	}
@@ -876,11 +884,11 @@ public abstract class Building extends SagaCustomSerialization{
 			return;
 		}
 		
-		if(!canBuild(sagaPlayer)){
-			event.setCancelled(true);
-			sagaPlayer.message(SagaMessages.noPermission(this));
-			return;
-		}
+//		if(!canBuild(sagaPlayer)){
+//			event.setCancelled(true);
+//			sagaPlayer.message(SagaMessages.noPermission(this));
+//			return;
+//		}
 
 		
 	}

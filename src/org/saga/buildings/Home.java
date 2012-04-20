@@ -83,7 +83,7 @@ public class Home extends Building {
 	 */
 	private boolean isResident(String playerName) {
 
-		return residents.contains(playerName);
+		return residents.contains(playerName) || residents.contains(playerName.toLowerCase());
 		
 	}
 	
@@ -96,12 +96,12 @@ public class Home extends Building {
 	public void addResident(String playerName) {
 
 
-		if(isResident(playerName)){
+		if(isResident(playerName.toLowerCase())){
 			Saga.severe(this, "tried to add an already existing resident", "ignoring request");
 			return;
 		}
 		
-		residents.add(playerName);
+		residents.add(playerName.toLowerCase());
 		
 		
 	}
@@ -121,6 +121,7 @@ public class Home extends Building {
 		}
 		
 		residents.remove(playerName);
+		residents.remove(playerName.toLowerCase());
 		
 		
 	}
@@ -316,8 +317,9 @@ public class Home extends Building {
 		}
 		
 		// Member:
-		if(!chunkGroup.hasPlayer(targetName)){
-			sagaPlayer.message(ChunkGroupMessages.notChunkGroupMember(chunkGroup, targetName));
+		
+		if(!SagaPlayer.checkExistance(targetName)){
+			sagaPlayer.message(ChunkGroupMessages.nonExistantPlayer(targetName));
 			return;
 		}
 		

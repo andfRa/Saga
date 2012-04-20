@@ -368,7 +368,7 @@ public class StatisticsMessages {
 		StringBook result = new StringBook("X-ray distributions", colour, 10);
 		
 		// Histogram data:
-		Double[] data = StatisticsManager.manager().getVeinHistogram(Material.DIAMOND_ORE, BalanceConfiguration.config().maximumLevel, false);
+		Double[] data = StatisticsManager.manager().getVeinHistogram(Material.DIAMOND_ORE, 50, false);
 		Double maxVal = MathUtil.max(data);
 		
 		// No data:

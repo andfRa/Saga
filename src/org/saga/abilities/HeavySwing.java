@@ -1,7 +1,7 @@
 package org.saga.abilities;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
 import java.util.Random;
 
 import org.bukkit.Effect;
@@ -160,7 +160,7 @@ public class HeavySwing extends Ability{
 		if(block.getType() == Material.AIR) return true;
 
 		// Call event:
-		BlockBreakEvent bbEvent = new BlockBreakEvent(block, player, new ArrayList<ItemStack>(block.getDrops()));
+		BlockBreakEvent bbEvent = new BlockBreakEvent(block, player);
 		Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
 		if(bbEvent.isCancelled()) return false;
 		
@@ -168,7 +168,7 @@ public class HeavySwing extends Ability{
 		block.setType(Material.AIR);
 		
 		// Drop:
-		List<ItemStack> drops = bbEvent.getDrops();
+		Collection<ItemStack> drops = block.getDrops();
 		for (ItemStack drop : drops) {
 
 			if(drop.getType() == Material.COBBLESTONE){

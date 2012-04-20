@@ -678,6 +678,33 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		// Owner:
 		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
 		
+		// Member:
+		return isMember(sagaPlayer);
+		
+//		// Check role:
+//		Proficiency role = playerRoles.get(sagaPlayer.getName());
+//		if(role == null){
+//			return false;
+//		}
+//		
+//		// Check permission:
+//		return role.hasSettlementPermission(SettlementPermission.BUILD);
+		
+		
+	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.chunkGroups.ChunkGroup#canBuild(org.saga.SagaPlayer)
+	 */
+	@Override
+	public boolean canBuildBuildings(SagaPlayer sagaPlayer) {
+		
+
+		// Owner:
+		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
+		
 		// Check role:
 		Proficiency role = playerRoles.get(sagaPlayer.getName());
 		if(role == null){
@@ -685,7 +712,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		}
 		
 		// Check permission:
-		return role.hasSettlementPermission(SettlementPermission.BUILD);
+		return role.hasSettlementPermission(SettlementPermission.BUILD_BUILDING);
 		
 		
 	}
@@ -984,6 +1011,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 
 		
 		BUILD,
+		BUILD_BUILDING,
 		CLAIM,
 		ABANDON,
 		DISOLVE,

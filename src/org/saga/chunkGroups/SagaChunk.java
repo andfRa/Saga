@@ -783,16 +783,39 @@ public class SagaChunk {
 
 		// Canceled:
 		if(event.isCancelled()) return;
-
+		
 		// Forward to chunk group:
 		getChunkGroup().onBlockPlace(event, sagaPlayer, this);
 		
-		// Canceled:
 		if(event.isCancelled()) return;
 		
 		// Forward to building:
 		if(bld != null) bld.onBlockPlace(event, sagaPlayer);
 
+		if(event.isCancelled()) return;
+		
+		// Build permission:
+		if(bld != null){
+			
+			if(bld.canBuild(sagaPlayer)){
+				return;
+			}else{
+				sagaPlayer.message(SagaMessages.noPermission(bld));
+				event.setCancelled(true);
+				return;
+			}
+			
+		}else{
+			
+			if (chunkGroup != null && !chunkGroup.canBuild(sagaPlayer)){
+				sagaPlayer.message(SagaMessages.noPermission(chunkGroup));
+				event.setCancelled(true);
+				event.setBuild(false);
+				return;
+			}
+			
+		}
+		
 		
 	}
 	
@@ -803,7 +826,6 @@ public class SagaChunk {
 	 * @param sagaPlayer saga player
 	 */
 	public void onBlockBreak(BlockBreakEvent event, SagaPlayer sagaPlayer) {
-
 
 
 		// Canceled:
@@ -829,8 +851,29 @@ public class SagaChunk {
 			}
 			
 		}
-    	
 
+		if(event.isCancelled()) return;
+		
+		// Build permission:
+		if(bld != null){
+			
+			if(bld.canBuild(sagaPlayer)){
+				return;
+			}else{
+				sagaPlayer.message(SagaMessages.noPermission(bld));
+				event.setCancelled(true);
+				return;
+			}
+			
+		}else{
+			
+			if (chunkGroup != null && !chunkGroup.canBuild(sagaPlayer)){
+				sagaPlayer.message(SagaMessages.noPermission(chunkGroup));
+				event.setCancelled(true);
+				return;
+			}
+			
+		}
 		
 		
 	}

@@ -286,23 +286,32 @@ public class StatisticsManager implements HourTicker{
 
 		
 		classKills = new Hashtable<String, Hashtable<String,Integer>>();
+		
 		skillUpgrades = new Hashtable<String, Integer>();
 		skillUpgradeCoins = new Hashtable<String, Double>();
+		
 		guardRuneRestores = 0;
 		guardRuneRecharges = 0;
+		
 		startDate = System.currentTimeMillis();
+		
 		abilityExp = new Hashtable<String, Double>();
 		abilityUsage = new Hashtable<String, Integer>();
+		
 		xrayStatistics = new Hashtable<String, Hashtable<Material,Integer>>();
 		blockDataChanges = 0;
+		
 		profExp = new Hashtable<String, Integer>();
 		profExpPlayers = new Hashtable<String, HashSet<String>>();
+		
 		exp = new Hashtable<String, Hashtable<String,Double>>();
 		playerLevels = new Hashtable<String, Integer>();
+		
 		playerBuyCoins = new Hashtable<String, Hashtable<Material,Double>>();
 		playerSellCoins = new Hashtable<String, Hashtable<Material,Double>>();
 		playerBuyAmount = new Hashtable<String, Hashtable<Material,Integer>>();
 		playerSellAmount = new Hashtable<String, Hashtable<Material,Integer>>();
+		
 		foundVeins = new Hashtable<String, Hashtable<Material,Integer>>();
 		
 		
@@ -1186,6 +1195,8 @@ public class StatisticsManager implements HourTicker{
 		}
 		
 		for (Double ratio : ratios) {
+			
+			if(ratio == 0) continue;
 			
 			System.out.println("adding value:" + ratio + " to " + new Double(ratio * step).intValue());
 			

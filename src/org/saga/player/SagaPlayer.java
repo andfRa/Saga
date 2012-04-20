@@ -1396,7 +1396,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 */
 	public void giveExperience(Double expAmount) {
 		
-		if(level >= ExperienceConfiguration.config().getMaxLevel()) return;
+		if(level > ExperienceConfiguration.config().getMaxLevel()) return;
 		
 		this.exp += expAmount;
 		

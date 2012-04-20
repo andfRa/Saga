@@ -14,6 +14,7 @@ import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
+import org.saga.SagaMessages;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.BalanceConfiguration;
@@ -29,7 +30,7 @@ public class BlockListener implements Listener{
 		
     	// Get saga chunk:
     	Location location = event.getBlock().getLocation();
-    	SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
+    	SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(location);
     	
 		// Get player:
     	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
@@ -47,8 +48,21 @@ public class BlockListener implements Listener{
     	}
     	
     	// Forward to chunk:
-    	if(sagaChunk != null) sagaChunk.onBlockBreak(event, sagaPlayer);
+    	if(sagaChunk != null){
+    		
+    		sagaChunk.onBlockBreak(event, sagaPlayer);
+    		
+    	}
 
+    	// Wilderness:
+    	else{
+    		
+    		if(!Saga.plugin().hasPermission(sagaPlayer, "saga.wilderness.build")){
+    			sagaPlayer.message(SagaMessages.noPermissionWilderness());
+    			event.setCancelled(true);
+    		}
+    		
+    	}
     	if(event.isCancelled()) return;
     	
     	// X-ray:
@@ -97,7 +111,7 @@ public class BlockListener implements Listener{
 
 		// Get saga chunk:
     	Location location = event.getBlock().getLocation();
-    	SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
+    	SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(location);
     	
 		// Get player:
     	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
@@ -115,7 +129,22 @@ public class BlockListener implements Listener{
     	}
     	
     	// Forward to chunk:
-    	if(sagaChunk != null) sagaChunk.onBlockPlace(event, sagaPlayer);
+    	if(sagaChunk != null){
+    		
+    		sagaChunk.onBlockPlace(event, sagaPlayer);
+    		
+    	}
+    	
+    	// Wilderness:
+    	else{
+    		
+    		if(!Saga.plugin().hasPermission(sagaPlayer, "saga.wilderness.build")){
+    			sagaPlayer.message(SagaMessages.noPermissionWilderness());
+    			event.setBuild(false);
+    			event.setCancelled(true);
+    		}
+    		
+    	}
     	
     	// Handle data change:
     	BalanceConfiguration.config().handleDataChange(event.getBlock());
