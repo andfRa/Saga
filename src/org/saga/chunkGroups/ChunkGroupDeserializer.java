@@ -24,6 +24,8 @@ public class ChunkGroupDeserializer implements  JsonSerializer<ChunkGroup>, Json
        public ChunkGroup deserialize(JsonElement je, Type type, JsonDeserializationContext jdc) throws JsonParseException {
 
     	   
+    	   System.out.println("DESERIALIZE FOR " + type.toString());
+    	   
             //If this JsonElement is not an object we cannot create a profession
             if ( !je.isJsonObject() ) {
                 throw new JsonParseException("JsonElement is not JsonObject!");

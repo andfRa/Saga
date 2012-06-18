@@ -1,10 +1,10 @@
 package org.saga.buildings.signs;
 
-import org.bukkit.Effect;
 import org.bukkit.block.Sign;
 import org.saga.buildings.Building;
 import org.saga.config.EconomyConfiguration;
-import org.saga.economy.EconomyMessages;
+import org.saga.messages.AbilityEffects;
+import org.saga.messages.EconomyMessages;
 import org.saga.messages.PlayerMessages;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
@@ -15,19 +15,19 @@ public class GuardianRuneSign extends BuildingSign{
 
 	
 	/**
-	 * Name for the sign.
+	 * Name for the 
 	 */
 	public static String SIGN_NAME = "=[RECHARGE]=";
 	
 	/**
-	 * Parameter for the sign.
+	 * Parameter for the 
 	 */
 	public static String RUNE_TYPE = "guardian rune";
 	
 	
-	// Initialization:
+	// Initialisation:
 	/**
-	 * Creates a stone sign.
+	 * Creates a stone 
 	 * 
 	 * @param type transaction type
 	 * @param sign sign
@@ -44,7 +44,7 @@ public class GuardianRuneSign extends BuildingSign{
 	}
 	
 	/**
-	 * Creates the training sign.
+	 * Creates the training 
 	 * 
 	 * @param sign bukkit sign
 	 * @param firstLine first line
@@ -67,59 +67,73 @@ public class GuardianRuneSign extends BuildingSign{
 	public String getName() {
 		return SIGN_NAME;
 	}
+
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.buildings.signs.BuildingSign#getStatus()
+	 */
+	@Override
+	public SignStatus getStatus() {
+	
+		return SignStatus.ENABLED;
+		
+	}
 	
 	/* 
 	 * (non-Javadoc)
 	 * 
-	 * @see org.saga.buildings.signs.BuildingSign#enable()
+	 * @see org.saga.buildings.signs.BuildingSign#getLine(int, org.saga.buildings.signs.BuildingSign.SignStatus)
 	 */
 	@Override
-	public void enable() {
-
-		
-		super.enable();
-		
-		Sign sign = getSign();
-
-		// Check parameters:
-		sign.setLine(1, RUNE_TYPE);
+	public String getLine(int index, SignStatus status) {
+	
 		
 		Double price = EconomyConfiguration.config().guardianRuneRechargeCost;
-		
-		if(price > 0.0){
-			sign.setLine(2, "for " + EconomyMessages.coins(price));
-		}else{
-			sign.setLine(2, "");
+				
+		switch (status) {
+			
+			case ENABLED:
+
+				
+				if(index == 1) return RUNE_TYPE;
+				
+				if(index == 2){
+					if(price > 0.0){
+						return "for " + EconomyMessages.coins(price);
+					}else{
+						return "";
+					}
+				}
+
+				break;
+				
+			case DISABLED:
+
+				if(index == 1) return RUNE_TYPE;
+				
+				if(index == 2){
+					if(price > 0.0){
+						return "for " + EconomyMessages.coins(price);
+					}else{
+						return "";
+					}
+				}
+
+				break;
+				
+			default:
+				
+				if(index == 1) return "-";
+				break;
+
 		}
-		
-		// Update:
-		sign.update();
+
+		return "";
 		
 		
 	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.signs.BuildingSign#invalidate()
-	 */
-	@Override
-	public void invalidate() {
-		
-		
-		super.invalidate();
-		
-		Sign sign = getSign();
 
-		sign.setLine(2, "-");
-		
-		sign.setLine(3, "");
-
-		sign.setLine(4, "");
-		
-		
-	}
-	
 	
 	// Events:
 	/* 
@@ -131,11 +145,11 @@ public class GuardianRuneSign extends BuildingSign{
 	protected void onRightClick(SagaPlayer sagaPlayer) {
 
 		
-		GuardianRune stone = sagaPlayer.getGuardianRune();
+		GuardianRune rune = sagaPlayer.getGuardRune();
 		
 		// Already charged:
-		if(stone.isCharged()){
-			sagaPlayer.message(PlayerMessages.alreadyRecharged(stone));
+		if(rune.isCharged()){
+			sagaPlayer.message(PlayerMessages.alreadyRecharged(rune));
 			return;
 		}
 
@@ -152,17 +166,16 @@ public class GuardianRuneSign extends BuildingSign{
 		}
 		
 		// Recharges rune:
-		stone.recharge();
+		rune.recharge();
 		
 		// Inform:
-		sagaPlayer.message(PlayerMessages.recharged(stone, price));
+		sagaPlayer.message(PlayerMessages.recharged(rune, price));
 
 		// Statistics:
 		StatisticsManager.manager().onGuardanRuneRecharge();
 		
 		// Play effect:
-		sagaPlayer.playGlobalEffect(Effect.BLAZE_SHOOT, 0);
-		sagaPlayer.playGlobalEffect(Effect.MOBSPAWNER_FLAMES, 6);
+		AbilityEffects.playRecharge(sagaPlayer);
 		
 		
 	}

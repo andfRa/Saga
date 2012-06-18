@@ -1,11 +1,16 @@
 package org.saga.economy;
 
+import java.util.HashMap;
+import java.util.Set;
+
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.saga.Saga;
+import org.saga.SagaLogger;
 
 public class InventoryUtil {
 
@@ -64,6 +69,57 @@ public class InventoryUtil {
 		if(remaining != null){
 			Saga.warning("Failed to remove " + itemStack + " from an inventory");
 		}
+		
+	}
+	
+	/**
+	 * Removes an item.
+	 * 
+	 * @param material material
+	 * @param toRemove amount to remove
+	 * @param removeEnch if true, then enchanted items will also be removed
+	 * @param player player
+	 */
+	public static void removeItem(Material material, Integer toRemove, boolean removeEnch, Player player) {
+
+		
+		Inventory inventory = player.getInventory();
+		Integer toDelete = toRemove;
+		
+		HashMap<Integer, ? extends ItemStack> all = inventory.all(material);
+		Set<Integer> slots = all.keySet();
+		
+		for (Integer first : slots) {
+			
+			ItemStack itemStack = inventory.getItem(first);
+			
+			// Ignore enchanted:
+			if(!removeEnch && itemStack.getEnchantments().size() > 0) continue;
+			
+			int amount = itemStack.getAmount();
+
+            if (amount <= toDelete) {
+                toDelete -= amount;
+                // clear the slot, all used up
+                inventory.clear(first);
+            } else {
+                // split the stack and store
+                itemStack.setAmount(amount - toDelete);
+                inventory.setItem(first, itemStack);
+                toDelete = 0;
+            }
+
+             // Bail when done
+             if (toDelete <= 0) {
+                 break;
+             }
+             
+		}
+		
+		 if(toDelete > 0){
+			 SagaLogger.severe("Failed to remove " + toDelete + " " + material + " from players " + player.getName() + " inventory");
+		 }
+	
 		
 	}
 	

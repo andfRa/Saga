@@ -65,7 +65,7 @@ public class Clock implements Runnable{
 	private Hashtable<String, Long> previousWorldTime = new Hashtable<String, Long>();
 	
 	/**
-	 * Initializes the clock.
+	 * Initialises the clock.
 	 * 
 	 */
 	public Clock() {
@@ -85,14 +85,24 @@ public class Clock implements Runnable{
 //		System.out.println("time=" + time.substring(0,time.length() -3)+":"+time.substring(time.length() -3));
 		
 		// Seconds:
+		HashSet<SecondTicker> removeTickers = new HashSet<Clock.SecondTicker>();
+		
 		synchronized (second) {
 			
 			secondsCycle ++;
 			ArrayList<SecondTicker> second = new ArrayList<Clock.SecondTicker>(this.second);
 			for (int i = 0; i < second.size(); i++) {
-				second.get(i).clockSecondTick();
+				
+				 if(!second.get(i).clockSecondTick()){
+					 removeTickers.add(second.get(i));
+				 }
+				 
 			}
 			
+		}
+		
+		for (SecondTicker ticker : removeTickers) {
+			second.remove(ticker);
 		}
 		
 		// Minutes:
@@ -440,8 +450,9 @@ public class Clock implements Runnable{
 		/**
 		 * A clock tick.
 		 * 
+		 * @return true if continue
 		 */
-		public void clockSecondTick();
+		public boolean clockSecondTick();
 		
 		
 	}
@@ -491,11 +502,13 @@ public class Clock implements Runnable{
 		
 		public static enum TimeOfDay{
 			
+			
 			SUNRISE,
 			MIDDAY,
 			DAWN,
 			MIDNIGHT,
 			ALL;
+			
 			
 		}
 		

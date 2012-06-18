@@ -2,22 +2,24 @@ package org.saga.listeners;
 
 
 import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.SignChangeEvent;
-import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.BalanceConfiguration;
+import org.saga.dependencies.PermissionsManager;
+import org.saga.listeners.events.SagaBlockBreakEvent;
+import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.messages.SagaMessages;
+import org.saga.metadata.UnnaturalTag;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.XrayIndicator;
 
@@ -28,105 +30,118 @@ public class BlockListener implements Listener{
 	public void onBlockBreak(BlockBreakEvent event) {
 
 
+		Block block = event.getBlock();
+		
 		// Get saga chunk:
-    	Location location = event.getBlock().getLocation();
-    	SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(location);
+    	SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(event.getBlock().getLocation());
     	
 		// Get player:
     	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
     	if(sagaPlayer == null){
     		
     		Saga.warning("Can't continue with onBlockBreak, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
-    		
-    		if(sagaChunk != null){
-    			Saga.info("Found saga chunk. Canceling event.");
-    			event.setCancelled(true);
-    		}
+    		event.setCancelled(true);
     		
     		return;
     		
     	}
+
+    	// Build event:
+    	SagaBuildEvent eventB = new SagaBuildEvent(event, sagaPlayer, sagaChunk);
     	
-    	// Forward to chunk:
-    	if(sagaChunk != null){
+    	// Claimed:
+    	if(eventB.getSagaChunk() != null){
     		
-    		sagaChunk.onBlockBreak(event, sagaPlayer);
+    		sagaChunk.onBuild(eventB);
     		
     	}
-
+    	
     	// Wilderness:
     	else{
     		
-    		if(!Saga.plugin().hasPermission(sagaPlayer, "saga.wilderness.build")){
+    		if(!PermissionsManager.hasPermission(sagaPlayer, PermissionsManager.WILDERNESS_BUILD_PERMISSION)){
     			sagaPlayer.message(SagaMessages.noPermissionWilderness());
-    			event.setCancelled(true);
+    			eventB.cancel();
     		}
     		
     	}
+    	
+    	if(eventB.isCancelled()) return;
+    	
+    	// Saga event:
+    	SagaBlockBreakEvent eventS = new SagaBlockBreakEvent(event, sagaPlayer, sagaChunk);
+    	
+    	// Forward to chunk:
+    	if(sagaChunk != null) sagaChunk.onBlockBreak(event, sagaPlayer);
+    	
     	if(event.isCancelled()) return;
     	
+    	// Forward to manager:
+    	sagaPlayer.getAttributeManager().onBlockBreak(eventS);
+    	
     	// X-ray:
-    	XrayIndicator.handleMine(sagaPlayer, event); // TODO: Remove old x-ray indication.
     	XrayIndicator.onBlockBreak(sagaPlayer, event);
     	
-    	// Forward to level manager:
-    	sagaPlayer.getLevelManager().onBlockBreak(event);
-		
-    	// Experience:
-    	sagaPlayer.onBlockExp(event);
-    	
-    	// TODO: Bug workaround(hoe takes no damage):
-    	ItemStack item = sagaPlayer.getItemInHand();
-    	if(item.getType() == Material.WOOD_HOE || item.getType() == Material.STONE_HOE || item.getType() == Material.IRON_HOE || item.getType() == Material.GOLD_HOE || item.getType() == Material.DIAMOND_HOE){
-    		sagaPlayer.damageTool();
-    	}
+    	// Apply event:
+    	eventS.apply();
     	
     	
 	}
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockPlace(BlockPlaceEvent event) {
-
-
+		
+		
+		Block block = event.getBlock();
+		
 		// Get saga chunk:
-    	Location location = event.getBlock().getLocation();
-    	SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(location);
+    	SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(event.getBlock().getLocation());
     	
 		// Get player:
     	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
     	if(sagaPlayer == null){
     		
     		Saga.warning("Can't continue with onBlockPlace, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
-    		
-    		if(sagaChunk != null){
-    			Saga.info("Found saga chunk. Canceling event.");
-    			event.setCancelled(true);
-    		}
+    		event.setCancelled(true);
     		
     		return;
     		
     	}
+
+    	// Build event:
+    	SagaBuildEvent eventB = new SagaBuildEvent(event, sagaPlayer, sagaChunk);
     	
-    	// Forward to chunk:
-    	if(sagaChunk != null){
+    	// Claimed:
+    	if(eventB.getSagaChunk() != null){
     		
-    		sagaChunk.onBlockPlace(event, sagaPlayer);
+    		sagaChunk.onBuild(eventB);
     		
     	}
     	
     	// Wilderness:
     	else{
     		
-    		if(!Saga.plugin().hasPermission(sagaPlayer, "saga.wilderness.build")){
+    		if(!PermissionsManager.hasPermission(sagaPlayer, PermissionsManager.WILDERNESS_BUILD_PERMISSION)){
     			sagaPlayer.message(SagaMessages.noPermissionWilderness());
-    			event.setBuild(false);
-    			event.setCancelled(true);
+    			eventB.cancel();
     		}
     		
     	}
     	
+    	if(eventB.isCancelled()) return;
+    	
+    	// Forward event:
+    	if(sagaChunk != null) sagaChunk.onBlockPlace(event, sagaPlayer);
+    	
+    	if(event.isCancelled()) return;
+    	
+    	// Unnatural tag:
+    	if(!block.hasMetadata(UnnaturalTag.METADATA_KEY)){
+    		block.setMetadata(UnnaturalTag.METADATA_KEY, UnnaturalTag.METADATA_VALUE);
+    	}
+    	
     	// Handle data change:
-    	BalanceConfiguration.config().handleDataChange(event.getBlock());
+    	BalanceConfiguration.config().modifyBlockData(block);
     	
 	
 	}

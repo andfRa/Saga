@@ -1,7 +1,50 @@
 {
 
-"levelUpExp":{"x1":0,"y1":100.0,"x2":49,"y2":15000.0},
+"maximumLevel":50,
 
-"skillPoints":{"x1":0,"y1":10.0,"x2":49,"y2":120.0}
+"levelUpExp":{"x1":0,"y1":200.0,"x2":49,"y2":15000.0},
+
+"blockExp":{
+  "DIAMOND_ORE":{"0":16.0},
+  "LAPIS_ORE":{"0":17.0},
+  "GOLD_ORE":{"0":6.0},
+  "IRON_ORE":{"0":2.5},
+  "COAL_ORE":{"0":0.75},
+  "STONE":{"0":0.02},
+  "LOG":{"0":1.30, "1":1.30, "2":1.30, "3":1.30},
+  "SUGAR_CANE_BLOCK":{"0":0.1937},
+  "CROPS":{"7":0.1937}
+},
+
+"playerExp":{"x1":0,"y1":1.0,"x2":50,"y2":50.0},
+
+"creatureExp":{
+
+  "creeper":20.0,
+  "enderman":20.0,
+  "ghast":20.0,
+  "blaze":15.0,
+  "bigslime":12.5,
+  "smallslime":5.0,
+  "zombiepigman":8.0,
+  "zombie":6.75,
+  "skeleton":6.75,
+  "spider":6.75,
+  "cavespider":6.75,
+  "wolf":4,
+  "default":1.25,
+
+  "cow":3.0,
+  "pig":3.0,
+  "sheep":3.0
+
+},
+
+"abilityExp":{
+  "repair":{"x1":0,"y1":0.0,"x2":500,"y2":37.5}
+},
+
+"spawnerEncPointMult":0.5,
+"spawnerExpMult":0.01
 
 }

@@ -6,10 +6,9 @@ import java.util.HashSet;
 
 import org.saga.Saga;
 import org.saga.abilities.Ability;
-import org.saga.config.AbilityConfiguration.InvalidAbilityException;
-import org.saga.config.BalanceConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
+import org.saga.exceptions.InvalidAbilityException;
 import org.saga.factions.SagaFaction.FactionPermission;
 import org.saga.settlements.Settlement.SettlementPermission;
 
@@ -248,7 +247,7 @@ public class Proficiency {
 		
 		HashSet<Ability> selectedAbilities = new HashSet<Ability>();
 		HashSet<String> selectedAbilityNames = new HashSet<String>(this.selectedAbilities);
-		Integer abilitiesLimit = BalanceConfiguration.config().abilitiesLimit;
+		Integer abilitiesLimit = 111;
 		
 		ArrayList<Ability> allAbilities = getAbilities(); 
 		for (Ability ability : allAbilities) {
@@ -356,8 +355,8 @@ public class Proficiency {
 
 		
 		// Limit:
-		if(selectedAbilities.size() >= BalanceConfiguration.config().abilitiesLimit){
-			Saga.severe(this, "ability selection limit reached: " + selectedAbilities.size() + "/" + BalanceConfiguration.config().abilitiesLimit, "ignoring request");
+		if(selectedAbilities.size() >= 11){
+			Saga.severe(this, "ability selection limit reached: " + selectedAbilities.size() + "/" + 11, "ignoring request");
 			return;
 		}
 		
@@ -387,7 +386,7 @@ public class Proficiency {
 		selectedAbilities.add(name);
 		
 		// Update manager:
-		sagaPlayer.getLevelManager().update();
+//		sagaPlayer.getLevelManager().update();
 		
 		
 	}
@@ -410,7 +409,7 @@ public class Proficiency {
 		selectedAbilities.remove(name);
 		
 		// Update manager:
-		sagaPlayer.getLevelManager().update();
+//		sagaPlayer.getLevelManager().update();
 		
 		
 	}
@@ -422,7 +421,7 @@ public class Proficiency {
 	 */
 	public boolean hasAbilitySlots() {
 
-		return selectedAbilities.size() < BalanceConfiguration.config().abilitiesLimit;
+		return selectedAbilities.size() < 11;
 		
 	}
 	

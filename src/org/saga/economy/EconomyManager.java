@@ -15,10 +15,11 @@ import org.saga.Clock.TimeOfDayTicker;
 import org.saga.Saga;
 import org.saga.buildings.TradingPost;
 import org.saga.config.EconomyConfiguration;
-import org.saga.constants.IOConstants.WriteReadType;
 import org.saga.economy.TradeDeal.TradeDealType;
+import org.saga.messages.EconomyMessages;
 import org.saga.player.SagaPlayer;
-import org.saga.utility.WriterReader;
+import org.saga.saveload.Directory;
+import org.saga.saveload.WriterReader;
 
 import com.google.gson.JsonParseException;
 
@@ -444,7 +445,7 @@ public class EconomyManager implements TimeOfDayTicker{
 		TradeDeal[] reTradingDeals = new TradeDeal[0];
 		try {
 			
-			reTradingDeals = WriterReader.readTradeDeals(worldName);
+			reTradingDeals = WriterReader.read(Directory.TRADE_DEALS, worldName, TradeDeal[].class);
 			
 		} catch (JsonParseException e) {
 			
@@ -454,7 +455,7 @@ public class EconomyManager implements TimeOfDayTicker{
 		} catch (FileNotFoundException e) {
 			
 			try {
-				WriterReader.writeTradeDeals(worldName, new TradeDeal[0], WriteReadType.TRADE_AGREEMENTS_NORMAL);
+				WriterReader.write(Directory.TRADE_DEALS, worldName, new TradeDeal[0]);
 			} catch (IOException e1) {
 				Saga.severe(EconomyManager.class, "failed to write empty trading deals: " + e1.getClass().getSimpleName() + ": " + e.getMessage(), "ignoring write");
 			}
@@ -518,7 +519,7 @@ public class EconomyManager implements TimeOfDayTicker{
 		
 		// Trading deals:
 		try {
-			WriterReader.writeTradeDeals(worldName, instance.tradeDeals.toArray(new TradeDeal[instance.tradeDeals.size()]), WriteReadType.TRADE_AGREEMENTS_NORMAL);
+			WriterReader.write(Directory.TRADE_DEALS, worldName, instance.tradeDeals.toArray(new TradeDeal[instance.tradeDeals.size()]));
 		} catch (IOException e) {
 			Saga.severe(EconomyManager.class, "failed to write trading deals: " + e.getClass().getSimpleName() + ": " + e.getMessage(), "ignoring write");
 		}

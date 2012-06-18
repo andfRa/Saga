@@ -2,7 +2,7 @@ package org.saga.abilities;
 
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.Saga;
-import org.saga.chunkGroups.ChunkGroupCommands;
+import org.saga.commands.ChunkGroupCommands;
 import org.saga.statistics.StatisticsManager;
 import org.sk89q.CommandContext;
 
@@ -29,13 +29,8 @@ public class Claim extends Ability{
 	 * @see org.saga.abilities.Ability#trigger()
 	 */
 	@Override
-	public boolean instant(PlayerInteractEvent event) {
+	public boolean trigger(PlayerInteractEvent event) {
 		
-
-		// Check pre use:
-		if(!handlePreUse()){
-			return false;
-		}
 
 		// Claim command:
 		CommandContext args = new CommandContext("sclaim");

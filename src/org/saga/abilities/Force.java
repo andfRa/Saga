@@ -11,18 +11,26 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 import org.saga.Saga;
-import org.saga.listeners.events.SagaEventHandler;
-import org.saga.listeners.events.SagaPvpEvent;
+import org.saga.messages.AbilityEffects;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
-import org.saga.utility.TwoPointFunction;
 
 public class Force extends Ability{
 
-	
-	// Initialization:
 	/**
-	 * Initializes using definition.
+	 * Radius key.
+	 */
+	private static String RADIUS_KEY = "radius";
+	
+	/**
+	 * Power key.
+	 */
+	private static String POWER_KEY = "power";
+	
+	
+	// Initialisation:
+	/**
+	 * Initialises using definition.
 	 * 
 	 * @param definition ability definition
 	 */
@@ -40,19 +48,11 @@ public class Force extends Ability{
 	 * @see org.saga.abilities.Ability#trigger()
 	 */
 	@Override
-	public boolean instant(PlayerInteractEvent event) {
+	public boolean trigger(PlayerInteractEvent event) {
 		
-
-		// Check pre use:
-		if(!handlePreUse()){
-			return false;
-		}
 
 		SagaPlayer sagaPlayer = getSagaPlayer();
-		
-		TwoPointFunction primaryFunction = getDefinition().getPrimaryFunction();
-		TwoPointFunction secondaryFunction = getDefinition().getSecondaryFunction();
-		Integer skillLevel = getSkillLevel();
+		Integer abilityLevel = getEffectiveScore();
 		
 		Player player = sagaPlayer.getPlayer();
 		if(player == null){
@@ -61,7 +61,7 @@ public class Force extends Ability{
 		}
 		
 		// Get entities:
-		double radius = primaryFunction.randomIntValue(skillLevel);
+		double radius = getDefinition().getFunction(RADIUS_KEY).randomIntValue(getEffectiveScore());
 		double radiusSquared = radius*radius;
 		
 		List<Entity> entities = player.getNearbyEntities(radius, 4, radius);
@@ -79,10 +79,10 @@ public class Force extends Ability{
 					return false;
 				}
 				
+				// Pvp event:
 				EntityDamageByEntityEvent edbeEvent = new EntityDamageByEntityEvent(event.getPlayer(), entity, DamageCause.ENTITY_ATTACK, 0);
-				SagaEventHandler.handlePvp(new SagaPvpEvent(sagaPlayer, targetPlayer, sagaPlayer.getSagaChunk(), targetPlayer.getSagaChunk(), edbeEvent));
-
-				if(edbeEvent.isCancelled()) continue;
+				Saga.plugin().getServer().getPluginManager().callEvent(edbeEvent);
+				if(edbeEvent.isCancelled()) return false;
 				
 			}
 			
@@ -93,7 +93,7 @@ public class Force extends Ability{
 		}
 		
 		// Push back:
-		double speed = secondaryFunction.value(skillLevel);
+		double speed = getDefinition().getFunction(POWER_KEY).value(abilityLevel);
 		Integer pushed = 0;
 		
 		for (LivingEntity entity : filteredEntities) {
@@ -115,14 +115,11 @@ public class Force extends Ability{
 			
 		}
 		
-		// Award exp:
-		Double awardedExp = awardExperience(pushed);
-		
 		// Statistics:
-		StatisticsManager.manager().onAbilityUse(getName(), awardedExp);
+		StatisticsManager.manager().onAbilityUse(getName(), 0.0);
 		
 		// Effect:
-		sagaPlayer.playeSpellEffect();
+		AbilityEffects.playSpellCast(sagaPlayer);
 		
 		return true;
 		

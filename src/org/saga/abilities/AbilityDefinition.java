@@ -1,10 +1,14 @@
 package org.saga.abilities;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Set;
 
 import org.bukkit.Material;
-import org.saga.Saga;
+import org.saga.SagaLogger;
+import org.saga.player.SagaPlayer;
 import org.saga.utility.TwoPointFunction;
 
 
@@ -18,24 +22,29 @@ public class AbilityDefinition{
 	
 	
 	/**
-	 * Ability class
+	 * Ability class.
 	 */
 	private String className;
 	
 	/**
-	 * Profession name.
+	 * Ability name.
 	 */
 	private String name;
-	
-	/**
-	 * Activation type.
-	 */
-	private ActivationType activationType;
 
 	/**
-	 * Used material.
+	 * Activation item.
 	 */
-	private Material usedMaterial;
+	private HashSet<Material> activationItem;
+	
+	/**
+	 * Activation action.
+	 */
+	private ActivationAction activationAction;
+	
+	/**
+	 * Used item.
+	 */
+	private Material usedItem;
 	
 	/**
 	 * Used amount.
@@ -51,44 +60,31 @@ public class AbilityDefinition{
 	 * Active for.
 	 */
 	private TwoPointFunction active;
-	
-	/**
-	 * Primary level function.
-	 */
-	private TwoPointFunction primaryFunction;
-	
-	/**
-	 * Secondary level function.
-	 */
-	private TwoPointFunction secondaryFunction;
-	
-	/**
-	 * Base skills.
-	 */
-	private HashSet<String> baseSkills;
-	
-	/**
-	 * Experience reward.
-	 */
-	private TwoPointFunction expReward;
 
+	/**
+	 * Usage description.
+	 */
+	private String usage;
+	
 	/**
 	 * Description.
 	 */
 	private String description;
 
 	/**
-	 * Primary function name.
+	 * Attribute requirements.
 	 */
-	private String primaryStat;
-	
+	private Hashtable<String, TwoPointFunction> attributeRequirements;
+
 	/**
-	 * Secondary function name.
+	 * Ability functions.
 	 */
-	private String secondaryStat;
+	private Hashtable<String, TwoPointFunction> functions;
 	
 	
-	// Initialization:
+	
+	
+	// Initialisation:
 	/**
 	 * Used by gson.
 	 * 
@@ -110,111 +106,86 @@ public class AbilityDefinition{
 	}
 	
 	/**
-	 * Completes the definition. Abilities need to be added.
+	 * Completes the definition.
 	 * 
 	 * @return integrity.
 	 */
-	public boolean complete() {
+	public void complete() {
 
-		
-		boolean integrity=true;
 		
 		if(className == null){
 			className = "invalid";
-			Saga.severe(this, "className field failed to initialize", "setting default");
-			integrity=false;
+			SagaLogger.nullField(this, "className");
 		}
 		
 		if(name == null){
 			name = "invalid";
-			Saga.severe(this, "name field failed to initialize", "setting default");
-			integrity=false;
+			SagaLogger.nullField(this, "name");
 		}
 		
-		if(activationType == null){
-			activationType = ActivationType.INSTANT;
-			Saga.severe(this, "activationType field failed to initialize", "setting default");
-			integrity=false;
+		if(activationItem == null){
+			activationItem = new HashSet<Material>();
+			SagaLogger.nullField(this, "activationItem");
 		}
 		
-		if(usedMaterial == null){
-			usedMaterial = Material.AIR;
-			Saga.severe(this, "usedMaterial field failed to initialize", "setting default");
-			integrity=false;
+		if(activationAction == null){
+			activationAction = ActivationAction.RIGHT_CLICK;
+			SagaLogger.nullField(this, "activationAction");
+		}
+		
+		if(usedItem == null){
+			usedItem = Material.AIR;
+			SagaLogger.nullField(this, "usedItem");
 		}
 		
 		if(usedAmount == null){
 			usedAmount = new TwoPointFunction(0.0);
-			Saga.severe(this, "usedAmount field failed to initialize", "setting default");
-			integrity=false;
+			SagaLogger.nullField(this, "usedAmount");
 		}
 		
 		if(cooldown == null){
 			cooldown = new TwoPointFunction(0.0);
-			Saga.severe(this, "cooldown field failed to initialize", "setting default");
-			integrity=false;
+			SagaLogger.nullField(this, "cooldown");
 		}
 		
 		if(active == null){
 			active = new TwoPointFunction(0.0);
-			Saga.severe(this, "active field failed to initialize", "setting default");
-			integrity=false;
+			SagaLogger.nullField(this, "active");
 		}
-		
-		if(primaryFunction == null){
-			primaryFunction = new TwoPointFunction(0.0);
-			Saga.severe(this, "primaryFunction field failed to initialize", "setting default");
-			integrity=false;
+
+		if(usage == null){
+			usage = "";
+			SagaLogger.nullField(this, "usage");
 		}
-		integrity = primaryFunction.complete() && integrity;
-		
-		if(secondaryFunction == null){
-			secondaryFunction = new TwoPointFunction(0.0);
-			Saga.severe(this, "secondaryFunction field failed to initialize", "setting default");
-			integrity=false;
-		}
-		integrity = secondaryFunction.complete() && integrity;
-		
-		if(baseSkills == null){
-			baseSkills = new HashSet<String>();
-			Saga.severe(this, "baseSkills field failed to initialize", "setting default");
-			integrity=false;
-		}
-		if(baseSkills.remove(null)){
-			Saga.severe(this, "baseSkills field element(s) failed to initialize", "setting default");
-			integrity=false;
-		}
-		
-		if(expReward == null){
-			expReward = new TwoPointFunction(0.0);
-			Saga.severe(this, "expReward field failed to initialize", "setting default");
-			integrity=false;
-		}
-		integrity = expReward.complete() && integrity;
 
 		if(description == null){
-			description = "<no description>";
-			Saga.severe(this, "description field failed to initialize", "setting default");
-			integrity = false;
+			description = "";
+			SagaLogger.nullField(this, "description");
 		}
 		
-		if(primaryStat == null){
-			primaryStat = "";
-			Saga.severe(this, "primaryStat field failed to initialize", "setting default");
-			integrity = false;
+		if(attributeRequirements == null){
+			attributeRequirements = new Hashtable<String, TwoPointFunction>();
+			SagaLogger.nullField(this, "attributeRequirements");
+		}
+		Collection<TwoPointFunction> reqFunctions = attributeRequirements.values();
+		for (TwoPointFunction reqFunction : reqFunctions) {
+			reqFunction.complete();
 		}
 		
-		if(secondaryStat == null){
-			secondaryStat = "";
-			Saga.severe(this, "secondaryStat field failed to initialize", "setting default");
-			integrity = false;
+		if(functions == null){
+			functions = new Hashtable<String, TwoPointFunction>();
+			SagaLogger.nullField(this, "functions");
 		}
-		
-		return integrity;
+		Collection<TwoPointFunction> functionsElements = functions.values();
+		for (TwoPointFunction function : functionsElements) {
+			function.complete();
+		}
 		
 		
 	}
 
+	
+	
 	
 	// Interaction:
 	/**
@@ -235,13 +206,33 @@ public class AbilityDefinition{
 		return name;
 	}
 	
+	
 	/**
-	 * Gets the usedMaterial.
+	 * Gets the activation items.
 	 * 
-	 * @return the usedMaterial
+	 * @return activation item
 	 */
-	public Material getUsedMaterial() {
-		return usedMaterial;
+	public HashSet<Material> getActivationItems() {
+		return activationItem;
+	}
+	
+	/**
+	 * Gets the activationAction.
+	 * 
+	 * @return the activationAction
+	 */
+	public ActivationAction getActivationAction() {
+		return activationAction;
+	}
+	
+
+	/**
+	 * Gets the used item.
+	 * 
+	 * @return used item, AIR if none
+	 */
+	public Material getUsedItem() {
+		return usedItem;
 	}
 
 	/**
@@ -260,10 +251,10 @@ public class AbilityDefinition{
 	 * @param level level
 	 * @return amount of used material
 	 */
-	public Integer getAbsoluteUsedAmount(Integer level) {
+	public Integer getMaxAmount(Integer level) {
 		return (int)Math.ceil(usedAmount.value(level));
 	}
-
+	
 	/**
 	 * Gets the cooldown.
 	 * 
@@ -282,50 +273,70 @@ public class AbilityDefinition{
 		return active.value(level.shortValue()).intValue();
 	}
 
+	
 	/**
-	 * Gets the primaryFunction.
+	 * Checks ability attribute requirements.
 	 * 
-	 * @return the primaryFunction
+	 * @param sagaPlayer saga player
+	 * @param abilityScore ability score
+	 * @return true if requirements are met
 	 */
-	public TwoPointFunction getPrimaryFunction() {
-		return primaryFunction;
+	public boolean checkAttributes(SagaPlayer sagaPlayer, Integer abilityScore) {
+
+
+		Set<String> attributeNames = attributeRequirements.keySet();
+		
+		for (String attrName : attributeNames) {
+			
+			if(sagaPlayer.getAttributeScore(attrName) < attributeRequirements.get(attrName).intValue(abilityScore)){
+				return false;
+			}
+			
+		}
+		
+		return true;
+		
+
 	}
 
 	/**
-	 * Gets the secondaryFunction.
+	 * Gets attribute requirement.
 	 * 
-	 * @return the secondaryFunction
+	 * @param attribute attribute
+	 * @param abilityScore ability score
+	 * @return ability attribute requirement
 	 */
-	public TwoPointFunction getSecondaryFunction() {
-		return secondaryFunction;
-	}
+	public Integer getAttrReq(String attribute, Integer abilityScore) {
 
-	/**
-	 * Gets the activationType.
-	 * 
-	 * @return the activationType
-	 */
-	public ActivationType getActivationType() {
-		return activationType;
+		
+		TwoPointFunction function = attributeRequirements.get(attribute);
+		if(function == null) return 0;
+		
+		return function.intValue(abilityScore);
+		
+		
 	}
 	
 	/**
-	 * Gets the base skills.
+	 * Gets a function for the given key.
 	 * 
-	 * @return the base skills
+	 * @param key key
+	 * @return function for the given key, 0 if none
 	 */
-	public HashSet<String> getBaseSkills() {
-		return baseSkills;
+	public TwoPointFunction getFunction(String key) {
+
+		TwoPointFunction function = functions.get(key);
+		
+		if(function == null){
+			SagaLogger.severe(this, "failed to retrive function for " + key + " key");
+			return new TwoPointFunction(0.0);
+		}
+		
+		return function;
+
 	}
 	
-	/**
-	 * Gets the expReward.
-	 * 
-	 * @return the expReward
-	 */
-	public Double getExpReward(Integer multiplier) {
-		return expReward.value(multiplier);
-	}
+	
 	
 	
 	// Info:
@@ -337,23 +348,14 @@ public class AbilityDefinition{
 	public String getDescription() {
 		return description;
 	}
-	
+
 	/**
-	 * Gets the primaryStat.
+	 * Gets the usage description.
 	 * 
-	 * @return the primaryStat
+	 * @return the usage description
 	 */
-	public String getPrimaryStat() {
-		return primaryStat;
-	}
-	
-	/**
-	 * Gets the secondaryStat.
-	 * 
-	 * @return the secondaryStat
-	 */
-	public String getSecondaryStat() {
-		return secondaryStat;
+	public String getUsage() {
+		return usage;
 	}
 
 	
@@ -369,17 +371,7 @@ public class AbilityDefinition{
 	}
 	
 	
-	// Types
-	public enum ActivationType{
-		
-		INSTANT,
-		SINGLE_USE,
-		TIMED,
-		TOGGLE,
-		PASSIVE;
-		
-	}
-	
+	// Types:
 	public enum ActivationAction{
 		
 		LEFT_CLICK,

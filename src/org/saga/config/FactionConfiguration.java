@@ -3,11 +3,11 @@ package org.saga.config;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.saga.Saga;
-import org.saga.constants.IOConstants.WriteReadType;
+import org.saga.SagaLogger;
 import org.saga.factions.FactionDefinition;
+import org.saga.saveload.Directory;
+import org.saga.saveload.WriterReader;
 import org.saga.utility.TwoPointFunction;
-import org.saga.utility.WriterReader;
 
 import com.google.gson.JsonParseException;
 
@@ -89,55 +89,55 @@ public class FactionConfiguration {
 		boolean integrity = true;
 		
 		if(factionOnlyPvp == null){
-			Saga.severe(getClass(), "failed to initialize factionOnlyPvp field", "setting default");
+			SagaLogger.severe(getClass(), "failed to initialize factionOnlyPvp field");
 			factionOnlyPvp = true;
 			integrity=false;
 		}
 		
 		if(pvpFactionOnlyMessage == null){
-			Saga.severe(getClass(), "failed to initialize pvpFactionOnlyMessage field", "setting default");
+			SagaLogger.severe(getClass(), "failed to initialize pvpFactionOnlyMessage field");
 			pvpFactionOnlyMessage = "Only factions can take part in pvp.";
 			integrity=false;
 		}
 		
 		if(prefixNameSeparator == null){
-			Saga.severe(getClass(), "failed to initialize prefixNameSeparator field", "setting default");
+			SagaLogger.severe(getClass(), "failed to initialize prefixNameSeparator field");
 			prefixNameSeparator = "-";
 			integrity=false;
 		}
 		
 		if(formationAmount == null){
-			Saga.severe(getClass(), "formationAmount field failed to initialize", "setting default");
+			SagaLogger.severe(getClass(), "formationAmount field failed to initialize");
 			formationAmount = 3;
 			integrity=false;
 		}
 		
 		if(factionDefinition == null){
-			Saga.severe(getClass(), "factionDefinition field not initialized", "setting default");
+			SagaLogger.severe(getClass(), "factionDefinition field not initialized");
 			factionDefinition = FactionDefinition.defaultDefinition();
 			integrity=false;
 		}
 		
 		if(factionDefaultRank == null){
-			Saga.severe(getClass(), "factionDefaultRank field not initialized", "setting default");
+			SagaLogger.severe(getClass(), "factionDefaultRank field not initialized");
 			factionDefaultRank = "novice";
 			integrity=false;
 		}
 		
 		if(factionOwnerRank == null){
-			Saga.severe(getClass(), "factionDefaultRank field not initialized", "setting default");
+			SagaLogger.severe(getClass(), "factionDefaultRank field not initialized");
 			factionDefaultRank = "novice";
 			integrity=false;
 		}
 		
 		if(factionOwnerRank == null){
-			Saga.severe(getClass(), "factionOwnerRank field not initialized", "setting default");
+			SagaLogger.severe(getClass(), "factionOwnerRank field not initialized");
 			factionOwnerRank = "grandmaster";
 			integrity=false;
 		}
 		
 		if(levelsPerActivePlayers == null){
-			Saga.severe(getClass(), "levelsPerActivePlayers field not initialized", "setting default");
+			SagaLogger.severe(getClass(), "levelsPerActivePlayers field not initialized");
 			levelsPerActivePlayers = new TwoPointFunction(1.0);
 			integrity=false;
 		}
@@ -152,50 +152,40 @@ public class FactionConfiguration {
 	
 	// Load unload:
 	/**
-	 * Loads the configuration.
+	 * Loads configuration.
 	 * 
-	 * @return experience configuration
+	 * @return configuration
 	 */
 	public static FactionConfiguration load(){
+
 		
-		
-		boolean integrityCheck = true;
-		
-		// Load:
 		FactionConfiguration config;
 		try {
-			config = WriterReader.readFactionConfig();
+			
+			config = WriterReader.read(Directory.FACTION_CONFIG, FactionConfiguration.class);
+			
 		} catch (FileNotFoundException e) {
-			Saga.severe(FactionConfiguration.class, "file not found", "loading defaults");
+			
+			SagaLogger.severe(BalanceConfiguration.class, "configuration not found");
 			config = new FactionConfiguration();
-			integrityCheck = false;
+			
 		} catch (IOException e) {
-			Saga.severe(FactionConfiguration.class, "failed to load", "loading defaults");
+			
+			SagaLogger.severe(ChunkGroupConfiguration.class, "failed to read configuration: " + e.getClass().getSimpleName());
 			config = new FactionConfiguration();
-			integrityCheck = false;
+			
 		} catch (JsonParseException e) {
-			Saga.severe(FactionConfiguration.class, "failed to parse", "loading defaults");
-			Saga.info("Parse message :" + e.getMessage());
+
+			SagaLogger.severe(ChunkGroupConfiguration.class, "failed to parse configuration: " + e.getClass().getSimpleName());
+			SagaLogger.info("message: " + e.getMessage());
 			config = new FactionConfiguration();
-			integrityCheck = false;
-		}
-		
-		// Integrity check and complete:
-		integrityCheck = config.complete() && integrityCheck;
-		
-		// Write default if integrity check failed:
-		if (!integrityCheck) {
-			Saga.severe(FactionConfiguration.class, "integrity check failed", "writing default fixed version");
-			try {
-				WriterReader.writeFactionConfig(config, WriteReadType.CONFIG_DEFAULTS);
-			} catch (IOException e) {
-				Saga.severe(FactionConfiguration.class, "write failed", "ignoring write");
-				Saga.info("Write fail cause:" + e.getClass().getSimpleName() + ":" + e.getMessage());
-			}
+			
 		}
 		
 		// Set instance:
 		instance = config;
+		
+		config.complete();
 		
 		return config;
 		

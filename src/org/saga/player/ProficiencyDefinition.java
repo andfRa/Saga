@@ -11,7 +11,6 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Creature;
 import org.saga.Saga;
 import org.saga.abilities.AbilityDefinition;
-import org.saga.abilities.AbilityDefinition.ActivationAction;
 import org.saga.factions.SagaFaction.FactionPermission;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.settlements.Settlement.SettlementPermission;
@@ -52,11 +51,6 @@ public class ProficiencyDefinition{
 	 */
 	private Hashtable<String, HashSet<Material>> bindMaterials;
 
-	/**
-	 * Ability bind actions.
-	 */
-	private Hashtable<String, ActivationAction> bindActions;
-	
 	/**
 	 * Skill maximum values.
 	 */
@@ -103,7 +97,7 @@ public class ProficiencyDefinition{
 	private Hashtable<String, Double> creatureExp;
 	
 	
-	// Initialization:
+	// Initialisation:
 	/**
 	 * Used by gson.
 	 * 
@@ -192,12 +186,6 @@ public class ProficiencyDefinition{
 				integrity=false;
 			}
 			
-		}
-		
-		if(bindActions == null){
-			bindActions = new Hashtable<String, AbilityDefinition.ActivationAction>();
-			Saga.severe(this, "bindActions field failed to initialize", "setting default");
-			integrity=false;
 		}
 		
 		if(skillMax == null){
@@ -353,42 +341,6 @@ public class ProficiencyDefinition{
 		return new HashSet<String>(abilities);
 	}
 	
-	/**
-	 * Checks if the ability is binded to the given material and action.
-	 * 
-	 * @param name ability name
-	 * @param material material
-	 * @param action action
-	 * @return true if binded
-	 */
-	public boolean isAbilityBinded(String name, Material material, ActivationAction action) {
-
-		
-		if(bindActions.get(name) != action) return false;
-		
-		HashSet<Material> materials = bindMaterials.get(name);
-		if(materials == null) return false;
-		
-		return materials.contains(material);
-		
-		
-	}
-	
-	/**
-	 * Gets ability bind action.
-	 * 
-	 * @param abilityName ability name
-	 * @return bind action, {@link ActivationAction#NONE} if none
-	 */
-	public ActivationAction getBindAction(String abilityName) {
-		
-		ActivationAction action = bindActions.get(abilityName);
-		if(action == null) action = ActivationAction.NONE;
-		
-		return action;
-		
-	}
-
 	/**
 	 * Gets ability bind materials.
 	 * 

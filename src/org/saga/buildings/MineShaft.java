@@ -4,51 +4,17 @@ package org.saga.buildings;
 public class MineShaft extends Building{
 
 	
-	// Initialization:
+	// Initialisation:
 	/**
-	 * Initializes
+	 * Creates a building from the definition.
 	 * 
-	 * @param pointCost point cost
-	 * @param moneyCost money cost
-	 * @param proficiencies proficiencies
+	 * @param definition building definition
 	 */
-	private MineShaft(String name) {
+	public MineShaft(BuildingDefinition definition) {
 		
-		super("");
-		
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#completeExtended()
-	 */
-	@Override
-	public boolean completeExtended() {
-		
-
-		boolean integrity = true;
-		
-//		if(signs == null){
-//			signs = new ArrayList<BuildingSign>();
-//			Saga.severe(this, "signs field failed to initialize", "setting default");
-//			integrity = false;
-//		}
-		
-		return integrity;
-		
+		super(definition);
 		
 	}
 
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#blueprint()
-	 */
-	@Override
-	public Building blueprint() {
-		return new MineShaft("");
-	}
-	
 	
 }

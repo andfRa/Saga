@@ -4,12 +4,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Hashtable;
 
-import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
 import org.saga.abilities.AbilityDefinition;
-import org.saga.constants.IOConstants.WriteReadType;
-import org.saga.utility.WriterReader;
+import org.saga.exceptions.InvalidAbilityException;
+import org.saga.saveload.Directory;
+import org.saga.saveload.WriterReader;
 
 import com.google.gson.JsonParseException;
 
@@ -30,6 +32,19 @@ public class AbilityConfiguration {
 		return instance;
 	}
 	
+	
+	
+	
+	/**
+	 * Starting ability scores.
+	 */
+	private Hashtable<String, Integer> startingScores;
+	
+	/**
+	 * Maximum ability score.
+	 */
+	public Integer maxAbilityScore;
+	
 	/**
 	 * Abilities.
 	 */
@@ -37,41 +52,41 @@ public class AbilityConfiguration {
 	
 	
 	
-	// Initialization:
-	/**
-	 * Used by gson.
-	 * 
-	 */
-	public AbilityConfiguration() {
-	}
 	
+	// Initialisation:
 	/**
 	 * Completes construction.
 	 * 
 	 */
-	public boolean complete() {
+	public void complete() {
 		
 		
-		boolean integrity = true;
+		if(startingScores == null){
+			startingScores = new Hashtable<String, Integer>();
+			SagaLogger.nullField(getClass(), "startingScores");
+		}
 		
-
+		if(maxAbilityScore == null){
+			maxAbilityScore = 0;
+			SagaLogger.nullField(getClass(), "maxAbilityScore");
+		}
+		
 		if(definitions == null){
-			Saga.severe(getClass(), "failed to intialize definitions field", "setting default");
+			SagaLogger.nullField(getClass(), "definitions");
 			definitions = new ArrayList<AbilityDefinition>();
-			integrity = false;
 		}
 		for (int i = 0; i < definitions.size(); i++) {
 			
 			if(definitions.get(i) == null){
-				Saga.severe(getClass(), "failed to intialize definitions field element", "removing element");
+				SagaLogger.nullField(getClass(), "definitions element");
 				definitions.remove(i);
 				i--;
 				continue;
 			}
 			try {
-				integrity = definitions.get(i).complete() && integrity;
+				definitions.get(i).complete();
 			} catch (Exception e) {
-				Saga.severe(getClass(), "failed to complete " + definitions.get(i).getName() + " definition: " + e.getClass().getSimpleName() + ":" + e.getMessage(), "removing element");
+				SagaLogger.severe(getClass(), "failed to complete " + definitions.get(i).getName() + " definition: " + e.getClass().getSimpleName() + ":" + e.getMessage());
 				definitions.remove(i);
 				i--;
 				continue;
@@ -79,11 +94,13 @@ public class AbilityConfiguration {
 			
 		}
 
-		return integrity;
-		
 		
 	}
+
 	
+	
+	
+	// Interaction:
 	/**
 	 * Gets the ability definition.
 	 * 
@@ -98,6 +115,18 @@ public class AbilityConfiguration {
 		return null;
 		
 	}
+	
+	/**
+	 * Gets the ability definitions.
+	 * 
+	 * @return definitions
+	 */
+	public ArrayList<AbilityDefinition> getDefinitions() {
+		
+		return new ArrayList<AbilityDefinition>(definitions);
+		
+	}
+
 	
 	/**
 	 * Creates an ability.
@@ -124,7 +153,7 @@ public class AbilityConfiguration {
 			Constructor<? extends Ability> co = clca.getConstructor(AbilityDefinition.class);
 			return co.newInstance(definition);
 			
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			
 			throw new InvalidAbilityException(name, e.getClass().getSimpleName() + ":" + e.getMessage());
 
@@ -133,8 +162,6 @@ public class AbilityConfiguration {
 		
 	}
 	
-	
-	// Interaction:
 	/**
 	 * Gets all ability names.
 	 * 
@@ -152,58 +179,60 @@ public class AbilityConfiguration {
 		return abilityNames;
 		
 	}
+	
+	
+	/**
+	 * Gets the startingScores.
+	 * 
+	 * @return the startingScores
+	 */
+	public Hashtable<String, Integer> getStartingScores() {
+		return new Hashtable<String, Integer>(startingScores);
+	}
 
+	
+	
+	
 	// Load unload:
 	/**
-	 * Loads the configuration.
+	 * Loads configuration.
 	 * 
-	 * @return experience configuration
+	 * @return configuration
 	 */
 	public static AbilityConfiguration load(){
+
 		
-		
-		boolean integrityCheck = true;
-		
-		// Load:
-		String configName = "ability configuration";
 		AbilityConfiguration config;
 		try {
-			config = WriterReader.readAbilityConfig();
+			
+			config = WriterReader.read(Directory.ABILITY_CONFIG, AbilityConfiguration.class);
+			
 		} catch (FileNotFoundException e) {
-			Saga.severe("Missing " + configName + ". Loading defaults.");
+			
+			SagaLogger.severe(AbilityConfiguration.class, "configuration not found");
 			config = new AbilityConfiguration();
-			integrityCheck = false;
+			
 		} catch (IOException e) {
-			Saga.severe("Failed to load " + configName + ". Loading defaults.");
+			
+			SagaLogger.severe(AbilityConfiguration.class, "failed to read configuration: " + e.getClass().getSimpleName());
 			config = new AbilityConfiguration();
-			integrityCheck = false;
+			
 		} catch (JsonParseException e) {
-			Saga.severe("Failed to parse " + configName + ". Loading defaults.");
-			Saga.info("Parse message :" + e.getMessage());
+
+			SagaLogger.severe(AbilityConfiguration.class, "failed to parse configuration: " + e.getClass().getSimpleName());
+			SagaLogger.info("message: " + e.getMessage());
 			config = new AbilityConfiguration();
-			integrityCheck = false;
+			
 		}
 		
 		// Set instance:
 		instance = config;
 		
-		// Integrity check and complete:
-		integrityCheck = config.complete() && integrityCheck;
-		
-		// Write default if integrity check failed:
-		if (!integrityCheck) {
-			Saga.severe("Integrity check failed for " + configName);
-			Saga.info("Writing " + configName + " with fixed default values. Edit and rename to use it.");
-			try {
-				WriterReader.writeAbilityConfig(config, WriteReadType.CONFIG_DEFAULTS);
-			} catch (IOException e) {
-				Saga.severe("Profession information write failure. Ignoring write.");
-			}
-		}
+		config.complete();
 		
 		return config;
 		
-		
+	
 	}
 	
 	/**
@@ -214,55 +243,5 @@ public class AbilityConfiguration {
 		instance = null;
 	}
 	
-	
-	// Types:
-	/**
-	 * Used when an invalid ability request is made.
-	 * 
-	 * @author andf
-	 *
-	 */
-	public static class InvalidAbilityException extends Exception{
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		
-		/**
-		 * Sets a ability name.
-		 * 
-		 * @param name name
-		 */
-		public InvalidAbilityException(String name) {
-			super("ability name="+name);
-		}
-		
-		/**
-		 * Sets a ability name and cause.
-		 * 
-		 * @param name name
-		 * @param cause cause
-		 */
-		public InvalidAbilityException(String name, String cause) {
-			super("ability name=" + name + ", cause=" + cause);
-		}
-		
-		
-	}
-	
-	
-	public static void main(String[] args) {
-		
-		
-		AbilityConfiguration.load();
-		
-		try {
-			createAbility("bash");
-		} catch (InvalidAbilityException e) {
-			e.printStackTrace();
-		}
-		
-	}
 	
 }

@@ -7,6 +7,7 @@ import org.saga.Clock.SecondTicker;
 import org.saga.Saga;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.GuardianRuneSign;
+import org.saga.exceptions.InvalidBuildingException;
 import org.saga.utility.Cooldown;
 
 
@@ -23,19 +24,18 @@ public class Academy extends Building implements SecondTicker, Cooldown{
 	 */
 	transient private boolean clockActive; 
 	
-	// Initialization:
+	
+	// Initialisation:
 	/**
-	 * Initializes
+	 * Creates a building from the definition.
 	 * 
-	 * @param pointCost point cost
-	 * @param moneyCost money cost
-	 * @param proficiencies proficiencies
+	 * @param definition building definition
 	 */
-	private Academy(String name) {
+	public Academy(BuildingDefinition definition) {
 		
 		
-		super("");
-		
+		super(definition);
+
 		cooldown = 0;
 		clockActive = false;
 		
@@ -48,10 +48,10 @@ public class Academy extends Building implements SecondTicker, Cooldown{
 	 * @see org.saga.buildings.Building#completeExtended()
 	 */
 	@Override
-	public boolean completeExtended() {
+	public boolean complete() throws InvalidBuildingException {
 		
 
-		boolean integrity = true;
+		boolean integrity = super.complete();
 		
 		if(cooldown == null){
 			cooldown = 0;
@@ -78,16 +78,6 @@ public class Academy extends Building implements SecondTicker, Cooldown{
 		
 	}
 
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#blueprint()
-	 */
-	@Override
-	public Building blueprint() {
-		return new Academy("");
-	}
-
 	
 	// Cooldown:
 	/* 
@@ -96,7 +86,7 @@ public class Academy extends Building implements SecondTicker, Cooldown{
 	 * @see org.saga.Clock.SecondTicker#clockSecondTick()
 	 */
 	@Override
-	public void clockSecondTick() {
+	public boolean clockSecondTick() {
 		
 		
 		cooldown--;
@@ -104,6 +94,8 @@ public class Academy extends Building implements SecondTicker, Cooldown{
 		if(cooldown <= 0){
 			stopClock();
 		}
+
+		return true;
 		
 		
 	}

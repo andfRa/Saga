@@ -4,44 +4,16 @@ package org.saga.buildings;
 public class Forge extends Building{
 
 	
-	// Initialization:
+	// Initialisation:
 	/**
-	 * Initializes
+	 * Creates a building from the definition.
 	 * 
-	 * @param pointCost point cost
-	 * @param moneyCost money cost
-	 * @param proficiencies proficiencies
+	 * @param definition building definition
 	 */
-	private Forge(String name) {
+	public Forge(BuildingDefinition definition) {
 		
-		super("");
+		super(definition);
 		
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#completeExtended()
-	 */
-	@Override
-	public boolean completeExtended() {
-		
-
-		boolean integrity = true;
-		
-		return integrity;
-		
-		
-	}
-
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#blueprint()
-	 */
-	@Override
-	public Building blueprint() {
-		return new Forge("");
 	}
 	
 	

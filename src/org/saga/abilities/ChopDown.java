@@ -1,10 +1,8 @@
 package org.saga.abilities;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import org.bukkit.Effect;
-import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -19,6 +17,10 @@ import org.saga.utility.TextUtil;
 
 public class ChopDown extends Ability{
 
+	/**
+	 * Tree size key.
+	 */
+	private static String TREE_SIZE_KEY = "tree size";
 	
 	/**
 	 * Amount logs a tree can have.
@@ -31,9 +33,9 @@ public class ChopDown extends Ability{
 	private static Integer MINIMUM_LEAVES_LOGS_RATIO = 1;
 
 	
-	// Initialization:
+	// Initialisation:
 	/**
-	 * Initializes using definition.
+	 * Initialises using definition.
 	 * 
 	 * @param definition ability definition
 	 */
@@ -44,15 +46,21 @@ public class ChopDown extends Ability{
 	}
 
 	
-	// Ability usage:
+	// Usage:
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.abilities.Ability#trigger(org.bukkit.event.player.PlayerInteractEvent)
+	 */
 	@Override
-	public boolean instant(PlayerInteractEvent event) {
+	public boolean trigger(PlayerInteractEvent event) {
 
 		
-		// Check preuse:
-		if(!handlePreUse()){
-			return false;
-		}
+		ItemStack itemHand = event.getItem();
+		Player player = event.getPlayer();
+		
+		// Drops:
+		boolean triggered = false;
 		
 		// Pointing a log:
 		Block clickedBlock = event.getClickedBlock();
@@ -61,116 +69,54 @@ public class ChopDown extends Ability{
 		}
 		
 		// Get the tree:
-		ArrayList<Block> logs = new ArrayList<Block>();
-		logs.add(clickedBlock);
+		ArrayList<Block> blocks = new ArrayList<Block>();
+		blocks.add(clickedBlock);
 		ArrayList<Block> leaves = new ArrayList<Block>();
-		getTree(clickedBlock, logs, leaves);
+		getTree(clickedBlock, blocks, leaves);
 		
 		// Check ratio:
-		if(logs.size() == 0) return false;
-		double ratio = new Double(leaves.size()) / new Double(logs.size());
+		if(blocks.size() == 0) return false;
+		double ratio = new Double(leaves.size()) / new Double(blocks.size());
 		
 		if(ratio < MINIMUM_LEAVES_LOGS_RATIO){
 			
 			getSagaPlayer().message(notTree());
-			
 			return false;
+			
 		}
 		
 		// Tree to big:
-		Integer skillLevel = getSkillLevel();
-		Integer chopSize = getDefinition().getPrimaryFunction().value(skillLevel).intValue();
-		if(chopSize < logs.size()){
-			getSagaPlayer().message(notStroungEnough(logs.size(), chopSize));
+		Integer treeSize = getDefinition().getFunction(TREE_SIZE_KEY).value(getEffectiveScore()).intValue();
+		if(treeSize < blocks.size()){
+			
+			getSagaPlayer().message(notStroungEnough(blocks.size(), treeSize));
 			return false;
+			
 		}
-		
-		// Get player:
-		Player player = getSagaPlayer().getPlayer();
-		if(player == null){
-			Saga.severe(this, "failed to retrieve player", "ignoring request");
-			return false;
-		}
-		
-		ArrayList<ItemStack> remainDrops = new ArrayList<ItemStack>();
 		
 		// Chop down:
-		for (Block log : logs) {
+		for (Block block : blocks) {
 			
-			// Break:
-			if(!handleBreak(log, player, remainDrops)) return true;
+			// Send event:
+			BlockBreakEvent eventB = new BlockBreakEvent(block, player);
+			Saga.plugin().getServer().getPluginManager().callEvent(eventB);
+			if(eventB.isCancelled()) return triggered;
 			
-		}
-		
-		// Remaining drops:
-		for (ItemStack drop : remainDrops) {
-			handleDrop(drop, player.getLocation());
+			block.breakNaturally(itemHand);
+			getSagaPlayer().damageTool();
+			
+			triggered = true;
+			
 		}
 		
 		// Play effect:
 		player.playEffect(clickedBlock.getLocation(), Effect.STEP_SOUND, Material.LOG.getId());
 		
-		// Award exp:
-		Integer expval = logs.size();
-		Double awardedExp = awardExperience(expval);
-		
 		// Statistics:
-		StatisticsManager.manager().onAbilityUse(getName(), awardedExp);
+		StatisticsManager.manager().onAbilityUse(getName(), 0.0);
 		
 		return true;
 
-		
-	}
-	
-	/**
-	 * Handles block break.
-	 * 
-	 * @param block block
-	 * @param player player
-	 * @param dropCache remaining drops
-	 * @return true if continue
-	 */
-	private boolean handleBreak(Block block, Player player, ArrayList<ItemStack> dropCache) {
-
-		
-		// Air:
-		if(block.getType() == Material.AIR) return true;
-
-		// Call event:
-		BlockBreakEvent bbEvent = new BlockBreakEvent(block, player);
-		Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
-		if(bbEvent.isCancelled()) return false;
-		
-		// Break:
-		block.setType(Material.AIR);
-		
-		// Drop:
-		Collection<ItemStack> drops = block.getDrops();
-		for (ItemStack drop : drops) {
-
-			handleDrop(drop, block.getLocation());
-			
-		}
-		
-		// Damage tool:
-		getSagaPlayer().damageTool();
-		
-		return true;
-		
-		
-	}
-	
-	/**
-	 * Handles drop.
-	 * 
-	 * @param drop item
-	 * @param location location
-	 */
-	private void handleDrop(ItemStack drop, Location location) {
-
-		if(drop.getType() == Material.AIR) return;
-		
-		location.getWorld().dropItemNaturally(location, drop);
 		
 	}
 	
@@ -179,7 +125,7 @@ public class ChopDown extends Ability{
 	 * 
 	 * @param anchor anchor block
 	 * @param logs logs
-	 * @param leaves loeaves
+	 * @param leaves leaves
 	 */
 	private static void getTree(Block anchor, ArrayList<Block> logs, ArrayList<Block> leaves){
 		

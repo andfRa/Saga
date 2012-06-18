@@ -2,18 +2,19 @@ package org.saga.config;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 
 import org.bukkit.Material;
-import org.saga.Saga;
-import org.saga.constants.IOConstants.WriteReadType;
+import org.saga.SagaLogger;
 import org.saga.economy.TradeDeal;
 import org.saga.economy.TradeDeal.TradeDealType;
+import org.saga.saveload.Directory;
+import org.saga.saveload.WriterReader;
 import org.saga.utility.TwoPointFunction;
-import org.saga.utility.WriterReader;
 
 import com.google.gson.JsonParseException;
 
@@ -132,12 +133,7 @@ public class EconomyConfiguration {
 	public Double guardianRuneRechargeCost;
 
 	
-	// Skills:
-	/**
-	 * Skill upgrade costs.
-	 */
-	private TwoPointFunction skillUpgradeCost;
-
+	// Attributes:
 	/**
 	 * Respecification cost.
 	 */
@@ -155,7 +151,14 @@ public class EconomyConfiguration {
 	 */
 	public Double chunkGroupRenameCost;
 	
-	// Initialization:
+	/**
+	 * Ability upgrade costs.
+	 */
+	private Hashtable<String, TwoPointFunction> abilityUpgradeCosts;
+
+	
+	
+	// Initialisation:
 	/**
 	 * Used by gson.
 	 */
@@ -176,31 +179,31 @@ public class EconomyConfiguration {
 		
 		
 		if(playerCoins == null){
-			Saga.severe(getClass(), "playerCoins field not initialized", "setting default");
+			SagaLogger.severe(getClass(), "playerCoins field not initialized");
 			playerCoins = 0.0;
 			integrity = false;
 		}
 		
 		if(coinName == null){
-			Saga.severe(getClass(), "coinName field not initialized", "setting default");
+			SagaLogger.severe(getClass(), "coinName field not initialized");
 			coinName = "coins";
 			integrity = false;
 		}
 
 		if(prices == null){
-			Saga.severe(getClass(), "prices field not initialized", "setting default");
+			SagaLogger.severe(getClass(), "prices field not initialized");
 			prices = new Hashtable<Material, Double>();
 			integrity=false;
 		}
 		
 		if(priceSpread == null){
-			Saga.severe(getClass(), "priceSpreads field not initialized", "setting default");
+			SagaLogger.severe(getClass(), "priceSpreads field not initialized");
 			priceSpread = new TwoPointFunction(0.0);
 			integrity = false;
 		}
 		
 		if(itemWeights == null){
-			Saga.severe(getClass(), "itemWeights field not initialized", "setting default");
+			SagaLogger.severe(getClass(), "itemWeights field not initialized");
 			itemWeights = new Hashtable<Material, Double>();
 			integrity=false;
 		}
@@ -208,87 +211,95 @@ public class EconomyConfiguration {
 		createWeights();
 		
 		if(amount == null){
-			Saga.severe(getClass(), "amount field not initialized", "setting default");
+			SagaLogger.severe(getClass(), "amount field not initialized");
 			amount = new TwoPointFunction(0.0);
 			integrity = false;
 		}
 
 		if(amountSpread == null){
-			Saga.severe(getClass(), "amountSpread field not initialized", "setting default");
+			SagaLogger.severe(getClass(), "amountSpread field not initialized");
 			amountSpread = new TwoPointFunction(0.0);
 			integrity = false;
 		}
 		
 		if(days == null){
-			Saga.severe(getClass(), "days field not initialized", "setting default");
+			SagaLogger.severe(getClass(), "days field not initialized");
 			days = new TwoPointFunction(0.0);
 			integrity = false;
 		}
 
 		if(daysSpread == null){
-			Saga.severe(getClass(), "daysSpread field not initialized", "setting default");
+			SagaLogger.severe(getClass(), "daysSpread field not initialized");
 			daysSpread = new TwoPointFunction(0.0);
 			integrity = false;
 		}
 		
 		if(dealsPerPlayer == null){
-			Saga.severe(getClass(), "dealsPerPlayer field not initialized", "setting default");
+			SagaLogger.severe(getClass(), "dealsPerPlayer field not initialized");
 			dealsPerPlayer = new TwoPointFunction(0.5);
 			integrity=false;
 		}
 
 		if(dealsCreatePerPlayer == null){
-			Saga.severe(getClass(), "dealsCreatePerPlayer field not initialized", "setting default");
+			SagaLogger.severe(getClass(), "dealsCreatePerPlayer field not initialized");
 			dealsCreatePerPlayer = new TwoPointFunction(0.5);
 			integrity=false;
 		}
 
 		if(automBuyMult == null){
-			Saga.severe(getClass(), "automBuyMult field not initialized", "setting default");
+			SagaLogger.severe(getClass(), "automBuyMult field not initialized");
 			automBuyMult = 1.0;
 			integrity=false;
 		}
 
 		if(automSellMult == null){
-			Saga.severe(getClass(), "automSellMult field not initialized", "setting default");
+			SagaLogger.severe(getClass(), "automSellMult field not initialized");
 			automSellMult = 1.0;
 			integrity=false;
 		}
 		
 		if(exchangeDistance == null){
-			Saga.severe(getClass(), "exchangeDistance field not initialized", "setting default");
+			SagaLogger.severe(getClass(), "exchangeDistance field not initialized");
 			exchangeDistance = 10.0;
 			integrity=false;
 		}
 		
 		if(guardianRuneRechargeCost == null){
-			Saga.severe(getClass(), "guardianRuneRechargeCost field not initialized", "setting default");
+			SagaLogger.severe(getClass(), "guardianRuneRechargeCost field not initialized");
 			guardianRuneRechargeCost = 1000.0;
 			integrity=false;
 		}
 		
-		if(skillUpgradeCost == null){
-			Saga.severe(getClass(), "skillUpgradeCost field failed to initialize", "setting default");
-			skillUpgradeCost= new TwoPointFunction(10000.0);
-			integrity=false;
-		}
-		
 		if(respecCost == null){
-			Saga.severe(getClass(), "respecCost field failed to initialize", "setting default");
+			SagaLogger.severe(getClass(), "respecCost field failed to initialize");
 			respecCost= new TwoPointFunction(10000.0);
 			integrity=false;
 		}
 		
 		if(chunkGroupRenameCost == null){
-			Saga.severe(getClass(), "chunkGroupRenameCost field failed to initialize", "setting default");
+			SagaLogger.severe(getClass(), "chunkGroupRenameCost field failed to initialize");
 			chunkGroupRenameCost= 1000.0;
 			integrity=false;
 		}
 		
 		if(factionRenameCost == null){
-			Saga.severe(getClass(), "factionRenameCost field failed to initialize", "setting default");
+			SagaLogger.severe(getClass(), "factionRenameCost field failed to initialize");
 			factionRenameCost= 1000.0;
 			integrity=false;
+		}
+		
+		if(abilityUpgradeCosts == null){
+			abilityUpgradeCosts = new Hashtable<String, TwoPointFunction>();
+			SagaLogger.nullField(this, "abilityUpgradeCosts");
+		}
+		Collection<TwoPointFunction> costs = abilityUpgradeCosts.values();
+		for (TwoPointFunction twoPointFunction : costs) {
+			twoPointFunction.complete();
+		}
+		
+		if(abilityUpgradeCosts.get("default") == null){
+			abilityUpgradeCosts.put("default", new TwoPointFunction(0.0));
+			SagaLogger.severe(this, "abilityUpgradeCosts missing default element");
 		}
 		
 		return integrity;
@@ -387,25 +398,40 @@ public class EconomyConfiguration {
 
 	}
 	
-	// Skills:
+	
+	
+	
+	
+	// Attributes:
 	/**
-	 * Gets the skill coin cost.
+	 * Gets the respec cost.
 	 * 
-	 * @param currentMultiplier current skill multiplier
+	 * @param score attribute score
 	 * @return coin cost
 	 */
-	public Double getSkillCoinCost(Integer currentMultiplier) {
-		return skillUpgradeCost.value(currentMultiplier);
+	public Double getRespecCost(Integer score) {
+		return respecCost.value(score);
 	}
 	
+	
+	// Abilities:
 	/**
-	 * Gets the skill coin cost.
+	 * Gets ability upgrade cost.
 	 * 
-	 * @param level player level
-	 * @return coin cost
+	 * @param ability ability name
+	 * @param score ability score
+	 * @return upgrade cost
 	 */
-	public Double getRespecCost(Integer level) {
-		return respecCost.value(level);
+	public Double getAbilityUpgradeCost(String ability, Integer score) {
+
+
+		TwoPointFunction function = abilityUpgradeCosts.get(ability);
+		if(function == null) function =  abilityUpgradeCosts.get("default");
+		if(function == null) return 0.0;
+
+		return function.value(score);
+		
+		
 	}
 	
 	
@@ -446,56 +472,48 @@ public class EconomyConfiguration {
 	}
 	
 	
+	
+	
 	// Load unload:
 	/**
-	 * Loads the configuration.
+	 * Loads configuration.
 	 * 
-	 * @return experience configuration
+	 * @return configuration
 	 */
 	public static EconomyConfiguration load(){
 		
 		
-		boolean integrityCheck = true;
-		
-		// Load:
 		EconomyConfiguration config;
 		try {
-			config = WriterReader.readEconomyConfig();
+			
+			config = WriterReader.read(Directory.ECONOMY_CONFIG, EconomyConfiguration.class);
+			
 		} catch (FileNotFoundException e) {
-			Saga.severe(EconomyConfiguration.class, "file not found", "loading defaults");
+			
+			SagaLogger.severe(BalanceConfiguration.class, "configuration not found");
 			config = new EconomyConfiguration();
-			integrityCheck = false;
+			
 		} catch (IOException e) {
-			Saga.severe(EconomyConfiguration.class, "failed to load", "loading defaults");
+			
+			SagaLogger.severe(ChunkGroupConfiguration.class, "failed to read configuration: " + e.getClass().getSimpleName());
 			config = new EconomyConfiguration();
-			integrityCheck = false;
+			
 		} catch (JsonParseException e) {
-			Saga.severe(EconomyConfiguration.class, "failed to parse", "loading defaults");
-			Saga.info("Parse message :" + e.getMessage());
+
+			SagaLogger.severe(ChunkGroupConfiguration.class, "failed to parse configuration: " + e.getClass().getSimpleName());
+			SagaLogger.info("message: " + e.getMessage());
 			config = new EconomyConfiguration();
-			integrityCheck = false;
-		}
-		
-		// Integrity check and complete:
-		integrityCheck = config.complete() && integrityCheck;
-		
-		// Write default if integrity check failed:
-		if (!integrityCheck) {
-			Saga.severe(EconomyConfiguration.class, "integrity check failed", "writing default fixed version");
-			try {
-				WriterReader.writeEconomyConfig(config, WriteReadType.CONFIG_DEFAULTS);
-			} catch (IOException e) {
-				Saga.severe(EconomyConfiguration.class, "write failed", "ignoring write");
-				Saga.info("Write fail cause:" + e.getClass().getSimpleName() + ":" + e.getMessage());
-			}
+			
 		}
 		
 		// Set instance:
 		instance = config;
 		
+		config.complete();
+		
 		return config;
 		
-		
+			
 	}
 	
 	/**
@@ -505,15 +523,8 @@ public class EconomyConfiguration {
 	public static void unload(){
 		instance = null;
 	}
+
+
 	
-	public static void main(String[] args) {
-
-
-		for (int i = 0; i < 100; i++) {
-			System.out.println(nextGaussian(20.0, 4.0));
-		}
-		
-		
-	}
 	
 }

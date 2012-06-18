@@ -76,7 +76,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	@Override
 	protected boolean completeExtended() {
 		
-
+		
 		boolean integrity=true;
 		
 		if(level == null){
@@ -161,7 +161,6 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		
 	}
 	
-	// Chunk group management:
 	/**
 	 * Adds a new settlement.
 	 * 
@@ -176,9 +175,9 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 
 		// Set owners role:
 		try {
-			settlement.setRole(owner, ChunkGroupConfiguration.config().settlementOwnerRole);
+			settlement.setRole(owner, settlement.getDefinition().ownerRole);
 		} catch (InvalidProficiencyException e) {
-			Saga.severe(settlement, "failed to set " + ChunkGroupConfiguration.config().settlementDefaultRole + " role, because the role name is invalid", "ignoring request");
+			Saga.severe(settlement, "failed to set " + settlement.getDefinition().ownerRole + " role, because the role name is invalid", "ignoring request");
 		}
 		
 		
@@ -199,42 +198,11 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 
 		// Set default role:
 		try {
-			setRole(sagaPlayer, ChunkGroupConfiguration.config().settlementDefaultRole);
+			setRole(sagaPlayer, getDefinition().defaultRole);
 		} catch (InvalidProficiencyException e) {
-			Saga.severe(this, "failed to set " + ChunkGroupConfiguration.config().settlementDefaultRole + " role, because the role name is invalid", "ignoring request");
+			Saga.severe(this, "failed to set " + getDefinition().defaultRole + " role, because the role name is invalid", "ignoring request");
 		}
 		
-		
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#registerPlayer3(org.saga.SagaPlayer)
-	 */
-	@Override
-	public void registerPlayer(SagaPlayer sagaPlayer) {
-
-		// Register role:
-		Proficiency role = getRole(sagaPlayer.getName());
-		if(role != null) sagaPlayer.registerRole(role);
-		
-		super.registerPlayer(sagaPlayer);
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#unregisterPlayer3(org.saga.SagaPlayer)
-	 */
-	@Override
-	public void unregisterPlayer(SagaPlayer sagaPlayer) {
-	
-		// Unregister role:
-		Proficiency role = getRole(sagaPlayer.getName());
-		if(role != null) sagaPlayer.unregisterRole();
-
-		super.unregisterPlayer(sagaPlayer);
 		
 	}
 	
@@ -301,7 +269,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	 * @return remaining experience
 	 */
 	public Double getRemainingExp() {
-		return getDefinition().getExpRequired(getLevel()) - exp;
+		return getDefinition().getLevelUpExp(getLevel()) - exp;
 	}
 
 	/**
@@ -326,7 +294,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 
 		
 		// Void role:
-		if(roleName.equals(ChunkGroupConfiguration.VOID_PROFICIENCY)){
+		if(roleName.equals("")){
 			return;
 		}
 		
@@ -340,9 +308,6 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 
 		// Add to settlement:
 		playerRoles.put(sagaPlayer.getName(), role);
-		
-		// Register:
-		sagaPlayer.setRole(role);
 		
 		
 	}
@@ -363,9 +328,6 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 
 		// Remove from settlement:
 		playerRoles.remove(sagaPlayer.getName());
-	
-		// Unregister:
-		sagaPlayer.clearRole();
 		
 			
 	}
@@ -378,7 +340,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	 */
 	public boolean isRoleAvailable(String roleName) {
 		
-		if(roleName.equals(ChunkGroupConfiguration.config().settlementDefaultRole)){
+		if(roleName.equals(getDefinition().defaultRole)){
 			return true;
 		}
 		
@@ -432,7 +394,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	public Integer getTotalRoles(String roleName) {
 		
 		
-		if(roleName.equals(ChunkGroupConfiguration.config().settlementDefaultRole)){
+		if(roleName.equals(getDefinition().defaultRole)){
 			return getPlayerCount() - getInactivePlayerCount();
 		}
 		
@@ -500,7 +462,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		HashSet<String> roles = new HashSet<String>();
 		
 		// Add default role:
-		roles.add(ChunkGroupConfiguration.config().settlementDefaultRole);
+		roles.add(getDefinition().defaultRole);
 		
 		// Add settlement roles:
 		roles.addAll(getDefinition().getRoles());
@@ -538,7 +500,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	 * @return claims in total.
 	 */
 	public Short getTotalClaims() {
-		return ChunkGroupConfiguration.config().calculateSettlementClaims(getLevel()).shortValue();
+		return getDefinition().getClaims(getLevel()).shortValue();
 	}
 	
 	/**
@@ -594,7 +556,31 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		
 	}
 	
+	
 	// Permissions:
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.chunkGroups.ChunkGroup#hasPermisson(org.saga.player.SagaPlayer, org.saga.settlements.Settlement.SettlementPermission)
+	 */
+	public boolean hasPermission(SagaPlayer sagaPlayer, SettlementPermission permission) {
+
+		
+		// Owner or admin:
+		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
+		
+		// Check role:
+		Proficiency role = playerRoles.get(sagaPlayer.getName());
+		if(role == null){
+			return false;
+		}
+		
+		// Check permission:
+		return role.hasSettlementPermission(permission);
+		
+		
+	}
+	
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -972,7 +958,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 
 		
 		// Level progress:
-		if(level < ChunkGroupConfiguration.config().settlementMaximumLevel && definition.canLevelUp(this)){
+		if(level < getDefinition().getMaxLevel() && definition.canLevelUp(this)){
 			
 			exp += getExpSpeed();
 			
@@ -1008,7 +994,6 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	 *
 	 */
 	public enum SettlementPermission{
-
 		
 		BUILD,
 		BUILD_BUILDING,
@@ -1020,7 +1005,12 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		SET_ROLE,
 		SET_BUILDING,
 		REMOVE_BUILDING,
-		RENAME;
+		RENAME,
+		
+		MANAGE_BUILDINGS,
+		MANAGE_HOMES,
+		MANAGE_TRADING_POST,
+		ACCESS_WAREHOUSE;
 		
 		
 	}

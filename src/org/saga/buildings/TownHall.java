@@ -2,8 +2,8 @@ package org.saga.buildings;
 
 import org.bukkit.entity.Creature;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.saga.listeners.events.SagaPvpEvent;
-import org.saga.listeners.events.SagaPvpEvent.PvpDenyReason;
+import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaEntityDamageEvent.PvPFlag;
 import org.saga.player.SagaPlayer;
 
 public class TownHall extends Building{
@@ -13,45 +13,17 @@ public class TownHall extends Building{
 	 */
 	transient public static String BLACKLIST_SIGN = "=[blacklist]=";
 	
-	
-	// Initialization:
+
+	// Initialisation:
 	/**
-	 * Initializes
+	 * Creates a building from the definition.
 	 * 
-	 * @param pointCost point cost
-	 * @param moneyCost money cost
-	 * @param proficiencies proficiencies
+	 * @param definition building definition
 	 */
-	private TownHall(String name) {
+	public TownHall(BuildingDefinition definition) {
 		
-		super("");
+		super(definition);
 		
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#completeExtended()
-	 */
-	@Override
-	public boolean completeExtended() {
-		
-
-		boolean integrity = true;
-		
-		return integrity;
-		
-		
-	}
-
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#blueprint()
-	 */
-	@Override
-	public Building blueprint() {
-		return new TownHall("");
 	}
 
 	/* 
@@ -86,10 +58,10 @@ public class TownHall extends Building{
 	 * @see org.saga.buildings.Building#onPlayerDamagedByPlayer(org.bukkit.event.entity.EntityDamageByEntityEvent, org.saga.SagaPlayer, org.saga.SagaPlayer)
 	 */
 	@Override
-	public void onPvP(SagaPvpEvent event){
+	public void onPvP(SagaEntityDamageEvent event){
 		
 		// Deny pvp:
-		event.setDenyReason(PvpDenyReason.SAFE_AREA);
+		event.addFlag(PvPFlag.SAFE_AREA);
 		
 	}
 	

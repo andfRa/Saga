@@ -4,44 +4,29 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import jline.ANSIBuffer.ANSICodes;
-import jline.ConsoleReader;
 import jline.Terminal;
+import jline.console.ConsoleReader;
 
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.CraftServer;
+import org.fusesource.jansi.Ansi;
+import org.fusesource.jansi.Ansi.Attribute;
 
 public class SagaLogger{
 
-	/**
-	 * Instance
-	 */
+	
 	private static SagaLogger instance = null;
 	
-	/**
-	 * Logger.
-	 */
-	private Logger logger = Logger.getLogger("Saga");
-	
-	/**
-	 * Chat color replacements.
-	 */
-	private final Map<ChatColor, String> replacements = new EnumMap<ChatColor, String>(ChatColor.class);
-	
-	/**
-	 * Reader.
-	 */
 	private final ConsoleReader reader;
 	
-    /**
-     * Terminal.
-     */
     private final Terminal terminal;
-
-    /**
-     * Colors.
-     */
+    
+    private final Map<ChatColor, String> replacements = new EnumMap<ChatColor, String>(ChatColor.class);
+    
     private final ChatColor[] colors = ChatColor.values();
+    
+    private Logger logger = Logger.getLogger("Saga");
+    
     
 	/**
 	 * Creates the logger
@@ -49,58 +34,68 @@ public class SagaLogger{
 	 */
 	private SagaLogger() {
 		
-		
 		this.reader = ((CraftServer) Saga.plugin().getServer()).getReader();
         this.terminal = reader.getTerminal();
 		
-		// Add colors:
-		replacements.put(ChatColor.BLACK, ANSICodes.attrib(0));
-        replacements.put(ChatColor.DARK_BLUE, ANSICodes.attrib(34));
-        replacements.put(ChatColor.DARK_GREEN, ANSICodes.attrib(32));
-        replacements.put(ChatColor.DARK_AQUA, ANSICodes.attrib(36));
-        replacements.put(ChatColor.DARK_RED, ANSICodes.attrib(31));
-        replacements.put(ChatColor.DARK_PURPLE, ANSICodes.attrib(35));
-        replacements.put(ChatColor.GOLD, ANSICodes.attrib(33));
-        replacements.put(ChatColor.GRAY, ANSICodes.attrib(37));
-        replacements.put(ChatColor.DARK_GRAY, ANSICodes.attrib(0));
-        replacements.put(ChatColor.BLUE, ANSICodes.attrib(34));
-        replacements.put(ChatColor.GREEN, ANSICodes.attrib(32));
-        replacements.put(ChatColor.AQUA, ANSICodes.attrib(36));
-        replacements.put(ChatColor.RED, ANSICodes.attrib(31));
-        replacements.put(ChatColor.LIGHT_PURPLE, ANSICodes.attrib(35));
-        replacements.put(ChatColor.YELLOW, ANSICodes.attrib(33));
-        replacements.put(ChatColor.WHITE, ANSICodes.attrib(37));
-		
-		
+        replacements.put(ChatColor.BLACK, Ansi.ansi().fg(Ansi.Color.BLACK).toString());
+        replacements.put(ChatColor.DARK_BLUE, Ansi.ansi().fg(Ansi.Color.BLUE).toString());
+        replacements.put(ChatColor.DARK_GREEN, Ansi.ansi().fg(Ansi.Color.GREEN).toString());
+        replacements.put(ChatColor.DARK_AQUA, Ansi.ansi().fg(Ansi.Color.CYAN).toString());
+        replacements.put(ChatColor.DARK_RED, Ansi.ansi().fg(Ansi.Color.RED).toString());
+        replacements.put(ChatColor.DARK_PURPLE, Ansi.ansi().fg(Ansi.Color.MAGENTA).toString());
+        replacements.put(ChatColor.GOLD, Ansi.ansi().fg(Ansi.Color.YELLOW).bold().toString());
+        replacements.put(ChatColor.GRAY, Ansi.ansi().fg(Ansi.Color.WHITE).toString());
+        replacements.put(ChatColor.DARK_GRAY, Ansi.ansi().fg(Ansi.Color.BLACK).bold().toString());
+        replacements.put(ChatColor.BLUE, Ansi.ansi().fg(Ansi.Color.BLUE).bold().toString());
+        replacements.put(ChatColor.GREEN, Ansi.ansi().fg(Ansi.Color.GREEN).bold().toString());
+        replacements.put(ChatColor.AQUA, Ansi.ansi().fg(Ansi.Color.CYAN).bold().toString());
+        replacements.put(ChatColor.RED, Ansi.ansi().fg(Ansi.Color.RED).bold().toString());
+        replacements.put(ChatColor.LIGHT_PURPLE, Ansi.ansi().fg(Ansi.Color.MAGENTA).bold().toString());
+        replacements.put(ChatColor.YELLOW, Ansi.ansi().fg(Ansi.Color.YELLOW).bold().toString());
+        replacements.put(ChatColor.WHITE, Ansi.ansi().fg(Ansi.Color.WHITE).bold().toString());
+        replacements.put(ChatColor.MAGIC, Ansi.ansi().a(Attribute.BLINK_SLOW).toString());
+        replacements.put(ChatColor.BOLD, Ansi.ansi().a(Attribute.UNDERLINE_DOUBLE).toString());
+        replacements.put(ChatColor.STRIKETHROUGH, Ansi.ansi().a(Attribute.STRIKETHROUGH_ON).toString());
+        replacements.put(ChatColor.UNDERLINE, Ansi.ansi().a(Attribute.UNDERLINE).toString());
+        replacements.put(ChatColor.ITALIC, Ansi.ansi().a(Attribute.ITALIC).toString());
+        replacements.put(ChatColor.RESET, Ansi.ansi().a(Attribute.RESET).fg(Ansi.Color.DEFAULT).toString());
+        
 	}
 
+	
 	/**
 	 * Formats the message.
 	 * 
 	 * @param message message
 	 * @return formated message
 	 */
-	private String format(String message) {
-
-		if (terminal.isANSISupported()) {
-            String result = message;
-
-            for (ChatColor color : colors) {
-                if (replacements.containsKey(color)) {
-                    result = result.replaceAll(color.toString(), replacements.get(color));
-                } else {
-                    result = result.replaceAll(color.toString(), "");
-                }
-            }
-            
-            return result + ANSICodes.attrib(0);
-            
+	public String format(String message) {
+       
+		
+		if(terminal.isAnsiSupported()) {
+                
+			String result = message;
+               
+			for (ChatColor color : colors) {
+                   
+				if (replacements.containsKey(color)) {
+					result = result.replaceAll("(?i)" + color.toString(), replacements.get(color));
+				} else {
+					result = result.replaceAll("(?i)" + color.toString(), "");
+				}
+                
+			}
+                
+            return result + Ansi.ansi().reset().toString();
+                
+        } else {
+        	
+        	return ChatColor.stripColor(message);
+        	
         }
 		
-		return ChatColor.stripColor(message);
 		
-		
-	}
+    }
 	
 	/**
 	 * Severe message.
@@ -108,7 +103,7 @@ public class SagaLogger{
 	 * @param msg message
 	 */
 	public static void severe(String msg) {
-		
+
 		instance.logger.severe(instance.format(ChatColor.RED + msg));
 		
 	}
@@ -119,7 +114,7 @@ public class SagaLogger{
 	 * @param msg message
 	 */
 	public static void warning(String msg) {
-		
+
 		instance.logger.warning(instance.format(ChatColor.YELLOW + msg));
 		
 	}
@@ -130,12 +125,107 @@ public class SagaLogger{
 	 * @param msg message
 	 */
 	public static void info(String msg) {
-		
+
 		instance.logger.info(instance.format(msg));
 		
 	}
+
+	/**
+	 * Message.
+	 * 
+	 * @param msg message
+	 */
+	public static void message(String msg) {
+
+		instance.logger.info(instance.format(msg));
+		
+	}
+
+
+
+    /**
+     * Info message.
+     * 
+     * @param instance instance
+     * @param message message
+     */
+	public static void info(Object instance, String message) {
+		info(instance.getClass().getSimpleName() + ":{" + instance + "} " + message + ".");
+    }
+    
+    /**
+     * Info message.
+     * 
+     * @param tClass class
+     * @param message message
+     */
+    public static void info(Class<?> tClass, String message) {
+    	info(tClass.getSimpleName() + ": " + message + ".");
+    }
+    
 	
+    /**
+     * Severe message.
+     * 
+     * @param instance instance
+     * @param message message
+     */
+	public static void severe(Object instance, String message) {
+        severe(instance.getClass().getSimpleName() + ":{" + instance + "} " + message + ".");
+    }
+    
+    /**
+     * Severe message.
+     * 
+     * @param tClass class
+     * @param message message
+     */
+    public static void severe(Class<?> tClass, String message) {
+    	severe(tClass.getSimpleName() + ": " + message + ".");
+    }
+    
+
+    /**
+     * Warning message.
+     * 
+     * @param instance instance
+     * @param message message
+     */
+    public static void warning(Object instance, String message) {
+    	warning(instance.getClass().getSimpleName() + ":{" + instance + "} " + message + ".");
+    }
+    
+    /**
+     * Warning message.
+     * 
+     * @param tClass class
+     * @param message message
+     */
+    public static void warning(Class<?> tClass, String message) {
+    	warning(tClass.getSimpleName() + ": " + message + ".");
+    }
+
+
+    /**
+     * Null field message.
+     * 
+     * @param instance instance
+     * @param field field
+     */
+	public static void nullField(Object instance, String field) {
+        severe(instance.getClass().getSimpleName() + ":{" + instance + "} " + field + " field failed to initialise.");
+    }
 	
+	/**
+     * Null field message.
+     * 
+     * @param classs class
+     * @param field field
+     */
+	public static void nullField(Class<?> classs, String field) {
+        severe(classs.getSimpleName() + ":" + field + " field failed to initialise.");
+    }
+    
 	/**
 	 * Loads the logger.
 	 * 

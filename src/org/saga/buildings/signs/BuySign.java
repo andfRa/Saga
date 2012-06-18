@@ -6,8 +6,8 @@ import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
 import org.saga.buildings.Building;
 import org.saga.buildings.TradingPost;
-import org.saga.economy.EconomyMessages;
 import org.saga.economy.Trader;
+import org.saga.messages.EconomyMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
 
@@ -16,12 +16,12 @@ public class BuySign extends BuildingSign {
 
 
 	/**
-	 * Name for the sign.
+	 * Name for the 
 	 */
 	public static String SIGN_NAME = "=[BUY]=";
 	
 	/**
-	 * Name for the sign.
+	 * Name for the 
 	 */
 	public static String MATERIAL_VALUE_DIV = "x";
 	
@@ -42,9 +42,9 @@ public class BuySign extends BuildingSign {
 	transient private Trader trader = null;
 
 	
-	// Initialization:
+	// Initialisation:
 	/**
-	 * Creates a learning sign.
+	 * Creates a learning 
 	 * 
 	 * @param sign sign
 	 * @param secondLine second line
@@ -57,10 +57,12 @@ public class BuySign extends BuildingSign {
 	
 		super(sign, SIGN_NAME, secondLine, thirdLine, fourthLine, building);
 		
+		initialiseFields();
+		
 	}
 	
 	/**
-	 * Creates the training sign.
+	 * Creates the training 
 	 * 
 	 * @param sign bukkit sign
 	 * @param firstLine first line
@@ -73,18 +75,26 @@ public class BuySign extends BuildingSign {
 	public static BuySign create(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building) {
 		return new BuySign(sign, secondLine, thirdLine, fourthLine, building);
 	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.signs.BuildingSign#enable()
-	 */
-	@Override
-	public void enable() {
 
+	@Override
+	public boolean complete(Building building) throws SignException {
 		
-		super.enable();
 		
+		super.complete(building);
+		
+		initialiseFields();
+		
+		return true;
+		
+		
+	}
+	
+	/**
+	 * Initialises fields.
+	 * 
+	 */
+	private void initialiseFields() {
+
 		// First parameter:
 		String[] firstParameter = getFirstParameter().split(MATERIAL_VALUE_DIV);
 
@@ -102,19 +112,12 @@ public class BuySign extends BuildingSign {
 					material = Material.getMaterial(Integer.parseInt(sMaterial));
 				} catch (NumberFormatException e) { }
 			}
-			if(material == null){
-				invalidate();
-				return;
-			}
 			
 			// Amount:
 			sAmount = firstParameter[0];
 			try {
 				amount = Integer.parseInt(sAmount);
-			} catch (NumberFormatException e) {
-				invalidate();
-				return;
-			}
+			} catch (NumberFormatException e) {}
 			
 		}else{
 
@@ -126,10 +129,7 @@ public class BuySign extends BuildingSign {
 					material = Material.getMaterial(Integer.parseInt(sMaterial));
 				} catch (NumberFormatException e) { }
 			}
-			if(material == null){
-				invalidate();
-				return;
-			}
+			if(material == null) return;
 			
 			amount = material.getMaxStackSize();
 			
@@ -138,105 +138,12 @@ public class BuySign extends BuildingSign {
 		// Trader:
 		if(!(getBuilding() instanceof Trader)){
 			Saga.severe(this, TradingPost.class.getSimpleName() + " required", "ignoring transaction and invalidating the sign");
-			invalidate();
-			return;
+		}else{
+			trader = (Trader) getBuilding();
 		}
-		trader = (Trader) getBuilding();
 		
 		// Fix amount:
-		if(amount < 0) amount = 0;
-		
-		// Refresh:
-		refresh();
-		
-		
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.signs.BuildingSign#disable()
-	 */
-	@Override
-	public void disable() {
-	
-	
-		super.disable();
-
-		if(material == null || amount == null || trader == null) return;
-		
-		// Sign:
-		Sign sign = getSign();
-
-		sign.setLine(1, amount + MATERIAL_VALUE_DIV + EconomyMessages.materialShort(material));
-		
-		sign.setLine(2, "price: " + "-" + EconomyMessages.coins());
-
-		sign.setLine(3, "stored: " + trader.getAmount(material));
-
-		sign.update();
-		
-		
-	}
-
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.signs.BuildingSign#refresh()
-	 */
-	@Override
-	public void refresh() {
-	
-		
-		super.refresh();
-		
-		if(material == null || amount == null || trader == null) return;
-		
-		// Price:
-		Double price = trader.getBuyPrice(material);
-		if(price == null){
-			disable();
-			return;
-		}else if(!isEnabled()){
-			enable();
-		}
-
-		// Sign:
-		Sign sign = getSign();
-
-		sign.setLine(1, amount + MATERIAL_VALUE_DIV + EconomyMessages.materialShort(material));
-		
-		sign.setLine(2, "price: " + EconomyMessages.coins(price));
-
-		sign.setLine(3, "stored: " + trader.getAmount(material));
-
-		sign.update();
-		
-		
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.signs.BuildingSign#invalidate()
-	 */
-	@Override
-	public void invalidate() {
-		
-		
-		super.invalidate();
-		
-		Sign sign = getSign();
-
-		sign.setLine(1, "-" + MATERIAL_VALUE_DIV + "-");
-		
-		sign.setLine(2, "price: " + "-" + EconomyMessages.coins());
-
-
-		sign.setLine(3, "stored: " + "-");
-
-		sign.update();
-		
+		if(amount != null && amount < 0) amount = 0;
 		
 	}
 	
@@ -250,6 +157,59 @@ public class BuySign extends BuildingSign {
 		return SIGN_NAME;
 	}
 
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.buildings.signs.BuildingSign#getStatus()
+	 */
+	@Override
+	public SignStatus getStatus() {
+		
+
+		if(material == null || amount == null || trader == null) return SignStatus.INVALIDATED;
+		
+		if(trader.getBuyPrice(material) == null) return SignStatus.DISABLED;
+		
+		return SignStatus.ENABLED;
+	
+		
+	}
+	
+	@Override
+	public String getLine(int index, SignStatus status) {
+	
+		
+		switch (status) {
+			
+				
+			case ENABLED:
+				
+				Double price = trader.getBuyPrice(material);
+				
+				if(index == 1) return amount + MATERIAL_VALUE_DIV + EconomyMessages.materialShort(material);
+				if(index == 2) return "price: " + EconomyMessages.coins(price);
+				if(index == 3) return "stored: " + trader.getAmount(material);
+				break;
+				
+			case DISABLED:
+				
+				if(index == 1) return amount + MATERIAL_VALUE_DIV + EconomyMessages.materialShort(material);
+				if(index == 2) return "price: -";
+				if(index == 3) return "stored: " + trader.getAmount(material);
+				break;
+				
+			default:
+				
+				return "-";
+
+		}
+
+		return "";
+		
+		
+	}
+	
+	
 	
 	// Custom parameters:
 	/**
@@ -287,7 +247,6 @@ public class BuySign extends BuildingSign {
 		// Used coins:
 		Double price = trader.getBuyPrice(material);
 		if(price == null){
-			disable();
 			return;
 		}
 		

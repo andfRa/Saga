@@ -14,8 +14,9 @@ import org.saga.Saga;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
-import org.saga.listeners.events.SagaPvpEvent;
-import org.saga.listeners.events.SagaPvpEvent.PvpDenyReason;
+import org.saga.exceptions.InvalidBuildingException;
+import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaEntityDamageEvent.PvPFlag;
 import org.saga.messages.BuildingMessages;
 import org.saga.messages.ChunkGroupMessages;
 import org.saga.messages.SagaMessages;
@@ -26,11 +27,6 @@ import org.sk89q.CommandPermissions;
 
 public class TownSquare extends Building implements SecondTicker{
 
-	
-	/**
-	 * Player will spawn at the town square if true.
-	 */
-	private Boolean spawnEnabled;
 	
 	/**
 	 * Random generator.
@@ -47,26 +43,18 @@ public class TownSquare extends Building implements SecondTicker{
 	 */
 	transient int cooldownLeft;
 	
-	
-	// Initialization:
+
+	// Initialisation:
 	/**
-	 * Used by gson.
+	 * Creates a building from the definition.
 	 * 
+	 * @param definition building definition
 	 */
-	protected TownSquare() {
-		super();
-	}
-	
-	/**
-	 * Sets a name.
-	 * 
-	 * @param name name
-	 */
-	public TownSquare(String name) {
+	public TownSquare(BuildingDefinition definition) {
 		
-		super("");
+		super(definition);
+		
 		random = new Random();
-		spawnEnabled = true;
 		
 	}
 
@@ -76,17 +64,10 @@ public class TownSquare extends Building implements SecondTicker{
 	 * @see org.saga.buildings.Building#completeExtended()
 	 */
 	@Override
-	public boolean completeExtended() {
+	public boolean complete() throws InvalidBuildingException {
 		
 
-		boolean integrity = true;
-		
-		// Fields:
-		if(spawnEnabled == null){
-			spawnEnabled = true;
-			Saga.info("Failed to initialize spawnEnabled field for " + this + " building.");
-			integrity = false;
-		}
+		boolean integrity = super.complete();
 		
 		// Transient:
 		random = new Random();
@@ -98,26 +79,6 @@ public class TownSquare extends Building implements SecondTicker{
 		
 	}
 
-	/**
-	 * Creates a new instance.
-	 * 
-	 * @return new instance
-	 */
-	public static TownSquare newInctance(){
-		return new TownSquare("");
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#duplicate()
-	 */
-	@Override
-	public Building blueprint() {
-		
-		return new TownSquare("");
-		
-	}
 	
 	/* 
 	 * (non-Javadoc)
@@ -145,11 +106,11 @@ public class TownSquare extends Building implements SecondTicker{
 	 * @see org.saga.Clock.SecondTicker#clockSecondTick()
 	 */
 	@Override
-	public void clockSecondTick() {
+	public boolean clockSecondTick() {
 
 		
 		if(!isOnCooldown){
-			return;
+			return true;
 		}
 		
 		cooldownLeft --;
@@ -157,6 +118,8 @@ public class TownSquare extends Building implements SecondTicker{
 		if(cooldownLeft <= 0){
 			stopCooldown();
 		}
+		
+		return true;
 		
 		
 	}
@@ -306,10 +269,8 @@ public class TownSquare extends Building implements SecondTicker{
 			return;
 		}
 		
-		// Respawn if enabled:
-		if(spawnEnabled){
-			event.setRespawnLocation(spawnLocation);
-		}
+		// Respawn:
+		event.setRespawnLocation(spawnLocation);
 		
 	
 	}
@@ -320,10 +281,10 @@ public class TownSquare extends Building implements SecondTicker{
 	 * @see org.saga.buildings.Building#onPlayerDamagedByPlayer(org.bukkit.event.entity.EntityDamageByEntityEvent, org.saga.SagaPlayer, org.saga.SagaPlayer)
 	 */
 	@Override
-	public void onPvP(SagaPvpEvent event){
+	public void onPvP(SagaEntityDamageEvent event){
 		
 		// Deny pvp:
-		event.setDenyReason(PvpDenyReason.SAFE_AREA);
+		event.addFlag(PvPFlag.SAFE_AREA);
 		
 	}
 	
@@ -368,7 +329,7 @@ public class TownSquare extends Building implements SecondTicker{
 		}else{
 			
 			// Chunk group:
-			selectedChunkGroup = sagaPlayer.getRegisteredChunkGroup();
+			selectedChunkGroup = sagaPlayer.getChunkGroup();
 			if(selectedChunkGroup == null){
 				sagaPlayer.message( ChunkGroupMessages.noChunkGroup() );
 				return;

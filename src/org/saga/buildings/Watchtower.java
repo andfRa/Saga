@@ -10,6 +10,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.saga.Clock;
 import org.saga.Clock.TimeOfDayTicker;
 import org.saga.chunkGroups.SagaChunk;
+import org.saga.exceptions.InvalidBuildingException;
 
 public class Watchtower extends Building implements TimeOfDayTicker{
 
@@ -34,22 +35,17 @@ public class Watchtower extends Building implements TimeOfDayTicker{
 	 */
 	transient Hashtable<String, Integer> mobReport = null;
 	
-	// Initialization:
+
+	// Initialisation:
 	/**
-	 * Used by gson.
+	 * Creates a building from the definition.
 	 * 
+	 * @param definition building definition
 	 */
-	protected Watchtower() {
-		super();
-	}
-	
-	/**
-	 * Sets a name.
-	 * 
-	 */
-	public Watchtower(String name) {
+	public Watchtower(BuildingDefinition definition) {
 		
-		super("");
+		super(definition);
+		
 		protectedChunks = new ArrayList<SagaChunk>();
 		mobReport = new Hashtable<String, Integer>();
 		
@@ -61,10 +57,10 @@ public class Watchtower extends Building implements TimeOfDayTicker{
 	 * @see org.saga.buildings.Building#completeExtended()
 	 */
 	@Override
-	public boolean completeExtended() {
+	public boolean complete() throws InvalidBuildingException {
 		
 
-		boolean integrity = true;
+		boolean integrity = super.complete();
 		
 		
 		// Transient:
@@ -77,19 +73,7 @@ public class Watchtower extends Building implements TimeOfDayTicker{
 		
 		
 	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#duplicate()
-	 */
-	@Override
-	public Building blueprint() {
-		
-		return new Watchtower("");
-		
-	}
-	
+
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -255,5 +239,6 @@ public class Watchtower extends Building implements TimeOfDayTicker{
 		return originChunk.getWorldName().equals(worldName);
 		
 	}
+	
 	
 }

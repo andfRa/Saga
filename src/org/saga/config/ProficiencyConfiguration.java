@@ -4,12 +4,12 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.saga.Saga;
-import org.saga.constants.IOConstants.WriteReadType;
+import org.saga.SagaLogger;
 import org.saga.player.Proficiency;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.ProficiencyDefinition;
-import org.saga.utility.WriterReader;
+import org.saga.saveload.Directory;
+import org.saga.saveload.WriterReader;
 
 import com.google.gson.JsonParseException;
 
@@ -47,7 +47,7 @@ public class ProficiencyConfiguration {
 	 */
 	private ArrayList<ProficiencyDefinition> definitions;
 
-	// Initialization:
+	// Initialisation:
 	/**
 	 * Used by gson.
 	 * 
@@ -69,24 +69,24 @@ public class ProficiencyConfiguration {
 
 		if(initialProfession == null){
 			initialProfession = false;
-			Saga.severe(getClass(), "initialProfession field failed to initalize", "setting default");
+			SagaLogger.severe(getClass(), "initialProfession field failed to initalize");
 			integrity=false;
 		}
 		
 		if(initialClass == null){
 			initialClass = false;
-			Saga.severe(getClass(), "initialClass field failed to initalize", "setting default");
+			SagaLogger.severe(getClass(), "initialClass field failed to initalize");
 			integrity=false;
 		}
 		
 		if(definitions == null){
 			definitions = new ArrayList<ProficiencyDefinition>();
-			Saga.severe(getClass(), "profiecncyDefinitions field failed to initalize", "setting default");
+			SagaLogger.severe(getClass(), "profiecncyDefinitions field failed to initalize");
 			integrity=false;
 		}
 		for (int i = 0; i < definitions.size() && i >= 0; i++) {
 			if(definitions.get(i) == null){
-				Saga.severe(getClass(), "definitions field element failed to initalize", "setting default");
+				SagaLogger.severe(getClass(), "definitions field element failed to initalize");
 				definitions.remove(i);
 				i--;
 				continue;
@@ -174,60 +174,40 @@ public class ProficiencyConfiguration {
 	
 	// Load unload:
 	/**
-	 * Loads proficiency information.
+	 * Loads configuration.
 	 * 
-	 * @return proficiency information
+	 * @return configuration
 	 */
 	public static ProficiencyConfiguration load(){
+
 		
-		
-		boolean integrity = true;
 		ProficiencyConfiguration config;
-		
-		// Fields:
 		try {
 			
-			config = WriterReader.readProficiencyConfig();
+			config = WriterReader.read(Directory.PROFICIENCY_CONFIG, ProficiencyConfiguration.class);
 			
 		} catch (FileNotFoundException e) {
 			
-			Saga.severe(ProficiencyConfiguration.class, "missing configuration", "loading defaults");
+			SagaLogger.severe(BalanceConfiguration.class, "configuration not found");
 			config = new ProficiencyConfiguration();
-			integrity = false;
 			
 		} catch (IOException e) {
 			
-			Saga.severe(ProficiencyConfiguration.class, "failed to read configuration: " + e.getClass().getSimpleName() + ":" + e.getMessage(), "loading defaults");
+			SagaLogger.severe(ChunkGroupConfiguration.class, "failed to read configuration: " + e.getClass().getSimpleName());
 			config = new ProficiencyConfiguration();
-			integrity = false;
 			
 		} catch (JsonParseException e) {
-			
-			Saga.severe(ProficiencyConfiguration.class, "failed to parse configuration: " + e.getClass().getSimpleName() + ":" + e.getMessage(), "loading defaults");
-			Saga.info("Parse message :" + e.getMessage());
+
+			SagaLogger.severe(ChunkGroupConfiguration.class, "failed to parse configuration: " + e.getClass().getSimpleName());
+			SagaLogger.info("message: " + e.getMessage());
 			config = new ProficiencyConfiguration();
-			integrity = false;
 			
 		}
-
+		
 		// Set instance:
 		instance = config;
 		
-		// Complete:
-		integrity = config.complete() && integrity;
-		
-		// Write default if integrity check failed:
-		if (!integrity) {
-			
-			Saga.severe(ProficiencyConfiguration.class, "integrity check failed", "writing defaults configuration");
-			try {
-				WriterReader.writeProficiencyConfig(config, WriteReadType.CONFIG_DEFAULTS);
-			} catch (IOException e) {
-				Saga.severe(ProficiencyConfiguration.class, "failed to write configuration: " + e.getClass().getSimpleName() + ":" + e.getMessage(), "write canceled");
-			}
-			
-		}
-		
+		config.complete();
 		
 		return config;
 		

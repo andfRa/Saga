@@ -13,21 +13,20 @@ import org.bukkit.Location;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.chunkGroups.ChunkGroup;
-import org.saga.config.ChunkGroupConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
-import org.saga.constants.IOConstants.WriteReadType;
 import org.saga.exceptions.InvalidLocationException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
-import org.saga.listeners.events.SagaPvpEvent;
-import org.saga.listeners.events.SagaPvpEvent.PvpDenyReason;
-import org.saga.messages.FactionMessages;
+import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaEntityDamageEvent.PvPFlag;
 import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
+import org.saga.saveload.Directory;
+import org.saga.saveload.WriterReader;
 import org.saga.utility.SagaLocation;
-import org.saga.utility.WriterReader;
 
 import com.google.gson.JsonParseException;
 
@@ -326,7 +325,7 @@ public class SagaFaction implements SecondTicker{
 		save();
 		
 		// Remove from disc:
-		WriterReader.deleteFaction(getId().toString());
+		WriterReader.delete(Directory.FACTION_DATA, getId().toString());
 		
 		
 	}
@@ -495,10 +494,6 @@ public class SagaFaction implements SecondTicker{
 	public void registerMember(SagaPlayer sagaPlayer) {
 
 
-		// Register rank:
-		Proficiency rank = getRank(sagaPlayer.getName());
-		if(rank != null) sagaPlayer.registerRank(rank);
-		
 		// Register player:
 		if(registeredMembers.contains(sagaPlayer)){
 			Saga.severe(this, "tried to register an already registered member " + sagaPlayer.getName(), "ignoring request");
@@ -525,10 +520,6 @@ public class SagaFaction implements SecondTicker{
 	public void unregisterMember(SagaPlayer sagaPlayer) {
 
 
-		// Unregister rank:
-		Proficiency rank = getRank(sagaPlayer.getName());
-		if(rank != null) sagaPlayer.unregisterRank();
-		
 		// Unregister player:
 		boolean removed = registeredMembers.remove(sagaPlayer);
 		if(!removed){
@@ -1326,13 +1317,13 @@ public class SagaFaction implements SecondTicker{
 		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
 		
 		// Check rank:
-		Proficiency role = playerRanks.get(sagaPlayer.getName());
-		if(role == null){
+		Proficiency rank = playerRanks.get(sagaPlayer.getName());
+		if(rank == null){
 			return false;
 		}
 		
 		// Check permission:
-		return role.hasFactionPermission(FactionPermission.SET_RANK);
+		return rank.hasFactionPermission(FactionPermission.SET_RANK);
 		
 	}
 
@@ -1354,10 +1345,10 @@ public class SagaFaction implements SecondTicker{
 	}
 
 	/**
-	 * Checks if the player can rally.
+	 * Checks if the player can set spawn.
 	 * 
 	 * @param sagaPlayer saga player
-	 * @return true if can rally
+	 * @return true if can set spawn
 	 */
 	public boolean canSetSpawn(SagaPlayer sagaPlayer) {
 
@@ -1372,6 +1363,22 @@ public class SagaFaction implements SecondTicker{
 		
 		// Check permission:
 		return role.hasFactionPermission(FactionPermission.SET_SPAWN);
+		
+	}
+
+	/**
+	 * Checks if the player can spawn.
+	 * 
+	 * @param sagaPlayer saga player
+	 * @return true if can spawn
+	 */
+	public boolean canSpawn(SagaPlayer sagaPlayer) {
+
+		// Owner:
+		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
+		
+		// Check permission:
+		return isMember(sagaPlayer.getName());
 		
 	}
 	
@@ -1460,7 +1467,7 @@ public class SagaFaction implements SecondTicker{
 
 		
 		// Void rank:
-		if(rankName.equals(ChunkGroupConfiguration.VOID_PROFICIENCY)){
+		if(rankName.equals("")){
 			return;
 		}
 		
@@ -1474,9 +1481,6 @@ public class SagaFaction implements SecondTicker{
 
 		// Add to settlement:
 		playerRanks.put(sagaPlayer.getName(), rank);
-		
-		// Register:
-		sagaPlayer.setRank(rank);
 		
 		
 	}
@@ -1498,9 +1502,6 @@ public class SagaFaction implements SecondTicker{
 		// Remove from faction:
 		playerRanks.remove(sagaPlayer.getName());
 	
-		// Unregister:
-		sagaPlayer.clearRank();
-		
 			
 	}
 
@@ -1523,12 +1524,12 @@ public class SagaFaction implements SecondTicker{
 	/**
 	 * Gets a player rank.
 	 * 
-	 * @param playerName player name
+	 * @param name player name
 	 * @return player rank. null if none
 	 */
-	public Proficiency getRank(String playerName) {
+	public Proficiency getRank(String name) {
 		
-		return playerRanks.get(playerName);
+		return playerRanks.get(name);
 		
 	}
 
@@ -1592,7 +1593,7 @@ public class SagaFaction implements SecondTicker{
 	 * @see org.saga.Clock.SecondTicker#clockSecondTick()
 	 */
 	@Override
-	public void clockSecondTick() {
+	public boolean clockSecondTick() {
 		
 		
 		boolean nextTick = false;
@@ -1603,6 +1604,7 @@ public class SagaFaction implements SecondTicker{
 			stopClock();
 		}
 		
+		return true;
 		
 	}
 	
@@ -1681,29 +1683,36 @@ public class SagaFaction implements SecondTicker{
 	/**
 	 * Loads and a faction from disc.
 	 * 
-	 * @param factionId faction ID in String form
+	 * @param id faction ID in String form
 	 * @return saga faction
 	 */
-	public static SagaFaction load(String factionId) {
+	public static SagaFaction load(String id) {
 
 		
 		// Load:
-		String configName = "" + factionId + " faction";
 		SagaFaction config;
 		try {
-			config = WriterReader.readFaction(factionId.toString());
+			
+			config = WriterReader.read(Directory.FACTION_DATA, id, SagaFaction.class);
+			
 		} catch (FileNotFoundException e) {
-			Saga.info("Missing " + configName + ". Creating a new one.");
+			
+			SagaLogger.info(SagaFaction.class, "missing data for " + id + " ID");
 			config = new SagaFaction();
+			
 		} catch (IOException e) {
-			Saga.severe("Failed to load " + configName + ". Loading defaults.");
+			
+			Saga.severe(SagaFaction.class + "failed to read data for " + id + " ID");
 			config = new SagaFaction();
 			config.disableSaving();
+			
 		} catch (JsonParseException e) {
-			Saga.severe("Failed to parse " + configName + ". Loading defaults.");
-			Saga.info("Parse message :" + e.getMessage());
+			
+			Saga.severe(SagaFaction.class + "failed to parse data for " + id + " ID: " + e.getClass().getSimpleName() + "");
+			Saga.info("Parse message: " + e.getMessage());
 			config = new SagaFaction();
 			config.disableSaving();
+			
 		}
 		
 		// Complete:
@@ -1722,15 +1731,14 @@ public class SagaFaction implements SecondTicker{
 
 		
 		if(!isSavingEnabled){
-			Saga.warning("Saving disabled for "+ id + " (" +name + ") faction. Ignoring save request." );
+			SagaLogger.warning(this, "saving disabled");
 			return;
 		}
 		
-		String configName = "" + id + " faction";
 		try {
-			WriterReader.writeFaction(id.toString(), this, WriteReadType.FACTION_NORMAL);
+			WriterReader.write(Directory.FACTION_DATA, id.toString(), this);
 		} catch (IOException e) {
-			Saga.severe("Failed to write "+ configName +". Ignoring write.");
+			SagaLogger.severe(this, "write failed: " + e.getClass().getSimpleName() + ":" + e.getMessage());
 		}
 		
 		
@@ -1756,20 +1764,20 @@ public class SagaFaction implements SecondTicker{
 	 * 
 	 * @param event event
 	 */
-	public void onMemberAttack(SagaPvpEvent event){
+	public void onAttack(SagaEntityDamageEvent event){
 		
 		
 		// Same faction:
-		if(isMember(event.getDefender().getName())){
+		if(isMember(event.getDefenderPlayer().getName())){
 			
-			event.setDenyReason(PvpDenyReason.SAME_FACTION);
+			event.addFlag(PvPFlag.SAME_FACTION);
 			
 		}
 
 		// Ally:
-		if(isAlly(event.getDefender().getFactionId())){
+		if(isAlly(event.getDefenderPlayer().getFactionId())){
 
-			event.setDenyReason(PvpDenyReason.ALLY);
+			event.addFlag(PvPFlag.ALLY);
 			
 		}
 
@@ -1781,13 +1789,13 @@ public class SagaFaction implements SecondTicker{
 	 * 
 	 * @param event event
 	 */
-	public void onMemberDefend(SagaPvpEvent event){
+	public void onDefend(SagaEntityDamageEvent event){
 		
 
 		// Ally:
-		if(isAlly(event.getAttacker().getFactionId())){
+		if(isAlly(event.getAttackerPlayer().getFactionId())){
 			
-			event.setDenyReason(PvpDenyReason.ALLY);
+			event.addFlag(PvPFlag.ALLY);
 			
 		}
 

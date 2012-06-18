@@ -1,7 +1,7 @@
 package org.saga.messages;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -9,12 +9,10 @@ import java.util.HashSet;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.saga.config.AbilityConfiguration;
+import org.saga.config.AttributeConfiguration;
 import org.saga.config.BalanceConfiguration;
-import org.saga.config.ProficiencyConfiguration;
-import org.saga.config.SkillConfiguration;
-import org.saga.economy.EconomyMessages;
+import org.saga.config.ExperienceConfiguration;
 import org.saga.messages.PlayerMessages.ColorCircle;
-import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
 import org.saga.statistics.XrayIndicator;
@@ -50,84 +48,6 @@ public class StatisticsMessages {
 	
 	
 	
-	
-	public static String classKills() {
-	
-		
-		ColorCircle color = new ColorCircle().addColor(normal1).addColor(normal2);
-		ArrayList<String> clazzes = ProficiencyConfiguration.config().getProficiencyNames(ProficiencyType.CLASS);
-		StringTable table = new StringTable(color);
-
-		clazzes.add("none");
-		
-		// Add headings:
-		table.addLine(new String[]{"CLASS","VERSUS", "KILLS", "DEATHS"});
-		
-		
-		// Add data:
-		for (int i = 0; i < clazzes.size(); i++) {
-			
-			String thisClazz = clazzes.get(i);
-			
-			for (int j = 0; j < clazzes.size(); j++) {
-				
-				String otherClazz = clazzes.get(j);
-				
-				String[] row = new String[]{"",otherClazz, StatisticsManager.manager().getClazzKills(thisClazz, otherClazz).toString(), StatisticsManager.manager().getClazzKills(otherClazz, thisClazz).toString()};
-				
-				if(j == 0){
-					row[0] = thisClazz;
-				}
-				
-				table.addLine(row);
-				
-			}
-			
-		}
-		
-		table.collapse();
-		
-		StringBook book = new StringBook("class kills", color, 18);
-		
-		book.addTable(table);
-		
-		return book.framed(0, table.calcTotalWidth());
-		
-		
-	}
-	
-	public static String skills() {
-	
-		
-		ColorCircle color = new ColorCircle().addColor(normal1).addColor(normal2);
-		ArrayList<String> skills = SkillConfiguration.config().getSkillNames();
-		StringTable table = new StringTable(color);
-
-		// Add headings:
-		table.addLine(new String[]{"SKILL","UPGRADES", "COIN COST"});
-		
-		// Add data:
-		StatisticsManager manager = StatisticsManager.manager();
-		for (int i = 0; i < skills.size(); i++) {
-			
-			String name = skills.get(i);
-			
-			String[] row = new String[]{name, manager.getSkillUpgrades(name).toString(), EconomyMessages.coins(manager.getSkillUpgradeCoins(name))};
-			
-			table.addLine(row);
-			
-		}
-		
-		table.collapse();
-		
-		StringBook book = new StringBook("class kills", color, 18);
-		
-		book.addTable(table);
-		
-		return book.framed(0, table.calcTotalWidth());
-		
-		
-	}
 
 	public static String general() {
 	
@@ -232,50 +152,51 @@ public class StatisticsMessages {
 
 	public static String xray(SagaPlayer sagaPlayer, Integer page) {
 
-		
-		String name = sagaPlayer.getName();
-		
-		ColorCircle color = new ColorCircle().addColor(normal1).addColor(normal2);
-		StringBook book = new StringBook(name + " x-ray statistics", color, 10);
-
-		// Blocks:
-		StringTable table = new StringTable(color);
-		String[] line = new String[2];
-		HashSet<Material> xrayMaterials = XrayIndicator.getXrayMaterials();
-		
-		line = new String[]{"MATERIAL", "AMOUNT", "RATIO"};
-		table.addLine(line);
-		
-		for (Material xrMaterial : xrayMaterials) {
-			
-			Integer amount = StatisticsManager.manager().getOreMined(name, xrMaterial);
-			String amountValue = amount.toString();
-			
-			Double ratio = StatisticsManager.manager().getOreRatio(name, xrMaterial);
-			boolean indication = BalanceConfiguration.config().checkXrayIndication(xrMaterial, ratio);
-			
-			String ratioValue = String.format("%.2g", ratio*100) + " %";
-			if(indication) ratioValue = ChatColor.DARK_RED + ratioValue;
-			
-			if(xrMaterial == Material.STONE){
-				
-				line = new String[]{EconomyMessages.material(xrMaterial), amountValue, ""};
-				
-			}else{
-				
-				line = new String[]{EconomyMessages.material(xrMaterial), amountValue, ratioValue};
-			
-			}
-			
-			table.addLine(line);
-			
-		}
-		
-		table.collapse();
-		book.addTable(table);
-		
-		return book.framed(page);
-		
+//		
+//		String name = sagaPlayer.getName();
+//		
+//		ColorCircle color = new ColorCircle().addColor(normal1).addColor(normal2);
+//		StringBook book = new StringBook(name + " x-ray statistics", color, 10);
+//
+//		// Blocks:
+//		StringTable table = new StringTable(color);
+//		String[] line = new String[2];
+//		HashSet<Material> xrayMaterials = XrayIndicator.getXrayBlocks();
+//		
+//		line = new String[]{"MATERIAL", "AMOUNT", "RATIO"};
+//		table.addLine(line);
+//		
+//		for (Material xrMaterial : xrayMaterials) {
+//			
+//			Integer amount = StatisticsManager.manager().getOreMined(name, xrMaterial);
+//			String amountValue = amount.toString();
+//			
+//			Double ratio = StatisticsManager.manager().getOreRatio(name, xrMaterial);
+//			boolean indication = BalanceConfiguration.config().checkXrayIndication(xrMaterial, ratio);
+//			
+//			String ratioValue = String.format("%.2g", ratio*100) + " %";
+//			if(indication) ratioValue = ChatColor.DARK_RED + ratioValue;
+//			
+//			if(xrMaterial == Material.STONE){
+//				
+//				line = new String[]{EconomyMessages.material(xrMaterial), amountValue, ""};
+//				
+//			}else{
+//				
+//				line = new String[]{EconomyMessages.material(xrMaterial), amountValue, ratioValue};
+//			
+//			}
+//			
+//			table.addLine(line);
+//			
+//		}
+//		
+//		table.collapse();
+//		book.addTable(table);
+//		
+//		return book.framed(page);
+//	
+		return "";
 		
 	}
 
@@ -286,7 +207,7 @@ public class StatisticsMessages {
 		StringBook result = new StringBook("Level statistics", colour, 10);
 		
 		// Histogram data:
-		Double[] data = StatisticsManager.manager().getLevelHistogram(BalanceConfiguration.config().maximumLevel, false);
+		Double[] data = StatisticsManager.manager().getLevelHistogram(ExperienceConfiguration.config().maximumLevel, false);
 		Double maxVal = MathUtil.max(data);
 		
 		// No data:
@@ -308,15 +229,43 @@ public class StatisticsMessages {
 		ColorCircle histColours = new ColorCircle().addColor(ChatColor.LIGHT_PURPLE).addColor(ChatColor.DARK_AQUA);
 		result.addLine("");
 		result.addLine("LEVEL DISTRIBUTION");
-		result.addLine("  " + frameColor + TextUtil.repeat("..", BalanceConfiguration.config().maximumLevel));
+		result.addLine("  " + frameColor + TextUtil.repeat("..", ExperienceConfiguration.config().maximumLevel));
 		result.addLine(frameColor + "  |" + TextUtil.histogram(data, histColours).replaceAll("\n", frameColor + "|\n  |") + frameColor + "|");
-		result.addLine("  " + frameColor + TextUtil.repeat("..", BalanceConfiguration.config().maximumLevel));
+		result.addLine("  " + frameColor + TextUtil.repeat("..", ExperienceConfiguration.config().maximumLevel));
 		result.addLine("");
 		
 		return result.framed(page);
 		
 		
 	}
+	
+	public static String attributes() {
+		
+		
+		ColorCircle color = new ColorCircle().addColor(normal1).addColor(normal2);
+		StringTable table = new StringTable(color);
+
+		// Add headings:
+		table.addLine(new String[]{GeneralMessages.columnTitle("attribute"), GeneralMessages.columnTitle("total score")});
+		
+		ArrayList<String> attributes = AttributeConfiguration.config().getAttributeNames();
+		for (String attribute : attributes) {
+			
+			table.addLine(attribute, StatisticsManager.manager().getAttributeScoreTotal(attribute).toString(), 0);
+			
+		}
+		
+		table.collapse();
+		
+		StringBook book = new StringBook("attribute statistics", color, 10);
+		
+		book.addTable(table);
+		
+		return book.framed(0, table.calcTotalWidth());
+		
+		
+	}
+		
 	
 	public static String exp(int page) {
 	
@@ -325,31 +274,31 @@ public class StatisticsMessages {
 		StringTable table = new StringTable(color);
 
 		// Add headings:
-		table.addLine(new String[]{"SOURCE","EXP/USES","EXP","USERS"});
+		table.addLine(new String[]{GeneralMessages.columnTitle("category"), GeneralMessages.columnTitle("exp")});
 		
-		String[] sources = StatisticsManager.manager().getExpSources().toArray(new String[0]);
-		Arrays.sort(sources);
+		Collection<String> categs = StatisticsManager.manager().getExpCategories();
+		Collection<String> subcategs = StatisticsManager.manager().getExpSubcategories();
 		
-		
-		if(sources.length > 0){
+		if(subcategs.size() != 0){
 			
-			for (int i = 0; i < sources.length; i++) {
+			for (String categ : categs) {
+
+				Double exp = StatisticsManager.manager().getExpGained(categ);
+				table.addLine(categ, exp.intValue() + "", 0);
 				
-				String source = sources[i];
-				
-				Double exp = StatisticsManager.manager().getSourceExp(source);
-				Double users = StatisticsManager.manager().countExpUsers(source).doubleValue();
-				
-				if(users != 0){
-					table.addLine(new String[]{source, MathUtil.round(exp/users).toString(), MathUtil.round(exp).toString(), users.toString()});
-				}else{
-					table.addLine(new String[]{source, "-", "-", "-"});
+				for (String subcateg : subcategs) {
+					
+					exp = StatisticsManager.manager().getExpGained(categ, subcateg);
+					if(exp <= 0) continue;
+					
+					table.addLine(TextUtil.TAB + subcateg, exp.intValue() + "", 0);
+					
 				}
 				
 			}
-			
+		
 		}else{
-			table.addLine(new String[]{"-", "-", "-", "-"});
+			table.addLine(new String[]{"-", "-"});
 		}
 		
 		table.collapse();
@@ -392,9 +341,9 @@ public class StatisticsMessages {
 		ColorCircle histColours = new ColorCircle().addColor(ChatColor.LIGHT_PURPLE).addColor(ChatColor.DARK_AQUA);
 		result.addLine("");
 		result.addLine("DIAMOND RATIO DISTRIBUTION");
-		result.addLine("  " + frameColor + TextUtil.repeat("..", BalanceConfiguration.config().maximumLevel));
+		result.addLine("  " + frameColor + TextUtil.repeat("..", ExperienceConfiguration.config().maximumLevel));
 		result.addLine(frameColor + "  |" + TextUtil.histogram(data, histColours).replaceAll("\n", frameColor + "|\n  |") + frameColor + "|");
-		result.addLine("  " + frameColor + TextUtil.repeat("..", BalanceConfiguration.config().maximumLevel));
+		result.addLine("  " + frameColor + TextUtil.repeat("..", ExperienceConfiguration.config().maximumLevel));
 		result.addLine("");
 		
 		if(data.length > 0) result.addLine("Maximum: " + maxVal);
@@ -459,6 +408,9 @@ public class StatisticsMessages {
 		
 		
 	}
+	
+	
+	
 	
 	// Resetting:
 	public static String reset() {

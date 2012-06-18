@@ -59,8 +59,8 @@
     "levelsCost":5,
     "properties":{},
     "blockExp":{
-      "SUGAR_CANE_BLOCK":{"0":1.937},
-      "CROPS":{"7":1.937}
+      "SUGAR_CANE_BLOCK":{"0":0.1937},
+      "CROPS":{"7":0.1937}
     },
     "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
     "creatureExp":{"pig":7, "cow":7, "sheep":7}
@@ -87,7 +87,7 @@
     "levelsCost":5,
     "properties":{},
     "blockExp":{},
-    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "playerExp":{"x1":0,"y1":1.0,"x2":50,"y2":0.0},
     "creatureExp":{}
   },
 
@@ -95,7 +95,7 @@
     "type":"CLASS",
     "hierarchyLevel":"1",
     "abilities":["bash"],
-    "bindMaterials":{"bash":["IRON_SWORD","DIAMOND_SWORD"]},
+    "bindMaterials":{"bash":["IRON_SWORD","DIAMOND_SWORD","IRON_AXE","DIAMOND_AXE"]},
     "bindActions":{"bash":"RIGHT_CLICK"},
     "skillMax":{"blade":20,"waraxe":20,"heavy armour":30,"magic warding":20,"unarmoured":5},
     "settlementPermissions":[],
@@ -180,7 +180,7 @@
     "bindMaterials":{"claim":["STICK","GOLD_SWORD"]},
     "bindActions":{"claim":"RIGHT_CLICK"},
     "skillMax":{},
-    "settlementPermissions":["BUILD","CLAIM","INVITE","ABANDON","KICK","BUILD_BUILDING","SET_BUILDING","REMOVE_BUILDING","RENAME"],
+    "settlementPermissions":["BUILD","CLAIM","INVITE","ABANDON","KICK","SET_BUILDING","REMOVE_BUILDING","RENAME"],
     "factionPermissions":[],
     "currencyCost":500,
     "levelsCost":5,
@@ -284,7 +284,7 @@
     "bindActions":{},
     "skillMax":{},
     "settlementPermissions":[],
-    "factionPermissions":["INVITE","KICK","SET_COLOR","RALLY","RENAME"],
+    "factionPermissions":["INVITE","KICK","SET_COLOR","RENAME","SET_RANK"],
     "currencyCost":500,
     "levelsCost":5,
     "properties":{},
@@ -305,7 +305,7 @@
     },
     "skillMax":{},
     "settlementPermissions":[],
-    "factionPermissions":["INVITE","KICK","SET_SPAWN"],
+    "factionPermissions":["INVITE","KICK"],
     "currencyCost":500,
     "levelsCost":5,
     "properties":{},

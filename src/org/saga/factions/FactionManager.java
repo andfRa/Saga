@@ -9,7 +9,8 @@ import java.util.Random;
 import org.saga.Saga;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.player.SagaPlayer;
-import org.saga.utility.WriterReader;
+import org.saga.saveload.Directory;
+import org.saga.saveload.WriterReader;
 
 
 public class FactionManager {
@@ -94,7 +95,7 @@ public class FactionManager {
 
 
 		// Retrieve the faction:
-		SagaFaction faction = sagaPlayer.getRegisteredFaction();
+		SagaFaction faction = sagaPlayer.getFaction();
 
 		// No longer exists:
 		if(faction == null){
@@ -276,7 +277,7 @@ public class FactionManager {
 		FactionManager manager = new FactionManager();
 		
 		// Load factions:
-		String[] ids = WriterReader.getAllFactionIds();
+		String[] ids = WriterReader.getAllIds(Directory.FACTION_DATA);
 		for (int i = 0; i < ids.length; i++) {
 			SagaFaction element = SagaFaction.load(ids[i]);
 			// Ignore all invalid IDs:

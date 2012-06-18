@@ -7,24 +7,23 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.chunkGroups.ChunkGroup;
+import org.saga.exceptions.InvalidBuildingException;
 import org.saga.messages.SagaMessages;
 import org.saga.player.SagaPlayer;
 
 
 public class Farm extends Building{
 
-	
-	// Initialization:
+
+	// Initialisation:
 	/**
-	 * Initializes
+	 * Creates a building from the definition.
 	 * 
-	 * @param pointCost point cost
-	 * @param moneyCost money cost
-	 * @param proficiencies proficiencies
+	 * @param definition building definition
 	 */
-	private Farm(String name) {
+	public Farm(BuildingDefinition definition) {
 		
-		super("");
+		super(definition);
 		
 	}
 	
@@ -34,10 +33,10 @@ public class Farm extends Building{
 	 * @see org.saga.buildings.Building#completeExtended()
 	 */
 	@Override
-	public boolean completeExtended() {
+	public boolean complete() throws InvalidBuildingException {
 		
 
-		boolean integrity = true;
+		boolean integrity = super.complete();
 		
 //		if(signs == null){
 //			signs = new ArrayList<BuildingSign>();
@@ -50,16 +49,6 @@ public class Farm extends Building{
 		
 	}
 
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#blueprint()
-	 */
-	@Override
-	public Building blueprint() {
-		return new Farm("");
-	}
-	
 	
 	// Events:
 	@Override
@@ -93,15 +82,7 @@ public class Farm extends Building{
 		// Stop trampling:
 		if(event.getAction() == Action.PHYSICAL && event.getClickedBlock().getType() == Material.SOIL){
 			
-			ChunkGroup chunkGroup = getChunkGroup();
-			
-			if(chunkGroup == null) return;
-			
-			// Permissions:
-			if(!chunkGroup.canTrample(sagaPlayer)){
-				sagaPlayer.message(SagaMessages.noPermission(this));
 				event.setCancelled(true);
-			}
 						
 			
 		}

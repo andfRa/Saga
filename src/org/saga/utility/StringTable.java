@@ -27,7 +27,7 @@ public class StringTable {
 	/**
 	 * Message colors.
 	 */
-	private ColorCircle messageColor;
+	private ColorCircle colours;
 
 	/**
 	 * Custom column widths.
@@ -40,9 +40,9 @@ public class StringTable {
 	 * Sets message color and lines.
 	 * 
 	 */
-	public StringTable(ColorCircle messageColor) {
+	public StringTable(ColorCircle colours) {
 
-		this.messageColor = messageColor;
+		this.colours = colours;
 		
 		this.columnIndex = 0;
 		table.add(new ArrayList<String>());
@@ -219,6 +219,20 @@ public class StringTable {
 	/**
 	 * Adds a line to a column.
 	 * 
+	 * @param value1 first value
+	 * @param value2 second value
+	 * @param index column index
+	 */
+	public void addLine(String value1,String value2, Integer index) {
+		
+		addLine(value1, index);
+		addLine(value2, index + 1);
+		
+	}
+
+	/**
+	 * Adds a line to a column.
+	 * 
 	 * @param line line
 	 */
 	public void addLine(String[] lines) {
@@ -241,7 +255,6 @@ public class StringTable {
 		
 		
 	}
-	
 	
 	/**
 	 * Gets the table size.
@@ -285,7 +298,7 @@ public class StringTable {
 			if(row != 0) result.append("\n");
 			
 			// All columns:
-			ChatColor elementColor = messageColor.nextColor();
+			ChatColor elementColor = colours.nextColor();
 			for (int colInd = 0; colInd < table.size(); colInd++) {
 				
 				ArrayList<String> column = table.get(colInd);

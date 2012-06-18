@@ -9,68 +9,50 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Random;
 
-import net.minecraft.server.EntityFireball;
-import net.minecraft.server.EntityLiving;
-import net.minecraft.server.WorldServer;
-
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.entity.CraftFireball;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.Arrow;
-import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
-import org.saga.abilities.AbilityDefinition.ActivationAction;
+import org.saga.abilities.AbilityManager;
+import org.saga.attributes.AttributeManager;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.AbilityConfiguration;
-import org.saga.config.AbilityConfiguration.InvalidAbilityException;
-import org.saga.config.BalanceConfiguration;
+import org.saga.config.AttributeConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
-import org.saga.config.ProficiencyConfiguration;
-import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
-import org.saga.config.SkillConfiguration;
-import org.saga.constants.BlockConstants;
 import org.saga.constants.PlayerDefaults;
+import org.saga.dependencies.PermissionsManager;
 import org.saga.economy.EconomyManager.TransactionType;
 import org.saga.economy.InventoryUtil;
 import org.saga.economy.TradeDeal;
 import org.saga.economy.Trader;
+import org.saga.exceptions.InvalidAbilityException;
 import org.saga.factions.SagaFaction;
+import org.saga.messages.GeneralMessages.CustomColour;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.StatsMessages;
-import org.saga.player.GuardianRune.GuardianRuneStatus;
-import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.Skill.ArmourType;
+import org.saga.saveload.Directory;
+import org.saga.saveload.WriterReader;
+import org.saga.settlements.Settlement;
 import org.saga.shape.RelativeShape.Orientation;
-import org.saga.statistics.StatisticsManager;
-import org.saga.utility.TextUtil;
-import org.saga.utility.WriterReader;
 
 import com.google.gson.JsonParseException;
 
@@ -101,38 +83,21 @@ public class SagaPlayer implements SecondTicker, Trader{
 	private Double exp;
 	
 	/**
-	 * Amount of currency the player has.
+	 * Amount of coins the player has.
 	 */
 	private Double coins;
 
 	
-	// Proficiencies:
+	// Attributes:
 	/**
-	 * Players profession.
+	 * Attribute scores.
 	 */
-	private Proficiency profession;
+	private Hashtable<String, Integer> attributeScores;
 	
 	/**
-	 * Players class.
+	 * Ability scores.
 	 */
-	private Proficiency classs;
-	
-	/**
-	 * Players role.
-	 */
-	transient private Proficiency role;
-	
-	/**
-	 * Players role.
-	 */
-	transient private Proficiency rank;
-	
-	
-	// Skills:
-	/**
-	 * Skills.
-	 */
-	private Hashtable<String, Integer> skills;
+	private Hashtable<String, Integer> abilityScores;
 
 	
 	// Abilities:
@@ -144,16 +109,14 @@ public class SagaPlayer implements SecondTicker, Trader{
 	
 	// Managers:
 	/**
-	 * Level manager.
+	 * Ability manager.
 	 */
-	transient private PlayerLevelManager levelManager;
+	transient private AbilityManager abilityManager;
 	
-
-	// Experience:
 	/**
-	 * Experience to be regenerated.
+	 * Attribute manager.
 	 */
-	private Integer expRegen;
+	transient private AttributeManager attributeManager;
 	
 	
 	// Faction:
@@ -165,7 +128,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	/**
 	 * Registered factions.
 	 */
-	transient private SagaFaction registeredFaction;
+	transient private SagaFaction faction;
 	
 	
 	// Chunk group:
@@ -177,7 +140,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	/**
 	 * All registered chunk groups.
 	 */
-	transient private ChunkGroup registeredChunkGroup = null;
+	transient private ChunkGroup chunkGroup = null;
 	
 	
 	// Location:
@@ -186,11 +149,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 */
 	transient public SagaChunk lastSagaChunk = null;
 	
-	/**
-	 * Last player location.
-	 */
-	transient private Location lastLocation2 = null;
-
 	
 	// Invites:
 	/**
@@ -208,28 +166,14 @@ public class SagaPlayer implements SecondTicker, Trader{
 	/**
 	 * All guardian stone.
 	 */
-	private GuardianRune guardianStone;
-	
-	
-	// Reward:
-	/**
-	 * Reward.
-	 */
-	private Integer reward; 
-	
-	
-	// Mining Statistics:
-	/**
-	 * Mining statistics:
-	 */
-	private Hashtable<Material, Integer> miningStatistics;
+	private GuardianRune guardRune;
 	
 	
 	// Date:
 	/**
 	 * Lost online date.
 	 */
-	private Date lastOnline;
+	private Date lastOnline2;
 
 	
 	// Admin mode:
@@ -256,7 +200,9 @@ public class SagaPlayer implements SecondTicker, Trader{
 	transient private boolean clockEnabled;
 	
 
-	// Loading and initialization:
+	
+	
+	// Loading and initialisation:
 	/**
 	 * Used by gson loader.
 	 */
@@ -281,14 +227,13 @@ public class SagaPlayer implements SecondTicker, Trader{
 		this.factionInvites = new ArrayList<Integer>();
 		this.chunkGroupInvites = new ArrayList<Integer>();
 		this.coins = EconomyConfiguration.config().playerCoins;
-		this.guardianStone = GuardianRune.newStone();
-		this.lastOnline = Calendar.getInstance().getTime();
-		this.levelManager = new PlayerLevelManager(this);
-		this.expRegen = 0;
+		this.guardRune = new GuardianRune(this);
 		this.abilities = new ArrayList<Ability>();
-		this.reward = 0;
-		this.skills = new Hashtable<String, Integer>();
-		this.miningStatistics = new Hashtable<Material, Integer>();
+		syncAbilities();
+		this.attributeScores = new Hashtable<String, Integer>();
+		this.abilityScores = AbilityConfiguration.config().getStartingScores();
+		this.abilityManager = new AbilityManager(this);
+		this.attributeManager = new AttributeManager(this);
 		
 	}
 	
@@ -339,45 +284,12 @@ public class SagaPlayer implements SecondTicker, Trader{
 			Saga.severe(this, "chunkGroupInvites field not initialized", "setting default");
 		}
 		
-		if(guardianStone == null){
-			guardianStone = GuardianRune.newStone();
-			Saga.severe(this, "guardianStone field not initialized", "setting default");
+		if(guardRune == null){
+			guardRune = new GuardianRune(this);
+			Saga.severe(this, "guardRune field not initialized", "setting default");
 		}
-		guardianStone.complete();
+		guardRune.complete();
 		
-		if(lastOnline == null){
-			lastOnline = Calendar.getInstance().getTime();
-			Saga.severe(this, "failed to initialize lastOnline field", "setting default");
-		}
-		
-		if(profession != null){
-			
-			try {
-				profession.complete();
-				profession.setPlayer(this);
-			} catch (InvalidProficiencyException e) {
-				Saga.severe(this, "failed to complete profession field", "removing field");
-				profession = null;
-			}
-			
-		}
-		
-		if(classs != null){
-			
-			try {
-				
-				classs.fixName();
-				
-				classs.complete();
-				classs.setPlayer(this);
-				
-			} catch (InvalidProficiencyException e) {
-				Saga.severe(this, "failed to complete classs field to initialize", "removing field");
-				classs = null;
-			}
-			
-		}
-
 		// Abilities:
 		if(abilities == null){
 			abilities = new ArrayList<Ability>();
@@ -397,9 +309,8 @@ public class SagaPlayer implements SecondTicker, Trader{
 			
 			try {
 				
-				ability.complete();
-				
 				ability.setPlayer(this);
+				ability.complete();
 				
 			} catch (InvalidAbilityException e) {
 				Saga.severe(this, "abilities element invalid: " + e.getMessage(), "removing element");
@@ -409,336 +320,130 @@ public class SagaPlayer implements SecondTicker, Trader{
 			}
 			
 		}
+
+		syncAbilities();
 		
-		if(expRegen == null){
-			expRegen = 0;
-			Saga.severe(this, "expRegen field failed", "setting default");
+		if(attributeScores == null){
+			attributeScores = new Hashtable<String, Integer>();
+			Saga.severe(this, "attributeScores field failed to initialize", "setting default");
 		}
 		
-		// Limit experience regeneration:
-		if(expRegen > BalanceConfiguration.config().expRegenLimit){
-			expRegen = BalanceConfiguration.config().expRegenLimit;
-		}
-		
-		if(skills == null){
-			skills = new Hashtable<String, Integer>();
-			Saga.severe(this, "skills field failed to initialize", "setting default");
-		}
-		
-		if(reward == null){
-			reward = 0;
-			Saga.severe(this, "reward field failed to initialize", "setting default");
-		}
-		
-		if(miningStatistics == null){
-			miningStatistics = new Hashtable<Material, Integer>();
-			Saga.severe(this, "miningStatistics field failed to initialize", "setting default");
+		if(abilityScores == null){
+			abilityScores = new Hashtable<String, Integer>();
+			Saga.severe(this, "abilityScores field failed to initialize", "setting default");
 		}
 		
 		// Transient:
 		this.clockEnabled = false;
-		this.levelManager = new PlayerLevelManager(this);
-	
-		
-	}
-
-	
-	// Proficiencies:
-	/**
-	 * Gets all proficiencies.
-	 * 
-	 * @return all proficiencies
-	 */
-	public ArrayList<Proficiency> getAllProficiencies() {
-
-		
-		ArrayList<Proficiency> allProficiencies = new ArrayList<Proficiency>();
-		
-		if(profession != null){
-			allProficiencies.add(profession);
-		}
-		
-		if(classs != null){
-			allProficiencies.add(classs);
-		}
-		
-		if(role != null){
-			allProficiencies.add(role);
-		}
-		
-		if(rank != null){
-			allProficiencies.add(rank);
-		}
-		
-		return allProficiencies;
+		this.attributeManager = new AttributeManager(this);
+		this.abilityManager = new AbilityManager(this);
 		
 		
 	}
-	
-	/**
-	 * Gets the profession.
-	 * 
-	 * @return profession, null if none
-	 */
-	public Proficiency getProfession() {
-		return profession;
-	}
-	
-	/**
-	 * Sets the profession.
-	 * 
-	 * @param profession profession
-	 */
-	public void setProfession(Proficiency profession) {
-		
-		if(this.profession != null){
-			Saga.severe(this, "tried to set a second profession", "continuing with request");
-		}
-
-		// Set player:
-		profession.setPlayer(this);
-		
-		this.profession = profession;
-
-		// Update managers:
-		levelManager.update();
-//
-//		// Correct bindings:
-//		correctBindings();
-//		
-		
-	}
-	
-	/**
-	 * Clears the profession.
-	 * 
-	 */
-	public void clearProfession() {
-		
-		if(this.profession == null){
-			Saga.severe(this, "tried clear a non-existant profession", "continuing with request");
-		}
-		
-		this.profession = null;
-
-		// Update managers:
-		levelManager.update();
-
-	}
-
-
-	/**
-	 * Gets the class.
-	 * 
-	 * @return class, null if none
-	 */
-	public Proficiency getClazz() {
-		return classs;
-	}
-	
-	/**
-	 * Sets the class.
-	 * 
-	 * @param class class
-	 */
-	public void setClass(Proficiency classs) {
-		
-		if(this.classs != null){
-			Saga.severe(this, "tried to set a second class", "continuing with request");
-		}
-		
-		// Set player:
-		classs.setPlayer(this);
-		
-		this.classs = classs;
-		
-		// Update managers:
-		levelManager.update();
-//
-//		// Correct bindings:
-//		correctBindings();
-//		
-		
-		
-	}
-	
-	/**
-	 * Clears the class.
-	 * 
-	 */
-	public void clearClass() {
-		
-		if(this.classs == null){
-			Saga.severe(this, "tried clear a non-existant class", "continuing with request");
-		}
-		
-		this.classs = null;
-
-		// Update managers:
-		levelManager.update();
-		
-	}
-
-
-	/**
-	 * Gets the role.
-	 * 
-	 * @return role, null if none
-	 */
-	public Proficiency getRole() {
-		return role;
-	}
-	
-	/**
-	 * Sets the role.
-	 * 
-	 * @param role role
-	 */
-	public void setRole(Proficiency role) {
-		
-		// Register:
-		registerRole(role);
-		
-	}
-	
-	/**
-	 * Clears the role.
-	 * 
-	 */
-	public void clearRole() {
-
-		
-		// Unregister:
-		unregisterRole();
-
-	}
-	
-
-	/**
-	 * Gets the rank.
-	 * 
-	 * @return rank, null if none
-	 */
-	public Proficiency getRank() {
-		return rank;
-	}
-	
-	/**
-	 * Sets the rank.
-	 * 
-	 * @param rank rank
-	 */
-	public void setRank(Proficiency rank) {
-		
-		// Register:
-		registerRank(rank);
-		
-	}
-	
-	/**
-	 * Clears the rank.
-	 * 
-	 */
-	public void clearRank() {
-		
-		// Unregister:
-		unregisterRank();
-		
-	}
-
-
-	/**
-	 * Registers the role.
-	 * 
-	 * @param role role
-	 */
-	public void registerRole(Proficiency role) {
-		
-		
-		if(this.role != null){
-			Saga.severe(this, "tried to set a second role", "continuing with request");
-		}
-
-		// Set player:
-		role.setPlayer(this);
-		
-		this.role = role;
-
-		// Update managers:
-		levelManager.update();
-
-		
-	}
-	
-	/**
-	 * Unregisters the role.
-	 * 
-	 */
-	public void unregisterRole() {
-		
-		
-		if(this.role == null){
-			Saga.severe(this, "tried clear a non-existant role", "continuing with request");
-		}
-		
-		this.role = null;
-		
-		// Update managers:
-		levelManager.update();
 
 	
-	}
-
-	/**
-	 * Registers the rank.
-	 * 
-	 * @param rank rank
-	 */
-	public void registerRank(Proficiency rank) {
-		
-		if(this.rank != null){
-			Saga.severe(this, "tried to set a second rank", "continuing with request");
-		}
-
-		// Set player:
-		rank.setPlayer(this);
-		
-		this.rank = rank;
-
-		// Update managers:
-		levelManager.update();
-		
-		
-	}
-	
-	/**
-	 * Unregisters the rank.
-	 * 
-	 */
-	public void unregisterRank() {
-		
-		if(this.rank == null){
-			Saga.severe(this, "tried clear a non-existant rank", "continuing with request");
-		}
-		
-		this.rank = null;
-
-		// Update managers:
-		levelManager.update();
-
-		
-	}
 	
 	
 	// Attributes:
 	/**
-	 * Gets the level manager.
+	 * Gets the ability manager.
 	 * 
-	 * @return level manager
+	 * @return ability manager
 	 */
-	public PlayerLevelManager getLevelManager() {
-		return levelManager;
+	public AbilityManager getAbilityManager() {
+		return abilityManager;
 	}
+	
+	/**
+	 * Gets the attribute manager.
+	 * 
+	 * @return attribute manager
+	 */
+	public AttributeManager getAttributeManager() {
+		return attributeManager;
+	}
+	
+	/**
+	 * Gets the score for the giver attribute.
+	 * 
+	 * @param name attribute name
+	 * @return attribute score
+	 */
+	public Integer getAttributeScore(String name) {
+
+		Integer multiplier = attributeScores.get(name);
+		if(multiplier == null) return 0;
+		return multiplier;
+
+	}
+
+	/**
+	 * Gets the score for the giver ability.
+	 * 
+	 * @param name ability name
+	 * @return ability score
+	 */
+	public Integer getAbilityScore(String name) {
+
+		Integer abilityLevel = abilityScores.get(name);
+		if(abilityLevel == null) return 0;
+		return abilityLevel;
+
+	}
+	
+	/**
+	 * Gets the used attribute points.
+	 * 
+	 * @return total attribute points
+	 */
+	public Integer getUsedAttributePoints() {
+
+		
+		Collection<Integer> attrVals = attributeScores.values();
+		Integer total = 0;
+		for (Integer score : attrVals) {
+			total += score;
+		}
+		
+		return total;
+				
+		
+	}
+
+	/**
+	 * Gets the available attribute points.
+	 * 
+	 * @return available attribute points
+	 */
+	public Integer getAvailableAttributePoints() {
+
+		return AttributeConfiguration.config().getAttributePoints(getLevel());
+		
+	}
+	
+	/**
+	 * Gets the remaining attribute points.
+	 * 
+	 * @return remaining attribute points
+	 */
+	public Integer getRemainingAttributePoints() {
+
+		return getAvailableAttributePoints() - getUsedAttributePoints();
+		
+	}
+	
+	/**
+	 * Sets attribute score.
+	 * 
+	 * @param attribute attribute name
+	 * @param score score
+	 */
+	public void setAttributeScore(String attribute, Integer score) {
+		this.attributeScores.put(attribute, score);
+		abilityManager.update();
+	}
+
+	
 	
 	
 	// Abilities:
@@ -773,420 +478,75 @@ public class SagaPlayer implements SecondTicker, Trader{
 	}
 	
 	/**
-	 * Gets learned abilities.
-	 * 
-	 * @return learned abilities
-	 */
-	public HashSet<Ability> getLearnedAbilities() {
-
-		
-		HashSet<Ability> learnedAbilities = new HashSet<Ability>();
-		HashSet<String> learnableAbilities = getLearnableAbilities();
-		
-		for (String abilityName : learnableAbilities) {
-			
-			Ability ability = getAbility(abilityName);
-			
-			// Correct abilities:
-			if(ability == null){
-				try {
-					
-					ability = AbilityConfiguration.createAbility(abilityName);
-					
-					this.abilities.add(ability);
-					
-					ability.setPlayer(this);
-					
-				} catch (InvalidAbilityException e) {
-					
-					Saga.severe(this, "failed to retrieve " + abilityName + " ability:" + expRegen.getClass().getSimpleName() + ":" + e.getMessage(), "ignoring ability");
-					continue;
-					
-				}
-			}
-			
-			learnedAbilities.add(ability);
-			
-		}
-		
-		return learnedAbilities;
-		
-		
-	}
-	
-	/**
 	 * Gets abilities.
 	 * 
 	 * @return abilities
 	 */
 	public HashSet<Ability> getAbilities() {
-
 		return new HashSet<Ability>(abilities);
-		
 	}
 
 	/**
-	 * Checks if the ability is binded to the given material and action.
+	 * Gets abilities that have a positive score.
 	 * 
-	 * @param name ability name
-	 * @param material material
-	 * @param action action
-	 * @return true if binded
+	 * @return available abilities
 	 */
-	public boolean isAbilityBinded(String name, Material material, ActivationAction action) {
-
-		
-		if(profession != null && profession.getDefinition().isAbilityBinded(name, material, action)) return true;
-
-		if(classs != null && classs.getDefinition().isAbilityBinded(name, material, action)) return true;
-
-		if(role != null && role.getDefinition().isAbilityBinded(name, material, action)) return true;
-
-		if(rank != null && rank.getDefinition().isAbilityBinded(name, material, action)) return true;
-		
-		return false;
+	public HashSet<Ability> getAvailableAbilities() {
 		
 		
-	}
-
-	/**
-	 * Checks if the ability can be learned.
-	 * 
-	 * @param name ability name
-	 * @return true if can be learned
-	 */
-	public boolean canLearnAbility(String name) {
-
+		HashSet<Ability> abilities = getAbilities();
+		HashSet<Ability> availableAbilities = new HashSet<Ability>();
 		
-		// Profession:
-		if(profession != null && profession.getDefinition().hasAbility(name)) return true;
-		
-		// Class:
-		if(classs != null && classs.getDefinition().hasAbility(name)) return true;
-		
-		// Role:
-		if(role != null && role.getDefinition().hasAbility(name)) return true;
-		
-		// Rank:
-		if(rank != null && rank.getDefinition().hasAbility(name)) return true;
-		
-		return false;
-		
-		
-	}
-	
-	/**
-	 * Gets all learnable abilities.
-	 * 
-	 * @return learnable abilities
-	 */
-	public HashSet<String> getLearnableAbilities() {
-
-		
-		HashSet<String> abilities = new HashSet<String>();
-
-		// Profession:
-		if(profession != null){
-			abilities.addAll(profession.getDefinition().getAbilities());
-		}
-
-		// Class:
-		if(classs != null){
-			abilities.addAll(classs.getDefinition().getAbilities());
-		}
-
-		// Role:
-		if(role != null){
-			abilities.addAll(role.getDefinition().getAbilities());
-		}
-
-		// Rank:
-		if(rank != null){
-			abilities.addAll(rank.getDefinition().getAbilities());
-		}
-		
-		return abilities;
-		
-		
-	}
-
-	/**
-	 * Matches an proficiency to the ability.
-	 * 
-	 * @param ability ability
-	 * @return proficiency, null if none
-	 */
-	public Proficiency matchProficiency(Ability ability) {
-
-
-		// Profession:
-		if(profession != null && profession.getDefinition().hasAbility(ability.getName())){
-			return profession;
-		}
-		
-		// Class:
-		if(classs != null && classs.getDefinition().hasAbility(ability.getName())){
-			return classs;
-		}
-		
-		return null;
-
-	}
-	
-	
-	// Skills:
-	/**
-	 * Gets skills.
-	 * 
-	 * @return skills
-	 */
-	public Hashtable<String, Integer> getSkills() {
-		return new Hashtable<String, Integer>(skills);
-	}
-	
-	/**
-	 * Gets enabled skills.
-	 * 
-	 * @return enabled skills
-	 */
-	public HashSet<String> getEnabledSkills() {
-		
-		
-		HashSet<String> skills = new HashSet<String>();
-
-		if(profession != null){
-			skills.addAll(profession.getDefinition().getSkills());
-		}
-		
-		if(classs != null){
-			skills.addAll(classs.getDefinition().getSkills());
-		}
-		
-		if(role != null){
-			skills.addAll(role.getDefinition().getSkills());
-		}
-		
-		if(rank != null){
-			skills.addAll(rank.getDefinition().getSkills());
-		}
-		
-		return skills;
-		
-		
-	}
-	
-	/**
-	 * Gets skill multiplier.
-	 * 
-	 * @param name skill name
-	 * @return multiplier, 0 if none
-	 */
-	public Integer getSkillMultiplier(String name) {
-		
-		Integer value = skills.get(name);
-		if(value == null) value = 0;
-		
-		return value;
-		
-	}
-
-	/**
-	 * Gets modified skill multiplier.
-	 * 
-	 * @param name skill name
-	 * @return modified multiplier, 0 if none
-	 */
-	public Integer getModifiedSkillMultiplier(String name) {
-		
-		Integer value = skills.get(name);
-		if(value == null) value = 0;
-		
-		
-		Integer maxValue = getSkillMaximum(name);
-		if(value > maxValue) value = maxValue;
-		
-		return value;
-		
-	}
-
-	/**
-	 * Gets maximum modified skill multiplier.
-	 * 
-	 * @param name skill name
-	 * @return modified multiplier, 0 if none
-	 */
-	public Integer getModifiedSkillMultiplier(HashSet<String> skillNames) {
-		
-		Integer value = 0;
-		for (String skillName : skillNames) {
-			Integer nextValue = getModifiedSkillMultiplier(skillName);
-			if(nextValue > value) value = nextValue;
-		}
-		
-		return value;
-		
-	}
-	
-	/**
-	 * Increases a skill.
-	 * 
-	 * @param name name
-	 * @param amount amount to increase
-	 * 
-	 * @return new skill value
-	 */
-	public Integer increaseSkill(String name, Integer amount) {
-		
-		
-		Integer value = skills.get(name);
-		if(value == null) value = 0;
-		
-		value += amount;
-		
-		if(value == 0){
-			skills.remove(name);
-			return value;
-		}
-		
-		skills.put(name, value);
-
-		// Update level manager:
-		levelManager.update();
-		
-		return value;
-		
-		
-	}
-	
-	/**
-	 * Decreases a skill.
-	 * 
-	 * @param name name
-	 * @param amount amount to decrease
-	 * 
-	 * @return new skill value
-	 */
-	public Integer decreaseSkill(String name, Integer amount) {
-		
-		
-		Integer value = skills.get(name);
-		if(value == null) value = 0;
-		
-		value -= amount;
-		
-		if(value == 0){
-			skills.remove(name);
-			return value;
-		}
-		
-		skills.put(name, value);
-
-		// Update level manager:
-		levelManager.update();
-		
-		return value;
-		
-		
-	}
-	
-	/**
-	 * Clears all skills.
-	 * 
-	 */
-	public void clearSkills() {
-		
-		
-		skills = new Hashtable<String, Integer>();
-
-		// Update level manager:
-		levelManager.update();
-		
-		
-	}
-	
-	/**
-	 * Gets the skill maximum multiplier.
-	 * 
-	 * @param name skill name
-	 * @return skill maximum multiplier, 0 if not available
-	 */
-	public Integer getSkillMaximum(String name) {
-
-		
-		Integer maximum = 0;
-		
-		ArrayList<Proficiency> proficiencies = getAllProficiencies();
-		for (Proficiency proficiency : proficiencies) {
+		for (Ability ability : abilities) {
 			
-			Integer profMax = proficiency.getSkillMaximum(name);
-			
-			if(profMax > maximum) maximum = profMax;
+			if(getAbilityScore(ability.getName()) > 0){
+				availableAbilities.add(ability);
+			}
 			
 		}
 		
-		return maximum;
-	
+		return availableAbilities;
+		
 		
 	}
-
+	
 	/**
-	 * Sets skill multiplier.
+	 * Creates and adds all missing abilities.
 	 * 
-	 * @param name skill name
-	 * @param multiplier multiplier
 	 */
-	public void setSkillMultiplier(String name, Integer multiplier) {
+	private void syncAbilities() {
 
 		
-		// Check if valid skill:
-		if(SkillConfiguration.config().getSkill(name) == null){
-			Saga.severe(this, "tried to set an invalid skill " + name, "ignoring request");
-			return;
+		ArrayList<String> abilityNames = AbilityConfiguration.config().getAbilityNames();
+		for (String abilityName : abilityNames) {
+			if(!hasAbility(abilityName)){
+				
+				try {
+					Ability ability = AbilityConfiguration.createAbility(abilityName);
+					ability.setPlayer(this);
+					abilities.add(ability);
+				}
+				catch (InvalidAbilityException e) {
+					SagaLogger.severe(this, "failed to create ability: " + e.getClass().getSimpleName() + ":" + e.getMessage());
+				}
+				
+			}
 		}
 		
-		skills.put(name, multiplier);
 
-		// Update level manager:
-		levelManager.update();
-		
-		
 	}
-	
-	
-	// Skill points:
+
 	/**
-	 * Gets spent skill points.
+	 * Sets ability score.
 	 * 
-	 * @return spent skill points
+	 * @param ability ability name
+	 * @param score score
 	 */
-	public Integer getSkillPoints() {
-		
-		
-		Integer skillsPoints = 0;
-		
-		Hashtable<String, Integer> skills = getSkills();
-		
-		Collection<Integer> multipliers = skills.values();
-		
-		for (Integer multiplier : multipliers) {
-			skillsPoints += multiplier;
-		}
-		
-		return skillsPoints;
-
-		
+	public void setAbilityScore(String ability, Integer score) {
+		this.abilityScores.put(ability, score);
+		abilityManager.update();
 	}
 	
-	/**
-	 * Gets remaining skill points.
-	 * 
-	 * @return spent skill points
-	 */
-	public Integer getRemainingSkillPoints() {
-		
-		return ExperienceConfiguration.config().getSkillPoints(getLevel()) - getSkillPoints();
-
-	}
 	
 	
 	
@@ -1209,15 +569,9 @@ public class SagaPlayer implements SecondTicker, Trader{
 	public void setPlayer(Player player) {
 		
 		this.player = player;
-		this.lastLocation2 = player.getLocation();
-		this.lastSagaChunk = ChunkGroupManager.manager().getSagaChunk(lastLocation2);
-		this.lastOnline = Calendar.getInstance().getTime();
 		
-		// Update managers:
-		levelManager.update();
-
 		// Admin mode:
-		if(isAdminMode() && !Saga.plugin().canAdminMode(this)){
+		if(isAdminMode() && !PermissionsManager.hasPermission(player, PermissionsManager.ADMIN_MODE_PERMISSION)){
 			disableAdminMode();
 			Saga.info(this, "no permission for admin mode", "disabling admin mode");
 		}
@@ -1227,6 +581,9 @@ public class SagaPlayer implements SecondTicker, Trader{
 			error("player information saving disabled");
 		}
 
+		// Start clock:
+		if(proceedClock() && !isClockEnabled()) enableClock();
+		
 		
 	}
 	
@@ -1238,15 +595,13 @@ public class SagaPlayer implements SecondTicker, Trader{
 
 		
 		// Admin mode:
-		if(isAdminMode() && !Saga.plugin().canAdminMode(this)){
+		if(isAdminMode() && !PermissionsManager.hasPermission(player, PermissionsManager.ADMIN_MODE_PERMISSION)){
 			disableAdminMode();
 			Saga.info(this, "no permission for admin mode", "disabling admin mode");
 		}
 		
 		this.player = null;
-		this.lastLocation2 = null;
 		lastSagaChunk = null;
-		this.lastOnline = Calendar.getInstance().getTime();
 
 		
 	}
@@ -1283,10 +638,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 		this.level = level;
 		
 		// Update managers:
-		levelManager.update();
-		
-		// Statistics:
-		StatisticsManager.manager().onLevelChange(this);
+		abilityManager.update();
 		
 	}
 	
@@ -1340,69 +692,25 @@ public class SagaPlayer implements SecondTicker, Trader{
 		return ExperienceConfiguration.config().getLevelExp(getLevel()).doubleValue() - getExp();
 		
 	}
-	
-	
-	/**
-	 * Gets player total experience.
-	 * 
-	 * @return player total experience
-	 */
-	public int getTotalExperience() {
-		
-		if(!isOnline()) return 0;
-		
-		int experience = ExperienceConfiguration.config().getTotalExperience(player);
-
-		return experience;
-		
-	}
 
 	/**
-	 * Sets player experience.
+	 * Awards player experience.
 	 * 
-	 * @param experience experience
+	 * @param amount amount of exp
 	 */
-	public void setTotalExperience2(int experience) {
-		
-		
-		
-	}
-	
-	/**
-	 * Gives player experience.
-	 * 
-	 * @param expAmount experience
-	 */
-	public void giveExperience(Double expAmount) {
+	public void awardExp(Double amount) {
 		
 		if(level > ExperienceConfiguration.config().getMaxLevel()) return;
 		
-		this.exp += expAmount;
+		this.exp += amount;
 		
 		if(this.exp >= ExperienceConfiguration.config().getLevelExp(getLevel())){
-			expAmount = 0.0;
 			levelUp();
-			
 		}
 		
 	}
 	
 	
-	// Physical:
-	/**
-	 * Returns player health.
-	 * 
-	 * @return player health, -1 if offline
-	 */
-	public Integer getHealth() {
-		
-		if(isOnline()){
-			return player.getHealth();
-		}else{
-			return -1;
-		}
-		
-	}
 	
 	
 	// Items:
@@ -1631,23 +939,26 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 	}
 	
+	
+	
+	
 	// Faction:
 	/**
 	 * Registers a faction.
 	 * 
-	 * @param sagaFaction saga faction
+	 * @param saga saga faction
 	 */
-	public void registerFaction(SagaFaction sagaFaction) {
+	public void registerFaction(SagaFaction saga) {
 		
 		
 		// Check if already registered:
-		if(registeredFaction != null){
-			Saga.severe(this, "tried to register a second " + sagaFaction + " faction", "ignoring request");
+		if(this.faction != null){
+			Saga.severe(this, "tried to register a second " + saga + " faction", "ignoring request");
 			return;
 		}
 		
 		// Register:
-		registeredFaction = sagaFaction;
+		this.faction = saga;
 		
 		
 	}
@@ -1655,25 +966,25 @@ public class SagaPlayer implements SecondTicker, Trader{
 	/**
 	 * Unregisters a faction.
 	 * 
-	 * @param sagaFaction saga faction
+	 * @param faction saga faction
 	 */
-	public void unregisterFaction(SagaFaction sagaFaction) {
+	public void unregisterFaction(SagaFaction faction) {
 		
 		
 		// Check if not registered:
-		if(registeredFaction == null){
-			Saga.severe(this, "tried to unregister a non-registered " + sagaFaction + " faction", "ignoring request");
+		if(this.faction == null){
+			Saga.severe(this, "tried to unregister a non-registered " + faction + " faction", "ignoring request");
 			return;
 		}
 
 		// Check if not a correct faction:
-		if(registeredFaction != sagaFaction){
-			Saga.severe(this, "tried to unregister an invalid " + sagaFaction + " faction", "ignoring request");
+		if(this.faction != faction){
+			Saga.severe(this, "tried to unregister an invalid " + faction + " faction", "ignoring request");
 			return;
 		}
 		
 		// Remove:
-		registeredFaction = null;
+		this.faction = null;
 		
 		
 	}
@@ -1688,12 +999,12 @@ public class SagaPlayer implements SecondTicker, Trader{
 	}
 	
 	/**
-	 * Gets the registered faction.
+	 * Gets the players faction.
 	 * 
-	 * @return registered faction, null if none
+	 * @return players faction, null if none
 	 */
-	public SagaFaction getRegisteredFaction() {
-		return registeredFaction;
+	public SagaFaction getFaction() {
+		return faction;
 	}
 
 	/**
@@ -1702,17 +1013,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * @param sagaFaction saga faction
 	 */
 	public void setFactionId(SagaFaction sagaFaction) {
-
-		
-		// Check if already on the list:
-		if(factionId.equals(sagaFaction.getId())){
-			Saga.severe(this, "tried to set a second " + sagaFaction + " faction ID", "continuing with the request");
-		}
-		
-		// Add:
 		factionId = sagaFaction.getId();
-		
-		
 	}
 
 	/**
@@ -1721,24 +1022,23 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * @param id faction id
 	 */
 	public void removeFactionId(Integer id) {
-
-
-		// Check if not set:
-		if(factionId == -1){
-			Saga.severe(this, "tried to remove a non-existing " + id + " faction ID", "continuing with the request");
-		}
-
-		// Check if not a correct faction:
-		if(!factionId.equals(id)){
-			Saga.severe(this, "tried to remove an invalid " + id + " faction ID", "continuing with the request");
-		}
-		
-		// Add:
 		factionId = -1;
+	}
+
+
+	/**
+	 * Checks if the player is part of the faction.
+	 * 
+	 * @param faction faction
+	 * @return true if part of the faction
+	 */
+	public boolean hasFaction(SagaFaction faction) {
 		
+		return faction.equals(faction.getId());
 		
 	}
 
+	
 	/**
 	 * Checks if the player has a faction.
 	 * 
@@ -1749,6 +1049,8 @@ public class SagaPlayer implements SecondTicker, Trader{
 	}
 	
 	
+	
+	
 	// Chunk group:
 	/**
 	 * Sets a chunk group ID to the player.
@@ -1756,17 +1058,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * @param chunkGroupId chunk group ID
 	 */
 	public void setChunkGroupId(Integer chunkGroupId) {
-
-
-		// Check if already set:
-		if(!this.chunkGroupId.equals(-1)){
-			Saga.severe(this, "tried set a second " + chunkGroupId + " chunk group ID", "continuing with request");
-		}
-		
-		// Set:
 		this.chunkGroupId = chunkGroupId;
-		
-		
 	}
 
 	/**
@@ -1775,22 +1067,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * @param chunkGroupId chunk group ID
 	 */
 	public void removeChunkGroupId(Integer chunkGroupId) {
-
-
-		// Check if not set:
-		if(this.chunkGroupId.equals(-1)){
-			Saga.severe(this, "tried to remove a non-existant chunk group ID", "continuing with request");
-		}
-
-		// Check if not set:
-		if(!this.chunkGroupId.equals(chunkGroupId)){
-			Saga.severe(this, "tried to remove an invalid chunk group ID", "continuing with request");
-		}
-		
-		// Remove:
 		this.chunkGroupId = -1;
-		
-		
 	}
 	
 	/**
@@ -1812,13 +1089,13 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 		
 		// Check if already on the list:
-		if(registeredChunkGroup != null){
+		if(this.chunkGroup != null){
 			Saga.severe(this, "tried to register a second chunk group", "ignoring request");
 			return;
 		}
 		
 		// Add:
-		registeredChunkGroup = chunkGroup;
+		this.chunkGroup = chunkGroup;
 		
 		
 	}
@@ -1833,26 +1110,14 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 		
 		// Check if not on the list:
-		if(registeredChunkGroup == null){
+		if(this.chunkGroup == null){
 			Saga.severe(this, "tried to unregister a non-registered chunk group", "ignoring request");
 			return;
 		}
 		
 		// Remove:
-		registeredChunkGroup = null;
+		this.chunkGroup = null;
 		
-		
-	}
-	
-	/**
-	 * Check if a chunk group is registered.
-	 * 
-	 * @param chunkGroup saga chunk group
-	 * @return true if registered
-	 */
-	public boolean isChunkGroupRegistered(ChunkGroup chunkGroup) {
-
-		return registeredChunkGroup != null;
 		
 	}
 
@@ -1861,15 +1126,15 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * 
 	 * @return the registered chunk group, null if none
 	 */
-	public ChunkGroup getRegisteredChunkGroup() {
-		return registeredChunkGroup;
+	public ChunkGroup getChunkGroup() {
+		return chunkGroup;
 	}
 
 	/**
 	 * Checks if the player is part of the chunk group.
 	 * 
 	 * @param chunkGroup chunk group
-	 * @return true if part of a chunk group
+	 * @return true if part of the chunk group
 	 */
 	public boolean hasChunkGroup(ChunkGroup chunkGroup) {
 		
@@ -1886,6 +1151,8 @@ public class SagaPlayer implements SecondTicker, Trader{
 		return !chunkGroupId.equals(-1);
 	}
 
+	
+	
 	
 	// Faction invitations:
 	/**
@@ -1944,6 +1211,8 @@ public class SagaPlayer implements SecondTicker, Trader{
 	public boolean hasFactionInvite(Integer id){
 		return factionInvites.contains(id);
 	}
+	
+	
 	
 	
 	// Chunk group invites:
@@ -2021,6 +1290,38 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 	}
 	
+	
+	// Rank and role:
+	/**
+	 * Gets player rank.
+	 * 
+	 * @return player rank, null if none
+	 */
+	public Proficiency getRank() {
+
+		if(faction == null) return null;
+		return faction.getRank(getName());
+
+	}
+	
+	/**
+	 * Gets player role.
+	 * 
+	 * @return player role, null if none
+	 */
+	public Proficiency getRole() {
+
+		if(chunkGroup == null) return null;
+		
+		if(chunkGroup instanceof Settlement){
+			return ((Settlement) chunkGroup).getRole(getName());
+		}else{
+			return null;
+		}
+		
+	}
+	
+	
 	// Messages:
 	/**
 	 * Sends the player a message.
@@ -2031,8 +1332,8 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 		if(message.length() == 0) return;
 		
-		if(isOnline()){
-        	TextUtil.messageLines(message, player);
+		if(player != null){
+        	player.sendMessage(CustomColour.processMessage(message));
         }
           
 	}
@@ -2048,6 +1349,8 @@ public class SagaPlayer implements SecondTicker, Trader{
           
 	}
 
+	
+	
 	
 	// Teleport:
 	/**
@@ -2065,7 +1368,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	}
 	
 	/**
-	 * Puts a player on the given blocks center.
+	 * Puts a player on the given blocks centre.
 	 * 
 	 * @param locationBlock block the player will be placed on
 	 */
@@ -2077,6 +1380,8 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 	}
 
+	
+	
 	
 	// Shapes:
 	/**
@@ -2120,13 +1425,15 @@ public class SagaPlayer implements SecondTicker, Trader{
 	}
 
 	
+	
+	
 	// Ability usage:
 	/**
 	 * Shoots a fireball.
 	 * 
 	 * @param accuracy accuracy. Can be in the range 0-10
 	 */
-	public void shootFireball() {
+	public void shootFireball(Double speed) {
 
 		
 		// Ignore if the player isn't online:
@@ -2135,8 +1442,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 		}
 		
 		// Shooter:
-		EntityLiving shooter = ((CraftPlayer)player).getHandle();
-		WorldServer serverWorld = ((CraftWorld) player.getWorld()).getHandle();
 		Location shootLocation = player.getEyeLocation();
 
 		// Direction vector:
@@ -2146,103 +1451,48 @@ public class SagaPlayer implements SecondTicker, Trader{
 		double startShift = 2;
 		Vector shootShiftVector = new Vector(directionVector.getX() * startShift, directionVector.getY() * startShift, directionVector.getZ() * startShift);
 		
-		// Empirical Accuracy:
-		double accuracy = 4;
-		
 		// Shift shoot location:
 		shootLocation = shootLocation.add(shootShiftVector.getX(), shootShiftVector.getY(), shootShiftVector.getZ());
 		
 		// Create the fireball:
-		EntityFireball fireball = new EntityFireball(serverWorld, shooter, directionVector.getX() * accuracy, directionVector.getY() * accuracy, directionVector.getZ() * accuracy);
-		fireball.getBukkitEntity().teleport(shootLocation);
-		serverWorld.addEntity(fireball);
-
+		Fireball fireballl = shootLocation.getWorld().spawn(shootLocation, Fireball.class);
+		fireballl.setVelocity(directionVector.multiply(speed));
+		
 		// Remove fire:
-		((CraftFireball)fireball.getBukkitEntity()).setIsIncendiary(false);
-		
-		// Velocity vector:
-		Vector velocityVector = directionVector.clone().multiply(1.5);
-		
-		// Set speed:
-//		fireball.getBukkitEntity().setVelocity(shootShiftVector.multiply(speed));
-		
-		// Increase speed:
-		fireball.getBukkitEntity().setVelocity(velocityVector);
-		
+		if(fireballl instanceof Fireball){
+			((Fireball) fireballl).setIsIncendiary(false);
+		}
 		
 	}
 	
 	/**
-	 * Shoots lightning at the target.
+	 * Shoots a fireball.
 	 * 
-	 * @param targetLocation target
-	 * @param selfDamage if true, the shooter may also be damaged
+	 * @param speed speed
+	 * @param shootLocation shoot location
 	 */
-	public void shootLightning(Location targetLocation, boolean selfDamage) {
+	public void shootFireball(Double speed, Location shootLocation) {
 
 		
 		// Ignore if the player isn't online:
 		if(!isOnline()){
 			return;
 		}
-		Entity damager = player;
 		
-		// Ground location:
-		targetLocation = BlockConstants.groundLocation(targetLocation);
+		// Direction vector:
+		Vector directionVector = shootLocation.getDirection().normalize();
 		
-		// Get the craftworld.
-		CraftWorld craftWorld = (CraftWorld) player.getWorld();
+		// Create the fireball:
+		Fireball fireball = shootLocation.getWorld().spawn(shootLocation, Fireball.class);
+		fireball.setVelocity(directionVector.multiply(speed));
 		
-		// Strike lightning effect and get the resulting entity:
-		Entity craftLightning = craftWorld.strikeLightningEffect(targetLocation);
+		// Set shooter:
+		fireball.setShooter(player);
 		
-		// Send damage events:
-		java.util.List<Entity> damagedEntities = craftLightning.getNearbyEntities(1, 5, 1);
-		ArrayList<EntityDamageByEntityEvent> damageEvents = new ArrayList<EntityDamageByEntityEvent>();
-		for (int i = 0; i < damagedEntities.size(); i++) {
-			EntityDamageByEntityEvent event = new EntityDamageByEntityEvent(damager, damagedEntities.get(i), DamageCause.LIGHTNING, BalanceConfiguration.config().baseLightningDamage);
-			// Don't add self if damage self is false:
-			if(selfDamage || !damagedEntities.get(i).equals(damager)){
-				// Reset damage ticks:
-				if(damagedEntities.get(i) instanceof LivingEntity) ((LivingEntity) damagedEntities.get(i)).setNoDamageTicks(0);
-				// Call event:
-				Bukkit.getServer().getPluginManager().callEvent(event);
-				damageEvents.add(event);
-			}
+		// Remove fire:
+		if(fireball instanceof Fireball){
+			((Fireball) fireball).setIsIncendiary(false);
 		}
-		
-		// Damage the puny eldar if the event is not canceled:
-		for (EntityDamageByEntityEvent entityDamageByEntityEvent : damageEvents) {
-			if(!entityDamageByEntityEvent.isCancelled()){
-				Entity damaged = entityDamageByEntityEvent.getEntity();
-				if(damaged instanceof LivingEntity){
-					((LivingEntity) damaged).damage(entityDamageByEntityEvent.getDamage());
-				}
-			}
-		}
-		
-		
-	}
-
-	/**
-	 * Shoots lightning relative to the player.
-	 * 
-	 * @param relativeLocation location relative to the player
-	 * @param selfDamage if true, the shooter may also be damaged
-	 */
-	public void shootLightning(Vector relativeLocation, boolean selfDamage) {
-
-		
-		// Ignore if the player isn't online:
-		if(!isOnline()){
-			return;
-		}
-		Entity damager = player;
-		
-		Location target = damager.getLocation().clone().add(relativeLocation.getX(), 0, relativeLocation.getZ());
-		
-		shootLightning(target, selfDamage);
-		
 		
 	}
 	
@@ -2298,6 +1548,8 @@ public class SagaPlayer implements SecondTicker, Trader{
 	}
 	
 	
+	
+	
 	// Effects:
 	/**
 	 * Plays an effect.
@@ -2345,26 +1597,8 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 		
 	}
-
-	/**
-	 * Plays a spell cast effect.
-	 * 
-	 */
-	public void playeSpellEffect() {
-		
-		
-		if(!isOnline()) return;
-		
-		// Smoke:
-		for (int i = 5; i <= 12; i++) {
-			playGlobalEffect(Effect.SMOKE, i);
-		}
-		
-		// Sound:
-		playGlobalEffect(Effect.GHAST_SHOOT, 0);
-		
-		
-	}
+	
+	
 	
 	
 	// Entities:
@@ -2436,45 +1670,27 @@ public class SagaPlayer implements SecondTicker, Trader{
 	/**
 	 * Gets the player location.
 	 * 
-	 * @return player location. null if no location
+	 * @return player location, null if not online
 	 */
 	public Location getLocation() {
 
-		
 		if(!isOnline()){
 			return null;
 		}
 		return player.getLocation();
 		
-		
 	}
 
 	
-	// Reward:
+	// Guard rune:
 	/**
-	 * Gets the reward.
+	 * Gets the guardRune.
 	 * 
-	 * @return the reward
+	 * @return the guardRune
 	 */
-	public Integer getReward() {
-		return reward;
-	}
-	
-	/**
-	 * Rewards the player.
-	 * 
-	 * @param reward reward
-	 */
-	public void reward(int reward) {
-		this.reward += reward;
-	}
-	
-	/**
-	 * Clears the reward.
-	 */
-	public void clearReward() {
-		reward = 0;
-	}
+	public GuardianRune getGuardRune() {
+		return guardRune;
+	}	
 	
 	
 	// Trader:
@@ -2487,6 +1703,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	public String getTradingName() {
 		return getName();
 	}
+
 
 	/* 
 	 * (non-Javadoc)
@@ -2579,6 +1796,25 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 	}
 	
+	/**
+	 * Removes items from a player.
+	 * 
+	 * @param material material
+	 * @param amount amount
+	 */
+	@SuppressWarnings("deprecation")
+	public void removeItem(Material material, int amount) {
+		
+		if(isOnline()){
+			
+			InventoryUtil.removeItem(material, amount, false, player);
+			
+			player.updateInventory(); // TODO replace updateInventory()
+			
+		}
+		
+	}
+	
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -2640,97 +1876,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 	}
 	
 	
-	// Events:
-	/**
-	 * Player join event.
-	 * 
-	 * @param event event
-	 */
-	public void playerJoinEvent2(PlayerJoinEvent event) {
-
-		// Forward to chunk group:
-		if(registeredChunkGroup != null) registeredChunkGroup.onMemberJoin(this, event);
-		// TODO: redo chunk group registering from events
-		
-		
-		
-	}
-	
-	/**
-	 * Player quit event.
-	 * 
-	 * @param event event
-	 */
-	public void playerQuitEvent(PlayerQuitEvent event) {
-
-		// Forward to chunk group:
-		if(registeredChunkGroup != null) registeredChunkGroup.onMemberQuit(this, event);
-		
-	}
-	
-	/**
-	 * Called when the guardian rune absorbed items.
-	 * 
-	 */
-	public void onGuardRuneAbsorption() {
-
-		if(!isClockEnabled()) enableClock();
-		
-	}
-
-	/**
-	 * Called when the saga player is created.
-	 * 
-	 */
-	public void onSagaPlayerCreation() {
-
-		
-		// Random profession:
-		if(ProficiencyConfiguration.config().initialProfession){
-			
-			ArrayList<String> professions =  ProficiencyConfiguration.config().getProficiencyNames(ProficiencyType.PROFESSION);
-			
-			if(professions.size() != 0 && profession == null){
-				
-				String name = professions.get(new Random().nextInt(professions.size()));
-				
-				try {
-					
-					Proficiency profession = ProficiencyConfiguration.config().createProficiency(name);
-					setProfession(profession);
-					
-				} catch (InvalidProficiencyException e) {
-					Saga.severe(this, "failed to create proficiency: " + e.getClass().getSimpleName() + ": " + e.getMessage(), "ignoring request");
-				}
-				
-			}
-			
-		}
-		
-		// Random class:
-		if(ProficiencyConfiguration.config().initialClass){
-			
-			ArrayList<String> clazzes =  ProficiencyConfiguration.config().getProficiencyNames(ProficiencyType.CLASS);
-			
-			if(clazzes.size() != 0 && classs == null){
-				
-				String name = clazzes.get(new Random().nextInt(clazzes.size()));
-				
-				try {
-					
-					Proficiency profession = ProficiencyConfiguration.config().createProficiency(name);
-					setClass(profession);
-					
-				} catch (InvalidProficiencyException e) {
-					Saga.severe(this, "failed to create proficiency: " + e.getClass().getSimpleName() + ": " + e.getMessage(), "ignoring request");
-				}
-				
-			}
-			
-		}
-		
-		
-	}
 	
 	
 	// Clock:
@@ -2740,22 +1885,9 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * @param tick tick number
 	 */
 	@Override
-	public void clockSecondTick() {
+	public boolean clockSecondTick() {
 		
-		
-		if(!getGuardianRune().isEmpty() && isOnline()){
-			
-			if(!getPlayer().isDead()){
-				GuardianRune.handleRestore(this);
-			}
-			
-		}
-		
-		// Disable clock:
-		if(!proceedClock()){
-			disableClock();
-		}
-		
+		return proceedClock();
 		
 	}
 
@@ -2779,19 +1911,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	public boolean isClockEnabled() {
 		return clockEnabled;
 	}
-	
-	/**
-	 * Disable the clock.
-	 * 
-	 */
-	private void disableClock() {
 
-		Clock.clock().unregisterSecondTick(this);
-		
-		clockEnabled = false;
-		
-	}
-	
 	/**
 	 * Checks if the clock should proceed.
 	 * 
@@ -2800,7 +1920,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	private boolean proceedClock() {
 
 		
-		if(!getGuardianRune().isEmpty()) return true;
+//		if(!guardRune.isEmpty() && player != null) return true;
 		
 		return false;
 		
@@ -2808,6 +1928,8 @@ public class SagaPlayer implements SecondTicker, Trader{
 	}
 	
 
+	
+	
 	// Saving and loading:
 	/**
 	 * Loads a offline saga player.
@@ -2824,10 +1946,19 @@ public class SagaPlayer implements SecondTicker, Trader{
             // Try loading:
             SagaPlayer sagaPlayer;
             
+            // New players:
+            if(!WriterReader.checkExists(Directory.PLAYER_DATA, playerName)){
+            	
+            	sagaPlayer = new SagaPlayer(playerName);
+            	sagaPlayer.save();
+            	return sagaPlayer;
+            	
+            }
+            
             // Try loading:
             try {
 
-                sagaPlayer = WriterReader.readPlayerInformation(playerName.toLowerCase());
+                sagaPlayer = WriterReader.read(Directory.PLAYER_DATA, playerName.toLowerCase(), SagaPlayer.class);
 
                 // Complete:
                 sagaPlayer.complete();
@@ -2838,9 +1969,6 @@ public class SagaPlayer implements SecondTicker, Trader{
                 Saga.info("Player information file not found for " + playerName + ". Loading default.");
                 sagaPlayer = new SagaPlayer(playerName);
 
-                // Create event:
-                sagaPlayer.onSagaPlayerCreation();
-                
             } catch (IOException e) {
 
                 Saga.severe(SagaPlayer.class, "player information file read failure for " + playerName + ":" + e.getClass().getSimpleName() + ":" + e.getMessage() ,"setting defaults");
@@ -2858,32 +1986,22 @@ public class SagaPlayer implements SecondTicker, Trader{
 
             }
 
-    		// Enable clock:
-    		if(sagaPlayer.proceedClock()){
-    			sagaPlayer.enableClock();
-    		}
-            
             return sagaPlayer;
 				
 
 	}
 	
 	/**
-	 * Unloads player information. Will not save if {@link #isSavingEnabled()} is false.
+	 * Unloads player information.
 	 */
 	public void unload() {
 		
-
-		// Save:
 		save();
-		
-		// Disable clock:
-		if(isClockEnabled()) disableClock();
 		
 	}
 
 	/**
-	 * Saves player information. Will not save if {@link #isSavingEnabled()} is false.
+	 * Saves player information.
 	 */
 	public void save() {
 		
@@ -2891,418 +2009,30 @@ public class SagaPlayer implements SecondTicker, Trader{
             if( isSavingEnabled() ) {
 
                 try {
-                    WriterReader.writePlayerInformation(getName().toLowerCase(), this);
-                } catch (Exception e) {
-                    Saga.severe(this, "player information save failure:" + e.getClass().getSimpleName() + ":" + e.getMessage(), "ignoring save");
+                    WriterReader.write(Directory.PLAYER_DATA, getName().toLowerCase(), this);
+                } catch (Throwable e) {
+                    SagaLogger.severe(this, "player information save failure:" + e.getClass().getSimpleName() + ":" + e.getMessage());
                 }
 
             } else {
-            	Saga.severe(this, "player information save denied", "ignoring save");
+            	SagaLogger.severe(this, "player information save denied");
             }
 
 		
 	}
-
 	
 	/**
 	 * Checks if the player exists.
 	 * 
-	 * @param name
-	 * @return
+	 * @param name player name
+	 * @return true if exists
 	 */
-	public static boolean checkExistance(String name){
-		return WriterReader.playerExists(name.toLowerCase());
+	public static boolean checkExists(String name){
+		return WriterReader.checkExists(Directory.PLAYER_DATA, name);
 	}
+
 	
 	
-	// Guardian rune:
-	/**
-	 * Gets the guardian rune.
-	 * 
-	 * @return guardian rune
-	 */
-	public GuardianRune getGuardianRune() {
-		return guardianStone;
-	}
-
-	/**
-	 * Makes the guardian rune absorb items.
-	 * 
-	 */
-	public void guardianRuneAbsorb() {
-
-		
-		if(!isOnline()) return;
-		
-		// Empty:
-		if(!guardianStone.isEmpty()){
-			Saga.severe(this, "tried to absorb with a non-empty guardian rune", "ignoring request");
-			return;
-		}
-		
-		// Absorb:
-		guardianStone.absorb(getPlayer());
-		
-		
-	}
-
-	/**
-	 * Makes the guardian rune absorb items.
-	 * 
-	 */
-	public void guardianRuneDischarge() {
-
-		if(!isOnline()) return;
-		
-		// Not charged:
-		if(!guardianStone.getStatus().equals(GuardianRuneStatus.CHARGED)){
-			Saga.severe(this, "tried to discharge a non-charged guardian rune", "ignoring request");
-			return;
-		}
-		
-		// Discharge:
-		guardianStone.discharge();
-		
-		
-	}
-	
-	/**
-	 * Restores items from the guardian rune.
-	 * 
-	 */
-	public void guardianRuneRestore() {
-
-		
-		if(!isOnline()) return;
-
-		// Empty:
-		if(guardianStone.isEmpty()){
-			Saga.severe(this, "tried to restore from an empty guardian rune", "ignoring request");
-			return;
-		}
-		
-		// Restore:
-		guardianStone.restore(getPlayer());
-		
-		
-	}
-
-	/**
-	 * Checks if there is anything to absorb.
-	 * 
-	 * @return true if can be absorbed
-	 */
-	public boolean checkGuardRuneAbsorb() {
-
-		
-		if(!isOnline()) return false;
-
-		Player player = getPlayer();
-		
-		// Level:
-		if(getLevel() > 0) return true;
-		
-		// Items:
-		ItemStack[] items = player.getInventory().getContents();
-		for (int i = 0; i < items.length; i++) {
-			
-			if(items[i] != null && !items[i].getType().equals(Material.AIR)) return true;
-			
-		}
-
-		// Armour:
-		ItemStack[] armour = player.getInventory().getArmorContents();
-		for (int i = 0; i < armour.length; i++) {
-			
-			if(armour[i] != null && !armour[i].getType().equals(Material.AIR)) return true;
-			
-		}
-		
-		return false;
-		
-		
-	}
-	
-	
-	// Time:
-	/**
-	 * Gets last online date.
-	 * 
-	 * @return last online date, current time if online
-	 */
-	public Date getLastOnline() {
-		
-		
-		if(isOnline()) return Calendar.getInstance().getTime();
-		
-		return lastOnline;
-		
-		
-	}
-	
-	
-	// Experience:
-	/**
-	 * Adds experience to regeneration.
-	 * 
-	 * @param amount amount of experience.
-	 */
-	public void addRegenExp(int amount) {
-		
-		expRegen += amount;
-		
-		// Normalize:
-		if(expRegen > BalanceConfiguration.config().expRegenLimit){
-			expRegen = BalanceConfiguration.config().expRegenLimit;
-		}
-		
-	}
-	
-	/**
-	 * Regenerates experience.
-	 * 
-	 * @return amount regenerated, 0 if none
-	 */
-	public int regenExp() {
-		
-		
-		if(isOnline()){
-			
-			int regenAmount = SagaEntityDamageManager.randomRound(BalanceConfiguration.config().expRegenSpeed);
-			
-			// Normalize:
-			if(regenAmount > expRegen){
-				regenAmount = expRegen;
-			}
-			if(regenAmount <= 0) return 0;
-			
-			// Limit level:
-			if(getLevel() >= BalanceConfiguration.config().maximumLevel){
-				return 0;
-			}
-			
-			// Subtract:
-			expRegen -= regenAmount;
-			
-			// Give exp:
-			player.giveExp(regenAmount);
-			
-			return regenAmount;
-			
-		}else{
-			
-			return 0;
-			
-		}
-
-		
-	}
-	
-	/**
-	 * Gets the amount of experience regeneration.
-	 * 
-	 * @return amount of experience regeneration
-	 */
-	public Integer getExpRegen() {
-		return expRegen;
-	}
-
-
-	// Experience events:
-	/**
-	 * Called when a block is broken by the player.
-	 * 
-	 * @param event event
-	 */
-	public void onBlockExp(BlockBreakEvent event) {
-
-		
-		// Profession:
-		if(profession != null){
-			Double expAmount = profession.getDefinition().calcExp(event.getBlock());
-			
-			if(expAmount != 0){
-				
-				giveExperience(expAmount);
-
-				// Statistics:
-				StatisticsManager.manager().onExp(this, profession.getName(), "block", expAmount);
-				
-			}
-			
-		}
-
-		// Class:
-		if(classs != null){
-			Double expAmount = classs.getDefinition().calcExp(event.getBlock());
-			
-			if(expAmount != 0){
-				
-				giveExperience(expAmount);
-
-				// Statistics:
-				StatisticsManager.manager().onExp(this, profession.getName(), "block", expAmount);
-				
-			}
-			
-		}
-		
-		
-	}
-	
-	/**
-	 * Called when a creature is killed.
-	 * 
-	 * @param event event
-	 * @param creature creature
-	 */
-	public void onCreatureExp(EntityDeathEvent event, Creature creature) {
-
-		
-		// Profession:
-		if(profession != null){
-			Double expAmount = profession.getDefinition().calcExp(creature);
-			
-			if(expAmount != 0){
-				
-				giveExperience(expAmount);
-
-				// Statistics:
-				StatisticsManager.manager().onExp(this, profession.getName(), "creature", expAmount);
-				
-			}
-			
-		}
-
-		// Class:
-		if(classs != null){
-			Double expAmount = classs.getDefinition().calcExp(creature);
-			
-			if(expAmount != 0){
-				
-				giveExperience(expAmount);
-
-				// Statistics:
-				StatisticsManager.manager().onExp(this, profession.getName(), "creature", expAmount);
-				
-			}
-			
-		}
-		
-		
-	}
-	
-	/**
-	 * Called when a creature is killed.
-	 * 
-	 * @param event event
-	 * @param killedPlayer killed saga player
-	 */
-	public void onPlayerExp(EntityDeathEvent event, SagaPlayer killedPlayer) {
-
-		
-		// Profession:
-		if(profession != null){
-			Double expAmount = profession.getDefinition().calcExp(killedPlayer);
-			
-			if(expAmount != 0){
-				
-				giveExperience(expAmount);
-
-				// Statistics:
-				StatisticsManager.manager().onExp(this, profession.getName(), "player", expAmount);
-				
-			}
-			
-		}
-
-		// Class:
-		if(classs != null){
-			Double expAmount = classs.getDefinition().calcExp(killedPlayer);
-			
-			if(expAmount != 0){
-				
-				giveExperience(expAmount);
-
-				// Statistics:
-				StatisticsManager.manager().onExp(this, classs.getName(), "player", expAmount);
-				
-			}
-			
-		}
-		
-		
-	}
-	
-	/**
-	 * Called when an ability is used.
-	 * 
-	 * @param ability ability
-	 * @param proficiency proficiency, null if none
-	 * @param expAmount experience
-	 */
-	public void onAbilityExp(Ability ability, Proficiency proficiency, Double expAmount) {
-
-		
-		if(expAmount == 0) return;
-		
-		giveExperience(expAmount);
-
-		// Statistics:
-		if(proficiency != null){
-			StatisticsManager.manager().onExp(this, proficiency.getName(), ability.getName(), expAmount);
-		}else{
-			StatisticsManager.manager().onExp(this, "-", ability.getName(), expAmount);
-		}
-		
-		
-	}
-	
-	
-	// Mining history:
-	/**
-	 * Gets the amount of block mined.
-	 * 
-	 * @param material block material
-	 * @return amount mined
-	 */
-	public Integer getMinedBlocks(Material material) {
-		
-		Integer mined = miningStatistics.get(material);
-		if(mined == null) mined = 0;
-		
-		return mined;
-		
-	}
-	
-	/**
-	 * Adds mined blocks.
-	 * 
-	 * @param material material
-	 * @param amount amount mined
-	 * @return new amount
-	 */
-	public Integer addMinedBlocks(Material material, Integer amount) {
-		
-		Integer newAmount = getMinedBlocks(material) + amount;
-		
-		miningStatistics.put(material, newAmount);
-		
-		return newAmount;
-		
-	}
-	
-	/**
-	 * Clears mining amount for the given material.
-	 * 
-	 * @param material material
-	 */
-	public void clearMinedBlocks(Material material) {
-
-		miningStatistics.remove(material);
-		
-	}
-
 	
 	// Control:
 	/**
@@ -3326,10 +2056,10 @@ public class SagaPlayer implements SecondTicker, Trader{
 	/**
 	 * Disables or enables player information saving.
 	 * 
-	 * @param savingDisabled true if player information should be disabled 
+	 * @param enabled true if enabled
 	 */
-	public void setSavingEnabled(boolean savingDisabled) {
-            this.isSavingEnabled = savingDisabled;
+	public void setSavingEnabled(boolean enabled) {
+            this.isSavingEnabled = enabled;
 	}
 
 	/**
@@ -3360,6 +2090,8 @@ public class SagaPlayer implements SecondTicker, Trader{
 	public boolean isForced() {
 		return forcedLevel > 0;
 	}
+	
+	
 	
 	
 	// Administration:
@@ -3393,6 +2125,8 @@ public class SagaPlayer implements SecondTicker, Trader{
 	}
 	
 	
+	
+	
 	// Other:
 	@Override
 	public String toString() {
@@ -3410,6 +2144,8 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 		
 	}
+	
+	
 	
 	
 	// Debuging:

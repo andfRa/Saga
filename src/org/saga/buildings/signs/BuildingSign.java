@@ -5,17 +5,17 @@ package org.saga.buildings.signs;
 import java.util.ArrayList;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Sign;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.buildings.Building;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.player.SagaPlayer;
-import org.saga.utility.SagaCustomSerialization;
+import org.saga.saveload.SagaCustomSerialization;
 
 
 public abstract class BuildingSign extends SagaCustomSerialization{
@@ -42,11 +42,6 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 	private String fourthLine;
 	
 	/**
-	 * True if enabled.
-	 */
-	private Boolean enabled;
-	
-	/**
 	 * World.
 	 */
 	private String world;
@@ -70,23 +65,14 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 	 * Location.
 	 */
 	transient private Location location;
-
-	/**
-	 * Sign.
-	 */
-	transient private Sign sign;
 	
 	/**
 	 * Building.
 	 */
 	transient private Building building;
 
-	/**
-	 * True if the sign is invalidated.
-	 */
-	transient private boolean invalidated;
 
-	// Initialization:
+	// Initialisation:
 	/**
 	 * Creates a economy sign.
 	 * 
@@ -104,18 +90,15 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 		super();
 		
 		this.name = firstLine;
-		this.enabled = false;
 		this.location = sign.getBlock().getLocation();
 		this.world = location.getWorld().getName();
 		this.x = location.getBlockX();
 		this.y = location.getBlockY();
 		this.z = location.getBlockZ();
-		this.sign = sign;
 		this.secondLine = secondLine;
 		this.thirdLine = thirdLine;
 		this.fourthLine = fourthLine;
 		this.building = building;
-		this.invalidated = false;
 		
 	}
 
@@ -134,11 +117,6 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 		if(name== null){
 			Saga.severe(this, "failed to initialize name field", "stopping complete");
 			throw new SignException("name null");
-		}
-		
-		if(enabled== null){
-			Saga.severe(this, "failed to initialize enabled field", "setting default");
-			enabled = false;
 		}
 		
 		if(world== null){
@@ -169,22 +147,6 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 		
 		location = new Location(serverWorld, x, y, z);
 		
-		if(location.getBlock().getType() != Material.SIGN_POST && location.getBlock().getType() != Material.WALL_SIGN){
-			
-			location.getBlock().setType(Material.SIGN_POST);
-			if(location.getBlock().getType() == Material.AIR) location.getBlock().setType(Material.WALL_SIGN);
-			
-			Saga.severe(this, "failed to find a sign at " + location, "setting WALL_SIGN/SIGN_POST");
-			
-		}
-		
-		try {
-			sign = (Sign) location.getBlock().getState();
-		} catch (Exception e) {
-			location.getBlock().setType(Material.SIGN_POST);
-			throw new SignException(e.getClass().getSimpleName() + ":" + e.getMessage() + " for sign retrieve");
-		}
-		
 		if(secondLine== null){
 			Saga.severe(this, "failed to initialize secondLine field", "setting default");
 			secondLine = "";
@@ -202,95 +164,67 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 
 		this.building = building;
 		
-		// Transient:
-		invalidated = false;
-		
 		return integrity;
 		
 		
 	}	
 	
 	/**
-	 * Deletes the sign.
+	 * Refreshes the sign.
 	 * 
 	 */
-	public void remove(){
-
+	public void refresh() {
 		
-		// Empty sign:
-		sign.setLine(0, "");
-		sign.setLine(1, "");
-		sign.setLine(2, "");
-		sign.setLine(3, "");
-
+		
+		Sign sign = getSign();
+		if(sign == null) return;
+		
+		setLines(sign);
+		
 		
 	}
 	
 	/**
-	 * Enables the sign.
+	 * Sets bukkit sign lines.
 	 * 
+	 * @param sign bukkit sign
 	 */
-	public void enable() {
+	public void setLines(Sign sign) {
+
 		
+		SignStatus status = getStatus();
 		
-		sign.setLine(0, ChunkGroupConfiguration.config().enabledSignColor + getName());
-		sign.setLine(1, secondLine);
-		sign.setLine(2, thirdLine);
-		sign.setLine(3, fourthLine);
+		// First line:
+		switch (status) {
+			case ENABLED:
+				
+				sign.setLine(0, ChunkGroupConfiguration.config().enabledSignColor + getName());
+				break;
+
+			case DISABLED:
+				
+				sign.setLine(0, ChunkGroupConfiguration.config().disabledSignColor + getName());
+				break;
+
+			case INVALIDATED:
+
+				sign.setLine(0, ChunkGroupConfiguration.config().invalidSignColor + getName());
+				break;
+
+			default:
+				break;
+		}
+		
+		// Remaining lines:
+		sign.setLine(1, getLine(1, status));
+		sign.setLine(2, getLine(2, status));
+		sign.setLine(3, getLine(3, status));
 		
 		sign.update();
 		
-		this.enabled = true;
-		
 		
 	}
 	
-	/**
-	 * Disables the sign.
-	 * 
-	 */
-	public void disable() {
-
-
-		sign.setLine(0, ChunkGroupConfiguration.config().disabledSignColor + getName());
-		sign.setLine(1, secondLine);
-		sign.setLine(2, thirdLine);
-		sign.setLine(3, fourthLine);
-		
-		sign.update();
-		
-		this.enabled = false;
-		
-	}
-	
-	/**
-	 * Invalidates the sign.
-	 * 
-	 */
-	public void invalidate() {
-
-		sign.setLine(0, ChunkGroupConfiguration.config().invalidSignColor + getName());
-		sign.setLine(1, secondLine);
-		sign.setLine(2, thirdLine);
-		sign.setLine(3, fourthLine);
-		
-		sign.update();
-
-		this.enabled = false;
-		this.invalidated = true;
-		
-	}
-	
-	/**
-	 * Toggles sign enable.
-	 * 
-	 */
-	public void toggleEnabled() {
-		this.enabled = !enabled;
-	}
-
-	
-	// Interaction:
 	/**
 	 * Gets the name.
 	 * 
@@ -299,23 +233,44 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 	public abstract String getName();
 	
 	/**
-	 * Gets if enabled.
+	 * Gets sign status.
 	 * 
-	 * @return true if enabled
+	 * @return sign status
 	 */
-	public Boolean isEnabled() {
-		return enabled;
-	}
+	public abstract SignStatus getStatus();
 
 	/**
-	 * Gets if valid.
+	 * Gets sign line.
 	 * 
-	 * @return true if valid
+	 * @param index line index
+	 * @param status sign status
+	 * @return sign line
 	 */
-	public boolean isValidated() {
-		return !invalidated;
+	public abstract String getLine(int index, SignStatus status);
+
+	/**
+	 * Deletes the sign.
+	 * 
+	 */
+	public void remove(){
+
+
+		Sign sign = getSign();
+		if(sign == null) return;
+		
+		// Empty sign:
+		sign.setLine(0, "");
+		sign.setLine(1, "");
+		sign.setLine(2, "");
+		sign.setLine(3, "");
+		
+		sign.update();
+
+		
 	}
 
+	
+	// Interaction:
 	/**
 	 * Gets the sign location.
 	 * 
@@ -328,10 +283,22 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 	/**
 	 * Gets the wrapped sign.
 	 * 
-	 * @return sign
+	 * @return sign null if not loaded or doesn't exist
 	 */
 	public Sign getSign() {
-		return sign;
+		
+		
+		// Only loaded:
+		if(!location.getChunk().isLoaded()) return null;
+		
+		// Get sign:
+		try {
+			return (Sign) location.getBlock().getState();
+		} catch (Exception e) {
+			return null;
+		}
+
+		
 	}
 
 	/**
@@ -341,14 +308,6 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 	 */
 	public Building getBuilding() {
 		return building;
-	}
-	
-	/**
-	 * Called when the parameters changed and the sign needs a refresh.
-	 * 
-	 */
-	public void refresh() {
-
 	}
 	
 	
@@ -490,7 +449,7 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 	public final void onPlayerInteract(SagaPlayer sagaPlayer, PlayerInteractEvent event) {
 
 
-		if(!isEnabled()) return;
+		if(getStatus() != SignStatus.ENABLED) return;
 		
 		// Left click:
 		if(event.getAction().equals(Action.LEFT_CLICK_BLOCK)){
@@ -521,27 +480,6 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 
 	
 	// Other:
-	/**
-	 * Checks if the sign is a duplicate.
-	 * 
-	 * @param sign sign
-	 * @return true if duplicate
-	 */
-	public boolean isDuplicateSign(BuildingSign sign) {
-		return this.sign.equals(sign);
-	}
-	
-	/**
-	 * Checks if the wrapped signs match.
-	 * 
-	 * @param bukkitSign bukkit sign
-	 * @return true if the wrapped and the given signs are the same
-	 */
-	public boolean isWrapped(Sign bukkitSign) {
-		return this.sign == bukkitSign;
-	}
-	
-	
 	public class SignException extends Exception{
 
 		public SignException(String message) {
@@ -554,6 +492,14 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 		private static final long serialVersionUID = 1L;
 
 		
+		
+	}
+	
+	public enum SignStatus{
+		
+		ENABLED,
+		DISABLED,
+		INVALIDATED;
 		
 	}
 	

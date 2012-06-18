@@ -1,15 +1,23 @@
 package org.saga.abilities;
 
+import org.bukkit.Location;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.util.Vector;
+import org.saga.messages.AbilityEffects;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
 
 public class Fireball extends Ability{
 
-	
-	// Initialization:
 	/**
-	 * Initializes using definition.
+	 * Speed key.
+	 */
+	private static String SPEED_KEY = "speed";
+	
+	
+	// Initialisation:
+	/**
+	 * Initialises using definition.
 	 * 
 	 * @param definition ability definition
 	 */
@@ -22,26 +30,35 @@ public class Fireball extends Ability{
 	
 	// Usage:
 	@Override
-	public boolean instant(PlayerInteractEvent event) {
+	public boolean trigger(PlayerInteractEvent event) {
 		
-
-		// Check pre use:
-		if(!handlePreUse()){
-			return false;
-		}
+		
+//		SagaPlayer sagaPlayer = getSagaPlayer();
+//		
+//		Vector shootDirection = event.getPlayer().getEyeLocation().getDirection().normalize();
+//		Location shootLocation1 = event.getPlayer().getEyeLocation().add(shootDirection.multiply(0.75)).add(new Vector(0, -1, 0));
+//		Location shootLocation2 = event.getPlayer().getEyeLocation().add(shootDirection.multiply(2.75));
+//		
+//		sagaPlayer.shootFireball(1.0, shootLocation1);
+//		sagaPlayer.shootFireball(1.5, shootLocation2);
+		
 		
 		SagaPlayer sagaPlayer = getSagaPlayer();
-		
-		sagaPlayer.shootFireball();
 
-		// Award exp:
-		Double awardedExp = awardExperience();
 		
+		Vector shootDirection = event.getPlayer().getEyeLocation().getDirection().normalize();
+//		Vector pendicularDirection = new Vector(- shootDirection.getZ(), 0, shootDirection.getX()).normalize();
+		
+//		Location shootLocation1 = event.getPlayer().getEyeLocation().add(shootDirection).add(pendicularDirection.multiply( 0.75)).add(new Vector(0, -0.75, 0));
+		Location shootLocation1 = event.getPlayer().getEyeLocation().add(shootDirection);
+
+		sagaPlayer.shootFireball(getDefinition().getFunction(SPEED_KEY).value(getEffectiveScore()), shootLocation1);
+
 		// Statistics:
-		StatisticsManager.manager().onAbilityUse(getName(), awardedExp);
+		StatisticsManager.manager().onAbilityUse(getName(), 0.0);
 
 		// Effect:
-		sagaPlayer.playeSpellEffect();
+		AbilityEffects.playSpellCast(sagaPlayer);
 		
 		return true;
 		

@@ -11,7 +11,8 @@ import org.saga.Saga;
 import org.saga.chunkGroups.SagaChunk.ChunkSide;
 import org.saga.factions.SagaFaction;
 import org.saga.player.SagaPlayer;
-import org.saga.utility.WriterReader;
+import org.saga.saveload.Directory;
+import org.saga.saveload.WriterReader;
 
 public class ChunkGroupManager {
 
@@ -495,7 +496,7 @@ public class ChunkGroupManager {
 		instance = manager;
 		
 		// Load:
-		String[] ids = WriterReader.getAllChunkGroupIds();
+		String[] ids = WriterReader.getAllIds(Directory.SETTLEMENT_DATA);
 		for (int i = 0; i < ids.length; i++) {
 			
 			ChunkGroup element = ChunkGroup.load(ids[i]);

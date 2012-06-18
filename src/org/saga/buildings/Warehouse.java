@@ -5,54 +5,28 @@ import org.bukkit.block.Block;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.saga.buildings.BuildingDefinition.BuildingPermission;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.messages.SagaMessages;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.Settlement.SettlementPermission;
 
 
 public class Warehouse extends Building{
 
-	
-	// Initialization:
+
+	// Initialisation:
 	/**
-	 * Initializes
+	 * Creates a building from the definition.
 	 * 
-	 * @param pointCost point cost
-	 * @param moneyCost money cost
-	 * @param proficiencies proficiencies
+	 * @param definition building definition
 	 */
-	private Warehouse(String name) {
+	public Warehouse(BuildingDefinition definition) {
 		
-		super("");
+		super(definition);
+		
 		
 	}
 	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#completeExtended()
-	 */
-	@Override
-	public boolean completeExtended() {
-		
-
-		boolean integrity = true;
-		
-		return integrity;
-		
-		
-	}
-
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#blueprint()
-	 */
-	@Override
-	public Building blueprint() {
-		return new Warehouse("");
-	}
 	
 	// Events:
 	/* 
@@ -77,8 +51,8 @@ public class Warehouse extends Building{
 		if(targetBlock == null) return;
 		Material targetMaterial = targetBlock.getType();
 		
-		// Request low permission:
-		if(!checkBuildingPermission(sagaPlayer, BuildingPermission.LOW)){
+		// Permission:
+		if(!chunkGroup.hasPermission(sagaPlayer, SettlementPermission.ACCESS_WAREHOUSE)){
 			
 			// Chest:
 			if(targetMaterial.equals(Material.CHEST) && event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
@@ -185,7 +159,6 @@ public class Warehouse extends Building{
 		
 	
 	}
-	
 	
 	
 }

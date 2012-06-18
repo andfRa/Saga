@@ -10,15 +10,10 @@ import java.util.Hashtable;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Enderman;
 import org.bukkit.event.Event.Result;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
@@ -27,33 +22,29 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.buildings.Building;
-import org.saga.buildings.MissingBuildingDefinitionException;
 import org.saga.config.ChunkGroupConfiguration;
-import org.saga.constants.IOConstants.WriteReadType;
+import org.saga.exceptions.InvalidBuildingException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.factions.SagaFaction;
-import org.saga.listeners.events.SagaPvpEvent;
-import org.saga.listeners.events.SagaPvpEvent.PvpDenyReason;
+import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaEntityDamageEvent.PvPFlag;
 import org.saga.messages.ChunkGroupMessages;
 import org.saga.messages.SagaMessages;
 import org.saga.player.SagaPlayer;
-import org.saga.utility.WriterReader;
+import org.saga.saveload.Directory;
+import org.saga.saveload.SagaCustomSerialization;
+import org.saga.saveload.WriterReader;
+import org.saga.settlements.Settlement.SettlementPermission;
 
 import com.google.gson.JsonParseException;
 
-public class ChunkGroup{
+public class ChunkGroup extends SagaCustomSerialization{
 
-	
-	/**
-	 * Class name. Used by gson.
-	 */
-	@SuppressWarnings("unused")
-	private String _className;
 	
 	/**
 	 * Group name ID.
@@ -138,7 +129,7 @@ public class ChunkGroup{
 	private Boolean lavaSpread;
 	
 	
-	// Initialization:
+	// Initialisation:
 	/**
 	 * Used by gson.
 	 * 
@@ -159,7 +150,6 @@ public class ChunkGroup{
 		players = new ArrayList<String>();
 		factions = new ArrayList<Integer>();
 		groupChunks = new ArrayList<SagaChunk>();
-		this._className = getClass().getName();
 		isSavingEnabled = true;
 		owner = "";
 		lastOnlineDates = new Hashtable<String, Date>();
@@ -255,7 +245,7 @@ public class ChunkGroup{
 				
 				try {
 					integrity = coords.getBuilding().complete() && integrity;
-				} catch (MissingBuildingDefinitionException e) {
+				} catch (InvalidBuildingException e) {
 					Saga.severe(this,"failed to complete " + coords.getBuilding().getName() + " building: "+ e.getClass().getSimpleName() + ":" + e.getMessage(), "removing element");
 					disableSaving();
 					coords.clearBuilding();
@@ -440,7 +430,7 @@ public class ChunkGroup{
 		save();
 		
 		// Remove from disc:
-		WriterReader.deleteChunkGroup(getId().toString());
+		WriterReader.delete(Directory.SETTLEMENT_DATA, getId().toString());
 		
 		// Update chunk group manager:
 		ChunkGroupManager.manager().removeChunkGroup(this);
@@ -966,7 +956,7 @@ public class ChunkGroup{
 		sagaPlayer.unregisterChunkGroup(this);
 		
 		// Add log out date:
-		lastOnlineDates.put(sagaPlayer.getName(), sagaPlayer.getLastOnline());
+		lastOnlineDates.put(sagaPlayer.getName(), Calendar.getInstance().getTime());
 		
 		
 	}
@@ -1112,7 +1102,7 @@ public class ChunkGroup{
 		
 		// Online players:
 		for (int i = 0; i < registeredPlayers.size(); i++) {
-			if(registeredPlayers.get(i).getName().equalsIgnoreCase(playerName)) return registeredPlayers.get(i).getLastOnline();
+			if(registeredPlayers.get(i).getName().equalsIgnoreCase(playerName)) return Calendar.getInstance().getTime();
 		}
 		
 		// Offline players:
@@ -1315,6 +1305,18 @@ public class ChunkGroup{
 
 	
 	// Permissions:
+	/**
+	 * Checks if the player has permission.
+	 * 
+	 * @param sagaPlayer saga player
+	 * @param permission permission
+	 * @return true if has permission
+	 */
+	public boolean hasPermission(SagaPlayer sagaPlayer, SettlementPermission permission) {
+
+		return false;
+	}
+	
 	/**
 	 * Checks if the player can build.
 	 * 
@@ -1667,25 +1669,6 @@ public class ChunkGroup{
 		
 	}
 	
-	/**
-	 * Member quit event.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @param event event
-	 */
-	public void onMemberQuit(SagaPlayer sagaPlayer, PlayerQuitEvent event) {
-
-		// TODO: Remove event.
-		
-		// Send to all buildings:
-		for (int i = 0; i < groupChunks.size(); i++) {
-			Building building = groupChunks.get(i).getBuilding();
-			if(building != null) building.onMemberQuit(sagaPlayer, event);
-		}
-		
-		
-	}
-
 	
 	// Block events:
 	/**
@@ -1785,76 +1768,10 @@ public class ChunkGroup{
     @SuppressWarnings("deprecation")
 	public void onPlayerInteract(PlayerInteractEvent event, SagaPlayer sagaPlayer, SagaChunk sagaChunk) {
     	
-
-		// Canceled:
-		if(event.isCancelled()){
-			return;
-		}
 		
 		ItemStack item = event.getPlayer().getItemInHand();
-		Block block = event.getClickedBlock();
 		
-		// Only builders:
-		if(!canBuild(sagaPlayer) && item != null && (event.getAction() == Action.RIGHT_CLICK_AIR || event.getAction() == Action.RIGHT_CLICK_BLOCK)){
-
-			switch (item.getType()) {
-				
-				case LAVA_BUCKET:
-					
-					event.setCancelled(true);
-					event.setUseItemInHand(Result.DENY);
-					sagaPlayer.message(SagaMessages.noPermission(this));
-					event.getPlayer().updateInventory();
-					return;
-				
-				case FLINT_AND_STEEL:
-					
-					event.setCancelled(true);
-					event.setUseItemInHand(Result.DENY);
-					sagaPlayer.message(SagaMessages.noPermission(this));
-					return;
-					
-				case FIREBALL:
-					
-					event.setCancelled(true);
-					event.setUseItemInHand(Result.DENY);
-					sagaPlayer.message(SagaMessages.noPermission(this));
-					return;
-
-				case WATER_BUCKET:
-					
-					event.setCancelled(true);
-					event.setUseItemInHand(Result.DENY);
-					sagaPlayer.message(SagaMessages.noPermission(this));
-					event.getPlayer().updateInventory();
-					return;
-					
-				case BUCKET:
-	
-					event.setCancelled(true);
-					event.setUseItemInHand(Result.DENY);
-					sagaPlayer.message(SagaMessages.noPermission(this));
-					event.getPlayer().updateInventory();
-					return;
-					
-				case INK_SACK:
-					
-					if(item.getData().getData() != 15) break;
-					
-					event.setCancelled(true);
-					event.setUseItemInHand(Result.DENY);
-					sagaPlayer.message(SagaMessages.noPermission(this));
-					event.getPlayer().updateInventory();
-					return;
-
-				default:
-					break;
-				
-			}
-			
-		}
-		
-		// Everyone:
+		// Harmful potions:
 		if(item != null && item.getType() == Material.POTION){
 
 			Short durability = item.getDurability();
@@ -1868,17 +1785,6 @@ public class ChunkGroup{
 			
 		}
 		
-		// Fire:
-		if(!canBuild(sagaPlayer) && block != null && block.getRelative(BlockFace.UP) != null && block.getRelative(BlockFace.UP).getType() == Material.FIRE){
-			
-			event.setCancelled(true);
-			event.setUseInteractedBlock(Result.DENY);
-			sagaPlayer.message(SagaMessages.noPermission(this));
-			event.getPlayer().updateInventory();
-			return;
-			
-		}
-		
 		
     }
 
@@ -1889,18 +1795,10 @@ public class ChunkGroup{
 	 * 
 	 * @param event event
 	 */
-	void onPvp(SagaPvpEvent event, SagaChunk locationChunk){
-		
+	void onPvp(SagaEntityDamageEvent event, SagaChunk locationChunk){
 
 		// Safe area:
-		if(hasPvpProtectionBonus()) event.setDenyReason(PvpDenyReason.SAFE_AREA);
-		
-//		// Forward to all buildings:
-//		for (int i = 0; i < groupChunks.size(); i++) {
-//			Building building = groupChunks.get(i).getBuilding();
-//			if(building != null) building.onPlayerVersusPlayer(event, locationChunk);
-//		}
-
+		if(hasPvpProtectionBonus()) event.addFlag(PvPFlag.SAFE_AREA);
 		
 	}
 	
@@ -1913,14 +1811,6 @@ public class ChunkGroup{
 	 * @param locationChunk chunk where the pvp occured
 	 */
 	void onPvpKill(SagaPlayer attacker, SagaPlayer defender, SagaChunk locationChunk){
-		
-		
-		// Forward to all buildings:
-		for (int i = 0; i < groupChunks.size(); i++) {
-			Building building = groupChunks.get(i).getBuilding();
-			if(building != null) building.onPlayerKillPlayer(attacker, defender, locationChunk);
-		}
-
 		
 	}
 	
@@ -1976,45 +1866,7 @@ public class ChunkGroup{
 	}
 	
 	
-	// Block events:
-	/**
-	 * Called when a block is placed in the chunk.
-	 * 
-	 * @param event event
-	 * @param sagaPlayer saga player
-	 */
-	void onBlockPlace(BlockPlaceEvent event, SagaPlayer sagaPlayer, SagaChunk locationChunk) {
-		
-
-//		// Check permission:
-//		if(!canBuild(sagaPlayer)){
-//			event.setCancelled(true);
-//			sagaPlayer.message(SagaMessages.noPermission(this));
-//			return;
-//		}
-		
-		
-	}
 	
-	/**
-	 * Called when a block is broken in the chunk.
-	 * 
-	 * @param event event
-	 * @param sagaPlayer saga player
-	 */
-	protected void onBlockBreak(BlockBreakEvent event, SagaPlayer sagaPlayer, SagaChunk locationChunk) {
-		
-//
-//		// Check permission:
-//		if(!canBuild(sagaPlayer)){
-//			event.setCancelled(true);
-//			sagaPlayer.message(SagaMessages.noPermission(this));
-//			return;
-//		}
-//		
-		
-	}
-
 	
     // Other:
 	/* 
@@ -2057,26 +1909,33 @@ public class ChunkGroup{
 	 * @param chunkGroupId faction ID in String form
 	 * @return saga faction
 	 */
-	public static ChunkGroup load(String chunkGroupId) {
+	public static ChunkGroup load(String id) {
 
 		
 		// Load:
-		String configName = "" + chunkGroupId + " chunk group";
 		ChunkGroup config;
 		try {
-			config = WriterReader.readChunkGroup(chunkGroupId.toString());
+			
+			config = WriterReader.read(Directory.SETTLEMENT_DATA, id, ChunkGroup.class);
+			
 		} catch (FileNotFoundException e) {
-			Saga.info("Missing " + configName + ". Creating a new one.");
+			
+			SagaLogger.info(SagaFaction.class, "missing data for " + id + " ID");
 			config = new ChunkGroup();
+			
 		} catch (IOException e) {
-			Saga.severe("Failed to load " + configName + ". Loading defaults.");
+			
+			Saga.severe(SagaFaction.class + "failed to read data for " + id + " ID");
 			config = new ChunkGroup();
 			config.disableSaving();
+			
 		} catch (JsonParseException e) {
-			Saga.severe("Failed to parse " + configName + ". Loading defaults.");
-			Saga.info("Parse message :" + e.getMessage());
+			
+			Saga.severe(SagaFaction.class + "failed to parse data for " + id + " ID: " + e.getClass().getSimpleName() + "");
+			Saga.info("Parse message: " + e.getMessage());
 			config = new ChunkGroup();
 			config.disableSaving();
+			
 		}
 		
 		// Complete:
@@ -2104,16 +1963,15 @@ public class ChunkGroup{
 	public void save() {
 
 		
-		String configName = "" + id + " chunk group";
 		if(!isSavingEnabled){
-			Saga.warning("Saving disabled for "+ configName + ". Ignoring save request." );
+			SagaLogger.warning(this, "saving disabled");
 			return;
 		}
 		
 		try {
-			WriterReader.writeChunkGroup(id.toString(), this, WriteReadType.SETTLEMENT_NORMAL);
+			WriterReader.write(Directory.SETTLEMENT_DATA, id.toString(), this);
 		} catch (IOException e) {
-			Saga.severe("Failed to write "+ configName +". Ignoring write.");
+			SagaLogger.severe(this, "write failed: " + e.getClass().getSimpleName() + ":" + e.getMessage());
 		}
 		
 		

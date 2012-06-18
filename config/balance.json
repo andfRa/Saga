@@ -1,29 +1,15 @@
 {
 
 "saveInterval":120,
-"maximumStamina":100.0,
-"staminaPerSecond":30.0,
-"maximumLevel":50,
-"maximumSkillLevel":50,
-"abilitySelectedTime":3,
-"baseLightningDamage":5,
-"pvpBaseFireballDamage":7,
-"pvcBaseFireballDamage":9,
-"bugReportMessage":"§2Saga is still in development. Please report any bugs you find at www.coryleach.com/Cory_Leach/Forum.html. Thank you!",
+
 "adminChatNameColor":"DARK_GREEN",
 "adminChatMessageColor":"GREEN",
-"abilitiesLimit":2,
-"expRegenSpeed":1.5,
-"expRegenLimit":800,
-"experienceDrop":0.30,
-"experienceRemain":0.55,
+
 "harmfulSplashPotions":[16388,16392,16394,16396,16420,16428,16452,16456],
-"statisticsUpdateAge":336,
-"expReward":1219,
-"coinReward":5000.0,
+"statisticsUpdateAge":33600000,
+
 "stopCreeperExplosions":true,
-"xrayUpdateInterval":1000,
-"xrayIndicationRatios":{"DIAMOND_ORE":0.038},
+
 "blockPlaceData":{
   "COAL_ORE":9,
   "IRON_ORE":9,
@@ -31,6 +17,8 @@
   "DIAMOND_ORE":9,
   "SUGAR_CANE_BLOCK":1,
   "LAPIS_ORE":9
-}
+},
+
+"guardRuneDisableWorlds":["Creative"]
 
 }

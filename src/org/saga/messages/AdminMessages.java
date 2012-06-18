@@ -1,10 +1,14 @@
 package org.saga.messages;
 
 import java.util.ArrayList;
+import java.util.Enumeration;
 
 import org.bukkit.ChatColor;
+import org.saga.Saga;
+import org.saga.config.AttributeConfiguration;
 import org.saga.config.BalanceConfiguration;
-import org.saga.economy.EconomyMessages;
+import org.saga.config.ExperienceConfiguration;
+import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.TextUtil;
 
@@ -28,37 +32,43 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 	
 	public static ChatColor normal2 = ChatColor.YELLOW;
 
+	
+	
 
 	// Levels:
-	public static String levelSet(SagaPlayer sagaPlayer){
-		return positive + "Player " + sagaPlayer.getName() + " level set to " + sagaPlayer.getLevel() + ".";
+	public static String levelSet(Integer level, SagaPlayer sagaPlayer){
+		return positive + "Player " + sagaPlayer.getName() + " level set to " + level + ".";
 	}
 	
-	public static String levelSetTo(SagaPlayer sagaPlayer){
-		return positive + "Level was set to " + sagaPlayer.getLevel() + ".";
+	public static String levelSet(Integer level){
+		return positive + "Level was set to " + level + ".";
 	}
 
 	public static String levelOutOfRange(String level){
-		return negative + level + " is out of range. Allowed range: 0 - " + BalanceConfiguration.config().maximumLevel + ".";
+		return negative + level + " is out of range. Allowed range: 0 - " + ExperienceConfiguration.config().maximumLevel + ".";
 	}
 
 	
-	// Skills:
-	public static String skillSet(SagaPlayer sagaPlayer, String skill){
-		return positive + "Player " +  sagaPlayer.getName() + " " + skill + " skill set to " + sagaPlayer.getSkillMultiplier(skill) + ".";
+	
+	
+	// Attributes:
+	public static String attributeSet(String attribute, Integer score){
+		return positive + TextUtil.capitalize(attribute) + " was set to " + score + ".";
 	}
 	
-	public static String skillSetTo(SagaPlayer sagaPlayer, String skill){
-		return positive + TextUtil.capitalize(skill) + " skill was set to " + sagaPlayer.getSkillMultiplier(skill) + ".";
-	}
-
-	public static String skillOutOfRange(String skill){
-		return negative + skill + " is out of range. Allowed range: 0 - " + BalanceConfiguration.config().maximumSkillLevel + ".";
+	public static String attributeSet(String attribute, Integer score, SagaPlayer sagaPlayer){
+		return positive + "Player " + sagaPlayer.getName() + " " + attribute + " was set to " + score + ".";
 	}
 	
-	public static String invalidSkill(String skill){
-		return negative + "Skill " + skill + " is not valid.";
+	public static String attributeInvalid(String attribute, SagaPlayer sagaPlayer){
+		return negative + TextUtil.capitalize(attribute) + " isn't a valid attribute.";
 	}
+	
+	public static String attributeOutOfRange(String score){
+		return negative + score + " is out of range. Allowed range: 0 - " + AttributeConfiguration.config().maxAttributeScore + ".";
+	}
+	
+	
 	
 	
 	// Administrator mode:
@@ -87,9 +97,27 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 	}
 	
 
+	
+	
 	// Additional info:
 	public static String statsTargetName(SagaPlayer sagaPlayer) {
 		return positive + "Stats for " + sagaPlayer.getName() + ".";
+	}
+	
+	
+	
+	
+	// Guardian rune:
+	public static String recharged(GuardianRune rune, SagaPlayer sagaPlayer) {
+		
+		return positive + "Recharged players " + sagaPlayer.getName() + " guardian rune recharged.";
+		
+	}
+	
+	public static String recharged(GuardianRune rune) {
+		
+		return positive + "Guardian rune recharged.";
+		
 	}
 	
 
@@ -102,31 +130,26 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 		return veryPositive + "Saving complete.";
 	}
 	
+	
+	
+	
+	// Messages:
+	public static String chatMessage(String name, String message) {
 
-	// Reward:
-	public static String rewarded(ArrayList<String> players) {
-
-		return positive + "Rewarded " + players.size() + " players.";
+		ChatColor nameColor = BalanceConfiguration.config().adminChatNameColor;
+		ChatColor messageColor = BalanceConfiguration.config().adminChatMessageColor;
+		String namedMessage = messageColor + "{" + nameColor + name + messageColor + "} " + message;
+		
+		return namedMessage;
 		
 	}
 	
-	public static String playersNotFound(ArrayList<String> players) {
+	public static void chatnWarning(String message) {
 
-		return negative + "Failed to find players: " + TextUtil.flatten(players) + ".";
+		chatMessage("WARNING", message);
 		
 	}
-	
-	public static String noReward() {
 
-		return negative + "No reward available.";
-		
-	}
-	
-	public static String collectedReward(Double exp, Double coins) {
-
-		return positive + "Collected " + exp.intValue() + " exp and " + EconomyMessages.coins(coins) + ".";
-		
-	}
 
 	
 }

@@ -4,21 +4,21 @@ import java.util.Random;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.inventory.ItemStack;
-import org.saga.Saga;
-import org.saga.listeners.events.SagaEventHandler;
-import org.saga.listeners.events.SagaPvpEvent;
-import org.saga.player.SagaPlayer;
+import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.messages.AbilityEffects;
 import org.saga.statistics.StatisticsManager;
 
 public class Bash extends Ability{
 
 	
 	/**
-	 * Initializes using definition.
+	 * Disarm chance key.
+	 */
+	private static String DISARM_CHANCE_KEY = "disarm chance";
+	
+	/**
+	 * Initialises using definition.
 	 * 
 	 * @param definition ability definition
 	 */
@@ -37,62 +37,41 @@ public class Bash extends Ability{
 	 */
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean onPlayerInteractPlayer(PlayerInteractEntityEvent event, SagaPlayer targetPlayer) {
+	public boolean triggerAttack(SagaEntityDamageEvent event) {
 
-		
-		// Check preuse:
-		if(!handlePreUse()){
-			return false;
-		}
 		
 		// Only player vs player:
-		if(!(event.getRightClicked() instanceof Player)){
-			return false;
-		}
-		Player defender = (Player)event.getRightClicked();
+		if(!event.isPlayerAttackPlayer()) return false;
 		
-		// Damage:
-		int damage = getDefinition().getPrimaryFunction().randomIntValue(getSkillLevel());
+		// Only physical:
+		if(!event.isPhysical()) return false;
 		
-		// Pvp event:
-		EntityDamageByEntityEvent edbeevent = new EntityDamageByEntityEvent(event.getPlayer(), event.getRightClicked(), DamageCause.ENTITY_ATTACK, damage);
+		// Only if the target is holding a sword:
+		Material targetsItem = event.getDefenderPlayer().getItemInHand().getType();
+		if(targetsItem != Material.DIAMOND_SWORD && targetsItem != Material.GOLD_SWORD && targetsItem != Material.IRON_SWORD && targetsItem != Material.STONE_SWORD && targetsItem != Material.WOOD_SWORD) return false;
 		
-		// Handle pvp:
-		SagaEventHandler.handlePvp(new SagaPvpEvent(getSagaPlayer(), targetPlayer, getSagaPlayer().getSagaChunk(), targetPlayer.getSagaChunk(), edbeevent));
-
-		if(edbeevent.isCancelled()){
-			return false;
-		}
+		
+		Player defender = event.getDefenderPlayer().getPlayer();
 		
 		// Determine disarm:
 		Random random = new Random();
-		int disarm = random.nextInt(getDefinition().getSecondaryFunction().randomIntValue(getSkillLevel())) +1;
-		
-		// Normalize disarm:
-		if(disarm < 1){
-			disarm = 1;
-			Saga.severe(this, "disarm below 1", "using minimum");
-		}
-		if(disarm > 35){
-			disarm = 35;
-			Saga.severe(this, "disarm above 35", "using maximum");
-		}
+		double disarm = getDefinition().getFunction(DISARM_CHANCE_KEY).value(getEffectiveScore());
+		if(random.nextDouble() > disarm) return false;
 		
 		// Slots:
 		int firstSlot = defender.getInventory().getHeldItemSlot();
-		int secondSlot = firstSlot;
-		
-		if(random.nextBoolean() && firstSlot != 0){
-			disarm *= -1;
+		int secondSlot = firstSlot + 1;
+		if(firstSlot == 0){
+			secondSlot = 2;
+		}else if(firstSlot == 8){
+			secondSlot = 7;
+		}else{
+			if(random.nextBoolean()){
+				secondSlot = firstSlot + 1;
+			}else{
+				secondSlot = firstSlot - 1;
+			}
 		}
-		
-		// Add disarm:
-		secondSlot += disarm;
-		
-		// Normalize:
-		if(secondSlot < 0) secondSlot = 0;
-		if(secondSlot > 35) secondSlot = 35;
-		
 		
 		ItemStack firstStack = defender.getInventory().getItem(firstSlot);
 		ItemStack secondStack = defender.getInventory().getItem(secondSlot);
@@ -100,21 +79,18 @@ public class Bash extends Ability{
 		// Disarm:
 		defender.getInventory().clear(firstSlot);
 		defender.getInventory().clear(secondSlot);
-
+		
 		if(secondStack != null && !secondStack.getType().equals(Material.AIR)) defender.getInventory().setItem(firstSlot, secondStack);
 		if(firstStack != null && !firstStack.getType().equals(Material.AIR)) defender.getInventory().setItem(secondSlot, firstStack);
 		
 		// Update inventory:
 		defender.updateInventory();
 		
-		// Damage:
-		defender.damage(damage, event.getPlayer());
-
-		// Award exp:
-		Double awardedExp = awardExperience();
+		// Effect:
+		AbilityEffects.playMinorAbility(getSagaPlayer(), getEffectiveScore());
 		
 		// Statistics:
-		StatisticsManager.manager().onAbilityUse(getName(), awardedExp);
+		StatisticsManager.manager().onAbilityUse(getName(), 0.0);
 		
 		return true;
 		

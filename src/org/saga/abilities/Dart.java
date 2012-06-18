@@ -3,14 +3,17 @@ package org.saga.abilities;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
-import org.saga.utility.TwoPointFunction;
 
 public class Dart extends Ability{
 
-	
-	// Initialization:
 	/**
-	 * Initializes using definition.
+	 * Speed key.
+	 */
+	private static String SPEED_KEY = "speed";
+	
+	// Initialisation:
+	/**
+	 * Initialises using definition.
 	 * 
 	 * @param definition ability definition
 	 */
@@ -28,26 +31,15 @@ public class Dart extends Ability{
 	 * @see org.saga.abilities.Ability#trigger()
 	 */
 	@Override
-	public boolean instant(PlayerInteractEvent event) {
+	public boolean trigger(PlayerInteractEvent event) {
 		
 
-		// Check pre use:
-		if(!handlePreUse()){
-			return false;
-		}
-
-		SagaPlayer sagaPlayer = getSagaPlayer();
-		TwoPointFunction primaryFunction = getDefinition().getPrimaryFunction();
-		Integer skillLevel = getSkillLevel();
-		
 		// Shoot:
-		sagaPlayer.shootArrow(primaryFunction.value(skillLevel));
+		SagaPlayer sagaPlayer = getSagaPlayer();
+		sagaPlayer.shootArrow(getDefinition().getFunction(SPEED_KEY).value(getEffectiveScore()));
 
-		// Award exp:
-		Double awardedExp = awardExperience();
-		
 		// Statistics:
-		StatisticsManager.manager().onAbilityUse(getName(), awardedExp);
+		StatisticsManager.manager().onAbilityUse(getName(), 0.0);
 		
 		return true;
 		

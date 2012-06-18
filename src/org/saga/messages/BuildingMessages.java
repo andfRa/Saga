@@ -1,18 +1,21 @@
 package org.saga.messages;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.saga.abilities.Ability;
 import org.saga.buildings.Arena;
 import org.saga.buildings.Building;
 import org.saga.buildings.BuildingDefinition;
 import org.saga.buildings.TradingPost;
 import org.saga.buildings.Arena.ArenaPlayer;
 import org.saga.chunkGroups.ChunkGroup;
+import org.saga.config.AbilityConfiguration;
+import org.saga.config.AttributeConfiguration;
 import org.saga.config.ChunkGroupConfiguration;
-import org.saga.economy.EconomyMessages;
 import org.saga.economy.TradeDeal;
 import org.saga.economy.TradeDeal.TradeDealType;
 import org.saga.messages.PlayerMessages.ColorCircle;
@@ -43,6 +46,8 @@ public class BuildingMessages {
 	
 	public static ChatColor frame = ChatColor.DARK_GREEN;
 	
+	
+	
 
 	// Adding buildings:
 	public static String newBuilding(ChunkGroup chunkGroup, Building building, SagaPlayer sagaPlayer) {
@@ -72,13 +77,33 @@ public class BuildingMessages {
 	}
 
 	
-	// Commands:
+	
+	
+	// General commands:
 	public static String invalidBuilding(String correctBuildingName, String command){
 		
 		return negative + command + " can only be used from a " + correctBuildingName + ".";
 		
 	}
 	
+	
+	
+	
+	// Arena:
+	public static String countdown(int count) {
+		
+		if(count == 0){
+			return ChunkGroupMessages.positive + "Fight!";
+		}else if((count%2)==0){
+			return ChunkGroupMessages.normal1 + "" + count + ".";
+		}else{
+			return ChunkGroupMessages.normal2 + "" + count + ".";
+		}
+		
+	}
+
+	
+
 	
 	// Trading post:
 	public static String setAutomate(TradingPost tradingPost){
@@ -351,24 +376,30 @@ public class BuildingMessages {
 	}
 	
 	
-	// Moving:
+	
+	
+	// Movement:
 	public static String entered(Building building) {
 		
-		return normal1 + "" + ChatColor.ITALIC + "Entered " + building.getName() + ".";
+		return normal1 + "" + ChatColor.ITALIC + "Entered " + building.getDisplayName() + ".";
 		
 	}
 	
 	public static String left(Building building) {
 		
-		return normal1 + "" + ChatColor.ITALIC + "Left " + building.getName() + ".";
+		return normal1 + "" + ChatColor.ITALIC + "Left " + building.getDisplayName() + ".";
 		
 	}
+	
+	
 	
 	
 	// General:
 	public static String cooldown(String buildingName, Integer secondsLeft) {
 		return negative + TextUtil.capitalize(buildingName) + " is on cooldown for " + TextUtil.fromSeconds(secondsLeft) + ".";
 	}
+	
+	
 	
 	
 	// Arena:
@@ -428,23 +459,117 @@ public class BuildingMessages {
 		
 	}
 	
+	
+	
+	
+	// Home:
+	public static String alreadyResident(String name) {
+		return ChunkGroupMessages.negative + name + " is already a resident.";
+	}
+	
+	public static String notResident(String name) {
+		return ChunkGroupMessages.negative + name + " is not a resident.";
+	}
+
+	public static String addedResident(String name) {
+		return ChunkGroupMessages.positive + "Added " + name + " to the resident list.";
+	}
+	
+	public static String removedResident(String name) {
+		return ChunkGroupMessages.positive + "Removed " + name + " from the resident list.";
+	}
+
+	
+	
+	
+	
+	// Attribute sign:
+	public static String attributeMaxReached(String attribute) {
+		return negative + "Can't increase " + attribute + " above " + AttributeConfiguration.config().maxAttributeScore + ".";
+	}
+
+	public static String attributeIncreased(String attribute, Integer score) {
+		return positive + TextUtil.capitalize(attribute) + " increased to " + score + ".";
+	}
+
+	public static String attributePointsRequired(String attribute) {
+		return negative + "Not enough attribute points to increase " + attribute + ".";
+	}
+	
+	
+	
+	
+	// Ability sign:
+	public static String abilityMaxReached(String ability) {
+		return negative + "Can't upgrade " + ability + " above " + AbilityConfiguration.config().maxAbilityScore + ".";
+	}
+
+	public static String abilityUpgraded(String ability, Integer score) {
+		
+		if(score == 1){
+			return positive + TextUtil.capitalize(ability) + " learned.";
+		}
+		return positive + "Upgraded to " + GeneralMessages.scoreAbility(ability, score) + ".";
+		
+	}
+	
+	public static String abilityReqNotMet(Ability ability, Integer score) {
+		
+		if(score == 1){
+			return negative + StatsMessages.requirements(ability.getDefinition(), score) + " is required to learn " + ability.getName() + ".";
+		}
+		
+		return negative + TextUtil.capitalize(GeneralMessages.scoreAbility(ability.getName(), score)) + " upgrade requires " + StatsMessages.requirements(ability.getDefinition(), score) + ".";
+		
+	}
+
+	public static String abilityCost(String ability, Integer score, Double cost) {
+		
+		if(score == 1){
+			return normal1 + "It costs " + EconomyMessages.coins(cost) + " to learn " + ability + ".";
+		}
+		
+		return normal1 + TextUtil.capitalize(GeneralMessages.scoreAbility(ability, score)) + " upgrade costs " + EconomyMessages.coins(cost) + ".";
+		
+	}
+		
+	
+	
+	
+	// Respec sign:
+	public static String respecCost(String attribute, Integer score, Double cost) {
+		
+		if(score == 0){
+			return normal1 + TextUtil.capitalize(attribute) + " is already 0.";
+		}
+		
+		return normal1 + TextUtil.capitalize(attribute) +  " " + score + " reset costs " + EconomyMessages.coins(cost) + ".";
+		
+	}
+	
+	public static String respec(String attribute) {
+		
+		return normal1 + TextUtil.capitalize(attribute) + " reset.";
+		
+	}
+	
+	public static String alreadyRespec(String attribute) {
+		
+		return negative + TextUtil.capitalize(attribute) + " is already 0.";
+		
+	}
+		
+	
 
 	// Help:
 	public static String info() {
 
 		
-		ColorCircle color = new ColorCircle().addColor(normal1).addColor(normal2);
-		StringBook book = new StringBook("building info", color, 10);
+		ColorCircle colour = new ColorCircle().addColor(normal1).addColor(normal2);
+		StringBook book = new StringBook("building info", colour, 10);
 		
 		// Buildings:
-		ArrayList<Building> buildings = ChunkGroupConfiguration.config().getBuildings();
-		ArrayList<String> buildingNames = new ArrayList<String>();
-		
-		for (Building building : buildings) {
-			
-			buildingNames.add(building.getName().replaceAll(" ", SagaMessages.spaceSymbol));
-			
-		}
+		Collection<String> buildingNames = ChunkGroupConfiguration.config().getBuildingNames();
 		
 		book.addLine("All buildings: " + TextUtil.flatten(buildingNames));
 
@@ -466,7 +591,7 @@ public class BuildingMessages {
 		book.addLine(definition.getDescription());
 		
 		// Skills:
-		book.addLine("skills: " + TextUtil.flatten(definition.getSkills()));
+		book.addLine("attributes: " + TextUtil.flatten(definition.getAttributes()));
 
 		// Select:
 		book.addLine("classes/profs: " + TextUtil.flatten(definition.getSelectable()));

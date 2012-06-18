@@ -7,11 +7,10 @@ import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.saga.commands.FactionCommands;
 import org.saga.config.BalanceConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.FactionConfiguration;
-import org.saga.economy.EconomyMessages;
-import org.saga.factions.FactionCommands;
 import org.saga.factions.FactionManager;
 import org.saga.factions.SagaFaction;
 import org.saga.messages.PlayerMessages.ColorCircle;
@@ -310,13 +309,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		
 	}
 	
-	public static String possibleColors(SagaFaction faction) {
-		
-		return possibleColors(ChatColor.values(), faction.getSecondaryColor());
-		
-	}
-	
-	public static String possibleColors(ChatColor[] colors, ChatColor messageColor) {
+	public static String possibleColors(ChatColor[] colors, SagaFaction faction) {
 		
 		
 		StringBuffer rString = new StringBuffer();
@@ -338,7 +331,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		}
 		
 		
-		rString.insert(0, messageColor);
+		rString.insert(0, faction.getSecondaryColor());
 		
 		return rString.toString();
 		
@@ -700,83 +693,6 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 
 	
 	// Info:
-	public static String help(int page) {
-		
-		
-		ColorCircle messageColor = new ColorCircle().addColor(normal1).addColor(normal2);
-		StringBook book = new StringBook("Faction help", messageColor, 10);
-		
-		// Bugs:
-		if(BalanceConfiguration.config().bugReportMessage.length() > 0){
-			book.addLine(negative + BalanceConfiguration.config().bugReportMessage);
-		}
-		
-		// Pvp:
-		if(FactionConfiguration.config().factionOnlyPvp){
-			book.addLine(veryNegative + "Only factions can take part in pvp.");
-		}
-		
-		// Create:
-		book.addLine("/fcreate <name> creates a new faction.");
-		
-		// Formation:
-		if(FactionConfiguration.config().formationAmount > 1){
-			book.addLine("A faction will not be formed until it has " + FactionConfiguration.config().formationAmount + " members.");
-		}
-		
-		// Invite:
-		book.addLine("/finvite <name> to invite someone to the faction.");
-		
-		// Accept:
-		book.addLine("/faccept to accept a faction invitation.");
-		
-		// Decline
-		book.addLine("/fdeclineall to decline all faction invitations.");
-
-		// Kick:
-		book.addLine("/fkick <name> to kick someone out from the faction.");
-		
-		// Quit:
-		book.addLine("/factionquit to quit a faction.");
-
-		// List:
-		book.addLine("/flist to list all faction members.");
-
-		// Primary color:
-		book.addLine("/fsetprimarycolor <color> to set the factions primary color.");
-
-		// Secondary color:
-		book.addLine("/fsetsecondarycolor <color> to set the factions secondary color.");
-
-		// Chat:
-		book.addLine("/f <message> to send a message in the faction chat.");
-
-		// Stats:
-		book.addLine("/fstats to see available ranks and other stats.");
-
-		// Set rank:
-		book.addLine("/fsetrank <name> <rank> to assign a rank to somebody.");
-
-		// Rename:
-		book.addLine("/frename <name> to rename the faction. Costs " + EconomyMessages.coins(EconomyConfiguration.config().factionRenameCost) + ".");
-		
-		// Request alliance:
-		book.addLine("/frequestally <faction_name> to request an alliance.");
-
-		// Accept alliance:
-		book.addLine("/facceptally <faction_name> to accept an alliance.");
-
-		// Decline alliance:
-		book.addLine("/fdeclinetally <faction_name> to deline an alliance.");
-		
-		// Decline alliance:
-		book.addLine("/fremoveally <faction_name> to break an alliance.");
-		
-		return book.framed(page);
-		
-		
-	}
-	
 	public static String wrongQuit() {
 		
 		return negative + "Because /squit and /fquit are similar, this command isn't used. Please use /factionquit instead.";
@@ -811,9 +727,9 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		
 	}
 	
-	public static String rankedPlayer(SagaPlayer sagaPlayer) {
+	public static String rankedPlayer(SagaFaction faction, SagaPlayer sagaPlayer) {
 
-		Proficiency rank = sagaPlayer.getRank();
+		Proficiency rank = faction.getRank(sagaPlayer.getName());
 		
 		if(rank == null){
 			return sagaPlayer.getName();

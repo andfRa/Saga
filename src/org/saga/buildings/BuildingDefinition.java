@@ -6,12 +6,16 @@ import java.util.HashSet;
 import java.util.Hashtable;
 
 import org.saga.Saga;
-import org.saga.player.Proficiency;
-import org.saga.player.SagaPlayer;
+import org.saga.SagaLogger;
 import org.saga.utility.TwoPointFunction;
 
 public class BuildingDefinition {
 
+
+	/**
+	 * Building class.
+	 */
+	private String className;
 	
 	/**
 	 * Building point cost.
@@ -27,11 +31,6 @@ public class BuildingDefinition {
 	 * Building specific function.
 	 */
 	private TwoPointFunction levelFunction;
-
-	/**
-	 * Permissions for the building.
-	 */
-	private Hashtable<String, BuildingPermission> permissions;
 
 	
 	// Proficiencies:
@@ -61,9 +60,14 @@ public class BuildingDefinition {
 	private Hashtable<String, TwoPointFunction> roleAmounts;
 	
 	/**
-	 * Skills.
+	 * Attributes.
 	 */
-	private HashSet<String> skills;
+	private HashSet<String> attributes;
+	
+	/**
+	 * Abilities.
+	 */
+	private HashSet<String> abilities;
 	
 	
 	// Buildings:
@@ -80,7 +84,7 @@ public class BuildingDefinition {
 	private String description;
 	
 	
-	// Initialization:
+	// Initialisation:
 	/**
 	 * Used by gson.
 	 * 
@@ -89,7 +93,7 @@ public class BuildingDefinition {
 	}
 	
 	/**
-	 * Initializes.
+	 * Initialises.
 	 * 
 	 * @param pointCost
 	 * @param moneyCost
@@ -113,6 +117,11 @@ public class BuildingDefinition {
 
 		boolean integrity=true;
 		
+		if(className == null){
+			SagaLogger.nullField(this, "className");
+			className = "invalid";
+		}
+		
 		if(pointCost == null){
 			pointCost = new TwoPointFunction(10000.0);
 			Saga.severe(BuildingDefinition.class, "failed to initialize pointCost field", "setting default");
@@ -133,12 +142,6 @@ public class BuildingDefinition {
 			integrity = false;
 		}
 		integrity = levelFunction.complete() && integrity;
-		
-		if(permissions == null){
-			permissions = new Hashtable<String, BuildingDefinition.BuildingPermission>();
-			Saga.severe(BuildingDefinition.class, "failed to initialize permissions field", "setting default");
-			integrity = false;
-		}
 		
 		if(this.roleAmounts == null){
 			this.roleAmounts = new Hashtable<String, TwoPointFunction>();
@@ -222,14 +225,25 @@ public class BuildingDefinition {
 			integrity = enabledBuildings.get(building).complete() && integrity;
 		}
 		
-		if(skills == null){
-			skills = new HashSet<String>();
-			Saga.severe(BuildingDefinition.class, "skills field failed to initialize", "setting default");
+		if(attributes == null){
+			attributes = new HashSet<String>();
+			Saga.severe(BuildingDefinition.class, "attributes field failed to initialize", "setting default");
 			integrity = false;
 		}
 		
-		if(skills.remove(null)){
-			Saga.severe(BuildingDefinition.class, "skills field failed to initialize element", "removing element");
+		if(attributes.remove(null)){
+			Saga.severe(BuildingDefinition.class, "attributes field failed to initialize element", "removing element");
+			integrity = false;
+		}
+		
+		if(abilities == null){
+			abilities = new HashSet<String>();
+			Saga.severe(BuildingDefinition.class, "abilities field failed to initialize", "setting default");
+			integrity = false;
+		}
+		
+		if(abilities.remove(null)){
+			Saga.severe(BuildingDefinition.class, "abilities field failed to initialize element", "removing element");
 			integrity = false;
 		}
 		
@@ -246,6 +260,15 @@ public class BuildingDefinition {
 	
 	
 	// Interaction:
+	/**
+	 * Gets the class name.
+	 * 
+	 * @return class name
+	 */
+	public String getClassName() {
+		return className;
+	}
+	
 	/**
 	 * Gets the building point cost.
 	 * 
@@ -289,32 +312,6 @@ public class BuildingDefinition {
 		requirements.levelFunction = new TwoPointFunction(10000.0);
 		requirements.complete();
 		return requirements;
-		
-		
-	}
-	
-	/**
-	 * Gets building permission for the given player based on players proficiencies.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return building permission, none if not found
-	 */
-	public BuildingPermission getBuildingPermission(SagaPlayer sagaPlayer) {
-		
-		
-		BuildingPermission buildingPermission = BuildingPermission.NONE;
-		ArrayList<Proficiency> proficiencies = sagaPlayer.getAllProficiencies();
-		
-		for (Proficiency proficiency : proficiencies) {
-			
-			BuildingPermission proficiencyPermission = permissions.get(proficiency.getName());
-			if(proficiencyPermission != null && proficiencyPermission.isHigher(buildingPermission)){
-				buildingPermission = proficiencyPermission;
-			}
-			
-		}
-		
-		return buildingPermission;
 		
 		
 	}
@@ -493,25 +490,38 @@ public class BuildingDefinition {
 	}
 	
 
-	// Skills:
+	// Attributes:
 	/**
-	 * Check if the ability.
+	 * Check if the building allows the attribute.
 	 * 
-	 * @param skillName skill name
-	 * @return true if has a skill
+	 * @param name attributes name
+	 * @return true if has a attributes
 	 */
-	public boolean hasSkill(String skillName) {
-		return skills.contains(skillName);
+	public boolean hasAttribute(String name) {
+		return attributes.contains(name);
 	}
 	
 	/**
-	 * Gets the skills.
+	 * Gets the attributes.
 	 * 
-	 * @return the skills
+	 * @return the attributes
 	 */
-	public HashSet<String> getSkills() {
-		return new HashSet<String>(skills);
+	public HashSet<String> getAttributes() {
+		return new HashSet<String>(attributes);
 	}
+	
+	
+	// Abilities:
+	/**
+	 * Check if the building allows the ability.
+	 * 
+	 * @param name ability name
+	 * @return true if has the ability
+	 */
+	public boolean hasAbility(String name) {
+		return abilities.contains(name);
+	}
+	
 
 	// Info:
 	/**
@@ -524,81 +534,16 @@ public class BuildingDefinition {
 	}
 
 	
-	// Types:
-	/**
-	 * Building permissions.
+	// Other:
+	/* 
+	 * (non-Javadoc)
 	 * 
-	 * @author andf
-	 *
+	 * @see java.lang.Object#toString()
 	 */
-	public static enum BuildingPermission{
-		
-		
-		NONE,
-		LOW,
-		MEDIUM,
-		HIGH,
-		FULL;
-		
-		
-		/**
-		 * Checks if the permissions is higher than the given permission.
-		 * 
-		 * @param permission given permission
-		 * @return true if higher
-		 */
-		public boolean isHigher(BuildingPermission permission) {
-			return this.compareTo(permission) > 0;
-		}
-		
-		/**
-		 * Checks if the permissions is lower than the given permission.
-		 * 
-		 * @param permission given permission
-		 * @return true if lower
-		 */
-		public boolean isLower(BuildingPermission permission) {
-			return this.compareTo(permission) < 0;
-		}
-		
-	}
-	
-	/**
-	 * Invalid proficiency.
-	 * 
-	 * @author andf
-	 *
-	 */
-	public static class InvalidProficiencyException extends Exception{
-
-		/**
-		 * 
-		 */
-		private static final long serialVersionUID = 1L;
-		
-		private String proficiencyName;
-		
-		
-		/**
-		 * Sets proficiency name.
-		 * 
-		 * @param proficiencyName proficiency name
-		 */
-		public InvalidProficiencyException(String proficiencyName) {
-			this.proficiencyName = proficiencyName;
-		}
-		
-		
-		/**
-		 * Returns proficiency name.
-		 * 
-		 * @return proficiency name
-		 */
-		public String getProficiencyName() {
-			return proficiencyName;
-		}
-		
-		
+	@Override
+	public String toString() {
+		if(className == null) return "null";
+		return className;
 	}
 	
 }

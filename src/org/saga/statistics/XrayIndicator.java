@@ -6,96 +6,23 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.saga.config.BalanceConfiguration;
 import org.saga.player.SagaPlayer;
-
 
 
 public class XrayIndicator {
 	
 	
 	/**
-	 * Xray materials.
+	 * X-ray blocks.
 	 */
-	private static HashSet<Material> XRAY_MATERIALS = getXrayMaterials();
-	
-	/**
-	 * Target materials.
-	 */
-	private static HashSet<Material> TARGETS = getXrayTargets();
+	private static HashSet<Material> XRAY_BLOCKS = getXrayBlocks();
 	
 	/**
 	 * Transparent materials.
 	 */
 	private static HashSet<Material> TRANSPARENT = getTransparent();
 	
-	/**
-	 * Handles mining.
-	 * 
-	 * @param sagaPlayer player
-	 * @param event event
-	 */
-	public static void handleMine(SagaPlayer sagaPlayer, BlockBreakEvent event) {
-
-		
-		if(event.isCancelled()) return;
-		
-		// Select blocks:
-		Material material = event.getBlock().getType();
-		
-		if(!XRAY_MATERIALS.contains(material)) return;
-		
-		// Add blocks:
-		Integer amount = sagaPlayer.addMinedBlocks(material, 1);
-		
-		// Flush:
-		if(material.equals(Material.STONE) && amount >= BalanceConfiguration.config().xrayUpdateInterval){
-			
-			String name = sagaPlayer.getName();
-			HashSet<Material> xrayMaterials = getXrayMaterials();
-			
-			for (Material xrayMat : xrayMaterials) {
-				
-				StatisticsManager.manager().onXrayStatisticsUpdate(name, xrayMat, sagaPlayer.getMinedBlocks(xrayMat));
-				sagaPlayer.clearMinedBlocks(xrayMat);
-				
-			}
-			
-			
-		}
-		
-		
-	}
 	
-	/**
-	 * Gets all xray materials.
-	 * 
-	 * @return xray materials
-	 */
-	public static HashSet<Material> getXrayMaterials(){
-		
-		
-		HashSet<Material> materials = new HashSet<Material>();
-		
-		materials.add(Material.STONE);
-		materials.add(Material.COAL_ORE);
-		materials.add(Material.IRON_ORE);
-		materials.add(Material.GOLD_ORE);
-		materials.add(Material.LAPIS_ORE);
-		materials.add(Material.DIAMOND_ORE);
-		materials.add(Material.MOSSY_COBBLESTONE);
-		
-		return materials;
-		
-		
-	}
-	
-	
-	
-	
-	
-	
-	//////////////
 	/**
 	 * Called when a block is broken.
 	 * 
@@ -156,32 +83,32 @@ public class XrayIndicator {
 		Block relative = null;
 
 		relative = anchor.getRelative(BlockFace.NORTH);
-		if(TARGETS.contains(relative.getType())){
+		if(XRAY_BLOCKS.contains(relative.getType())){
 			return relative;
 		}
 
 		relative = anchor.getRelative(BlockFace.EAST);
-		if(TARGETS.contains(relative.getType())){
+		if(XRAY_BLOCKS.contains(relative.getType())){
 			return relative;
 		}
 
 		relative = anchor.getRelative(BlockFace.SOUTH);
-		if(TARGETS.contains(relative.getType())){
+		if(XRAY_BLOCKS.contains(relative.getType())){
 			return relative;
 		}
 
 		relative = anchor.getRelative(BlockFace.WEST);
-		if(TARGETS.contains(relative.getType())){
+		if(XRAY_BLOCKS.contains(relative.getType())){
 			return relative;
 		}
 
 		relative = anchor.getRelative(BlockFace.UP);
-		if(TARGETS.contains(relative.getType())){
+		if(XRAY_BLOCKS.contains(relative.getType())){
 			return relative;
 		}
 
 		relative = anchor.getRelative(BlockFace.DOWN);
-		if(TARGETS.contains(relative.getType())){
+		if(XRAY_BLOCKS.contains(relative.getType())){
 			return relative;
 		}
 
@@ -209,42 +136,42 @@ public class XrayIndicator {
 		Block relative = null;
 
 		relative = anchor.getRelative(BlockFace.NORTH);
-		if(TARGETS.contains(relative.getType())){
+		if(XRAY_BLOCKS.contains(relative.getType())){
 			getRelative(relative, targetBlocks, otherBlocks, depthremain-1);
 		}else{
 			otherBlocks.add(relative);
 		}
 
 		relative = anchor.getRelative(BlockFace.EAST);
-		if(TARGETS.contains(relative.getType())){
+		if(XRAY_BLOCKS.contains(relative.getType())){
 			getRelative(relative, targetBlocks, otherBlocks, depthremain-1);
 		}else{
 			otherBlocks.add(relative);
 		}
 
 		relative = anchor.getRelative(BlockFace.SOUTH);
-		if(TARGETS.contains(relative.getType())){
+		if(XRAY_BLOCKS.contains(relative.getType())){
 			getRelative(relative, targetBlocks, otherBlocks, depthremain-1);
 		}else{
 			otherBlocks.add(relative);
 		}
 
 		relative = anchor.getRelative(BlockFace.WEST);
-		if(TARGETS.contains(relative.getType())){
+		if(XRAY_BLOCKS.contains(relative.getType())){
 			getRelative(relative, targetBlocks, otherBlocks, depthremain-1);
 		}else{
 			otherBlocks.add(relative);
 		}
 
 		relative = anchor.getRelative(BlockFace.UP);
-		if(TARGETS.contains(relative.getType())){
+		if(XRAY_BLOCKS.contains(relative.getType())){
 			getRelative(relative, targetBlocks, otherBlocks, depthremain-1);
 		}else{
 			otherBlocks.add(relative);
 		}
 
 		relative = anchor.getRelative(BlockFace.DOWN);
-		if(TARGETS.contains(relative.getType())){
+		if(XRAY_BLOCKS.contains(relative.getType())){
 			getRelative(relative, targetBlocks, otherBlocks, depthremain-1);
 		}else{
 			otherBlocks.add(relative);
@@ -260,7 +187,7 @@ public class XrayIndicator {
 	 * 
 	 * @return xray targets
 	 */
-	public static HashSet<Material> getXrayTargets(){
+	public static HashSet<Material> getXrayBlocks(){
 		
 		
 		HashSet<Material> materials = new HashSet<Material>();

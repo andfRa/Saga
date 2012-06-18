@@ -2,6 +2,7 @@ package org.saga.utility;
 
 import java.util.ArrayList;
 
+import org.saga.messages.GeneralMessages.CustomColour;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.PlayerMessages.ColorCircle;
 
@@ -45,11 +46,11 @@ public class StringBook {
 	/**
 	 * Adds a line.
 	 * 
-	 * @param page page
+	 * @param line line
 	 */
-	public void addLine(String page) {
+	public void addLine(String line) {
 
-		lines.add(page);
+		lines.add(line);
 		
 	}
 	
@@ -106,8 +107,10 @@ public class StringBook {
 				rString.append("\n");
 			}
 			
-			rString.append(messageColor.nextColor());
-			rString.append(lines.get(currentLine));
+			rString.append(CustomColour.processMessage(
+				messageColor.nextColor()
+				+ lines.get(currentLine)
+			));
 			
 			linesLeft--;
 			currentLine ++;

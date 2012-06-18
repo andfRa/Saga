@@ -2,11 +2,12 @@ package org.saga.buildings.signs;
 
 import org.bukkit.block.Sign;
 import org.saga.buildings.Building;
-import org.saga.config.BalanceConfiguration;
+import org.saga.config.AttributeConfiguration;
 import org.saga.config.EconomyConfiguration;
-import org.saga.economy.EconomyMessages;
-import org.saga.messages.PlayerMessages;
-import org.saga.messages.SagaMessages;
+import org.saga.messages.AbilityEffects;
+import org.saga.messages.BuildingMessages;
+import org.saga.messages.EconomyMessages;
+import org.saga.messages.GeneralMessages;
 import org.saga.player.SagaPlayer;
 
 
@@ -14,15 +15,16 @@ public class RespecSign extends BuildingSign{
 
 	
 	/**
-	 * Name for the sign.
+	 * Name for the 
 	 */
 	public static String SIGN_NAME = "=[RESET]=";
 	
 	
-	// Initialization:
+	// Initialisation:
 	/**
-	 * Creates a learning sign.
+	 * Creates a stone 
 	 * 
+	 * @param type transaction type
 	 * @param sign sign
 	 * @param secondLine second line
 	 * @param thirdLine third line
@@ -30,14 +32,14 @@ public class RespecSign extends BuildingSign{
 	 * @param event event that created the sign
 	 * @param building building
 	 */
-	protected RespecSign(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building){
+	private RespecSign(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building){
 	
 		super(sign, SIGN_NAME, secondLine, thirdLine, fourthLine, building);
 		
 	}
 	
 	/**
-	 * Creates the training sign.
+	 * Creates the training 
 	 * 
 	 * @param sign bukkit sign
 	 * @param firstLine first line
@@ -61,31 +63,21 @@ public class RespecSign extends BuildingSign{
 		return SIGN_NAME;
 	}
 	
+
 	/* 
 	 * (non-Javadoc)
 	 * 
-	 * @see org.saga.buildings.signs.BuildingSign#enable()
+	 * @see org.saga.buildings.signs.BuildingSign#getStatus()
 	 */
 	@Override
-	public void enable() {
-
+	public SignStatus getStatus() {
+	
 		
-		super.enable();
+		String attribute = getFirstParameter();
 		
-		Sign sign = getSign();
+		if(!AttributeConfiguration.config().getAttributeNames().contains(attribute)) return SignStatus.INVALIDATED;
 		
-		sign.setLine(1, "stats");
-		
-		if(EconomyConfiguration.config().getRespecCost(BalanceConfiguration.config().maximumLevel) > 0){
-			sign.setLine(2, "for ?" + EconomyMessages.coins());
-		}else{
-			sign.setLine(2, "");
-		}
-		
-		sign.setLine(3, "lclick for info");
-			
-		// Update:
-		sign.update();
+		return SignStatus.ENABLED;
 		
 		
 	}
@@ -93,21 +85,32 @@ public class RespecSign extends BuildingSign{
 	/* 
 	 * (non-Javadoc)
 	 * 
-	 * @see org.saga.buildings.signs.BuildingSign#invalidate()
+	 * @see org.saga.buildings.signs.BuildingSign#getLine(int, org.saga.buildings.signs.BuildingSign.SignStatus)
 	 */
 	@Override
-	public void invalidate() {
+	public String getLine(int index, SignStatus status) {
+	
 		
-		
-		super.invalidate();
-		
-		Sign sign = getSign();
+		switch (status) {
 
-		sign.setLine(1, "-");
-		
-		sign.setLine(2, "");
+			case ENABLED:
 
-		sign.setLine(3, "");
+				if(index == 1) return getFirstParameter();
+				break;
+
+			case DISABLED:
+
+				if(index == 1) return getFirstParameter();
+				break;
+				
+			default:
+				
+				if(index == 1) return "-";
+				break;
+
+		}
+
+		return "";
 		
 		
 	}
@@ -121,61 +124,59 @@ public class RespecSign extends BuildingSign{
 	 */
 	@Override
 	protected void onRightClick(SagaPlayer sagaPlayer) {
-		
 
-		// Permission:
-		if(!getBuilding().canRespec(sagaPlayer)){
-			sagaPlayer.message(SagaMessages.noPermission(getBuilding()));
+		String attribute = getFirstParameter();
+		Integer attributeScore = sagaPlayer.getAttributeScore(attribute);
+		
+		// Already minimum:
+		if(attributeScore <= 0){
+			sagaPlayer.message(BuildingMessages.alreadyRespec(attribute));
 			return;
 		}
-		
+
 		// Enough coins:
-		Double requiredCoins = EconomyConfiguration.config().getRespecCost(sagaPlayer.getLevel());
-		if(requiredCoins > sagaPlayer.getCoins()){
-			sagaPlayer.message(PlayerMessages.coinsNeeded(requiredCoins));
+		Double cost = EconomyConfiguration.config().getRespecCost(attributeScore);
+		if(sagaPlayer.getCoins() < cost){
+			sagaPlayer.message(EconomyMessages.notEnoughCoins(cost, sagaPlayer.getCoins()));
 			return;
 		}
-		
-		boolean classRespec = false;
-		boolean profRespec = false;
-		boolean skillRespec = false;
 
-		if(sagaPlayer.getClazz() != null){
-			sagaPlayer.clearClass();
-			classRespec = true;
-		}
-
-		if(sagaPlayer.getProfession() != null){
-			sagaPlayer.clearProfession();
-			profRespec = true;
-		}
+		// Take coins:
+		sagaPlayer.removeCoins(cost);
+		sagaPlayer.message(GeneralMessages.coinsSpent(cost));
 		
-		if(sagaPlayer.getSkillPoints() > 0){
-			sagaPlayer.clearSkills();
-			skillRespec = true;
-		}
-		
-		if(profRespec || classRespec || skillRespec){
-
-			// Remove coins:
-			sagaPlayer.removeCoins(requiredCoins);
-			
-		}
+		// Reset:
+		sagaPlayer.setAttributeScore(attribute, 0);
 		
 		// Inform:
-		sagaPlayer.info(PlayerMessages.respec(profRespec, classRespec, skillRespec, requiredCoins));
+		sagaPlayer.message(BuildingMessages.respec(attribute));
+		
+		// Play effect:
+		AbilityEffects.playSign(sagaPlayer);
 		
 		
 	}
 	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.buildings.signs.BuildingSign#onLeftClick(org.saga.player.SagaPlayer)
+	 */
 	@Override
 	protected void onLeftClick(SagaPlayer sagaPlayer) {
-
-		sagaPlayer.message(PlayerMessages.respecInfo(sagaPlayer));
 	
+		
+		String attrName = getFirstParameter();
+		Integer attrScore = sagaPlayer.getAbilityScore(attrName);
+		
+		// Cost:
+		Double cost = EconomyConfiguration.config().getRespecCost(attrScore);
+		
+		// Inform:
+		sagaPlayer.message(BuildingMessages.respecCost(attrName, attrScore, cost));
+		
+		
 	}
-	
-	
 	
 	
 }

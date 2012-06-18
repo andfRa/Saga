@@ -2,6 +2,7 @@ package org.saga.statistics;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,14 +11,18 @@ import java.util.HashSet;
 import java.util.Hashtable;
 
 import org.bukkit.Material;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.saga.Clock;
 import org.saga.Clock.HourTicker;
 import org.saga.Saga;
+import org.saga.SagaLogger;
+import org.saga.config.AttributeConfiguration;
 import org.saga.config.BalanceConfiguration;
+import org.saga.config.ChunkGroupConfiguration;
+import org.saga.config.ExperienceConfiguration;
 import org.saga.player.SagaPlayer;
+import org.saga.saveload.Directory;
+import org.saga.saveload.WriterReader;
 import org.saga.utility.MathUtil;
-import org.saga.utility.WriterReader;
 
 import com.google.gson.JsonParseException;
 
@@ -37,25 +42,12 @@ public class StatisticsManager implements HourTicker{
 	public static StatisticsManager manager() {
 		return instance;
 	}
+
 	
 	
-	/**
-	 * Class kills.
-	 */
-	private Hashtable<String, Hashtable<String, Integer>> classKills;
 
 	/**
-	 * Skill upgrades.
-	 */
-	private Hashtable<String, Integer> skillUpgrades;
-
-	/**
-	 * Coins used for upgrades.
-	 */
-	private Hashtable<String, Double> skillUpgradeCoins;
-
-	/**
-	 * Guardian stone breaks.
+	 * Guardian rune res.
 	 */
 	private Integer guardRuneRestores;
 
@@ -64,6 +56,10 @@ public class StatisticsManager implements HourTicker{
 	 */
 	private Integer guardRuneRecharges;
 
+	
+	
+	
+	
 	/**
 	 * Ability usage.
 	 */
@@ -74,6 +70,10 @@ public class StatisticsManager implements HourTicker{
 	 */
 	private Hashtable<String, Double> abilityExp;
 
+	
+	
+	
+	
 	/**
 	 * Ore mining.
 	 */
@@ -83,27 +83,10 @@ public class StatisticsManager implements HourTicker{
 	 * Block data changes.
 	 */
 	private Integer blockDataChanges; 
+
 	
-	/**
-	 * Experience awarded by proficiencies.
-	 */
-	private Hashtable<String, Integer> profExp; 
 	
-	/**
-	 * Players that were awarded proficiency experience.
-	 */
-	private Hashtable<String, HashSet<String>> profExpPlayers; 
-
-	/**
-	 * Players experience.
-	 */
-	private Hashtable<String, Hashtable<String,Double>> exp; 
-
-	/**
-	 * Player levels.
-	 */
-	private Hashtable<String, Integer> playerLevels; 
-
+	
 	/**
 	 * Players sell coins.
 	 */
@@ -131,14 +114,32 @@ public class StatisticsManager implements HourTicker{
 
 	
 	/**
+	 * Player levels.
+	 */
+	private Hashtable<String, Integer> playerLevels; 
+
+	/**
+	 * Player attributes.
+	 */
+	private Hashtable<String, Hashtable<String, Integer>> playerAttributes;
+	
+	/**
+	 * Experience gained.
+	 */
+	private Hashtable<String, Hashtable<String, Double>> expGained;
+	
+	
+
+	
+	/**
 	 * Last date.
 	 */
 	private Long startDate = null;
 	
 	
-	// Initialization:
+	// Initialisation:
 	/**
-	 * Initializes.
+	 * Initialises.
 	 * 
 	 * @param str nothing
 	 */
@@ -158,24 +159,6 @@ public class StatisticsManager implements HourTicker{
 		
 		
 		boolean integrity = true;
-		
-		if(classKills == null){
-			Saga.severe(getClass(), "classKills field failed to initialize", "setting default");
-			classKills = new Hashtable<String, Hashtable<String,Integer>>();
-			integrity=false;
-		}
-		
-		if(skillUpgrades == null){
-			Saga.severe(getClass(), "skillUpgrades field failed to initialize", "setting default");
-			skillUpgrades = new Hashtable<String, Integer>();
-			integrity=false;
-		}
-		
-		if(skillUpgradeCoins == null){
-			Saga.severe(getClass(), "skillUpgradeCoins field failed to initialize", "setting default");
-			skillUpgradeCoins = new Hashtable<String, Double>();
-			integrity=false;
-		}
 		
 		if(startDate == null){
 			Saga.severe(getClass(), "startDate field failed to initialize", "setting default");
@@ -219,27 +202,15 @@ public class StatisticsManager implements HourTicker{
 			integrity=false;
 		}
 		
-		if(profExp == null){
-			Saga.severe(getClass(), "profExp field failed to initialize", "setting default");
-			profExp = new Hashtable<String, Integer>();
-			integrity=false;
-		}
-		
-		if(profExpPlayers == null){
-			Saga.severe(getClass(), "profExpPlayers field failed to initialize", "setting default");
-			profExpPlayers = new Hashtable<String, HashSet<String>>();
-			integrity=false;
-		}
-	
-		if(exp == null){
-			Saga.severe(getClass(), "exp field failed to initialize", "setting default");
-			exp = new Hashtable<String, Hashtable<String,Double>>();
-			integrity=false;
-		}
-		
 		if(playerLevels == null){
-			Saga.severe(getClass(), "playerLevels field failed to initialize", "setting default");
+			SagaLogger.severe(getClass(), "playerLevels");
 			playerLevels = new Hashtable<String, Integer>();
+			integrity=false;
+		}
+
+		if(playerAttributes == null){
+			SagaLogger.severe(getClass(), "playerAttributes");
+			playerAttributes = new Hashtable<String, Hashtable<String,Integer>>();
 			integrity=false;
 		}
 
@@ -273,6 +244,11 @@ public class StatisticsManager implements HourTicker{
 			integrity=false;
 		}
 		
+		if(expGained == null){
+			SagaLogger.nullField(getClass(), "expGained");
+			expGained = new Hashtable<String, Hashtable<String,Double>>();
+		}
+		
 		return integrity;
 		
 		
@@ -285,11 +261,6 @@ public class StatisticsManager implements HourTicker{
 	public void reset() {
 
 		
-		classKills = new Hashtable<String, Hashtable<String,Integer>>();
-		
-		skillUpgrades = new Hashtable<String, Integer>();
-		skillUpgradeCoins = new Hashtable<String, Double>();
-		
 		guardRuneRestores = 0;
 		guardRuneRecharges = 0;
 		
@@ -301,11 +272,8 @@ public class StatisticsManager implements HourTicker{
 		xrayStatistics = new Hashtable<String, Hashtable<Material,Integer>>();
 		blockDataChanges = 0;
 		
-		profExp = new Hashtable<String, Integer>();
-		profExpPlayers = new Hashtable<String, HashSet<String>>();
-		
-		exp = new Hashtable<String, Hashtable<String,Double>>();
 		playerLevels = new Hashtable<String, Integer>();
+		playerAttributes = new Hashtable<String, Hashtable<String,Integer>>();
 		
 		playerBuyCoins = new Hashtable<String, Hashtable<Material,Double>>();
 		playerSellCoins = new Hashtable<String, Hashtable<Material,Double>>();
@@ -314,6 +282,7 @@ public class StatisticsManager implements HourTicker{
 		
 		foundVeins = new Hashtable<String, Hashtable<Material,Integer>>();
 		
+		expGained = new Hashtable<String, Hashtable<String,Double>>();
 		
 	}
 
@@ -340,90 +309,9 @@ public class StatisticsManager implements HourTicker{
 		
 		
 	}
-	
-	
-	// Kills:
-	/**
-	 * Adds a class kill.
-	 * 
-	 * @param attacker attacker
-	 * @param defender defender
-	 */
-	private void addClassKill(String attacker, String defender) {
-
-		Hashtable<String, Integer> allKills = classKills.get(attacker);
-		if(allKills == null) allKills = new Hashtable<String, Integer>();
-		classKills.put(attacker, allKills);
-		
-		Integer kills = allKills.get(defender);
-		if(kills == null) kills = 0;
-		
-		kills++;
-		
-		allKills.put(defender, kills);
-		
-	}
-	
-	/**
-	 * Gets class kills.
-	 * 
-	 * @return class kills
-	 */
-	public Hashtable<String, Hashtable<String, Integer>> getClassKills() {
-		return classKills;
-	}
-	
-	/**
-	 * Gets the kills by the class.
-	 * 
-	 * @param attacker attacker class
-	 * @param defender defender class
-	 * @return kills
-	 */
-	public Integer getClazzKills(String attacker, String defender) {
-
-		Hashtable<String, Integer> allKills = classKills.get(attacker);
-		if(allKills == null) return 0;
-		
-		Integer kills = allKills.get(defender);
-		if(kills == null) return 0;
-		
-		return kills;
-		
-	}
 
 	
-	// Skills:
-	/**
-	 * Gets skill upgrades.
-	 * 
-	 * @param skillName skill name
-	 * @return upgrades
-	 */
-	public Integer getSkillUpgrades(String skillName) {
-		
-		Integer value = skillUpgrades.get(skillName);
-		if(value == null) value = 0;
-		
-		return value;
-		
-	}
-	
-	/**
-	 * Gets skill upgrade coin costs.
-	 * 
-	 * @param skillName skill name
-	 * @return upgrade coin costs
-	 */
-	public Double getSkillUpgradeCoins(String skillName) {
-		
-		Double value = skillUpgradeCoins.get(skillName);
-		if(value == null) value = 0.0;
-		
-		return value;
-		
-	}
-	
+
 	
 	// Abilities:
 	/**
@@ -477,7 +365,9 @@ public class StatisticsManager implements HourTicker{
 	}
 	
 	
-	// Xray:
+	
+	
+	// X-ray:
 	/**
 	 * Adds ore mined.
 	 * 
@@ -517,6 +407,9 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 	
+	
+	
+	
 	// Age:
 	/**
 	 * Calculates the milliseconds the statistics are active.
@@ -531,56 +424,6 @@ public class StatisticsManager implements HourTicker{
 	
 
 	// Events:
-	/**
-	 * Called when a player kills a player.
-	 * 
-	 * @param attacker attacker
-	 * @param defender defender
-	 */
-	public void onPlayerKillPlayer(SagaPlayer attacker, SagaPlayer defender, EntityDeathEvent event) {
-
-		
-		// Classes:
-		String attackerClass = "none";
-		String defenderClass = "none";
-
-		if(attacker.getClazz() != null){
-			attackerClass = attacker.getClazz().getName();
-		}
-
-		if(defender.getClazz() != null){
-			defenderClass = defender.getClazz().getName();
-		}
-		
-		addClassKill(attackerClass, defenderClass);
-		
-		
-	}
-	
-	/**
-	 * Called when a player upgrades his skill.
-	 * 
-	 * @param skillName skill name
-	 * @param levelCost level cost
-	 * @param coinCost coin cost
-	 */
-	public void onSkillUpgrade(String skillName, Double coinCost) {
-
-		
-		// Upgrades:
-		Integer upgrades = skillUpgrades.get(skillName);
-		if(upgrades == null) upgrades = 0;
-		skillUpgrades.put(skillName, upgrades + 1);
-		
-		// Upgrade coin costs:
-		Double upgradeCoins = skillUpgradeCoins.get(skillName);
-		if(upgradeCoins == null) upgradeCoins = 0.0;
-		skillUpgradeCoins.put(skillName, upgradeCoins + coinCost);
-		
-		
-	}
-	
-
 	/**
 	 * Called when a guardian stone restored items.
 	 * 
@@ -646,23 +489,8 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 
-	/**
-	 * Called when experience is awarded for skill block breaking.
-	 * 
-	 * @param skillName ability name
-	 * @param exp experience awarded
-	 * @param sagaPlayer player
-	 */
-	public void onSkillBlockExp(String skillName, Integer exp, SagaPlayer sagaPlayer) {
-
-		profExp.put(skillName, getBlockSkillExperience(skillName) + exp);
-		
-		HashSet<String> players = getBlockSkillPlayers(skillName);
-		players.add(sagaPlayer.getName());
-		profExpPlayers.put(skillName, players);
-		
-	}
-
+	
+	
 	
 	// X-ray:
 	/**
@@ -707,187 +535,11 @@ public class StatisticsManager implements HourTicker{
 	public Integer getBlockDataChanges() {
 		return blockDataChanges;
 	}
+
 	
-	/**
-	 * Gets the experience awarded for block breaks.
-	 * 
-	 * @param name skill name
-	 * @return experience awarded
-	 */
-	public Integer getBlockSkillExperience(String name) {
-		
-		Integer exp = profExp.get(name);
-		if(exp == null) exp = 0;
-		
-		return exp;
-		
-	}
-	
-	/**
-	 * Gets all skills
-	 * 
-	 * @return
-	 */
-	public ArrayList<String> getBlockSkills() {
-
-		return new ArrayList<String>(profExp.keySet());
-		
-	}
-	
-	/**
-	 * Gets all players that used a block skill.
-	 * 
-	 * @return players who used a block skill.
-	 */
-	public HashSet<String> getBlockSkillPlayers(String skillName) {
-
-		HashSet<String> players = profExpPlayers.get(skillName);
-		if(players == null) players = new HashSet<String>();
-		
-		return players;
-		
-	}
-
-	/**
-	 * Counts all players that used a block skill.
-	 * 
-	 * @return count of players who used a block skill.
-	 */
-	public Integer countBlockSkillPlayers(String skillName) {
-
-		HashSet<String> players = profExpPlayers.get(skillName);
-		if(players == null) return 0;
-		
-		return players.size();
-		
-	}
-	
-	
-	// Experience:
-	/**
-	 * Called when a player receives experience from a source.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @param source source
-	 * @param amount amount received
-	 */
-	public void onExp(SagaPlayer sagaPlayer, String source, Double amount) {
-
-		
-		Hashtable<String, Double> playerExp = exp.get(sagaPlayer.getName());
-		if(playerExp == null){
-			playerExp = new Hashtable<String, Double>();
-			exp.put(sagaPlayer.getName(), playerExp);
-		}
-		
-		Double sourceExp = playerExp.get(source);
-		if(sourceExp == null) sourceExp = 0.0; 
-		
-		sourceExp += amount;
-		playerExp.put(source, sourceExp);
-		
-		
-	}
-	
-	/**
-	 * Called when a player receives experience from a source.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @param proficiency proficiency
-	 * @param source source
-	 * @param amount amount received
-	 */
-	public void onExp(SagaPlayer sagaPlayer, String proficiency, String source, Double amount) {
-		
-		onExp(sagaPlayer, proficiency + "(" + source + ")", amount);
-		
-	}
-	
-	/**
-	 * Gets the experience for the given source.
-	 * 
-	 * @param source source
-	 * @return experience
-	 */
-	public Double getSourceExp(String source) {
-
-		
-		Collection<Hashtable<String, Double>> souceExps = exp.values();
-		
-		Double exp = 0.0;
-		
-		for (Hashtable<String, Double> souceExp : souceExps) {
-			
-			Double expSinge = souceExp.get(source);
-			if(expSinge != null) exp += expSinge;
-			
-		}
-		
-		return exp;
-
-		
-	}
-	
-	/**
-	 * Counts the users for the given experience source.
-	 * 
-	 * @param source source
-	 * @return users count
-	 */
-	public Integer countExpUsers(String source) {
-
-		
-		Collection<Hashtable<String, Double>> souceExps = exp.values();
-		
-		Integer sources = 0;
-		
-		for (Hashtable<String, Double> souceExp : souceExps) {
-			
-			if(souceExp.get(source) != null) sources += 1;
-			
-		}
-		
-		return sources;
-
-		
-	}
-	
-	/**
-	 * Gets all experience sources.
-	 * 
-	 * @return all experience sources
-	 */
-	public HashSet<String> getExpSources() {
-
-		
-		HashSet<String> sources = new HashSet<String>();
-		
-		Collection<Hashtable<String, Double>> souceExps = exp.values();
-		
-		for (Hashtable<String, Double> souceExp : souceExps) {
-			
-			sources.addAll(new HashSet<String>(souceExp.keySet()));
-			
-		}
-		
-		return sources;
-		
-		
-	}
 	
 	
 	// Levels:
-	/**
-	 * Called on level change.
-	 * 
-	 * @param sagaPlayer saga player
-	 */
-	public void onLevelChange(SagaPlayer sagaPlayer) {
-
-		playerLevels.put(sagaPlayer.getName(), sagaPlayer.getLevel());
-
-	}
-	
 	/**
 	 * Gets the histogram representing levels.
 	 * 
@@ -901,7 +553,7 @@ public class StatisticsManager implements HourTicker{
 		
 		if(width < 1) width = 1;
 		
-		Double step = (width.doubleValue() - 1.0) / BalanceConfiguration.config().maximumLevel.doubleValue();
+		Double step = (width.doubleValue() - 1.0) / ExperienceConfiguration.config().maximumLevel.doubleValue();
 
 		Double[] histogram = new Double[width];
 		for (int i = 0; i < histogram.length; i++) {
@@ -911,7 +563,7 @@ public class StatisticsManager implements HourTicker{
 		Collection<Integer> levels = playerLevels.values();
 		for (Integer level : levels) {
 			
-			if(level > BalanceConfiguration.config().maximumLevel) continue;
+			if(level > ExperienceConfiguration.config().maximumLevel) continue;
 			
 			Integer index = new Double(level.doubleValue() * step).intValue();
 			histogram[index] = histogram[index] + 1;
@@ -1114,6 +766,8 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 	
+
+	
 	
 	// X-ray indicator:
 	public void addFoundVein(String name, Material material) {
@@ -1226,6 +880,148 @@ public class StatisticsManager implements HourTicker{
 	}
 	
 	
+	
+	
+	// Level and attributes:
+	public void setLevel(SagaPlayer sagaPlayer) {
+
+		playerLevels.put(sagaPlayer.getName(), sagaPlayer.getLevel());
+
+	}
+	
+	public void setAttribute2(SagaPlayer sagaPlayer, String attribute, Integer score) {
+
+		
+		Hashtable<String, Integer> players = playerAttributes.get(attribute);
+		if(players == null){
+			players = new Hashtable<String, Integer>();
+			playerAttributes.put(attribute, players);
+		}
+		
+		players.put(sagaPlayer.getName(), score);
+		
+		
+	}
+	
+	public void setAttributes(SagaPlayer sagaPlayer) {
+
+		
+		ArrayList<String> attributes = AttributeConfiguration.config().getAttributeNames();
+		for (String attribute : attributes) {
+			
+			Integer score = sagaPlayer.getAttributeScore(attribute);
+			if(score <= 0) continue;
+			setAttribute2(sagaPlayer, attribute, score);
+			
+		}
+		
+		
+	}
+	
+	public Integer getAttributeScoreTotal(String attribute) {
+
+		
+		Hashtable<String, Integer> players = playerAttributes.get(attribute);
+		if(players == null) players = new Hashtable<String, Integer>();
+		
+		Integer totalScore = 0;
+		Collection<Integer> scores = players.values();
+		for (Integer score : scores) {
+			totalScore += score;
+		}
+		
+		return totalScore;
+		
+		
+	}
+	
+	
+	// Experience:
+	public void addExp(String category, String subcategory, Double amount) {
+
+		
+		Hashtable<String, Double> subcats = expGained.get(category);
+		if(subcats == null){
+			subcats = new Hashtable<String, Double>();
+			expGained.put(category, subcats);
+		}
+		
+		Double exp = subcats.get(subcategory);
+		if(exp == null) exp = 0.0;
+
+		exp+= amount;
+		subcats.put(subcategory, exp);
+		
+
+	}
+	
+	public Hashtable<String, Hashtable<String, Double>> getExpGained() {
+		return new Hashtable<String, Hashtable<String,Double>>(expGained);
+	}
+	
+	public Double getExpGained(String category) {
+		
+		
+		Hashtable<String, Double> subcategs = expGained.get(category);
+		if(subcategs == null) subcategs = new Hashtable<String, Double>();
+
+		Double exp = 0.0;
+		Collection<Double> exps = subcategs.values();
+		for (Double amount : exps) {
+			exp += amount;
+		}
+		
+		return exp;
+		
+		
+	}
+	
+	public Double getExpGained(String category, String subcategory) {
+		
+		
+		Hashtable<String, Double> subcateg = expGained.get(category);
+		if(subcateg == null) subcateg = new Hashtable<String, Double>();
+
+		Double exp = subcateg.get(subcategory);
+		if(exp == null) exp = 0.0;
+		
+		return exp;
+		
+		
+	}
+	
+	public ArrayList<String> getExpCategories() {
+
+		
+		ArrayList<String> sortedCategs = new ArrayList<String>(expGained.keySet());
+		Collections.sort(sortedCategs);
+		
+		return sortedCategs;
+		
+		
+	}
+	
+	public ArrayList<String> getExpSubcategories() {
+
+		
+		HashSet<String> subcategs = new HashSet<String>();
+		
+		Collection<Hashtable<String, Double>> allSubcategs = expGained.values();
+		for (Hashtable<String, Double> subcateg : allSubcategs) {
+			subcategs.addAll(subcateg.keySet());
+		}
+		
+		ArrayList<String> sortedSubcategs = new ArrayList<String>(subcategs);
+		Collections.sort(sortedSubcategs);
+		
+		return sortedSubcategs;
+		
+		
+	}
+
+	
+	
+	
 	// Load unload:
 	/**
 	 * Loads the manager.
@@ -1244,7 +1040,7 @@ public class StatisticsManager implements HourTicker{
 		StatisticsManager manager;
 		try {
 			
-			manager = WriterReader.readLastStatistics();
+			manager = WriterReader.read(Directory.STATISTICS, "last" , StatisticsManager.class);
 			
 		} catch (FileNotFoundException e) {
 			
@@ -1292,7 +1088,7 @@ public class StatisticsManager implements HourTicker{
 		
 		try {
 			
-			WriterReader.writeLastStatistics(instance);
+			WriterReader.write(Directory.STATISTICS, "last", instance);
 			
 		} catch (IOException e) {
 			
@@ -1314,12 +1110,19 @@ public class StatisticsManager implements HourTicker{
 		
 		try {
 			
-			WriterReader.writeStatisticsArchive(instance, GregorianCalendar.getInstance());
+			SimpleDateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy");
+			String name = dateFormat.format(GregorianCalendar.getInstance().getTime());
+			
+			WriterReader.write(Directory.STATISTICS, name, instance);
 			
 		} catch (IOException e) {
 			
-			Saga.severe(StatisticsManager.class, "write failed", "ignoring write");
-			Saga.info("Write failure cause:" + e.getClass().getSimpleName() + ":" + e.getMessage());
+			SagaLogger.severe(ChunkGroupConfiguration.class, "failed to read statistics: " + e.getClass().getSimpleName());
+			SagaLogger.info("message: " + e.getMessage());
+			
+			SagaLogger.severe(StatisticsManager.class, "write failed ");
+			SagaLogger.info("Write failure cause:" + e.getClass().getSimpleName() + ":" + e.getMessage());
+			e.printStackTrace();
 			
 		}
 		

@@ -26,7 +26,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 import org.saga.Saga;
 import org.saga.buildings.Building;
-import org.saga.listeners.events.SagaPvpEvent;
+import org.saga.buildings.Home;
+import org.saga.listeners.events.SagaBuildEvent;
+import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.messages.BuildingMessages;
 import org.saga.messages.SagaMessages;
 import org.saga.player.SagaPlayer;
@@ -66,7 +68,7 @@ public class SagaChunk {
     transient private ChunkGroup chunkGroup = null;
     
     
-    // Initialization:
+    // Initialisation:
     /**
      * Creates a saga chunk from a bukkit chunk.
      * 
@@ -124,25 +126,12 @@ public class SagaChunk {
 		
 		// Check chunk group:
 		this.chunkGroup = chunkGroup;
-//		if(chunkGroup == null){
-//			Saga.severe(this + " saga chunk chunkGroup field not initialized.");
-//			integrity = false;
-//		}
 		
 		// Properties:
 		
 		return integrity;
 		
 		
-	}
-	
-	/**
-	 * Sets the chunk group.
-	 * 
-	 * @param chunkGroup chunk group
-	 */
-	void s2etChunkGroup(ChunkGroup chunkGroup) {
-		this.chunkGroup = chunkGroup;
 	}
 	
 	
@@ -415,6 +404,7 @@ public class SagaChunk {
 		if(bld != null){
 			bld.removeSagaChunk();
 			bld.disable();
+			bld.removeSigns();
 		}
 		
 		this.bld = null;
@@ -680,7 +670,7 @@ public class SagaChunk {
 	 * 
 	 * @param event event
 	 */
-	public void onPvP(SagaPvpEvent event){
+	public void onPvP(SagaEntityDamageEvent event){
 		
 
 		// Forward to chunk group:
@@ -768,43 +758,6 @@ public class SagaChunk {
 	 * @param sagaPlayer saga player
 	 */
 	public void onBlockPlace(BlockPlaceEvent event, SagaPlayer sagaPlayer) {
-
-
-		// Canceled:
-		if(event.isCancelled()) return;
-		
-		// Forward to chunk group:
-		getChunkGroup().onBlockPlace(event, sagaPlayer, this);
-		
-		if(event.isCancelled()) return;
-		
-		// Forward to building:
-		if(bld != null) bld.onBlockPlace(event, sagaPlayer);
-
-		if(event.isCancelled()) return;
-		
-		// Build permission:
-		if(bld != null){
-			
-			if(bld.canBuild(sagaPlayer)){
-				return;
-			}else{
-				sagaPlayer.message(SagaMessages.noPermission(bld));
-				event.setCancelled(true);
-				return;
-			}
-			
-		}else{
-			
-			if (chunkGroup != null && !chunkGroup.canBuild(sagaPlayer)){
-				sagaPlayer.message(SagaMessages.noPermission(chunkGroup));
-				event.setCancelled(true);
-				event.setBuild(false);
-				return;
-			}
-			
-		}
-		
 		
 	}
 	
@@ -815,23 +768,11 @@ public class SagaChunk {
 	 * @param sagaPlayer saga player
 	 */
 	public void onBlockBreak(BlockBreakEvent event, SagaPlayer sagaPlayer) {
+		
 
-
-		// Canceled:
-		if(event.isCancelled()) return;
-
-		// Forward to chunk group:
-		getChunkGroup().onBlockBreak(event, sagaPlayer, this);
-
-		// Canceled:
-		if(event.isCancelled()) return;
-
-		// Forward to building:
+		// Sign:
 		if(bld != null){
 			
-			bld.onBlockBreak(event, sagaPlayer);
-			
-			// Sign:
 			Block targetBlock = event.getBlock();
 			if((targetBlock.getState() instanceof Sign)){
 						
@@ -841,26 +782,40 @@ public class SagaChunk {
 			
 		}
 
-		if(event.isCancelled()) return;
 		
-		// Build permission:
-		if(bld != null){
+	}
+
+	/**
+	 * Called when a block is broken in the chunk.
+	 * 
+	 * @param event event
+	 * @param sagaPlayer saga player
+	 */
+	public void onBuild(SagaBuildEvent event) {
+
+		
+		SagaPlayer sagaPlayer = event.getSagaPlayer();
+		
+		// Home:
+		if(bld instanceof Home && bld.canBuild(sagaPlayer)){
+			return;
+		}
+		
+		// Building:
+		if(bld != null && !bld.canBuild(sagaPlayer)){
 			
-			if(bld.canBuild(sagaPlayer)){
-				return;
-			}else{
-				sagaPlayer.message(SagaMessages.noPermission(bld));
-				event.setCancelled(true);
-				return;
-			}
+			sagaPlayer.message(SagaMessages.noPermission(bld));
+			event.cancel();
+			return;
+
+		}
+		
+		// Chunk group:
+		else if (chunkGroup != null && !chunkGroup.canBuild(sagaPlayer)){
 			
-		}else{
-			
-			if (chunkGroup != null && !chunkGroup.canBuild(sagaPlayer)){
-				sagaPlayer.message(SagaMessages.noPermission(chunkGroup));
-				event.setCancelled(true);
-				return;
-			}
+			sagaPlayer.message(SagaMessages.noPermission(chunkGroup));
+			event.cancel();
+			return;
 			
 		}
 		
@@ -961,6 +916,25 @@ public class SagaChunk {
 
 		
 	}
+
+	
+	// World events:
+	/**
+	 * Called when the chunk loads.
+	 */
+	public void onChunkLoad() {
+
+		
+		// Refresh all signs:
+		if(bld != null){
+			
+			bld.refreshSigns();
+			
+		}
+
+		
+	}
+
 
 	
     // Commands:

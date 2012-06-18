@@ -1,27 +1,21 @@
 package org.saga.abilities;
 
-
-import java.util.HashSet;
-
-import org.bukkit.Effect;
 import org.bukkit.Material;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Projectile;
-import org.bukkit.event.block.BlockDamageEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.Saga;
-import org.saga.abilities.AbilityDefinition.ActivationType;
 import org.saga.config.AbilityConfiguration;
-import org.saga.config.AbilityConfiguration.InvalidAbilityException;
-import org.saga.messages.StatsMessages;
+import org.saga.config.ExperienceConfiguration;
+import org.saga.exceptions.InvalidAbilityException;
+import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaInteractEntityEvent;
+import org.saga.messages.AbilityMessages;
 import org.saga.player.SagaPlayer;
-import org.saga.utility.SagaCustomSerialization;
+import org.saga.saveload.SagaCustomSerialization;
+import org.saga.statistics.StatisticsManager;
 
 public abstract class Ability extends SagaCustomSerialization implements SecondTicker{
 
@@ -45,26 +39,33 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 * Cooldown.
 	 */
 	private Integer cooldown;
-	
-	/**
-	 * True if the clock is enabled.
-	 */
-	transient private boolean clockEnabled;
-	
+
 	/**
 	 * Saga player.
 	 */
 	transient private SagaPlayer sagaPlayer = null;
-	
+
 	/**
-	 * Last triggered cooldown.
+	 * Clock is enabled if true.
 	 */
-	transient private Integer triggeredCooldown;
+	transient private boolean clock;
 	
-	
-	// Initialization:
 	/**
-	 * Initializes using definition.
+	 * Cooldown last value.
+	 */
+	transient private Integer lastCooldown;
+	
+	
+	// Initialisation:
+	/**
+	 * Used by gson.
+	 * 
+	 */
+	public Ability() {
+	}
+	
+	/**
+	 * Initialises using definition.
 	 * 
 	 * @param definition ability definition
 	 */
@@ -74,17 +75,11 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		this.name = definition.getName();
 		this.cooldown = 0;
 		this.active = 0;
-		this.triggeredCooldown = -1;
+		this.clock = false;
+		this.lastCooldown = -1;
 		
 	}
 
-	/**
-	 * Used by gson.
-	 * 
-	 */
-	public Ability() {
-	}
-	
 	/**
 	 * Goes trough all the fields and makes sure everything has been set after gson load.
 	 * If not, it fills the field with defaults.
@@ -99,7 +94,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		
 		if (name == null) {
 			Saga.severe(this, "name field failed to initialize", "settin default");
-			name = getStaticName();
+			name = "<unnamed ability>";
 			integrity = false;
 		}
 		
@@ -121,271 +116,19 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		}
 		
 		// Transient:
-		clockEnabled = false;
+		clock = false;
 		if(cooldown > 0 || active > 0){
 			startClock();
 		}
-		triggeredCooldown = -1;
+		
+		lastCooldown = -1;
 		
 		return integrity;
 		
 
 	}
 	
-
-	// Activation:
-	/**
-	 * Starts activate.
-	 * 
-	 * @param active activate
-	 */
-	protected void activate() {
-		
-
-		this.active = getDefinition().getActiveFor(getSkillLevel());
-		
-		// Start clock:
-		if(!isClockEnabled() && active > 0){
-			startClock();
-		}
-
-		
-	}
-
-	/**
-	 * Deactivates the ability.
-	 * 
-	 */
-	public void deactivate() {
-
-		this.active = 0;
-
-	}
-
-	/**
-	 * Gets the time the ability is active for.
-	 * 
-	 * @return ability active time
-	 */
-	public Integer getActive() {
-		return active;
-	}
 	
-	/**
-	 * Checks if the ability is on cooldown.
-	 * 
-	 * @return true if on cooldown
-	 */
-	public boolean isActive() {
-		
-		// Always active:
-		ActivationType type = getDefinition().getActivationType();
-		if(type.equals(ActivationType.INSTANT) || type.equals(ActivationType.PASSIVE)) return true;
-		
-		return active > 0;
-		
-	}
-	
-	/**
-	 * Gets the activation type.
-	 * 
-	 * @return activation type
-	 */
-	public ActivationType getActivationType() {
-		return definition.getActivationType();
-	}
-	
-	
-	// Cooldown:
-	/**
-	 * Starts cooldown.
-	 * 
-	 * @param cooldown cooldown
-	 */
-	protected void startCooldown(Integer cooldown) {
-		
-		this.cooldown = cooldown;
-		
-		// Start clock:
-		if(!isClockEnabled() && cooldown > 0){
-			startClock();
-		}
-		
-	}
-
-	/**
-	 * Starts the cooldown.
-	 * 
-	 */
-	protected void startCooldown() {
-
-		startCooldown(definition.getCooldown(getSkillLevel()));
-
-	}
-	
-	/**
-	 * Checks if the ability is on cooldown.
-	 * 
-	 * @return true if on cooldown
-	 */
-	public boolean isOnCooldown() {
-		return cooldown > 0;
-	}
-	
-	/**
-	 * Gets the cooldown.
-	 * 
-	 * @return cooldown
-	 */
-	public Integer getCooldown() {
-		return cooldown;
-	}
-
-	/**
-	 * Gets the total cooldown.
-	 * 
-	 * @return total cooldown
-	 */
-	public Integer getTotalCooldown() {
-		return definition.getCooldown(getSkillLevel());
-	}
-
-	
-	// Material usage:
-	/**
-	 * Checks if there is enough materials to use the ability.
-	 * 
-	 * @return true can be used
-	 */
-	public boolean checkUsageMaterials() {
-		
-		
-		Material usedMaterial = getUsedMaterial();
-		Integer usedAmount = getAbsoluteUsedAmount();
-		
-		if(usedMaterial.equals(Material.AIR) || usedAmount == 0){
-			return true;
-		}
-		
-		return sagaPlayer.getAmount(usedMaterial) >= usedAmount;
-		
-		
-	}
-	
-	/**
-	 * Uses the required materials.
-	 * 
-	 */
-	public void useMaterials() {
-
-		
-		Integer amount = definition.getUsedAmount(getSkillLevel());
-		Material material = definition.getUsedMaterial();
-		
-		// Nothing to remove.
-		if(material.equals(Material.AIR) || amount == 0){
-			return;
-		}
-		
-		getSagaPlayer().removeItem(new ItemStack(material, amount));
-		
-		
-	}
-
-	/**
-	 * Gets the usedMaterial.
-	 * 
-	 * @return the usedMaterial
-	 */
-	public Material getUsedMaterial() {
-		return definition.getUsedMaterial();
-	}
-
-	/**
-	 * Gets the absolute amount of used material.
-	 * 
-	 * @return amount of used material
-	 */
-	public Integer getAbsoluteUsedAmount() {
-		return definition.getAbsoluteUsedAmount(getSkillLevel());
-	}
-
-	
-	// Inform:
-	/**
-	 * Informs cooldown.
-	 * 
-	 */
-	protected void informCooldown() {
-
-		
-		// Stop cooldown inform spam and and for passive abilities:
-		Integer cooldown = getCooldown();
-		if(cooldown == this.triggeredCooldown || getActivationType() == ActivationType.PASSIVE) return;
-		
-		triggeredCooldown = cooldown;
-		
-		sagaPlayer.message(StatsMessages.onCooldown(this));
-
-		
-	}
-	
-	/**
-	 * Informs cooldown end.
-	 * 
-	 */
-	protected void informCooldownEnd() {
-
-		sagaPlayer.message(StatsMessages.cooldownEnd(this));
-		
-		sagaPlayer.playEffect(Effect.CLICK1, 0);
-		
-	}
-
-	/**
-	 * Informs that the ability is already activated.
-	 * 
-	 */
-	protected void informAlreadyActive() {
-
-		sagaPlayer.message(StatsMessages.alreadyActive(this));
-		
-	}
-
-	/**
-	 * Informs that the ability was activated.
-	 * 
-	 */
-	protected void informActivated() {
-
-		sagaPlayer.message(StatsMessages.activated(this));
-		
-	}
-	
-	/**
-	 * Informs that the ability was deactivated.
-	 * 
-	 */
-	protected void informDeactivated() {
-
-		sagaPlayer.message(StatsMessages.deactivated(this));
-		
-		sagaPlayer.playEffect(Effect.CLICK2, 0);
-		
-	}
-	
-	/**
-	 * Informs that there isn't enough materials.
-	 * 
-	 */
-	protected void informNotEnoughMaterials() {
-		
-		Material usedMaterial = getUsedMaterial();
-		Integer usedAmount = getAbsoluteUsedAmount();
-		
-		sagaPlayer.message(StatsMessages.insufficientMaterials(this, usedMaterial, usedAmount));
-		
-	}
 	
 	
 	// Clock:
@@ -397,78 +140,38 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		
 		Clock.clock().registerSecondTick(this);
 		
-		clockEnabled = true;
+		clock = true;
 		
 	}
-	
-	/**
-	 * Stops the clock.
-	 * 
-	 */
-	private void stopClock() {
-		
-		Clock.clock().unregisterSecondTick(this);
-		
-		clockEnabled = false;
-		
-	}
-	
-	/**
-	 * Checks if the clock is enables.
-	 * 
-	 * @return true if enabled
-	 */
-	public boolean isClockEnabled() {
-		return clockEnabled;
-	}
-	
+
 	/* 
 	 * (non-Javadoc)
 	 * 
 	 * @see org.saga.Clock.SecondTicker#clockSecondTick()
 	 */
 	@Override
-	public void clockSecondTick() {
+	public boolean clockSecondTick() {
 		
-
-		// Cooldown:
-		if(cooldown > 0){
-			cooldown --;
-			
-			// Inform cooldown:
-			if(cooldown <= 0){
-				
-				informCooldownEnd();
-			
-			}
-			
+		
+		if(cooldown == 1){
+			getSagaPlayer().message(AbilityMessages.cooldownEnd(this));
 		}
 		
-		// Active:
-		if(active > 0){
-			
-			active --;
-
-			// Deactivate:
-			if(active <= 0){
-				
-				handleDeactivate();
-				
-			}
-			
-		}
+		if(cooldown > 0) cooldown --;
+		if(active > 0) active --;
 		
 		// Stop clock:
 		if(cooldown <= 0 && active <= 0){
-				
-			stopClock();
-			
+			clock = false;
+			return false;
+		}else{
+			return true;
 		}
-		
-		
 		
 	}
 
+	
+	
 	
 	// Interaction:
 	/**
@@ -488,16 +191,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	public String getName() {
 		return name;
 	}
-	
-	/**
-	 * Gets the static ability name
-	 * 
-	 * @return static ability name
-	 */
-	public String getStaticName() {
-		return getClass().getSimpleName().replaceAll("(\\p{Ll})(\\p{Lu})","$1 $2").toLowerCase();
-	}
-	
+
 	/**
 	 * Sets the player.
 	 * 
@@ -519,550 +213,306 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	}
 
 	/**
-	 * Returns the skill.
+	 * Gets the effective ability score.
+	 * Lowers the level until it meets the requirements.
 	 * 
-	 * @return skill
+	 * @return ability score, 0 if the requirements can't be met
 	 */
-	public Integer getSkillLevel() {
+	public Integer getEffectiveScore() {
+
+		int max = sagaPlayer.getAbilityScore(getName());
 		
-		HashSet<String> baseSkills = getDefinition().getBaseSkills();
-		return getSagaPlayer().getModifiedSkillMultiplier(baseSkills);
+		for (int abilityLevel = max; abilityLevel >= 0; abilityLevel--) {
+		
+			if(definition.checkAttributes(sagaPlayer, abilityLevel)) return abilityLevel;
+			
+		}
+		
+		return 0;
+
 		
 	}
 	
-	
-	// Experience:
 	/**
-	 * Awards experience for usage.
+	 * Gets the maximum ability score.
 	 * 
-	 * @param expval experience value
-	 * @return experience awarded
+	 * @return ability score
 	 */
-	public Double awardExperience(Integer expval) {
+	public Integer getScore() {
+
+		return sagaPlayer.getAbilityScore(getName());
+
+	}
+
+	/**
+	 * Gets the active.
+	 * 
+	 * @return the active
+	 */
+	public Integer getActive() {
+		return active;
+	}
+
+	/**
+	 * Gets the cooldown.
+	 * 
+	 * @return the cooldown
+	 */
+	public Integer getCooldown() {
 	
-		Double exp = getDefinition().getExpReward(expval);
+	
+		return cooldown;
+	}
+
+	/**
+	 * Gets the total cooldown.
+	 * 
+	 * @return the total cooldown
+	 */
+	public Integer getTotalCooldown() {
+		return getDefinition().getCooldown(getEffectiveScore());
+	}
+
+	/**
+	 * Awards exp for ability usage.
+	 * 
+	 * @param value ability dependent value
+	 * @return exp awarded
+	 */
+	public Double awardExp(Integer value) {
+
+		Double exp = ExperienceConfiguration.config().getExp(this, value);
+		sagaPlayer.awardExp(exp);
 		
-		getSagaPlayer().onAbilityExp(this, sagaPlayer.matchProficiency(this), exp);
+		// Statistics:
+		StatisticsManager.manager().addExp("ability", getName(), exp);
 		
 		return exp;
-		
+
 	}
-
-	/**
-	 * Awards experience for usage.
-	 * 
-	 * @return experience awarded
-	 */
-	public Double awardExperience() {
-
-		return awardExperience(0);
-		
-	}
-
 	
-	// Ability usage:
+	
+	
+	// Trigger handling:
 	/**
-	 * Called on activation.
+	 * Uses the required items.
 	 * 
-	 * @return activated if true
 	 */
-	public boolean handleActivate() {
+	public void useItems() {
+
+		
+		Material material = definition.getUsedItem();
+		Integer amount = definition.getUsedAmount(getEffectiveScore());
+		
+		// Nothing to remove.
+		if(material.equals(Material.AIR) || amount == 0) return;
+		
+		getSagaPlayer().removeItem(material, amount);
 		
 		
-		// Activate:
-		switch (definition.getActivationType()) {
+	}
+	
+	/**
+	 * Uses the required items.
+	 * 
+	 * @param material used material
+	 * @param amount used amount
+	 */
+	public void useItems(Material material, Integer amount) {
+
 		
-		case INSTANT:
+		// Nothing to remove.
+		if(material.equals(Material.AIR) || amount == 0) return;
+		
+		getSagaPlayer().removeItem(new ItemStack(material, amount));
+		
+		
+	}
+	
+	/**
+	 * Checks if the ability can be activated.
+	 * 
+	 * @return true if can be activated
+	 */
+	public boolean checkActivation() {
+
+		PlayerInventory inventory = sagaPlayer.getPlayer().getInventory();
+		
+		ItemStack itemHand = inventory.getItemInHand();
+		if(itemHand == null) itemHand = new ItemStack(Material.AIR);
+		
+		return getDefinition().getActivationItems().contains(itemHand.getType());
+		
+
+	}
+	
+	/**
+	 * Checks if the player has enough of the required item.
+	 * 
+	 * @return true if enough items
+	 */
+	public boolean checkCost() {
+
+		
+		PlayerInventory inventory = sagaPlayer.getPlayer().getInventory();
+		
+		Material usedItem = getDefinition().getUsedItem();
+		Integer usedAmount = getDefinition().getUsedAmount(getEffectiveScore());
+		
+		if(usedItem == Material.AIR) return true;
+		
+		return inventory.contains(usedItem, usedAmount);
+
+		
+	}
+	
+	/**
+	 * Checks if the player has enough of the required item.
+	 * 
+	 * @param material used item
+	 * @param amount used amount
+	 * @return true if enough
+	 */
+	public boolean checkCost(Material material, Integer amount) {
+
+		
+		PlayerInventory inventory = sagaPlayer.getPlayer().getInventory();
+		
+		if(material == Material.AIR) return true;
+		
+		return inventory.contains(material, amount);
+
+		
+	}
+	
+	
+	/**
+	 * Starts the cooldown.
+	 * 
+	 */
+	protected void startCooldown() {
+
+		this.cooldown = definition.getCooldown(getEffectiveScore());
+		
+		// Start clock:
+		if(!clock) startClock();
+
+	}
+
+	/**
+	 * Checks if on cooldown.
+	 * 
+	 * @return true if on cooldown
+	 */
+	protected boolean isCooldown() {
+		
+		return cooldown > 0;
+
+	}
+	
+	
+	/**
+	 * Called before the ability is triggered.
+	 * 
+	 * @return true if can be triggered
+	 */
+	public boolean handlePreTrigger() {
+		
+		if(!checkActivation()) return false;
+		
+		if(isCooldown()){
+			
+			// Prevent cooldown spam:
+			if(getCooldown() != lastCooldown){
+				getSagaPlayer().message(AbilityMessages.onCooldown(this));
+			}
+			lastCooldown = getCooldown();
 			
 			return false;
 			
-		case TIMED:
-			
-			// Already active:
-			if(isActive()){
-				informAlreadyActive();
-				return false;
-			}
-
-			// Cooldown:
-			if(isOnCooldown()){
-				informCooldown();
-				return false;
-			}
-
-			// Materials:
-			if(!checkUsageMaterials()){
-				informNotEnoughMaterials();
-				return false;
-			}
-			
-			// Activate event:
-			if(!onPreActivate()) return false;
-
-			// Activate:
-			activate();
-			
-			// Inform:
-			informActivated();
-
-			// Use materials:
-			useMaterials();
-			
-			break;
-
-		case SINGLE_USE:
-
-			// Already active:
-			if(isActive()){
-				informAlreadyActive();
-				return false;
-			}
-			
-			// Cooldown:
-			if(isOnCooldown()){
-				informCooldown();
-				return false;
-			}
-
-			// Activate event:
-			if(!onPreActivate()) return false;
-
-			// Activate:
-			activate();
-			
-			// Inform:
-			informActivated();
-			
-			break;
-		
-		case TOGGLE:
-
-			// Cooldown:
-			if(isOnCooldown()){
-				informCooldown();
-				return false;
-			}
-			
-			if(isActive()){
-				
-				// Deactivate:
-				handleDeactivate();
-				
-				return false;
-				
-			}else{
-
-				// Activate event:
-				if(!onPreActivate()) return false;
-
-				// Activate:
-				activate();
-				
-				// Inform:
-				informActivated();
-				
-				return true;
-				
-			}
-			
-		case PASSIVE:
-	
-			return true;
-	
-		default:
-			
-			break;
 		}
 		
-		return true;
+		if(getEffectiveScore() < 1) return false;
 		
-		
-	}
-
-	/**
-	 * Called on deactivation.
-	 * 
-	 * @return deactivated if true
-	 */
-	public void handleDeactivate() {
-		
-		
-		// Activate:
-		switch (definition.getActivationType()) {
-		
-		case INSTANT:
-			
-			return;
-			
-		case TIMED:
-
-			// Cooldown:
-			startCooldown();
-
-			// Deactivate event:
-			if(!onPreDeactivate()) return;
-
-			// Deactivate:
-			deactivate();
-			
-			// Inform:
-			informDeactivated();
-			
-			return;
-			
-		case SINGLE_USE:
-
-			// Cooldown:
-			startCooldown();
-
-			// Deactivate event:
-			if(!onPreDeactivate()) return;
-
-			// Deactivate:
-			deactivate();
-			
-			// Inform:
-			informDeactivated();
-			
-			return;
-			
-		default:
-
-			// Deactivate event:
-			if(!onPreDeactivate()) return;
-
-			// Deactivate:
-			deactivate();
-			
-			// Inform:
-			informDeactivated();
-			
-			return;
-			
+		if(!checkCost()){
+			sagaPlayer.message(AbilityMessages.insufficientItems(this, definition.getUsedItem(), definition.getUsedAmount(getEffectiveScore())));
+			return false;
 		}
-		
-		
-	}
-	
-	/**
-	 * Handles before use.
-	 * 
-	 * @return true if can proceed with use.
-	 */
-	public final boolean handlePreUse() {
 
-		
-		ActivationType type = getDefinition().getActivationType();
-		
-		// Materials:
-		switch (type) {
-		case TIMED:
-			
-			// Active:
-			if(!isActive()){
-				return false;
-			}
-			
-			break;
-
-		default:
-
-			// Active:
-			if(!isActive()){
-				return false;
-			}
-			
-			// Cooldown:
-			if(isOnCooldown()){
-				informCooldown();
-				return false;
-			}
-			
-			// Materials:
-			if(!checkUsageMaterials()){
-				informNotEnoughMaterials();
-				return false;
-			}
-			
-			break;
-			
-		}
-		
 		return true;
-	
 		
 	}
-
+	
 	/**
-	 * Called when the ability was used.
+	 * Called after the ability is triggered.
 	 * 
 	 */
-	public final void handleAfterUse() {
-
+	public void handleAfterTrigger() {
 		
-		// Deactivate
-		switch (definition.getActivationType()) {
-		
-		case INSTANT:
-			
-			// Cooldown:
-			startCooldown();
-
-			// Use materials:
-			useMaterials();
-			
-			break;
-
-		case TIMED:
-			
-			break;
-
-		case SINGLE_USE:
-			
-			// Cooldown:
-			startCooldown();
-
-			// Use materials:
-			useMaterials();
-			
-			handleDeactivate();	
-			
-			break;
-		
-		case TOGGLE:
-
-			// Cooldown:
-			startCooldown();
-
-			// Use materials:
-			useMaterials();
-			
-			break;
-			
-		case PASSIVE:
-
-			// Cooldown:
-			startCooldown();
-
-			// Use materials:
-			useMaterials();
-			
-			break;
-	
-		default:
-
-			// Cooldown:
-			startCooldown();
-
-			// Use materials:
-			useMaterials();
-			
-			break;
-			
-		}
-		
+		useItems();
+		startCooldown();
 		
 	}
-
 	
-	// Event:
+	
+	
+	// Triggering:
 	/**
-	 * Called when the ability was activated.
+	 * Triggers the ability.
 	 * 
-	 * @return true if activated
+	 * @param event event
+	 * @return true if triggered
 	 */
-	public boolean onPreActivate() {
-		return true;
-	}
-
-	/**
-	 * Called when the ability was deactivated.
-	 * 
-	 * @return true if deactivated
-	 */
-	public boolean onPreDeactivate() {
-		return true;
+	public boolean trigger(SagaInteractEntityEvent event) {
+		return false;
 	}
 	
 	/**
 	 * Triggers the ability.
 	 * 
 	 * @param event event
-	 * @return true of triggered
+	 * @return true if triggered
 	 */
-	public boolean instant(PlayerInteractEvent event) {
+	public boolean trigger(PlayerInteractEvent event) {
+		return false;
+	}
+	
+	/**
+	 * Triggers the ability.
+	 * 
+	 * @param event event
+	 * @return true if triggered
+	 */
+	public boolean triggerAttack(SagaEntityDamageEvent event) {
 		return false;
 	}
 
 	/**
-	 * Called when the player interacts.
+	 * Triggers the ability.
 	 * 
 	 * @param event event
-	 * @return true if gets deactivated
+	 * @return true if triggered
 	 */
-	public boolean onPlayerInteract(PlayerInteractEvent event) {
-		return true;
+	public boolean triggerDefend(SagaEntityDamageEvent event) {
+		return false;
 	}
 	
-	/**
-	 * Called when the player gets damaged by a creature.
-	 * 
-	 * @param event event
-	 */
-	public boolean onHitByCreature(EntityDamageByEntityEvent event, Creature creature) {
-		
-		return false;
-		
-	}
 	
-	/**
-	 * Called when the player damages a creature.
+	// Other:
+	/* 
+	 * (non-Javadoc)
 	 * 
-	 * @param event event
+	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
-	public boolean onHitCreature(EntityDamageByEntityEvent event, Creature creature) {
+	@Override
+	public boolean equals(Object obj) {
 		
+		if(obj instanceof Ability){
+			return ((Ability) obj).getName().equalsIgnoreCase(getName());
+		}
 		return false;
 		
 	}
-	
-	/**
-	 * Called when the player gets damaged by a player.
-	 * 
-	 * @param event event
-	 * @return true if gets deactivated
-	 */
-	public boolean onHitByPlayer(EntityDamageByEntityEvent event, SagaPlayer attacker) {
-		
-		return false;
-		
-	}
-	
-	/**
-	 * Called when the player hits a player.
-	 * 
-	 * @param event event
-	 * @return true if gets deactivated
-	 */
-	public boolean onHitPlayer(EntityDamageByEntityEvent event, SagaPlayer defender) {
-		
-		return false;
-		
-	}
-
-	
-	/**
-	 * Called when the player gets shot by a creature.
-	 * 
-	 * @param event event
-	 */
-	public boolean onShotByCreature(EntityDamageByEntityEvent event, Creature creature, Projectile projectile) {
-		
-		return false;
-		
-	}
-	
-	/**
-	 * Called when the player shoots a creature.
-	 * 
-	 * @param event event
-	 */
-	public boolean onShotCreature(EntityDamageByEntityEvent event, Creature creature, Projectile projectile) {
-		
-		return false;
-		
-	}
-
-	/**
-	 * Called when the player gets shot by a player.
-	 * 
-	 * @param event event
-	 */
-	public boolean onShotByPlayer(EntityDamageByEntityEvent event, SagaPlayer attacker, Projectile projectile) {
-		
-		return false;
-		
-	}
-	
-	/**
-	 * Called when the player shoots a player.
-	 * 
-	 * @param event event
-	 */
-	public boolean onShotPlayer(EntityDamageByEntityEvent event, SagaPlayer defender, Projectile projectile) {
-		
-		return false;
-		
-	}
-	
-
-	/**
-	 * Called when magic is casted by the player.
-	 * 
-	 * @param event event
-	 */
-	public boolean onSpelledPlayer(EntityDamageByEntityEvent event, SagaPlayer defender, Projectile projectile) {
-
-		return false;
-		
-	}
-	
-	/**
-	 * Called when magic is casted by the player.
-	 * 
-	 * @param event event
-	 */
-	public boolean onSpelledByPlayer(EntityDamageByEntityEvent event, SagaPlayer defender, Projectile projectile) {
-		
-		return false;
-		
-	}
-	
-
-	/**
-	 * Called when the player interacts with an player.
-	 * 
-	 * @param event event
-	 */
-	public boolean onPlayerInteractPlayer(PlayerInteractEntityEvent event, SagaPlayer tragetPlayer) {
-
-		return false;
-		
-	}
-	
-	/**
-	 * Called when the player interacts with an creature.
-	 * 
-	 * @param event event
-	 */
-	public boolean onPlayerInteractCreature(PlayerInteractEntityEvent event, Creature targetCreature) {
-		
-		return false;
-		
-	}
-	
-	/**
-	 * Called when a projectile fired by the player hits a target.
-	 * 
-	 * @param event event
-	 */
-	public boolean onProjectileHit(ProjectileHitEvent event) {
-		
-		return false;
-		
-	}
-
-	/**
-	 * Called when the player damages a block.
-	 * 
-	 * @param event event
-	 */
-	public boolean onBlockDamage(BlockDamageEvent event) {
-		
-		return false;
-		
-	}
-	
 	
 	
 }

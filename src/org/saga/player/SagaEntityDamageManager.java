@@ -66,42 +66,7 @@ public class SagaEntityDamageManager {
 		
 	}
 	
-	/**
-	 * Generates rounds a integer and adds random damage of one.
-	 * 
-	 * @param value value
-	 * @return integer with random additional damage
-	 */
-	public static int randomRound(Double value) {
-
-		
-		
-		if (value >= 0){
-		
-			double decimal = value - Math.floor(value);
-			
-			if(random.nextDouble() < decimal){
-				return value.intValue() + 1;
-			}else{
-				return value.intValue();
-			}
-			
-		}else{
-			
-			double decimal = -value + Math.ceil(value);
-			
-			if(random.nextDouble() < decimal){
-				return value.intValue() - 1;
-			}else{
-				return value.intValue();
-			}
-			
-		}
-			
-			
-			
-		
-	}
+	
 
 	
 	

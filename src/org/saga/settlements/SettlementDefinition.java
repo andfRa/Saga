@@ -6,9 +6,10 @@ import java.util.HashSet;
 import java.util.Hashtable;
 
 import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.utility.TwoPointFunction;
 
-public class SettlementDefinition {
+public class SettlementDefinition{
 
 	
 	/**
@@ -16,6 +17,7 @@ public class SettlementDefinition {
 	 */
 	private TwoPointFunction activePlayers;
 
+	
 	/**
 	 * The amount of building points.
 	 */
@@ -26,28 +28,47 @@ public class SettlementDefinition {
 	 */
 	private Hashtable<String, TwoPointFunction> roles;
 	
+	
 	/**
-	 * Buildings that are enabled.
+	 * Buildings.
 	 */
-	private Hashtable<String, TwoPointFunction> enabledBuildings;
+	private Hashtable<String, TwoPointFunction> buildings;
 
+	
 	/**
 	 * Experience requirement.
 	 */
-	private TwoPointFunction expRequirement;
+	private TwoPointFunction levelUpExp;
 
 	/**
 	 * Experience speed.
 	 */
 	private TwoPointFunction expSpeed;
 	
+	
+	/**
+	 * Settlement claims.
+	 */
+	private TwoPointFunction claims;
 
-	// Initialization:
+	/**
+	 * Role assigned to settlement owner.
+	 */
+	public String ownerRole;
+	
+	/**
+	 * Role assigned to joined members.
+	 */
+	public String defaultRole;
+
+
+	// Initialisation:
 	/**
 	 * Used by gson.
 	 * 
 	 */
 	private SettlementDefinition() {
+		
 	}
 	
 
@@ -84,23 +105,23 @@ public class SettlementDefinition {
 			integrity = roles.get(role).complete() && integrity;
 		}
 		
-		if(enabledBuildings == null){
-			enabledBuildings = new Hashtable<String, TwoPointFunction>();
-			Saga.severe(SettlementDefinition.class, "enabledBuildings field failed to initialize", "setting default");
+		if(buildings == null){
+			buildings = new Hashtable<String, TwoPointFunction>();
+			Saga.severe(SettlementDefinition.class, "buildings field failed to initialize", "setting default");
 			integrity = false;
 		}
-		Enumeration<String> eBuildings = enabledBuildings.keys();
+		Enumeration<String> eBuildings = buildings.keys();
 		while (eBuildings.hasMoreElements()) {
 			String building = (String) eBuildings.nextElement();
-			integrity = enabledBuildings.get(building).complete() && integrity;
+			integrity = buildings.get(building).complete() && integrity;
 		}
 		
-		if(expRequirement == null){
-			expRequirement = new TwoPointFunction(10000.0);
-			Saga.severe(SettlementDefinition.class, "expRequirement field failed to initialize", "setting default");
+		if(levelUpExp == null){
+			levelUpExp = new TwoPointFunction(10000.0);
+			Saga.severe(SettlementDefinition.class, "levelUpExp field failed to initialize", "setting default");
 			integrity = false;
 		}
-		integrity = integrity && expRequirement.complete();
+		integrity = integrity && levelUpExp.complete();
 		
 		if(expSpeed == null){
 			expSpeed = new TwoPointFunction(0.0);
@@ -108,6 +129,25 @@ public class SettlementDefinition {
 			integrity = false;
 		}
 		integrity = integrity && expSpeed.complete();
+		
+		if(claims == null){
+			SagaLogger.severe(getClass(), "claims field failed to initialize");
+			claims = new TwoPointFunction(1.0);
+			integrity=false;
+		}
+		integrity = claims.complete() && integrity;
+		
+		if(ownerRole == null){
+			SagaLogger.nullField(getClass(),"ownerRole");
+			ownerRole = "";
+			integrity=false;
+		}
+		
+		if(defaultRole == null){
+			SagaLogger.nullField(getClass(),"defaultRole");
+			defaultRole = "";
+			integrity=false;
+		}
 		
 		return integrity;
 		
@@ -196,7 +236,7 @@ public class SettlementDefinition {
 	 */
 	public Integer getTotalBuildings(String buildingName, Integer level) {
 		
-		TwoPointFunction amount = enabledBuildings.get(buildingName);
+		TwoPointFunction amount = buildings.get(buildingName);
 		if(amount == null || amount.getXMin() > level){
 			return 0;
 		}
@@ -214,18 +254,21 @@ public class SettlementDefinition {
 	public HashSet<String> getAllBuildings(Integer level) {
 		
 		
-		HashSet<String> buildings = new HashSet<String>();
+		HashSet<String> allBuildings = new HashSet<String>();
 		
-		Enumeration<String> buildingNames =  enabledBuildings.keys();
+		Enumeration<String> buildingNames =  buildings.keys();
 		
 		while (buildingNames.hasMoreElements()) {
+			
 			String buildingName = (String) buildingNames.nextElement();
+			
 			if(getTotalBuildings(buildingName, level) > 0){
-				buildings.add(buildingName);
+				allBuildings.add(buildingName);
 			}
+			
 		}
 		
-		return buildings;
+		return allBuildings;
 
 		
 	}
@@ -238,9 +281,9 @@ public class SettlementDefinition {
 	 * @param level settlement level
 	 * @return requirement
 	 */
-	public Double getExpRequired(Integer level) {
+	public Double getLevelUpExp(Integer level) {
 		
-		return expRequirement.value(level);
+		return levelUpExp.value(level);
 
 	}
 	
@@ -256,6 +299,31 @@ public class SettlementDefinition {
 
 	}
 	
+	/**
+	 * Gets maximum level.
+	 * 
+	 * @return maximum level
+	 */
+	public Integer getMaxLevel() {
+
+		return levelUpExp.getXMax().intValue();
+
+	}
+	
+	
+	// Claiming:
+	/**
+	 * Gets the number of claims available.
+	 * 
+	 * @param level level
+	 * @return number of claims
+	 */
+	public Double getClaims(Integer level) {
+
+		return claims.value(level);
+		
+	}
+
 	
 	// Other:
 	/**
@@ -268,7 +336,7 @@ public class SettlementDefinition {
 
 		SettlementDefinition definition = new SettlementDefinition();
 		definition.activePlayers = new TwoPointFunction(0.0);
-		definition.enabledBuildings = new Hashtable<String, TwoPointFunction>();
+		definition.buildings = new Hashtable<String, TwoPointFunction>();
 		definition.complete();
 		return definition;
 

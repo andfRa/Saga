@@ -8,7 +8,6 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.Clock;
@@ -17,14 +16,11 @@ import org.saga.Clock.TimeOfDayTicker;
 import org.saga.Saga;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.ChunkGroupConfiguration;
-import org.saga.listeners.events.SagaPvpEvent;
-import org.saga.listeners.events.SagaPvpEvent.PvpAllowReason;
+import org.saga.exceptions.InvalidBuildingException;
+import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaEntityDamageEvent.PvPFlag;
 import org.saga.messages.BuildingMessages;
-import org.saga.messages.ChunkGroupMessages;
 import org.saga.player.SagaPlayer;
-import org.sk89q.Command;
-import org.sk89q.CommandContext;
-import org.sk89q.CommandPermissions;
 
 
 public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
@@ -62,17 +58,17 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 	transient private Integer count;
 	
 	
-	// Initialization:
+	// Initialisation:
 	/**
-	 * Initializes
+	 * Creates a building from the definition.
 	 * 
-	 * @param pointCost point cost
-	 * @param moneyCost money cost
-	 * @param proficiencies proficiencies
+	 * @param definition building definition
 	 */
-	private Arena(String name) {
+	public Arena(BuildingDefinition definition) {
 		
-		super("");
+		
+		super(definition);
+
 		arenaPlayers = new ArrayList<Arena.ArenaPlayer>();
 		
 	}
@@ -83,10 +79,10 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 	 * @see org.saga.buildings.Building#completeExtended()
 	 */
 	@Override
-	public boolean completeExtended() {
+	public boolean complete() throws InvalidBuildingException {
 		
 
-		boolean integrity = true;
+		boolean integrity = super.complete();
 		
 		if(arenaPlayers == null){
 			arenaPlayers = new ArrayList<Arena.ArenaPlayer>();
@@ -102,18 +98,6 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 		
 		return integrity;
 		
-		
-	}
-
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#duplicate()
-	 */
-	@Override
-	public Building blueprint() {
-		
-		return new Arena("");
 		
 	}
 
@@ -154,6 +138,8 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 		
 	}
 
+	
+	
 	
 	// Kill death:
 	/**
@@ -196,7 +182,7 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 	 */
 	private void addPoints(String name, Double points) {
 
-
+		
 		ArenaPlayer foundPlayer = null;
 		
 		for (ArenaPlayer arenaPlayer : arenaPlayers) {
@@ -274,6 +260,8 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 	}
 	
 	
+	
+	
 	// Count down:
 	/**
 	 * Initiates or refreshes count down.
@@ -290,6 +278,8 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 		this.count = count;
 		
 	}
+	
+	
 	
 	
 	// Time:
@@ -334,7 +324,7 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 	 * @see org.saga.Clock.SecondTicker#clockSecondTick()
 	 */
 	@Override
-	public void clockSecondTick() {
+	public boolean clockSecondTick() {
 		
 		
 		// Disable clock:
@@ -344,12 +334,16 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 		
 		// Inform:
 		SagaChunk sagaChunk = getSagaChunk();
-		if(sagaChunk != null) sagaChunk.broadcast(countdown(count));
+		if(sagaChunk != null) sagaChunk.broadcast(BuildingMessages.countdown(count));
 		
 		count--;
 		
+		return true;
+		
+		
 	}
 
+	
 	
 	
 	// Events:
@@ -458,17 +452,21 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 	/* 
 	 * (non-Javadoc)
 	 * 
-	 * @see org.saga.buildings.Building#onBlockPlace(org.bukkit.event.block.BlockPlaceEvent, org.saga.SagaPlayer)
+	 * @see org.saga.buildings.Building#onPlayerDamagedByPlayer(org.bukkit.event.entity.EntityDamageByEntityEvent, org.saga.SagaPlayer, org.saga.SagaPlayer)
 	 */
 	@Override
-	public void onBlockPlace(BlockPlaceEvent event, SagaPlayer sagaPlayer) {
+	public void onPvP(SagaEntityDamageEvent event){
 		
-
-		// Canceled:
-		if(event.isCancelled()){
+		
+		// Attack from outside of the arena:
+		SagaChunk attackerChunk = event.getAttackerChunk();
+		SagaChunk defenderChunk = event.getDefenderChunk();
+		if(attackerChunk == null || defenderChunk == null || attackerChunk != getSagaChunk() || defenderChunk != getSagaChunk()){
 			return;
 		}
 		
+		// Force allow:
+		event.addFlag(PvPFlag.ARENA);
 		
 		
 	}
@@ -476,26 +474,8 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 	/* 
 	 * (non-Javadoc)
 	 * 
-	 * @see org.saga.buildings.Building#onPlayerDamagedByPlayer(org.bukkit.event.entity.EntityDamageByEntityEvent, org.saga.SagaPlayer, org.saga.SagaPlayer)
+	 * @see org.saga.buildings.Building#onPlayerKillPlayer(org.saga.player.SagaPlayer, org.saga.player.SagaPlayer)
 	 */
-	@Override
-	public void onPvP(SagaPvpEvent event){
-		
-		
-		// Attack from outside of the arena:
-		SagaChunk attackerChunk = event.getAttackerChunk();
-		SagaChunk defenderChunk = event.getDefenderChunk();
-		if(attackerChunk != getSagaChunk() || defenderChunk != getSagaChunk()){
-			return;
-		}
-		
-		// Force allow:
-		event.setAllowReason(PvpAllowReason.ARENA);
-		
-		
-	}
-
-	
 	@Override
 	public void onPlayerKillPlayer(SagaPlayer attacker, SagaPlayer defender) {
 
@@ -510,18 +490,7 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 	
 	}
 	
-	// Messages:
-	public static String countdown(int count) {
-		
-		if(count == 0){
-			return ChunkGroupMessages.positive + "Fight!";
-		}else if((count%2)==0){
-			return ChunkGroupMessages.normal1 + "" + count + ".";
-		}else{
-			return ChunkGroupMessages.normal2 + "" + count + ".";
-		}
-		
-	}
+	
 	
 	
 	// Other:
@@ -536,12 +505,9 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 	}
 
 	
-	// Commands:
-
+	
 	
 	// Types:
-	
-	
 	/**
 	 * Death kill specific information.
 	 * 
@@ -717,56 +683,6 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 		
 		
 	}
-	
-	
-
-	// Commands:
-	@Command(
-			aliases = {"btop"},
-			usage = "<amount to displaye>",
-			flags = "",
-			desc = "Show top players for the arena.",
-			min = 0,
-			max = 1
-	)
-	@CommandPermissions({"saga.user.building.tradingpost.economy.setsell"})
-	public static void top(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-		
-		Integer count = null;
-		
-		// Retrieve building:
-		Arena selectedBuilding = null;
-		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, Arena.class);
-		} catch (Throwable e) {
-			sagaPlayer.message(e.getMessage());
-			return;
-		}
-	
-		// Arguments:
-		if (args.argsLength() == 1) {
-		
-			try {
-				count = Integer.parseInt(args.getString(0));
-			} catch (NumberFormatException e) {
-				sagaPlayer.message(ChunkGroupMessages.invalidInteger(args.getString(0)));
-				return;
-			}
-			
-		}else{
-			
-			count = 10;
-			
-		}
-		
-		// Inform:
-		sagaPlayer.message(BuildingMessages.arenaTop(selectedBuilding, count));
-		
-	
-	}
-	
-	
 	
 	
 }

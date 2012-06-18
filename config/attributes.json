@@ -1,123 +1,70 @@
 {
 
-"damageSkills":{
-  "blade":{
-    "name":"blade",
-    "type":"OFFENSE",
-    "attackerWeapons":["WOOD_SWORD","STONE_SWORD","IRON_SWORD","GOLD_SWORD","DIAMOND_SWORD"],
-    "defenderWeapons":[],
-    "attackerArmor":"ALL",
-    "defenderArmor":"ALL",
-    "attacker":"PLAYER",
-    "defender":"ALL",
-    "attack":"MELEE",
-    "modifier":{"x1":0,"y1":4.0,"x2":50,"y2":34.0}
+"maxAttributeScore":50,
+
+"attributePoints":{"x1":0,"y1":5.0,"x2":50,"y2":140},
+
+
+"attributes":[
+  {"name":"strength",
+    "attack":{"MELEE_MODIFIER":{"x1":0,"y1":0.0,"x2":50,"y2":7}},
+    "defend":{},
+    "blockBreak":{},
+    "description":"Melee damage."
   },
 
-  "waraxe":{
-    "name":"waraxe",
-    "type":"OFFENSE",
-    "attackerWeapons":["WOOD_AXE","STONE_AXE","IRON_AXE","GOLD_AXE","DIAMOND_AXE"],
-    "defenderWeapons":[],
-    "attackerArmor":"ALL",
-    "defenderArmor":"ALL",
-    "attacker":"PLAYER",
-    "defender":"ALL",
-    "attack":"MELEE",
-    "modifier":{"x1":0,"y1":0.0,"x2":10,"y2":14.0}
+  {"name":"precision",
+    "attack":{
+      "RANGED_MODIFIER":{"x1":0,"y1":0.0,"x2":50,"y2":8},
+      "MELEE_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":50,"y2":0.5},
+      "RANGED_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":50,"y2":0.5}
+    },
+    "defend":{
+      "MELEE_HIT_CHANCE":{"x1":0,"y1":0.0,"x2":40,"y2":-0.5},
+      "RANGED_HIT_CHANCE":{"x1":0,"y1":0.0,"x2":40,"y2":-0.5},
+      "MAGIC_HIT_CHANCE":{"x1":0,"y1":0.0,"x2":40,"y2":-0.5}                  
+    },
+    "blockBreak":{},
+    "description":"Ranged damage, armour penetration and dodge."
+  },
+  
+  {"name":"willpower",
+    "attack":{
+      "MAGIC_MODIFIER":{"x1":0,"y1":6.0,"x2":50,"y2":13.0},
+      "MAGIC_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":50,"y2":0.25}
+     },
+    "defend":{},
+    "blockBreak":{},
+    "description":"Magic damage and magical armour penetration."
   },
 
-  "archery":{
-    "name":"archery",
-    "type":"OFFENSE",
-    "attackerWeapons":["BOW"],
-    "defenderWeapons":[],
-    "attackerArmor":"ALL",
-    "defenderArmor":"ALL",
-    "attacker":"PLAYER",
-    "defender":"ALL",
-    "attack":"RANGED",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":30.0}
+  {"name":"toughness",
+    "attack":{},
+    "defend":{
+      "MELEE_MULTIPLIER":{"x1":0,"y1":0.0,"x2":50,"y2":-0.5},
+      "RANGED_MULTIPLIER":{"x1":0,"y1":0.0,"x2":50,"y2":-0.5}
+    },
+    "blockBreak":{},
+    "description":"Melee and ranged damage protection."
   },
 
-  "magic":{
-    "name":"magic",
-    "type":"OFFENSE",
-    "attackerWeapons":[],
-    "defenderWeapons":[],
-    "attackerArmor":"ALL",
-    "defenderArmor":"ALL",
-    "attacker":"PLAYER",
-    "defender":"ALL",
-    "attack":"MAGIC",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":30.0}
+  {"name":"warding",
+    "attack":{},
+    "defend":{
+      "MAGIC_MULTIPLIER":{"x1":0,"y1":0,"x2":50,"y2":-0.5},
+      "BURN_IGNORE_CHANCE":{"x1":0,"y1":0,"x2":50,"y2":0.9}
+    },
+    "blockBreak":{},
+    "description":"Magic damage and burning protection."
   },
-
-  "heavy armour":{
-    "name":"heavy armour",
-    "type":"DEFENSE",
-    "attackerWeapons":[],
-    "defenderWeapons":[],
-    "attackerArmor":"ALL",
-    "defenderArmor":"HEAVY",
-    "attacker":"ALL",
-    "defender":"ALL",
-    "attack":"PHYSICAL",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-30.0}
-  },
-
-  "light armour":{
-    "name":"light armour",
-    "type":"DEFENSE",
-    "attackerWeapons":[],
-    "defenderWeapons":[],
-    "attackerArmor":"ALL",
-    "defenderArmor":"LIGHT",
-    "attacker":"ALL",
-    "defender":"ALL",
-    "attack":"PHYSICAL",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-30.0}
-  },
-
-  "unarmoured":{
-    "name":"unarmoured",
-    "type":"DEFENSE",
-    "attackerWeapons":[],
-    "defenderWeapons":[],
-    "attackerArmor":"ALL",
-    "defenderArmor":"UNARMOURED",
-    "attacker":"ALL",
-    "defender":"ALL",
-    "attack":"MELEE",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-30.0}
-  },
-
-  "magic warding":{
-    "name":"magic warding",
-    "type":"DEFENSE",
-    "attackerWeapons":[],
-    "defenderWeapons":[],
-    "attackerArmor":"ALL",
-    "defenderArmor":"ALL",
-    "attacker":"ALL",
-    "defender":"ALL",
-    "attack":"MAGIC",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-30.0}
-  },
-
-  "woodcutting":{
-    "name":"woodcutting",
-    "type":"OFFENSE",
-    "attackerWeapons":[],
-    "defenderWeapons":[],
-    "attackerArmor":"ALL",
-    "defenderArmor":"ALL",
-    "attacker":"ALL",
-    "defender":"ALL",
-    "attack":"NONE",
-    "modifier":{"x1":0,"y1":0.0,"x2":50,"y2":-30.0}
+  
+  {"name":"luck",
+    "attack":{},
+    "defend":{},
+    "blockBreak":{
+      "DROP_MODIFIER":{"x1":0,"y1":0,"x2":50,"y2":0.40}
+    },
+    "description":"Additional drops from blocks."
   }
-
-}
-
+]
 }

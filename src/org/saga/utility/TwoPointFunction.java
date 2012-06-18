@@ -9,6 +9,12 @@ public class TwoPointFunction {
 
 	
 	/**
+	 * Random generator.
+	 */
+	private static Random RANDOM = new Random();
+	
+	
+	/**
 	 * Multiplier function x1.
 	 */
 	private Short x1;
@@ -161,6 +167,17 @@ public class TwoPointFunction {
 	 * 
 	 * @param x x value
 	 */
+	public Integer intValueCeil(Integer x) {
+		
+		return (int)Math.ceil(value(x.shortValue()));
+		
+	}
+	
+	/**
+	 * Calculates the value for the given y value.
+	 * 
+	 * @param x x value
+	 */
 	public Double value(Double x) {
 		
 		return value(x.shortValue());
@@ -174,7 +191,7 @@ public class TwoPointFunction {
 	 */
 	public Integer randomIntValue(Integer x) {
 		
-		return SagaEntityDamageManager.randomRound(value(x.intValue()));
+		return randomRound(value(x.intValue()));
 		
 	}
 
@@ -185,9 +202,7 @@ public class TwoPointFunction {
 	 */
 	public boolean randomBooleanValue(Double x) {
 		
-		Random random = new Random();
-		
-		return value(x) > random.nextDouble();
+		return value(x) > RANDOM.nextDouble();
 		
 	}
 	
@@ -223,10 +238,61 @@ public class TwoPointFunction {
 	}
 	
 	
+	// Util:
+	/**
+	 * Generates rounds a integer and adds random damage of one.
+	 * 
+	 * @param value value
+	 * @return integer with random additional damage
+	 */
+	public static int randomRound(Double value) {
+
+		
+		
+		if (value >= 0){
+		
+			double decimal = value - Math.floor(value);
+			
+			if(RANDOM.nextDouble() < decimal){
+				return value.intValue() + 1;
+			}else{
+				return value.intValue();
+			}
+			
+		}else{
+			
+			double decimal = -value + Math.ceil(value);
+			
+			if(RANDOM.nextDouble() < decimal){
+				return value.intValue() - 1;
+			}else{
+				return value.intValue();
+			}
+			
+		}
+			
+			
+			
+		
+	}
+	
+
+	// Other:
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString() {
 		return "(" + x1 +"," + y1 + ");(" + x2 +"," + y2 + ")";
 	}
 	
+	
+	public static void main(String[] args) {
+
+		System.out.println(Math.ceil(4.55));
+		
+	}
 	
 }

@@ -1,7 +1,6 @@
 package org.saga.abilities;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -18,7 +17,13 @@ import org.saga.statistics.StatisticsManager;
 
 
 public class Harvest extends Ability{
-
+	
+	
+	/**
+	 * Range key.
+	 */
+	private static String RANGE_KEY = "range";
+	
 
 	/**
 	 * Shape for the ability.
@@ -26,9 +31,9 @@ public class Harvest extends Ability{
 	private static RelativeShape SPAHPE = createShape();
 
 	
-	// Initialization:
+	// Initialisation:
 	/**
-	 * Initializes using definition.
+	 * Initialises using definition.
 	 * 
 	 * @param definition ability definition
 	 */
@@ -39,156 +44,77 @@ public class Harvest extends Ability{
 	}
 
 	
-	// Ability usage:
+	// Ability trigger:
 	/* 
 	 * (non-Javadoc)
 	 * 
 	 * @see org.saga.abilities.Ability#instant(org.bukkit.event.player.PlayerInteractEvent)
 	 */
 	@Override
-	public boolean instant(PlayerInteractEvent event) {
+	public boolean trigger(PlayerInteractEvent event) {
 
 		
-		// Check preuse:
-		if(!handlePreUse()){
-			return false;
-		}
-
+		ItemStack itemHand = event.getItem();
 		Player player = event.getPlayer();
 		
 		// Drops:
-		boolean reedDrop = false;
-		boolean wheatDrop = false;
+		boolean reedTrigger = false;
+		boolean wheatTrigger = false;
 		
 		
 		// Target:
 		Location dropLocation = event.getPlayer().getLocation();
 		
 		// Skill functions:
-		Integer size = getDefinition().getPrimaryFunction().randomIntValue(getSkillLevel());
-		
-		// Exp reward:
-		int expval = 0;
+		Integer range = getDefinition().getFunction(RANGE_KEY).randomIntValue(getEffectiveScore());
 		
 		// Get shape:
 		RelativeShape shape = SPAHPE;
-		ArrayList<Block> blocks = shape.getBlocks(dropLocation, getSagaPlayer().getOrientation(), size);
+		ArrayList<Block> blocks = shape.getBlocks(dropLocation, getSagaPlayer().getOrientation(), range);
 		
-		// No blocks:
+		// Not a farm:
 		if(blocks.size() == 0){
 			return false;
 		}
 		
-		ArrayList<ItemStack> remainDrops = new ArrayList<ItemStack>();
-		
-		// Break and drop:
+		// Harvest:
 		for (Block block : blocks) {
+
+			
+			// Send event:
+			BlockBreakEvent eventB = new BlockBreakEvent(block, player);
+			Saga.plugin().getServer().getPluginManager().callEvent(eventB);
+			if(eventB.isCancelled()) return reedTrigger || wheatTrigger;
+			
+			block.breakNaturally(itemHand);
+			getSagaPlayer().damageTool();
 
 			// Drop indication:
 			if(block.getType() == Material.SUGAR_CANE_BLOCK){
-				reedDrop = true;
+				reedTrigger = true;
 			}
 			else if(block.getType() == Material.CROPS){
-				wheatDrop = true;
+				wheatTrigger = true;
 			}
-
-			// Break:
-			if(!handleBreak(block, player, remainDrops)) return false;
-			
-			expval += 1;
 			
 		}
 
-		// Remaining drops:
-		for (ItemStack drop : remainDrops) {
-			handleDrop(drop, player.getLocation());
-		}
-		
-		// Effect:
-		if(reedDrop){
+		// Effects:
+		if(reedTrigger){
 			getSagaPlayer().playGlobalEffect(Effect.STEP_SOUND, Material.SUGAR_CANE_BLOCK.getId());
 		}
-		
-		if(wheatDrop){
+		if(wheatTrigger){
 			getSagaPlayer().playGlobalEffect(Effect.STEP_SOUND, Material.CROPS.getId());
 		}
 		
-		// Award exp:
-		Double awardedExp = awardExperience(expval);
-		
 		// Statistics:
-		StatisticsManager.manager().onAbilityUse(getName(), awardedExp);
+		StatisticsManager.manager().onAbilityUse(getName(), 0.0);
 		
 		return true;
 		
 		
 	}
 
-	
-	// Blocks:
-	/**
-	 * Handles block break.
-	 * 
-	 * @param block block
-	 * @param player player
-	 * @param dropCache remaining drops
-	 * @return true if continue
-	 */
-	private boolean handleBreak(Block block, Player player, ArrayList<ItemStack> dropCache) {
-
-		
-		// Air:
-		if(block.getType() == Material.AIR) return true;
-
-		// Call event:
-		BlockBreakEvent bbEvent = new BlockBreakEvent(block, player);
-		Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
-		if(bbEvent.isCancelled()) return false;
-		
-		// Only developed:
-		if(block.getType().equals(Material.CROPS) && block.getData() != 7) return true;
-		
-		// Break:
-		block.setType(Material.AIR);
-		
-		// Drop:
-		Collection<ItemStack> drops = block.getDrops();
-		for (ItemStack drop : drops) {
-
-			Boolean convenience = getDefinition().getSecondaryFunction().randomBooleanValue(getSkillLevel());
-			
-			// Convenience:
-			if(convenience){
-				handleDrop(drop, player.getLocation());
-			}else{
-				dropCache.add(drop);
-			}
-			
-		}
-		
-		// Damage tool:
-		getSagaPlayer().damageTool();
-		
-		return true;
-		
-		
-	}
-	
-	/**
-	 * Handles drop.
-	 * 
-	 * @param drop item
-	 * @param location location
-	 */
-	private void handleDrop(ItemStack drop, Location location) {
-
-		if(drop.getType() == Material.AIR) return;
-		
-		location.getWorld().dropItemNaturally(location, drop);
-		
-	}
-
-	
 	/**
 	 * Creates the shape for the ability.
 	 * 

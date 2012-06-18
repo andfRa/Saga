@@ -1,7 +1,6 @@
 package org.saga.abilities;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Random;
 
 import org.bukkit.Effect;
@@ -14,16 +13,25 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
-import org.saga.economy.EconomyMessages;
-import org.saga.messages.PlayerMessages;
+import org.saga.messages.AbilityMessages;
 import org.saga.shape.BlockFilter;
 import org.saga.shape.RelativeShape;
 import org.saga.statistics.StatisticsManager;
-import org.saga.utility.TextUtil;
 
 
 public class HeavySwing extends Ability{
 
+
+	/**
+	 * Size key.
+	 */
+	private static String SIZE_KEY = "size";
+	
+	/**
+	 * Crumble key.
+	 */
+	private static String CRUMBLE_KEY = "crumble";
+	
 
 	/**
 	 * Shape for the ability.
@@ -31,9 +39,9 @@ public class HeavySwing extends Ability{
 	private static RelativeShape SPAHPE = createShape();
 
 	
-	// Initialization:
+	// Initialisation:
 	/**
-	 * Initializes using definition.
+	 * Initialises using definition.
 	 * 
 	 * @param definition ability definition
 	 */
@@ -51,28 +59,28 @@ public class HeavySwing extends Ability{
 	 * @see org.saga.abilities.Ability#instant(org.bukkit.event.player.PlayerInteractEvent)
 	 */
 	@Override
-	public boolean instant(PlayerInteractEvent event) {
+	public boolean trigger(PlayerInteractEvent event) {
 
 		
-		// Check preuse:
-		if(!handlePreUse()){
-			return false;
-		}
-
+		ItemStack itemHand = event.getItem();
 		Player player = event.getPlayer();
+		Integer abilityLevel = getEffectiveScore();
+
+		// Drops:
+		boolean triggered = false;
 		
 		// Check blocks:
-		if(event.getClickedBlock() == null) return false;
+		if(event.getClickedBlock() == null){
+			getSagaPlayer().message(AbilityMessages.targetStone(this));
+			return false;
+		}
 		
 		// Target stone:
 		Location targetLocation = event.getPlayer().getLocation();
 		
 		// Skill functions:
-		Integer size = getDefinition().getPrimaryFunction().randomIntValue(getSkillLevel());
-		Integer crumble = getDefinition().getSecondaryFunction().randomIntValue(getSkillLevel());
-		
-		// Exp reward:
-		int expval = 0;
+		Integer size = getDefinition().getFunction(SIZE_KEY).randomIntValue(abilityLevel);
+		Integer crumble = getDefinition().getFunction(CRUMBLE_KEY).randomIntValue(abilityLevel);
 		
 		// Get shape:
 		RelativeShape shape = SPAHPE;
@@ -80,18 +88,22 @@ public class HeavySwing extends Ability{
 		
 		// Check if target block is included:
 		if(!blocks.contains(event.getClickedBlock())){
+			getSagaPlayer().message(AbilityMessages.targetStone(this));
 			return false;
 		}
 		
-		ArrayList<ItemStack> remainDrops = new ArrayList<ItemStack>();
-
 		// Swing:
 		for (Block block : blocks) {
+
+			// Send event:
+			BlockBreakEvent eventB = new BlockBreakEvent(block, player);
+			Saga.plugin().getServer().getPluginManager().callEvent(eventB);
+			if(eventB.isCancelled()) return triggered;
 			
-			// Break:
-			if(!handleBreak(block, player, remainDrops)) return true;
+			block.breakNaturally(itemHand);
+			getSagaPlayer().damageTool();
 			
-			expval += 1;
+			triggered = true;
 			
 		}
 		
@@ -115,28 +127,17 @@ public class HeavySwing extends Ability{
 			
 			if(canCrumble(crumbleBlock)){
 
-				// Break:
-				if(!handleBreak(crumbleBlock, player, remainDrops)) return true;
-				
-				expval += 1;
+				crumbleBlock.breakNaturally(itemHand);
 				
 			}
 			
 		}
 
-		// Remaining drops:
-		for (ItemStack drop : remainDrops) {
-			handleDrop(drop, player.getLocation());
-		}
-		
 		// Effect:
 		getSagaPlayer().playGlobalEffect(Effect.STEP_SOUND, Material.STONE.getId());
 
-		// Award exp:
-		Double awardedExp = awardExperience(expval);
-		
 		// Statistics:
-		StatisticsManager.manager().onAbilityUse(getName(), awardedExp);
+		StatisticsManager.manager().onAbilityUse(getName(), 0.0);
 		
 		return true;
 		
@@ -145,80 +146,6 @@ public class HeavySwing extends Ability{
 	
 	
 	// Blocks:
-	/**
-	 * Handles block break.
-	 * 
-	 * @param block block
-	 * @param player player
-	 * @param dropCache remaining drops
-	 * @return true if continue
-	 */
-	private boolean handleBreak(Block block, Player player, ArrayList<ItemStack> dropCache) {
-
-		
-		// Air:
-		if(block.getType() == Material.AIR) return true;
-
-		// Call event:
-		BlockBreakEvent bbEvent = new BlockBreakEvent(block, player);
-		Saga.plugin().getServer().getPluginManager().callEvent(bbEvent);
-		if(bbEvent.isCancelled()) return false;
-		
-		// Break:
-		block.setType(Material.AIR);
-		
-		// Drop:
-		Collection<ItemStack> drops = block.getDrops();
-		for (ItemStack drop : drops) {
-
-			if(drop.getType() == Material.COBBLESTONE){
-				dropCache.add(drop);
-			}else{
-				handleDrop(drop, block.getLocation());
-			}
-			
-		}
-		
-		if(dropCache.size() > 10){
-			
-			int cobble = 0;
-			
-			for (int i = 0; i < dropCache.size(); i++) {
-				
-				if(dropCache.get(i).getType() == Material.COBBLESTONE){
-					cobble += dropCache.get(i).getAmount();
-					dropCache.remove(i);
-					i--;
-				}
-				
-			}
-			
-			if(cobble > 0) handleDrop(new ItemStack(Material.COBBLESTONE, cobble), block.getLocation());
-			
-		}
-		
-		// Damage tool:
-		getSagaPlayer().damageTool();
-		
-		return true;
-		
-		
-	}
-	
-	/**
-	 * Handles drop.
-	 * 
-	 * @param drop item
-	 * @param location location
-	 */
-	private void handleDrop(ItemStack drop, Location location) {
-
-		if(drop.getType() == Material.AIR) return;
-		
-		location.getWorld().dropItemNaturally(location, drop);
-		
-	}
-	
 	/**
 	 * Checks if can crumble.
 	 * 
@@ -248,17 +175,6 @@ public class HeavySwing extends Ability{
 		
 		
 	}
-	
-	
-	// Messages:
-	public String stuck(Material material) {
-		return PlayerMessages.negative + TextUtil.capitalize(getName()) + " got stuck in " + EconomyMessages.material(material) + ".";
-	}
-	
-	public String mustHitStone() {
-		return PlayerMessages.negative + TextUtil.capitalize(getName()) + " ability can only be used on stone and ores.";
-	}
-	
 	
 	/**
 	 * Creates the shape for the ability.
@@ -404,7 +320,6 @@ public class HeavySwing extends Ability{
 		
 		
 	}
-
 
 	/**
 	 * Creates the filter for the ability.

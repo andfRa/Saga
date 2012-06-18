@@ -79,6 +79,8 @@ public class SagaMessages {
 	}
 	
 	
+	
+	
 	// Map:
 	public static String map(SagaPlayer sagaPlayer, Location location){
 		
@@ -107,6 +109,8 @@ public class SagaMessages {
 	}
 	
 
+	
+	
 	// Meter:
 	public static String meter(String name, Integer value, Integer maxValue, String unit, ChatColor messageColor, ChatColor barColor, ChatColor enclosingColor) {
 

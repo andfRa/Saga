@@ -9,13 +9,12 @@ import org.bukkit.ChatColor;
 import org.saga.Saga;
 import org.saga.buildings.Building;
 import org.saga.chunkGroups.ChunkGroup;
-import org.saga.chunkGroups.ChunkGroupCommands;
 import org.saga.chunkGroups.SagaChunk;
+import org.saga.commands.ChunkGroupCommands;
 import org.saga.config.BalanceConfiguration;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.FactionConfiguration;
-import org.saga.economy.EconomyMessages;
 import org.saga.factions.SagaFaction;
 import org.saga.messages.PlayerMessages.ColorCircle;
 import org.saga.player.Proficiency;
@@ -408,7 +407,7 @@ public class ChunkGroupMessages {
 		// Level:
 		rString.append(messageColor.nextColor());
 		rString.append("Level: " + settlement.getLevel());
-		if(settlement.getLevel() < ChunkGroupConfiguration.config().settlementMaximumLevel){
+		if(settlement.getLevel() < settlement.getDefinition().getMaxLevel()){
 			rString.append(" Remaining exp: " + settlement.getRemainingExp().intValue());
 		}else{
 			rString.append(" Remaining exp: -");
@@ -1165,109 +1164,7 @@ public class ChunkGroupMessages {
 		
 	}
 
-	public static String help(int page) {
-		
-		
-		ColorCircle messageColor = new ColorCircle().addColor(normal1).addColor(normal2);
-		StringBook book = new StringBook("settlement help", messageColor, 10);
 
-		// Bugs:
-		if(BalanceConfiguration.config().bugReportMessage.length() > 0){
-			book.addLine(veryPositive + BalanceConfiguration.config().bugReportMessage);
-		}
-		
-		// Pvp enabled:
-		if(FactionConfiguration.config().factionOnlyPvp){
-			book.addLine(veryNegative + "Settlements don't get pvp protection. Build walls or don't join a faction to protect yourself.");
-		}else{
-			book.addLine(veryNegative + "Settlements don't get pvp protection. Build walls to protect yourself.");
-		}
-		
-		// Create:
-		book.addLine("/ssettle <name> to create a settlement.");
-
-		// Claim:
-		book.addLine("/sclaim to claim more land.");
-		
-		// Abandon:
-		book.addLine("/sabandon to unclaim land.");
-
-		// Map:
-		book.addLine("/map to see all claimed land.");
-		
-		// Invite:
-		book.addLine("/sinvite <name> to invite someone to the settlement.");
-
-		// Accept:
-		book.addLine("/saccept to accept a settlement invitation.");
-		
-		// Decline:
-		book.addLine("/sdeclineall to decline all settlement invitations.");
-
-		// Stats:
-		book.addLine("/sstats to see the level, claims, buildings, roles and other settlement stats.");
-
-		// Leveling bonus:
-		book.addLine("Higher level gives more land to claim and more buildings.");
-		
-		// List:
-		book.addLine("/slist to see all settlement members.");
-
-		// Quit:
-		book.addLine("/settlementquit to quit the settlement.");
-
-		// Kick:
-		book.addLine("/skick <name> to kick someone from the settlement.");
-
-		// Set role:
-		book.addLine("/ssetrole <name> <role_name> to assign a role to someone.");
-
-		// Roles:
-		book.addLine("Available roles can be found under /sstats.");
-		
-		// Declare owner:
-		book.addLine("/sdeclareowner <name> to declare someone as the new owner.");
-		
-		// Homes:
-		book.addLine("/bset home to set a home building.");
-
-		// New residents:
-		book.addLine("/baddresident to add a resident to a home.");
-
-		// Remove residents:
-		book.addLine("/bremoveresident to remove a resident from a home.");
-
-		// List residents:
-		book.addLine("Home residents are listed under /bstats.");
-		
-		// Protection:
-		book.addLine(positive + "Set homes to limit griefing damage by members!");
-		
-		// Leveling speed:
-		book.addLine("The settlement gains exp each second, based on the number of members online.");
-
-		// Set building:
-		book.addLine("/bset <building_name> to set a building.");
-
-		// Remove building:
-		book.addLine("/bremove to remove a building.");
-		
-		// Buildings:
-		book.addLine("Available buildings can be found under /sstats.");
-
-		// New buildings:
-		book.addLine("More buildings become available as the settlement gains levels or diferent building are added.");
-
-		// Set building:
-		book.addLine("/binfo for information about a particular building.");
-		
-		// Rename:
-		book.addLine("/srename <name> to rename the settlement. Costs " + EconomyMessages.coins(EconomyConfiguration.config().chunkGroupRenameCost) + ".");
-		
-		return book.framed(page);
-		
-		
-	}
 	
 	
 	// Admin:

@@ -1,45 +1,40 @@
 package org.saga;
 
-import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import org.anjocaido.groupmanager.GroupManager;
-import org.anjocaido.groupmanager.data.User;
-import org.anjocaido.groupmanager.dataholder.OverloadedWorldHolder;
-import org.anjocaido.groupmanager.dataholder.worlds.WorldsHolder;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.saga.Clock.MinuteTicker;
-import org.saga.buildings.Building;
-import org.saga.chunkGroups.ChunkGroupCommands;
 import org.saga.chunkGroups.ChunkGroupManager;
+import org.saga.commands.AdminCommands;
+import org.saga.commands.BuildingCommands;
+import org.saga.commands.ChunkGroupCommands;
+import org.saga.commands.EconomyCommands;
+import org.saga.commands.FactionCommands;
+import org.saga.commands.PlayerCommands;
 import org.saga.config.AbilityConfiguration;
+import org.saga.config.AttributeConfiguration;
 import org.saga.config.BalanceConfiguration;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.FactionConfiguration;
-import org.saga.config.GuildConfiguration;
 import org.saga.config.ProficiencyConfiguration;
-import org.saga.config.SkillConfiguration;
-import org.saga.economy.EconomyCommands;
+import org.saga.dependencies.PermissionsManager;
 import org.saga.economy.EconomyManager;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;
-import org.saga.factions.FactionCommands;
 import org.saga.factions.FactionManager;
-import org.saga.guilds.GuildsManager;
 import org.saga.listeners.BlockListener;
 import org.saga.listeners.EntityListener;
 import org.saga.listeners.PlayerListener;
 import org.saga.listeners.ServerListener;
-import org.saga.player.PlayerCommands;
+import org.saga.listeners.WorldListener;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsCommands;
 import org.saga.statistics.StatisticsManager;
@@ -57,14 +52,24 @@ import org.sk89q.WrappedCommandException;
 public class Saga extends JavaPlugin implements MinuteTicker{
 
 	
-    //Static Members
-    private static Saga instance;
+    /**
+     * Plugin instance.
+     */
+    private static Saga plugin;
 
-    //Instance Members
-    private static CommandsManager<Player> commandMap;
+    /**
+     * Gets Saga plugin.
+     * 
+     * @return Saga plugin
+     */
+    public static Saga plugin() {
+        return plugin;
+    }
     
-    private WorldsHolder worldsHolder;
     
+    /**
+     * All saga players.
+     */
     private Hashtable<String,SagaPlayer> loadedPlayers;
 
     
@@ -75,10 +80,11 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     private Integer saveMinutes;
     
     
-    static public Saga plugin() {
-        return instance;
-    }
-    
+    /* 
+     * (non-Javadoc)
+     * 
+     * @see org.bukkit.plugin.java.JavaPlugin#onDisable()
+     */
     @Override
     public void onDisable() {
 
@@ -102,24 +108,22 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         ChunkGroupManager.unload(); // Needs building manager.
         FactionManager.unload(); // Needs access to chunk group manager.
         EconomyManager.unload();
-        GuildsManager.unload(); // Needs access to the clock.
         
         // Configuration:
         ExperienceConfiguration.unload();
         ProficiencyConfiguration.unload();
-        SkillConfiguration.load();
+        AttributeConfiguration.load();
         AbilityConfiguration.unload();
         BalanceConfiguration.unload();
         ChunkGroupConfiguration.unload();
         EconomyConfiguration.unload();
         FactionConfiguration.unload();
-        GuildConfiguration.load();  // Needs access to clock.
         Clock.unload(); // Needs access to Saga.pluging()
+
+        // Disable permissions:
+        PermissionsManager.disable();
         
-        // Other:
-        commandMap = null;
-        
-        Saga.instance = null;
+        Saga.plugin = null;
 
         Saga.info("Saga disabled.");
         
@@ -129,79 +133,45 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         
     }
 
+    /* 
+     * (non-Javadoc)
+     * 
+     * @see org.bukkit.plugin.java.JavaPlugin#onEnable()
+     */
     @Override
     public void onEnable() {
         
 
     	//Set Global Plugin Instance Variable
-    	Saga.instance = this;
+    	Saga.plugin = this;
 
         // Logger:
         SagaLogger.load();
     	
     	// Messages:
-    	Saga.info("Enabling Saga.");
+        SagaLogger.info("Enabling Saga.");
 
-        //Allocate Instance Variables
+    	// Plugin manager:
+    	final PluginManager pluginManager = getServer().getPluginManager();
+    	
+        // Players:
         loadedPlayers = new Hashtable<String, SagaPlayer>();
         
-        // Get GroupManager:
-        PluginManager pluginManager = getServer().getPluginManager();
-        try {
-    	   Plugin groupManager = null;
-           groupManager = pluginManager.getPlugin("GroupManager");
-           if ( groupManager != null ) {
-               Saga.info("Using GroupManager.");
-               worldsHolder = ((GroupManager)groupManager).getWorldsHolder();
-           } else {
-               Saga.warning("GroupManager not found. Using Op only permissions.");
-           }
-       } catch (Throwable e) {
-    	   Saga.severe("GroupManager failed to load: " + e.getClass().getSimpleName() + ":" + e.getMessage() +". Using Op only permissions.");
-       }
-
-        //Setup Command Manager
-        commandMap = new CommandsManager<Player>() {
-          
-        	
-        	@Override
-            public boolean hasPermission(Player player, String perm) {
-            	
-            	
-                if ( worldsHolder != null ) {
-                   
-                	OverloadedWorldHolder world = worldsHolder.getWorldData(player);
-                    User user = world.getUser(player.getName());
-                    return world.getPermissionsHandler().checkUserPermission(user, perm) || player.isOp();
-                    
-                } else  {
-                	
-                	if(perm.startsWith("saga.user")) return true;
-                	
-                    return player.isOp();
-                    
-                }
-                
-                
-            }
-            
-        	
-        };
+        // Enable permissions:
+        PermissionsManager.enable();
 
         // Configuration:
         Clock.load(); // Needs access to Saga.pluging().
-        GuildConfiguration.load();
         BalanceConfiguration.load();
         ExperienceConfiguration.load();
         AbilityConfiguration.load();
-        SkillConfiguration.load();
+        AttributeConfiguration.load();
         ProficiencyConfiguration.load(); // Needs access to experience info.
         ChunkGroupConfiguration.load();
         EconomyConfiguration.load();
         FactionConfiguration.load();
         
         // Managers:
-        GuildsManager.load(); // Needs access to the clock.
         ChunkGroupManager.load();
         FactionManager.load(); // Needs access to chunk group manager.
         EconomyManager.load(); // Needs access to clock.
@@ -212,30 +182,31 @@ public class Saga extends JavaPlugin implements MinuteTicker{
       	pluginManager.registerEvents(new EntityListener(), this);
       	pluginManager.registerEvents(new BlockListener(), this);
       	pluginManager.registerEvents(new ServerListener(), this);
-        
+      	pluginManager.registerEvents(new WorldListener(), this);
+
+      	
+      	// Commands map:
+      	CommandsManager<Player> commandMap = PermissionsManager.getCommandMap();
+      	
         //Register Command Classes to the command map
-        commandMap.register(SagaCommands.class);
+        commandMap.register(AdminCommands.class);
         commandMap.register(FactionCommands.class);
         commandMap.register(ChunkGroupCommands.class);
         commandMap.register(EconomyCommands.class);
         commandMap.register(PlayerCommands.class);
         commandMap.register(StatisticsCommands.class);
-        
-        // Register all buildings as command classes:
-        ArrayList<Building> buildings = ChunkGroupConfiguration.config().getBuildings();
-		for (Building building : buildings) {
-			commandMap.register(building.getClass());
-		}
+        commandMap.register(BuildingCommands.class);
 
         // Load all saga players:
         loadAllSagaPlayers();
 		
-        Saga.info("Saga enabled.");
+        SagaLogger.info("Saga enabled.");
 
         // Enable automatic saving:
     	saveMinutes = BalanceConfiguration.config().saveInterval;
     	Clock.clock().registerMinuteTick(this);
         
+    	
 	}
     
     
@@ -443,7 +414,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
      * @return true if the player exists
      */
     public boolean isSagaPlayerExistant(String playerName) {
-    	return SagaPlayer.checkExistance(playerName);
+    	return SagaPlayer.checkExists(playerName);
 	}
     
     /**
@@ -580,7 +551,6 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         ChunkGroupManager.save();
         FactionManager.save();
         EconomyManager.save();
-        GuildsManager.save();
     	StatisticsManager.save();
     	
 	}
@@ -643,6 +613,8 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     public boolean handleCommand(Player player, String[] split, String command) {
 
     	
+    	CommandsManager<Player> commandMap = PermissionsManager.getCommandMap();
+    	
         try {
 
             split[0] = split[0].substring(1);
@@ -676,12 +648,12 @@ public class Saga extends JavaPlugin implements MinuteTicker{
             	
             } catch (CommandUsageException e) {
                 
-            	player.sendMessage(e.getMessage());
+            	if(e.getMessage() != null) player.sendMessage(e.getMessage());
                 player.sendMessage(e.getUsage());
                 
             } catch (WrappedCommandException e) {
                 
-            	player.sendMessage(ChatColor.RED + e.getMessage());
+            	if(e.getMessage() != null) player.sendMessage(ChatColor.RED + e.getMessage());
                 throw e;
                 
             } catch (UnhandledCommandException e) {
@@ -696,7 +668,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         } catch (Throwable t) {
 
             player.sendMessage("Failed to handle command: " + command);
-            player.sendMessage(t.getMessage());
+            if(t.getMessage() != null) player.sendMessage(t.getMessage());
             t.printStackTrace();
             return false;
 
@@ -716,31 +688,21 @@ public class Saga extends JavaPlugin implements MinuteTicker{
      * @param permission permission
      * @return true if has permission
      */
-    public boolean hasPermission(SagaPlayer sagaPlayer, String permission) {
+    public boolean hasPermission2(SagaPlayer sagaPlayer, String permission) {
     	
-    	try {
-    		
-    		if(commandMap != null && sagaPlayer.isOnline() && commandMap.hasPermission(sagaPlayer.getPlayer(), permission)) return true;
-    		
-		} catch (Throwable e) {
-			
-			Saga.severe(getClass(), "failed to check GroupManager permission for " + sagaPlayer.getName() + ", " + e.getClass().getSimpleName() + ":" + e.getMessage(), "ignoring GroupManager permission");
-		
-		}
-    	
-    	return false;
-    	
-	}
-    
-    /**
-     * Checks if the player has access to admin mode.
-     * 
-     * @param sagaPlayer saga player
-     * @return true if has access
-     */
-    public boolean canAdminMode(SagaPlayer sagaPlayer) {
+//    	try {
+//    		
+//    		if(commandMap != null && sagaPlayer.isOnline() && commandMap.hasPermission(sagaPlayer.getPlayer(), permission)) return true;
+//    		
+//		} catch (Throwable e) {
+//			
+//			Saga.severe(getClass(), "failed to check GroupManager permission for " + sagaPlayer.getName() + ", " + e.getClass().getSimpleName() + ":" + e.getMessage(), "ignoring GroupManager permission");
+//		
+//		}
+//    	
+//    	return false;
 
-    	return hasPermission(sagaPlayer, "saga.admin.adminmode");
+    	return false;
     	
 	}
     

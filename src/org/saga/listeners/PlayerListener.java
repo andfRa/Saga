@@ -7,8 +7,9 @@ package org.saga.listeners;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
-import org.bukkit.entity.Creature;
+import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -23,13 +24,20 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
+import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.FactionConfiguration;
+import org.saga.dependencies.PermissionsManager;
 import org.saga.factions.SagaFaction;
+import org.saga.listeners.events.SagaBuildEvent;
+import org.saga.listeners.events.SagaInteractEntityEvent;
+import org.saga.messages.SagaMessages;
+import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
+import org.saga.statistics.StatisticsManager;
 
 public class PlayerListener implements Listener {
 
@@ -98,8 +106,9 @@ public class PlayerListener implements Listener {
     		return;
     	}
 
-    	// Send event:
-    	sagaPlayer.playerQuitEvent(event);
+		// Statistics:
+    	StatisticsManager.manager().setLevel(sagaPlayer);
+    	StatisticsManager.manager().setAttributes(sagaPlayer);
     	
     	// Remove player:
     	sagaPlayer.removePlayer();
@@ -110,7 +119,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
     	
-
+    	
     	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
     	
     	// Invalid player:
@@ -120,12 +129,19 @@ public class PlayerListener implements Listener {
     	}
 
     	// Get chunk group:
-    	ChunkGroup chunkGroup = sagaPlayer.getRegisteredChunkGroup();
+    	ChunkGroup chunkGroup = sagaPlayer.getChunkGroup();
     	
     	// Forward to chunk group:
     	if(chunkGroup != null) chunkGroup.onMemberRespawn(sagaPlayer, event);
 
-    	
+    	// Restore rune:
+		if(!sagaPlayer.getGuardRune().isEmpty()){
+			
+			GuardianRune.handleRestore(sagaPlayer);
+			
+		}
+
+		
     }
 
     @EventHandler(priority = EventPriority.NORMAL)
@@ -176,33 +192,57 @@ public class PlayerListener implements Listener {
     	}
 
     	// Get Saga chunk:
-    	Block clickedBlock = event.getClickedBlock();
-    	Location location = event.getPlayer().getLocation();
-    	if(clickedBlock != null) location = clickedBlock.getLocation();
+    	Location location = null;
+    	if(event.getClickedBlock() != null){
+    		location = event.getClickedBlock().getLocation();
+    	}else{
+    		location = event.getPlayer().getLocation();
+    	}
     	SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
-
     	
     	// Invalid player:
     	if(sagaPlayer == null){
     		
     		Saga.warning("Can't continue with onPlayerInteract, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
-    		
-    		if(sagaChunk != null){
-    			Saga.info("Found saga chunk. Canceling event.");
-    			event.setCancelled(true);
-    		}
+    		event.setCancelled(true);
     		
     		return;
     		
     	}
     	
+    	// Build event:
+    	if(isBuildEvent(event)){
+
+    		SagaBuildEvent eventB = new SagaBuildEvent(event, sagaPlayer, sagaChunk);
+    		
+        	// Claimed:
+        	if(eventB.getSagaChunk() != null){
+        		
+        		sagaChunk.onBuild(eventB);
+        		
+        	}
+        	
+        	// Wilderness:
+        	else{
+        		
+        		if(!PermissionsManager.hasPermission(sagaPlayer, PermissionsManager.WILDERNESS_BUILD_PERMISSION)){
+        			sagaPlayer.message(SagaMessages.noPermissionWilderness());
+        			eventB.cancel();
+        		}
+        		
+        	}
+
+        	if(eventB.isCancelled()) return;
+        	
+    	}
+
     	// Forward to saga chunk:
     	if(sagaChunk != null) sagaChunk.onPlayerInteract(event, sagaPlayer);
     	
     	if(event.isCancelled()) return;
     	
-    	// Forward to level manager:
-    	sagaPlayer.getLevelManager().onPlayerInteract(event);
+    	// Forward to managers:
+    	sagaPlayer.getAbilityManager().onInteract(event);
     	
     	
 	}
@@ -220,7 +260,7 @@ public class PlayerListener implements Listener {
     	}
     	
     	// No faction or not formed yet:
-    	SagaFaction sagaFaction = sagaPlayer.getRegisteredFaction();
+    	SagaFaction sagaFaction = sagaPlayer.getFaction();
     	if(sagaFaction == null || !sagaFaction.isFormed()) return;
     	
     	ChatColor primaryColor = sagaFaction.getPrimaryColor();
@@ -253,24 +293,6 @@ public class PlayerListener implements Listener {
     		return;
     	}
     	
-    	// Target player:
-    	if(event.getRightClicked() instanceof Player){
-    		
-    		SagaPlayer targetSagaPlayer = Saga.plugin().getSagaPlayer(((Player) event.getRightClicked()).getName());
-        	if(targetSagaPlayer == null){
-        		Saga.warning("Can't continue with onPlayerInteractEntity, because the target saga player for "+ event.getPlayer().getName() + " isn't loaded.");
-        		return;
-        	}
-
-        	// Forward to level manager:
-        	sagaPlayer.getLevelManager().onPlayerInteractPlayer(event, targetSagaPlayer);
-        	
-    	}else if(event.getRightClicked() instanceof Creature){
-    		
-        	// Forward to level manager:
-        	sagaPlayer.getLevelManager().onPlayerInteractCreature(event, (Creature) event.getRightClicked());
-    		
-    	}
     	
     	
     }
@@ -308,5 +330,61 @@ public class PlayerListener implements Listener {
     	
     }
     
+    private boolean isBuildEvent(PlayerInteractEvent event) {
+
+		
+		ItemStack item = event.getPlayer().getItemInHand();
+		Block block = event.getClickedBlock();
+		
+		switch (item.getType()) {
+			
+			case LAVA_BUCKET:
+				
+				return true;
+			
+			case FLINT_AND_STEEL:
+				
+				return true;
+				
+			case FIREBALL:
+				
+				return true;
+
+			case WATER_BUCKET:
+				
+				return true;
+				
+			case BUCKET:
+
+				return true;
+				
+			case INK_SACK:
+				
+				if(item.getData().getData() != 15) break;
+				return true;
+				
+			case PAINTING:
+	
+				return true;
+
+			default:
+				break;
+			
+		}
+		
+		// Fire:
+		if(block != null && block.getRelative(BlockFace.UP) != null && block.getRelative(BlockFace.UP).getType() == Material.FIRE){
+			return true;
+		}
+		
+		// Trample:
+		if(event.getAction() == Action.PHYSICAL && block != null && block.getType() == Material.SOIL){
+			return true;
+		}
+		
+		return false;
+		
+		
+	}
     
 }

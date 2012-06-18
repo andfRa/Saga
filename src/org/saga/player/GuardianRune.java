@@ -1,28 +1,20 @@
 package org.saga.player;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.saga.Saga;
-import org.saga.config.ExperienceConfiguration;
-import org.saga.economy.InventoryUtil;
+import org.saga.SagaLogger;
+import org.saga.config.BalanceConfiguration;
 import org.saga.messages.PlayerMessages;
 import org.saga.statistics.StatisticsManager;
 
 
 public class GuardianRune {
 	
-
-	/**
-	 * Guardian stone status.
-	 */
-	private GuardianRuneStatus status;
 
 	/**
 	 * True if the rune is charged.
@@ -32,38 +24,44 @@ public class GuardianRune {
 	/**
 	 * Items contained.
 	 */
-	private Hashtable<Integer, ItemStack> items;
+	private ItemStack[] items;
 	
 	/**
-	 * Items contained.
+	 * Armour contained.
 	 */
-	private Hashtable<Integer, ItemStack> armor;
-	
+	private ItemStack[] armour;
+
 	/**
 	 * Experience contained.
 	 */
-	private Integer exp;
+	private Float exp;
+
+	/**
+	 * Levels contained.
+	 */
+	private Integer levels;
 	
 	/**
 	 * True if enabled.
 	 */
 	private Boolean enabled;
 	
-	
-	// Initialization:
-	/**
-	 * Creates a guardian stone.
-	 * 
-	 * @param items items stored
-	 * @param exp experience stored
-	 * @param status guardian stone status
-	 */
-	private GuardianRune(Hashtable<Integer, ItemStack> items, Hashtable<Integer, ItemStack>  armor, Integer exp, GuardianRuneStatus status) {
 
-		this.armor = armor;
-		this.items = items;
-		this.exp = exp;
-		this.status = status;
+	
+	
+	// Initialisation:
+	/**
+	 * Creates a guardian rune.
+	 * 
+	 * @param sagaPlayer saga player
+	 */
+	public GuardianRune(SagaPlayer sagaPlayer) {
+
+		this.armour =  new ItemStack[0];
+		this.items =  new ItemStack[0];
+		this.exp = (float) 0;
+		this.levels = 0;
+		this.levels = 0;
 		this.enabled = true;
 		this.charged = true;
 		
@@ -82,51 +80,47 @@ public class GuardianRune {
 		
 		// Fields:
 		if(exp == null){
-			exp = 0;
-			Saga.severe(getClass(), "exp field failed to initialize", "setting default");
+			exp = (float) 0;
+			SagaLogger.nullField(getClass(), "exp");
+			integrity = false;
+		}
+		
+		if(levels == null){
+			levels = 0;
+			SagaLogger.nullField(getClass(), "levels");
 			integrity = false;
 		}
 		
 		if(charged == null){
 			charged = false;
-			Saga.severe(getClass(), "charged field failed to initialize", "setting default");
+			SagaLogger.nullField(getClass(), "charged");
 			integrity = false;
 		}
 		
 		if(items == null){
-			items = new Hashtable<Integer, ItemStack>();
-			Saga.severe(getClass(), "items field failed to initialize", "setting default");
+			items = new ItemStack[0];
+			SagaLogger.nullField(getClass(), "items");
 			integrity = false;
 		}
 		
-		if(armor == null){
-			armor = new Hashtable<Integer, ItemStack>();
-			Saga.severe(getClass(), "armor field failed to initialize", "setting default");
-			integrity = false;
-		}
-		
-		if(status == null){
-			status = GuardianRuneStatus.FULL;
-			Saga.severe(getClass(), "status field failed to initialize", "setting default");
+		if(armour == null){
+			armour = new ItemStack[0];
+			SagaLogger.nullField(getClass(), "armor");
 			integrity = false;
 		}
 		
 		if(enabled == null){
 			enabled = true;
-			Saga.severe(getClass(), "enabled field failed to initialize", "setting default");
+			SagaLogger.nullField(getClass(), "enabled");
 			integrity = false;
-		}
-		
-		if(status.equals(GuardianRuneStatus.FULL)){
-			status = GuardianRuneStatus.DISCHARGED;
-		}else{
-			status = GuardianRuneStatus.CHARGED;
 		}
 		
 		return integrity;
 		
 
 	}
+	
+	
 	
 	
 	// Usage:
@@ -138,36 +132,12 @@ public class GuardianRune {
 	public void absorb(Player player) {
 
 		
-		this.exp = ExperienceConfiguration.config().getTotalExperience(player);
-		this.items = new Hashtable<Integer, ItemStack>();
+		this.charged = false;
+		this.items =  player.getInventory().getContents();
+		this.armour =  player.getInventory().getArmorContents();
+		this.exp = player.getExp();
+		this.levels = player.getLevel();
 		
-		// Absorb items:
-		ItemStack[] contents = player.getInventory().getContents();
-		for (int i = 0; i < contents.length; i++) {
-				
-			putItem(i, contents[i]);
-			
-		}
-
-		// Absorb armor:
-		ItemStack[] armorContents = player.getInventory().getArmorContents();
-		for (int i = 0; i < armorContents.length; i++) {
-				
-			putArmor(i, armorContents[i]);
-			
-		}
-//		
-//		// Use the stone:
-//		if(exp.intValue() > 0 || items.size() > 0){
-//			
-//			return true;
-//			
-//		}else{
-//			
-//			return false;
-//			
-//		}
-//		
 		
 	}
 	
@@ -180,75 +150,50 @@ public class GuardianRune {
 	public void restore(Player player) {
 
 		
-		ArrayList<ItemStack> remainingItems = new ArrayList<ItemStack>();
-		
-		// Add experience:
-		for (int i = 0; i < exp; i++) {
-			player.giveExp(1);
-		}
-		exp = 0;
-		
-		PlayerInventory inventory = player.getInventory();
-		
-		// Add items:
-		for (int i = 0; i < inventory.getSize(); i++) {
-			
-			// Absorbed item:
-			ItemStack absorbedItem = takeItem(i);
-			if(absorbedItem == null) continue;
-			
-			// Only put in empty slots:
-			if(!(inventory.getItem(i) == null || inventory.getItem(i).getType().equals(Material.AIR))){
-				
-				remainingItems.add(absorbedItem);
-				continue;
-				
-			}
-			
-			// Put item:
-			inventory.setItem(i, absorbedItem);
-			
-		}
-		
-		// Add armor:
-		ItemStack[] armorContents = inventory.getArmorContents();
-		for (int i = 0; i < armorContents.length; i++) {
+		try {
 
-			// Absorbed item:
-			ItemStack absorbedItem = takeArmor(i);
-			if(absorbedItem == null || absorbedItem.getType().equals(Material.AIR)) continue;
-
-			// Only put in empty slots:
-			if(!(armorContents[i] == null || armorContents[i].getType().equals(Material.AIR))){
-				
-				remainingItems.add(absorbedItem);
-				continue;
-				
-			}
+			// Items and armour:
+			player.getInventory().setContents(items);
+			player.getInventory().setArmorContents(armour);
 			
-			// Put item:
-			armorContents[i] = absorbedItem;
+			// Levels and exp:
+			player.setLevel(levels);
+			player.setExp(exp);
 			
 		}
-		inventory.setArmorContents(armorContents);
-		
-		
-		// Add left items:
-		for (ItemStack remainingItem : remainingItems) {
-			
-			InventoryUtil.addItem(remainingItem, inventory, player.getLocation());
-		
+		catch (Exception e) {
+			SagaLogger.severe(this, "guardian rune failure: " + e.getClass().getSimpleName() + ":" + e.getMessage());
+			e.printStackTrace();
 		}
 		
-//		// Discharge the stone:
-//		status = GuardianRuneStatus.DISCHARGED;
-
 		// Update inventory:
 		player.updateInventory();
 		
 		
 	}
 
+	/**
+	 * Checks if the stone is empty.
+	 * 
+	 * @return true if empty
+	 */
+	public boolean isEmpty() {
+		return levels <= 0 && exp <= 0 && items.length <= 0 && armour.length <= 0;
+	}
+	
+	/**
+	 * Clears the rune.
+	 * 
+	 */
+	private void clear() {
+
+		items = new ItemStack[0];
+		armour = new ItemStack[0];
+		levels = 0;
+		exp = (float) 0;
+
+	}
+	
 	/**
 	 * Enables or disables the stone.
 	 * 
@@ -259,37 +204,6 @@ public class GuardianRune {
 	}
 	
 	/**
-	 * Creates a new guardian stone.
-	 * 
-	 * @return guardian stone
-	 */
-	public static GuardianRune newStone() {
-
-		return new GuardianRune(new Hashtable<Integer, ItemStack>(), new Hashtable<Integer, ItemStack>(), 0, GuardianRuneStatus.EMPTY);
-		
-	}
-	
-	
-	// Interaction:
-	/**
-	 * Gets the status.
-	 * 
-	 * @return the status
-	 */
-	public GuardianRuneStatus getStatus() {
-		return status;
-	}
-	
-	/**
-	 * Checks if the stone is empty.
-	 * 
-	 * @return true if empty
-	 */
-	public boolean isEmpty() {
-		return exp <= 0 && items.size() <= 0 && armor.size() <= 0;
-	}
-	
-	/**
 	 * Gets if enabled.
 	 * 
 	 * @return true if enabled
@@ -297,13 +211,37 @@ public class GuardianRune {
 	public Boolean isEnabled() {
 		return enabled;
 	}
-
+	
+	/**
+	 * Gets the enchant exp.
+	 * 
+	 * @return the exp
+	 */
+	public Float getExp() {
+		return exp;
+	}
+	
+	/**
+	 * Gets the enchant level points.
+	 * 
+	 * @return enchant level points
+	 */
+	public Integer getLevel() {
+		return levels;
+	}
+	
+	
+	
+	
+	// Getters:
 	/**
 	 * Gets the items.
 	 * 
 	 * @return the items
 	 */
-	public Hashtable<Integer, ItemStack> getItems() {
+	public ItemStack[] getItems() {
+	
+	
 		return items;
 	}
 
@@ -312,87 +250,13 @@ public class GuardianRune {
 	 * 
 	 * @return the armor
 	 */
-	public Hashtable<Integer, ItemStack> getArmor() {
-		return armor;
-	}
+	public ItemStack[] getArmour() {
+	
+	
+		return armour;
+	}	
 
 	
-	/**
-	 * Gets the exp.
-	 * 
-	 * @return the exp
-	 */
-	public Integer getExp() {
-		return exp;
-	}
-	
-	/**
-	 * Puts the item.
-	 * 
-	 * @param index index
-	 * @param item item
-	 */
-	private void putItem(Integer index, ItemStack item) {
-
-		
-		if(item == null || item.getType().equals(Material.AIR)) return;
-		
-		items.put(index, item);
-		
-		
-	}
-	
-	/**
-	 * Puts the armor.
-	 * 
-	 * @param index index
-	 * @param item armor
-	 */
-	private void putArmor(Integer index, ItemStack item) {
-
-		
-		if(item == null || item.getType().equals(Material.AIR)) return;
-		
-		armor.put(index, item);
-		
-		
-	}
-	
-	/**
-	 * Takes the item.
-	 * 
-	 * @param index index
-	 * @return item taken, null if air or none
-	 */
-	private ItemStack takeItem(Integer index) {
-
-		
-		ItemStack item = items.remove(index);
-		
-		if(item == null || item.getType().equals(Material.AIR)) return null;
-		
-		return item;
-		
-		
-	}
-	
-	/**
-	 * Takes the armor.
-	 * 
-	 * @param index index
-	 * @return armor taken, null if air or none
-	 */
-	private ItemStack takeArmor(Integer index) {
-
-
-		ItemStack item = armor.remove(index);
-		
-		if(item == null || item.getType().equals(Material.AIR)) return null;
-		
-		return item;
-		
-		
-	}
 	
 	
 	// Charge:
@@ -405,6 +269,7 @@ public class GuardianRune {
 		return charged;
 	}
 	
+
 	/**
 	 * Recharges the rune.
 	 * 
@@ -422,6 +287,8 @@ public class GuardianRune {
 	}
 	
 	
+	
+	
 	// Other:
 	@Override
 	public String toString() {
@@ -429,47 +296,25 @@ public class GuardianRune {
 	}
 
 	/**
-	 * Guardian rune status.
+	 * Counts items.
 	 * 
-	 * @author andf
-	 *
+	 * @param items items
+	 * @return item count
 	 */
-	public static enum GuardianRuneStatus{
-		
-		EMPTY("empty"),
-		FULL("full"),
-		BROKEN("broken"),
-		
-		CHARGED("charged"),
-		DISCHARGED("discharged");
-		
-		/**
-		 * Status name.
-		 */
-		private final String name;
-		
-		/**
-		 * Sets status name.
-		 * 
-		 * @param name status name
-		 */
-		private GuardianRuneStatus(String name) {
-			this.name = name;
+	public static int countItems(ItemStack[] items) {
+
+
+		int count = 0;
+		for (int i = 0; i < items.length; i++) {
+			if(items[i] != null && items[i].getType() != Material.AIR)
+				count += items[i].getAmount();
 		}
-		
-		/**
-		 * Gets status name.
-		 * 
-		 * @return status name
-		 */
-		public String getStatusName() {
-			return name;
-		}
-		
+		return count;
+
 	}
 	
 	
-	// Events:
+	// Absorb and restore:
 	/**
 	 * Handles rune restoration after death.
 	 * 
@@ -478,15 +323,24 @@ public class GuardianRune {
 	 */
 	public static void handleRestore(SagaPlayer sagaPlayer){
 		
+		
+		
+		Player player = sagaPlayer.getPlayer();
+		GuardianRune rune = sagaPlayer.getGuardRune();
+		
+		// Rune disabled in the world:
+		if(!BalanceConfiguration.config().isRuneEnabled(rune, sagaPlayer.getLocation().getWorld())) return;
+		
+		if(rune.isEmpty()) return;
 
-		GuardianRune rune = sagaPlayer.getGuardianRune();
-		if(sagaPlayer.getGuardianRune().isEmpty()) return;
-
+		// Restore:
+		rune.restore(player);
+		
 		// Inform:
 		sagaPlayer.message(PlayerMessages.restored(rune));
 		
-		// Restore:
-		sagaPlayer.guardianRuneRestore();
+		// Clear:
+		rune.clear();
 		
 		// Statistics:
 		StatisticsManager.manager().onGuardanRuneRestore();
@@ -501,13 +355,17 @@ public class GuardianRune {
 	 * @param event event
 	 * @return true if absorbed
 	 */
-	public static boolean handleAbsorb(SagaPlayer sagaDead, PlayerDeathEvent event){
+	public static boolean handleAbsorb(SagaPlayer sagaDead, EntityDeathEvent event){
 		
 		
-		GuardianRune rune = sagaDead.getGuardianRune();
+		GuardianRune rune = sagaDead.getGuardRune();
+		Player player = sagaDead.getPlayer();
+		
+		// Rune disabled in the world:
+		if(!BalanceConfiguration.config().isRuneEnabled(rune, player.getLocation().getWorld())) return false;
 		
 		// Nothing to absorb:
-		if(!sagaDead.checkGuardRuneAbsorb()){
+		if(countItems(player.getInventory().getContents()) <= 0 && countItems(player.getInventory().getArmorContents()) <= 0 && player.getLevel() <= 0 && player.getExp() <= 0){
 			return false;
 		}
 		
@@ -525,7 +383,7 @@ public class GuardianRune {
 		}
 		
 		// Absorb:
-		sagaDead.guardianRuneAbsorb();
+		rune.absorb(player);
 		
 		// Remove drops:
 		List<ItemStack> drops = event.getDrops();
@@ -535,9 +393,6 @@ public class GuardianRune {
 		// Discharge:
 		rune.discharge();
 	
-		// Indicate:
-		sagaDead.onGuardRuneAbsorption();
-		
 		return true;
 		
 		

@@ -12,15 +12,12 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Clock;
 import org.saga.Clock.TimeOfDayTicker;
 import org.saga.Saga;
-import org.saga.buildings.BuildingDefinition.BuildingPermission;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.BuySign;
 import org.saga.buildings.signs.SellSign;
@@ -28,23 +25,17 @@ import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.config.EconomyConfiguration;
-import org.saga.economy.EconomyCommands;
 import org.saga.economy.EconomyManager;
 import org.saga.economy.EconomyManager.InvalidWorldException;
 import org.saga.economy.EconomyManager.TradeDealNotFoundException;
 import org.saga.economy.EconomyManager.TransactionType;
-import org.saga.economy.EconomyMessages;
 import org.saga.economy.TradeDeal;
 import org.saga.economy.TradeDeal.TradeDealType;
 import org.saga.economy.Trader;
+import org.saga.exceptions.InvalidBuildingException;
 import org.saga.messages.BuildingMessages;
-import org.saga.messages.ChunkGroupMessages;
-import org.saga.messages.SagaMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.TwoPointFunction;
-import org.sk89q.Command;
-import org.sk89q.CommandContext;
-import org.sk89q.CommandPermissions;
 
 
 public class TradingPost extends Building implements Trader, TimeOfDayTicker{
@@ -135,22 +126,20 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	private Boolean automated;
 	
 	
-	// Initialization:
+	// Initialisation:
 	/**
-	 * Initializes
+	 * Creates a building from the definition.
 	 * 
-	 * @param pointCost point cost
-	 * @param moneyCost money cost
-	 * @param proficiencies proficiencies
+	 * @param definition building definition
 	 */
-	private TradingPost(Double coins, Hashtable<Material, Integer> storedItems) {
+	public TradingPost(BuildingDefinition definition) {
 		
+		super(definition);
 		
-		super("");
-		this.coins = coins;
+		this.coins = 0.0;
 		this.sellPrices = new Hashtable<Material, Double>();
 		this.buyPrices = new Hashtable<Material, Double>();
-		this.stored = storedItems;
+		this.stored = new Hashtable<Material, Integer>();
 		this.tradeDeals = new ArrayList<TradeDeal>();
 		
 		this.imported = 0.0;
@@ -171,10 +160,10 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	 * @see org.saga.buildings.Building#completeExtended()
 	 */
 	@Override
-	public boolean completeExtended() {
+	public boolean complete() throws InvalidBuildingException {
 		
 
-		boolean integrity = true;
+		boolean integrity = super.complete();
 		
 		if(coins == null){
 			coins = 0.0;
@@ -269,18 +258,6 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		
 		return integrity;
 		
-		
-	}
-
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#duplicate()
-	 */
-	@Override
-	public Building blueprint() {
-		
-		return new TradingPost(coins, new Hashtable<Material, Integer>(stored));
 		
 	}
 
@@ -999,6 +976,16 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	}
 
 	/**
+	 * Add a new deal.
+	 * 
+	 * @param deal new deal
+	 */
+	public void addNewDeal(TradeDeal deal) {
+		newDeals.add(deal);
+	}
+
+	
+	/**
 	 * Gets the expiredDeals.
 	 * 
 	 * @return the expiredDeals
@@ -1230,71 +1217,6 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	/* 
 	 * (non-Javadoc)
 	 * 
-	 * @see org.saga.buildings.Building#onBlockPlace(org.bukkit.event.block.BlockPlaceEvent, org.saga.SagaPlayer)
-	 */
-	@Override
-	public void onBlockPlace(BlockPlaceEvent event, SagaPlayer sagaPlayer) {
-		
-
-		// Canceled:
-		if(event.isCancelled()){
-			return;
-		}
-
-		// Building permission:
-		if(!super.canBuild(sagaPlayer)){
-			event.setCancelled(true);
-			sagaPlayer.message(SagaMessages.noPermission(this));
-			return;
-		}
-		
-		
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#onBlockBreak(org.bukkit.event.block.BlockBreakEvent, org.saga.SagaPlayer)
-	 */
-	@Override
-	public void onBlockBreak(BlockBreakEvent event, SagaPlayer sagaPlayer) {
-
-
-		// Canceled:
-		if(event.isCancelled()){
-			return;
-		}
-		
-		// Building permission:
-		if(!super.canBuild(sagaPlayer)){
-			event.setCancelled(true);
-			sagaPlayer.message(SagaMessages.noPermission(this));
-			return;
-		}
-		
-		Block targetBlock = event.getBlock();
-
-		// Sign:
-		if(!(targetBlock.getState() instanceof Sign)){
-			return;
-		}
-//		
-//		// Trade sign:
-//		TradeSign tradeSign = tradeSignAt(targetBlock.getLocation());
-//		if(tradeSign == null){
-//			return;
-//		}
-//
-//		// Delete and remove sign:
-//		tradeSign.remove();
-//		removeTradeSign(tradeSign);
-//		
-//		
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
 	 * @see org.saga.buildings.Building#onSignChange(org.bukkit.event.block.SignChangeEvent, org.saga.player.SagaPlayer)
 	 */
 	@Override
@@ -1413,6 +1335,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		
 	}
 	
+	
 	// Other:
 	/* 
 	 * (non-Javadoc)
@@ -1424,816 +1347,6 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		return super.toString();
 	}
 
-	
-	// Commands:
-	@Command(
-			aliases = {"bsetsell", "setsell"},
-			usage = "[item] <price>",
-			flags = "",
-			desc = "Sets item sell price. Item in hand if no item is given.",
-			min = 1,
-			max = 2
-	)
-	@CommandPermissions({"saga.user.building.tradingpost.economy.setsell"})
-	public static void setSell(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-		
-		// Retrieve building:
-		TradingPost selectedBuilding = null;
-		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-		} catch (Throwable e) {
-			sagaPlayer.message(e.getMessage());
-			return;
-		}
-		
-		Material material = null;
-		Double price = null;
-		
-		// Permission:
-		if(!selectedBuilding.checkBuildingPermission(sagaPlayer, BuildingPermission.HIGH)){
-			sagaPlayer.message(SagaMessages.noPermission(selectedBuilding));
-			return;
-		}
-		
-		// Arguments:
-		if(args.argsLength() == 2){
-			
-			String sMaterial = args.getString(0);
-			material = Material.matchMaterial(sMaterial);
-			if(material == null){
-				try {
-					material = Material.getMaterial(Integer.parseInt(sMaterial));
-				} catch (NumberFormatException e) { }
-			}
-			if(material == null){
-				sagaPlayer.message(EconomyMessages.invalidMaterial(sMaterial));
-				return;
-			}
-			
-			// Price:
-			String sValue = args.getString(1);
-			try {
-				price = Double.parseDouble(sValue);
-			} catch (NumberFormatException e) {
-				sagaPlayer.message(EconomyMessages.invalidPrice(sValue));
-				return;
-			}
-			
-		}else{
-			
-			// Material:
-			ItemStack item = sagaPlayer.getItemInHand();
-			if(item != null && item.getType() != Material.AIR) material = item.getType();
-			if(material == null){
-				sagaPlayer.message(EconomyMessages.invalidItemHand());
-				return;
-			}
-			
-			// Price:
-			String sValue = args.getString(0);
-			try {
-				price = Double.parseDouble(sValue);
-			} catch (NumberFormatException e) {
-				sagaPlayer.message(EconomyMessages.invalidPrice(sValue));
-				return;
-			}
-			
-		}
-		
-		// Add price:
-		selectedBuilding.setSellPrice(material, price);
-		
-		// Inform:
-		sagaPlayer.message(EconomyMessages.setSell(material, price));
-		
-		// Notify transaction:
-		selectedBuilding.notifyTransaction();
-		
-		
-	}
-
-	@Command(
-			aliases = {"bremovesell", "removesell"},
-			usage = "[item]",
-			flags = "",
-			desc = "Removes item sell price. Item in hand if no item is given.",
-			min = 1,
-			max = 0
-	)
-	@CommandPermissions({"saga.user.building.tradingpost.economy.removesell"})
-	public static void removeSell(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-		
-		// Retrieve building:
-		TradingPost selectedBuilding = null;
-		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-		} catch (Throwable e) {
-			sagaPlayer.message(e.getMessage());
-			return;
-		}
-		
-		Material material = null;
-		
-		// Permission:
-		if(!selectedBuilding.checkBuildingPermission(sagaPlayer, BuildingPermission.HIGH)){
-			sagaPlayer.message(SagaMessages.noPermission(selectedBuilding));
-			return;
-		}
-		
-		// Arguments:
-		if(args.argsLength() == 1){
-			
-			String sMaterial = args.getString(0);
-			material = Material.matchMaterial(sMaterial);
-			if(material == null){
-				try {
-					material = Material.getMaterial(Integer.parseInt(sMaterial));
-				} catch (NumberFormatException e) { }
-			}
-			if(material == null){
-				sagaPlayer.message(EconomyMessages.invalidMaterial(sMaterial));
-				return;
-			}
-			
-		}else{
-			
-			// Material:
-			ItemStack item = sagaPlayer.getItemInHand();
-			if(item != null && item.getType() != Material.AIR) material = item.getType();
-			if(material == null){
-				sagaPlayer.message(EconomyMessages.invalidItemHand());
-				return;
-			}
-			
-		}
-		
-		// Remove price:
-		selectedBuilding.removeSellPrice(material);
-		
-		// Inform:
-		sagaPlayer.message(EconomyMessages.removeSell(material));
-		
-		// Notify transaction:
-		selectedBuilding.notifyTransaction();
-		
-		
-	}
-	
-	@Command(
-			aliases = {"bsetbuy", "setbuy"},
-			usage = "[item] <price>",
-			flags = "",
-			desc = "Sets item buy price. Item in hand if no item is given.",
-			min = 1,
-			max = 2
-	)
-	@CommandPermissions({"saga.user.building.tradingpost.economy.setsell"})
-	public static void setBuy(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-		
-		// Retrieve building:
-		TradingPost selectedBuilding = null;
-		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-		} catch (Throwable e) {
-			sagaPlayer.message(e.getMessage());
-			return;
-		}
-		
-		Material material = null;
-		Double price = null;
-		
-		// Permission:
-		if(!selectedBuilding.checkBuildingPermission(sagaPlayer, BuildingPermission.HIGH)){
-			sagaPlayer.message(SagaMessages.noPermission(selectedBuilding));
-			return;
-		}
-		
-		// Arguments:
-		if(args.argsLength() == 2){
-			
-			String sMaterial = args.getString(0);
-			material = Material.matchMaterial(sMaterial);
-			if(material == null){
-				try {
-					material = Material.getMaterial(Integer.parseInt(sMaterial));
-				} catch (NumberFormatException e) { }
-			}
-			if(material == null){
-				sagaPlayer.message(EconomyMessages.invalidMaterial(sMaterial));
-				return;
-			}
-			
-			// Price:
-			String sValue = args.getString(1);
-			try {
-				price = Double.parseDouble(sValue);
-			} catch (NumberFormatException e) {
-				sagaPlayer.message(EconomyMessages.invalidPrice(sValue));
-				return;
-			}
-			
-		}else{
-			
-			// Material:
-			ItemStack item = sagaPlayer.getItemInHand();
-			if(item != null && item.getType() != Material.AIR) material = item.getType();
-			if(material == null){
-				sagaPlayer.message(EconomyMessages.invalidItemHand());
-				return;
-			}
-			
-			// Price:
-			String sValue = args.getString(0);
-			try {
-				price = Double.parseDouble(sValue);
-			} catch (NumberFormatException e) {
-				sagaPlayer.message(EconomyMessages.invalidPrice(sValue));
-				return;
-			}
-			
-		}
-		
-		// Add price:
-		selectedBuilding.setBuyPrice(material, price);
-		
-		// Inform:
-		sagaPlayer.message(EconomyMessages.setBuy(material, price));
-		
-		// Notify transaction:
-		selectedBuilding.notifyTransaction();
-		
-		
-	}
-
-	@Command(
-			aliases = {"bremovebuy", "removebuy"},
-			usage = "[item]",
-			flags = "",
-			desc = "Removes item buy price. Item in hand if no item is given.",
-			min = 1,
-			max = 0
-	)
-	@CommandPermissions({"saga.user.building.tradingpost.economy.removesell"})
-	public static void removeBuy(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-		
-		// Retrieve building:
-		TradingPost selectedBuilding = null;
-		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-		} catch (Throwable e) {
-			sagaPlayer.message(e.getMessage());
-			return;
-		}
-		
-		Material material = null;
-		
-		// Permission:
-		if(!selectedBuilding.checkBuildingPermission(sagaPlayer, BuildingPermission.HIGH)){
-			sagaPlayer.message(SagaMessages.noPermission(selectedBuilding));
-			return;
-		}
-		
-		// Arguments:
-		if(args.argsLength() == 1){
-			
-			String sMaterial = args.getString(0);
-			material = Material.matchMaterial(sMaterial);
-			if(material == null){
-				try {
-					material = Material.getMaterial(Integer.parseInt(sMaterial));
-				} catch (NumberFormatException e) { }
-			}
-			if(material == null){
-				sagaPlayer.message(EconomyMessages.invalidMaterial(sMaterial));
-				return;
-			}
-			
-		}else{
-			
-			// Material:
-			ItemStack item = sagaPlayer.getItemInHand();
-			if(item != null && item.getType() != Material.AIR) material = item.getType();
-			if(material == null){
-				sagaPlayer.message(EconomyMessages.invalidItemHand());
-				return;
-			}
-			
-		}
-		
-		// Remove price:
-		selectedBuilding.removeBuyPrice(material);
-		
-		// Inform:
-		sagaPlayer.message(EconomyMessages.removeSell(material));
-		
-		// Notify transaction:
-		selectedBuilding.notifyTransaction();
-		
-		
-	}
-	
-	
-	@Command(
-			aliases = {"bdonate", "donate"},
-			usage = "",
-			flags = "",
-			desc = "Donates an item held in hand to the tading post.",
-			min = 0,
-			max = 0
-	)
-	@CommandPermissions({"saga.user.building.tradingpost.economy.donate"})
-	public static void donate(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-
-		// Retrieve building:
-		TradingPost selectedBuilding = null;
-		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-		} catch (Throwable e) {
-			sagaPlayer.message(e.getMessage());
-			return;
-		}
-		
-		// Permission:
-		if(!selectedBuilding.checkBuildingPermission(sagaPlayer, BuildingPermission.LOW)){
-			sagaPlayer.message(SagaMessages.noPermission(selectedBuilding));
-			return;
-		}
-		
-		// Item:
-		ItemStack item = sagaPlayer.getItemInHand();
-		if(item == null) return;
-
-		// Damaged:
-		if(item.getDurability() > 0){
-			sagaPlayer.message(BuildingMessages.cantDonateDamaged());
-			return;
-		}
-		
-		// Enchanted:
-		if(item.getEnchantments().size() > 0){
-			sagaPlayer.message(BuildingMessages.cantDonateEnchanted());
-			return;
-		}
-		
-		// Remove:
-		item = sagaPlayer.removeItemInHand();
-		if(item.getType().equals(Material.AIR)){
-			sagaPlayer.message(EconomyMessages.nothingInHand());
-			return;
-		}
-
-		// Put:
-		selectedBuilding.addItem(item);
-		
-		// Inform:
-		SagaChunk sagaChunk = selectedBuilding.getSagaChunk();
-		if(sagaChunk != null){
-			sagaChunk.getChunkGroup().broadcast(EconomyMessages.donatedItemsBroadcast(item, selectedBuilding, sagaPlayer));
-		}
-		
-		// Notify transaction:
-		selectedBuilding.notifyTransaction();
-		
-		
-	}
-	
-	@Command(
-			aliases = {"bdonateall","donateall"},
-			usage = "<item>",
-			flags = "",
-			desc = "Donates all items of the give type.",
-			min = 1,
-			max = 1
-	)
-	@CommandPermissions({"saga.user.building.tradingpost.economy.donate"})
-	public static void donateAll(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-
-		// Retrieve building:
-		TradingPost selectedBuilding = null;
-		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-		} catch (Throwable e) {
-			sagaPlayer.message(e.getMessage());
-			return;
-		}
-		
-		// Permission:
-		if(!selectedBuilding.checkBuildingPermission(sagaPlayer, BuildingPermission.LOW)){
-			sagaPlayer.message(SagaMessages.noPermission(selectedBuilding));
-			return;
-		}
-		
-		// Arguments:
-		Material material = Material.matchMaterial(args.getString(0));
-		if(material == null || material.equals(Material.AIR)){
-			sagaPlayer.message( EconomyMessages.invalidMaterial(args.getString(0)) );
-			return;
-		}
-		
-		// Add items:
-		int amount = 0;
-		for (int i = 0; i < sagaPlayer.getInventorySize(); i++) {
-			
-			ItemStack item = sagaPlayer.getInventoryItem(i);
-			
-			if(item != null && item.getType().equals(material) && item.getDurability() == 0 && item.getEnchantments().size() == 0){
-
-				amount += item.getAmount();
-				selectedBuilding.addItem(item);
-				sagaPlayer.removeInventoryItem(i);
-				
-			}
-			
-		}
-		
-		// Inform:
-		SagaChunk sagaChunk = selectedBuilding.getSagaChunk();
-		if(sagaChunk != null){
-			sagaChunk.getChunkGroup().broadcast(EconomyMessages.donatedItemsBroadcast(new ItemStack(material, amount), selectedBuilding, sagaPlayer));
-		}
-		
-		// Notify transactions:
-		selectedBuilding.notifyTransaction();
-		
-	}
-	
-	@Command(
-			aliases = {"bdonatecurrency", "donatec"},
-			usage = "<amount>",
-			flags = "",
-			desc = "Donates currency to the tading post.",
-			min = 1,
-			max = 1
-	)
-	@CommandPermissions({"saga.user.building.tradingpost.economy.donate"})
-	public static void donateCoins(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-
-		// Retrieve building:
-		TradingPost selectedBuilding = null;
-		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-		} catch (Throwable e) {
-			sagaPlayer.message(e.getMessage());
-			return;
-		}
-		
-		// Permission:
-		if(!selectedBuilding.checkBuildingPermission(sagaPlayer, BuildingPermission.LOW)){
-			sagaPlayer.message(SagaMessages.noPermission(selectedBuilding));
-			return;
-		}
-		
-		// Amount:
-		Double amount = null;
-		try {
-			amount = Double.parseDouble(args.getString(0));
-		} catch (NumberFormatException e) {
-			sagaPlayer.message(EconomyMessages.invalidAmount(args.getString(0)));
-			return;
-		}
-		
-		// Check if enough:
-		if(sagaPlayer.getCoins() < amount){
-			sagaPlayer.message(EconomyMessages.notEnoughCoins());
-			return;
-		}
-		
-		// Remove:
-		sagaPlayer.removeCoins(amount);
-
-		// Put:
-		selectedBuilding.addCoins(amount);
-		
-		// Inform:
-		SagaChunk sagaChunk = selectedBuilding.getSagaChunk();
-		if(sagaChunk != null){
-			sagaChunk.getChunkGroup().broadcast(EconomyMessages.donatedCurrencyBroadcast(amount, selectedBuilding, sagaPlayer));
-		}
-
-		// Notify transaction:
-		selectedBuilding.notifyTransaction();
-		
-		
-	}
-	
-	@Command(
-			aliases = {"btradingpost", "tpost"},
-			usage = "",
-			flags = "",
-			desc = "Information about the trading post building.",
-			min = 0,
-			max = 0
-	)
-	@CommandPermissions({"saga.user.building.tradingpost.put"})
-	public static void tradingPost(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-
-		// Retrieve building:
-		TradingPost selectedBuilding = null;
-		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-		} catch (Throwable e) {
-			sagaPlayer.message(e.getMessage());
-			return;
-		}
-		
-		// Inform:
-		sagaPlayer.message(EconomyMessages.tradingpost(selectedBuilding));
-		
-		
-	}
-
-	@Command(
-			aliases = {"bnewdeal","bnewimport","bnewexport", "newdeal","newimport","newexport"},
-			usage = "<trade deal ID>",
-			flags = "",
-			desc = "Form a new trading deal.",
-			min = 1,
-			max = 1
-	)
-	@CommandPermissions({"saga.user.building.tradingpost.economy.formdeal"})
-	public static void newdeal(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-
-		// Retrieve building:
-		TradingPost selectedBuilding = null;
-		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-		} catch (Throwable e) {
-			sagaPlayer.message(e.getMessage());
-			return;
-		}
-		
-		// Permission:
-		if(!selectedBuilding.checkBuildingPermission(sagaPlayer, BuildingPermission.MEDIUM)){
-			sagaPlayer.message(SagaMessages.noPermission(selectedBuilding));
-			return;
-		}
-		
-		// Retrieve manager:
-		EconomyManager manager = null;
-		try {
-			manager = EconomyManager.manager(sagaPlayer.getLocation());
-		} catch (InvalidWorldException e1) {
-			Saga.severe(EconomyCommands.class, "failed to retrieve " + EconomyManager.class.getSimpleName() + ": " + e1.getClass().getSimpleName() + ":" + e1.getMessage() + ".", "ignoring command");
-			sagaPlayer.error("failed to retrieve " + EconomyManager.class.getSimpleName());
-		}
-		
-		// Check existing trade deals:
-		if(selectedBuilding.getDealCount() >= selectedBuilding.getDealsMaxCount()){
-			sagaPlayer.message(EconomyMessages.tradeDealLimitReached(selectedBuilding));
-			return;
-		}
-		
-		// Check ID:
-		Integer id;
-		try {
-			id = Integer.parseInt(args.getString(0));
-		} catch (NumberFormatException e) {
-			sagaPlayer.message(EconomyMessages.invalidId(args.getString(0)));
-			return;
-		}
-		
-		// Retrieve trade deal:
-		TradeDeal tradeDeal = null;
-		try {
-			tradeDeal = manager.takeTradeDeal(id);
-		} catch (TradeDealNotFoundException e) {
-			sagaPlayer.message(EconomyMessages.invalidId(args.getString(0)));
-			return;
-		}
-		
-		// Add trade deal:
-		selectedBuilding.addDeal(tradeDeal);
-		
-		// Inform:
-		if(selectedBuilding.getChunkGroup() != null){
-			selectedBuilding.getChunkGroup().broadcast(BuildingMessages.formedDealBrdc(tradeDeal, sagaPlayer));
-		}
-		
-		// Report:
-		selectedBuilding.newDeals.add(tradeDeal);
-		
-		
-	}
-
-	@Command(
-			aliases = {"bsetminimumcoins","bsetminc"},
-			usage = "<amount>",
-			flags = "",
-			desc = "Sets the coins that can't be used for imports.",
-			min = 1,
-			max = 1
-	)
-	@CommandPermissions({"saga.user.building.tradingpost.economy.reserve"})
-	public static void setMinCoins(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-		
-		Double amount = null;
-
-		// Retrieve building:
-		TradingPost selectedBuilding = null;
-		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-		} catch (Throwable e) {
-			sagaPlayer.message(e.getMessage());
-			return;
-		}
-		
-		// Permission:
-		if(!selectedBuilding.checkBuildingPermission(sagaPlayer, BuildingPermission.MEDIUM)){
-			sagaPlayer.message(SagaMessages.noPermission(selectedBuilding));
-			return;
-		}
-		
-		// Arguments:
-		try {
-			amount = Double.parseDouble(args.getString(0));
-		} catch (NumberFormatException e) {
-			sagaPlayer.message(EconomyMessages.invalidAmount(args.getString(0)));
-			return;
-		}
-		
-		// Reserve:
-		selectedBuilding.setMinimumCoins(amount);
-		
-		// Inform:
-		if(selectedBuilding.getChunkGroup() != null){
-			selectedBuilding.getChunkGroup().broadcast(EconomyMessages.reservedBroadcast(amount, sagaPlayer, selectedBuilding));
-		}
-		
-		
-	}
-	
-
-	@Command(
-			aliases = {"atpostautomatic","asetautomatic"},
-			usage = "",
-			flags = "",
-			desc = "Sets the trading post to automatic.",
-			min = 0,
-			max = 0
-	)
-	@CommandPermissions({"saga.admin.economy.tradingpost.automatic"})
-	public static void setAutomatic(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-		
-		// Retrieve building:
-		TradingPost selectedBuilding = null;
-		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-		} catch (Throwable e) {
-			sagaPlayer.message(e.getMessage());
-			return;
-		}
-		
-		// Already automatic:
-		if(selectedBuilding.isAutomated()){
-			sagaPlayer.message(BuildingMessages.alreadyAutomatic(selectedBuilding));
-			return;
-		}
-		
-		// Set automatic:
-		selectedBuilding.setAutomated(true);
-		
-		// Inform:
-		sagaPlayer.message(BuildingMessages.setAutomate(selectedBuilding));
-		
-		
-	}
-	
-	@Command(
-			aliases = {"atpostmanual","asetmanual"},
-			usage = "",
-			flags = "",
-			desc = "Sets the trading post to manual.",
-			min = 0,
-			max = 0
-	)
-	@CommandPermissions({"saga.admin.economy.tradingpost.automatic"})
-	public static void setManual(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-		
-		// Retrieve building:
-		TradingPost selectedBuilding = null;
-		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-		} catch (Throwable e) {
-			sagaPlayer.message(e.getMessage());
-			return;
-		}
-		
-		// Already manual:
-		if(!selectedBuilding.isAutomated()){
-			sagaPlayer.message(BuildingMessages.alreadyAutomatic(selectedBuilding));
-			return;
-		}
-		
-		// Set manual:
-		selectedBuilding.setAutomated(false);
-		
-		// Inform:
-		sagaPlayer.message(BuildingMessages.setAutomate(selectedBuilding));
-		
-		
-	}
-	
-	
-	@Command(
-			aliases = {"bgoods","goods"},
-			usage = "",
-			flags = "",
-			desc = "Shows trading post goods.",
-			min = 0,
-			max = 1
-	)
-	@CommandPermissions({"saga.user.building.tradingpost.economy.goods"})
-	public static void levels(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-
-		// Retrieve building:
-		TradingPost selectedBuilding = null;
-		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-		} catch (Throwable e) {
-			sagaPlayer.message(e.getMessage());
-			return;
-		}
-		
-    	// Arguments:
-		Integer page = null;
-    	if(args.argsLength() == 1){
-    		
-        	try {
-    			page = Integer.parseInt(args.getString(0));
-    		} catch (NumberFormatException e) {
-    			sagaPlayer.message(ChunkGroupMessages.invalidPage(args.getString(0)));
-    			return;
-    		}
-    		
-    	}else{
-    		
-    		page = 1;
-        	
-    	}
-		
-	    // Inform:
-	    sagaPlayer.message(BuildingMessages.goods(selectedBuilding, page - 1));
-	      
-	    
-	}
-	
-	@Command(
-			aliases = {"breport","report"},
-			usage = "",
-			flags = "",
-			desc = "Shows trading post report.",
-			min = 0,
-			max = 1
-	)
-	@CommandPermissions({"saga.user.building.tradingpost.economy.report"})
-	public static void report(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-
-		// Retrieve building:
-		TradingPost selectedBuilding = null;
-		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-		} catch (Throwable e) {
-			sagaPlayer.message(e.getMessage());
-			return;
-		}
-		
-    	// Arguments:
-		Integer page = null;
-    	if(args.argsLength() == 1){
-    		
-        	try {
-    			page = Integer.parseInt(args.getString(0));
-    		} catch (NumberFormatException e) {
-    			sagaPlayer.message(ChunkGroupMessages.invalidPage(args.getString(0)));
-    			return;
-    		}
-    		
-    	}else{
-    		
-    		page = 1;
-        	
-    	}
-		
-	    // Inform:
-	    sagaPlayer.message(BuildingMessages.report(selectedBuilding, page - 1));
-	      
-	    
-	}
-	
 	
 	
 }

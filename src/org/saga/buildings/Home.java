@@ -5,16 +5,11 @@ import java.util.ArrayList;
 import org.bukkit.entity.Creature;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.saga.Saga;
-import org.saga.buildings.BuildingDefinition.BuildingPermission;
 import org.saga.chunkGroups.ChunkGroup;
-import org.saga.listeners.events.SagaPvpEvent;
-import org.saga.listeners.events.SagaPvpEvent.PvpDenyReason;
-import org.saga.messages.ChunkGroupMessages;
-import org.saga.messages.SagaMessages;
+import org.saga.exceptions.InvalidBuildingException;
+import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaEntityDamageEvent.PvPFlag;
 import org.saga.player.SagaPlayer;
-import org.sk89q.Command;
-import org.sk89q.CommandContext;
-import org.sk89q.CommandPermissions;
 
 public class Home extends Building {
 
@@ -25,17 +20,15 @@ public class Home extends Building {
 	private ArrayList<String> residents;
 	
 	
-	// Initialization:
+	// Initialisation:
 	/**
-	 * Initializes
+	 * Creates a building from the definition.
 	 * 
-	 * @param pointCost point cost
-	 * @param moneyCost money cost
-	 * @param proficiencies proficiencies
+	 * @param definition building definition
 	 */
-	private Home(String name) {
+	public Home(BuildingDefinition definition) {
 		
-		super("");
+		super(definition);
 		
 		residents = new ArrayList<String>();
 		
@@ -47,10 +40,10 @@ public class Home extends Building {
 	 * @see org.saga.buildings.Building#completeExtended()
 	 */
 	@Override
-	public boolean completeExtended() {
+	public boolean complete() throws InvalidBuildingException {
 		
 
-		boolean integrity = true;
+		boolean integrity = super.complete();
 		
 		if(residents == null){
 			residents = new ArrayList<String>();
@@ -63,16 +56,6 @@ public class Home extends Building {
 		
 	}
 
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#blueprint()
-	 */
-	@Override
-	public Building blueprint() {
-		return new Home("");
-	}
-
 	
 	// Residents:
 	/**
@@ -81,7 +64,7 @@ public class Home extends Building {
 	 * @param playerName player name
 	 * @return true if resident
 	 */
-	private boolean isResident(String playerName) {
+	public boolean isResident(String playerName) {
 
 		return residents.contains(playerName) || residents.contains(playerName.toLowerCase());
 		
@@ -175,36 +158,6 @@ public class Home extends Building {
 		
 	}
 
-	
-	// Events:
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#onPlayerDamagedByPlayer(org.bukkit.event.entity.EntityDamageByEntityEvent, org.saga.SagaPlayer, org.saga.SagaPlayer)
-	 */
-	@Override
-	public void onPvP(SagaPvpEvent event){
-			
-		// Deny pvp:
-		event.setDenyReason(PvpDenyReason.SAFE_AREA);
-		
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#onPlayerDamagedByCreature(org.bukkit.event.entity.EntityDamageByEntityEvent, org.bukkit.entity.Creature, org.saga.SagaPlayer)
-	 */
-	@Override
-	public void onPlayerDamagedByCreature(EntityDamageByEntityEvent event, Creature damager, SagaPlayer damaged) {
-
-		// Disable cvp:
-		event.setCancelled(true);
-		
-	}
-	
-	
-	// Messages:
 	@Override
 	public ArrayList<String> getSpecificStats() {
 		
@@ -238,22 +191,34 @@ public class Home extends Building {
 		
 	}
 
-	public static String alreadyResident(String name) {
-		return ChunkGroupMessages.negative + name + " is already a resident.";
+	
+	// Events:
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.buildings.Building#onPlayerDamagedByPlayer(org.bukkit.event.entity.EntityDamageByEntityEvent, org.saga.SagaPlayer, org.saga.SagaPlayer)
+	 */
+	@Override
+	public void onPvP(SagaEntityDamageEvent event){
+			
+		// Deny pvp:
+		event.addFlag(PvPFlag.SAFE_AREA);
+		
 	}
 	
-	public static String notResident(String name) {
-		return ChunkGroupMessages.negative + name + " is not a resident.";
-	}
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.buildings.Building#onPlayerDamagedByCreature(org.bukkit.event.entity.EntityDamageByEntityEvent, org.bukkit.entity.Creature, org.saga.SagaPlayer)
+	 */
+	@Override
+	public void onPlayerDamagedByCreature(EntityDamageByEntityEvent event, Creature damager, SagaPlayer damaged) {
 
-	public static String addedResident(String name) {
-		return ChunkGroupMessages.positive + "Added " + name + " to the resident list.";
+		// Disable cvp:
+		event.setCancelled(true);
+		
 	}
 	
-	public static String removedResident(String name) {
-		return ChunkGroupMessages.positive + "Removed " + name + " from the resident list.";
-	}
-
 	
 	// Permissions:
 	/* 
@@ -274,130 +239,6 @@ public class Home extends Building {
 		
 		
 	}
-	
-	
-	// Commands:
-	@Command(
-			aliases = {"baddresident"},
-			usage = "<name>",
-			flags = "",
-			desc = "Add a resident to a home.",
-			min = 1,
-			max = 1
-	)
-	@CommandPermissions({"saga.user.building.home.addresident"})
-	public static void addResident(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-		
-		String targetName = null;
-		
-		// Retrieve building:
-		Home selectedBuilding = null;
-		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, Home.class);
-		} catch (Throwable e) {
-			sagaPlayer.message(e.getMessage());
-			return;
-		}
-	
-		// Arguments:
-		targetName = args.getString(0);
-
-		// Permission:
-		if(!selectedBuilding.checkBuildingPermission(sagaPlayer, BuildingPermission.FULL)){
-			sagaPlayer.message(SagaMessages.noPermission(selectedBuilding));
-			return;
-		}
-		
-		// Not a member:
-		ChunkGroup chunkGroup = selectedBuilding.getChunkGroup();
-		if(chunkGroup == null){
-			sagaPlayer.message(SagaMessages.noPermission());
-			return;
-		}
-		
-		// Member:
-		
-		if(!SagaPlayer.checkExistance(targetName)){
-			sagaPlayer.message(ChunkGroupMessages.nonExistantPlayer(targetName));
-			return;
-		}
-		
-		// Already a resident:
-		if(selectedBuilding.isResident(targetName)){
-			sagaPlayer.message(alreadyResident(targetName));
-			return;
-		}
-		
-		// Add:
-		selectedBuilding.addResident(targetName);
-		
-		// Inform:
-		sagaPlayer.message(addedResident(targetName));
-		
-	
-	}
-	
-	@Command(
-			aliases = {"bremoveresident"},
-			usage = "<name>",
-			flags = "",
-			desc = "Remove a resident from a home.",
-			min = 1,
-			max = 1
-	)
-	@CommandPermissions({"saga.user.building.home.removeresident"})
-	public static void removeResident(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-		
-		String targetName = null;
-		
-		// Retrieve building:
-		Home selectedBuilding = null;
-		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, Home.class);
-		} catch (Throwable e) {
-			sagaPlayer.message(e.getMessage());
-			return;
-		}
-	
-		// Arguments:
-		targetName = args.getString(0);
-		
-		// Permission:
-		if(!selectedBuilding.checkBuildingPermission(sagaPlayer, BuildingPermission.FULL)){
-			sagaPlayer.message(SagaMessages.noPermission(selectedBuilding));
-			return;
-		}
-		
-		// Not a member:
-		ChunkGroup chunkGroup = selectedBuilding.getChunkGroup();
-		if(chunkGroup == null){
-			sagaPlayer.message(SagaMessages.noPermission());
-			return;
-		}
-		
-//		// Member:
-//		if(!chunkGroup.hasPlayer(targetName)){
-//			sagaPlayer.sendMessage(ChunkGroupMessages.notChunkGroupMember(chunkGroup, targetName));
-//			return;
-//		}
-		
-		// Already a resident:
-		if(!selectedBuilding.isResident(targetName)){
-			sagaPlayer.message(notResident(targetName));
-			return;
-		}
-		
-		// Remove:
-		selectedBuilding.removeResident(targetName);
-		
-		// Inform:
-		sagaPlayer.message(removedResident(targetName));
-		
-	
-	}
-	
 	
 	
 }

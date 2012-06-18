@@ -4,7 +4,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.server.ServerCommandEvent;
-import org.saga.SagaCommands;
+import org.saga.commands.AdminCommands;
 
 
 public class ServerListener implements Listener {
@@ -21,7 +21,7 @@ public class ServerListener implements Listener {
 			
 			String message = event.getCommand().substring(adminCommand.length());
 			
-			SagaCommands.sendAdminMessage("SERVER", message);
+			AdminCommands.chatServer(message);
 			
 		}
 		

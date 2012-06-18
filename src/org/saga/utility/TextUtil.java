@@ -18,6 +18,11 @@ public class TextUtil {
 	
 	
 	/**
+	 * Represents tab in chat.
+	 */
+	public static String TAB = "   ";
+	
+	/**
 	 * Non-special character length.
 	 */
 	private static Double defaultCharLength = 3.0 / 2.0;
@@ -62,6 +67,7 @@ public class TextUtil {
 		
 	}
 	
+	
 	public static String repeat(String s, int times) {
 	    
 		
@@ -71,6 +77,7 @@ public class TextUtil {
 		
 	}
 
+	
 	public static String getMaterialName(Material material) {
 		
 		
@@ -101,6 +108,7 @@ public class TextUtil {
 		return ret.toLowerCase();
 	}
 
+	
 	public static String capitalize(String string) {
 
 		if(string.length()>=1){
@@ -110,6 +118,17 @@ public class TextUtil {
 		}
 		
 	}
+
+	public static String firstString(String string, int chars) {
+
+		if(string.length()>=chars){
+			return string.substring(0, chars);
+		}else{
+			return string;
+		}
+		
+	}
+
 
 	public static String fromSeconds(Integer secondsFull) {
 
@@ -185,6 +204,8 @@ public class TextUtil {
 			if(length + charLength > requiredLength) break;
 			
 			result.append(chars[i]);
+			
+			if(!(chars[i] == ChatColor.COLOR_CHAR || (i > 0 && chars[i-1] == ChatColor.COLOR_CHAR)))
 			length += charLength;
 			
 			
@@ -308,6 +329,7 @@ public class TextUtil {
 			Double charLength = specialChars.get(chars[i]);
 			if(charLength == null) charLength = defaultCharLength;
 			
+			if(!(chars[i] == ChatColor.COLOR_CHAR || (i > 0 && chars[i-1] == ChatColor.COLOR_CHAR)))
 			length += charLength;
 			
 		}
@@ -387,33 +409,34 @@ public class TextUtil {
 		
 	}
 	
-	public static void messageLines(String message, Player player) {
+	public static void messageLines2(String message, Player player) {
 
 
-		String[] arrayMessage = Pattern.compile("\n").split(message);
+//		String[] arrayMessage = Pattern.compile("\n").split(message);
+//		
+//		// Add lost colors after line brake:
+//		int lastColorIndex = -1;
+//		String colorString= "\u00A7";
+//		String color = "";
+//		
+//		for (int i = 1; i < arrayMessage.length; i++) {
+//			
+//			lastColorIndex = arrayMessage[i-1].lastIndexOf(colorString);
+//			
+//			if(lastColorIndex != -1 && (arrayMessage[i-1].length() - lastColorIndex - colorString.length()) >= 1 ){
+//				color = arrayMessage[i-1].substring(lastColorIndex, lastColorIndex + colorString.length()+1);
+//			}
+//			if(color.length() != 0){
+//				arrayMessage[i] = color + arrayMessage[i];
+//			}
+//			
+//		}
+//		
+//		for (int i = 0; i < arrayMessage.length; i++) {
+//			player.sendMessage(arrayMessage[i]);
+//		}
 		
-		// Add lost colors after line brake:
-		int lastColorIndex = -1;
-		String colorString= "\u00A7";
-		String color = "";
-		
-		for (int i = 1; i < arrayMessage.length; i++) {
-			
-			lastColorIndex = arrayMessage[i-1].lastIndexOf(colorString);
-			
-			if(lastColorIndex != -1 && (arrayMessage[i-1].length() - lastColorIndex - colorString.length()) >= 1 ){
-				color = arrayMessage[i-1].substring(lastColorIndex, lastColorIndex + colorString.length()+1);
-			}
-			if(color.length() != 0){
-				arrayMessage[i] = color + arrayMessage[i];
-			}
-			
-		}
-		
-		for (int i = 0; i < arrayMessage.length; i++) {
-			player.sendMessage(arrayMessage[i]);
-		}
-		
+		player.sendMessage(message);
 		
 	}
 	
