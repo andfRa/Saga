@@ -461,6 +461,12 @@ public class BuildingMessages {
 	
 	
 	
+	// Farm:
+	public static String farmAnimalsDamageDeny() {
+		return negative + "Can't harm animals on this farms.";
+	}
+	
+	
 	
 	// Home:
 	public static String alreadyResident(String name) {

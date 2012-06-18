@@ -15,6 +15,8 @@ import org.saga.config.BalanceConfiguration;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
+import org.saga.listeners.events.SagaBuildEvent;
+import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.messages.ChunkGroupMessages;
 import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
@@ -651,34 +653,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		
 		
 	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#canBuild(org.saga.SagaPlayer)
-	 */
-	@Override
-	public boolean canBuild(SagaPlayer sagaPlayer) {
-		
 
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// Member:
-		return isMember(sagaPlayer);
-		
-//		// Check role:
-//		Proficiency role = playerRoles.get(sagaPlayer.getName());
-//		if(role == null){
-//			return false;
-//		}
-//		
-//		// Check permission:
-//		return role.hasSettlementPermission(SettlementPermission.BUILD);
-		
-		
-	}
-	
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -934,9 +909,10 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		return true;
 	
 	}
+
 	
 	
-	// Definition:
+	// Information:
 	/**
 	 * Gets the definition for the settlement.
 	 * 
@@ -945,6 +921,23 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	public SettlementDefinition getDefinition() {
 		return definition;
 	}
+
+	
+	
+	// Events:
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.chunkGroups.ChunkGroup#onBuild(org.saga.listeners.events.SagaBuildEvent)
+	 */
+	@Override
+	public void onBuild(SagaBuildEvent event) {
+		
+		// Add override:
+		if(!hasPermission(event.getSagaPlayer(), SettlementPermission.BUILD)) event.addBuildOverride(BuildOverride.SETTLEMENT_DENY);
+		
+	}
+	
 
 	
 	// Clock:

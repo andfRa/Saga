@@ -53,28 +53,19 @@ public class TownHall extends Building{
 	
 	// Events:
 	/* 
+	/* 
 	 * (non-Javadoc)
 	 * 
 	 * @see org.saga.buildings.Building#onPlayerDamagedByPlayer(org.bukkit.event.entity.EntityDamageByEntityEvent, org.saga.SagaPlayer, org.saga.SagaPlayer)
 	 */
 	@Override
-	public void onPvP(SagaEntityDamageEvent event){
-		
-		// Deny pvp:
-		event.addPvpOverride(PvPOverride.SAFE_AREA);
-		
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#onPlayerDamagedByCreature(org.bukkit.event.entity.EntityDamageByEntityEvent, org.bukkit.entity.Creature, org.saga.SagaPlayer)
-	 */
-	@Override
-	public void onPlayerDamagedByCreature(EntityDamageByEntityEvent event, Creature damager, SagaPlayer damaged) {
+	public void onEntityDamage(SagaEntityDamageEvent event){
 
-		// Disable cvp:
-		event.setCancelled(true);
+		
+		if(event.isPlayerAttackPlayer()){
+			event.addPvpOverride(PvPOverride.SAFE_AREA);
+		}
+		
 		
 	}
 

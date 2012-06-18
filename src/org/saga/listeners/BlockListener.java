@@ -15,10 +15,9 @@ import org.saga.Saga;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.BalanceConfiguration;
-import org.saga.dependencies.PermissionsManager;
 import org.saga.listeners.events.SagaBlockBreakEvent;
 import org.saga.listeners.events.SagaBuildEvent;
-import org.saga.messages.SagaMessages;
+import org.saga.listeners.events.SagaEventHandler;
 import org.saga.metadata.UnnaturalTag;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.XrayIndicator;
@@ -30,8 +29,6 @@ public class BlockListener implements Listener{
 	public void onBlockBreak(BlockBreakEvent event) {
 
 
-		Block block = event.getBlock();
-		
 		// Get saga chunk:
     	SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(event.getBlock().getLocation());
     	
@@ -48,24 +45,7 @@ public class BlockListener implements Listener{
 
     	// Build event:
     	SagaBuildEvent eventB = new SagaBuildEvent(event, sagaPlayer, sagaChunk);
-    	
-    	// Claimed:
-    	if(eventB.getSagaChunk() != null){
-    		
-    		sagaChunk.onBuild(eventB);
-    		
-    	}
-    	
-    	// Wilderness:
-    	else{
-    		
-    		if(!PermissionsManager.hasPermission(sagaPlayer, PermissionsManager.WILDERNESS_BUILD_PERMISSION)){
-    			sagaPlayer.message(SagaMessages.noPermissionWilderness());
-    			eventB.cancel();
-    		}
-    		
-    	}
-    	
+    	SagaEventHandler.onBuild(eventB);
     	if(eventB.isCancelled()) return;
     	
     	// Saga event:
@@ -110,24 +90,7 @@ public class BlockListener implements Listener{
 
     	// Build event:
     	SagaBuildEvent eventB = new SagaBuildEvent(event, sagaPlayer, sagaChunk);
-    	
-    	// Claimed:
-    	if(eventB.getSagaChunk() != null){
-    		
-    		sagaChunk.onBuild(eventB);
-    		
-    	}
-    	
-    	// Wilderness:
-    	else{
-    		
-    		if(!PermissionsManager.hasPermission(sagaPlayer, PermissionsManager.WILDERNESS_BUILD_PERMISSION)){
-    			sagaPlayer.message(SagaMessages.noPermissionWilderness());
-    			eventB.cancel();
-    		}
-    		
-    	}
-    	
+    	SagaEventHandler.onBuild(eventB);
     	if(eventB.isCancelled()) return;
     	
     	// Forward event:
@@ -160,6 +123,18 @@ public class BlockListener implements Listener{
     		Saga.warning("Can't continue with onSignChange, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
     		return;
     	}
+    	
+    	// Build event:
+    	SagaBuildEvent eventB = new SagaBuildEvent(event, sagaPlayer, sagaChunk);
+    	
+    	// Forward to Saga chunk:
+    	if(eventB.getSagaChunk() != null){
+    		
+    		sagaChunk.onBuild(eventB);
+    		
+    	}
+
+    	if(eventB.isCancelled()) return;
     	
     	// Forward to chunk:
     	if(sagaChunk != null) sagaChunk.onSignChange(event, sagaPlayer);

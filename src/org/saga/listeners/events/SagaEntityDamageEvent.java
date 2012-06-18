@@ -489,6 +489,17 @@ public class SagaEntityDamageEvent {
 
 	}
 	
+	
+	/**
+	 * Checks if the event is cancelled.
+	 * 
+	 * @return true if cancelled
+	 */
+	public boolean isCancelled() {
+
+		return event.isCancelled();
+
+	}
 
 
 	/**

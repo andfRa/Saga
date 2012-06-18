@@ -30,11 +30,9 @@ import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.FactionConfiguration;
-import org.saga.dependencies.PermissionsManager;
 import org.saga.factions.SagaFaction;
 import org.saga.listeners.events.SagaBuildEvent;
-import org.saga.listeners.events.SagaInteractEntityEvent;
-import org.saga.messages.SagaMessages;
+import org.saga.listeners.events.SagaEventHandler;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
@@ -213,25 +211,8 @@ public class PlayerListener implements Listener {
     	// Build event:
     	if(isBuildEvent(event)){
 
-    		SagaBuildEvent eventB = new SagaBuildEvent(event, sagaPlayer, sagaChunk);
-    		
-        	// Claimed:
-        	if(eventB.getSagaChunk() != null){
-        		
-        		sagaChunk.onBuild(eventB);
-        		
-        	}
-        	
-        	// Wilderness:
-        	else{
-        		
-        		if(!PermissionsManager.hasPermission(sagaPlayer, PermissionsManager.WILDERNESS_BUILD_PERMISSION)){
-        			sagaPlayer.message(SagaMessages.noPermissionWilderness());
-        			eventB.cancel();
-        		}
-        		
-        	}
-
+        	SagaBuildEvent eventB = new SagaBuildEvent(event, sagaPlayer, sagaChunk);
+        	SagaEventHandler.onBuild(eventB);
         	if(eventB.isCancelled()) return;
         	
     	}

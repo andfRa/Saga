@@ -16,6 +16,7 @@ import org.saga.config.ChunkGroupConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.factions.SagaFaction;
+import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.messages.PlayerMessages.ColorCircle;
 import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
@@ -133,6 +134,42 @@ public class ChunkGroupMessages {
 	public static String invalidPage(String amount) {
 		return negative + amount + " isn't a valid page number.";
 	}
+	
+	
+	
+	// Build restriction:
+	public static String buildOverride(BuildOverride override){
+		
+		
+		switch (override) {
+			case BUILDING_DENY:
+				
+				return negative + "Can't build in this building.";
+
+			case SETTLEMENT_DENY:
+				
+				return negative + "Can't build in this settlement.";
+
+			case CHUNK_GROUP_DENY:
+				
+				return negative + "Can't build in this chunk group.";
+				
+			case HOME_DENY:
+				
+				return negative + "Can't build in this home.";
+
+			case WILDERNESS_DENY:
+				
+				return negative + "Can't build in the wilderness.";
+
+			default:
+				return negative + "Can't build here.";
+				
+		}
+		
+		
+	}
+	
 	
 	
 	// Settle and claim messages:

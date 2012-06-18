@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import org.bukkit.Location;
-import org.bukkit.entity.Creature;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.util.Vector;
 import org.saga.Clock;
@@ -281,25 +279,19 @@ public class TownSquare extends Building implements SecondTicker{
 	 * @see org.saga.buildings.Building#onPlayerDamagedByPlayer(org.bukkit.event.entity.EntityDamageByEntityEvent, org.saga.SagaPlayer, org.saga.SagaPlayer)
 	 */
 	@Override
-	public void onPvP(SagaEntityDamageEvent event){
+	public void onEntityDamage(SagaEntityDamageEvent event){
+
+		// Deny damage:
+		if(event.isCreatureAttackPlayer()){
+			event.cancel();
+		}
 		
-		// Deny pvp:
-		event.addPvpOverride(PvPOverride.SAFE_AREA);
+		else if(event.isPlayerAttackPlayer()){
+			event.addPvpOverride(PvPOverride.SAFE_AREA);
+		}
 		
 	}
 	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#onPlayerDamagedByCreature(org.bukkit.event.entity.EntityDamageByEntityEvent, org.bukkit.entity.Creature, org.saga.SagaPlayer)
-	 */
-	@Override
-	public void onPlayerDamagedByCreature(EntityDamageByEntityEvent event, Creature damager, SagaPlayer damaged) {
-
-		// Disable cvp:
-		event.setCancelled(true);
-		
-	}
 	
 	// Commands:
 	@Command(

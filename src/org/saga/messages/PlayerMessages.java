@@ -3,18 +3,12 @@ package org.saga.messages;
 import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
-import org.saga.buildings.signs.GuardianRuneSign;
-import org.saga.config.AbilityConfiguration;
-import org.saga.config.BalanceConfiguration;
-import org.saga.config.EconomyConfiguration;
-import org.saga.config.ProficiencyConfiguration;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.player.GuardianRune;
 import org.saga.player.Proficiency;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.SagaPlayer;
-import org.saga.utility.StringBook;
 import org.saga.utility.TextUtil;
 
 
@@ -193,31 +187,32 @@ public class PlayerMessages {
 	
 
 	// Player versus player:
-	public static String pvpDenied(SagaEntityDamageEvent event){
+	public static String pvpOverride(SagaEntityDamageEvent event){
 		
 		
-		PvPOverride cause = event.getPvpOverride();
+		PvPOverride cause = event.getOverride();
 		
 		switch (cause) {
 		case SAME_FACTION:
 			
-			return negative + event.getDefenderPlayer().getName() + " is from the same faction.";
+			return negative + "Can't attack faction members.";
 			
 		case ALLY:
 	
-		return negative + event.getDefenderPlayer().getName() + " is an ally.";
+		return negative + "Can't attack allies.";
 	
 		case FACTION_ONLY_PVP:
 			
-			return negative + "Only factions may participate in pvp.";
+			return negative + "Only factions can participate in pvp.";
 			
 		case SAFE_AREA:
 			
-			return negative + "Pvp not allowed in safe areas.";
+			return negative + "Can't attack players in safe areas.";
 			
 		}
 		
-		return negative + "Pvp isn't allowed.";
+		return negative + "Can't attack player.";
+		
 		
 	}
 	

@@ -555,24 +555,6 @@ public class SagaChunk {
 	public void onSignChange(SignChangeEvent event, SagaPlayer sagaPlayer) {
 
 		
-		// Canceled:
-		if(event.isCancelled()){
-			return;
-		}
-		
-		// Ask chunk group:
-		ChunkGroup chunkGroup = getChunkGroup();
-		boolean isCanceled = true;
-		if(chunkGroup != null){
-			isCanceled = !chunkGroup.canBuild(sagaPlayer);
-		}
-		event.setCancelled(isCanceled);
-
-		// Inform:
-		if(isCanceled){
-			sagaPlayer.message(SagaMessages.noPermission());
-		}
-
     	// Forward to building:
     	Building building = getBuilding();
     	if(building != null){
@@ -670,84 +652,38 @@ public class SagaChunk {
 	 * 
 	 * @param event event
 	 */
-	public void onPvP(SagaEntityDamageEvent event){
+	public void onEntityDamage(SagaEntityDamageEvent event){
 		
 
 		// Forward to chunk group:
-		getChunkGroup().onPvp(event, this);
+		getChunkGroup().onEntityDamage(event, this);
 		
 		// Forward to building:
-		if(bld != null) bld.onPvP(event);
+		if(bld != null) bld.onEntityDamage(event);
 
 		
 	}
 	
 	/**
-	 * Called when a player is kiled by another player.
+	 * Called when a player is killed by another player.
 	 * 
 	 * @param event event
 	 * @param damager damager saga player
 	 * @param damaged damaged saga player
 	 * @param locationChunk chunk where the pvp occured
 	 */
-	public void onPlayerKillPlayer(SagaPlayer attacker, SagaPlayer defender){
+	public void onPvpKill(SagaPlayer attacker, SagaPlayer defender){
 		
 
 		// Forward to chunk group:
 		getChunkGroup().onPvpKill(attacker, defender, this);
 		
 		// Forward to building:
-		if(bld != null) bld.onPlayerKillPlayer(attacker, defender);
+		if(bld != null) bld.onPvPKill(attacker, defender);
 
 		
 	}
 	
-
-	/**
-	 * Called when a player is damaged by a creature.
-	 * 
-	 * @param event event
-	 * @param damager damager creature
-	 * @param damaged damaged saga player
-	 */
-	public void onPlayerDamagedByCreature(EntityDamageByEntityEvent event, Creature damager, SagaPlayer damaged){
-
-		
-		if(event.isCancelled()){
-			return;
-		}
-
-		// Forward to chunk group:
-		getChunkGroup().onCvp(event, damager, damaged, this);
-		
-		// Forward to building:
-		if(bld != null) bld.onPlayerDamagedByCreature(event, damager, damaged);
-
-		
-	}
-	
-	/**
-	 * Called when a player is damages a creature.
-	 * 
-	 * @param event event
-	 * @param damager damager saga player
-	 * @param damaged damaged creature
-	 */
-	public void onPlayerDamagedCreature(EntityDamageByEntityEvent event, SagaPlayer damager, Creature damaged){
-
-		
-		if(event.isCancelled()){
-			return;
-		}
-//
-//		// Forward to chunk group:
-//		getChunkGroup().onPlayerDamagedCreature(event, damager, damaged, this);
-//		
-		// Forward to building:
-		if(bld != null) bld.onPlayerDamagedCreature(event, damager, damaged);
-
-		
-	}
 	
 	
 	// Block events:
@@ -786,38 +722,20 @@ public class SagaChunk {
 	}
 
 	/**
-	 * Called when a block is broken in the chunk.
+	 * Called when a player builds on the chunk.
 	 * 
 	 * @param event event
-	 * @param sagaPlayer saga player
 	 */
 	public void onBuild(SagaBuildEvent event) {
 
 		
 		SagaPlayer sagaPlayer = event.getSagaPlayer();
 		
-		// Home:
-		if(bld instanceof Home && bld.canBuild(sagaPlayer)){
-			return;
-		}
+		// Forward to building:
+		if(bld != null) bld.onBuild(event);
 		
-		// Building:
-		if(bld != null && !bld.canBuild(sagaPlayer)){
-			
-			sagaPlayer.message(SagaMessages.noPermission(bld));
-			event.cancel();
-			return;
-
-		}
-		
-		// Chunk group:
-		else if (chunkGroup != null && !chunkGroup.canBuild(sagaPlayer)){
-			
-			sagaPlayer.message(SagaMessages.noPermission(chunkGroup));
-			event.cancel();
-			return;
-			
-		}
+		// Forward to chunk group:
+		if(chunkGroup != null) chunkGroup.onBuild(event);
 		
 		
 	}

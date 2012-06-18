@@ -21,11 +21,9 @@ import org.saga.Saga;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.BalanceConfiguration;
-import org.saga.config.FactionConfiguration;
 import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.listeners.events.SagaEntityDeathEvent;
-import org.saga.messages.PlayerMessages;
+import org.saga.listeners.events.SagaEventHandler;
 import org.saga.metadata.SpawnerTag;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
@@ -49,33 +47,11 @@ public class EntityListener implements Listener{
 
 		// Dead:
 		if(defender.getHealth() <= 0) return;
-		
+
 		// Saga event:
 		SagaEntityDamageEvent damageEvent = new SagaEntityDamageEvent(event, defender);
-
-		// PvP event:
-		if(damageEvent.isPlayerAttackPlayer()){
-			
-			// Chunks:
-			SagaChunk attackerChunk = damageEvent.getAttackerChunk();
-			SagaChunk defenderChunk = damageEvent.getDefenderChunk();
-			if(attackerChunk != null) attackerChunk.onPvP(damageEvent);
-			if(defenderChunk != null && attackerChunk != defenderChunk) defenderChunk.onPvP(damageEvent);
-			
-			// Factions:
-			if(FactionConfiguration.config().factionOnlyPvp && !damageEvent.isFactionAttacksFaction()) damageEvent.addPvpOverride(PvPOverride.FACTION_ONLY_PVP);
-			if(damageEvent.getAttackerPlayer().getFaction() != null) damageEvent.getAttackerPlayer().getFaction().onAttack(damageEvent);
-			if(damageEvent.getDefenderPlayer().getFaction() != null) damageEvent.getDefenderPlayer().getFaction().onDefend(damageEvent);
-			
-			if(!damageEvent.getPvpOverride().isAllow()){
-				
-				damageEvent.getAttackerPlayer().message(PlayerMessages.pvpDenied(damageEvent));
-				damageEvent.cancel();
-				return;
-				
-			}
-			
-		}
+		SagaEventHandler.onEntityDamage(damageEvent);
+		if(damageEvent.isCancelled()) return;
 		
 		// Forward to managers:
 		SagaPlayer attackerPlayer = damageEvent.getAttackerPlayer();
@@ -189,7 +165,7 @@ public class EntityListener implements Listener{
 			}
 			
 			// Forward to chunk:
-			sagaChunk.onPlayerKillPlayer(sagaAttacker, sagaDead);
+			sagaChunk.onPvpKill(sagaAttacker, sagaDead);
 			
 		}
 		

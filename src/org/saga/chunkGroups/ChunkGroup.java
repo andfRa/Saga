@@ -31,6 +31,8 @@ import org.saga.config.ChunkGroupConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.factions.SagaFaction;
+import org.saga.listeners.events.SagaBuildEvent;
+import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.messages.ChunkGroupMessages;
@@ -1316,17 +1318,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 
 		return false;
 	}
-	
-	/**
-	 * Checks if the player can build.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if the player can build
-	 */
-	public boolean canBuild(SagaPlayer sagaPlayer) {
-		return false;
-	}
-	
+
 	/**
 	 * Checks if the player can build everywhere.
 	 * 
@@ -1756,6 +1748,20 @@ public class ChunkGroup extends SagaCustomSerialization{
 
     }
     
+    /**
+	 * Called when a block is broken in the chunk.
+	 * 
+	 * @param event event
+	 * @param sagaPlayer saga player
+	 */
+	public void onBuild(SagaBuildEvent event) {
+		
+		// Deny building:
+		event.addBuildOverride(BuildOverride.CHUNK_GROUP_DENY);
+		
+	}
+
+	
 	
 	// Interact events:
 	/**
@@ -1791,11 +1797,11 @@ public class ChunkGroup extends SagaCustomSerialization{
     
     // Damage events:
 	/**
-	 * Called when a player damages other player.
+	 * Called when a a entity takes damage.
 	 * 
 	 * @param event event
 	 */
-	void onPvp(SagaEntityDamageEvent event, SagaChunk locationChunk){
+	void onEntityDamage(SagaEntityDamageEvent event, SagaChunk locationChunk){
 
 		// Deny pvp:
 		if(hasPvpProtectionBonus()) event.addPvpOverride(PvPOverride.SAFE_AREA);
@@ -1813,30 +1819,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	void onPvpKill(SagaPlayer attacker, SagaPlayer defender, SagaChunk locationChunk){
 		
 	}
-	
-	/**
-	 * Called when a player is damaged by a creature.
-	 * 
-	 * @param event event
-	 * @param damager damager creature
-	 * @param damaged damaged saga player
-	 * @param locationChunk location chunk
-	 */
-	void onCvp(EntityDamageByEntityEvent event, Creature damager, SagaPlayer damaged, SagaChunk locationChunk){
 
-
-		if(event.isCancelled()){
-			return;
-		}
-		
-		// Forward to all buildings:
-		for (int i = 0; i < groupChunks.size() && !event.isCancelled(); i++) {
-			Building building = groupChunks.get(i).getBuilding();
-			if(building != null) building.onPlayerDamagedByCreature(event, damager, damaged, locationChunk);
-		}
-		
-		
-	}
 	
 	
 	// Move events:

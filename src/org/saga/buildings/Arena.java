@@ -455,7 +455,7 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 	 * @see org.saga.buildings.Building#onPlayerDamagedByPlayer(org.bukkit.event.entity.EntityDamageByEntityEvent, org.saga.SagaPlayer, org.saga.SagaPlayer)
 	 */
 	@Override
-	public void onPvP(SagaEntityDamageEvent event){
+	public void onEntityDamage(SagaEntityDamageEvent event){
 		
 		
 		// Attack from outside of the arena:
@@ -477,7 +477,7 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 	 * @see org.saga.buildings.Building#onPlayerKillPlayer(org.saga.player.SagaPlayer, org.saga.player.SagaPlayer)
 	 */
 	@Override
-	public void onPlayerKillPlayer(SagaPlayer attacker, SagaPlayer defender) {
+	public void onPvPKill(SagaPlayer attacker, SagaPlayer defender) {
 
 		
 		// Add kills:

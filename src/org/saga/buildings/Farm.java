@@ -4,11 +4,10 @@ import org.bukkit.Material;
 import org.bukkit.entity.Animals;
 import org.bukkit.entity.Creature;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.chunkGroups.ChunkGroup;
-import org.saga.exceptions.InvalidBuildingException;
-import org.saga.messages.SagaMessages;
+import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.messages.BuildingMessages;
 import org.saga.player.SagaPlayer;
 
 
@@ -26,46 +25,26 @@ public class Farm extends Building{
 		super(definition);
 		
 	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#completeExtended()
-	 */
-	@Override
-	public boolean complete() throws InvalidBuildingException {
-		
-
-		boolean integrity = super.complete();
-		
-//		if(signs == null){
-//			signs = new ArrayList<BuildingSign>();
-//			Saga.severe(this, "signs field failed to initialize", "setting default");
-//			integrity = false;
-//		}
-		
-		return integrity;
-		
-		
-	}
 
 	
 	// Events:
 	@Override
-	public void onPlayerDamagedCreature(EntityDamageByEntityEvent event, SagaPlayer damager, Creature damaged) {
+	public void onEntityDamage(SagaEntityDamageEvent event) {
 	
 		
-		// Stop animal abuse:
-		if(damaged instanceof Animals){
+		Creature damaged = event.getDefenderCreature();
+		SagaPlayer damager = event.getAttackerPlayer();
+		
+		// Stop animal abuse by non members:
+		if(damaged instanceof Animals && damager != null){
 			
 			ChunkGroup chunkGroup = getChunkGroup();
-			
 			if(chunkGroup == null) return;
 			
 			// Permissions:
-			if(!chunkGroup.canHurtAnimals(damager)){
-				damager.message(SagaMessages.noPermission(this));
-				event.setCancelled(true);
+			if(!chunkGroup.isMember(damager)){
+				damager.message(BuildingMessages.farmAnimalsDamageDeny());
+				event.cancel();
 			}
 			
 		}

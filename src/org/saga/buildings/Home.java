@@ -2,11 +2,10 @@ package org.saga.buildings;
 
 import java.util.ArrayList;
 
-import org.bukkit.entity.Creature;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.saga.Saga;
-import org.saga.chunkGroups.ChunkGroup;
 import org.saga.exceptions.InvalidBuildingException;
+import org.saga.listeners.events.SagaBuildEvent;
+import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.player.SagaPlayer;
@@ -18,6 +17,7 @@ public class Home extends Building {
 	 * residents.
 	 */
 	private ArrayList<String> residents;
+	
 	
 	
 	// Initialisation:
@@ -56,6 +56,7 @@ public class Home extends Building {
 		
 	}
 
+	
 	
 	// Residents:
 	/**
@@ -117,6 +118,7 @@ public class Home extends Building {
 	public ArrayList<String> getResidents() {
 		return new ArrayList<String>(residents);
 	}
+	
 	
 	
 	// Display:
@@ -192,6 +194,7 @@ public class Home extends Building {
 	}
 
 	
+	
 	// Events:
 	/* 
 	 * (non-Javadoc)
@@ -199,43 +202,39 @@ public class Home extends Building {
 	 * @see org.saga.buildings.Building#onPlayerDamagedByPlayer(org.bukkit.event.entity.EntityDamageByEntityEvent, org.saga.SagaPlayer, org.saga.SagaPlayer)
 	 */
 	@Override
-	public void onPvP(SagaEntityDamageEvent event){
+	public void onEntityDamage(SagaEntityDamageEvent event){
 			
-		// Deny pvp:
-		event.addPvpOverride(PvPOverride.SAFE_AREA);
+		// Deny damage:
+		if(event.isCreatureAttackPlayer()){
+			event.cancel();
+		}
+		
+		else if(event.isPlayerAttackPlayer()){
+			event.addPvpOverride(PvPOverride.SAFE_AREA);
+		}
 		
 	}
 	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#onPlayerDamagedByCreature(org.bukkit.event.entity.EntityDamageByEntityEvent, org.bukkit.entity.Creature, org.saga.SagaPlayer)
-	 */
-	@Override
-	public void onPlayerDamagedByCreature(EntityDamageByEntityEvent event, Creature damager, SagaPlayer damaged) {
-
-		// Disable cvp:
-		event.setCancelled(true);
-		
-	}
-	
-	
-	// Permissions:
 	/* 
 	 * (non-Javadoc)
 	 * 
 	 * @see org.saga.buildings.Building#canBuild(org.saga.SagaPlayer)
 	 */
 	@Override
-	public boolean canBuild(SagaPlayer sagaPlayer) {
+	public void onBuild(SagaBuildEvent event) {
 
 		
-		ChunkGroup chunkGroup = getChunkGroup();
-		if(chunkGroup != null && chunkGroup.isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()){
-			return true;
+		SagaPlayer sagaPlayer = event.getSagaPlayer();
+		
+		// Allow residents to build:
+		if(isResident(sagaPlayer.getName())){
+			event.addBuildOverride(BuildOverride.HOME_RESIDENT_ALLOW);
 		}
 		
-		return isResident(sagaPlayer.getName());
+		// Deny everyone else:
+		else{
+			event.addBuildOverride(BuildOverride.HOME_DENY);
+		}
 		
 		
 	}

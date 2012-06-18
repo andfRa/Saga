@@ -47,19 +47,13 @@ public class FactionCommands {
 	public static void create(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 	    	
 		
-		//TODO Remove hotfix
-		if(!sagaPlayer.isAdminMode()){
-			sagaPlayer.message(SagaMessages.noPermission());
-    		return;
+		// Arguments:
+		String name = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
+
+		// Fix spaces:
+		while(name.contains("  ")){
+			name = name.replaceAll("  ", " ");
 		}
-
-			// Arguments:
-	    	String name = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
-
-			// Fix spaces:
-			while(name.contains("  ")){
-				name = name.replaceAll("  ", " ");
-			}
 		
 	    	// Already in faction:
 	    	if(sagaPlayer.getFaction() != null){

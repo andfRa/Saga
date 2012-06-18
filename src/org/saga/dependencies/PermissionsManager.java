@@ -173,7 +173,7 @@ public class PermissionsManager {
 
 		
 		// Admin mode:
-		if(permission.startsWith("saga.admin") && sagaPlayer.isAdminMode()) return true;
+		if(permission.startsWith("saga") && sagaPlayer.isAdminMode()) return true;
 		
 		Player player = sagaPlayer.getPlayer();
 		if(player == null) return false;

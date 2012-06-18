@@ -4,11 +4,9 @@ import java.util.ArrayList;
 
 import org.bukkit.Location;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Creature;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -23,15 +21,15 @@ import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
+import org.saga.listeners.events.SagaBuildEvent;
+import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.messages.BuildingMessages;
 import org.saga.messages.SagaMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.SagaCustomSerialization;
 import org.saga.settlements.Settlement.SettlementPermission;
-import org.sk89q.Command;
 import org.sk89q.CommandContext;
-import org.sk89q.CommandPermissions;
 
 public abstract class Building extends SagaCustomSerialization{
 
@@ -62,15 +60,8 @@ public abstract class Building extends SagaCustomSerialization{
 	transient private boolean isEnabled = false;
 	
 	
-	// Initialisation:
-	/**
-	 * Used by gson.
-	 * 
-	 */
-	protected Building() {
-//		_className = getClass().getName();
-	}
 	
+	// Initialisation:
 	/**
 	 * Creates a building from a definition.
 	 * 
@@ -174,6 +165,7 @@ public abstract class Building extends SagaCustomSerialization{
 		return originChunk.getChunkGroup();
 		
 	}
+	
 	
 	
 	// Building signs:
@@ -506,6 +498,7 @@ public abstract class Building extends SagaCustomSerialization{
 	}
 	
 	
+	
 	// Stats and description:
 	/**
 	 * Gets the building specific stats.
@@ -534,26 +527,7 @@ public abstract class Building extends SagaCustomSerialization{
 		return letter;
 		
 	}
-	
-	/**
-	 * Checks if the player can build. Checks if the player has building permission.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return
-	 */
-	public boolean canBuild(SagaPlayer sagaPlayer) {
-		
 
-		// Owner:
-		if( 
-			(originChunk != null && originChunk.getChunkGroup().isOwner(sagaPlayer.getName()))
-			|| sagaPlayer.isAdminMode()
-		) return true;
-		
-		return getChunkGroup().canBuildBuildings(sagaPlayer);
-		
-		
-	}
 	
 	/**
 	 * Checks if the player can create a sign.
@@ -658,6 +632,7 @@ public abstract class Building extends SagaCustomSerialization{
 	}
 	
 	
+	
 	// Interaction:
 	/**
 	 * Gets the name.
@@ -715,6 +690,7 @@ public abstract class Building extends SagaCustomSerialization{
 	}
 	
 
+	
 	// Updates:
 	/**
 	 * Enables the building
@@ -744,6 +720,7 @@ public abstract class Building extends SagaCustomSerialization{
 	public boolean isEnabled() {
 		return isEnabled;
 	}
+	
 	
 	
 	// Events:
@@ -793,61 +770,27 @@ public abstract class Building extends SagaCustomSerialization{
 	}
 	
 	
+	
 	// Entity damage events:
 	/**
-	 * Called when a player is damaged by another player.
+	 * Called when a a entity takes damage.
 	 * 
 	 * @param event event
 	 */
-	public void onPvP(SagaEntityDamageEvent event){
-		
-	}
-	
-	/**
-	 * Called when a player is damaged by another player.
-	 * 
-	 * @param event event
-	 * @param locationChunk location chunk
-	 */
-	public void onPlayerKillPlayer(SagaPlayer attacker, SagaPlayer defender){
+	public void onEntityDamage(SagaEntityDamageEvent event){
 		
 	}
 
 	/**
-	 * Called when a player is damaged by a creature.
+	 * Called when a player is killed by another player.
 	 * 
 	 * @param event event
-	 * @param damager damager creature
-	 * @param damaged damaged saga player
 	 * @param locationChunk location chunk
 	 */
-	public void onPlayerDamagedByCreature(EntityDamageByEntityEvent event, Creature damager, SagaPlayer damaged){
-
-	}
-
-	/**
-	 * Called when a player is damaged by a creature.
-	 * 
-	 * @param event event
-	 * @param damager damager creature
-	 * @param damaged damaged saga player
-	 * @param locationChunk location chunk
-	 */
-	public void onPlayerDamagedByCreature(EntityDamageByEntityEvent event, Creature damager, SagaPlayer damaged, SagaChunk locationChunk){
-
-	}
-
-	/**
-	 * Called when a player is damages a creature.
-	 * 
-	 * @param event event
-	 * @param damager damager saga player
-	 * @param damaged damaged creature
-	 */
-	public void onPlayerDamagedCreature(EntityDamageByEntityEvent event, SagaPlayer damager, Creature damaged){
-
+	public void onPvPKill(SagaPlayer attacker, SagaPlayer defender){
 		
 	}
+
 	
 	
 	// Move events:
@@ -873,6 +816,21 @@ public abstract class Building extends SagaCustomSerialization{
 
 	}
 
+	
+	
+	// Block events:
+	/**
+	 * Called when a player builds on the chunk.
+	 * 
+	 * @param event event
+	 */
+	public void onBuild(SagaBuildEvent event) {
+
+		// Add override:
+		if(getChunkGroup() != null && !getChunkGroup().hasPermission(event.getSagaPlayer(), SettlementPermission.BUILD_BUILDING)) event.addBuildOverride(BuildOverride.BUILDING_DENY);
+		
+	}
+	
 
 	// Member events:
 	/**
@@ -945,49 +903,7 @@ public abstract class Building extends SagaCustomSerialization{
 		
 		
 	}
-
 	
-	// Commands:
-	@Command(
-			aliases = {"binfo"},
-			usage = "[building name]",
-			flags = "",
-			desc = "Display building information.",
-			min = 0,
-			max = 1
-	)
-	@CommandPermissions({"saga.user.building.info"})
-	public static void help(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-		
-		String buildingName = null;
-		
-		// Arguments:
-		if(args.argsLength() == 1){
-			
-			buildingName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
-			
-			BuildingDefinition definition = ChunkGroupConfiguration.config().getBuildingDefinition(buildingName);
-			if(definition == null){
-				sagaPlayer.message(BuildingMessages.invalidName(buildingName));
-				return;
-			}
-			
-			sagaPlayer.message(BuildingMessages.info(buildingName, definition));
-			
-		}else{
-			
-			sagaPlayer.message(BuildingMessages.info());
-
-			return;
-			
-		}
-
-		
-	}
-	
-	
-	// Messages:
 	
 	
 	// Other:
