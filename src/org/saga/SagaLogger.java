@@ -223,7 +223,7 @@ public class SagaLogger{
      * @param field field
      */
 	public static void nullField(Class<?> classs, String field) {
-        severe(classs.getSimpleName() + ":" + field + " field failed to initialise.");
+        severe(classs.getSimpleName() + ": field " + field + " failed to initialise.");
     }
     
 	/**

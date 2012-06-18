@@ -9,28 +9,24 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.buildings.Building;
-import org.saga.buildings.Home;
 import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.messages.BuildingMessages;
-import org.saga.messages.SagaMessages;
 import org.saga.player.SagaPlayer;
 
 public class SagaChunk {
@@ -94,7 +90,7 @@ public class SagaChunk {
     }
     
 	/**
-	 * Completes the initialization.
+	 * Completes the initialisation.
 	 * 
 	 * @param chunkGroup origin chunk group
 	 * @return integrity
@@ -104,17 +100,17 @@ public class SagaChunk {
 		
 		boolean integrity=true;
 		if(x == null){
-			Saga.severe(this + " saga chunk x field not initialized. Setting default.");
+			SagaLogger.nullField(this,"x");
 			x= 0;
 			integrity = false;
 		}
 		if(z == null){
-			Saga.severe(this + " saga chunk z field not initialized. Setting default.");
+			SagaLogger.nullField(this, "z");
 			z= 0;
 			integrity = false;
 		}
 		if(world == null){
-			Saga.severe(this + " saga chunk world field not initialized. Setting default.");
+			SagaLogger.nullField(this, "world");
 			world = "nullworld";
 			integrity = false;
 		}
@@ -226,7 +222,7 @@ public class SagaChunk {
 		World world = getWorld();
 		
 		if(world == null){
-			Saga.severe(this, "failed to retrieve world", "ignoring bukkit chunk load");
+			SagaLogger.severe(this, "failed to retrieve world");
 			return;
 		}
 		
@@ -246,7 +242,7 @@ public class SagaChunk {
 		World world = getWorld();
 		
 		if(world == null){
-			Saga.severe(this, "failed to retrieve world", "returning false for loaded check");
+			SagaLogger.severe(this, "failed to retrieve world");
 			return false;
 		}
 		
@@ -531,7 +527,7 @@ public class SagaChunk {
 			SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(player.getName());
 			
 			if(sagaPlayer == null){
-				Saga.severe(this, "failed to fetch saga player for " + player.getName() + ", because the player isnt loaded", "ignoring request");
+				SagaLogger.severe(this, "failed to retrieve saga player for " + player.getName() + ", because the player isnt loaded");
 				continue;
 			}
 			
@@ -728,8 +724,6 @@ public class SagaChunk {
 	 */
 	public void onBuild(SagaBuildEvent event) {
 
-		
-		SagaPlayer sagaPlayer = event.getSagaPlayer();
 		
 		// Forward to building:
 		if(bld != null) bld.onBuild(event);

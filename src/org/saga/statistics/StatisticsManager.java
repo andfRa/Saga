@@ -13,7 +13,6 @@ import java.util.Hashtable;
 import org.bukkit.Material;
 import org.saga.Clock;
 import org.saga.Clock.HourTicker;
-import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.BalanceConfiguration;
@@ -161,43 +160,43 @@ public class StatisticsManager implements HourTicker{
 		boolean integrity = true;
 		
 		if(startDate == null){
-			Saga.severe(getClass(), "startDate field failed to initialize", "setting default");
+			SagaLogger.nullField(getClass(), "startDate");
 			startDate = System.currentTimeMillis();
 			integrity=false;
 		}
 		
 		if(guardRuneRestores == null){
-			Saga.severe(getClass(), "guardRuneRestores field failed to initialize", "setting default");
+			SagaLogger.nullField(getClass(), "guardRuneRestores");
 			guardRuneRestores = 0;
 			integrity=false;
 		}
 		
 		if(guardRuneRecharges == null){
-			Saga.severe(getClass(), "guardRuneRecharges field failed to initialize", "setting default");
+			SagaLogger.nullField(getClass(), "guardRuneRecharges");
 			guardRuneRecharges = 0;
 			integrity=false;
 		}
 		
 		if(abilityUsage == null){
-			Saga.severe(getClass(), "abilityUsage field failed to initialize", "setting default");
+			SagaLogger.nullField(getClass(), "abilityUsage");
 			abilityUsage = new Hashtable<String, Integer>();
 			integrity=false;
 		}
 		
 		if(abilityExp == null){
-			Saga.severe(getClass(), "abilityExp field failed to initialize", "setting default");
+			SagaLogger.nullField(getClass(), "abilityExp");
 			abilityExp = new Hashtable<String, Double>();
 			integrity=false;
 		}
 		
 		if(xrayStatistics == null){
-			Saga.severe(getClass(), "xrayStatistics field failed to initialize", "setting default");
+			SagaLogger.nullField(getClass(), "xrayStatistics");
 			xrayStatistics = new Hashtable<String, Hashtable<Material,Integer>>();
 			integrity=false;
 		}
 		
 		if(blockDataChanges == null){
-			Saga.severe(getClass(), "blockDataChanges field failed to initialize", "setting default");
+			SagaLogger.nullField(getClass(), "blockDataChanges");
 			blockDataChanges = 0;
 			integrity=false;
 		}
@@ -215,31 +214,31 @@ public class StatisticsManager implements HourTicker{
 		}
 
 		if(playerSellCoins == null){
-			Saga.severe(getClass(), "playerSellCoins field failed to initialize", "setting default");
+			SagaLogger.nullField(getClass(), "playerSellCoins");
 			playerSellCoins = new Hashtable<String, Hashtable<Material,Double>>();
 			integrity=false;
 		}
 
 		if(playerBuyCoins == null){
-			Saga.severe(getClass(), "playerBuyCoins field failed to initialize", "setting default");
+			SagaLogger.nullField(getClass(), "playerBuyCoins");
 			playerBuyCoins = new Hashtable<String, Hashtable<Material,Double>>();
 			integrity=false;
 		}
 
 		if(playerSellAmount == null){
-			Saga.severe(getClass(), "playerSellAmount field failed to initialize", "setting default");
+			SagaLogger.nullField(getClass(), "playerSellAmount");
 			playerSellAmount = new Hashtable<String, Hashtable<Material,Integer>>();
 			integrity=false;
 		}
 
 		if(playerBuyAmount == null){
-			Saga.severe(getClass(), "playerBuyAmount field failed to initialize", "setting default");
+			SagaLogger.nullField(getClass(), "playerBuyAmount");
 			playerBuyAmount = new Hashtable<String, Hashtable<Material,Integer>>();
 			integrity=false;
 		}
 		
 		if(foundVeins == null){
-			Saga.severe(getClass(), "foundVeins field failed to initialize", "setting default");
+			SagaLogger.nullField(getClass(), "foundVeins");
 			foundVeins = new Hashtable<String, Hashtable<Material,Integer>>();
 			integrity=false;
 		}
@@ -301,7 +300,7 @@ public class StatisticsManager implements HourTicker{
 		Integer ageDays = new Double(calcStatisticsAge() / (60.0 * 60.0 * 1000.0)).intValue();
 		if(ageDays < BalanceConfiguration.config().statisticsUpdateAge) return;
 		
-		Saga.info("Resetting statistics.");
+		SagaLogger.info("Resetting statistics.");
 		
 		archive();
 		
@@ -1032,7 +1031,7 @@ public class StatisticsManager implements HourTicker{
 
 		
 		// Inform:
-		Saga.info("Loading statistics.");
+		SagaLogger.info("Loading statistics.");
 		
 		boolean integrity = true;
 		
@@ -1048,14 +1047,14 @@ public class StatisticsManager implements HourTicker{
 			
 		} catch (IOException e) {
 			
-			Saga.severe(StatisticsManager.class, "failed to load", "loading defaults");
+			SagaLogger.severe(StatisticsManager.class, "failed to load");
 			manager = new StatisticsManager("");
 			integrity = false;
 			
 		} catch (JsonParseException e) {
 			
-			Saga.severe(StatisticsManager.class, "failed to parse", "loading defaults");
-			Saga.info("Parse message :" + e.getMessage());
+			SagaLogger.severe(StatisticsManager.class, "failed to parse");
+			SagaLogger.info("Parse message :" + e.getMessage());
 			manager = new StatisticsManager("");
 			integrity = false;
 			
@@ -1084,7 +1083,7 @@ public class StatisticsManager implements HourTicker{
 
 		
 		// Inform:
-		Saga.info("Saving statistics.");
+		SagaLogger.info("Saving statistics.");
 		
 		try {
 			
@@ -1092,8 +1091,8 @@ public class StatisticsManager implements HourTicker{
 			
 		} catch (IOException e) {
 			
-			Saga.severe(StatisticsManager.class, "write failed", "ignoring write");
-			Saga.info("Write failure cause:" + e.getClass().getSimpleName() + ":" + e.getMessage());
+			SagaLogger.severe(StatisticsManager.class, "write failed");
+			SagaLogger.info("Write failure cause:" + e.getClass().getSimpleName() + ":" + e.getMessage());
 			
 		}
 		
@@ -1106,7 +1105,7 @@ public class StatisticsManager implements HourTicker{
 	public void archive(){
 
 		// Inform:
-		Saga.info("Archiving statistics.");
+		SagaLogger.info("Archiving statistics.");
 		
 		try {
 			
@@ -1135,7 +1134,7 @@ public class StatisticsManager implements HourTicker{
 	public static void unload(){
 
 		// Inform:
-		Saga.info("Unloading statistics.");
+		SagaLogger.info("Unloading statistics.");
 		
 		// Clock:
 		Clock.clock().registerHourTick(instance);

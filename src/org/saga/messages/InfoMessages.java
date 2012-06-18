@@ -1,12 +1,10 @@
 package org.saga.messages;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import org.bukkit.ChatColor;
 import org.saga.abilities.AbilityDefinition;
 import org.saga.attributes.Attribute;
-import org.saga.buildings.Building;
 import org.saga.buildings.TradingPost;
 import org.saga.buildings.signs.AbilitySign;
 import org.saga.buildings.signs.AttributeSign;
@@ -14,17 +12,12 @@ import org.saga.buildings.signs.GuardianRuneSign;
 import org.saga.buildings.signs.SellSign;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
-import org.saga.config.BalanceConfiguration;
-import org.saga.config.ChunkGroupConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.FactionConfiguration;
-import org.saga.config.ProficiencyConfiguration;
 import org.saga.messages.PlayerMessages.ColorCircle;
-import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.utility.RomanNumeral;
 import org.saga.utility.StringBook;
 import org.saga.utility.StringTable;
-import org.saga.utility.TextUtil;
 
 public class InfoMessages {
 
@@ -56,9 +49,6 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		
 		ColorCircle color = new ColorCircle().addColor(normal1).addColor(normal2);
 		StringBook book = new StringBook("building help", color, 9);
-		
-		// Buildings:
-		Collection<String> buildingNames = ChunkGroupConfiguration.config().getBuildingNames();
 		
 		// General:
 		book.addLine("Items can be bought and sold at a trading post building. See /bhelp for details.");

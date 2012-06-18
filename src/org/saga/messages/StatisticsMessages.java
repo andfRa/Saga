@@ -4,18 +4,15 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
-import org.saga.config.BalanceConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.messages.PlayerMessages.ColorCircle;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
-import org.saga.statistics.XrayIndicator;
 import org.saga.utility.MathUtil;
 import org.saga.utility.StringBook;
 import org.saga.utility.StringTable;

@@ -4,7 +4,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
-import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.GuardianRuneSign;
 import org.saga.exceptions.InvalidBuildingException;
@@ -55,23 +55,9 @@ public class Academy extends Building implements SecondTicker, Cooldown{
 		
 		if(cooldown == null){
 			cooldown = 0;
-			Saga.severe(this, "cooldown field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "cooldown");
 			integrity = false;
 		}
-//		for (int i = 0; i < signs.size(); i++) {
-//			
-//			try {
-//				signs.get(i).complete(this);
-//			} catch (SignException e) {
-//				Saga.severe(this, "failed to initialize signs field element: " + e.getClass().getSimpleName() + ":" + e.getMessage(), "removing element");
-//				signs.remove(i);
-//				i--;
-//				continue;
-//			}
-//			
-//		}
-		
-		
 		
 		return integrity;
 		

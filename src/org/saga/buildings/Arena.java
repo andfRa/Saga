@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.Clock.TimeOfDayTicker;
-import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
@@ -86,7 +86,7 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 		
 		if(arenaPlayers == null){
 			arenaPlayers = new ArrayList<Arena.ArenaPlayer>();
-			Saga.severe(this, "failed to initialize arenaPlayers field", "setting default");
+			SagaLogger.nullField(this, "arenaPlayers");
 			integrity = false;
 		}
 		for (ArenaPlayer arenaPlayer : arenaPlayers) {
@@ -558,7 +558,7 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 		/* 
 		 * (non-Javadoc)
 		 * 
-		 * @see org.saga.buildings.Building#completeExtended()
+		 * @see org.saga.buildings.Building#complete()
 		 */
 		public boolean complete() {
 			
@@ -567,25 +567,25 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 			
 			if(name == null){
 				name = "none";
-				Saga.severe(this.getClass(), "name field failed to initialize", "setting default");
+				SagaLogger.nullField(this, "name");
 				integrity = false;
 			}
 			
 			if(kills == null){
 				kills = 0;
-				Saga.severe(this.getClass(), "kills field failed to initialize", "setting default");
+				SagaLogger.nullField(this, "kills");
 				integrity = false;
 			}
 			
 			if(deaths == null){
 				deaths = 0;
-				Saga.severe(this.getClass(), "deaths field failed to initialize", "setting default");
+				SagaLogger.nullField(this, "deaths");
 				integrity = false;
 			}
 			
 			if(points == null){
 				points = 0.0;
-				Saga.severe(this.getClass(), "points field failed to initialize", "setting default");
+				SagaLogger.nullField(this, "points");
 				integrity = false;
 			}
 

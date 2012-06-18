@@ -3,9 +3,7 @@ package org.saga.player;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -21,11 +19,9 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.util.Vector;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
-import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
 import org.saga.abilities.AbilityManager;
@@ -48,7 +44,6 @@ import org.saga.factions.SagaFaction;
 import org.saga.messages.GeneralMessages.CustomColour;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.StatsMessages;
-import org.saga.player.Skill.ArmourType;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.settlements.Settlement;
@@ -169,13 +164,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 	private GuardianRune guardRune;
 	
 	
-	// Date:
-	/**
-	 * Lost online date.
-	 */
-	private Date lastOnline2;
-
-	
 	// Admin mode:
 	/**
 	 * Administration mode.
@@ -251,49 +239,49 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 		if(level == null){
 			level = 0;
-			Saga.severe(this, "level field not initialized", "setting default");
+			SagaLogger.nullField(this, "level");
 		}
 		
 		if(exp == null){
 			exp = 0.0;
-			Saga.severe(this, "level field not initialized", "setting default");
+			SagaLogger.nullField(this, "level");
 		}
 		
 		if(coins == null){
 			coins = EconomyConfiguration.config().playerCoins;
-			Saga.severe(this, "coins field not initialized", "setting default");
+			SagaLogger.nullField(this, "coins");
 		}
 		
 		if(factionId == null){
 			factionId = -1;
-			Saga.severe(this, "stamina field not initialized", "setting default");
+			SagaLogger.nullField(this, "stamina");
 		}
 		
 		if(chunkGroupId == null){
 			chunkGroupId = -1;
-			Saga.severe(this, "chunkGroupId field not initialized", "setting default");
+			SagaLogger.nullField(this, "chunkGroupId");
 		}
 		
 		if(factionInvites == null){
 			factionInvites = new ArrayList<Integer>();
-			Saga.severe(this, "factionInvites field not initialized", "setting default");
+			SagaLogger.nullField(this, "factionInvites");
 		}
 	
 		if(chunkGroupInvites == null){
 			chunkGroupInvites = new ArrayList<Integer>();
-			Saga.severe(this, "chunkGroupInvites field not initialized", "setting default");
+			SagaLogger.nullField(this, "chunkGroupInvites");
 		}
 		
 		if(guardRune == null){
 			guardRune = new GuardianRune(this);
-			Saga.severe(this, "guardRune field not initialized", "setting default");
+			SagaLogger.nullField(this, "guardRune");
 		}
 		guardRune.complete();
 		
 		// Abilities:
 		if(abilities == null){
 			abilities = new ArrayList<Ability>();
-			Saga.severe(this, "abilities field failed", "setting default");
+			SagaLogger.nullField(this, "abilities");
 		}
 		
 		for (int i = 0; i < abilities.size(); i++) {
@@ -301,7 +289,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 			Ability ability = abilities.get(i);
 			
 			if(ability == null){
-				Saga.severe(this, "abilities element field failed to initialize", "setting default");
+				SagaLogger.nullField(this, "abilities element");
 				abilities.remove(i);
 				i--;
 				continue;
@@ -313,7 +301,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 				ability.complete();
 				
 			} catch (InvalidAbilityException e) {
-				Saga.severe(this, "abilities element invalid: " + e.getMessage(), "removing element");
+				SagaLogger.severe(this, "abilities element invalid: " + e.getMessage());
 				abilities.remove(i);
 				i--;
 				continue;
@@ -325,12 +313,12 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 		if(attributeScores == null){
 			attributeScores = new Hashtable<String, Integer>();
-			Saga.severe(this, "attributeScores field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "attributeScores");
 		}
 		
 		if(abilityScores == null){
 			abilityScores = new Hashtable<String, Integer>();
-			Saga.severe(this, "abilityScores field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "abilityScores");
 		}
 		
 		// Transient:
@@ -573,7 +561,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 		// Admin mode:
 		if(isAdminMode() && !PermissionsManager.hasPermission(player, PermissionsManager.ADMIN_MODE_PERMISSION)){
 			disableAdminMode();
-			Saga.info(this, "no permission for admin mode", "disabling admin mode");
+			SagaLogger.info(this, "no permission for admin mode");
 		}
 		
 		// Saving disabled:
@@ -597,7 +585,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 		// Admin mode:
 		if(isAdminMode() && !PermissionsManager.hasPermission(player, PermissionsManager.ADMIN_MODE_PERMISSION)){
 			disableAdminMode();
-			Saga.info(this, "no permission for admin mode", "disabling admin mode");
+			SagaLogger.info(this, "no permission for admin mode");
 		}
 		
 		this.player = null;
@@ -809,114 +797,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 		
 	}
-	
-	/**
-	 * Gets the armor.
-	 * 
-	 * @param type type
-	 * @return armor percentage
-	 */
-	public double getArmor(ArmourType type) {
-
-		
-		if(!isOnline()) return 0.0;
-		
-		double armour = 0;
-		PlayerInventory inventory = getPlayer().getInventory();
-		
-		switch (type) {
-		case EXOTIC:
-			
-			if(inventory.getHelmet() != null && inventory.getHelmet().getType().equals(Material.DIAMOND_HELMET)){
-				armour += 0.15;
-			}
-			
-			if(inventory.getChestplate() != null && inventory.getChestplate().getType().equals(Material.DIAMOND_CHESTPLATE)){
-				armour += 0.4;
-			}
-			
-			if(inventory.getLeggings() != null && inventory.getLeggings().getType().equals(Material.DIAMOND_LEGGINGS)){
-				armour += 0.3;
-			}
-			
-			if(inventory.getBoots() != null && inventory.getBoots().getType().equals(Material.DIAMOND_BOOTS)){
-				armour += 0.15;
-			}
-			
-			break;
-			
-		case HEAVY:
-			
-			if(inventory.getHelmet() != null && inventory.getHelmet().getType().equals(Material.IRON_HELMET)){
-				armour += 0.15;
-			}
-			
-			if(inventory.getChestplate() != null && inventory.getChestplate().getType().equals(Material.IRON_CHESTPLATE)){
-				armour += 0.4;
-			}
-			
-			if(inventory.getLeggings() != null && inventory.getLeggings().getType().equals(Material.IRON_LEGGINGS)){
-				armour += 0.3;
-			}
-			
-			if(inventory.getBoots() != null && inventory.getBoots().getType().equals(Material.IRON_BOOTS)){
-				armour += 0.15;
-			}
-			
-			break;
-
-		case LIGHT:
-			
-			if(inventory.getHelmet() != null && inventory.getHelmet().getType().equals(Material.LEATHER_HELMET)){
-				armour += 0.15;
-			}
-			
-			if(inventory.getChestplate() != null && inventory.getChestplate().getType().equals(Material.LEATHER_CHESTPLATE)){
-				armour += 0.4;
-			}
-			
-			if(inventory.getLeggings() != null && inventory.getLeggings().getType().equals(Material.LEATHER_LEGGINGS)){
-				armour += 0.3;
-			}
-			
-			if(inventory.getBoots() != null && inventory.getBoots().getType().equals(Material.LEATHER_BOOTS)){
-				armour += 0.15;
-			}
-			
-			break;
-		
-		case UNARMOURED:
-			
-			if(inventory.getHelmet() == null || inventory.getHelmet().getType().equals(Material.AIR)){
-				armour += 0.15;
-			}
-			
-			if(inventory.getChestplate() == null || inventory.getChestplate().getType().equals(Material.AIR)){
-				armour += 0.4;
-			}
-			
-			if(inventory.getLeggings() == null || inventory.getLeggings().getType().equals(Material.AIR)){
-				armour += 0.3;
-			}
-			
-			if(inventory.getBoots() == null || inventory.getBoots().getType().equals(Material.AIR)){
-				armour += 0.15;
-			}
-			
-			break;
-		
-		case ALL:
-		
-			armour = 1.0;
-			
-		default:
-			break;
-		}
-	
-		return armour;
-		
-		
-	}
 
 	/**
 	 * Damages item in hand.
@@ -953,7 +833,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 		// Check if already registered:
 		if(this.faction != null){
-			Saga.severe(this, "tried to register a second " + saga + " faction", "ignoring request");
+			SagaLogger.severe(this, "tried to register a second " + saga + " faction");
 			return;
 		}
 		
@@ -973,13 +853,13 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 		// Check if not registered:
 		if(this.faction == null){
-			Saga.severe(this, "tried to unregister a non-registered " + faction + " faction", "ignoring request");
+			SagaLogger.severe(this, "tried to unregister a non-registered " + faction + " faction");
 			return;
 		}
 
 		// Check if not a correct faction:
 		if(this.faction != faction){
-			Saga.severe(this, "tried to unregister an invalid " + faction + " faction", "ignoring request");
+			SagaLogger.severe(this, "tried to unregister an invalid " + faction + " faction");
 			return;
 		}
 		
@@ -1090,7 +970,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 		// Check if already on the list:
 		if(this.chunkGroup != null){
-			Saga.severe(this, "tried to register a second chunk group", "ignoring request");
+			SagaLogger.severe(this, "tried to register a second chunk group");
 			return;
 		}
 		
@@ -1111,7 +991,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 		// Check if not on the list:
 		if(this.chunkGroup == null){
-			Saga.severe(this, "tried to unregister a non-registered chunk group", "ignoring request");
+			SagaLogger.severe(this, "tried to unregister a non-registered chunk group");
 			return;
 		}
 		
@@ -1966,21 +1846,21 @@ public class SagaPlayer implements SecondTicker, Trader{
                 
             } catch (FileNotFoundException e) {
 
-                Saga.info("Player information file not found for " + playerName + ". Loading default.");
+            	SagaLogger.info("Player information file not found for " + playerName + ". Loading default.");
                 sagaPlayer = new SagaPlayer(playerName);
 
             } catch (IOException e) {
 
-                Saga.severe(SagaPlayer.class, "player information file read failure for " + playerName + ":" + e.getClass().getSimpleName() + ":" + e.getMessage() ,"setting defaults");
-                Saga.info("disabling player information saving");
+            	SagaLogger.severe(SagaPlayer.class, "player information file read failure for " + playerName + ":" + e.getClass().getSimpleName() + ":" + e.getMessage());
+            	SagaLogger.info("disabling player information saving");
                 sagaPlayer= new SagaPlayer(playerName);
                 sagaPlayer.setSavingEnabled(false);
 
             } catch (JsonParseException e) {
 
-            	Saga.severe(SagaPlayer.class, "player information parse load failure for " + playerName + ":" + e.getClass().getSimpleName() + ":" + e.getMessage() ,"setting defaults");
-                Saga.info("disabling player information saving");
-                Saga.info("Parse message: " + e.getMessage());
+            	SagaLogger.severe(SagaPlayer.class, "player information parse load failure for " + playerName + ":" + e.getClass().getSimpleName() + ":" + e.getMessage());
+            	SagaLogger.info("disabling player information saving");
+            	SagaLogger.info("Parse message: " + e.getMessage());
                 sagaPlayer= new SagaPlayer(playerName);
                 sagaPlayer.setSavingEnabled(false);
 

@@ -13,6 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.saga.Clock;
 import org.saga.Clock.TimeOfDayTicker;
 import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.buildings.TradingPost;
 import org.saga.config.EconomyConfiguration;
 import org.saga.economy.TradeDeal.TradeDealType;
@@ -122,7 +123,7 @@ public class EconomyManager implements TimeOfDayTicker{
 		// Player count:
 		World world = Saga.plugin().getServer().getWorld(worldName);
 		if(world == null){
-			Saga.severe(EconomyManager.class, "failed to get a world with " + worldName + " name", "ignoring trade deal amount refresh");
+			SagaLogger.severe(EconomyManager.class, "failed to get a world with " + worldName + " name");
 			return;
 		}
 		int playerCount = world.getPlayers().size();
@@ -267,7 +268,7 @@ public class EconomyManager implements TimeOfDayTicker{
 			}
 			
 		}else{
-			Saga.severe(EconomyManager.class, "unsupported transaction", "ignoring request");
+			SagaLogger.severe(EconomyManager.class, "unsupported transaction");
 			if(targeter instanceof SagaPlayer){
 				((SagaPlayer) targeter).error("unsupproted transaction");
 			}
@@ -420,7 +421,7 @@ public class EconomyManager implements TimeOfDayTicker{
 	public static void load() {
 
 		// Inform:
-		Saga.info("Loading economy.");
+		SagaLogger.info("Loading economy.");
 		
 		// Load for all worlds:
 		List<World> worlds = Saga.plugin().getServer().getWorlds();
@@ -449,20 +450,20 @@ public class EconomyManager implements TimeOfDayTicker{
 			
 		} catch (JsonParseException e) {
 			
-			Saga.severe(EconomyManager.class, "failed to parse empty trading deals: " + e.getClass().getSimpleName() + ": " + e.getMessage(), "using empty list");
-			Saga.info("Parse message :" + e.getMessage());
+			SagaLogger.severe(EconomyManager.class, "failed to parse empty trading deals: " + e.getClass().getSimpleName() + ": " + e.getMessage());
+			SagaLogger.info("Parse message :" + e.getMessage());
 			
 		} catch (FileNotFoundException e) {
 			
 			try {
 				WriterReader.write(Directory.TRADE_DEALS, worldName, new TradeDeal[0]);
 			} catch (IOException e1) {
-				Saga.severe(EconomyManager.class, "failed to write empty trading deals: " + e1.getClass().getSimpleName() + ": " + e.getMessage(), "ignoring write");
+				SagaLogger.severe(EconomyManager.class, "failed to write empty trading deals: " + e1.getClass().getSimpleName() + ": " + e.getMessage());
 			}
 			
 		}catch (IOException e) {
 			
-			Saga.severe(EconomyManager.class, "failed to read trading deals: " + e.getClass().getSimpleName() + ": " + e.getMessage(), "using empty list");
+			SagaLogger.severe(EconomyManager.class, "failed to read trading deals: " + e.getClass().getSimpleName() + ": " + e.getMessage());
 			reTradingDeals = new TradeDeal[0];
 			
 		}
@@ -490,7 +491,7 @@ public class EconomyManager implements TimeOfDayTicker{
 	public static void save() {
 
 		// Inform:
-		Saga.info("Saving economy.");
+		SagaLogger.info("Saving economy.");
 		
 		// Save for all worlds:
 		List<World> worlds = Saga.plugin().getServer().getWorlds();
@@ -513,7 +514,7 @@ public class EconomyManager implements TimeOfDayTicker{
 		try {
 			instance = manager(worldName);
 		} catch (InvalidWorldException e1) {
-			Saga.severe(EconomyManager.class, "failed to unload a economy manager for " + worldName + " world isn't loaded", "ignoring unload");
+			SagaLogger.severe(EconomyManager.class, "failed to unload a economy manager for " + worldName + " world isn't loaded");
 			return;
 		}
 		
@@ -521,7 +522,7 @@ public class EconomyManager implements TimeOfDayTicker{
 		try {
 			WriterReader.write(Directory.TRADE_DEALS, worldName, instance.tradeDeals.toArray(new TradeDeal[instance.tradeDeals.size()]));
 		} catch (IOException e) {
-			Saga.severe(EconomyManager.class, "failed to write trading deals: " + e.getClass().getSimpleName() + ": " + e.getMessage(), "ignoring write");
+			SagaLogger.severe(EconomyManager.class, "failed to write trading deals: " + e.getClass().getSimpleName() + ": " + e.getMessage());
 		}
 		
 		
@@ -535,7 +536,7 @@ public class EconomyManager implements TimeOfDayTicker{
 		
 		
 		// Inform:
-		Saga.info("Unloading economy.");
+		SagaLogger.info("Unloading economy.");
 		
 		// Unload for all worlds:
 		List<World> worlds = Saga.plugin().getServer().getWorlds();
@@ -561,7 +562,7 @@ public class EconomyManager implements TimeOfDayTicker{
 		try {
 			instance = manager(worldName);
 		} catch (InvalidWorldException e1) {
-			Saga.severe(EconomyManager.class, "failed to unload a economy manager for " + worldName + " world isn't loaded", "ignoring unload");
+			SagaLogger.severe(EconomyManager.class, "failed to unload a economy manager for " + worldName + " world isn't loaded");
 			return;
 		}
 		

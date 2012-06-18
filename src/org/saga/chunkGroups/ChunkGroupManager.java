@@ -7,7 +7,7 @@ import java.util.Random;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.chunkGroups.SagaChunk.ChunkSide;
 import org.saga.factions.SagaFaction;
 import org.saga.player.SagaPlayer;
@@ -63,12 +63,12 @@ public class ChunkGroupManager {
 //			
 //			// No longer exists:
 //			if(chunkGroup == null){
-//				Saga.severe("ChunkGroupManager could not register " + groupId + " chunk group for " + sagaFaction + " faction, because the chunk group was not found. Ignoring request.");
+//				Saga.severe(this, a,"ChunkGroupManager could not register " + groupId + " chunk group for " + sagaFaction + " faction, because the chunk group was not found. Ignoring request.");
 //				continue;
 //			}
 //			
 //			if(!chunkGroup.hasFaction(sagaFaction.getId())){
-//				Saga.severe("ChunkGroupManager could not register " + groupId + " chunk group for " + sagaFaction + " faction, because the chunk group doesn't have the faction on its list. Ignoring request.");
+//				Saga.severe(this, a,"ChunkGroupManager could not register " + groupId + " chunk group for " + sagaFaction + " faction, because the chunk group doesn't have the faction on its list. Ignoring request.");
 //				continue;
 //			}
 //			
@@ -99,12 +99,12 @@ public class ChunkGroupManager {
 //			
 //			// No longer exists:
 //			if(chunkGroup == null){
-//				Saga.severe("ChunkGroupManager could not unregister " + groupId + " chunk group for " + sagaFaction + " faction, because the chunk group was not found. Ignoring request.");
+//				Saga.severe(this, a,"ChunkGroupManager could not unregister " + groupId + " chunk group for " + sagaFaction + " faction, because the chunk group was not found. Ignoring request.");
 //				continue;
 //			}
 //			
 //			if(!chunkGroup.hasFaction(sagaFaction.getId())){
-//				Saga.severe("ChunkGroupManager could not unregister " + groupId + " chunk group for " + sagaFaction + " faction, because the chunk group doesn't have the faction on its list. Ignoring request.");
+//				Saga.severe(this, a,"ChunkGroupManager could not unregister " + groupId + " chunk group for " + sagaFaction + " faction, because the chunk group doesn't have the faction on its list. Ignoring request.");
 //				continue;
 //			}
 //			
@@ -137,13 +137,13 @@ public class ChunkGroupManager {
 		
 		// No longer exists:
 		if(chunkGroup == null){
-			Saga.severe(getClass(), "failed to register " + groupId + " chunk group for " + sagaPlayer + " player, because the chunk group was not found", "ignoring request");
+			SagaLogger.severe(getClass(), "failed to register " + groupId + " chunk group for " + sagaPlayer + " player, because the chunk group was not found");
 			return;
 		}
 		
 		// Not on the list:
 		if(!chunkGroup.hasPlayer(sagaPlayer.getName())){
-			Saga.severe(getClass(), "chunkGroupManager could not register " + groupId + " chunk group for " + sagaPlayer + " player, because the chunk group doesn't have the player on its list", "removing ID");
+			SagaLogger.severe(getClass(), "chunkGroupManager could not register " + groupId + " chunk group for " + sagaPlayer + " player, because the chunk group doesn't have the player on its list");
 			sagaPlayer.removeChunkGroupId(sagaPlayer.getChunkGroupId());
 			return;
 		}
@@ -175,12 +175,12 @@ public class ChunkGroupManager {
 		
 		// No longer exists:
 		if(chunkGroup == null){
-			Saga.severe("ChunkGroupManager could not unregister " + groupId + " chunk group for " + sagaPlayer + " player, because the chunk group was not found. Ignoring request.");
+			SagaLogger.severe(this, "could not unregister " + groupId + " chunk group for " + sagaPlayer + " player, because the chunk group was not found");
 			return;
 		}
 		
 		if(!chunkGroup.hasPlayer(sagaPlayer.getName())){
-			Saga.severe("ChunkGroupManager could not unregister " + groupId + " chunk group for " + sagaPlayer + " player, because the chunk group doesn't have the player on its list. Ignoring request.");
+			SagaLogger.severe(this, "could not unregister " + groupId + " chunk group for " + sagaPlayer + " player, because the chunk group doesn't have the player on its list");
 			return;
 		}
 		
@@ -337,21 +337,21 @@ public class ChunkGroupManager {
 		Hashtable<Integer, Hashtable<Integer, SagaChunk>> world = sagaChunks.get(sagaChunk.getWorldName());
 		
 		if(world == null){
-			Saga.severe("Tried to remove a non-existan " + sagaChunk + " chunk to group manager chunk shortcut.");
+			SagaLogger.severe(this, "tried to remove a non-existan " + sagaChunk + " chunk to group manager chunk shortcut");
 			return;
 		}
 		
 		Hashtable<Integer, SagaChunk> x = world.get(sagaChunk.getX());
 		
 		if(x == null){
-			Saga.severe("Tried to remove a non-existan " + sagaChunk + " chunk to group manager chunk shortcut.");
+			SagaLogger.severe(this, "tried to remove a non-existan " + sagaChunk + " chunk to group manager chunk shortcut");
 			return;
 		}
 		
 		SagaChunk z = x.get(sagaChunk.getZ());
 		
 		if(z == null){
-			Saga.severe("Tried to remove a non-existan " + sagaChunk + " chunk to group manager chunk shortcut.");
+			SagaLogger.severe(this, "tried to remove a non-existan " + sagaChunk + " chunk to group manager chunk shortcut");
 			return;
 		}
 		
@@ -394,7 +394,7 @@ public class ChunkGroupManager {
 		SagaChunk z = x.get(sagaChunk.getZ());
 		
 		if(z != null){
-			Saga.severe("Tried to add an aready existing " + sagaChunk + " to chunk group managers chunk shortcut. Ignoring request.");
+			SagaLogger.severe(this, "tried to add an aready existing " + sagaChunk + " to chunk group managers chunk shortcut");
 			return;
 		}
 		
@@ -413,7 +413,7 @@ public class ChunkGroupManager {
 
 		
 		if(!registeredGroups.containsKey(chunkGroup.getId())){
-			Saga.severe(getClass(), "tried to remove a non-existing " + chunkGroup + " chunk group", "ignoring request");
+			SagaLogger.severe(getClass(), "tried to remove a non-existing " + chunkGroup + " chunk group");
 			return;
 		}
 		
@@ -439,7 +439,7 @@ public class ChunkGroupManager {
 
 		
 		if(registeredGroups.containsKey(chunkGroup.getId())){
-			Saga.severe(getClass(), "tried to add an already existing " + chunkGroup + " chunk group", "ignoring request");
+			SagaLogger.severe(getClass(), "tried to add an already existing " + chunkGroup + " chunk group");
 			return;
 		}
 		
@@ -488,7 +488,7 @@ public class ChunkGroupManager {
 		
 
 		// Inform:
-		Saga.info("Loading chunk groups.");
+		SagaLogger.info("Loading chunk groups.");
 		
 		ChunkGroupManager manager = new ChunkGroupManager();
 		
@@ -503,7 +503,7 @@ public class ChunkGroupManager {
 			
 			// Ignore all invalid IDs:
 			if(element.getId() < 0){
-				Saga.severe("Can't load " + element + " chunk group, because it has an invalid ID. Ignoring request.");
+				SagaLogger.severe(ChunkGroupManager.class, "can't load " + element + " chunk group, because it has an invalid ID");
 				continue;
 			}
 			
@@ -520,7 +520,7 @@ public class ChunkGroupManager {
 
 
 		// Inform:
-		Saga.info("Saving chunk groups.");
+		SagaLogger.info("Saving chunk groups.");
 
 		// Save:
 		Collection<ChunkGroup> elements = manager().registeredGroups.values();
@@ -539,7 +539,7 @@ public class ChunkGroupManager {
 
 
 		// Inform:
-		Saga.info("Unloading chunk groups.");
+		SagaLogger.info("Unloading chunk groups.");
 		
 		save();
 		instance = null;

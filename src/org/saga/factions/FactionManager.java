@@ -6,7 +6,7 @@ import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Random;
 
-import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
@@ -69,13 +69,13 @@ public class FactionManager {
 		
 		// No longer exists:
 		if(faction == null){
-			Saga.severe(getClass(), "failed to retrieve faction for " + sagaPlayer + "player with " + factionId + " ID", "ignoring request");
+			SagaLogger.severe(getClass(), "failed to retrieve faction for " + sagaPlayer + "player with " + factionId + " ID");
 			return;
 		}
 		
 		// Not on the list:
 		if(!faction.isMember(sagaPlayer.getName())){
-			Saga.severe(getClass(), "failed to register faction for " + sagaPlayer + "player with " + factionId + " ID, because the player is not on its member list", "removing ID");
+			SagaLogger.severe(getClass(), "failed to register faction for " + sagaPlayer + "player with " + factionId + " ID, because the player is not on its member list");
 			sagaPlayer.removeFactionId(sagaPlayer.getFactionId());
 			return;
 		}
@@ -186,7 +186,7 @@ public class FactionManager {
 		// Add:
 		SagaFaction oldFaction = factions.put(faction.getId(), faction);
 		if(oldFaction != null){
-			Saga.severe("Added an already existing faction " + oldFaction.getName() + "(" + oldFaction.getId() + ") to the faction list.");
+			SagaLogger.severe(getClass(), "added an already existing faction " + oldFaction + " to the faction list");
 		}
 		
 		// Register faction:
@@ -205,7 +205,7 @@ public class FactionManager {
 		
 		// Remove:
 		if(factions.remove(faction.getId()) == null){
-			Saga.severe("Tried to remove a non-existing " + faction.getName() + "(" + faction.getId() + ") faction from the list.");
+			SagaLogger.severe(getClass(), "tried to remove a non-existing " + faction + " faction from the list");
 			return;
 		}
 
@@ -272,7 +272,7 @@ public class FactionManager {
 
 		
 		// Inform:
-		Saga.info("Loading factions.");
+		SagaLogger.info("Loading factions.");
 
 		FactionManager manager = new FactionManager();
 		
@@ -282,7 +282,7 @@ public class FactionManager {
 			SagaFaction element = SagaFaction.load(ids[i]);
 			// Ignore all invalid IDs:
 			if(element.getId() < 0){
-				Saga.severe("Can't load " + element + " faction, because it has an invalid ID. Ignoring request.");
+				SagaLogger.severe(FactionManager.class, "can't load " + element + " faction, because it has an invalid ID");
 				continue;
 			}
 			// Add to manager:
@@ -302,7 +302,7 @@ public class FactionManager {
 	public static void save() {
 
 		// Inform:
-		Saga.info("Saving factions.");
+		SagaLogger.info("Saving factions.");
 
 		// Save factions:
 		Collection<SagaFaction> factions = manager().factions.values();
@@ -320,7 +320,7 @@ public class FactionManager {
 	public static void unload() {
 
 		// Inform:
-		Saga.info("Unloading factions.");
+		SagaLogger.info("Unloading factions.");
 		
 		save();
 		instance = null;

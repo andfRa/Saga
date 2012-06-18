@@ -26,6 +26,7 @@ import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
@@ -48,7 +49,7 @@ public class PlayerListener implements Listener {
     	
     	// Invalid player:
     	if(sagaPlayer == null){
-    		Saga.warning("Can't continue with onPlayerCommandPreprocess, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
+    		SagaLogger.severe(BlockListener.class, "can't continue with onPlayerCommandPreprocess, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
     	}
 
@@ -79,7 +80,7 @@ public class PlayerListener implements Listener {
     	
     	// Invalid player:
     	if(sagaPlayer == null){
-    		Saga.warning("Can't continue with onPlayerJoin, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
+    		SagaLogger.severe(BlockListener.class, "can't continue with onPlayerJoin, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
     	}
 
@@ -100,7 +101,7 @@ public class PlayerListener implements Listener {
     	
     	// Invalid player:
     	if(sagaPlayer == null){
-    		Saga.warning("Can't continue with onPlayerQuit, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
+    		SagaLogger.severe(BlockListener.class, "can't continue with onPlayerQuit, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
     	}
 
@@ -122,7 +123,7 @@ public class PlayerListener implements Listener {
     	
     	// Invalid player:
     	if(sagaPlayer == null){
-    		Saga.warning("Can't continue with onPlayerRespawn, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
+    		SagaLogger.severe(BlockListener.class, "can't continue with onPlayerRespawn, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
     	}
 
@@ -150,7 +151,7 @@ public class PlayerListener implements Listener {
     	
     	// Invalid player:
     	if(sagaPlayer == null){
-    		Saga.warning("Can't continue with onPlayerMove, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
+    		SagaLogger.severe(BlockListener.class, "can't continue with onPlayerMove, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
     	}
     	
@@ -168,7 +169,7 @@ public class PlayerListener implements Listener {
     	
     	// Invalid player:
     	if(sagaPlayer == null){
-    		Saga.warning("Can't continue with onPlayerTeleport, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
+    		SagaLogger.severe(BlockListener.class, "can't continue with onPlayerTeleport, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
     	}
     	
@@ -201,7 +202,7 @@ public class PlayerListener implements Listener {
     	// Invalid player:
     	if(sagaPlayer == null){
     		
-    		Saga.warning("Can't continue with onPlayerInteract, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
+    		SagaLogger.severe(BlockListener.class, "can't continue with onPlayerInteract, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		event.setCancelled(true);
     		
     		return;
@@ -236,7 +237,7 @@ public class PlayerListener implements Listener {
     	
     	// Invalid player:
     	if(sagaPlayer == null){
-    		Saga.warning("Can't continue with onPlayerChat, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
+    		SagaLogger.severe(BlockListener.class, "can't continue with onPlayerChat, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
     	}
     	
@@ -256,7 +257,7 @@ public class PlayerListener implements Listener {
     	try {
     		event.setFormat(formatString);
 		} catch (Exception e) {
-			Saga.severe("onPlayerChat failed to set format: " +e.getClass().getSimpleName() + ":" + e.getMessage());
+			SagaLogger.severe(PlayerListener.class, "onPlayerChat failed to set format: " +e.getClass().getSimpleName() + ":" + e.getMessage());
 		}
     	
     	
@@ -270,7 +271,7 @@ public class PlayerListener implements Listener {
     	
     	// Invalid player:
     	if(sagaPlayer == null){
-    		Saga.warning("Can't continue with onPlayerInteractEntity, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
+    		SagaLogger.severe(BlockListener.class, "can't continue with onPlayerInteractEntity, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
     	}
     	

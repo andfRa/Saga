@@ -2,7 +2,7 @@ package org.saga.economy;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.saga.Saga;
+import org.saga.SagaLogger;
 
 public class TradeDeal implements Comparable<TradeDeal>{
 
@@ -81,37 +81,37 @@ public class TradeDeal implements Comparable<TradeDeal>{
 		
 		if(id == null){
 			id = -1;
-			Saga.severe(TradeDeal.class, "id field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "id");
 			integrity = false;
 		}
 		
 		if(type == null){
 			type = TradeDealType.EXPORT;
-			Saga.severe(TradeDeal.class, "type field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "type");
 			integrity = false;
 		}
 	
 		if(material == null){
 			material = Material.AIR;
-			Saga.severe(TradeDeal.class, "material field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "material");
 			integrity = false;
 		}
 		
 		if(amount == null){
 			amount = Integer.MAX_VALUE;
-			Saga.severe(TradeDeal.class, "amount field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "amount");
 			integrity = false;
 		}
 		
 		if(price == null){
 			price = 0.0;
-			Saga.severe(TradeDeal.class, "price field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "price");
 			integrity = false;
 		}
 		
 		if(days == null){
 			days = 0;
-			Saga.severe(TradeDeal.class, "daysLeft field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "daysLeft");
 			integrity = false;
 		}
 		

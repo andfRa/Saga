@@ -1,10 +1,7 @@
 package org.saga.buildings;
 
-import org.bukkit.entity.Creature;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
-import org.saga.player.SagaPlayer;
 
 public class TownHall extends Building{
 

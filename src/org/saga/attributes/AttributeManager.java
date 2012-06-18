@@ -1,9 +1,7 @@
 package org.saga.attributes;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
-import org.bukkit.event.entity.EntityCombustEvent;
 import org.saga.config.AttributeConfiguration;
 import org.saga.listeners.events.SagaBlockBreakEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent;

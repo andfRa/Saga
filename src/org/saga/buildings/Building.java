@@ -12,6 +12,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.buildings.signs.AbilitySign;
 import org.saga.buildings.signs.AttributeSign;
 import org.saga.buildings.signs.BuildingSign;
@@ -89,21 +90,21 @@ public abstract class Building extends SagaCustomSerialization{
 		
 		if(level == null){
 			level = 0;
-			Saga.severe("Failed to initialize level field for " + this + " building. Setting default.");
+			SagaLogger.severe("level field for " + this + " building. Setting default.");
 			integrity = false;
 		}
 		
 		// Definition:
 		definition = ChunkGroupConfiguration.config().getBuildingDefinition(getName());
 		if(definition == null){
-			Saga.severe(this + " building failed to retrieve definition. Stoping complete.");
+			SagaLogger.severe(this, "missing definition");
 			integrity = false;
 			throw new InvalidBuildingException(getName());
 		}
 		
 		if(signs == null){
 			signs = new ArrayList<BuildingSign>();
-			Saga.severe(this, "failed to initialize signs field", "setting default");
+			SagaLogger.nullField(this, "signs");
 			integrity = false;
 		}
 		for (int i = 0; i < signs.size(); i++) {
@@ -111,7 +112,7 @@ public abstract class Building extends SagaCustomSerialization{
 			try {
 				signs.get(i).complete(this);
 			} catch (SignException e) {
-				Saga.severe(this, "failed to initialize signs field element: " + e.getClass().getSimpleName() + ":" + e.getMessage(), "removing element");
+				SagaLogger.nullField(this, "failed to initialise signs field element: " + e.getClass().getSimpleName() + ":" + e.getMessage());
 				signs.remove(i);
 				i--;
 				continue;
@@ -338,7 +339,7 @@ public abstract class Building extends SagaCustomSerialization{
 
 		
 		if(signs.contains(buildingSign)){
-			Saga.severe(this, "tried to add an already existing building sign", "ignoring request");
+			SagaLogger.severe(this, "tried to add an already existing building sign");
 			return;
 		}
 		signs.add(buildingSign);
@@ -362,7 +363,7 @@ public abstract class Building extends SagaCustomSerialization{
 
 		// Non-existent:
 		if(!signs.contains(buildingSign)){
-			Saga.severe(this, "tried to remove a non-existing building sign", "ignoring request");
+			SagaLogger.severe(this, "tried to remove a non-existing building sign");
 			return;
 		}
 		

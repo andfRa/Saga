@@ -18,6 +18,7 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.BalanceConfiguration;
@@ -85,7 +86,7 @@ public class EntityListener implements Listener{
 		// Get player:
     	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(player.getName());
     	if(sagaPlayer == null){
-    		Saga.warning("Can't continue with onProjectileHit, because the saga player for "+ player.getName() + " isn't loaded.");
+    		SagaLogger.severe(BlockListener.class, "can't continue with onProjectileHit, because the saga player for "+ player.getName() + " isn't loaded.");
     		return;
     	}
 

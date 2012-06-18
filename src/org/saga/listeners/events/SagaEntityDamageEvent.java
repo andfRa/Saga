@@ -14,6 +14,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.player.SagaPlayer;
@@ -145,7 +146,7 @@ public class SagaEntityDamageEvent {
 
 	    	// No player:
 	    	if(attackerPlayer == null){
-	    		Saga.warning(getClass(), "failed to load saga player for "+ ((Player) attacker).getName(), "ignoring saga player");
+	    		SagaLogger.severe(getClass(), "failed to load saga player for "+ ((Player) attacker).getName());
 	    		return;
 	    	}
 	    	
@@ -165,7 +166,7 @@ public class SagaEntityDamageEvent {
 
 	    	// No player:
 	    	if(defenderPlayer == null){
-	    		Saga.warning(getClass(), "failed to load saga player for "+ ((Player) attacker).getName(), "ignoring saga player");
+	    		SagaLogger.severe(getClass(), "failed to load saga player for "+ ((Player) attacker).getName());
 	    		return;
 	    	}
 			

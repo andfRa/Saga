@@ -8,6 +8,7 @@ import java.util.Hashtable;
 import org.saga.Clock;
 import org.saga.Clock.MinuteTicker;
 import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.buildings.Building;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.SagaChunk;
@@ -82,19 +83,19 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		boolean integrity=true;
 		
 		if(level == null){
-			Saga.info("ChunkGroup "+ this +" level not initialized. Setting default.");
+			SagaLogger.nullField(this, "level");
 			level = 0;
 			integrity = false;
 		}
 		
 		if(exp == null){
-			Saga.info("exp "+ this +" levelProgress not initialized. Setting default.");
+			SagaLogger.nullField(this, "exp "+ this +" levelProgress");
 			exp = 0.0;
 			integrity = false;
 		}
 		
 		if(playerRoles == null){
-			Saga.info("ChunkGroup "+ this +" playerRoles not initialized. Setting default.");
+			SagaLogger.nullField(this, "playerRoles");
 			playerRoles = new Hashtable<String, Proficiency>();
 			integrity = false;
 		}
@@ -108,11 +109,11 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 				proficiency = playerRoles.get(playerName);
 				proficiency.complete();
 			} catch (InvalidProficiencyException e) {
-				Saga.severe(this, "tried to add an invalid " + proficiency + " role:" + e.getMessage(), "removing proficiency");
+				SagaLogger.severe(this, "tried to add an invalid " + proficiency + " role:" + e.getMessage());
 				playerRoles.remove(playerName);
 			}
 			catch (NullPointerException e) {
-				Saga.severe("Tried to add an null proficiency to " +  this + " settlement. Removing proficiency.");
+				SagaLogger.severe(this, "tried to add an null proficiency");
 				playerRoles.remove(playerName);
 			}
 		}
@@ -179,7 +180,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		try {
 			settlement.setRole(owner, settlement.getDefinition().ownerRole);
 		} catch (InvalidProficiencyException e) {
-			Saga.severe(settlement, "failed to set " + settlement.getDefinition().ownerRole + " role, because the role name is invalid", "ignoring request");
+			SagaLogger.severe(settlement, "failed to set " + settlement.getDefinition().ownerRole + " role, because the role name is invalid");
 		}
 		
 		
@@ -202,7 +203,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		try {
 			setRole(sagaPlayer, getDefinition().defaultRole);
 		} catch (InvalidProficiencyException e) {
-			Saga.severe(this, "failed to set " + getDefinition().defaultRole + " role, because the role name is invalid", "ignoring request");
+			SagaLogger.severe(this, "failed to set " + getDefinition().defaultRole + " role, because the role name is invalid");
 		}
 		
 		

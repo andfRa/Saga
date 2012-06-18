@@ -8,8 +8,6 @@ package org.saga.saveload;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
-import org.saga.Saga;
-
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;

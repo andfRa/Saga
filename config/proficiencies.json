@@ -8,344 +8,127 @@
   {"name":"miner",
     "type":"PROFESSION",
     "hierarchyLevel":"1",
-    "abilities":["heavy swing"],
-    "bindMaterials":{"heavy swing":["IRON_PICKAXE","DIAMOND_PICKAXE"]},
-    "bindActions":{"heavy swing":"RIGHT_CLICK"},
-    "skillMax":{"mining":50},
     "settlementPermissions":[],
-    "factionPermissions":[],
-    "currencyCost":500,
-    "levelsCost":5,
-    "properties":{},
-    "blockExp":{
-      "DIAMOND_ORE":{"0":12.5},
-      "LAPIS_ORE":{"0":13.79},
-      "GOLD_ORE":{"0":5.08},
-      "IRON_ORE":{"0":0.81},
-      "COAL_ORE":{"0":0.65},
-      "STONE":{"0":0.017}
-    },
-    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
-    "creatureExp":{}
+    "factionPermissions":[]
   },
 
   {"name":"woodsman",
     "type":"PROFESSION",
     "hierarchyLevel":"1",
-    "abilities":["chop down"],
-    "bindMaterials":{"chop down":["IRON_AXE","DIAMOND_AXE"]},
-    "bindActions":{"chop down":"RIGHT_CLICK"},
-    "skillMax":{"woodcutting":50},
     "settlementPermissions":[],
-    "factionPermissions":[],
-    "currencyCost":500,
-    "levelsCost":5,
-    "properties":{},
-    "blockExp":{"LOG":{"0":1.937, "1":1.937, "2":1.937, "3":1.937}},
-    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
-    "creatureExp":{"wolf":3, "bigslime":4, "smallslime":2, "blaze":10, "creeper":9, "zombie":5, "skeleton":5, "spider":5, "default":1}
+    "factionPermissions":[]
   },
 
   {"name":"farmer",
     "type":"PROFESSION",
     "hierarchyLevel":"1",
-    "abilities":["harvest"],
-    "bindMaterials":{"harvest":["IRON_HOE","DIAMOND_HOE"]},
-    "bindActions":{"harvest":"LEFT_CLICK"},
-    "skillMax":{"farming":50},
     "settlementPermissions":[],
-    "factionPermissions":[],
-    "currencyCost":500,
-    "levelsCost":5,
-    "properties":{},
-    "blockExp":{
-      "SUGAR_CANE_BLOCK":{"0":0.1937},
-      "CROPS":{"7":0.1937}
-    },
-    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
-    "creatureExp":{"pig":7, "cow":7, "sheep":7}
+    "factionPermissions":[]
   },
 
   {"name":"blacksmith",
     "type":"PROFESSION",
     "hierarchyLevel":"1",
-    "abilities":["repair (leather)","repair (iron)","repair (diamond)"],
-    "bindMaterials":{
-      "repair (leather)":["LEATHER_HELMET","LEATHER_CHESTPLATE","LEATHER_LEGGINGS","LEATHER_BOOTS"],
-      "repair (iron)":["IRON_PICKAXE","IRON_SPADE","IRON_AXE","IRON_HOE","IRON_SWORD","IRON_HELMET","IRON_CHESTPLATE","IRON_LEGGINGS","IRON_BOOTS"],
-      "repair (diamond)":["DIAMOND_PICKAXE","DIAMOND_SPADE","DIAMOND_AXE","DIAMOND_HOE","DIAMOND_SWORD","DIAMOND_HELMET","DIAMOND_CHESTPLATE","DIAMOND_LEGGINGS","DIAMOND_BOOTS"]
-    },
-    "bindActions":{
-      "repair (leather)":"LEFT_CLICK",
-      "repair (iron)":"LEFT_CLICK",
-      "repair (diamond)":"LEFT_CLICK"
-    },
-    "skillMax":{"smithing":50},
     "settlementPermissions":[],
-    "factionPermissions":[],
-    "currencyCost":500,
-    "levelsCost":5,
-    "properties":{},
-    "blockExp":{},
-    "playerExp":{"x1":0,"y1":1.0,"x2":50,"y2":0.0},
-    "creatureExp":{}
+    "factionPermissions":[]
   },
 
   {"name":"warrior",
     "type":"CLASS",
     "hierarchyLevel":"1",
-    "abilities":["bash"],
-    "bindMaterials":{"bash":["IRON_SWORD","DIAMOND_SWORD","IRON_AXE","DIAMOND_AXE"]},
-    "bindActions":{"bash":"RIGHT_CLICK"},
-    "skillMax":{"blade":20,"waraxe":20,"heavy armour":30,"magic warding":20,"unarmoured":5},
     "settlementPermissions":[],
-    "factionPermissions":[],
-    "currencyCost":500,
-    "levelsCost":5,
-    "properties":{},
-    "blockExp":{},
-    "playerExp":{"x1":0,"y1":1.0,"x2":50,"y2":30.0},
-    "creatureExp":{}
+    "factionPermissions":[]
   },
 
   {"name":"rogue",
     "type":"CLASS",
     "hierarchyLevel":"1",
-    "abilities":["exploding arrow","dart","dodge"],
-    "bindMaterials":{
-      "exploding arrow":["ARROW"],
-      "dart":["IRON_SWORD","DIAMOND_SWORD"]
-    },
-    "bindActions":{
-      "exploding arrow":"RIGHT_CLICK",
-      "dart":"RIGHT_CLICK"
-    },
-    "skillMax":{"archery":30,"blade":30,"light armour":15,"magic warding":20,"unarmoured":10},
     "settlementPermissions":[],
-    "factionPermissions":[],
-    "currencyCost":500,
-    "levelsCost":5,
-    "properties":{},
-    "blockExp":{},
-    "playerExp":{"x1":0,"y1":1.0,"x2":50,"y2":30.0},
-    "creatureExp":{}
+    "factionPermissions":[]
   },
 
   {"name":"mage",
     "type":"CLASS",
     "hierarchyLevel":"2",
-    "abilities":["fireball","force","stoneskin"],
-    "bindMaterials":{
-      "fireball":["BOOK"],
-      "force":["BOOK"],
-      "stoneskin":["PAPER"]
-    },
-    "bindActions":{
-      "fireball":"RIGHT_CLICK",
-      "force":"LEFT_CLICK",
-      "stoneskin":"LEFT_CLICK"
-    },
-    "skillMax":{"magic":30,"light armour":15,"magic warding":30,"unarmoured":15},
     "settlementPermissions":[],
-    "factionPermissions":[],
-    "currencyCost":500,
-    "levelsCost":5,
-    "properties":{},
-    "blockExp":{},
-    "playerExp":{"x1":0,"y1":1.0,"x2":50,"y2":30.0},
-    "creatureExp":{}
+    "factionPermissions":[]
   },
 
   {"name":"councilman",
     "type":"ROLE",
     "hierarchyLevel":"10",
-    "abilities":[],
-    "bindMaterials":{},
-    "bindActions":{},
-    "skillMax":{},
     "settlementPermissions":["BUILD","CLAIM","INVITE","ABANDON","KICK","SET_BUILDING","REMOVE_BUILDING","RENAME"],
-    "factionPermissions":[],
-    "currencyCost":500,
-    "levelsCost":5,
-    "properties":{},
-    "blockExp":{},
-    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
-    "creatureExp":{}
+    "factionPermissions":[]
   },
 
   {"name":"noble",
     "type":"ROLE",
     "hierarchyLevel":"10",
-    "abilities":["claim"],
-    "bindMaterials":{"claim":["STICK","GOLD_SWORD"]},
-    "bindActions":{"claim":"RIGHT_CLICK"},
-    "skillMax":{},
-    "settlementPermissions":["BUILD","CLAIM","INVITE","ABANDON","KICK","SET_BUILDING","REMOVE_BUILDING","RENAME"],
-    "factionPermissions":[],
-    "currencyCost":500,
-    "levelsCost":5,
-    "properties":{},
-    "blockExp":{},
-    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
-    "creatureExp":{}
+    "settlementPermissions":["BUILD","BUILD_BUILDING","CLAIM","INVITE","ABANDON","KICK","SET_BUILDING","REMOVE_BUILDING","RENAME"],
+    "factionPermissions":[]
   },
 
   {"name":"planner",
     "type":"ROLE",
     "hierarchyLevel":"2",
-    "abilities":[],
-    "bindMaterials":{},
-    "bindActions":{},
-    "skillMax":{},
     "settlementPermissions":["BUILD"],
-    "factionPermissions":[],
-    "currencyCost":500,
-    "levelsCost":5,
-    "properties":{},
-    "blockExp":{},
-    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
-    "creatureExp":{}
+    "factionPermissions":[]
   },
 
   {"name":"commoner",
     "type":"ROLE",
     "hierarchyLevel":"1",
-    "abilities":[],
-    "bindMaterials":{},
-    "bindActions":{},
-    "skillMax":{},
     "settlementPermissions":["BUILD"],
-    "factionPermissions":[],
-    "currencyCost":500,
-    "levelsCost":5,
-    "properties":{},
-    "blockExp":{},
-    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
-    "creatureExp":{}
+    "factionPermissions":[]
   },
 
   {"name":"master trader",
     "type":"ROLE",
     "hierarchyLevel":"4",
-    "abilities":[],
-    "bindMaterials":{},
-    "bindActions":{},
-    "skillMax":{},
     "settlementPermissions":["BUILD"],
-    "factionPermissions":[],
-    "currencyCost":500,
-    "levelsCost":5,
-    "properties":{},
-    "blockExp":{},
-    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
-    "creatureExp":{}
+    "factionPermissions":[]
   },
 
   {"name":"trader journeyman",
     "type":"ROLE",
     "hierarchyLevel":"3",
-    "abilities":[],
-    "bindMaterials":{},
-    "bindActions":{},
-    "skillMax":{},
     "settlementPermissions":["BUILD"],
-    "factionPermissions":[],
-    "currencyCost":500,
-    "levelsCost":5,
-    "properties":{},
-    "blockExp":{},
-    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
-    "creatureExp":{}
+    "factionPermissions":[]
   },
 
   {"name":"trader apprentice",
     "type":"ROLE",
     "hierarchyLevel":"2",
-    "abilities":[],
-    "bindMaterials":{},
-    "bindActions":{},
-    "skillMax":{},
     "settlementPermissions":["BUILD"],
-    "factionPermissions":[],
-    "currencyCost":500,
-    "levelsCost":5,
-    "properties":{},
-    "blockExp":{},
-    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
-    "creatureExp":{}
+    "factionPermissions":[]
   },
 
   {"name":"grandmaster",
     "type":"RANK",
     "hierarchyLevel":"10",
-
-    "abilities":[],
-    "bindMaterials":{},
-    "bindActions":{},
-    "skillMax":{},
     "settlementPermissions":[],
-    "factionPermissions":["INVITE","KICK","SET_COLOR","RENAME","SET_RANK"],
-    "currencyCost":500,
-    "levelsCost":5,
-    "properties":{},
-    "blockExp":{},
-    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
-    "creatureExp":{}
+    "factionPermissions":["INVITE","KICK","SET_COLOR","RENAME","SET_RANK"]
   },
 
   {"name":"warmaster",
     "type":"RANK",
     "hierarchyLevel":"9",
-    "abilities":["mobilize"],
-    "bindMaterials":{
-      "mobilize":["GOLD_SWORD"]
-    },
-    "bindActions":{
-      "mobilize":"RIGHT_CLICK"
-    },
-    "skillMax":{},
     "settlementPermissions":[],
-    "factionPermissions":["INVITE","KICK"],
-    "currencyCost":500,
-    "levelsCost":5,
-    "properties":{},
-    "blockExp":{},
-    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
-    "creatureExp":{}
+    "factionPermissions":["INVITE","KICK"]
   },
 
   {"name":"adept",
     "type":"RANK",
     "hierarchyLevel":"2",
-    "abilities":[],
-    "bindMaterials":{},
-    "bindActions":{},
-    "skillMax":{},
     "settlementPermissions":[],
-    "factionPermissions":["RALLY"],
-    "currencyCost":500,
-    "levelsCost":5,
-    "properties":{},
-    "blockExp":{},
-    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
-    "creatureExp":{}
+    "factionPermissions":["RALLY"]
   },
 
   {"name":"novice",
     "type":"RANK",
     "hierarchyLevel":"1",
-    "abilities":[],
-    "bindMaterials":{},
-    "bindActions":{},
-    "skillMax":{},
     "settlementPermissions":[],
-    "factionPermissions":[],
-    "currencyCost":500,
-    "levelsCost":5,
-    "properties":{},
-    "blockExp":{},
-    "playerExp":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
-    "creatureExp":{}
+    "factionPermissions":[]
   }
 ]
 

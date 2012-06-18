@@ -11,6 +11,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.messages.AbilityEffects;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
@@ -56,7 +57,7 @@ public class Force extends Ability{
 		
 		Player player = sagaPlayer.getPlayer();
 		if(player == null){
-			Saga.severe(this, "cant continue with trigger because the player isn't online", "ignoring request");
+			SagaLogger.severe(this, "cant continue with trigger because the player isn't online");
 			return false;
 		}
 		
@@ -75,7 +76,7 @@ public class Force extends Ability{
 			
 				SagaPlayer targetPlayer = Saga.plugin().getSagaPlayer(((Player)entity).getName());
 				if(targetPlayer == null){
-					Saga.severe(this, "can't continue with trigger because the player "+ ((Player)entity).getName() + " isn't loaded", "ignoring request");
+					SagaLogger.severe(this, "can't continue with trigger because the player "+ ((Player)entity).getName() + " isn't loaded");
 					return false;
 				}
 				

@@ -1,19 +1,6 @@
 package org.saga.abilities.unused;
 
-import org.bukkit.Effect;
-import org.bukkit.Location;
-import org.bukkit.entity.Creature;
-import org.bukkit.entity.Projectile;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.saga.Saga;
 import org.saga.abilities.Ability;
-import org.saga.messages.PlayerMessages;
-import org.saga.player.SagaEntityDamageManager;
-import org.saga.player.SagaPlayer;
-import org.saga.player.Skill.ArmourType;
-import org.saga.statistics.StatisticsManager;
-import org.saga.utility.TextUtil;
-import org.saga.utility.TwoPointFunction;
 
 public class Stoneskin extends Ability{
 

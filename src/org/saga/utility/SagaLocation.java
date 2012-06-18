@@ -3,6 +3,7 @@ package org.saga.utility;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.exceptions.InvalidLocationException;
 
 /**
@@ -84,38 +85,38 @@ public class SagaLocation {
 		boolean integrity = true;
 
 		if (worldn == null) {
-			Saga.severe(this, "world field failed to initialize", "stopping complete");
+			SagaLogger.severe(this, "world field invalid");
 			throw new InvalidLocationException(worldn, x, y, z);
 		}
 
 		if (x == null) {
-			Saga.severe(this, "x field failed to initialize", "stopping complete");
+			SagaLogger.severe(this, "x field invalid");
 			throw new InvalidLocationException(worldn, x, y, z);
 		}
 
 		if (y == null) {
-			Saga.severe(this, "y field failed to initialize", "stopping complete");
+			SagaLogger.severe(this, "y field invalid");
 			throw new InvalidLocationException(worldn, x, y, z);
 		}
 
 		if (z == null) {
-			Saga.severe(this, "z field failed to initialize", "stopping complete");
+			SagaLogger.severe(this, "z field invalid");
 			throw new InvalidLocationException(worldn, x, y, z);
 		}
 		
 		if (yaw == null) {
-			Saga.severe(this, "yaw field failed to initialize", "stopping complete");
+			SagaLogger.severe(this, "yaw field invalid");
 			throw new InvalidLocationException(worldn, x, y, z);
 		}
 		
 		if (pitch == null) {
-			Saga.severe(this, "pitch field failed to initialize", "stopping complete");
+			SagaLogger.severe(this, "pitch field invalid");
 			throw new InvalidLocationException(worldn, x, y, z);
 		}
 
 		World world = Saga.plugin().getServer().getWorld(worldn);
 		if (world == null) {
-			Saga.severe(this, "world name is invalid", "stopping complete");
+			SagaLogger.severe(this, "world field invalid");
 			throw new InvalidLocationException(worldn, x, y, z);
 		}
 

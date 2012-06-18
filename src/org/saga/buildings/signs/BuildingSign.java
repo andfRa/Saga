@@ -115,50 +115,50 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 		boolean integrity = true;
 
 		if(name== null){
-			Saga.severe(this, "failed to initialize name field", "stopping complete");
+			SagaLogger.nullField(this, "name");
 			throw new SignException("name null");
 		}
 		
 		if(world== null){
-			Saga.severe(this, "failed to initialize world field", "stopping complete");
+			SagaLogger.nullField(this, "world");
 			throw new SignException("world null");
 		}
 		
 		if(x== null){
-			Saga.severe(this, "failed to initialize x field", "stopping complete");
+			SagaLogger.nullField(this, "x");
 			throw new SignException("x null");
 		}
 		
 		if(y== null){
-			Saga.severe(this, "failed to initialize y field", "stopping complete");
+			SagaLogger.nullField(this, "y");
 			throw new SignException("y null");
 		}
 		
 		if(z== null){
-			Saga.severe(this, "failed to initialize z field", "stopping complete");
+			SagaLogger.nullField(this, "z");
 			throw new SignException("z null");
 		}
 		
 		World serverWorld = Saga.plugin().getServer().getWorld(this.world);
 		if(serverWorld == null){
-			Saga.severe(this, "failed to retrieve world", "stopping complete");
+			SagaLogger.severe(this, "failed to retrieve world");
 			throw new SignException("invalid world");
 		}
 		
 		location = new Location(serverWorld, x, y, z);
 		
 		if(secondLine== null){
-			Saga.severe(this, "failed to initialize secondLine field", "setting default");
+			SagaLogger.nullField(this, "secondLine");
 			secondLine = "";
 		}
 		
 		if(thirdLine== null){
-			Saga.severe(this, "failed to initialize thirdLine field", "setting default");
+			SagaLogger.nullField(this, "thirdLine");
 			thirdLine = "";
 		}
 		
 		if(fourthLine== null){
-			Saga.severe(this, "failed to initialize fourthLine field", "setting default");
+			SagaLogger.nullField(this, "fourthLine");
 			fourthLine = "";
 		}
 

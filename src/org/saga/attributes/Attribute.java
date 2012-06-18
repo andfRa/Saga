@@ -4,15 +4,10 @@ import java.util.Collection;
 import java.util.Hashtable;
 
 import org.bukkit.Effect;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.event.entity.EntityCombustEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.listeners.events.SagaBlockBreakEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.player.SagaPlayer;
 import org.saga.utility.TwoPointFunction;
 
 public class Attribute {

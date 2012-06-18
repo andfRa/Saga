@@ -1,16 +1,12 @@
 package org.saga.commands;
 
 import org.saga.Saga;
-import org.saga.config.AbilityConfiguration;
-import org.saga.config.ProficiencyConfiguration;
 import org.saga.messages.ChunkGroupMessages;
 import org.saga.messages.InfoMessages;
 import org.saga.messages.PlayerMessages;
-import org.saga.messages.SagaMessages;
 import org.saga.messages.StatsMessages;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
-import org.saga.player.Proficiency.ProficiencyType;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
 import org.sk89q.CommandPermissions;

@@ -7,12 +7,11 @@ import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
 
-import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
 import org.saga.buildings.Building;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.chunkGroups.ChunkGroup;
-import org.saga.chunkGroups.ChunkGroupDeserializer;
 import org.saga.constants.IOConstants;
 import org.saga.constants.IOConstants.WriteReadType;
 
@@ -46,7 +45,7 @@ public class WriterReader {
 		String objStr = gson.toJson(obj);
 		
 		if(objStr == null || objStr.equals("null")){
-			Saga.severe(WriterReader.class, "null config for " + obj, "ignoring save");
+			SagaLogger.severe(WriterReader.class, "null config for " + obj);
 			return;
 		}
 		
@@ -54,14 +53,14 @@ public class WriterReader {
 		File directory = new File(dir.getDirectory());
 		if(!directory.exists()){
 			directory.mkdirs();
-			Saga.info("Creating " + directory + " directory.");
+			SagaLogger.info("Creating " + directory + " directory.");
 		}
 		
 		// File:
 		File filedir = new File(dir.getDirectory() + dir.getFilename().replace(NAME_SUBS, name));
 		if(!filedir.exists()){
 			filedir.createNewFile();
-			Saga.info("Creating " + filedir + " file.");
+			SagaLogger.info("Creating " + filedir + " file.");
 		}
         
 		// Write:
@@ -99,14 +98,14 @@ public class WriterReader {
 		File directory = new File(dir.getDirectory());
 		if(!directory.exists()){
 			directory.mkdirs();
-			Saga.info("Creating " + directory + " directory.");
+			SagaLogger.info("Creating " + directory + " directory.");
 		}
 		
 		// File:
 		File filedir = new File(dir.getDirectory() + dir.getFilename().replace(NAME_SUBS, name));
 		if(!filedir.exists()){
 			filedir.createNewFile();
-			Saga.info("Creating " + filedir + " file.");
+			SagaLogger.info("Creating " + filedir + " file.");
 		}
 		
 		// Read:
@@ -121,7 +120,7 @@ public class WriterReader {
 
         // Fix null and empty:
         if(objStr.length() == 0 || objStr.toString().equals("null")){
-        	Saga.severe(WriterReader.class, "null or empty config for " + dir, "fixing format");
+        	SagaLogger.severe(WriterReader.class, "null or empty config for " + dir);
         	objStr = new StringBuffer("{ }");
         }
           
@@ -193,13 +192,13 @@ public class WriterReader {
 		
 		if(!dir.exists()){
 			dir.mkdirs();
-			Saga.info("Creating "+dir+" directory.");
+			SagaLogger.info("Creating "+dir+" directory.");
 		}
 		
 		String[] names = dir.list(filter);
 		
 		if(names == null){
-			Saga.severe("Could not retrieve faction names.");
+			SagaLogger.severe(WriterReader.class, "could not retrieve faction names");
 			names = new String[0];
 		}
 		
@@ -231,17 +230,17 @@ public class WriterReader {
 		
 		if(!newDir.exists()){
 			newDir.mkdirs();
-			Saga.info("Creating " + newDir + " directory.");
+			SagaLogger.info("Creating " + newDir + " directory.");
 		}
 		
 		if(!oldDir.exists()){
 			oldDir.mkdirs();
-			Saga.info("Creating " + oldDir + " directory.");
+			SagaLogger.info("Creating " + oldDir + " directory.");
 		}
 		
 		// Check if exists.
 		if(!oldFile.exists()){
-			Saga.severe("Failed to move " + oldFile + ", because it doesent exist.");
+			SagaLogger.severe(WriterReader.class, "failed to move " + oldFile + ", because it doesent exist");
 		}
 		
 		// Rename if target exists:
@@ -259,9 +258,9 @@ public class WriterReader {
 		
 		// Notify on failure:
 		if(success){
-			Saga.info("Moved " + oldFile.getName() + " file to " + newDir + ".");
+			SagaLogger.info("Moved " + oldFile.getName() + " file to " + newDir + ".");
 		}else{
-			Saga.info("Failed to move " + oldFile.getName() + " file to " + newDir + ".");
+			SagaLogger.info("Failed to move " + oldFile.getName() + " file to " + newDir + ".");
 		}
 		
 

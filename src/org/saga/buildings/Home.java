@@ -2,7 +2,7 @@ package org.saga.buildings;
 
 import java.util.ArrayList;
 
-import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
@@ -47,7 +47,7 @@ public class Home extends Building {
 		
 		if(residents == null){
 			residents = new ArrayList<String>();
-			Saga.severe(this, "failed to initialize residents field", "setting default");
+			SagaLogger.nullField(this, "residents");
 			integrity = false;
 		}
 		
@@ -81,7 +81,7 @@ public class Home extends Building {
 
 
 		if(isResident(playerName.toLowerCase())){
-			Saga.severe(this, "tried to add an already existing resident", "ignoring request");
+			SagaLogger.severe(this, "tried to add an already existing resident");
 			return;
 		}
 		
@@ -100,7 +100,7 @@ public class Home extends Building {
 
 
 		if(!isResident(playerName)){
-			Saga.severe(this, "tried to add an non-existing resident", "ignoring request");
+			SagaLogger.severe(this, "tried to add an non-existing resident");
 			return;
 		}
 		

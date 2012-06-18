@@ -9,6 +9,7 @@ import org.bukkit.util.Vector;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
@@ -200,7 +201,7 @@ public class TownSquare extends Building implements SecondTicker{
 		}
 		
 		if(spawnLocation.getY() < 10){
-			Saga.severe(this, spawnLocation + " is an invalid spawn location", "ignoring location");
+			SagaLogger.severe(this, spawnLocation + " is an invalid spawn location");
 			return null;
 		}
 		
@@ -219,7 +220,7 @@ public class TownSquare extends Building implements SecondTicker{
 		SagaChunk originChun = getSagaChunk();
 		
 		if(originChun == null){
-			Saga.severe(this, "failed to retrieve origin chunk", "ignoring chunk refresh");
+			SagaLogger.severe(this, "failed to retrieve origin chunk");
 			return;
 		}
 		
@@ -244,7 +245,7 @@ public class TownSquare extends Building implements SecondTicker{
 		// Location chunk:
 		SagaChunk locationChunk = getSagaChunk();
 		if(locationChunk == null){
-			Saga.severe(this + " building can't continue with memberRespawnEvent, because the location chunk isn't set.");
+			SagaLogger.severe(this, "can't continue with memberRespawnEvent, because the location chunk isn't set.");
 			return;
 		}
 		
@@ -262,7 +263,7 @@ public class TownSquare extends Building implements SecondTicker{
 		Location spawnLocation = getSpawnLocation();
 		
 		if(spawnLocation == null){
-			Saga.severe(this, "can't continue with onMemberRespawnEvent, because the location can't be retrieved","ignoring request");
+			SagaLogger.severe(this, "can't continue with onMemberRespawnEvent, because the location can't be retrieved");
 			sagaPlayer.error("failed to respawn at " + getDisplayName());
 			return;
 		}
@@ -368,7 +369,7 @@ public class TownSquare extends Building implements SecondTicker{
 		// Location:
 		Location spawnLocation = selectedBuilding.getSpawnLocation();
 		if(spawnLocation == null){
-			Saga.severe(selectedBuilding, sagaPlayer + " player failed to respawn at " + selectedBuilding.getDisplayName(), "ignoring request");
+			SagaLogger.severe(selectedBuilding, sagaPlayer + " player failed to respawn at " + selectedBuilding.getDisplayName());
 			sagaPlayer.error("failed to respawn");
 			return;
 		}

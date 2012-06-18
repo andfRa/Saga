@@ -1,10 +1,6 @@
 package org.saga.messages;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
-
 import org.bukkit.ChatColor;
-import org.saga.Saga;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.BalanceConfiguration;
 import org.saga.config.ExperienceConfiguration;

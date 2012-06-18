@@ -5,7 +5,6 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 
-import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.utility.TwoPointFunction;
 
@@ -124,28 +123,28 @@ public class BuildingDefinition {
 		
 		if(pointCost == null){
 			pointCost = new TwoPointFunction(10000.0);
-			Saga.severe(BuildingDefinition.class, "failed to initialize pointCost field", "setting default");
+			SagaLogger.nullField(BuildingDefinition.class, "pointCost");
 			integrity = false;
 		}
 		integrity = pointCost.complete() && integrity;
 		
 		if(moneyCost == null){
 			moneyCost = new TwoPointFunction(10000.0);
-			Saga.severe(BuildingDefinition.class, "failed to initialize moneyCost field", "setting default");
+			SagaLogger.nullField(BuildingDefinition.class, "moneyCost");
 			integrity = false;
 		}
 		integrity = moneyCost.complete() && integrity;
 		
 		if(levelFunction == null){
 			levelFunction = new TwoPointFunction(10000.0);
-			Saga.severe(BuildingDefinition.class, "failed to initialize levelFunction field", "setting default");
+			SagaLogger.nullField(BuildingDefinition.class, "levelFunction");
 			integrity = false;
 		}
 		integrity = levelFunction.complete() && integrity;
 		
 		if(this.roleAmounts == null){
 			this.roleAmounts = new Hashtable<String, TwoPointFunction>();
-			Saga.severe(BuildingDefinition.class, "failed to initialize roleAmounts field", "setting default");
+			SagaLogger.nullField(BuildingDefinition.class, "roleAmounts");
 			integrity = false;
 		}
 		Enumeration<String> proficiencies = this.roleAmounts.keys();
@@ -156,14 +155,14 @@ public class BuildingDefinition {
 		
 		if(professions == null){
 			professions = new ArrayList<String>();
-			Saga.severe(BuildingDefinition.class, "failed to initialize professions field", "setting default");
+			SagaLogger.nullField(BuildingDefinition.class, "professions");
 			integrity = false;
 		}
 		for (int i = 0; i < professions.size(); i++) {
 			if(professions.get(i) == null){
 				professions.remove(i);
 				i--;
-				Saga.severe(BuildingDefinition.class, "failed to initialize professions field element", "setting default");
+				SagaLogger.nullField(BuildingDefinition.class, "professions element");
 				integrity = false;
 				continue;
 			}
@@ -171,14 +170,14 @@ public class BuildingDefinition {
 		
 		if(classes == null){
 			classes = new ArrayList<String>();
-			Saga.severe(BuildingDefinition.class, "failed to initialize classes field", "setting default");
+			SagaLogger.nullField(BuildingDefinition.class, "classes");
 			integrity = false;
 		}
 		for (int i = 0; i < classes.size(); i++) {
 			if(classes.get(i) == null){
 				classes.remove(i);
 				i--;
-				Saga.severe(BuildingDefinition.class, "failed to initialize classes field element", "setting default");
+				SagaLogger.nullField(this, "classes element");
 				integrity = false;
 				continue;
 			}
@@ -186,14 +185,14 @@ public class BuildingDefinition {
 		
 		if(roles == null){
 			roles = new ArrayList<String>();
-			Saga.severe(BuildingDefinition.class, "failed to initialize roles field", "setting default");
+			SagaLogger.nullField(BuildingDefinition.class, "roles");
 			integrity = false;
 		}
 		for (int i = 0; i < roles.size(); i++) {
 			if(roles.get(i) == null){
 				roles.remove(i);
 				i--;
-				Saga.severe(BuildingDefinition.class, "failed to initialize roles field element", "setting default");
+				SagaLogger.nullField(BuildingDefinition.class, "roles element");
 				integrity = false;
 				continue;
 			}
@@ -201,14 +200,14 @@ public class BuildingDefinition {
 		
 		if(ranks == null){
 			ranks = new ArrayList<String>();
-			Saga.severe(BuildingDefinition.class, "failed to initialize ranks field", "setting default");
+			SagaLogger.nullField(BuildingDefinition.class, "ranks");
 			integrity = false;
 		}
 		for (int i = 0; i < ranks.size(); i++) {
 			if(ranks.get(i) == null){
 				ranks.remove(i);
 				i--;
-				Saga.severe(BuildingDefinition.class, "failed to initialize ranks field element", "setting default");
+				SagaLogger.nullField(BuildingDefinition.class, "ranks element");
 				integrity = false;
 				continue;
 			}
@@ -216,7 +215,7 @@ public class BuildingDefinition {
 		
 		if(enabledBuildings == null){
 			enabledBuildings = new Hashtable<String, TwoPointFunction>();
-			Saga.severe(BuildingDefinition.class, "failed to initialize enabledBuildings field", "setting default");
+			SagaLogger.nullField(BuildingDefinition.class, "enabledBuildings");
 			integrity = false;
 		}
 		Enumeration<String> eBuildings = enabledBuildings.keys();
@@ -227,29 +226,29 @@ public class BuildingDefinition {
 		
 		if(attributes == null){
 			attributes = new HashSet<String>();
-			Saga.severe(BuildingDefinition.class, "attributes field failed to initialize", "setting default");
+			SagaLogger.nullField(BuildingDefinition.class, "attributes");
 			integrity = false;
 		}
 		
 		if(attributes.remove(null)){
-			Saga.severe(BuildingDefinition.class, "attributes field failed to initialize element", "removing element");
+			SagaLogger.nullField(BuildingDefinition.class, "attributes element");
 			integrity = false;
 		}
 		
 		if(abilities == null){
 			abilities = new HashSet<String>();
-			Saga.severe(BuildingDefinition.class, "abilities field failed to initialize", "setting default");
+			SagaLogger.nullField(BuildingDefinition.class, "abilities");
 			integrity = false;
 		}
 		
 		if(abilities.remove(null)){
-			Saga.severe(BuildingDefinition.class, "abilities field failed to initialize element", "removing element");
+			SagaLogger.nullField(BuildingDefinition.class, "abilities element");
 			integrity = false;
 		}
 		
 		if(description == null){
 			description = "<no description>";
-			Saga.severe(BuildingDefinition.class, "description field failed to initialize", "setting default");
+			SagaLogger.nullField(BuildingDefinition.class, "description");
 			integrity = false;
 		}
 		

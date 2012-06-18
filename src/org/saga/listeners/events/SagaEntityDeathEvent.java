@@ -2,11 +2,8 @@ package org.saga.listeners.events;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.saga.config.BalanceConfiguration;
-import org.saga.config.ChunkGroupConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.metadata.SpawnerTag;
-import org.saga.metadata.UnnaturalTag;
 import org.saga.statistics.StatisticsManager;
 import org.saga.utility.TwoPointFunction;
 

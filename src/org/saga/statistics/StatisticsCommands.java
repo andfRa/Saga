@@ -5,14 +5,8 @@
 
 package org.saga.statistics;
 
-import java.util.ArrayList;
-
-import org.bukkit.Material;
 import org.saga.Saga;
-import org.saga.config.BalanceConfiguration;
-import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.messages.ChunkGroupMessages;
-import org.saga.messages.SagaMessages;
 import org.saga.messages.StatisticsMessages;
 import org.saga.player.SagaPlayer;
 import org.sk89q.Command;

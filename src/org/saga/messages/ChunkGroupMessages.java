@@ -6,22 +6,17 @@ import java.util.HashSet;
 import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
-import org.saga.Saga;
 import org.saga.buildings.Building;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.commands.ChunkGroupCommands;
-import org.saga.config.BalanceConfiguration;
 import org.saga.config.ChunkGroupConfiguration;
-import org.saga.config.EconomyConfiguration;
-import org.saga.config.FactionConfiguration;
 import org.saga.factions.SagaFaction;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.messages.PlayerMessages.ColorCircle;
 import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;
-import org.saga.utility.StringBook;
 import org.saga.utility.TextUtil;
 
 
@@ -905,7 +900,7 @@ public class ChunkGroupMessages {
 	
 	public static String newRole(SagaPlayer sagaPlayer, ChunkGroup settlement, String roleName) {
 		
-		return anouncment + sagaPlayer.getName() + " is now " + roleName + ".";
+		return anouncment + sagaPlayer.getName() + " is now a " + roleName + ".";
 		
 	}
 

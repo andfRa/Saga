@@ -3,7 +3,7 @@ package org.saga.buildings.signs;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.inventory.ItemStack;
-import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.buildings.Building;
 import org.saga.buildings.TradingPost;
 import org.saga.economy.Trader;
@@ -137,7 +137,7 @@ public class BuySign extends BuildingSign {
 		
 		// Trader:
 		if(!(getBuilding() instanceof Trader)){
-			Saga.severe(this, TradingPost.class.getSimpleName() + " required", "ignoring transaction and invalidating the sign");
+			SagaLogger.severe(this, TradingPost.class.getSimpleName() + " building required");
 		}else{
 			trader = (Trader) getBuilding();
 		}

@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.buildings.Building;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupManager;
@@ -56,7 +57,7 @@ public class ChunkGroupCommands {
 		SagaChunk locationChunk = sagaPlayer.getSagaChunk();
 		Location location = sagaPlayer.getLocation();
 		if(location == null){
-			Saga.severe(ChunkGroupCommands.class, "saga player location is null for " + sagaPlayer.getName(), "ignoring command");
+			SagaLogger.severe(ChunkGroupCommands.class, "saga player location is null for " + sagaPlayer.getName());
 			sagaPlayer.error("failed to retrieve "+ sagaPlayer +" player location");
 			return;
 		}
@@ -142,7 +143,7 @@ public class ChunkGroupCommands {
 		SagaChunk locationChunk = sagaPlayer.getSagaChunk();
 	   	Location location = sagaPlayer.getLocation();
 	   	if(location == null){
-	   		Saga.severe(ChunkGroupCommands.class, "saga player location is null for " + sagaPlayer.getName(), "ignoring command");
+	   		SagaLogger.severe(ChunkGroupCommands.class, "saga player location is null for " + sagaPlayer.getName());
 	   		sagaPlayer.error("failed to retrieve "+ sagaPlayer +" player location");
 	   		return;
 	   	}
@@ -248,7 +249,7 @@ public class ChunkGroupCommands {
 			try {
 				((Settlement) selectedChunkGroup).setRole(sagaPlayer, definition.ownerRole);
 			} catch (InvalidProficiencyException e) {
-				Saga.severe(ChunkGroupCommands.class, "failed to add " + definition.ownerRole + " proficiency to a chunk group, because the proficiency name is invalid", "ignoring request");
+				SagaLogger.severe(ChunkGroupCommands.class, "failed to add " + definition.ownerRole + " proficiency to a chunk group, because the proficiency name is invalid");
 			}
 			
 		}
@@ -278,7 +279,7 @@ public class ChunkGroupCommands {
 	   	SagaChunk locationChunk = sagaPlayer.getSagaChunk();
 	   	Location location = sagaPlayer.getLocation();
 	   	if(location == null){
-	   		Saga.severe(ChunkGroupCommands.class, "saga player location is null for " + sagaPlayer.getName(), "ignoring command");
+	   		SagaLogger.severe(ChunkGroupCommands.class, "saga player location is null for " + sagaPlayer.getName());
 	   		sagaPlayer.error("failed to retrieve "+ sagaPlayer +" player location");
 	   		return;
 	   	}
@@ -1102,7 +1103,7 @@ public class ChunkGroupCommands {
 		try {
 			selectedBuilding = ChunkGroupConfiguration.config().createBuilding(buildingName);
 		} catch (InvalidBuildingException e) {
-			Saga.severe(ChunkGroupCommands.class, sagaPlayer + " tried to set a building with missing definition", "stopping command");
+			SagaLogger.severe(ChunkGroupCommands.class, sagaPlayer + " tried to set a building with missing definition");
 			sagaPlayer.error("definition missing for " + buildingName + " is missing");
 			return;
 		}

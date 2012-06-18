@@ -17,7 +17,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Clock;
 import org.saga.Clock.TimeOfDayTicker;
-import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.BuySign;
 import org.saga.buildings.signs.SellSign;
@@ -167,36 +167,36 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		
 		if(coins == null){
 			coins = 0.0;
-			Saga.severe(this, "coins field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "coins");
 			integrity = false;
 		}
 
 		if(sellPrices == null){
 			sellPrices = new Hashtable<Material, Double>();
-			Saga.severe(this, "sellPrices field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "sellPrices");
 			integrity = false;
 		}
 
 		if(buyPrices == null){
 			buyPrices = new Hashtable<Material, Double>();
-			Saga.severe(this, "buyPrices field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "buyPrices");
 			integrity = false;
 		}
 		
 		if(stored == null){
 			stored = new Hashtable<Material, Integer>();
-			Saga.severe(this, "stored field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "stored");
 			integrity = false;
 		}
 		
 		if(tradeDeals == null){
 			tradeDeals = new ArrayList<TradeDeal>();
-			Saga.severe(this, "failed to initialize tradeDeals field", "setting default");
+			SagaLogger.nullField(this, "tradeDeals");
 			integrity = false;
 		}
 		for (int i = 0; i < tradeDeals.size(); i++) {
 			if(tradeDeals.get(i) == null){
-				Saga.severe(this, "failed to initialize tradeDeals field element", "removing element");
+				SagaLogger.nullField(this, "tradeDeals element");
 				tradeDeals.remove(i);
 				i--;
 				continue;
@@ -207,19 +207,19 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		
 		if(imported == null){
 			imported = 0.0;
-			Saga.severe(this, "imported field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "imported");
 			integrity = false;
 		}
 		
 		if(exported == null){
 			exported = 0.0;
-			Saga.severe(this, "exported field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "exported");
 			integrity = false;
 		}
 		
 		if(newDeals == null){
 			newDeals = new ArrayList<TradeDeal>();
-			Saga.severe(this, "newDeals field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "newDeals");
 			integrity = false;
 		}
 		for (TradeDeal deal : newDeals) {
@@ -228,7 +228,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		
 		if(completedDeals == null){
 			completedDeals = new ArrayList<TradeDeal>();
-			Saga.severe(this, "completedDeals field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "completedDeals");
 			integrity = false;
 		}
 		for (TradeDeal deal : completedDeals) {
@@ -237,7 +237,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 
 		if(expiredDeals == null){
 			expiredDeals = new ArrayList<TradeDeal>();
-			Saga.severe(this, "expiredDeals field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "expiredDeals");
 			integrity = false;
 		}
 		for (TradeDeal deal : expiredDeals) {
@@ -246,13 +246,13 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		
 		if(autoMinCoins == null){
 			autoMinCoins = 0.0;
-			Saga.severe(this, "autoMinCoins field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "autoMinCoins");
 			integrity = false;
 		}
 		
 		if(automated == null){
 			automated = false;
-			Saga.severe(this, "failed to initialize automated field", "setting default");
+			SagaLogger.nullField(this, "automated");
 			integrity = false;
 		}
 		
@@ -576,7 +576,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 				imported += tradeDeal.doDeal(this);
 				
 			}else{
-				Saga.warning(this, "found invalid trade deal type for " + tradeDeal + " trade deal for doTradeDeal()", "ignoring request");
+				SagaLogger.severe(this, "found invalid trade deal type for " + tradeDeal + " trade deal for doTradeDeal()");
 			}
 			
 			// Check for completion:
@@ -585,7 +585,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 				try {
 					completedDeals.add(removeDeal(tradeDeal.getId()));
 				} catch (TradeDealNotFoundException e) {
-					Saga.severe(this, "failed to remove a non-existing trading deal with " + tradeDeal.getId(), "ignoring request");
+					SagaLogger.severe(this, "failed to remove a non-existing trading deal with " + tradeDeal.getId());
 				}
 				
 			}else 
@@ -596,7 +596,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 				try {
 					expiredDeals.add(removeDeal(tradeDeal.getId()));
 				} catch (TradeDealNotFoundException e) {
-					Saga.severe(this, "failed to remove a non-existing trading deal with " + tradeDeal.getId(), "ignoring request");
+					SagaLogger.severe(this, "failed to remove a non-existing trading deal with " + tradeDeal.getId());
 				}
 
 			}
@@ -852,7 +852,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 			manager = EconomyManager.manager(worldName);
 		}
 		catch (InvalidWorldException e) {
-			Saga.severe(this,worldName + " is not a valid world name", "ignoring deal selection");
+			SagaLogger.severe(this,worldName + " is not a valid world name");
 			return;
 		}
 		
@@ -920,7 +920,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 					
 				}
 				catch (TradeDealNotFoundException e) {
-					Saga.severe(this, "deal selection failed to retrieve a deal with id " + newDeal.getId(), "stopping deal selection");
+					SagaLogger.severe(this, "deal selection failed to retrieve a deal with id " + newDeal.getId());
 					return;
 				}
 				

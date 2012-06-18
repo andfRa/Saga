@@ -6,17 +6,12 @@ import java.util.HashSet;
 import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
 import org.saga.commands.FactionCommands;
-import org.saga.config.BalanceConfiguration;
-import org.saga.config.EconomyConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.factions.FactionManager;
 import org.saga.factions.SagaFaction;
-import org.saga.messages.PlayerMessages.ColorCircle;
 import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
-import org.saga.utility.StringBook;
 import org.saga.utility.TextUtil;
 
 

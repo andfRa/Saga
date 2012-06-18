@@ -1,7 +1,5 @@
 package org.saga.messages;
 
-import java.util.Stack;
-
 import org.bukkit.ChatColor;
 import org.saga.abilities.Ability;
 import org.saga.utility.RomanNumeral;

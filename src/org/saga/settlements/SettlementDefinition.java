@@ -5,7 +5,6 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 
-import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.utility.TwoPointFunction;
 
@@ -83,20 +82,20 @@ public class SettlementDefinition{
 		boolean integrity=true;
 		
 		if(activePlayers == null){
-			Saga.severe("SettlementDefinition failed to initialize activePlayers field. Setting default.");
+			SagaLogger.nullField(this, "activePlayers field");
 			activePlayers = new TwoPointFunction(0.0);
 			integrity = false;
 		}
 		
 		if(buildingPoints == null){
-			Saga.severe("SettlementDefinition failed to initialize buildingPoints field. Setting default.");
+			SagaLogger.nullField(this, "buildingPoints field");
 			buildingPoints = new TwoPointFunction(0.0);
 			integrity=false;
 		}
 		
 		if(roles == null){
 			roles = new Hashtable<String, TwoPointFunction>();
-			Saga.severe(SettlementDefinition.class, "roles field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "roles");
 			integrity = false;
 		}
 		Enumeration<String> eRoles = roles.keys();
@@ -107,7 +106,7 @@ public class SettlementDefinition{
 		
 		if(buildings == null){
 			buildings = new Hashtable<String, TwoPointFunction>();
-			Saga.severe(SettlementDefinition.class, "buildings field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "buildings");
 			integrity = false;
 		}
 		Enumeration<String> eBuildings = buildings.keys();
@@ -118,33 +117,33 @@ public class SettlementDefinition{
 		
 		if(levelUpExp == null){
 			levelUpExp = new TwoPointFunction(10000.0);
-			Saga.severe(SettlementDefinition.class, "levelUpExp field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "levelUpExp");
 			integrity = false;
 		}
 		integrity = integrity && levelUpExp.complete();
 		
 		if(expSpeed == null){
 			expSpeed = new TwoPointFunction(0.0);
-			Saga.severe(SettlementDefinition.class, "expSpeed field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "expSpeed");
 			integrity = false;
 		}
 		integrity = integrity && expSpeed.complete();
 		
 		if(claims == null){
-			SagaLogger.severe(getClass(), "claims field failed to initialize");
+			SagaLogger.nullField(this, "claims");
 			claims = new TwoPointFunction(1.0);
 			integrity=false;
 		}
 		integrity = claims.complete() && integrity;
 		
 		if(ownerRole == null){
-			SagaLogger.nullField(getClass(),"ownerRole");
+			SagaLogger.nullField(this,"ownerRole");
 			ownerRole = "";
 			integrity=false;
 		}
 		
 		if(defaultRole == null){
-			SagaLogger.nullField(getClass(),"defaultRole");
+			SagaLogger.nullField(this,"defaultRole");
 			defaultRole = "";
 			integrity=false;
 		}

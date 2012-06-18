@@ -6,7 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
-import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.exceptions.InvalidAbilityException;
@@ -93,19 +93,19 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		boolean integrity = true;
 		
 		if (name == null) {
-			Saga.severe(this, "name field failed to initialize", "settin default");
+			SagaLogger.severe(this, "name");
 			name = "<unnamed ability>";
 			integrity = false;
 		}
 		
 		if (cooldown == null) {
-			Saga.severe(this, "cooldown field failed to initialize", "settin default");
+			SagaLogger.nullField(this, "cooldown");
 			cooldown = 0;
 			integrity = false;
 		}
 		
 		if (active == null) {
-			Saga.severe(this, "active field failed to initialize", "settin default");
+			SagaLogger.nullField(this, "active");
 			active = 0;
 			integrity = false;
 		}

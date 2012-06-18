@@ -1,18 +1,6 @@
 package org.saga.abilities.unused;
 
-import java.util.List;
-
-import org.bukkit.Location;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.Player;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
-import org.bukkit.event.entity.ProjectileHitEvent;
-import org.saga.Saga;
 import org.saga.abilities.Ability;
-import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.player.SagaPlayer;
-import org.saga.statistics.StatisticsManager;
 
 public class ExplodingArrow extends Ability{
 

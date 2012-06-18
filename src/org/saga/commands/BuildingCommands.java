@@ -3,6 +3,7 @@ package org.saga.commands;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.buildings.Arena;
 import org.saga.buildings.Building;
 import org.saga.buildings.Home;
@@ -745,7 +746,7 @@ public class BuildingCommands {
 		try {
 			manager = EconomyManager.manager(sagaPlayer.getLocation());
 		} catch (InvalidWorldException e1) {
-			Saga.severe(EconomyCommands.class, "failed to retrieve " + EconomyManager.class.getSimpleName() + ": " + e1.getClass().getSimpleName() + ":" + e1.getMessage() + ".", "ignoring command");
+			SagaLogger.severe(EconomyCommands.class, "failed to retrieve " + EconomyManager.class.getSimpleName() + ": " + e1.getClass().getSimpleName() + ":" + e1.getMessage());
 			sagaPlayer.error("failed to retrieve " + EconomyManager.class.getSimpleName());
 		}
 		

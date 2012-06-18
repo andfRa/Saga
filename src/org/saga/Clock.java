@@ -129,7 +129,7 @@ public class Clock implements Runnable{
 				hoursCycle ++;
 				// Hours:
 				ArrayList<HourTicker> hour = new ArrayList<HourTicker>(this.hour);
-				Saga.info("Hour tick for " + hour.size() + " registered instances.");
+				SagaLogger.info("Hour tick for " + hour.size() + " registered instances.");
 				for (int i = 0; i < hour.size(); i++) {
 					hour.get(i).clockHourTick();
 				}
@@ -162,7 +162,7 @@ public class Clock implements Runnable{
 		synchronized (second) {
 			
 			if(second.contains(ticker)){
-				Saga.severe("Tried to register an already registered second ticker. Ignoring request.");
+				SagaLogger.severe(getClass(), "tried to register an already registered second ticker");
 				return;
 			}
 			second.add(ticker);
@@ -183,7 +183,7 @@ public class Clock implements Runnable{
 		synchronized (second) {
 		
 			if(!second.contains(ticker)){
-				Saga.severe("Tried to unregister an non-registered second ticker. Ignoring request.");
+				SagaLogger.severe(getClass(), "tried to unregister an non-registered second ticker");
 				return;
 			}
 			second.remove(ticker);
@@ -206,7 +206,7 @@ public class Clock implements Runnable{
 		synchronized (minute) {
 
 			if(minute.contains(ticker)){
-				Saga.severe("Tried to register an already registered minute ticker. Ignoring request.");
+				SagaLogger.severe(getClass(), "tried to register an already registered minute ticker");
 				return;
 			}
 			minute.add(ticker);
@@ -228,7 +228,7 @@ public class Clock implements Runnable{
 		synchronized (minute) {
 
 			if(!minute.contains(ticker)){
-				Saga.severe("Tried to unregister an non-registered minute ticker. Ignoring request.");
+				SagaLogger.severe(getClass(), "tried to unregister an non-registered minute ticker");
 				return;
 			}
 			minute.remove(ticker);
@@ -250,7 +250,7 @@ public class Clock implements Runnable{
 		synchronized (hour) {
 			
 			if(minute.contains(ticker)){
-				Saga.severe("Tried to register an already registered hour ticker. Ignoring request.");
+				SagaLogger.severe(getClass(), "tried to register an already registered hour ticker");
 				return;
 			}
 			hour.add(ticker);
@@ -271,7 +271,7 @@ public class Clock implements Runnable{
 		synchronized (hour) {
 
 			if(!hour.contains(ticker)){
-				Saga.severe("Tried to unregister an non-registered hour ticker. Ignoring request.");
+				SagaLogger.severe(getClass(), "tried to unregister an non-registered hour ticker");
 				return;
 			}
 			hour.remove(ticker);
@@ -293,7 +293,7 @@ public class Clock implements Runnable{
 		synchronized (timeOfDays) {
 
 			if(timeOfDays.contains(ticker)){
-				Saga.severe("Tried to register an already registered time of day ticker. Ignoring request.");
+				SagaLogger.severe(getClass(), "tried to register an already registered time of day ticker");
 				return;
 			}
 			timeOfDays.add(ticker);
@@ -314,7 +314,7 @@ public class Clock implements Runnable{
 		synchronized (timeOfDays) {
 		
 			if(!timeOfDays.contains(ticker)){
-				Saga.severe("Tried to unregister an non-registered time of day ticker. Ignoring request.");
+				SagaLogger.severe(getClass(), "tried to unregister an non-registered time of day ticker");
 				return;
 			}
 			timeOfDays.remove(ticker);
@@ -355,7 +355,7 @@ public class Clock implements Runnable{
 				timePassed = Math.abs(currentTime - previousTime);
 			}
 			if(timePassed > 2000){
-				Saga.warning(Clock.class, "time of day tick skipped too much", "ignoring tick");
+				SagaLogger.warning(Clock.class, "time of day tick skipped too much");
 				previousWorldTime.put(worldName, currentTime);
 				return;
 			}
@@ -378,7 +378,7 @@ public class Clock implements Runnable{
 			}
 			
 			if(timeOfDay != null){
-				Saga.info(timeOfDay.name() + " for " + worldName + " world.");
+				SagaLogger.info(timeOfDay.name() + " for " + worldName + " world.");
 				ArrayList<TimeOfDayTicker> timeOfDays = new ArrayList<TimeOfDayTicker>(this.timeOfDays);
 				for (TimeOfDayTicker ticker : timeOfDays) {
 					

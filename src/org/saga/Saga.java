@@ -90,7 +90,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
 
 
     	// Messages:
-        Saga.info("Disabling Saga.");
+    	SagaLogger.info("Disabling Saga.");
     	
     	// Disable automatic saving:
     	Clock.clock().unregisterMinuteTick(this);
@@ -125,7 +125,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         
         Saga.plugin = null;
 
-        Saga.info("Saga disabled.");
+        SagaLogger.info("Saga disabled.");
         
         // Logger:
         SagaLogger.unload();
@@ -232,12 +232,12 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         sagaPlayer = loadSagaPlayer(player.getName());
 
         if ( sagaPlayer == null ) {
-            Saga.severe("Saga player was supposed to have been loaded!!");
+        	SagaLogger.severe(getClass(), "failed to load saga player for " + player.getName());
         }
 
     	// Check if online:
     	if( sagaPlayer.isOnline() ) {
-            severe("Cant wrap player for " + player.getName() + ", because sagaPlayer is already set to online. Wrapping ignored.");
+    		SagaLogger.severe(getClass(), "cant wrap player for " + player.getName() + ", because sagaPlayer is already set to online");
             return;
     	}
     	
@@ -258,13 +258,13 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     	SagaPlayer sagaPlayer = getSagaPlayer(name);
     	// Check if loaded:
     	if( sagaPlayer == null ) {
-            severe(getClass(), "Cant remove player wrap form " + name + ", because the saga player isnt loaded", "player information not saved");
+            SagaLogger.severe(getClass(), "Cant remove player wrap form " + name + ", because the saga player isnt loaded");
             return;
     	}
     	
     	// Remove if online:
     	if( !sagaPlayer.isOnline() ) {
-    		severe(getClass(), "Cant remove player wrap form " + name + ", because the saga player isn't online", "ignoring request");
+    		SagaLogger.severe(getClass(), "Cant remove player wrap form " + name + ", because the saga player isn't online");
     	} else {
             sagaPlayer.removePlayer();
     	}
@@ -329,19 +329,19 @@ public class Saga extends JavaPlugin implements MinuteTicker{
 
     	// Check if forced:
     	if( sagaPlayer != null && sagaPlayer.isForced() ){
-            severe(getClass(), "tried to load already loadaded and forced saga player for " + name, "loading ignored");
+    		SagaLogger.severe(getClass(), "tried to load already loadaded and forced saga player for " + name);
             return sagaPlayer;
     	}
     	
     	// Check if already loaded:
     	if( sagaPlayer != null ){
-    		severe(getClass(), "tried to load already loadaded saga player for " + name, "loading ignored");
+    		SagaLogger.severe(getClass(), "tried to load already loadaded saga player for " + name);
             return sagaPlayer;
     	}
 
     	// Load:
     	sagaPlayer = SagaPlayer.load(name);
-    	Saga.info("Loading saga player for " + name + ".");
+    	SagaLogger.info("Loading saga player for " + name + ".");
     	putSagaPlayer(name, sagaPlayer);
     	
     	// Register factions:
@@ -369,18 +369,18 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     	
     	// Ignore if already unloaded:
     	if( sagaPlayer == null ) {
-    		severe(getClass(), "tried unload a non-loaded player for " + name, "loading ignored");
+    		SagaLogger.severe(getClass(), "tried unload a non-loaded player for " + name);
             return sagaPlayer;
     	}
     	
     	// Ignore if forced:
     	if( sagaPlayer.isForced() ){
-    		info("Denied unloading for a forced saga player " + sagaPlayer.getName() + ".");
+    		SagaLogger.info("Denied unloading for a forced saga player " + sagaPlayer.getName() + ".");
             return sagaPlayer;
     	}
     	
     	// Unload:
-    	Saga.info("Unloading saga player for " + name + ".");
+    	SagaLogger.info("Unloading saga player for " + name + ".");
     	removeSagaPlayer(name);
     	
     	// Unregister factions:
@@ -432,7 +432,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     	// Check in loaded list:
     	sagaPlayer = getSagaPlayer(name);
     	if(sagaPlayer != null){
-    		Saga.info("Forcing saga player for " + name + ".");
+    		SagaLogger.info("Forcing saga player for " + name + ".");
     		sagaPlayer.increaseForceLevel();
     		return sagaPlayer;
     	}
@@ -444,7 +444,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     	
     	// Load:
     	sagaPlayer = loadSagaPlayer(name);
-    	Saga.info("Forcing saga player for " + name + ".");
+    	SagaLogger.info("Forcing saga player for " + name + ".");
     	sagaPlayer.increaseForceLevel();
 		return sagaPlayer;
     	
@@ -464,12 +464,12 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     	// Check in loaded list:
     	SagaPlayer sagaPlayer = getSagaPlayer(name);
     	if(sagaPlayer == null){
-    		Saga.severe(getClass(), "tried to unforce a non-loaded player for " + name, "ignoring request");
+    		SagaLogger.severe(getClass(), "tried to unforce a non-loaded player for " + name);
     		return;
     	}
     	
     	// Decrease force level:
-    	Saga.info("Unforcing saga player for " + name + ".");
+    	SagaLogger.info("Unforcing saga player for " + name + ".");
     	sagaPlayer.decreaseForceLevel();
     	
     	// Unload if possible:
@@ -636,7 +636,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
             try {
             	
                 commandMap.execute(split, player, this, getSagaPlayer(player.getName()));
-                Saga.info("[Saga Command] " + player.getName() + ": " + command);
+                SagaLogger.info("[Saga Command] " + player.getName() + ": " + command);
                 
             } catch (CommandPermissionsException e) {
                
@@ -754,44 +754,6 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     	
     	
 	}
-    
-    
-    // Log:
-    static public void info(String msg) {
-    	SagaLogger.info(msg);
-    }
-
-    static public void info(Object instance, String message, String result) {
-        info(instance.getClass().getSimpleName() + ":{" + instance + "} " + message + ". " + result + ".");
-    }
-
-    static public void info(Class<?> tClass, String message, String result) {
-    	info(tClass.getSimpleName() + ": " + message + ". " + result + ".");
-    }
-    
-    static public void severe(String msg) {
-    	SagaLogger.severe(msg);
-    }
-    
-    static public void severe(Object instance, String message, String result) {
-        severe(instance.getClass().getSimpleName() + ":{" + instance + "} " + message + ". " + result + ".");
-    }
-    
-    static public void severe(Class<?> tClass, String message, String result) {
-    	severe(tClass.getSimpleName() + ": " + message + ". " + result + ".");
-    }
-
-    static public void warning(String msg) {
-    	SagaLogger.warning(msg);
-    }
-    
-    static public void warning(Object instance, String message, String result) {
-        warning(instance.getClass().getSimpleName() + ":{" + instance + "} " + message + ". " + result + ".");
-    }
-    
-    static public void warning(Class<?> tClass, String message, String result) {
-        warning(tClass.getSimpleName() + ": " + message + ". " + result + ".");
-    }
     
     
 }

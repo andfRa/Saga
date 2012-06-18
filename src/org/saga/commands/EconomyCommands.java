@@ -3,16 +3,12 @@ package org.saga.commands;
 import java.util.ArrayList;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.saga.Saga;
-import org.saga.buildings.Building;
-import org.saga.buildings.TradingPost;
-import org.saga.chunkGroups.ChunkGroup;
+import org.saga.SagaLogger;
 import org.saga.config.EconomyConfiguration;
 import org.saga.economy.EconomyManager;
-import org.saga.economy.TradeDeal;
 import org.saga.economy.EconomyManager.InvalidWorldException;
-import org.saga.economy.EconomyManager.TransactionType;
+import org.saga.economy.TradeDeal;
 import org.saga.economy.TradeDeal.TradeDealType;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.messages.ChunkGroupMessages;
@@ -47,7 +43,7 @@ public class EconomyCommands {
 		Location location = sagaPlayer.getLocation();
 		if(location == null){
 			sagaPlayer.error("failed to retrieve location");
-			Saga.severe(EconomyCommands.class, "failed to retrieve location for " + sagaPlayer + " saga player", "ignoring command");
+			SagaLogger.severe(EconomyCommands.class, "failed to retrieve location for " + sagaPlayer + " saga player");
 			return;
 		}
 		
@@ -57,7 +53,7 @@ public class EconomyCommands {
 			tradeDeals = EconomyManager.manager(location.getWorld().getName()).getTradingDeals();
 		} catch (InvalidWorldException e) {
 			sagaPlayer.error("failed to retrieve " + EconomyManager.class.getSimpleName() + " for " + location.getWorld().getName() + " world.");
-			Saga.severe(EconomyCommands.class, "failed to retrieve " + EconomyManager.class.getSimpleName() + " for " + location.getWorld().getName() + " world", "ignoring command");
+			SagaLogger.severe(EconomyCommands.class, "failed to retrieve " + EconomyManager.class.getSimpleName() + " for " + location.getWorld().getName() + " world");
 			return;
 		}
 		
@@ -99,7 +95,7 @@ public class EconomyCommands {
 		Location location = sagaPlayer.getLocation();
 		if(location == null){
 			sagaPlayer.error("failed to retrieve location");
-			Saga.severe(EconomyCommands.class, "failed to retrieve location for " + sagaPlayer + " saga player", "ignoring command");
+			SagaLogger.severe(EconomyCommands.class, "failed to retrieve location for " + sagaPlayer + " saga player");
 			return;
 		}
 		
@@ -109,7 +105,7 @@ public class EconomyCommands {
 			tradeDeals = EconomyManager.manager(location.getWorld().getName()).getTradingDeals();
 		} catch (InvalidWorldException e) {
 			sagaPlayer.error("failed to retrieve " + EconomyManager.class.getSimpleName() + " for " + location.getWorld().getName() + " world.");
-			Saga.severe(EconomyCommands.class, "failed to retrieve " + EconomyManager.class.getSimpleName() + " for " + location.getWorld().getName() + " world", "ignoring command");
+			SagaLogger.severe(EconomyCommands.class, "failed to retrieve " + EconomyManager.class.getSimpleName() + " for " + location.getWorld().getName() + " world");
 			return;
 		}
 		

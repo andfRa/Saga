@@ -10,14 +10,12 @@ import java.util.Hashtable;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
-import org.bukkit.entity.Creature;
 import org.bukkit.entity.Enderman;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.BlockFromToEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -163,7 +161,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	}
 	
 	/**
-	 * Completes the initialization.
+	 * Completes the initialisation.
 	 * 
 	 * @return integrity
 	 */
@@ -172,38 +170,37 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 		boolean integrity=true;
 		
-		String group = id + "(" + name + ")";
 		if(name == null){
-			Saga.severe("ChunkGroup "+ group +" name not initialized. Setting unnamed.");
+			SagaLogger.nullField(this, "name");
 			name = "unnamed";
 			integrity = false;
 		}
 		if(id == null){
-			Saga.severe("ChunkGroup"+ group +" id not initialized. Setting -1.");
+			SagaLogger.nullField(this, "id");
 			id = -1;
 			integrity = false;
 		}
 		if(players == null){
-			Saga.severe("ChunkGroup "+ group +" players not initialized. Initializing empty list.");
+			SagaLogger.nullField(this, "players");
 			players = new ArrayList<String>();
 			integrity = false;
 		}
 		for (int i = 0; i < players.size(); i++) {
 			if(players.get(i) == null){
-				Saga.severe("ChunkGroup "+ group +" players element not initialized. Removing element.");
+				SagaLogger.nullField(this, "players element");
 				players.remove(i);
 				i--;
 				integrity = false;
 			}
 		}
 		if(factions == null){
-			Saga.severe("ChunkGroup "+ group +" factions not initialized. Initializing empty list.");
+			SagaLogger.nullField(this, "factions");
 			factions = new ArrayList<Integer>();
 			integrity = false;
 		}
 		for (int i = 0; i < factions.size(); i++) {
 			if(factions.get(i) == null){
-				Saga.severe("ChunkGroup "+ group +" factions element not initialized. Removing element.");
+				SagaLogger.nullField(this, "factions element");
 				factions.remove(i);
 				i--;
 				integrity = false;
@@ -211,12 +208,12 @@ public class ChunkGroup extends SagaCustomSerialization{
 		}
 		
 		if(owner == null){
-			Saga.info("ChunkGroup "+ group +" owners field not initialized. Setting default.");
+			SagaLogger.nullField(this, "owners");
 			owner = "";
 			integrity = false;
 		}
 		if(lastOnlineDates == null){
-			Saga.severe("ChunkGroup "+ group +" lastOnlineDates field not initialized. Setting default.");
+			SagaLogger.nullField(this, "lastOnlineDates");
 			lastOnlineDates = new Hashtable<String, Date>();
 			integrity = false;
 		}
@@ -227,7 +224,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 		isSavingEnabled = true;
 	
 		if(groupChunks == null){
-			Saga.severe("ChunkGroup "+ group +" groupChunks not initialized. Initializing empty list.");
+			SagaLogger.nullField(this, "groupChunks");
 			groupChunks = new ArrayList<SagaChunk>();
 			integrity = false;
 		}
@@ -235,7 +232,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 			SagaChunk coords= groupChunks.get(i);
 			if(coords == null){
 			
-				Saga.severe("ChunkGroup "+ group +" groupChunks element not initialized. Removing element.");
+				SagaLogger.nullField(this, "groupChunks element");
 				groupChunks.remove(i);
 				i--;
 				continue;
@@ -248,7 +245,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 				try {
 					integrity = coords.getBuilding().complete() && integrity;
 				} catch (InvalidBuildingException e) {
-					Saga.severe(this,"failed to complete " + coords.getBuilding().getName() + " building: "+ e.getClass().getSimpleName() + ":" + e.getMessage(), "removing element");
+					SagaLogger.severe(this,"failed to complete " + coords.getBuilding().getName() + " building: "+ e.getClass().getSimpleName() + ":" + e.getMessage());
 					disableSaving();
 					coords.clearBuilding();
 				}
@@ -258,24 +255,24 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 		// Bonuses:
 		if(pvpProtectionBonus == null){
-			Saga.severe(this,"pvpProtectionBonus field not initialized","setting default");
+			SagaLogger.nullField(this, "this");
 			pvpProtectionBonus = false;
 			integrity = false;
 		}
 		if(unlimitedClaimBonus == null){
-			Saga.severe(this,"unlimitedClaimBonus field not initialized","setting default");
+			SagaLogger.nullField(this, "unlimitedClaimBonus");
 			unlimitedClaimBonus = false;
 			integrity = false;
 		}
 		
 		// Properties:
 		if(fireSpread == null){
-			Saga.severe(this,"fireSpread field not initialized", "setting default");
+			SagaLogger.nullField(this, "fireSpread");
 			fireSpread = false;
 			integrity = false;
 		}
 		if(lavaSpread == null){
-			Saga.severe(this,"lavaSpread field not initialized", "setting default");
+			SagaLogger.nullField(this, "lavaSpread");
 			lavaSpread = false;
 			integrity = false;
 		}
@@ -351,7 +348,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 
 		
 		// Log:
-		Saga.info("Creating " + chunkGroup + " chunk group.");
+		SagaLogger.info("Creating " + chunkGroup + " chunk group.");
 
 		// Update chunk group manager:
 		ChunkGroupManager.manager().addChunkGroup(chunkGroup);
@@ -402,7 +399,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 
 
 		// Log:
-		Saga.info("Deleting " + this + " chunk group.");
+		SagaLogger.info("Deleting " + this + " chunk group.");
 		
 		// Disable:
 		disable();
@@ -416,7 +413,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 				removePlayer(sagaPlayer);
 				Saga.plugin().unforceSagaPlayer(player);
 			} catch (NonExistantSagaPlayerException e) {
-				Saga.severe(this, "failed to remove " + player + " player", "removing player from the list");
+				SagaLogger.severe(this, "failed to remove " + player + " player");
 				removePlayer(player);
 			}
 			
@@ -451,7 +448,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 		// Check if already on the list:
 		if(groupChunks.contains(sagaChunk)){
-			Saga.severe(this, "tried to add an already existing " + sagaChunk + "chunk", "ignoring request");
+			SagaLogger.severe(this, "tried to add an already existing " + sagaChunk + "chunk");
 			return;
 		}
 		
@@ -481,7 +478,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 		// Check if not in this group:
 		if(!groupChunks.contains(sagaChunk)){
-			Saga.severe(this, "tried to remove a non-existing " + sagaChunk + "chunk", "ignoring request");
+			SagaLogger.severe(this, "tried to remove a non-existing " + sagaChunk + "chunk");
 			return;
 		}
 		
@@ -789,7 +786,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 		// Check list:
 		if(registeredFactions.contains(sagaFaction)){
-			Saga.severe("Tried to register an already registered faction for " + this + " chunk group. Ignoring request.");
+			SagaLogger.severe(this, "tried to register an already registered faction");
 			return;
 		}
 		
@@ -812,7 +809,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 		// Check list:
 		if(!registeredFactions.contains(sagaFaction)){
-			Saga.severe("Tried to unregister a non-registered faction for " + this + " chunk group.");
+			SagaLogger.severe(this, "tried to unregister a non-registered faction");
 			return;
 		}
 
@@ -834,7 +831,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 		// Check if already on the list:
 		if(players.contains(playerName)){
-			Saga.severe("Tried to add an already existing " + playerName + " player to "+ this +" chunk group. Ignoring request.");
+			SagaLogger.severe(this, "tried to add an already registered " + playerName + " player");
 			return;
 		}
 		
@@ -854,7 +851,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 		// Check if not in this settlement:
 		if(!players.contains(playerName)){
-			Saga.severe("Tried to remove a non-member " + playerName + " player from " + this +  "chunk group.");
+			SagaLogger.severe(this, "tried to remove a non-member " + playerName + " player");
 			return;
 		}
 
@@ -919,7 +916,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 		// Check list:
 		if(registeredPlayers.contains(sagaPlayer)){
-			Saga.severe("Tried to register an already registered " + sagaPlayer + " player for " + this + " chunk group. Ignoring request.");
+			SagaLogger.severe(this, "tried to register an already registered " + sagaPlayer + " player");
 			return;
 		}
 		
@@ -947,7 +944,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 		// Check list:
 		if(!registeredPlayers.contains(sagaPlayer)){
-			Saga.severe("Tried to unregister a non-registered " + sagaPlayer + " player for " + this + " chunk group. Ignoring request.");
+			SagaLogger.severe(this, "tried to unregister a non-registered " + sagaPlayer + " player");
 			return;
 		}
 
@@ -1199,7 +1196,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 			
 			Date logoutDate = getPlayerLogOutDate(playerName);
 			if(logoutDate == null){
-				Saga.severe(this, "failed to retrieve player log out date", "using current date");
+				SagaLogger.severe(this, "failed to retrieve player log out date");
 				logoutDate = Calendar.getInstance().getTime();
 			}
 			
@@ -1870,7 +1867,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	 */
 	private void disableSaving() {
 
-		Saga.warning("Disabling saving for " + this + " chunk group." );
+		SagaLogger.warning(this, "disabling saving");
 		isSavingEnabled = false;
 		
 	}
@@ -1908,14 +1905,14 @@ public class ChunkGroup extends SagaCustomSerialization{
 			
 		} catch (IOException e) {
 			
-			Saga.severe(SagaFaction.class + "failed to read data for " + id + " ID");
+			SagaLogger.severe(SagaFaction.class, "failed to read data for " + id + " ID");
 			config = new ChunkGroup();
 			config.disableSaving();
 			
 		} catch (JsonParseException e) {
 			
-			Saga.severe(SagaFaction.class + "failed to parse data for " + id + " ID: " + e.getClass().getSimpleName() + "");
-			Saga.info("Parse message: " + e.getMessage());
+			SagaLogger.severe(SagaFaction.class, "failed to parse data for " + id + " ID: " + e.getClass().getSimpleName() + "");
+			SagaLogger.info("Parse message: " + e.getMessage());
 			config = new ChunkGroup();
 			config.disableSaving();
 			

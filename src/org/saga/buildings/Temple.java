@@ -1,11 +1,7 @@
 package org.saga.buildings;
 
-import java.util.ArrayList;
-
-import org.bukkit.Location;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.buildings.signs.BuildingSign;
@@ -119,18 +115,18 @@ public class Temple extends Building implements SecondTicker{
 		
 		// Disable clock if no players:
 		if(countPlayers() == 0) disableClock();
-		
-		// Level too low:
-		if(getDefinition().getLevelFunction().getXMin() > getLevel()){
-			return true;
-		}
-		
-		// Get saga players:
-		SagaChunk sagaChunk = getSagaChunk();
-		if(sagaChunk == null) return true;
-		ArrayList<SagaPlayer> sagaPlayers = sagaChunk.getSagaPlayers();
-		
-		return true;
+//		
+//		// Level too low:
+//		if(getDefinition().getLevelFunction().getXMin() > getLevel()){
+//			return true;
+//		}
+//		
+//		// Get saga players:
+//		SagaChunk sagaChunk = getSagaChunk();
+//		if(sagaChunk == null) return true;
+//		ArrayList<SagaPlayer> sagaPlayers = sagaChunk.getSagaPlayers();
+//		
+		return false;
 		
 		
 	}

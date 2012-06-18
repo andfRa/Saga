@@ -3,17 +3,12 @@ package org.saga.messages;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.saga.abilities.Ability;
 import org.saga.abilities.AbilityDefinition;
-import org.saga.abilities.AbilityManager;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupManager;
-import org.saga.config.AbilityConfiguration;
-import org.saga.config.BalanceConfiguration;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.factions.FactionManager;
@@ -21,8 +16,6 @@ import org.saga.factions.SagaFaction;
 import org.saga.messages.PlayerMessages.ColorCircle;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
-import org.saga.player.SkillType;
-import org.saga.utility.RomanNumeral;
 import org.saga.utility.StringTable;
 import org.saga.utility.TextUtil;
 

@@ -2,8 +2,7 @@ package org.saga.utility;
 
 import java.util.Random;
 
-import org.saga.Saga;
-import org.saga.player.SagaEntityDamageManager;
+import org.saga.SagaLogger;
 
 public class TwoPointFunction {
 
@@ -87,22 +86,22 @@ public class TwoPointFunction {
 		// Fields:
 		if(x1 == null){
 			x1 = 0;
-			Saga.severe("Failed to initialize " + this + " level function x1. Setting default.");
+			SagaLogger.nullField(getClass(), "x1");
 			integrity = false;
 		}
 		if(y1 == null){
 			y1 = 1.0;
-			Saga.severe("Failed to initialize " + this + " level function y1. Setting default.");
+			SagaLogger.nullField(getClass(), "y1");
 			integrity = false;
 		}
 		if(x2 == null){
 			x2 = 1;
-			Saga.severe("Failed to initialize " + this + " level function x2. Setting default.");
+			SagaLogger.nullField(getClass(), "x2");
 			integrity = false;
 		}
 		if(y2 == null){
 			y2 = 1.0;
-			Saga.severe("Failed to initialize " + this + " level function y2. Setting default.");
+			SagaLogger.nullField(getClass(), "y2");
 			integrity = false;
 		}
 
@@ -129,7 +128,7 @@ public class TwoPointFunction {
 		}
 		
 		if(x2 - x1 == 0){
-			Saga.severe(getClass(), "infinite slope", "using 0.0 value");
+			SagaLogger.severe(getClass(), "infinite slope");
 			return 0.0;
 		}
 		

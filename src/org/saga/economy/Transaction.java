@@ -1,7 +1,7 @@
 package org.saga.economy;
 
 import org.bukkit.Material;
-import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.economy.EconomyManager.TransactionType;
 
 
@@ -59,25 +59,25 @@ public class Transaction {
 		// Fields:
 		if(type == null){
 			type = TransactionType.INVALID;
-			Saga.severe(this, "failed to initialize type field", "setting default");
+			SagaLogger.nullField(this, "type");
 			integrity = false;
 		}
 		
 		if(material == null){
 			material = Material.AIR;
-			Saga.severe(this, "failed to initialize material field", "setting default");
+			SagaLogger.nullField(this, "material");
 			integrity = false;
 		}
 
 		if(value == null){
 			value = 0.0;
-			Saga.severe(this, "failed to initialize value field", "setting default");
+			SagaLogger.nullField(this, "value");
 			integrity = false;
 		}
 		
 		if(amount == null){
 			amount = 1;
-			Saga.severe(this, "failed to initialize amount field", "setting default");
+			SagaLogger.nullField(this, "amount");
 			integrity = false;
 		}
 		

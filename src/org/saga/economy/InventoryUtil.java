@@ -8,8 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.saga.Saga;
 import org.saga.SagaLogger;
 
 public class InventoryUtil {
@@ -67,7 +65,7 @@ public class InventoryUtil {
 		ItemStack remaining = inventory.removeItem(itemStack).get(0);
 	
 		if(remaining != null){
-			Saga.warning("Failed to remove " + itemStack + " from an inventory");
+			SagaLogger.warning(InventoryUtil.class, "failed to remove " + itemStack + " from the inventory");
 		}
 		
 	}
@@ -123,49 +121,6 @@ public class InventoryUtil {
 		
 	}
 	
-	/**
-	 * Removes an item from an inventory.
-	 * 
-	 * @param itemStack item stack
-	 * @param inventory inventory
-	 */
-	public static void removeItemHand2(ItemStack itemStack, Inventory inventory) {
-
-		if(inventory instanceof PlayerInventory){
-			
-			PlayerInventory playerInventory = (PlayerInventory) inventory;
-			
-			if(!playerInventory.getItemInHand().getType().equals(itemStack.getType())){
-				removeItem(itemStack, playerInventory);
-				return;
-			}
-			
-			Integer newAmount = playerInventory.getItemInHand().getAmount() - itemStack.getAmount();
-			
-			if(newAmount < 0){
-				removeItem(new ItemStack(itemStack.getType(), newAmount * -1), playerInventory);
-				newAmount = 0;
-			}
-			
-//			playerInventory.setItemInHand(stack)
-//			
-//			Material inHandType = playerInventory.getItemInHand().getType();
-//			Integer amountInHand = playerInventory.getItemInHand().getAmount();
-//			if(inHandType.equals(itemStack.getType())){
-//				Integer newAmount = amountInHand - itemStack.getAmount();
-//				
-//				
-//			}
-//			
-			
-		}
-		
-		ItemStack remaining = inventory.removeItem(itemStack).get(0);
-		if(remaining != null){
-			Saga.warning("Failed to remove " + itemStack + " from an inventory");
-		}
-		
-	}
 	
 	
 	

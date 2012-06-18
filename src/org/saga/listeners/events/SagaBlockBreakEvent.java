@@ -1,14 +1,12 @@
 package org.saga.listeners.events;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.BalanceConfiguration;
 import org.saga.config.ExperienceConfiguration;

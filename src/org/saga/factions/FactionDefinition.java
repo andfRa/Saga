@@ -4,7 +4,7 @@ import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 
-import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.settlements.SettlementDefinition;
 import org.saga.utility.TwoPointFunction;
 
@@ -37,15 +37,9 @@ public class FactionDefinition {
 
 		boolean integrity=true;
 		
-//		if(activePlayers == null){
-//			Saga.severe("SettlementDefinition failed to initialize activePlayers field. Setting default.");
-//			activePlayers = new TwoPointFunction(Double.MAX_VALUE, Short.MAX_VALUE, Double.MAX_VALUE);
-//			integrity = false;
-//		}
-		
 		if(enabledRanks == null){
 			enabledRanks = new Hashtable<String, TwoPointFunction>();
-			Saga.severe(SettlementDefinition.class, "failed to initialize enabledRanks field", "setting default");
+			SagaLogger.nullField(SettlementDefinition.class, "enabledRanks");
 			integrity = false;
 		}
 		Enumeration<String> eRanks = enabledRanks.keys();

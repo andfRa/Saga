@@ -14,7 +14,6 @@ import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.Saga;
 import org.saga.SagaLogger;
-import org.saga.chunkGroups.ChunkGroup;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
@@ -74,11 +73,6 @@ public class SagaFaction implements SecondTicker{
 	private ArrayList<Integer> chunkGroups;
 	
 	/**
-	 * Faction registered chunk groups.
-	 */
-	transient private ArrayList<ChunkGroup> registeredChunkGroups = new ArrayList<ChunkGroup>();
-	
-	/**
 	 * Chunk group invites.
 	 */
 	private ArrayList<Integer> chunkGroupInvites;
@@ -133,7 +127,7 @@ public class SagaFaction implements SecondTicker{
 	private SagaLocation spawn;
 	
 	
-	// Initialization:
+	// Initialisation:
 	/**
 	 * Used by gson.
 	 * 
@@ -142,7 +136,7 @@ public class SagaFaction implements SecondTicker{
 	}
 	
 	/**
-	 * Initializes.
+	 * Creates a faction.
 	 * 
 	 * @param factionId faction ID
 	 * @param factionName faction name
@@ -157,7 +151,6 @@ public class SagaFaction implements SecondTicker{
 		primaryColor = ChatColor.WHITE;
 		secondaryColor = ChatColor.WHITE;
 		chunkGroups = new ArrayList<Integer>();
-		registeredChunkGroups = new ArrayList<ChunkGroup>();
 		chunkGroupInvites = new ArrayList<Integer>();
 		playerRanks = new Hashtable<String, Proficiency>();
 		enemies = new HashSet<Integer>();
@@ -172,7 +165,7 @@ public class SagaFaction implements SecondTicker{
 	}
 	
 	/**
-	 * Completes the initialization.
+	 * Completes the initialisation.
 	 * 
 	 * @return integrity
 	 */
@@ -181,65 +174,64 @@ public class SagaFaction implements SecondTicker{
 		
 		boolean integrity=true;
 		
-		String faction = id + "(" + name + ")";
 		if(name == null){
-			Saga.severe("Faction "+ faction +" name not initialized. Setting unnamed.");
+			SagaLogger.nullField(this, "name");
 			name= "unnamed";
 			integrity = false;
 		}
 		
 		if(id == null){
-			Saga.severe("Faction "+ faction +" id not initialized. Setting -1.");
+			SagaLogger.nullField(this, "id");
 			id = -1;
 			integrity = false;
 		}
 		
 		if(members == null){
-			Saga.severe("Faction "+ faction +" memberNames not initialized. Initializing empty list.");
+			SagaLogger.nullField(this, "memberNames");
 			members = new ArrayList<String>();
 			integrity = false;
 		}
 		
 		if(primaryColor == null){
-			Saga.severe("Faction "+ faction +" primaryColor not initialized. Setting white.");
+			SagaLogger.nullField(this, "primaryColor");
 			primaryColor = ChatColor.WHITE;
 			integrity = false;
 		}
 		
 		if(secondaryColor == null){
-			Saga.severe("Faction "+ faction +" secondaryColor not initialized. Setting primaryColor.");
+			SagaLogger.nullField(this, "secondaryColor");
 			secondaryColor = primaryColor;
 			integrity = false;
 		}
 		
 		if(chunkGroups == null){
-			Saga.severe("Faction "+ faction +" chunkGroups not initialized. Setting empty list.");
+			SagaLogger.nullField(this, "chunkGroups");
 			chunkGroups = new ArrayList<Integer>();
 			integrity = false;
 		}
 		
 		if(chunkGroupInvites == null){
-			Saga.severe("Faction "+ faction +" chunkGroupInvites not initialized. Setting empty list.");
+			SagaLogger.nullField(this, "chunkGroupInvites");
 			chunkGroupInvites = new ArrayList<Integer>();
 			integrity = false;
 		}
 		
 		for (int i = 0; i < chunkGroupInvites.size(); i++) {
 			if(chunkGroupInvites.get(i) == null){
-				Saga.severe("Faction "+ faction +" chunkGroupInvites element not initialized. Removing element.");
+				SagaLogger.nullField(this, "chunkGroupInvites element");
 				chunkGroupInvites.remove(i);
 				i--;
 			}
 		}
 		
 		if(owner == null){
-			Saga.severe(this, "failed to initialize owner field", "setting default");
+			SagaLogger.nullField(this, "owner");
 			owner = "";
 			integrity = false;
 		}
 		
 		if(playerRanks == null){
-			Saga.severe(this, "failed to initialize playerRanks field", "setting default");
+			SagaLogger.nullField(this, "playerRanks");
 			playerRanks = new Hashtable<String, Proficiency>();
 			integrity = false;
 		}
@@ -253,11 +245,11 @@ public class SagaFaction implements SecondTicker{
 				proficiency = playerRanks.get(playerName);
 				proficiency.complete();
 			} catch (InvalidProficiencyException e) {
-				Saga.severe(this, "tried to add an invalid " + proficiency + " rank:" + e.getMessage(), "removing proficiency");
+				SagaLogger.severe(this, "tried to add an invalid " + proficiency + " rank:" + e.getMessage());
 				playerRanks.remove(playerName);
 			}
 			catch (NullPointerException e) {
-				Saga.severe(this, "tried to add a unitialized " + proficiency + " rank", "removing proficiency");
+				SagaLogger.severe(this, "tried to add a unitialized " + proficiency + " rank");
 				playerRanks.remove(playerName);
 			}
 		}
@@ -266,33 +258,32 @@ public class SagaFaction implements SecondTicker{
 		definition = FactionConfiguration.config().factionDefinition;
 		clockEnabled = false;
 		
-		// Rally:
 		if(spawn != null){
 			
 			try {
 				integrity = spawn.complete() && integrity;
 				startClock();
 			} catch (InvalidLocationException e) {
-				Saga.severe(this, "invalid rally point " + spawn, "removing mobilization point");
+				SagaLogger.severe(this, "invalid spawn point: " + spawn);
 				removeRallyPoint();
 			}
 			
 		}
 		
 		if(enemies == null){
-			Saga.severe(this, "enemies field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "enemies");
 			enemies = new HashSet<Integer>();
 			integrity = false;
 		}
 		
 		if(allies == null){
-			Saga.severe(this, "allies field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "allies");
 			allies = new HashSet<Integer>();
 			integrity = false;
 		}
 		
 		if(allyRequests == null){
-			Saga.severe(this, "allyRequests field failed to initialize", "setting default");
+			SagaLogger.nullField(this, "allyRequests");
 			allyRequests = new HashSet<Integer>();
 			integrity = false;
 		}
@@ -310,7 +301,7 @@ public class SagaFaction implements SecondTicker{
 
 		
 		// Log:
-		Saga.info("Deleting " + getId() + "(" + getName() + ") faction.");
+		SagaLogger.info("Deleting " + getId() + "(" + getName() + ") faction.");
 		
 		// Remove all members:
 		ArrayList<String> playerNames = getMembers();
@@ -346,7 +337,7 @@ public class SagaFaction implements SecondTicker{
 		faction.complete();
 		
 		// Log:
-		Saga.info("Creating " + faction + " faction.");
+		SagaLogger.info("Creating " + faction + " faction.");
 		
 		// Add the first member:
 		faction.addMember(owner);
@@ -364,7 +355,7 @@ public class SagaFaction implements SecondTicker{
 		try {
 			faction.setRank(owner, FactionConfiguration.config().factionOwnerRank);
 		} catch (InvalidProficiencyException e) {
-			Saga.severe(faction, "failed to set " + FactionConfiguration.config().factionOwnerRank + " rank, because the rank name is invalid", "ignoring request");
+			SagaLogger.severe(faction, "failed to set " + FactionConfiguration.config().factionOwnerRank + " rank, because the rank name is invalid");
 		}
 		
 		
@@ -385,7 +376,7 @@ public class SagaFaction implements SecondTicker{
 		
 		// Check if already in this faction:
 		if(members.contains(sagaPlayer.getName())){
-			Saga.severe(this, "tried to add an already existing member " + sagaPlayer.getName(), "ignoring request");
+			SagaLogger.severe(this, "tried to add an already existing member " + sagaPlayer.getName());
 			return;
 		}
 		
@@ -403,7 +394,7 @@ public class SagaFaction implements SecondTicker{
 		try {
 			setRank(sagaPlayer, FactionConfiguration.config().factionDefaultRank);
 		} catch (InvalidProficiencyException e) {
-			Saga.severe(this, "failed to set " + FactionConfiguration.config().factionDefaultRank + " rank, because the rank name is invalid", "ignoring request");
+			SagaLogger.severe(this, "failed to set " + FactionConfiguration.config().factionDefaultRank + " rank, because the rank name is invalid");
 		}
 		
 		
@@ -419,7 +410,7 @@ public class SagaFaction implements SecondTicker{
 		
 		// Check if not in this faction:
 		if(!members.contains(sagaPlayer.getName())){
-			Saga.severe("Tried to remove a non-member " + sagaPlayer.getName() + " player from " + this +  "faction.");
+			SagaLogger.severe(this, "tried to remove a non-member " + sagaPlayer.getName() + " player");
 			return;
 		}
 
@@ -461,7 +452,7 @@ public class SagaFaction implements SecondTicker{
 		
 		// Check if not in this faction:
 		if(!members.contains(playerName)){
-			Saga.severe("Tried to remove a non-member " + playerName + " player from " + this +  "faction.");
+			SagaLogger.severe("Tried to remove a non-member " + playerName + " player");
 			return;
 		}
 		
@@ -470,7 +461,7 @@ public class SagaFaction implements SecondTicker{
 		try {
 			factionMember = Saga.plugin().forceSagaPlayer(playerName);
 		} catch (NonExistantSagaPlayerException e) {
-			Saga.severe(this, "could not remove " + playerName + " player, because the player doesent exist", "ignoring request");
+			SagaLogger.severe(this, "could not remove " + playerName + " player, because the player doesent exist");
 			return;
 		}
 		
@@ -496,7 +487,7 @@ public class SagaFaction implements SecondTicker{
 
 		// Register player:
 		if(registeredMembers.contains(sagaPlayer)){
-			Saga.severe(this, "tried to register an already registered member " + sagaPlayer.getName(), "ignoring request");
+			SagaLogger.severe(this, "tried to register an already registered member " + sagaPlayer.getName());
 			return;
 		}
 		
@@ -523,7 +514,7 @@ public class SagaFaction implements SecondTicker{
 		// Unregister player:
 		boolean removed = registeredMembers.remove(sagaPlayer);
 		if(!removed){
-			Saga.severe(this, "tried to unregister an non-registered member " + sagaPlayer.getName(), "ignoring request");
+			SagaLogger.severe(this, "tried to unregister an non-registered member " + sagaPlayer.getName());
 		}
 
 		// Unregister player:
@@ -714,132 +705,6 @@ public class SagaFaction implements SecondTicker{
 		return !owner.equals("");
 	}
 	
-	
-	// Chunk groups:
-	/**
-	 * Registers a chunk group.
-	 * Will not add faction permanently to the player.
-	 * 
-	 * @param sagaSettlement saga faction
-	 */
-	public void registerChunkGroup2(ChunkGroup sagaSettlement) {
-		
-		
-		// Check if already on the list:
-		if(registeredChunkGroups.contains(sagaSettlement)){
-			Saga.severe("Tried to register an already registered " + sagaSettlement.getId() + "(" + sagaSettlement.getName() + ") settlement" + ". Ignoring request.");
-			return;
-		}
-		
-		// Add:
-		registeredChunkGroups.add(sagaSettlement);
-		
-		
-	}
-	
-	/**
-	 * Unregisters a chunk group.
-	 * Will not remove faction permanently to the player.
-	 * 
-	 * @param sagaSettlement saga faction
-	 */
-	public void unregisterChunkGroup2(ChunkGroup sagaSettlement) {
-		
-		
-		// Check if not on the list:
-		if(!registeredChunkGroups.contains(sagaSettlement)){
-			Saga.severe("Tried to unregister an non-registered " + sagaSettlement.getId() + "(" + sagaSettlement.getName() + ") settlement" + ". Ignoring request.");
-			return;
-		}
-		
-		// Remove:
-		registeredChunkGroups.remove(sagaSettlement);
-		
-		
-	}
-
-
-	/**
-	 * Gets the number of chunk groups.
-	 * 
-	 * @return chunk group count.
-	 */
-	public int getChunkGroupCount2() {
-		return chunkGroups.size();
-	}
-	
-	/**
-	 * Gets the chunk group IDs.
-	 * 
-	 * @return the chunk group IDs
-	 */
-	public ArrayList<Integer> getChunkGroupIds2() {
-		return chunkGroups;
-	}
-
-	/**
-	 * Gets registered chunk groups.
-	 * 
-	 * @return the registered chunk groups
-	 */
-	public ArrayList<ChunkGroup> getRegisteredChunkGroups2() {
-		return new ArrayList<ChunkGroup>(registeredChunkGroups);
-	}
-
-	
-	// Invites:
-	/**
-	 * Adds an invitation to a chunk group.
-	 * 
-	 * @param id chunk group ID
-	 */
-	public void addChunkGroupInvitation2(Integer id) {
-
-		
-		if(chunkGroupInvites.contains(id)){
-			Saga.severe("Tried to add an already existing " + id +" chunk group invite to "+ this +" faction. Ignoring request.");
-			return;
-		}
-		chunkGroupInvites.add(id);
-		
-		
-	}
-	
-	/**
-	 * Removes an invitation to a chunk group.
-	 * 
-	 * @param id chunk group ID
-	 */
-	public void removeChunkGroupInvitation2(Integer id) {
-
-		
-		if(!chunkGroupInvites.contains(id)){
-			Saga.severe("Tried to remove an non-existing " + id +" chunk group invite from "+ this +" faction. Ignoring request.");
-			return;
-		}
-		chunkGroupInvites.remove(id);
-		
-		
-	}
-	
-	/**
-	 * Gets the chunkGroupInvites.
-	 * 
-	 * @return the chunkGroupInvites
-	 */
-	public ArrayList<Integer> getChunkGroupInvites2() {
-		return chunkGroupInvites;
-	}
-
-	/**
-	 * Checks if the faction has an invite to a chunk group.
-	 * 
-	 * @param id chunk group ID
-	 * @return
-	 */
-	public boolean hasChunkGrouInvite2(Integer id) {
-		return chunkGroupInvites.contains(id);
-	}
 	
 	
 	// Messages:
@@ -1702,14 +1567,14 @@ public class SagaFaction implements SecondTicker{
 			
 		} catch (IOException e) {
 			
-			Saga.severe(SagaFaction.class + "failed to read data for " + id + " ID");
+			SagaLogger.severe(SagaFaction.class, "failed to read data");
 			config = new SagaFaction();
 			config.disableSaving();
 			
 		} catch (JsonParseException e) {
 			
-			Saga.severe(SagaFaction.class + "failed to parse data for " + id + " ID: " + e.getClass().getSimpleName() + "");
-			Saga.info("Parse message: " + e.getMessage());
+			SagaLogger.severe(SagaFaction.class, "failed to parse data");
+			SagaLogger.info("Parse message: " + e.getMessage());
 			config = new SagaFaction();
 			config.disableSaving();
 			
@@ -1752,7 +1617,7 @@ public class SagaFaction implements SecondTicker{
 	 */
 	private void disableSaving() {
 
-		Saga.warning("Disabling saving for "+ id + " (" +name + ") faction." );
+		SagaLogger.warning(this, "disabling saving");
 		isSavingEnabled = false;
 		// TODO Add notify for faction saving disabled.
 	}

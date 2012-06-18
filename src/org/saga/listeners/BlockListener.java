@@ -12,6 +12,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.saga.Saga;
+import org.saga.SagaLogger;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.BalanceConfiguration;
@@ -36,7 +37,7 @@ public class BlockListener implements Listener{
     	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
     	if(sagaPlayer == null){
     		
-    		Saga.warning("Can't continue with onBlockBreak, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
+    		SagaLogger.severe(BlockListener.class, "can't continue with onBlockBreak, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		event.setCancelled(true);
     		
     		return;
@@ -81,7 +82,7 @@ public class BlockListener implements Listener{
     	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
     	if(sagaPlayer == null){
     		
-    		Saga.warning("Can't continue with onBlockPlace, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
+    		SagaLogger.severe(BlockListener.class, "can't continue with onBlockPlace, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
     		event.setCancelled(true);
     		
     		return;
@@ -120,7 +121,7 @@ public class BlockListener implements Listener{
 		// Get player:
     	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
     	if(sagaPlayer == null){
-    		Saga.warning("Can't continue with onSignChange, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
+    		SagaLogger.severe(BlockListener.class, "can't continue with onSignChange, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
     		return;
     	}
     	
