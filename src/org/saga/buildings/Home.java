@@ -8,7 +8,7 @@ import org.saga.Saga;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.listeners.events.SagaEntityDamageEvent.PvPFlag;
+import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.player.SagaPlayer;
 
 public class Home extends Building {
@@ -202,7 +202,7 @@ public class Home extends Building {
 	public void onPvP(SagaEntityDamageEvent event){
 			
 		// Deny pvp:
-		event.addFlag(PvPFlag.SAFE_AREA);
+		event.addPvpOverride(PvPOverride.SAFE_AREA);
 		
 	}
 	

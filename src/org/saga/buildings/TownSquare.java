@@ -16,7 +16,7 @@ import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.listeners.events.SagaEntityDamageEvent.PvPFlag;
+import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.messages.BuildingMessages;
 import org.saga.messages.ChunkGroupMessages;
 import org.saga.messages.SagaMessages;
@@ -284,7 +284,7 @@ public class TownSquare extends Building implements SecondTicker{
 	public void onPvP(SagaEntityDamageEvent event){
 		
 		// Deny pvp:
-		event.addFlag(PvPFlag.SAFE_AREA);
+		event.addPvpOverride(PvPOverride.SAFE_AREA);
 		
 	}
 	

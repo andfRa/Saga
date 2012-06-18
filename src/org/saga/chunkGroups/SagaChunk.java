@@ -718,7 +718,7 @@ public class SagaChunk {
 		}
 
 		// Forward to chunk group:
-		getChunkGroup().onPlayerDamagedByCreature(event, damager, damaged, this);
+		getChunkGroup().onCvp(event, damager, damaged, this);
 		
 		// Forward to building:
 		if(bld != null) bld.onPlayerDamagedByCreature(event, damager, damaged);

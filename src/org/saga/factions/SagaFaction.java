@@ -21,7 +21,7 @@ import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
 import org.saga.exceptions.InvalidLocationException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.listeners.events.SagaEntityDamageEvent.PvPFlag;
+import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
@@ -1770,14 +1770,14 @@ public class SagaFaction implements SecondTicker{
 		// Same faction:
 		if(isMember(event.getDefenderPlayer().getName())){
 			
-			event.addFlag(PvPFlag.SAME_FACTION);
+			event.addPvpOverride(PvPOverride.SAME_FACTION);
 			
 		}
 
 		// Ally:
 		if(isAlly(event.getDefenderPlayer().getFactionId())){
 
-			event.addFlag(PvPFlag.ALLY);
+			event.addPvpOverride(PvPOverride.ALLY);
 			
 		}
 
@@ -1795,7 +1795,7 @@ public class SagaFaction implements SecondTicker{
 		// Ally:
 		if(isAlly(event.getAttackerPlayer().getFactionId())){
 			
-			event.addFlag(PvPFlag.ALLY);
+			event.addPvpOverride(PvPOverride.ALLY);
 			
 		}
 

@@ -4,7 +4,6 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Creeper;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -14,25 +13,20 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
-import org.bukkit.event.entity.EntityCombustEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.saga.Saga;
-import org.saga.SagaLogger;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.BalanceConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.listeners.events.SagaEntityDamageEvent.PvPFlag;
+import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.listeners.events.SagaEntityDeathEvent;
 import org.saga.messages.PlayerMessages;
 import org.saga.metadata.SpawnerTag;
-import org.saga.metadata.UnnaturalTag;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
 
@@ -69,11 +63,11 @@ public class EntityListener implements Listener{
 			if(defenderChunk != null && attackerChunk != defenderChunk) defenderChunk.onPvP(damageEvent);
 			
 			// Factions:
-			if(FactionConfiguration.config().factionOnlyPvp && !damageEvent.isFactionAttacksFaction()) damageEvent.addFlag(PvPFlag.FACTION_ONLY_PVP);
+			if(FactionConfiguration.config().factionOnlyPvp && !damageEvent.isFactionAttacksFaction()) damageEvent.addPvpOverride(PvPOverride.FACTION_ONLY_PVP);
 			if(damageEvent.getAttackerPlayer().getFaction() != null) damageEvent.getAttackerPlayer().getFaction().onAttack(damageEvent);
 			if(damageEvent.getDefenderPlayer().getFaction() != null) damageEvent.getDefenderPlayer().getFaction().onDefend(damageEvent);
 			
-			if(damageEvent.getDenyFlag() != PvPFlag.NONE){
+			if(!damageEvent.getPvpOverride().isAllow()){
 				
 				damageEvent.getAttackerPlayer().message(PlayerMessages.pvpDenied(damageEvent));
 				damageEvent.cancel();

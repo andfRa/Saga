@@ -18,7 +18,7 @@ import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.listeners.events.SagaEntityDamageEvent.PvPFlag;
+import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.messages.BuildingMessages;
 import org.saga.player.SagaPlayer;
 
@@ -465,8 +465,8 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 			return;
 		}
 		
-		// Force allow:
-		event.addFlag(PvPFlag.ARENA);
+		// Allow pvp:
+		event.addPvpOverride(PvPOverride.ARENA);
 		
 		
 	}

@@ -3,7 +3,7 @@ package org.saga.buildings;
 import org.bukkit.entity.Creature;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.listeners.events.SagaEntityDamageEvent.PvPFlag;
+import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.player.SagaPlayer;
 
 public class TownHall extends Building{
@@ -61,7 +61,7 @@ public class TownHall extends Building{
 	public void onPvP(SagaEntityDamageEvent event){
 		
 		// Deny pvp:
-		event.addFlag(PvPFlag.SAFE_AREA);
+		event.addPvpOverride(PvPOverride.SAFE_AREA);
 		
 	}
 	

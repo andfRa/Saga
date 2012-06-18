@@ -32,7 +32,7 @@ import org.saga.exceptions.InvalidBuildingException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.factions.SagaFaction;
 import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.listeners.events.SagaEntityDamageEvent.PvPFlag;
+import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.messages.ChunkGroupMessages;
 import org.saga.messages.SagaMessages;
 import org.saga.player.SagaPlayer;
@@ -1797,18 +1797,18 @@ public class ChunkGroup extends SagaCustomSerialization{
 	 */
 	void onPvp(SagaEntityDamageEvent event, SagaChunk locationChunk){
 
-		// Safe area:
-		if(hasPvpProtectionBonus()) event.addFlag(PvPFlag.SAFE_AREA);
+		// Deny pvp:
+		if(hasPvpProtectionBonus()) event.addPvpOverride(PvPOverride.SAFE_AREA);
 		
 	}
 	
 	/**
-	 * Called when a player is kiled by another player.
+	 * Called when a player is killed by another player.
 	 * 
 	 * @param event event
 	 * @param damager damager saga player
 	 * @param damaged damaged saga player
-	 * @param locationChunk chunk where the pvp occured
+	 * @param locationChunk chunk where the pvp occurred
 	 */
 	void onPvpKill(SagaPlayer attacker, SagaPlayer defender, SagaChunk locationChunk){
 		
@@ -1822,7 +1822,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	 * @param damaged damaged saga player
 	 * @param locationChunk location chunk
 	 */
-	void onPlayerDamagedByCreature(EntityDamageByEntityEvent event, Creature damager, SagaPlayer damaged, SagaChunk locationChunk){
+	void onCvp(EntityDamageByEntityEvent event, Creature damager, SagaPlayer damaged, SagaChunk locationChunk){
 
 
 		if(event.isCancelled()){

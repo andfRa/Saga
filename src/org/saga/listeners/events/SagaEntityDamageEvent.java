@@ -1,6 +1,7 @@
 package org.saga.listeners.events;
 
 import java.util.ArrayList;
+import java.util.PriorityQueue;
 import java.util.Random;
 
 import org.bukkit.ChatColor;
@@ -101,9 +102,9 @@ public class SagaEntityDamageEvent {
 	private double penetration = 0;
 	
 	/**
-	 * PvP flags.
+	 * PvP override.
 	 */
-	private ArrayList<PvPFlag> pvpFlags = new ArrayList<SagaEntityDamageEvent.PvPFlag>();
+	private PriorityQueue<PvPOverride> pvpOverride = new PriorityQueue<SagaEntityDamageEvent.PvPOverride>();
 	
 	
 	
@@ -433,26 +434,26 @@ public class SagaEntityDamageEvent {
 	
 
 	/**
-	 * Adds a pvp flag.
+	 * Adds a pvp override.
 	 * 
-	 * @param flag pvp flag
+	 * @param override pvp override
 	 */
-	public void addFlag(PvPFlag flag) {
+	public void addPvpOverride(PvPOverride override) {
 
-		pvpFlags.add(flag);
+		pvpOverride.add(override);
 		
 	}
 	
 	/**
-	 * Gets pvp deny flag.
+	 * Gets the top override.
 	 * 
-	 * @return flag that denied pvp, NONE if not denied
+	 * @return top override, NONE if none
 	 */
-	public PvPFlag getDenyFlag() {
+	public PvPOverride getPvpOverride() {
 
-		if(PvPFlag.findFlag(pvpFlags, true) != PvPFlag.NONE) return PvPFlag.NONE;
-
-		return PvPFlag.findFlag(pvpFlags, false);
+		if(pvpOverride.size() == 0) return PvPOverride.NONE;
+		
+		return pvpOverride.peek();
 
 	}
 	
@@ -504,57 +505,45 @@ public class SagaEntityDamageEvent {
 	 * @author andf
 	 *
 	 */
-	public enum PvPFlag{
+	public enum PvPOverride{
 		
+		ADMIN_ALLOW(true),
+		ADMIN_DENY(false),
+		ARENA(true),
 		
 		SAFE_AREA(false),
 		FACTION_ONLY_PVP(false),
 		SAME_FACTION(false),
 		ALLY(false),
 		
-		ARENA(true),
-		DUEL(true),
-		ADMIN_OVERRIDE(true),
+		NONE(true);
 		
-		NONE(false);
-		
-		
-		boolean forceAllow = false;
 		
 		/**
-		 * Sets if pvp flag forces PvP.
-		 * 
-		 * @param forceAllow forces pvp to be allowed under the given flag
+		 * If true, then pvp will be allowed.
 		 */
-		private PvPFlag(boolean forceAllow) {
-			this.forceAllow = forceAllow;
+		private boolean allow;
+		
+		/**
+		 * Sets if pvp override enables PvP.
+		 * 
+		 * @param true if allows pvp, false if denies pvp
+		 */
+		private PvPOverride(boolean allow) {
+			this.allow = allow;
 		}
 		
 		/**
-		 * Finds a pvp flag from the list, based on forced allow.
+		 * If true, then pvp will be allowed. Denied if false.
 		 * 
-		 * @param flags flags
-		 * @param foceAllow true if force allow flags, false if deny flags
-		 * @return pvp flag
+		 * @return true if allowed, false if denied
 		 */
-		public static PvPFlag findFlag(ArrayList<PvPFlag> flags, boolean foceAllow) {
-
-			
-			for (PvPFlag pvPFlag : flags) {
-				
-				if ((pvPFlag.forceAllow && foceAllow) || (!pvPFlag.forceAllow && !foceAllow)) {
-					return pvPFlag;
-				}
-				
-			}
-			
-			return NONE;
-
-			
-		}
-		
+		public boolean isAllow() {
+			return allow;
+		}		
 		
 	}
+	
 	
 	// TODO: Explode on attack.
 	

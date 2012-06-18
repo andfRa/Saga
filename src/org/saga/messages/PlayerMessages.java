@@ -9,7 +9,7 @@ import org.saga.config.BalanceConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.listeners.events.SagaEntityDamageEvent.PvPFlag;
+import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.player.GuardianRune;
 import org.saga.player.Proficiency;
 import org.saga.player.Proficiency.ProficiencyType;
@@ -196,7 +196,7 @@ public class PlayerMessages {
 	public static String pvpDenied(SagaEntityDamageEvent event){
 		
 		
-		PvPFlag cause = event.getDenyFlag();
+		PvPOverride cause = event.getPvpOverride();
 		
 		switch (cause) {
 		case SAME_FACTION:
