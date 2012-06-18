@@ -287,7 +287,7 @@ public class TownSquare extends Building implements SecondTicker{
 		}
 		
 		else if(event.isPlayerAttackPlayer()){
-			event.addPvpOverride(PvPOverride.SAFE_AREA);
+			event.addPvpOverride(PvPOverride.SAFE_AREA_DENY);
 		}
 		
 	}

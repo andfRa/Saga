@@ -193,19 +193,19 @@ public class PlayerMessages {
 		PvPOverride cause = event.getOverride();
 		
 		switch (cause) {
-		case SAME_FACTION:
+		case SAME_FACTION_DENY:
 			
 			return negative + "Can't attack faction members.";
 			
-		case ALLY:
+		case ALLY_DENY:
 	
 		return negative + "Can't attack allies.";
 	
-		case FACTION_ONLY_PVP:
+		case FACTION_ONLY_PVP_DENY:
 			
 			return negative + "Only factions can participate in pvp.";
 			
-		case SAFE_AREA:
+		case SAFE_AREA_DENY:
 			
 			return negative + "Can't attack players in safe areas.";
 			

@@ -1804,7 +1804,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	void onEntityDamage(SagaEntityDamageEvent event, SagaChunk locationChunk){
 
 		// Deny pvp:
-		if(hasPvpProtectionBonus()) event.addPvpOverride(PvPOverride.SAFE_AREA);
+		if(hasPvpProtectionBonus()) event.addPvpOverride(PvPOverride.SAFE_AREA_DENY);
 		
 	}
 	

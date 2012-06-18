@@ -1770,14 +1770,14 @@ public class SagaFaction implements SecondTicker{
 		// Same faction:
 		if(isMember(event.getDefenderPlayer().getName())){
 			
-			event.addPvpOverride(PvPOverride.SAME_FACTION);
+			event.addPvpOverride(PvPOverride.SAME_FACTION_DENY);
 			
 		}
 
 		// Ally:
 		if(isAlly(event.getDefenderPlayer().getFactionId())){
 
-			event.addPvpOverride(PvPOverride.ALLY);
+			event.addPvpOverride(PvPOverride.ALLY_DENY);
 			
 		}
 
@@ -1795,7 +1795,7 @@ public class SagaFaction implements SecondTicker{
 		// Ally:
 		if(isAlly(event.getAttackerPlayer().getFactionId())){
 			
-			event.addPvpOverride(PvPOverride.ALLY);
+			event.addPvpOverride(PvPOverride.ALLY_DENY);
 			
 		}
 

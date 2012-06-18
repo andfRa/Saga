@@ -466,7 +466,7 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 		}
 		
 		// Allow pvp:
-		event.addPvpOverride(PvPOverride.ARENA);
+		event.addPvpOverride(PvPOverride.ARENA_ALLOW);
 		
 		
 	}

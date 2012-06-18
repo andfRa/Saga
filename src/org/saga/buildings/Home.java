@@ -210,7 +210,7 @@ public class Home extends Building {
 		}
 		
 		else if(event.isPlayerAttackPlayer()){
-			event.addPvpOverride(PvPOverride.SAFE_AREA);
+			event.addPvpOverride(PvPOverride.SAFE_AREA_DENY);
 		}
 		
 	}

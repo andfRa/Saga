@@ -512,12 +512,12 @@ public class SagaEntityDamageEvent {
 		
 		ADMIN_ALLOW(true),
 		ADMIN_DENY(false),
-		ARENA(true),
+		ARENA_ALLOW(true),
 		
-		SAFE_AREA(false),
-		FACTION_ONLY_PVP(false),
-		SAME_FACTION(false),
-		ALLY(false),
+		SAFE_AREA_DENY(false),
+		FACTION_ONLY_PVP_DENY(false),
+		SAME_FACTION_DENY(false),
+		ALLY_DENY(false),
 		
 		NONE(true);
 		

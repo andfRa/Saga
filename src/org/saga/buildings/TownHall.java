@@ -63,7 +63,7 @@ public class TownHall extends Building{
 
 		
 		if(event.isPlayerAttackPlayer()){
-			event.addPvpOverride(PvPOverride.SAFE_AREA);
+			event.addPvpOverride(PvPOverride.SAFE_AREA_DENY);
 		}
 		
 		
