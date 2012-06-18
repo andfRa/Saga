@@ -446,7 +446,7 @@ public class SagaEntityDamageEvent {
 	 * 
 	 * @return top override, NONE if none
 	 */
-	public PvPOverride getPvpOverride() {
+	public PvPOverride getOverride() {
 
 		if(pvpOverride.size() == 0) return PvPOverride.NONE;
 		
@@ -497,7 +497,7 @@ public class SagaEntityDamageEvent {
 
 
 	/**
-	 * Pvp flags.
+	 * Pvp overrides.
 	 * 
 	 * @author andf
 	 *
