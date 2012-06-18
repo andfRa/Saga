@@ -1,10 +1,8 @@
 package org.saga.listeners.events;
 
-import java.util.ArrayList;
 import java.util.PriorityQueue;
 import java.util.Random;
 
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
@@ -18,7 +16,6 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.saga.Saga;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
-import org.saga.config.ExperienceConfiguration;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.TwoPointFunction;
 
