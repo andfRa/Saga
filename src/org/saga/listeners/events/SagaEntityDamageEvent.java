@@ -105,7 +105,6 @@ public class SagaEntityDamageEvent {
 	
 	
 	
-	
 	// Initialise:
 	/**
 	 * Sets entity damage event.
@@ -185,7 +184,6 @@ public class SagaEntityDamageEvent {
 		
 
 	}
-	
 	
 	
 	
@@ -270,6 +268,7 @@ public class SagaEntityDamageEvent {
 		return projectile instanceof Fireball && type == DamageCause.MAGIC;
 
 	}
+	
 	
 	
 	// Conclude:
@@ -454,7 +453,7 @@ public class SagaEntityDamageEvent {
 
 	}
 	
-	
+
 	/**
 	 * Gets the attackerChunk.
 	 * 
@@ -465,9 +464,6 @@ public class SagaEntityDamageEvent {
 	
 		return attackerChunk;
 	}
-	
-
-
 
 	/**
 	 * Gets the defenderChunk.
@@ -493,7 +489,6 @@ public class SagaEntityDamageEvent {
 
 	}
 	
-
 
 
 	/**
