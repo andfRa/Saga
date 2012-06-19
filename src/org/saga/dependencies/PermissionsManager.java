@@ -24,8 +24,9 @@ public class PermissionsManager {
 	/**
 	 * Manager instance.
 	 */
-	private static PermissionsManager manager = null;
+	private static PermissionsManager manager;
 
+	
 	
 	/**
 	 * Permission for saga administrator mode.
@@ -43,6 +44,7 @@ public class PermissionsManager {
 	public static String WILDERNESS_BUILD_PERMISSION = "saga.user.wilderness.build";
 	
 	
+	
 	/**
 	 * Commands map.
 	 */
@@ -58,6 +60,7 @@ public class PermissionsManager {
 	 * Group manager.
 	 */
 	private PermissionsEx permissionsEx = null;
+	
 	
 	
 	/**
@@ -123,6 +126,8 @@ public class PermissionsManager {
 
 	}
 	
+	
+	
 	/**
 	 * Checks if the player has permission.
 	 * 
@@ -160,7 +165,6 @@ public class PermissionsManager {
 		
 		
 	}
-
 
 	/**
 	 * Checks if the player has permission. Checks administrator mode.
