@@ -11,6 +11,7 @@ import org.saga.buildings.Arena;
 import org.saga.buildings.Arena.ArenaPlayer;
 import org.saga.buildings.Building;
 import org.saga.buildings.BuildingDefinition;
+import org.saga.buildings.TownSquare;
 import org.saga.buildings.TradingPost;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.config.AbilityConfiguration;
@@ -375,6 +376,14 @@ public class BuildingMessages {
 		
 	}
 	
+	
+	
+	// Town square:
+	public static String noTownSquare(ChunkGroup chunkGroup){
+		
+		return BuildingMessages.negative + "" + chunkGroup.getName() + " deosen't have a " + TownSquare.getName(TownSquare.class) + ".";
+		
+	}
 	
 	
 	

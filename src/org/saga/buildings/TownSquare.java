@@ -192,7 +192,7 @@ public class TownSquare extends Building implements SecondTicker{
 		double spreadRadius = 6;
 		Double x = 2 * spreadRadius * (random.nextDouble() - 0.5);
 		Double z = 2 * spreadRadius * (random.nextDouble() - 0.5);
-		Vector displacement = new Vector(x, 2, z);
+		Vector displacement = new Vector(x.intValue(), 2, z.intValue());
 		
 		// Shifted location:
 		Location spawnLocation = sagaChunk.getLocation(displacement);
