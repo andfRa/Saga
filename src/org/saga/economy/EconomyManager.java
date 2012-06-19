@@ -1,6 +1,5 @@
 package org.saga.economy;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -446,22 +445,18 @@ public class EconomyManager implements TimeOfDayTicker{
 		TradeDeal[] reTradingDeals = new TradeDeal[0];
 		try {
 			
-			reTradingDeals = WriterReader.read(Directory.TRADE_DEALS, worldName, TradeDeal[].class);
+			 if(!WriterReader.checkExists(Directory.TRADE_DEALS, worldName)){
+				 reTradingDeals = new TradeDeal[0];
+			 }else{
+				reTradingDeals = WriterReader.read(Directory.TRADE_DEALS, worldName, TradeDeal[].class);
+			 }
 			
 		} catch (JsonParseException e) {
 			
 			SagaLogger.severe(EconomyManager.class, "failed to parse empty trading deals: " + e.getClass().getSimpleName() + ": " + e.getMessage());
 			SagaLogger.info("Parse message :" + e.getMessage());
 			
-		} catch (FileNotFoundException e) {
-			
-			try {
-				WriterReader.write(Directory.TRADE_DEALS, worldName, new TradeDeal[0]);
-			} catch (IOException e1) {
-				SagaLogger.severe(EconomyManager.class, "failed to write empty trading deals: " + e1.getClass().getSimpleName() + ": " + e.getMessage());
-			}
-			
-		}catch (IOException e) {
+		} catch (IOException e) {
 			
 			SagaLogger.severe(EconomyManager.class, "failed to read trading deals: " + e.getClass().getSimpleName() + ": " + e.getMessage());
 			reTradingDeals = new TradeDeal[0];
