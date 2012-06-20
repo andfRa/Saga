@@ -144,7 +144,7 @@ public class SagaBuildEvent {
 		CHUNK_GROUP_DENY(false),
 		SETTLEMENT_OWNER_ALLOW(true),
 		HOME_RESIDENT_ALLOW(true),
-		HOME_DENY(true),
+		HOME_DENY(false),
 		
 		BUILDING_DENY(false),
 		SETTLEMENT_DENY(false),
