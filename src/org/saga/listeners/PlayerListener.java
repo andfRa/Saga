@@ -49,7 +49,7 @@ public class PlayerListener implements Listener {
     	
     	// Invalid player:
     	if(sagaPlayer == null){
-    		SagaLogger.severe(BlockListener.class, "can't continue with onPlayerCommandPreprocess, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
+    		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerCommandPreprocess, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
     	}
 
@@ -80,7 +80,7 @@ public class PlayerListener implements Listener {
     	
     	// Invalid player:
     	if(sagaPlayer == null){
-    		SagaLogger.severe(BlockListener.class, "can't continue with onPlayerJoin, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
+    		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerJoin, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
     	}
 
@@ -101,7 +101,7 @@ public class PlayerListener implements Listener {
     	
     	// Invalid player:
     	if(sagaPlayer == null){
-    		SagaLogger.severe(BlockListener.class, "can't continue with onPlayerQuit, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
+    		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerQuit, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
     	}
 
@@ -123,7 +123,7 @@ public class PlayerListener implements Listener {
     	
     	// Invalid player:
     	if(sagaPlayer == null){
-    		SagaLogger.severe(BlockListener.class, "can't continue with onPlayerRespawn, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
+    		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerRespawn, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
     	}
 
@@ -151,7 +151,7 @@ public class PlayerListener implements Listener {
     	
     	// Invalid player:
     	if(sagaPlayer == null){
-    		SagaLogger.severe(BlockListener.class, "can't continue with onPlayerMove, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
+    		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerMove, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
     	}
     	
@@ -169,7 +169,7 @@ public class PlayerListener implements Listener {
     	
     	// Invalid player:
     	if(sagaPlayer == null){
-    		SagaLogger.severe(BlockListener.class, "can't continue with onPlayerTeleport, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
+    		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerTeleport, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
     	}
     	
@@ -202,7 +202,7 @@ public class PlayerListener implements Listener {
     	// Invalid player:
     	if(sagaPlayer == null){
     		
-    		SagaLogger.severe(BlockListener.class, "can't continue with onPlayerInteract, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
+    		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerInteract, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		event.setCancelled(true);
     		
     		return;
@@ -237,7 +237,7 @@ public class PlayerListener implements Listener {
     	
     	// Invalid player:
     	if(sagaPlayer == null){
-    		SagaLogger.severe(BlockListener.class, "can't continue with onPlayerChat, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
+    		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerChat, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
     	}
     	
@@ -271,7 +271,7 @@ public class PlayerListener implements Listener {
     	
     	// Invalid player:
     	if(sagaPlayer == null){
-    		SagaLogger.severe(BlockListener.class, "can't continue with onPlayerInteractEntity, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
+    		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerInteractEntity, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
     	}
     	
