@@ -227,7 +227,7 @@ public class Home extends Building {
 		SagaPlayer sagaPlayer = event.getSagaPlayer();
 		
 		// Allow residents to build:
-		if(isResident(sagaPlayer.getName())){
+		if(isResident(sagaPlayer.getName()) || getChunkGroup().isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()){
 			event.addBuildOverride(BuildOverride.HOME_RESIDENT_ALLOW);
 		}
 		
