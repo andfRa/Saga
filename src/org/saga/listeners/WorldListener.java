@@ -26,6 +26,7 @@ public class WorldListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onChunkUnloadEvent(ChunkUnloadEvent event) {
 
+		System.out.println("loading chunk " + event.getChunk().getX() + ", " + event.getChunk().getZ());
 		
 	}
 	

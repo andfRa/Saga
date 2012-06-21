@@ -10,6 +10,11 @@ import java.util.Enumeration;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.getspout.spoutapi.Spout;
+import org.getspout.spoutapi.gui.GenericButton;
+import org.getspout.spoutapi.gui.GenericPopup;
+import org.getspout.spoutapi.gui.PopupScreen;
+import org.getspout.spoutapi.player.SpoutPlayer;
 import org.saga.Clock;
 import org.saga.Clock.TimeOfDayTicker.TimeOfDay;
 import org.saga.Saga;
@@ -17,6 +22,8 @@ import org.saga.SagaLogger;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.dependencies.PermissionsManager;
+import org.saga.dependencies.spout.ClientManager;
+import org.saga.dependencies.spout.buttons.PopupCloseButton;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;
 import org.saga.messages.AdminMessages;
@@ -534,7 +541,7 @@ public class AdminCommands {
     @CommandPermissions({"saga.admin.dcommand"})
     public static void debugCommand(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
-    	sagaPlayer.message(ChatColor.DARK_GREEN + "perm for " + args.getString(0) + "=" + PermissionsManager.hasPermission(sagaPlayer, args.getString(0)));
+    	ClientManager.showStats(sagaPlayer);
     	
     }
     
