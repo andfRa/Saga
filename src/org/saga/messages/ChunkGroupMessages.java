@@ -202,10 +202,6 @@ public class ChunkGroupMessages {
 		return anouncment + settlement.getName() + " settlement was disolved by " + sagaPlayer.getName();
 	}
 
-	public static String abandonedChunkBroadcast(SagaPlayer sagaPlayer, ChunkGroup settlement) {
-		return anouncment + "This chunk has been abandoned from " + settlement.getName() + " settlement.";
-	}
-	
 	
 	
 	// Claiming:
@@ -215,6 +211,14 @@ public class ChunkGroupMessages {
 	
 	public static String claimed(SagaChunk sagaChunk, ChunkGroup chunkGroup) {
 		return normal1 +  "Claimed chunk for " + chunkGroup.getName() + " settlement.";
+	}
+	
+	public static String abandoned(SagaChunk sagaChunk) {
+		return normal1 +  "Abandoned chunk.";
+	}
+	
+	public static String abandoned(SagaChunk sagaChunk, ChunkGroup chunkGroup) {
+		return normal1 +  "Abandoned chunk from " + chunkGroup.getName() + " settlement.";
 	}
 	
 	

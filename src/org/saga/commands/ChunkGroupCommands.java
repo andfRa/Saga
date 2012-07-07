@@ -287,7 +287,7 @@ public class ChunkGroupCommands {
 
 			
 		// Location chunk:
-	   	SagaChunk locationChunk = sagaPlayer.getSagaChunk();
+	   	SagaChunk selectedChunk = sagaPlayer.getSagaChunk();
 	   	Location location = sagaPlayer.getLocation();
 	   	if(location == null){
 	   		SagaLogger.severe(ChunkGroupCommands.class, "saga player location is null for " + sagaPlayer.getName());
@@ -296,30 +296,40 @@ public class ChunkGroupCommands {
 	   	}
 	   	
 	   	// Unclaimed:
-	   	if(locationChunk == null){
+	   	if(selectedChunk == null){
 			sagaPlayer.message(ChunkGroupMessages.chunkNotClaimed());
 			return;
 		}
 	   	
 	   	// Chunk group:
-	   	ChunkGroup chunkGroup = locationChunk.getChunkGroup();
+	   	ChunkGroup selectedGroup = selectedChunk.getChunkGroup();
 	   	
 	   	// Permissions:
-	   	if(!chunkGroup.canAbandon(sagaPlayer)){
+	   	if(!selectedGroup.canAbandon(sagaPlayer)){
 	   		sagaPlayer.message(SagaMessages.noPermission());
 	   		return;
 	   	}
 	   	
 		// Remove chunk from the chunk group:
-		chunkGroup.removeChunk(locationChunk);
+		selectedGroup.removeChunk(selectedChunk);
 		
 		// Inform:
-		locationChunk.broadcast(ChunkGroupMessages.abandonedChunkBroadcast(sagaPlayer, chunkGroup));
+		if(sagaPlayer.getChunkGroup() == selectedGroup){
+			sagaPlayer.message(ChunkGroupMessages.abandoned(selectedChunk));
+		}else{
+			sagaPlayer.message(ChunkGroupMessages.abandoned(selectedChunk, selectedGroup));
+		}
+		
+		// Refresh:
+		selectedChunk.refresh();
+		
+		// Play effect:
+		SettlementEffects.playAbandon(sagaPlayer, selectedChunk);
 		
 		// Delete if none left:
-		if( chunkGroup.getSize() == 0 ){
-			chunkGroup.delete();
-			Saga.broadcast(ChunkGroupMessages.broadcastDeleted(sagaPlayer, chunkGroup));
+		if( selectedGroup.getSize() == 0 ){
+			selectedGroup.delete();
+			Saga.broadcast(ChunkGroupMessages.broadcastDeleted(sagaPlayer, selectedGroup));
 		}
 		
 		

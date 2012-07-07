@@ -38,4 +38,32 @@ public class SettlementEffects {
 		
 	}
 	
+	public static void playAbandon(SagaPlayer sagaPlayer, SagaChunk sagaChunk) {
+
+		
+		int xmin = sagaChunk.getX() * 16;
+		int zmin = sagaChunk.getZ() * 16;
+		
+		int xmax = xmin + 15;
+		int zmax = zmin + 15;
+		
+		World world = sagaPlayer.getLocation().getWorld();
+		
+		for (int x = xmin; x <= xmax; x++) {
+			
+			for (int z = zmin; z <= zmax; z++) {
+				
+				Location location = new Location(world, x + 0.5, world.getHighestBlockYAt(x, z) + 0.5, z + 0.5);
+				
+				if(x != xmin && x != xmax && z != zmin && z != zmax && (xmax - x) != (zmax - z)) continue;
+				
+				sagaPlayer.playGlobalEffect(Effect.MOBSPAWNER_FLAMES, 0, location);
+				
+			}
+			
+		}
+		
+		
+	}
+	
 }
