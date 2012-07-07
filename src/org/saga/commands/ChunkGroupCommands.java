@@ -55,7 +55,7 @@ public class ChunkGroupCommands {
 		String settlementName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
 
 		// Location chunk:
-		SagaChunk locationChunk = sagaPlayer.getSagaChunk();
+		SagaChunk selectedChunk = sagaPlayer.getSagaChunk();
 		Location location = sagaPlayer.getLocation();
 		if(location == null){
 			SagaLogger.severe(ChunkGroupCommands.class, "saga player location is null for " + sagaPlayer.getName());
@@ -64,7 +64,7 @@ public class ChunkGroupCommands {
 		}
 		
 		// Already claimed:
-		if(locationChunk != null){
+		if(selectedChunk != null){
 			sagaPlayer.message(ChunkGroupMessages.chunkClaimed());
 			return;
 		}
@@ -95,11 +95,15 @@ public class ChunkGroupCommands {
 		// Settle:
 		Settlement settlement = new Settlement(settlementName);
 		settlement.complete();
-		settlement.addChunk(new SagaChunk(location));
+		selectedChunk = new SagaChunk(location);
+		settlement.addChunk(selectedChunk);
 		Settlement.create(settlement, sagaPlayer);
 		
 		// Inform:
-		Saga.broadcast(ChunkGroupMessages.foundedChunkGroupBroadcast(sagaPlayer, settlement));
+		Saga.broadcast(ChunkGroupMessages.settled(sagaPlayer, settlement));
+
+		// Play effect:
+		SettlementEffects.playClaim(sagaPlayer, selectedChunk);
 		
 		
 	}
@@ -329,7 +333,7 @@ public class ChunkGroupCommands {
 		// Delete if none left:
 		if( selectedGroup.getSize() == 0 ){
 			selectedGroup.delete();
-			Saga.broadcast(ChunkGroupMessages.broadcastDeleted(sagaPlayer, selectedGroup));
+			Saga.broadcast(ChunkGroupMessages.dissolved(sagaPlayer, selectedGroup));
 		}
 		
 		
@@ -577,7 +581,7 @@ public class ChunkGroupCommands {
 					selectedsettlement.delete();
 						
 					// Inform:
-					Saga.broadcast(ChunkGroupMessages.broadcastDeleted(sagaPlayer, selectedsettlement));
+					Saga.broadcast(ChunkGroupMessages.dissolved(sagaPlayer, selectedsettlement));
 					
 				}else{
 					
@@ -689,7 +693,7 @@ public class ChunkGroupCommands {
 					selectedsettlement.delete();
 						
 					// Inform:
-					Saga.broadcast(ChunkGroupMessages.broadcastDeleted(sagaPlayer, selectedsettlement));
+					Saga.broadcast(ChunkGroupMessages.dissolved(sagaPlayer, selectedsettlement));
 					
 				}else{
 					
@@ -1161,9 +1165,16 @@ public class ChunkGroupCommands {
 		
 		// Set building:
 		selectedChunk.setBuilding(selectedBuilding);
-		
+
 		// Inform:
-		selectedChunkGroup.broadcast(BuildingMessages.newBuilding(selectedChunkGroup, selectedBuilding, sagaPlayer));
+		if(sagaPlayer.getChunkGroup() == selectedChunkGroup){
+			sagaPlayer.message(ChunkGroupMessages.setBuilding(selectedBuilding));
+		}else{
+			sagaPlayer.message(ChunkGroupMessages.setBuilding(selectedBuilding, selectedChunkGroup));
+		}
+		
+		// Play effect:
+		SettlementEffects.playBuildingSet(sagaPlayer, selectedBuilding);
 		
 
 	}
@@ -1209,12 +1220,19 @@ public class ChunkGroupCommands {
 			return;
 		}
 
+		// Inform:
+		if(sagaPlayer.getChunkGroup() == selectedChunkGroup){
+			sagaPlayer.message(ChunkGroupMessages.removedBuilding(selectedBuilding));
+		}else{
+			sagaPlayer.message(ChunkGroupMessages.removedBuilding(selectedBuilding, selectedChunkGroup));
+		}
+
+		// Play effect:
+		SettlementEffects.playBuildingRemove(sagaPlayer, selectedBuilding);
+		
 		// Remove building:
 		selectedChunk.removeBuilding();
-		
-		// Inform:
-		selectedChunkGroup.broadcast(BuildingMessages.deletedBuilding(selectedChunkGroup, selectedBuilding, sagaPlayer));
-		
+
 		
 	}
 
@@ -1554,7 +1572,7 @@ public class ChunkGroupCommands {
 	   	selectedChunkGroup.delete();
 			
 		// Inform:
-		Saga.broadcast(ChunkGroupMessages.broadcastDeleted(sagaPlayer, selectedChunkGroup));
+		Saga.broadcast(ChunkGroupMessages.dissolved(sagaPlayer, selectedChunkGroup));
 		
 	
 	}

@@ -193,13 +193,14 @@ public class ChunkGroupMessages {
 	}
 	
 	
-	// Found delete claim abandon messages:
-	public static String foundedChunkGroupBroadcast(SagaPlayer sagaPlayer, ChunkGroup settlement) {
-		return anouncment + sagaPlayer.getName() + " has founded the new settlement " + settlement.getName() + ".";
+	
+	// Settling and dissolving:
+	public static String settled(SagaPlayer sagaPlayer, ChunkGroup settlement) {
+		return anouncment + settlement.getName() + " settlement was founded  by " + sagaPlayer.getName() + ".";
 	}
 
-	public static String broadcastDeleted(SagaPlayer sagaPlayer, ChunkGroup settlement) {
-		return anouncment + settlement.getName() + " settlement was disolved by " + sagaPlayer.getName();
+	public static String dissolved(SagaPlayer sagaPlayer, ChunkGroup settlement) {
+		return anouncment + settlement.getName() + " settlement was dissolved by " + sagaPlayer.getName() + ".";
 	}
 
 	
@@ -219,6 +220,25 @@ public class ChunkGroupMessages {
 	
 	public static String abandoned(SagaChunk sagaChunk, ChunkGroup chunkGroup) {
 		return normal1 +  "Abandoned chunk from " + chunkGroup.getName() + " settlement.";
+	}
+	
+	
+	
+	// Buildings:
+	public static String setBuilding(Building building) {
+		return normal1 +  "Set " +  building.getName() + " building.";
+	}
+	
+	public static String setBuilding(Building building, ChunkGroup chunkGroup) {
+		return normal1 +  "Set " +  building.getName() + " building for " + chunkGroup.getName() + " settlement.";
+	}
+	
+	public static String removedBuilding(Building building) {
+		return normal1 +  "Removed " +  building.getName() + " building.";
+	}
+	
+	public static String removedBuilding(Building building, ChunkGroup chunkGroup) {
+		return normal1 +  "Removed " +  building.getName() + " building from " + chunkGroup.getName() + " settlement.";
 	}
 	
 	

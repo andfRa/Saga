@@ -51,14 +51,6 @@ public class BuildingMessages {
 	
 
 	// Adding buildings:
-	public static String newBuilding(ChunkGroup chunkGroup, Building building, SagaPlayer sagaPlayer) {
-		return anouncment + sagaPlayer.getName() + " added a " + building.getDisplayName() + " to the settlement.";
-	}
-	
-	public static String deletedBuilding(ChunkGroup chunkGroup, Building building, SagaPlayer sagaPlayer) {
-		return anouncment + sagaPlayer.getName() + " removed a " + building.getDisplayName() + " from the settlement.";
-	}
-	
 	public static String buildingsOnClaimedLand(ChunkGroup chunkGroup) {
 		return negative + "Buildings can only be on located on claimed land.";
 	}
