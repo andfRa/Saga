@@ -201,14 +201,22 @@ public class ChunkGroupMessages {
 	public static String broadcastDeleted(SagaPlayer sagaPlayer, ChunkGroup settlement) {
 		return anouncment + settlement.getName() + " settlement was disolved by " + sagaPlayer.getName();
 	}
-	
-	public static String claimedChunkBroadcast(SagaPlayer sagaPlayer, ChunkGroup settlement) {
-		return anouncment +  "This chunk was claimed for " + settlement.getName() + " settlement.";
-	}
-	
+
 	public static String abandonedChunkBroadcast(SagaPlayer sagaPlayer, ChunkGroup settlement) {
 		return anouncment + "This chunk has been abandoned from " + settlement.getName() + " settlement.";
 	}
+	
+	
+	
+	// Claiming:
+	public static String claimed(SagaChunk sagaChunk) {
+		return normal1 +  "Claimed chunk.";
+	}
+	
+	public static String claimed(SagaChunk sagaChunk, ChunkGroup chunkGroup) {
+		return normal1 +  "Claimed chunk for " + chunkGroup.getName() + " settlement.";
+	}
+	
 	
 
 	// Found delete claim abandon restrictions:

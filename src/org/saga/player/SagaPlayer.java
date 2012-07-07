@@ -1155,10 +1155,10 @@ public class SagaPlayer implements SecondTicker, Trader{
 
 	
 	/**
-	 * Forces a refresh on the last location.
+	 * Refreshes last saga chunk.
 	 * 
 	 */
-	public void refreshLocation() {
+	public void refreshChunk() {
 		
 		
 		if(!isOnline()){

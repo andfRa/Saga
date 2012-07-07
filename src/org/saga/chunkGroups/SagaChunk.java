@@ -339,27 +339,28 @@ public class SagaChunk {
 	}
 	
 	/**
-	 * Sends a refresh for all entities on the chunk.
+	 * Sends a chunk refresh to all players on the chunk.
 	 * 
 	 */
 	public void refresh() {
 		
 		
-//		Entity[] entities = getBukkitChunk().getEntities();
-//		ArrayList<SagaPlayer> sagaPlayers = new ArrayList<SagaPlayer>();
-//		for (int i = 0; i < entities.length; i++) {
-//			if(!(entities[i] instanceof Player)){
-//				continue;
-//			}
-//			SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(((Player) entities[i]).getName());
-//			if(sagaPlayer != null){
-//				sagaPlayers.add(sagaPlayer);
-//			}
-//		}
-//		for (SagaPlayer sagaPlayer : sagaPlayers) {
-//			sagaPlayer.refreshLocation2();
-//		}
-//		
+		Entity[] entities = getBukkitChunk().getEntities();
+		ArrayList<SagaPlayer> sagaPlayers = new ArrayList<SagaPlayer>();
+		
+		for (int i = 0; i < entities.length; i++) {
+
+			if(!(entities[i] instanceof Player)) continue;
+			
+			SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(((Player) entities[i]).getName());
+			if(sagaPlayer != null) sagaPlayers.add(sagaPlayer);
+			
+		}
+		
+		for (SagaPlayer sagaPlayer : sagaPlayers) {
+			sagaPlayer.refreshChunk();
+		}
+		
 		
 	}
 

@@ -21,6 +21,7 @@ import org.saga.messages.EconomyMessages;
 import org.saga.messages.FactionMessages;
 import org.saga.messages.InfoMessages;
 import org.saga.messages.SagaMessages;
+import org.saga.messages.SettlementEffects;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;
 import org.saga.settlements.SettlementDefinition;
@@ -182,7 +183,17 @@ public class ChunkGroupCommands {
 		selectedChunkGroup.addChunk(sagaChunk);
 		
 		// Inform:
-		sagaChunk.broadcast(ChunkGroupMessages.claimedChunkBroadcast(sagaPlayer, selectedChunkGroup));
+		if(sagaPlayer.getChunkGroup() == selectedChunkGroup){
+			sagaPlayer.message(ChunkGroupMessages.claimed(sagaChunk));
+		}else{
+			sagaPlayer.message(ChunkGroupMessages.claimed(sagaChunk, selectedChunkGroup));
+		}
+		
+		// Refresh:
+		sagaChunk.refresh();
+		
+		// Play effect:
+		SettlementEffects.playClaim(sagaPlayer, sagaChunk);
 		
 		
 	}
