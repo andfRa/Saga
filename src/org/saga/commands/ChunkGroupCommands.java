@@ -759,41 +759,83 @@ public class ChunkGroupCommands {
 
 	@Command(
             aliases = {"sstats"},
-            usage = "[settlement name]",
+            usage = "[settlement name] [page]",
             flags = "",
             desc = "Lists settlement stats.",
             min = 0,
-            max = 1
+            max = 2
 		)
 	@CommandPermissions({"saga.user.settlement.stats"})
 	public static void stats(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
-
-		Settlement selectedSettlement = null;
-		ChunkGroup selectedChunkGroup = null;
-
-		// Arguments:
-		if(args.argsLength() == 1){
-			
-			// Chunk group:
-			String groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
-			selectedChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(groupName);
-			if(selectedChunkGroup == null){
-				sagaPlayer.message(ChunkGroupMessages.noChunkGroup(groupName));
-				return;
-			}
-			
-		}else{
-			
-			// Chunk group:
-			selectedChunkGroup = sagaPlayer.getChunkGroup();
-			if(selectedChunkGroup == null){
-				sagaPlayer.message( ChunkGroupMessages.noChunkGroup() );
-				return;
-			}
-			
-		}
 		
+		Integer page = null;
+		Settlement selectedSettlement = null;
+		
+		ChunkGroup selectedChunkGroup = null;
+		String sPage = null;
+		String groupName = null;
+		
+		// Arguments:
+		switch (args.argsLength()) {
+			
+			case 2:
+				
+				// Chunk group:
+				groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
+				selectedChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(groupName);
+				if(selectedChunkGroup == null){
+					sagaPlayer.message(ChunkGroupMessages.noChunkGroup(groupName));
+					return;
+				}
+				
+				// Page:
+				sPage = args.getString(1);
+				try {
+					page = Integer.parseInt(sPage);
+				}
+				catch (NumberFormatException e) {
+					sagaPlayer.message(ChunkGroupMessages.invalidInteger(sPage));
+					return;
+				}
+				break;
+
+			case 1:
+
+				// Chunk group:
+				selectedChunkGroup = sagaPlayer.getChunkGroup();
+				if(selectedChunkGroup == null){
+					sagaPlayer.message( ChunkGroupMessages.noChunkGroup() );
+					return;
+				}
+
+				// Page:
+				sPage = args.getString(0);
+				try {
+					page = Integer.parseInt(sPage);
+				}
+				catch (NumberFormatException e) {
+					sagaPlayer.message(ChunkGroupMessages.invalidInteger(sPage));
+					return;
+				}
+				
+				break;
+
+			default:
+
+				// Chunk group:
+				selectedChunkGroup = sagaPlayer.getChunkGroup();
+				if(selectedChunkGroup == null){
+					sagaPlayer.message(ChunkGroupMessages.noChunkGroup());
+					return;
+				}
+				
+				// Page:
+				page = 1;
+				
+				break;
+				
+		}
 		
 		// Is a settlement:
 		if(! (selectedChunkGroup instanceof Settlement) ){
@@ -803,7 +845,7 @@ public class ChunkGroupCommands {
 		selectedSettlement = (Settlement) selectedChunkGroup;
 		
 		// Inform:
-		sagaPlayer.message(ChunkGroupMessages.stats(sagaPlayer, selectedSettlement));
+		sagaPlayer.message(ChunkGroupMessages.stats(sagaPlayer, selectedSettlement, page -1));
 		
 		
 	}
@@ -1149,14 +1191,6 @@ public class ChunkGroupCommands {
 			return;
 		}
 		
-		// Building points:
-		Integer cost = selectedBuilding.getPointCost();
-		Integer available = selectedChunkGroup.getAvailableBuildingPoints();
-		if(cost > available){
-			sagaPlayer.message(ChunkGroupMessages.notEnoughBuildingPoints(selectedChunkGroup, available, cost));
-			return;
-		}
-		
 		// Building available:
 		if(!selectedChunkGroup.isBuildingAvailable(buildingName)){
 			sagaPlayer.message(BuildingMessages.unavailableBuilding(selectedChunkGroup, selectedBuilding));
@@ -1480,35 +1514,6 @@ public class ChunkGroupCommands {
 		
 	}
 
-	
-	// Other:
-	@Command(
-			aliases = {"bstats"},
-			usage = "",
-			flags = "",
-			desc = "Display building stats.",
-			min = 0,
-			max = 0
-	)
-	@CommandPermissions({"saga.user.settlement.building.stats"})
-	public static void buildingStats(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-
-		// Building:
-		SagaChunk sagaChunk =  sagaPlayer.getSagaChunk();
-		Building selectedBuilding = null;
-		if(sagaChunk != null){
-			selectedBuilding = sagaChunk.getBuilding();
-		}
-		if(selectedBuilding == null){
-			sagaPlayer.message(ChunkGroupMessages.noBuilding());
-			return;
-		}
-		
-		// Inform:
-		sagaPlayer.message(ChunkGroupMessages.buildingStats(selectedBuilding));
-
-	}
 	
 	
 	// Admin:

@@ -1,22 +1,29 @@
 package org.saga.messages;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
 import org.saga.buildings.Building;
+import org.saga.buildings.BuildingDefinition;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.commands.ChunkGroupCommands;
 import org.saga.config.ChunkGroupConfiguration;
+import org.saga.config.ProficiencyConfiguration;
 import org.saga.factions.SagaFaction;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.messages.PlayerMessages.ColorCircle;
 import org.saga.player.Proficiency;
+import org.saga.player.Proficiency.ProficiencyType;
+import org.saga.player.ProficiencyDefinition;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;
+import org.saga.utility.StringTable;
 import org.saga.utility.TextUtil;
 
 
@@ -452,189 +459,223 @@ public class ChunkGroupMessages {
 	}
 	
 	
+	
 	// Stats:
-	public static String stats(SagaPlayer sagaPlayer, Settlement settlement) {
+	public static String stats(SagaPlayer sagaPlayer, Settlement settlement, Integer page) {
+		
+		// TODO: bonuses
+		StringBuffer result = new StringBuffer();
+		
+		switch (page) {
+			
+			// Buildings:
+			case 1:
+				
+				result.append(buildings(settlement).createTable());
+				
+				break;
+
+			// Roles:	
+			case 2:
+				
+				result.append(roles(settlement).createTable());
+				
+				break;
+				
+			// Main stats:
+			default:
+				
+				page = 0;
+				
+				// Levels and claims:
+				result.append(levelClaims(settlement).createTable());
+
+				break;
+				
+		}
+		
+		return TextUtil.frame(settlement.getName() + " stats " + (page + 1) + "/" + 3, result.toString(), normal1);
+
+		
+	}
+	
+	private static StringTable levelClaims(Settlement settlement){
 		
 		
-		StringBuffer rString = new StringBuffer();
-		ColorCircle messageColor = new ColorCircle().addColor(normal1).addColor(normal2);
+		ColorCircle colours = new ColorCircle().addColor(normal1).addColor(normal2);
+		StringTable table = new StringTable(colours);
 		
-		// Saving disabled:
-		if(!settlement.isSavingEnabled()){
-			
-			rString.append(veryNegative + "Settlement information will not be saved!");
-			
-			rString.append("\n");
-			
+		// Claims:
+		table.addLine("claims", settlement.getTotalClaimed() + "/" + settlement.getTotalClaims(), 0);
+		
+		// Upgrades:
+		table.addLine("upgrades", 0 + "/" + 0, 0);
+		
+		// Owner:
+		if(settlement.hasOwner()){
+			table.addLine("owner", settlement.getOwner(), 0);
+		}else{
+			table.addLine("owner", veryNegative + "none", 0);
 		}
 		
 		// Level:
-		rString.append(messageColor.nextColor());
-		rString.append("Level: " + settlement.getLevel());
-		if(settlement.getLevel() < settlement.getDefinition().getMaxLevel()){
-			rString.append(" Remaining exp: " + settlement.getRemainingExp().intValue());
-		}else{
-			rString.append(" Remaining exp: -");
-		}
-		rString.append(" Exp speed: " + settlement.getExpSpeed());
-		
-		rString.append("\n");
-		
-		// Claim and building points:
-		rString.append(messageColor.nextColor());
-		rString.append("Claims: " + settlement.getTotalClaimed() + "/" + settlement.getTotalClaims());
-		rString.append(" Building points: " + settlement.getUsedBuildingPoints() + "/" + settlement.getTotalBuildingPoints());
-		
-		rString.append("\n");
-		
-		// Owner:
-		ChatColor elementColor = messageColor.nextColor();
-		if(settlement.hasOwner()){
-			rString.append(elementColor);
-			rString.append("Owner: " + settlement.getOwner());
-		}else{
-			rString.append("Owner: "+ veryNegative +"none" + elementColor);
-		}
-		
-		rString.append("\n");
-		
-		// Level requirements:
-		rString.append(levelupRequirementsElement(settlement, messageColor.nextColor()));
-		
-		// Buildings:
-		rString.append("\n");
-		rString.append(buildingsElement(settlement, messageColor.nextColor()));
+		table.addLine("level", settlement.getLevel() + "/" + settlement.getDefinition().getMaxLevel(), 2);
 
-		// Roles:
-		if(settlement.getRoles().size() != 0){
-			
-			rString.append("\n");
-			
-			rString.append(rolesElement(settlement, messageColor.nextColor()));
-			
-		}
+		// Next exp:
+		table.addLine("next EXP", settlement.getRemainingExp().toString(), 2);
+
+		// Exp per minute:
+		table.addLine("EXP/minute", settlement.getExpSpeed().toString(), 2);
 		
-		// Bonuses:
-		ArrayList<String> bonuses = bonusesElement(settlement);
-		if(bonuses.size() > 0){
-			
-			rString.append("\n");
-			rString.append(messageColor.nextColor());
-			
-			rString.append("Bonuses: ");
-			
-			for (int i = 0; i < bonuses.size(); i++) {
-				
-				if(i != 0) rString.append(", ");
-				
-				rString.append(bonuses.get(i));
-				
-			}
-			
-		}
+		table.collapse();
 		
-		return TextUtil.frame(settlement.getName() + " stats", rString.toString(), messageColor.nextColor());
+		return table;
 		
 		
 	}
 	
-	private static String levelupRequirementsElement(Settlement settlement, ChatColor messageColor){
+	private static StringTable buildings(Settlement settlement){
 		
 		
-		StringBuffer rString = new StringBuffer();
-		ChatColor notEnough = ChatColor.DARK_GRAY;
+		ColorCircle colours = new ColorCircle().addColor(normal1).addColor(normal2);
+		StringTable table = new StringTable(colours);
 		
-		// Active players:
-		Integer activePlayers = settlement.getActivePlayerCount();
-		Integer requiredActive = settlement.getDefinition().getActivePlayers(settlement.getLevel());
-		if(requiredActive == 0){
+		// Retrieve buildings:
+		String[] names = ChunkGroupConfiguration.config().getBuildingNames().toArray(new String[0]);
+		BuildingDefinition[] definitions = new BuildingDefinition[names.length];
+		for (int i = 0; i < definitions.length; i++) {
+			definitions[i] = ChunkGroupConfiguration.config().getBuildingDefinition(names[i]);
+		}
+		
+		// Levels:
+		Integer[] levels = new Integer[names.length];
+		for (int i = 0; i < levels.length; i++) {
 			
-		}	
-		else if(requiredActive > activePlayers){
-			rString.append("" + notEnough + activePlayers + "/" + requiredActive + messageColor + " active players");
-		}else{
-			rString.append("" + activePlayers + "/" + requiredActive + " active players");
+			Building building = settlement.getFirstBuilding(names[i]);
+			levels[i] = 0;
+			if(building != null) levels[i] = building.getLevel();
+			
 		}
 		
-		// No requirements:
-		if(rString.length() == 0){
-			rString.append("none");
-		}
+		// Column names:
+		table.addLine(new String[]{GeneralMessages.columnTitle("building"), GeneralMessages.columnTitle("next req.")});
 		
-		// Tite:
-		rString.insert(0, "Requirements: ");
-		
-		rString.insert(0, messageColor);
-		
-		return rString.toString();
-		
-		
-	}
+		// Column values:
+		if(definitions.length != 0){
+			
+			for (int j = 0; j < definitions.length; j++) {
+				
+				// Values:
+				String name = names[j];
+				String requirements = requirements(definitions[j], levels[j]);
 
-	private static String buildingsElement(Settlement settlement, ChatColor messageColor) {
-
-		
-		StringBuffer rString = new StringBuffer();
-		
-		HashSet<String> buildings = settlement.getEnabledBuildings();
-		
-		if(buildings.size() == 0){
-			rString.append("Buildings: none");
-		}else if(buildings.size() == 1){
-			rString.append("Building: ");
+				if(requirements.length() == 0) requirements = "-";
+				
+				// Multiple buildings:
+				Integer totalBuildings = settlement.getTotalBuildings(names[j]);
+				Integer usedBuildings = settlement.getUsedBuildings(names[j]);
+				if(totalBuildings != 1){
+					name = name + " " + usedBuildings + "/" + totalBuildings;
+				}
+				
+				// Not available:
+				if(!definitions[j].checkRequirements(settlement, 1)){
+					name = unavailable + name;
+					requirements = unavailable + requirements;
+				}
+				
+				// Already set:
+				if(usedBuildings > 0){
+					name = veryPositive + name;
+					requirements = veryPositive + requirements;
+				}
+					
+				table.addLine(new String[]{name, requirements});
+			
+			}
+			
 		}else{
-			rString.append("Buildings: ");
+			table.addLine(new String[]{"-", "-"});
 		}
 		
-		boolean firstElement = true;
-		for (String buildingName : buildings) {
-			
-			if(!firstElement) rString.append(", ");
-			firstElement = false;
-			
-			rString.append(buildingName + " " + settlement.getUsedBuildings(buildingName) + "/" + settlement.getTotalBuildings(buildingName) );
-			
-		}
+		table.collapse();
 		
-		rString.insert(0, messageColor);
-		
-		return rString.toString();
+		return table;
 		
 		
 	}
 	
-	private static String rolesElement(Settlement settlement, ChatColor messageColor) {
+	private static String requirements(BuildingDefinition definition, Integer buildingLevel){
 		
 		
-		StringBuffer rString = new StringBuffer();
-		HashSet<String> roles = settlement.getRoles();
+		StringBuffer result = new StringBuffer();
 		
-		if(roles.size() == 0){
-			rString.append("Roles: none");
-		}else if(roles.size() == 0){
-			rString.append("Role: ");
-		}else{
-			rString.append("Roles: ");
-		}
+		// Level:
+		Integer reqLevel = definition.getRequiredLevel();
+		if(reqLevel > 0) result.append("lvl " + reqLevel);
 		
-		boolean firstElement = true;
-		for (String role : roles) {
-			
-			if(!firstElement){
-				rString.append(", ");
-			}
-			firstElement = false;
-			
-			rString.append(role + " " + settlement.getUsedRoles(role) + "/" + settlement.getTotalRoles(role));
-			
-		}
+		if(result.length() > 0) result.append(", ");
 		
-		rString.insert(0, messageColor);
-		
-		return rString.toString();
+		return result.toString();
 		
 		
 	}
+	
+	private static StringTable roles(Settlement settlement){
+		
+		
+		ColorCircle colours = new ColorCircle().addColor(normal1).addColor(normal2);
+		StringTable table = new StringTable(colours);
+		
+		// Definitions:
+		ArrayList<String> names = ProficiencyConfiguration.config().getProficiencyNames(ProficiencyType.ROLE);
+		ArrayList<ProficiencyDefinition> definitions = new ArrayList<ProficiencyDefinition>();
+		for (String name : names) {
+			definitions.add(ProficiencyConfiguration.config().getDefinition(name));
+		}
+		
+		// Sort by hierarchy:
+		Comparator<ProficiencyDefinition> comparator = new Comparator<ProficiencyDefinition>() {
+			@Override
+			public int compare(ProficiencyDefinition o1, ProficiencyDefinition o2) {
+				return o1.getHierarchyLevel() - o2.getHierarchyLevel();
+			}
+		};
+		Collections.sort(definitions, comparator);
+		
+		// Column names:
+		table.addLine(new String[]{GeneralMessages.columnTitle("role"), GeneralMessages.columnTitle("assigned")});
+		
+		// Column values:
+		if(definitions.size() != 0){
+			
+			for (ProficiencyDefinition definition : definitions) {
+				
+				String name = definition.getName();
+				String available = settlement.getUsedRoles(name) + "/" + settlement.getTotalRoles(name);
+				
+				if(settlement.getAvailableRoles(name) > 0){
+					available = positive + available;
+				}else if(settlement.getAvailableRoles(name) < 0){
+					available = negative + available;
+				}
+				
+				table.addLine(new String[]{name, available});
+				
+			}
+			
+			
+		}else{
+			table.addLine(new String[]{"-", "-"});
+		}
+		
+		table.collapse();
+		
+		return table;
+		
+		
+	}
+
 	
 	public static String list(SagaPlayer sagaPlayer, Settlement settlement) {
 		
@@ -872,28 +913,6 @@ public class ChunkGroupMessages {
 		
 	}
 
-	private static ArrayList<String> bonusesElement(ChunkGroup cunkGroup){
-		
-		ArrayList<String> rList = new ArrayList<String>();
-		
-		// Pvp:
-		if(cunkGroup.hasPvpProtectionBonus()){
-			
-			rList.add("pvp protection");
-			
-		}
-		
-		// Unlimited claims:
-		if(cunkGroup.hasUnlimitedClaimBonus()){
-			
-			rList.add("unlimited claims");
-			
-		}
-		
-		return rList;
-		
-		
-	}
 	
 	
 	// Roles:
@@ -1029,138 +1048,6 @@ public class ChunkGroupMessages {
 		return negative + "There is no building on this chunk of land.";
 	}
 
-	
-	public static String buildingStats(Building building){
-		
-		
-		StringBuffer rString = new StringBuffer();
-		ColorCircle messageColor = new ColorCircle().addColor(ChunkGroupMessages.normal1).addColor(ChunkGroupMessages.normal2);
-		ChatColor elementColor;
-		
-		// Chunk group:
-		SagaChunk sagaChunk = building.getSagaChunk();
-		elementColor = messageColor.nextColor();
-		rString.append(elementColor);
-		if(sagaChunk == null){
-			
-			rString.append("Settlement: " + veryNegative + "none" + elementColor);
-			
-		}else{
-			
-			rString.append("Settlement: " + sagaChunk.getChunkGroup().getName());
-			
-		}
-		
-		// Enabled buildings:
-		if(building.getDefinition().getBuildings(building.getLevel()).size() > 0){
-			
-			rString.append("\n");
-			
-			rString.append(enabledBuildingsElement(building, messageColor.nextColor()));
-			
-		}
-		
-		// Enabled roles:
-		if(building.getDefinition().getRoles(building.getLevel()).size() > 0){
-			
-			rString.append("\n");
-			
-			rString.append(enabledRolesElement(building, messageColor.nextColor()));
-			
-		}
-		
-		
-		// Specific:
-		ArrayList<String> specific = building.getSpecificStats();
-		if(specific.size() > 0){
-			
-			for (String sElement : specific) {
-				
-				rString.append("\n");
-				
-				rString.append(messageColor.nextColor());
-				
-				rString.append(sElement);
-				
-			}
-			
-		}
-		
-		rString.append(messageColor.nextColor());
-		
-		return TextUtil.frame(building.getDisplayName() + " stats", rString.toString(), messageColor.nextColor());
-		
-	}
-	
-	private static String enabledBuildingsElement(Building building, ChatColor messageColor) {
-		
-
-		StringBuffer rString = new StringBuffer();
-		
-		HashSet<String> buildings = building.getDefinition().getBuildings(building.getLevel());
-		
-		if(buildings.size() == 0){
-			rString.append("Enabled buildings: none");
-		}else if(buildings.size() == 1){
-			rString.append("Enabled building: ");
-		}else{
-			rString.append("Enabled buildings: ");
-		}
-		
-		boolean firstElement = true;
-		for (String buildingName : buildings) {
-			
-			if(!firstElement) rString.append(", ");
-			firstElement = false;
-			
-			String element = buildingName + "(" + building.getDefinition().getTotalBuildings(buildingName, building.getLevel()) + ")";
-			
-			rString.append(element);
-			
-		}
-		
-		rString.insert(0, messageColor);
-		
-		return rString.toString();
-		
-		
-		// TODO Auto-generated method stub
-
-	}
-	
-	private static String enabledRolesElement(Building building, ChatColor messageColor) {
-		
-
-		StringBuffer rString = new StringBuffer();
-		
-		HashSet<String> roles = building.getDefinition().getRoles(building.getLevel());
-		
-		if(roles.size() == 0){
-			rString.append("Enabled roles: none");
-		}else if(roles.size() == 1){
-			rString.append("Enabled roles: ");
-		}else{
-			rString.append("Enabled roles: ");
-		}
-		
-		boolean firstElement = true;
-		for (String buildingName : roles) {
-			
-			if(!firstElement) rString.append(", ");
-			firstElement = false;
-			
-			String element = buildingName + "(" + building.getDefinition().getTotalRoles(buildingName, building.getLevel()) + ")";
-			
-			rString.append(element);
-			
-		}
-		
-		rString.insert(0, messageColor);
-		
-		return rString.toString();
-		
-
-	}
 	
 	
 	// Inform:

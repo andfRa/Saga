@@ -2,7 +2,6 @@ package org.saga.settlements;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Hashtable;
 
 import org.saga.SagaLogger;
@@ -27,12 +26,6 @@ public class SettlementDefinition{
 	 */
 	private Hashtable<String, TwoPointFunction> roles;
 	
-	
-	/**
-	 * Buildings.
-	 */
-	private Hashtable<String, TwoPointFunction> buildings;
-
 	
 	/**
 	 * Experience requirement.
@@ -60,6 +53,7 @@ public class SettlementDefinition{
 	 */
 	public String defaultRole;
 
+	
 
 	// Initialisation:
 	/**
@@ -69,7 +63,6 @@ public class SettlementDefinition{
 	private SettlementDefinition() {
 		
 	}
-	
 
 	/**
 	 * Completes.
@@ -102,17 +95,6 @@ public class SettlementDefinition{
 		while (eRoles.hasMoreElements()) {
 			String role = (String) eRoles.nextElement();
 			integrity = roles.get(role).complete() && integrity;
-		}
-		
-		if(buildings == null){
-			buildings = new Hashtable<String, TwoPointFunction>();
-			SagaLogger.nullField(this, "buildings");
-			integrity = false;
-		}
-		Enumeration<String> eBuildings = buildings.keys();
-		while (eBuildings.hasMoreElements()) {
-			String building = (String) eBuildings.nextElement();
-			integrity = buildings.get(building).complete() && integrity;
 		}
 		
 		if(levelUpExp == null){
@@ -153,6 +135,7 @@ public class SettlementDefinition{
 		
 	}
 	
+
 	
 	// Interaction:
 	/**
@@ -164,10 +147,10 @@ public class SettlementDefinition{
 	public boolean canLevelUp(Settlement settlement) {
 
 		
-		// Active players:
-		if(settlement.getActivePlayerCount() < activePlayers.value(settlement.getLevel())){
-			return false;
-		}
+//		// Active players:
+//		if(settlement.getActivePlayerCount() < activePlayers.value(settlement.getLevel())){
+//			return false;
+//		}
 		
 		return true;
 		
@@ -194,6 +177,7 @@ public class SettlementDefinition{
 		return buildingPoints.value(level).intValue();
 	}
 
+	
 	
 	// Roles:
 	/**
@@ -224,55 +208,8 @@ public class SettlementDefinition{
 		
 	}
 	
+	
 
-	// Buildings:
-	/**
-	 * Gets the total available buildings.
-	 * 
-	 * @param buildingName building name
-	 * @param level settlement level
-	 * @return amount of enabled buildings
-	 */
-	public Integer getTotalBuildings(String buildingName, Integer level) {
-		
-		TwoPointFunction amount = buildings.get(buildingName);
-		if(amount == null || amount.getXMin() > level){
-			return 0;
-		}
-		return new Double(amount.value(level)).intValue();
-		
-		
-	}
-	
-	/**
-	 * Gets all building names enabled by this building
-	 * 
-	 * @param level settlement level
-	 * @return enabled building names
-	 */
-	public HashSet<String> getAllBuildings(Integer level) {
-		
-		
-		HashSet<String> allBuildings = new HashSet<String>();
-		
-		Enumeration<String> buildingNames =  buildings.keys();
-		
-		while (buildingNames.hasMoreElements()) {
-			
-			String buildingName = (String) buildingNames.nextElement();
-			
-			if(getTotalBuildings(buildingName, level) > 0){
-				allBuildings.add(buildingName);
-			}
-			
-		}
-		
-		return allBuildings;
-
-		
-	}
-	
-	
 	// Experience:
 	/**
 	 * Gets experience requirement.
@@ -310,6 +247,7 @@ public class SettlementDefinition{
 	}
 	
 	
+	
 	// Claiming:
 	/**
 	 * Gets the number of claims available.
@@ -324,6 +262,7 @@ public class SettlementDefinition{
 	}
 
 	
+	
 	// Other:
 	/**
 	* Returns the default definition.
@@ -335,7 +274,6 @@ public class SettlementDefinition{
 
 		SettlementDefinition definition = new SettlementDefinition();
 		definition.activePlayers = new TwoPointFunction(0.0);
-		definition.buildings = new Hashtable<String, TwoPointFunction>();
 		definition.complete();
 		return definition;
 

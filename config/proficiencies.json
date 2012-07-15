@@ -54,24 +54,11 @@
     "factionPermissions":[]
   },
 
-  {"name":"councilman",
-    "type":"ROLE",
-    "hierarchyLevel":"10",
-    "settlementPermissions":["BUILD","CLAIM","INVITE","ABANDON","KICK","SET_BUILDING","REMOVE_BUILDING","RENAME"],
-    "factionPermissions":[]
-  },
 
   {"name":"noble",
     "type":"ROLE",
     "hierarchyLevel":"10",
     "settlementPermissions":["BUILD","BUILD_BUILDING","CLAIM","INVITE","ABANDON","KICK","SET_BUILDING","REMOVE_BUILDING","RENAME"],
-    "factionPermissions":[]
-  },
-
-  {"name":"planner",
-    "type":"ROLE",
-    "hierarchyLevel":"2",
-    "settlementPermissions":["BUILD"],
     "factionPermissions":[]
   },
 
@@ -82,26 +69,6 @@
     "factionPermissions":[]
   },
 
-  {"name":"master trader",
-    "type":"ROLE",
-    "hierarchyLevel":"4",
-    "settlementPermissions":["BUILD"],
-    "factionPermissions":[]
-  },
-
-  {"name":"trader journeyman",
-    "type":"ROLE",
-    "hierarchyLevel":"3",
-    "settlementPermissions":["BUILD"],
-    "factionPermissions":[]
-  },
-
-  {"name":"trader apprentice",
-    "type":"ROLE",
-    "hierarchyLevel":"2",
-    "settlementPermissions":["BUILD"],
-    "factionPermissions":[]
-  },
 
   {"name":"grandmaster",
     "type":"RANK",

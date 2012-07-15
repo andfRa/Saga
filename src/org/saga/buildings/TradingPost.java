@@ -35,11 +35,12 @@ import org.saga.economy.Trader;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.messages.BuildingMessages;
 import org.saga.player.SagaPlayer;
-import org.saga.utility.TwoPointFunction;
 
 
 public class TradingPost extends Building implements Trader, TimeOfDayTicker{
-
+	
+	// TODO: Improve trading post
+	
 
 	/**
 	 * Name for goods the sign.
@@ -619,14 +620,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	 */
 	public Integer getDealsMaxCount() {
 		
-		TwoPointFunction tradeDeals = getDefinition().getLevelFunction();
-		
-		// Not high enough level:
-		if(tradeDeals.getXMin() < getLevel()){
-			return 0;
-		}
-		
-		return tradeDeals.value(getLevel()).intValue();
+		return 4;
 				
 	}
 

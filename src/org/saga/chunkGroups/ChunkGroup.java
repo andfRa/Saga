@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Hashtable;
 
 import org.bukkit.Chunk;
@@ -611,42 +610,9 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 	}
 	
-	/**
-	 * Gets the total available building points.
-	 * 
-	 * @return total building points.
-	 */
-	public Integer getTotalBuildingPoints() {
-		return 0;
-	}
 	
 	/**
-	 * Gets used building points.
-	 * 
-	 * @return
-	 */
-	public Integer getUsedBuildingPoints() {
-		
-		int used = 0;
-		for (int i = 0; i < groupChunks.size(); i++) {
-			Building building = groupChunks.get(i).getBuilding();
-			if(building != null) used += building.getPointCost();
-		}
-		
-		return used;
-	}
-	
-	/**
-	 * Gets the available building points
-	 * 
-	 * @return available building points
-	 */
-	public Integer getAvailableBuildingPoints() {
-		return getTotalBuildingPoints() - getUsedBuildingPoints();
-	}
-
-	/**
-	 * Gets the amount of enabled buildings. 
+	 * Gets the amount of buildings with the given name. 
 	 * 
 	 * @param buildingName building name
 	 * @return amount used
@@ -673,33 +639,19 @@ public class ChunkGroup extends SagaCustomSerialization{
 	}
 
 	/**
-	 * Gets the amount of total enabled buildings. 
+	 * Gets the total possible amount of buildings. 
 	 * 
 	 * @param buildingName building name
-	 * @return total amount
+	 * @return total buildings amount amount
 	 */
 	public Integer getTotalBuildings(String buildingName) {
-
-
-		// Total buildings:
-		Integer total = 0;
-		ArrayList<SagaChunk> groupChunks = getGroupChunks();
-		for (SagaChunk sagaChunk : groupChunks) {
-			
-			Building building = sagaChunk.getBuilding();
-			if(building == null) continue;
-			
-			total += building.getDefinition().getTotalBuildings(buildingName, building.getLevel());
-			
-		}
 		
-		return total;
-		
+		return 0;
 		
 	}
 	
 	/**
-	 * Gets the amount of available enabled buildings. 
+	 * Gets the amount of available buildings. 
 	 * 
 	 * @param buildingName building name
 	 * @return amount available
@@ -722,30 +674,6 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 	}
 	
-	/**
-	 * Gets all enabled buildings.
-	 * 
-	 * @return enabled buildings
-	 */
-	public HashSet<String> getEnabledBuildings() {
-
-		
-		HashSet<String> enabledBuildings = new HashSet<String>();
-		
-		ArrayList<SagaChunk> groupChunks = getGroupChunks();
-		for (SagaChunk sagaChunk : groupChunks) {
-			
-			Building building = sagaChunk.getBuilding();
-			if(building == null) continue;
-			
-			enabledBuildings.addAll(building.getDefinition().getBuildings(building.getLevel()));
-			
-		}
-		
-		return enabledBuildings;
-		
-		
-	}
 	
 	/**
 	 * Gets all buildings instance of the given class.
@@ -774,6 +702,28 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 	}
 	
+	/**
+	 * Gets the first building with the given name.
+	 * 
+	 * @param buildingName building name
+	 * @return first building with the given name
+	 */
+	public Building getFirstBuilding(String buildingName) {
+
+		for (SagaChunk sagaChunk : groupChunks) {
+			
+			Building building = sagaChunk.getBuilding();
+			if(building == null) continue;
+			
+			if(building.getName().equals(buildingName)) return building;
+			
+		}
+		
+		return null;
+		
+	}
+	
+
 	
 	// Todo methods:
 	/**
@@ -1159,21 +1109,21 @@ public class ChunkGroup extends SagaCustomSerialization{
 	}
 	
 	/**
-	 * Gets inactive player count.
+	 * Gets active player count.
 	 * 
 	 * @return inactive player count
 	 */
 	public int getActivePlayerCount() {
 
 		
-		int inactivePlayers = 0;
+		int activePlayers = 0;
 		ArrayList<String> players = getPlayers();
 		for (String playerName : players) {
 			if(isPlayerActive(playerName)){
-				inactivePlayers++;
+				activePlayers++;
 			}
 		}
-		return inactivePlayers;
+		return activePlayers;
 		
 		
 	}

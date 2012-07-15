@@ -10,6 +10,7 @@ import org.saga.Clock.MinuteTicker;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.Building;
+import org.saga.buildings.BuildingDefinition;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.BalanceConfiguration;
@@ -524,17 +525,9 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		return getRemainingClaims() > 0 || hasUnlimitedClaimBonus();
 	}
 	
+	
+	
 	// Buildings:
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#getTotalBuildingPoints()
-	 */
-	@Override
-	public Integer getTotalBuildingPoints() {
-		return definition.getBuildingPoints(getLevel());
-	}
-
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -542,23 +535,18 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	 */
 	@Override
 	public Integer getTotalBuildings(String buildingName) {
-		return getDefinition().getTotalBuildings(buildingName, getLevel()) + super.getTotalBuildings(buildingName);
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#getEnabledBuildings()
-	 */
-	@Override
-	public HashSet<String> getEnabledBuildings() {
+
+
+		BuildingDefinition definition = ChunkGroupConfiguration.config().getBuildingDefinition(buildingName);
 		
-		HashSet<String> enabledBuildings = getDefinition().getAllBuildings(getLevel());
-		enabledBuildings.addAll(super.getEnabledBuildings());
-		return enabledBuildings;
+		if(definition == null) return 0;
+		
+		return definition.getAvailableCount(getLevel());
+		
 		
 	}
 	
+
 	
 	// Permissions:
 	/* 

@@ -2,7 +2,6 @@ package org.saga.messages;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -10,7 +9,6 @@ import org.saga.abilities.Ability;
 import org.saga.buildings.Arena;
 import org.saga.buildings.Arena.ArenaPlayer;
 import org.saga.buildings.Building;
-import org.saga.buildings.BuildingDefinition;
 import org.saga.buildings.TownSquare;
 import org.saga.buildings.TradingPost;
 import org.saga.chunkGroups.ChunkGroup;
@@ -566,70 +564,6 @@ public class BuildingMessages {
 		
 	}
 		
-	
-
-	// Help:
-	public static String info() {
-
-		
-		ColorCircle colour = new ColorCircle().addColor(normal1).addColor(normal2);
-		StringBook book = new StringBook("building info", colour, 10);
-		
-		// Buildings:
-		Collection<String> buildingNames = ChunkGroupConfiguration.config().getBuildingNames();
-		
-		book.addLine("All buildings: " + TextUtil.flatten(buildingNames));
-
-		// Requirements:
-		book.addLine("/binfo <building_name> for more details.");
-
-		return book.framed(0, 76.0);
-		
-		
-	}
-	
-	public static String info(String buildingName, BuildingDefinition definition) {
-		
-		
-		ColorCircle color = new ColorCircle().addColor(normal1).addColor(normal2);
-		StringBook book = new StringBook(buildingName + " help", color, 10);
-		
-		// Description:
-		book.addLine(definition.getDescription());
-		
-		// Skills:
-		book.addLine("attributes: " + TextUtil.flatten(definition.getAttributes()));
-
-		// Select:
-		book.addLine("classes/profs: " + TextUtil.flatten(definition.getSelectable()));
-		
-		// Roles:
-		HashSet<String> allRoles = definition.getRoles((short)0);
-		HashSet<String> roles = new HashSet<String>();
-		for (String role : allRoles) {
-
-			roles.add(definition.getTotalRoles(role, (short)0) + " " + role);
-			
-		}
-		book.addLine("roles: " + TextUtil.flatten(roles));
-		
-		// Buildings:
-		HashSet<String> allBuilings = definition.getBuildings((short)0);
-		HashSet<String> buildings = new HashSet<String>();
-		for (String building : allBuilings) {
-
-			buildings.add(definition.getTotalBuildings(building, (short)0) + " " + building);
-			
-		}
-		book.addLine("enabled buildings: " + TextUtil.flatten(buildings));
-		
-		// Building points:
-		book.addLine("building point cost: " + definition.getPointCost((short)0));
-		
-		return book.framed(0, 76.0);
-		
-		
-	}
 	
 	
 	

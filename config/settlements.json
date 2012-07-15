@@ -8,30 +8,6 @@
 
   "roles":{"noble":{"x1":1,"y1":2.0,"x2":50,"y2":10.0}},
 
-  "buildings":{
-    "town square":{"x1":2,"y1":1.0,"x2":50,"y2":1.0},
-
-    "trading post":{"x1":4,"y1":1.0,"x2":50,"y2":1.0},
-
-    "woodsman camp":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
-    "mine shaft":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
-    "farm":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
-    "forge":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
-
-    "warehouse":{"x1":7,"y1":1.0,"x2":50,"y2":1.0},
-
-    "barracks":{"x1":10,"y1":1.0,"x2":50,"y2":1.0},
-    "tavern":{"x1":10,"y1":1.0,"x2":50,"y2":1.0},
-    "academy":{"x1":10,"y1":1.0,"x2":50,"y2":1.0},
-    
-    "arena":{"x1":15,"y1":1.0,"x2":50,"y2":1.0},
-
-    "temple":{"x1":20,"y1":1.0,"x2":50,"y2":5.0},
-
-    "home":{"x1":0,"y1":1.0,"x2":200,"y2":1000.0},
-    "watchtower":{"x1":5,"y1":1.0,"x2":50,"y2":8.0}
-  },
-  
   "levelUpExp":{"x1":0,"y1":30.0,"x2":50,"y2":100000.0},
   "expSpeed":{"x1":1,"y1":1.0,"x2":10,"y2":5.5},
 
@@ -42,43 +18,16 @@
 
 },
 
+
 "noDeleteLevel":5,
 
 "inactiveSetDays":7,
 
-"buildingDefinitions":{
 
-  "town hall":{
-    "className":"org.saga.buildings.TownHall",
-    "pointCost":{"x1":0,"y1":1,"x2":5,"y2":6},
-    "moneyCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "levelFunction":{"x1":0,"y1":3.0,"x2":5,"y2":6.0},
-    "professions":[],
-    "classes":[],
-    "roles":[],
-    "ranks":[],
-    "roleAmounts":{"councilman":{"x1":0,"y1":2.0,"x2":5,"y2":4.0}},
-    "attributes":[],
-    "abilities":[],
-    "permissions":{"noble":"HIGH"},
-    "enabledBuildings":{
-      "town square":{"x1":0,"y1":1.0,"x2":5,"y2":1.0},
-      "warehouse":{"x1":0,"y1":1.0,"x2":5,"y2":1.0},
-      "arena":{"x1":0,"y1":1.0,"x2":5,"y2":1.0},
-      "barracks":{"x1":0,"y1":1.0,"x2":25,"y2":1.0},
-      "tavern":{"x1":0,"y1":1.0,"x2":25,"y2":1.0},
-      "academy":{"x1":0,"y1":1.0,"x2":25,"y2":1.0},
-      "watchtower":{"x1":0,"y1":1.0,"x2":50,"y2":8.0},
-      "woodsman camp":{"x1":0,"y1":1.0,"x2":5,"y2":1.0},
-      "mine shaft":{"x1":0,"y1":1.0,"x2":5,"y2":1.0}
-    },
-    "description":"Prerequisite for most other buildings."
-  },
+"buildingDefinitions":{
 
   "town square":{
     "className":"org.saga.buildings.TownSquare",
-    "pointCost":{"x1":0,"y1":1,"x2":5,"y2":6},
-    "moneyCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "levelFunction":{"x1":0,"y1":3.0,"x2":5,"y2":6.0},
     "professions":[],
     "classes":[],
@@ -88,14 +37,13 @@
     "attributes":[],
     "abilities":[],
     "permissions":{"noble":"HIGH"},
-    "enabledBuildings":{},
+    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
+    "available":{"x1":2,"y1":1.0,"x2":50,"y2":1.0},
     "description":"Enables settlement spawn command: /sspawn."
   },
 
   "warehouse":{
     "className":"org.saga.buildings.Warehouse",
-    "pointCost":{"x1":0,"y1":1,"x2":5,"y2":6},
-    "moneyCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "levelFunction":{"x1":0,"y1":3.0,"x2":5,"y2":6.0},
     "professions":[],
     "classes":[],
@@ -105,14 +53,13 @@
     "attributes":[],
     "abilities":[],
     "permissions":{"commoner":"LOW","noble":"HIGH"},
-    "enabledBuildings":{},
-  "description":"Limits chest access to settlement members."
+    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
+    "available":{"x1":7,"y1":1.0,"x2":50,"y2":1.0},
+    "description":"Limits chest access to settlement members."
   },
 
   "trading post":{
     "className":"org.saga.buildings.TradingPost",
-    "pointCost":{"x1":0,"y1":1,"x2":5,"y2":6},
-    "moneyCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "levelFunction":{"x1":0,"y1":4.0,"x2":5,"y2":7.0},
     "professions":[],
     "classes":[],
@@ -124,14 +71,13 @@
     "attributes":[],
     "abilities":[],
     "permissions":{"councilman":"LOW","trader apprentice":"LOW","trader journeyman":"MEDIUM","master trader":"HIGH"},
-    "enabledBuildings":{},
+    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
+    "available":{"x1":4,"y1":1.0,"x2":50,"y2":1.0},
     "description":"Allows to sell, buy, export and impor items."
   },
 
   "barracks":{
     "className":"org.saga.buildings.Barracks",
-    "pointCost":{"x1":0,"y1":1,"x2":5,"y2":6},
-    "moneyCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "levelFunction":{"x1":0,"y1":3.0,"x2":5,"y2":6.0},
     "professions":[],
     "classes":["warrior"],
@@ -141,14 +87,13 @@
     "attributes":["strength","toughness"],
     "abilities":["bash"],
     "permissions":{"noble":"HIGH"},
-    "enabledBuildings":{},
+    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
+    "available":{"x1":10,"y1":1.0,"x2":50,"y2":1.0},
     "description":"Trains warrior related attributes."
   },
 
   "arena":{
     "className":"org.saga.buildings.Arena",
-    "pointCost":{"x1":0,"y1":1,"x2":5,"y2":6},
-    "moneyCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "levelFunction":{"x1":0,"y1":3.0,"x2":5,"y2":6.0},
     "professions":[],
     "classes":[],
@@ -158,14 +103,13 @@
     "attributes":[],
     "abilities":[],
     "permissions":{"noble":"HIGH"},
-    "enabledBuildings":{},
+    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
+    "available":{"x1":15,"y1":1.0,"x2":50,"y2":1.0},
     "description":"Records player kills and deaths."
   },
 
   "tavern":{
     "className":"org.saga.buildings.Tavern",
-    "pointCost":{"x1":0,"y1":1,"x2":5,"y2":6},
-    "moneyCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "levelFunction":{"x1":0,"y1":3.0,"x2":5,"y2":6.0},
     "professions":[],
     "classes":["rogue"],
@@ -175,14 +119,13 @@
     "attributes":["precision","luck"],
     "abilities":["dart"],
     "permissions":{"noble":"HIGH"},
-    "enabledBuildings":{},
+    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
+    "available":{"x1":10,"y1":1.0,"x2":50,"y2":1.0},
     "description":"Trains rogue related attributes."
   },
 
   "academy":{
     "className":"org.saga.buildings.Academy",
-    "pointCost":{"x1":0,"y1":1,"x2":5,"y2":6},
-    "moneyCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "levelFunction":{"x1":0,"y1":90.0,"x2":5,"y2":15.0},
     "professions":[],
     "classes":["mage"],
@@ -192,14 +135,13 @@
     "attributes":["willpower","warding"],
     "abilities":["fireball"],
     "permissions":{"noble":"HIGH"},
-    "enabledBuildings":{},
+    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
+    "available":{"x1":10,"y1":1.0,"x2":50,"y2":1.0},
     "description":"Trains mage related attributes. Recharges guardian stones."
   },
 
   "watchtower":{
     "className":"org.saga.buildings.Watchtower",
-    "pointCost":{"x1":0,"y1":1,"x2":5,"y2":6},
-    "moneyCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "levelFunction":{"x1":0,"y1":3.0,"x2":5,"y2":6.0},
     "professions":[],
     "classes":[],
@@ -209,14 +151,13 @@
     "attributes":[],
     "abilities":[],
     "permissions":{"noble":"HIGH"},
-    "enabledBuildings":{},
+    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
+    "available":{"x1":5,"y1":1.0,"x2":50,"y2":8.0},
     "description":"Stops mobs from spawning within a certain claimed area."
   },
 
   "home":{
     "className":"org.saga.buildings.Home",
-    "pointCost":{"x1":0,"y1":0,"x2":5,"y2":5},
-    "moneyCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "levelFunction":{"x1":0,"y1":3.0,"x2":5,"y2":6.0},
     "professions":[],
     "classes":[],
@@ -226,14 +167,13 @@
     "attributes":[],
     "abilities":[],
     "permissions":{"noble":"HIGH"},
-    "enabledBuildings":{},
+    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
+    "available":{"x1":0,"y1":1.0,"x2":200,"y2":1000.0},
     "description":"Limits build access to settlement owner and residents, /baddresident and /bremoveresident to add and remove residents."
   },
 
   "temple":{
     "className":"org.saga.buildings.Temple",
-    "pointCost":{"x1":0,"y1":5,"x2":5,"y2":6},
-    "moneyCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "levelFunction":{"x1":0,"y1":10.0,"x2":5,"y2":20.0},
     "professions":[],
     "classes":[],
@@ -243,14 +183,13 @@
     "attributes":[],
     "abilities":[],
     "permissions":{"noble":"HIGH"},
-    "enabledBuildings":{},
+    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
+    "available":{"x1":20,"y1":1.0,"x2":50,"y2":5.0},
     "description":"Regenerates lost experience."
   },
 
   "woodsman camp":{
     "className":"org.saga.buildings.WoodsmanCamp",
-    "pointCost":{"x1":0,"y1":1,"x2":1,"y2":6},
-    "moneyCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "levelFunction":{"x1":0,"y1":10.0,"x2":5,"y2":20.0},
     "professions":["woodsman"],
     "classes":[],
@@ -260,14 +199,13 @@
     "attributes":[],
     "abilities":["chop down"],
     "permissions":{"noble":"HIGH"},
-    "enabledBuildings":{},
+    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
+    "available":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
     "description":"Trains woodsman related attributes."
   },
 
   "mine shaft":{
     "className":"org.saga.buildings.MineShaft",
-    "pointCost":{"x1":0,"y1":1,"x2":1,"y2":6},
-    "moneyCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "levelFunction":{"x1":0,"y1":10.0,"x2":5,"y2":20.0},
     "professions":["miner"],
     "classes":[],
@@ -277,14 +215,13 @@
     "attributes":[],
     "abilities":["heavy swing"],
     "permissions":{"noble":"HIGH"},
-    "enabledBuildings":{},
+    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
+    "available":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
     "description":"Trains miner related attributes."
   },
 
   "farm":{
     "className":"org.saga.buildings.Farm",
-    "pointCost":{"x1":0,"y1":1,"x2":1,"y2":6},
-    "moneyCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "levelFunction":{"x1":0,"y1":10.0,"x2":5,"y2":20.0},
     "professions":[],
     "classes":[],
@@ -294,14 +231,13 @@
     "attributes":[],
     "abilities":["harvest"],
     "permissions":{"noble":"HIGH"},
-    "enabledBuildings":{},
+    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
+    "available":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
     "description":"Trains farmer related attributes, prevents animals from being killed and soil from being trampled."
   },
 
   "forge":{
     "className":"org.saga.buildings.Forge",
-    "pointCost":{"x1":0,"y1":1,"x2":1,"y2":6},
-    "moneyCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "levelFunction":{"x1":0,"y1":10.0,"x2":5,"y2":20.0},
     "professions":[],
     "classes":[],
@@ -311,7 +247,8 @@
     "attributes":[],
     "abilities":["repair"],
     "permissions":{"noble":"HIGH"},
-    "enabledBuildings":{},
+    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
+    "available":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
     "description":"Trains blacksmith related attributes."
   }
 

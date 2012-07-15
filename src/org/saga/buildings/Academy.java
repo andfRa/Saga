@@ -2,28 +2,13 @@ package org.saga.buildings;
 
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
-import org.saga.Clock;
-import org.saga.Clock.SecondTicker;
-import org.saga.SagaLogger;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.GuardianRuneSign;
 import org.saga.exceptions.InvalidBuildingException;
-import org.saga.utility.Cooldown;
 
 
-public class Academy extends Building implements SecondTicker, Cooldown{
+public class Academy extends Building{
 
-	
-	/**
-	 * Building cooldown.
-	 */
-	private Integer cooldown;
-	
-	/**
-	 * True if clock active.
-	 */
-	transient private boolean clockActive; 
-	
 	
 	// Initialisation:
 	/**
@@ -36,9 +21,6 @@ public class Academy extends Building implements SecondTicker, Cooldown{
 		
 		super(definition);
 
-		cooldown = 0;
-		clockActive = false;
-		
 		
 	}
 	
@@ -53,99 +35,11 @@ public class Academy extends Building implements SecondTicker, Cooldown{
 
 		boolean integrity = super.complete();
 		
-		if(cooldown == null){
-			cooldown = 0;
-			SagaLogger.nullField(this, "cooldown");
-			integrity = false;
-		}
-		
 		return integrity;
 		
 		
 	}
 
-	
-	// Cooldown:
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.Clock.SecondTicker#clockSecondTick()
-	 */
-	@Override
-	public boolean clockSecondTick() {
-		
-		
-		cooldown--;
-		
-		if(cooldown <= 0){
-			stopClock();
-		}
-
-		return true;
-		
-		
-	}
-	
-	/**
-	 * Starts the clock:
-	 * 
-	 */
-	private void startClock() {
-		Clock.clock().registerSecondTick(this);
-		clockActive = true;
-	}
-	
-	/**
-	 * Stops the clock:
-	 * 
-	 */
-	private void stopClock() {
-		Clock.clock().unregisterSecondTick(this);
-		clockActive = false;
-	}
-	
-	/**
-	 * Checks if the clock is active.
-	 * 
-	 * @return
-	 */
-	public boolean isClockActive() {
-		return clockActive;
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.utility.Cooldown#isOnCooldown()
-	 */
-	public boolean isOnCooldown() {
-		return cooldown > 0;
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.utility.Cooldown#startCooldown()
-	 */
-	public void startCooldown() {
-		
-		this.cooldown = getDefinition().getLevelFunction().value(getLevel()).intValue();
-		
-		// Start clock:
-		if(!isClockActive()){
-			startClock();
-		}
-		
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.utility.Cooldown#getCooldown()
-	 */
-	public int getCooldown() {
-		return cooldown;
-	}
 	
 	
 	// Signs:

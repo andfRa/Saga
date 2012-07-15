@@ -668,19 +668,10 @@ public abstract class Building extends SagaCustomSerialization{
 	 * 
 	 * @return the level
 	 */
-	public Short getLevel() {
-		return level;
+	public Integer getLevel() {
+		return level.intValue();
 	}
 	
-	/**
-	 * Gets the building point cost.
-	 * 
-	 * @return the building point cost
-	 */
-	public Integer getPointCost() {
-		return definition.getPointCost(getLevel());
-	}
-
 	/**
 	 * Gets building definition.
 	 * 

@@ -60,6 +60,7 @@ public class ChunkGroupConfiguration {
 	public Short inactiveSetDays;
 	
 	
+	
 	// Buildings:
 	/**
 	 * Building definitions.
@@ -92,11 +93,13 @@ public class ChunkGroupConfiguration {
 	public ChatColor invalidSignColor;
 
 	
+	
 	// Formation:
 	/**
 	 * Amount of members needed for the chunk group to form.
 	 */
 	public Integer formationAmount;
+	
 	
 	
 	// Commands:
@@ -105,6 +108,7 @@ public class ChunkGroupConfiguration {
 	 */
 	private HashSet<String> memberOnlyCommands;
 
+	
 	
 	// Initialisation:
 	/**
@@ -140,8 +144,6 @@ public class ChunkGroupConfiguration {
 		if(buildingDefinitions == null){
 			SagaLogger.severe(config + " failed to initialize buildingDefinitions field. Adding two examples.");
 			buildingDefinitions = new Hashtable<String, BuildingDefinition>();
-			buildingDefinitions.put("first building", BuildingDefinition.zeroDefinition());
-			buildingDefinitions.put("second building", BuildingDefinition.zeroDefinition());
 			integrity=false;
 		}
 		Enumeration<String> buildingNames = buildingDefinitions.keys();
@@ -209,7 +211,8 @@ public class ChunkGroupConfiguration {
 	}
 
 	
-	// Interaction:
+	
+	// Settlement:
 	/**
 	 * Gets level definition for the given settlement.
 	 * 
@@ -220,6 +223,7 @@ public class ChunkGroupConfiguration {
 		return settlementDefinition;
 		
 	}
+	
 	
 	
 	// Buildings:
@@ -258,17 +262,17 @@ public class ChunkGroupConfiguration {
 	}
 	
 	/**
-	 * Gets level definition for the given building.
+	 * Gets definition for the given building.
 	 * 
-	 * @param name name
-	 * @return definition, null if not found
+	 * @param name building name
+	 * @return building definition, null if not found
 	 */
 	public BuildingDefinition getBuildingDefinition(String name) {
 
 		return buildingDefinitions.get(name);
 		
 	}
-
+	
 	/**
 	 * Gets all building names.
 	 * 
@@ -292,6 +296,7 @@ public class ChunkGroupConfiguration {
 		return new HashSet<String>(memberOnlyCommands).contains(command);
 		
 	}
+	
 	
 	
 	// Load unload:

@@ -1060,12 +1060,8 @@ public class BuildingCommands {
 		
 		for (TownSquare townSquare : selectedBuildings) {
 			
-			if(townSquare.getCooldown() < smallestCooldown) smallestCooldown = townSquare.getCooldown();
-			
-			if(!townSquare.isOnCooldown()){
-				selectedBuilding = townSquare;
-				break;
-			}
+			selectedBuilding = townSquare;
+			break;
 			
 		}
 		

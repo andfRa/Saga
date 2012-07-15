@@ -14,6 +14,7 @@ import org.saga.exceptions.InvalidBuildingException;
 
 public class Watchtower extends Building implements TimeOfDayTicker{
 
+	// TODO: Improve watchtower
 	
 	/**
 	 * True if is on cool down.
@@ -121,7 +122,7 @@ public class Watchtower extends Building implements TimeOfDayTicker{
 	 */
 	private Integer getRadius() {
 
-		return getDefinition().getLevelFunction().value(getLevel()).intValue();
+		return 4;
 
 	}
 	

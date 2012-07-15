@@ -6,8 +6,6 @@ import java.util.Random;
 import org.bukkit.Location;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.util.Vector;
-import org.saga.Clock;
-import org.saga.Clock.SecondTicker;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.chunkGroups.ChunkGroup;
@@ -24,7 +22,7 @@ import org.sk89q.Command;
 import org.sk89q.CommandContext;
 import org.sk89q.CommandPermissions;
 
-public class TownSquare extends Building implements SecondTicker{
+public class TownSquare extends Building{
 
 	
 	/**
@@ -32,15 +30,6 @@ public class TownSquare extends Building implements SecondTicker{
 	 */
 	transient private Random random;
 	
-	/**
-	 * True if is on cool down.
-	 */
-	transient boolean isOnCooldown;
-	
-	/**
-	 * Seconds left for the cool down.
-	 */
-	transient int cooldownLeft;
 	
 
 	// Initialisation:
@@ -70,8 +59,6 @@ public class TownSquare extends Building implements SecondTicker{
 		
 		// Transient:
 		random = new Random();
-		isOnCooldown = false;
-		cooldownLeft = 0;
 		
 		return integrity;
 		
@@ -90,88 +77,9 @@ public class TownSquare extends Building implements SecondTicker{
 		
 		super.disable();
 		
-		// Unregister if still on cool down:
-		if (isOnCooldown) {
-			Clock.clock().unregisterSecondTick(this);
-		}
 		
 	}
 	
-	
-	// Clock:
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.Clock.SecondTicker#clockSecondTick()
-	 */
-	@Override
-	public boolean clockSecondTick() {
-
-		
-		if(!isOnCooldown){
-			return true;
-		}
-		
-		cooldownLeft --;
-		
-		if(cooldownLeft <= 0){
-			stopCooldown();
-		}
-		
-		return true;
-		
-		
-	}
-	
-	/**
-	 * Starts cool down.
-	 * 
-	 */
-	private void startCooldown() {
-
-		
-		isOnCooldown = true;
-		
-		cooldownLeft = getDefinition().getLevelFunction().value(getLevel()).intValue();
-		
-		Clock.clock().registerSecondTick(this);
-		
-		
-	}
-	
-	/**
-	 * Stops cool down.
-	 * 
-	 */
-	private void stopCooldown() {
-
-		
-		isOnCooldown = false;
-		
-		cooldownLeft = 0;
-		
-		Clock.clock().unregisterSecondTick(this);
-		
-		
-	}
-	
-	/**
-	 * Gets the cool down.
-	 * 
-	 * @return gets cool down
-	 */
-	public int getCooldown() {
-		return cooldownLeft;
-	}
-	
-	/**
-	 * Checks if on cool down.
-	 * 
-	 * @return true if on cool down
-	 */
-	public boolean isOnCooldown() {
-		return isOnCooldown;
-	}
 	
 	
 	// Utility:
@@ -348,12 +256,8 @@ public class TownSquare extends Building implements SecondTicker{
 		
 		for (TownSquare townSquare : selectedBuildings) {
 			
-			if(townSquare.getCooldown() < smallestCooldown) smallestCooldown = townSquare.getCooldown();
-			
-			if(!townSquare.isOnCooldown()){
-				selectedBuilding = townSquare;
-				break;
-			}
+			selectedBuilding = townSquare;
+			break;
 			
 		}
 		
@@ -376,9 +280,6 @@ public class TownSquare extends Building implements SecondTicker{
 		
 		// Teleport:
 		sagaPlayer.teleport(spawnLocation);
-		
-		// Cool down:
-		selectedBuilding.startCooldown();
 		
 	
 	}

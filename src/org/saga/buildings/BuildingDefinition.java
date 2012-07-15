@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.Hashtable;
 
 import org.saga.SagaLogger;
+import org.saga.settlements.Settlement;
 import org.saga.utility.TwoPointFunction;
 
 public class BuildingDefinition {
@@ -15,17 +16,7 @@ public class BuildingDefinition {
 	 * Building class.
 	 */
 	private String className;
-	
-	/**
-	 * Building point cost.
-	 */
-	private TwoPointFunction pointCost;
-	
-	/**
-	 * Building point cost.
-	 */
-	private TwoPointFunction moneyCost;
-	
+
 	/**
 	 * Building specific function.
 	 */
@@ -69,11 +60,16 @@ public class BuildingDefinition {
 	private HashSet<String> abilities;
 	
 	
-	// Buildings:
+	// Availability:
 	/**
-	 * Buildings that are enabled.
+	 * Coin cost.
 	 */
-	private Hashtable<String, TwoPointFunction> enabledBuildings;
+	private TwoPointFunction coinCost;
+	
+	/**
+	 * Number of buildings available.
+	 */
+	private TwoPointFunction available;
 	
 	
 	// Info:
@@ -83,14 +79,8 @@ public class BuildingDefinition {
 	private String description;
 	
 	
-	// Initialisation:
-	/**
-	 * Used by gson.
-	 * 
-	 */
-	private BuildingDefinition() {
-	}
 	
+	// Initialisation:
 	/**
 	 * Initialises.
 	 * 
@@ -100,8 +90,7 @@ public class BuildingDefinition {
 	 */
 	public BuildingDefinition(TwoPointFunction pointCost, TwoPointFunction moneyCost, TwoPointFunction levelFunction) {
 		
-		this.pointCost = pointCost;
-		this.moneyCost = moneyCost;
+		this.coinCost = moneyCost;
 		this.levelFunction = levelFunction;
 		
 	}
@@ -120,20 +109,6 @@ public class BuildingDefinition {
 			SagaLogger.nullField(this, "className");
 			className = "invalid";
 		}
-		
-		if(pointCost == null){
-			pointCost = new TwoPointFunction(10000.0);
-			SagaLogger.nullField(BuildingDefinition.class, "pointCost");
-			integrity = false;
-		}
-		integrity = pointCost.complete() && integrity;
-		
-		if(moneyCost == null){
-			moneyCost = new TwoPointFunction(10000.0);
-			SagaLogger.nullField(BuildingDefinition.class, "moneyCost");
-			integrity = false;
-		}
-		integrity = moneyCost.complete() && integrity;
 		
 		if(levelFunction == null){
 			levelFunction = new TwoPointFunction(10000.0);
@@ -213,17 +188,6 @@ public class BuildingDefinition {
 			}
 		}
 		
-		if(enabledBuildings == null){
-			enabledBuildings = new Hashtable<String, TwoPointFunction>();
-			SagaLogger.nullField(BuildingDefinition.class, "enabledBuildings");
-			integrity = false;
-		}
-		Enumeration<String> eBuildings = enabledBuildings.keys();
-		while (eBuildings.hasMoreElements()) {
-			String building = (String) eBuildings.nextElement();
-			integrity = enabledBuildings.get(building).complete() && integrity;
-		}
-		
 		if(attributes == null){
 			attributes = new HashSet<String>();
 			SagaLogger.nullField(BuildingDefinition.class, "attributes");
@@ -246,6 +210,20 @@ public class BuildingDefinition {
 			integrity = false;
 		}
 		
+		if(coinCost == null){
+			coinCost = new TwoPointFunction(10000.0);
+			SagaLogger.nullField(BuildingDefinition.class, "coinCost");
+			integrity = false;
+		}
+		integrity = coinCost.complete() && integrity;
+		
+		if(available == null){
+			available = new TwoPointFunction(0.0);
+			SagaLogger.nullField(BuildingDefinition.class, "available");
+			integrity = false;
+		}
+		integrity = available.complete() && integrity;
+		
 		if(description == null){
 			description = "<no description>";
 			SagaLogger.nullField(BuildingDefinition.class, "description");
@@ -258,6 +236,7 @@ public class BuildingDefinition {
 	}
 	
 	
+	
 	// Interaction:
 	/**
 	 * Gets the class name.
@@ -267,54 +246,10 @@ public class BuildingDefinition {
 	public String getClassName() {
 		return className;
 	}
-	
-	/**
-	 * Gets the building point cost.
-	 * 
-	 * @name level level
-	 * @return the building point cost
-	 */
-	public Integer getPointCost(Short level) {
-		return pointCost.value(level).intValue();
-	}
 
-	/**
-	 * Gets the money cost.
-	 * 
-	 * @name level level
-	 * @return the money cost
-	 */
-	public Integer getMoneyCost(Short level) {
-		return moneyCost.value(level).intValue();
-	}
 	
-	/**
-	 * Gets the building specific function.
-	 * 
-	 * @return building specific function
-	 */
-	public TwoPointFunction getLevelFunction() {
-		return levelFunction;
-	}
 	
-	/**
-	 * Returns the zero element.
-	 * 
-	 * @return zero level definition
-	 */
-	public static BuildingDefinition zeroDefinition(){
-		
-		
-		BuildingDefinition requirements = new BuildingDefinition();
-		requirements.pointCost =  new TwoPointFunction(10000.0);
-		requirements.moneyCost = new TwoPointFunction(10000.0);
-		requirements.levelFunction = new TwoPointFunction(10000.0);
-		requirements.complete();
-		return requirements;
-		
-		
-	}
-	
+	// Roles:
 	/**
 	 * Gets the building role hierarchy.
 	 * 
@@ -331,7 +266,7 @@ public class BuildingDefinition {
 	 * @param level level
 	 * @return amount of available roles
 	 */
-	public Integer getTotalRoles(String roleName, Short level) {
+	public Integer getTotalRoles(String roleName, Integer level) {
 		
 		
 		TwoPointFunction amount = roleAmounts.get(roleName);
@@ -344,57 +279,13 @@ public class BuildingDefinition {
 	}
 	
 	/**
-	 * Gets the total available buildings.
-	 * 
-	 * @param buildingName building name
-	 * @param level level
-	 * @return amount of enabled buildings
-	 */
-	public Integer getTotalBuildings(String buildingName, Short level) {
-		
-		
-		TwoPointFunction amount = enabledBuildings.get(buildingName);
-		if(amount == null || amount.getXMin() > level){
-			return 0;
-		}
-		return new Double(amount.value(level)).intValue();
-		
-		
-	}
-	
-	/**
-	 * Gets all building names enabled by this building
-	 * 
-	 * @param level building level
-	 * @return enabled building names
-	 */
-	public HashSet<String> getBuildings(Short level) {
-		
-		
-		HashSet<String> buildings = new HashSet<String>();
-		
-		Enumeration<String> buildingNames =  enabledBuildings.keys();
-		
-		while (buildingNames.hasMoreElements()) {
-			String buildingName = (String) buildingNames.nextElement();
-			if(getTotalBuildings(buildingName, level) > 0){
-				buildings.add(buildingName);
-			}
-		}
-		
-		return buildings;
-
-		
-	}
-	
-	/**
 	**
 	 * Gets all role names enabled by this building
 	 * 
 	 * @param level building level
 	 * @return enabled role names
 	 */
-	public HashSet<String> getRoles(Short level) {
+	public HashSet<String> getRoles(Integer level) {
 		
 		
 		HashSet<String> roles = new HashSet<String>();
@@ -414,6 +305,7 @@ public class BuildingDefinition {
 	}
 
 
+	
 	// Proficiencies:
 	/**
 	 * Check if the building has a promotion profession.
@@ -474,13 +366,12 @@ public class BuildingDefinition {
 	}
 	
 	
-	
 	/**
 	 * Gets classes and professions.
 	 * 
 	 * @return classes and professions
 	 */
-	public ArrayList<String> getSelectable() {
+	public ArrayList<String> getSelectable2() {
 
 		ArrayList<String> result = getProfessions();
 		result.addAll(getClasses());
@@ -489,6 +380,7 @@ public class BuildingDefinition {
 	}
 	
 
+	
 	// Attributes:
 	/**
 	 * Check if the building allows the attribute.
@@ -510,6 +402,7 @@ public class BuildingDefinition {
 	}
 	
 	
+	
 	// Abilities:
 	/**
 	 * Check if the building allows the ability.
@@ -521,7 +414,52 @@ public class BuildingDefinition {
 		return abilities.contains(name);
 	}
 	
+	
+	
+	// Availability:
+	/**
+	 * Gets the number of available buildings.
+	 * 
+	 * @param level building level
+	 * @return number of buildings
+	 */
+	public Integer getAvailableCount(Integer level) {
+		
+		return available.intValue(level);
 
+	}
+	
+	/**
+	 * Gets the required settlement level.
+	 * 
+	 * @return required settlement level
+	 */
+	public Integer getRequiredLevel() {
+
+		return available.getXMin().intValue();
+
+	}
+	
+	/**
+	 * Checks the requirements for the given building.
+	 * 
+	 * @param settlement settlement
+	 * @param buildingLevel building level
+	 * @return true if the requirements are met
+	 */
+	public boolean checkRequirements(Settlement settlement, Integer buildingLevel) {
+
+		
+		// Building not available:
+		if(getRequiredLevel() > settlement.getLevel()) return false;
+		
+		return true;
+		
+		
+	}
+
+	
+	
 	// Info:
 	/**
 	 * Gets the description.
@@ -532,6 +470,7 @@ public class BuildingDefinition {
 		return description;
 	}
 
+	
 	
 	// Other:
 	/* 

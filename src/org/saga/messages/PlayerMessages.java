@@ -209,6 +209,10 @@ public class PlayerMessages {
 			
 			return negative + "Can't attack players in safe areas.";
 			
+		default:
+			
+			break;
+			
 		}
 		
 		return negative + "Can't attack player.";
