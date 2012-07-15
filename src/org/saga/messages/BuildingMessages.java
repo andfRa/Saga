@@ -1,7 +1,6 @@
 package org.saga.messages;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,7 +13,6 @@ import org.saga.buildings.TradingPost;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
-import org.saga.config.ChunkGroupConfiguration;
 import org.saga.economy.TradeDeal;
 import org.saga.economy.TradeDeal.TradeDealType;
 import org.saga.messages.PlayerMessages.ColorCircle;
@@ -49,19 +47,19 @@ public class BuildingMessages {
 	
 
 	// Adding buildings:
-	public static String buildingsOnClaimedLand(ChunkGroup chunkGroup) {
+	public static String notOnClaimedLand(ChunkGroup chunkGroup) {
 		return negative + "Buildings can only be on located on claimed land.";
 	}
 	
-	public static String oneBuildingPerChunk(ChunkGroup chunkGroup) {
+	public static String oneBuildingAllowed(ChunkGroup chunkGroup) {
 		return negative + "A chunk of land can only have one building.";
 	}
 	
-	public static String invalidName(String buildingName) {
+	public static String invalidBuilding(String buildingName) {
 		return negative + buildingName + " isn't a valid building.";
 	}
 	
-	public static String unavailableBuilding(ChunkGroup chunkGroup, Building building){
+	public static String unavailable(Building building){
 		
 		return negative + TextUtil.capitalize(building.getDisplayName()) + " isn't available.";
 		

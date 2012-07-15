@@ -1159,24 +1159,30 @@ public class ChunkGroupCommands {
 		// Selected chunk:
 		SagaChunk selectedChunk = sagaPlayer.getSagaChunk();
 	   	if(selectedChunk == null){
-			sagaPlayer.message(BuildingMessages.buildingsOnClaimedLand(selectedChunkGroup));
+			sagaPlayer.message(BuildingMessages.notOnClaimedLand(selectedChunkGroup));
 			return;
 		}
 		
 	   	// Selected chunk group:
 	   	selectedChunkGroup = selectedChunk.getChunkGroup();
-		
+
+	   	// Valid building:
+	   	if(ChunkGroupConfiguration.config().getBuildingDefinition(buildingName) == null){
+	   		sagaPlayer.message(BuildingMessages.invalidBuilding(buildingName));
+	   		return;
+	   	}
+	   	
 		// Building:
 		Building selectedBuilding;
 		try {
 			selectedBuilding = ChunkGroupConfiguration.config().createBuilding(buildingName);
 		} catch (InvalidBuildingException e) {
 			SagaLogger.severe(ChunkGroupCommands.class, sagaPlayer + " tried to set a building with missing definition");
-			sagaPlayer.error("definition missing for " + buildingName + " is missing");
+			sagaPlayer.error("definition missing for " + buildingName + " building");
 			return;
 		}
 		if(selectedBuilding == null){
-			sagaPlayer.message(BuildingMessages.invalidName(buildingName));
+			sagaPlayer.message(BuildingMessages.invalidBuilding(buildingName));
 			return;
 		}
 		
@@ -1188,13 +1194,13 @@ public class ChunkGroupCommands {
 
 		// Existing building:
 		if(selectedChunk.getBuilding() != null){
-			sagaPlayer.message(BuildingMessages.oneBuildingPerChunk(selectedChunkGroup));
+			sagaPlayer.message(BuildingMessages.oneBuildingAllowed(selectedChunkGroup));
 			return;
 		}
-		
+
 		// Building available:
 		if(!selectedChunkGroup.isBuildingAvailable(buildingName)){
-			sagaPlayer.message(BuildingMessages.unavailableBuilding(selectedChunkGroup, selectedBuilding));
+			sagaPlayer.message(BuildingMessages.unavailable(selectedBuilding));
 			return;
 		}
 		
@@ -1238,7 +1244,7 @@ public class ChunkGroupCommands {
 		// Selected chunk:
 		SagaChunk selectedChunk = sagaPlayer.getSagaChunk();
 	   	if(selectedChunk == null){
-			sagaPlayer.message(BuildingMessages.buildingsOnClaimedLand(selectedChunkGroup));
+			sagaPlayer.message(BuildingMessages.notOnClaimedLand(selectedChunkGroup));
 			return;
 		}
 		
