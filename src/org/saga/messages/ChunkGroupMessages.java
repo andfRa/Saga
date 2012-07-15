@@ -638,7 +638,7 @@ public class ChunkGroupMessages {
 		Comparator<ProficiencyDefinition> comparator = new Comparator<ProficiencyDefinition>() {
 			@Override
 			public int compare(ProficiencyDefinition o1, ProficiencyDefinition o2) {
-				return o1.getHierarchyLevel() - o2.getHierarchyLevel();
+				return o2.getHierarchyLevel() - o1.getHierarchyLevel();
 			}
 		};
 		Collections.sort(definitions, comparator);
