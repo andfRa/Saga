@@ -186,7 +186,7 @@ public abstract class Building extends SagaCustomSerialization{
 		}
 
 		// Permission
-		if(!getChunkGroup().hasPermission(sagaPlayer, SettlementPermission.MANAGE_BUILDINGS)){
+		if(!getChunkGroup().hasPermission(sagaPlayer, SettlementPermission.BUILD_BUILDING)){
 			sagaPlayer.message(SagaMessages.noPermission(this));
 			return;
 		}
@@ -230,7 +230,7 @@ public abstract class Building extends SagaCustomSerialization{
 		if(buildingSign == null) return;
 
 		// Permission
-		if(!getChunkGroup().hasPermission(sagaPlayer, SettlementPermission.MANAGE_BUILDINGS)){
+		if(!getChunkGroup().hasPermission(sagaPlayer, SettlementPermission.BUILD_BUILDING)){
 			sagaPlayer.message(SagaMessages.noPermission(this));
 			return;
 		}

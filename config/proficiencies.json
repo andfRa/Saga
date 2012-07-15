@@ -58,7 +58,7 @@
   {"name":"noble",
     "type":"ROLE",
     "hierarchyLevel":"10",
-    "settlementPermissions":["BUILD","BUILD_BUILDING","CLAIM","INVITE","ABANDON","KICK","SET_BUILDING","REMOVE_BUILDING","RENAME","SPAWN","MEMBER_COMMAND"],
+    "settlementPermissions":["BUILD","BUILD_BUILDING","CLAIM","INVITE","ABANDON","KICK","SET_BUILDING","REMOVE_BUILDING","RENAME","SPAWN","MEMBER_COMMAND","ADD_RESIDENT","REMOVE_RESIDENT","MANAGE_PRICES","MANAGE_DEALS"],
     "factionPermissions":[]
   },
 

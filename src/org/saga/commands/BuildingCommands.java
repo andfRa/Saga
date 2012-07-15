@@ -110,7 +110,7 @@ public class BuildingCommands {
 
 		// Permission:
 		ChunkGroup chunkGroup = selectedBuilding.getChunkGroup();
-		if(!chunkGroup.hasPermission(sagaPlayer, SettlementPermission.MANAGE_HOMES)){
+		if(!chunkGroup.hasPermission(sagaPlayer, SettlementPermission.ADD_RESIDENT)){
 			sagaPlayer.message(SagaMessages.noPermission(chunkGroup));
 			return;
 		}
@@ -165,7 +165,7 @@ public class BuildingCommands {
 		
 		// Permission:
 		ChunkGroup chunkGroup = selectedBuilding.getChunkGroup();
-		if(!chunkGroup.hasPermission(sagaPlayer, SettlementPermission.MANAGE_HOMES)){
+		if(!chunkGroup.hasPermission(sagaPlayer, SettlementPermission.REMOVE_RESIDENT)){
 			sagaPlayer.message(SagaMessages.noPermission(chunkGroup));
 			return;
 		}
@@ -213,7 +213,7 @@ public class BuildingCommands {
 
 		// Permission:
 		ChunkGroup chunkGroup = selectedBuilding.getChunkGroup();
-		if(!chunkGroup.hasPermission(sagaPlayer, SettlementPermission.MANAGE_TRADING_POST)){
+		if(!chunkGroup.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
 			sagaPlayer.message(SagaMessages.noPermission(chunkGroup));
 			return;
 		}
@@ -300,7 +300,7 @@ public class BuildingCommands {
 
 		// Permission:
 		ChunkGroup chunkGroup = selectedBuilding.getChunkGroup();
-		if(!chunkGroup.hasPermission(sagaPlayer, SettlementPermission.MANAGE_TRADING_POST)){
+		if(!chunkGroup.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
 			sagaPlayer.message(SagaMessages.noPermission(chunkGroup));
 			return;
 		}
@@ -370,7 +370,7 @@ public class BuildingCommands {
 
 		// Permission:
 		ChunkGroup chunkGroup = selectedBuilding.getChunkGroup();
-		if(!chunkGroup.hasPermission(sagaPlayer, SettlementPermission.MANAGE_TRADING_POST)){
+		if(!chunkGroup.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
 			sagaPlayer.message(SagaMessages.noPermission(chunkGroup));
 			return;
 		}
@@ -457,7 +457,7 @@ public class BuildingCommands {
 
 		// Permission:
 		ChunkGroup chunkGroup = selectedBuilding.getChunkGroup();
-		if(!chunkGroup.hasPermission(sagaPlayer, SettlementPermission.MANAGE_TRADING_POST)){
+		if(!chunkGroup.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
 			sagaPlayer.message(SagaMessages.noPermission(chunkGroup));
 			return;
 		}
@@ -741,7 +741,7 @@ public class BuildingCommands {
 
 		// Permission:
 		ChunkGroup chunkGroup = selectedBuilding.getChunkGroup();
-		if(!chunkGroup.hasPermission(sagaPlayer, SettlementPermission.MANAGE_TRADING_POST)){
+		if(!chunkGroup.hasPermission(sagaPlayer, SettlementPermission.MANAGE_DEALS)){
 			sagaPlayer.message(SagaMessages.noPermission(chunkGroup));
 			return;
 		}
@@ -818,7 +818,7 @@ public class BuildingCommands {
 
 		// Permission:
 		ChunkGroup chunkGroup = selectedBuilding.getChunkGroup();
-		if(!chunkGroup.hasPermission(sagaPlayer, SettlementPermission.MANAGE_TRADING_POST)){
+		if(!chunkGroup.hasPermission(sagaPlayer, SettlementPermission.MANAGE_DEALS)){
 			sagaPlayer.message(SagaMessages.noPermission(chunkGroup));
 			return;
 		}

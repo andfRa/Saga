@@ -630,6 +630,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	 */
 	public enum SettlementPermission{
 		
+		
 		ACCESS_WAREHOUSE,
 		BUILD,
 		BUILD_BUILDING,
@@ -644,11 +645,17 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		SET_BUILDING,
 		REMOVE_BUILDING,
 		RENAME,
-		MANAGE_BUILDINGS,
-		MANAGE_HOMES,
-		MANAGE_TRADING_POST,
 		MEMBER_COMMAND,
-		SPAWN;
+		SPAWN,
+		
+		// Home:
+		REMOVE_RESIDENT,
+		ADD_RESIDENT,
+		
+		// Trading post:
+		MANAGE_PRICES,
+		MANAGE_DEALS;
+		
 		
 	}
 	
