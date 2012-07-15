@@ -142,7 +142,7 @@ public class ChunkGroupManager {
 		}
 		
 		// Not on the list:
-		if(!chunkGroup.hasPlayer(sagaPlayer.getName())){
+		if(!chunkGroup.hasMember(sagaPlayer.getName())){
 			SagaLogger.severe(getClass(), "chunkGroupManager could not register " + groupId + " chunk group for " + sagaPlayer + " player, because the chunk group doesn't have the player on its list");
 			sagaPlayer.removeChunkGroupId(sagaPlayer.getChunkGroupId());
 			return;
@@ -179,7 +179,7 @@ public class ChunkGroupManager {
 			return;
 		}
 		
-		if(!chunkGroup.hasPlayer(sagaPlayer.getName())){
+		if(!chunkGroup.hasMember(sagaPlayer.getName())){
 			SagaLogger.severe(this, "could not unregister " + groupId + " chunk group for " + sagaPlayer + " player, because the chunk group doesn't have the player on its list");
 			return;
 		}

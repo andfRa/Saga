@@ -506,7 +506,7 @@ public class ChunkGroupMessages {
 		StringTable table = new StringTable(colours);
 		
 		// Claims:
-		table.addLine("claims", settlement.getTotalClaimed() + "/" + settlement.getTotalClaims(), 0);
+		table.addLine("claims", settlement.getUsedClaimed() + "/" + settlement.getTotalClaims(), 0);
 		
 		// Upgrades:
 		table.addLine("upgrades", 0 + "/" + 0, 0);
@@ -688,7 +688,7 @@ public class ChunkGroupMessages {
 			
 			if(rString.length() > 0) rString.append("\n");
 			
-			rString.append(normalColor.nextColor() + "Online: " + settlement.getRegisteredPlayerCount() + "/" + settlement.getPlayerCount());
+			rString.append(normalColor.nextColor() + "Online: " + settlement.getRegisteredMemberCount() + "/" + settlement.getPlayerCount());
 
 			int inactiveCount = settlement.getInactivePlayerCount();
 			if(inactiveCount != 0){
@@ -869,7 +869,7 @@ public class ChunkGroupMessages {
 			rString.append(inactiveColor + playerName + messageColor);
 			
 		}
-		else if(!settlement.hasRegisteredPlayer(playerName)){
+		else if(!settlement.hasRegisteredMember(playerName)){
 			
 			rString.append(offlineColor + playerName + messageColor);
 			

@@ -255,9 +255,9 @@ public class SettlementDefinition{
 	 * @param level level
 	 * @return number of claims
 	 */
-	public Double getClaims(Integer level) {
+	public Integer getClaims(Integer level) {
 
-		return claims.value(level);
+		return claims.intValue(level);
 		
 	}
 

@@ -13,7 +13,6 @@ import org.saga.buildings.Building;
 import org.saga.buildings.BuildingDefinition;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.SagaChunk;
-import org.saga.config.BalanceConfiguration;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
@@ -56,7 +55,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	transient private SettlementDefinition definition;
 	
 	
-	// Initialization:
+	// Initialisation:
 	/**
 	 * Sets name.
 	 * 
@@ -78,10 +77,10 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	 * @see org.saga.chunkGroups.ChunkGroup#completeExtended()
 	 */
 	@Override
-	protected boolean completeExtended() {
+	public boolean complete() {
 		
 		
-		boolean integrity=true;
+		boolean integrity = super.complete();
 		
 		if(level == null){
 			SagaLogger.nullField(this, "level");
@@ -188,7 +187,8 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	}
 	
 	
-	// Player and faction management:
+	
+	// Player management:
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -286,6 +286,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	}
 	
 	
+	
 	// Roles:
 	/**
 	 * Adds a role to the player.
@@ -363,31 +364,38 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		return playerRoles.get(playerName);
 		
 	}
-	
+
 	/**
-	 * Gets the total assigned proficiencies with the given name.
+	 * Gets the available roles.
 	 * 
-	 * @param proficiencyName proficiency name
-	 * @return amount of proficiencies assigned with the given name
+	 * @return all available roles
 	 */
-	public Integer getTotalAssignedProficiencies(String proficiencyName) {
-
-
-		int total = 0;
+	public HashSet<String> getRoles() {
 		
-		Proficiency proficiency = null;
-		Enumeration<Proficiency> proficiencies = playerRoles.elements();
-		while(proficiencies.hasMoreElements()){
-			proficiency = proficiencies.nextElement();
-			if(proficiency.getName().equals(proficiencyName)){
-				total++;
-			}
+		HashSet<String> roles = new HashSet<String>();
+		
+		// Add default role:
+		roles.add(getDefinition().defaultRole);
+		
+		// Add settlement roles:
+		roles.addAll(getDefinition().getRoles());
+		
+		// Add building roles:
+		ArrayList<SagaChunk> groupChunks = getGroupChunks();
+		for (SagaChunk sagaChunk : groupChunks) {
+			
+			Building building = sagaChunk.getBuilding();
+			if(building == null) continue;
+			
+			ArrayList<String> promotions = building.getDefinition().getRoles();
+			roles.addAll(promotions);
+			
 		}
 		
-		return total;
-		
+		return roles;
 		
 	}
+
 	
 	/**
 	 * Gets the total amount of roles.
@@ -456,64 +464,34 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		
 	}
 	
-	/**
-	 * Gets the available roles.
-	 * 
-	 * @return all available roles
-	 */
-	public HashSet<String> getRoles() {
-		
-		HashSet<String> roles = new HashSet<String>();
-		
-		// Add default role:
-		roles.add(getDefinition().defaultRole);
-		
-		// Add settlement roles:
-		roles.addAll(getDefinition().getRoles());
-		
-		// Add building roles:
-		ArrayList<SagaChunk> groupChunks = getGroupChunks();
-		for (SagaChunk sagaChunk : groupChunks) {
-			
-			Building building = sagaChunk.getBuilding();
-			if(building == null) continue;
-			
-			ArrayList<String> promotions = building.getDefinition().getRoles();
-			roles.addAll(promotions);
-			
-		}
-		
-		return roles;
-		
-	}
 
 	
 	// Claiming:
 	/**
-	 * Gets owned chunks count.
+	 * Gets used claims.
 	 * 
-	 * @return owned chunks
+	 * @return used claims
 	 */
-	public Short getTotalClaimed() {
-		return new Integer(getGroupChunks().size()).shortValue();
+	public Integer getUsedClaimed() {
+		return new Integer(getGroupChunks().size());
 	}
 	
 	/**
-	 * Gets the claims the faction has in total.
+	 * Gets total claims.
 	 * 
-	 * @return claims in total.
+	 * @return total claims.
 	 */
-	public Short getTotalClaims() {
-		return getDefinition().getClaims(getLevel()).shortValue();
+	public Integer getTotalClaims() {
+		return getDefinition().getClaims(getLevel());
 	}
 	
 	/**
-	 * Gets remaining claims.
+	 * Gets available claims.
 	 * 
-	 * @return remaining claims
+	 * @return available claims
 	 */
-	public Short getRemainingClaims() {
-		return ( new Integer(getTotalClaims() - getTotalClaimed()) ).shortValue();
+	public Integer getAvailableClaims() {
+		return getTotalClaims() - getUsedClaimed();
 	}
 
 	/**
@@ -521,8 +499,8 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	 * 
 	 * @return true if available
 	 */
-	public boolean isClaimAvailable() {
-		return getRemainingClaims() > 0 || hasUnlimitedClaimBonus();
+	public boolean isClaimsAvailable() {
+		return getAvailableClaims() > 0 || hasUnlimitedClaimBonus();
 	}
 	
 	
@@ -572,333 +550,6 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		
 	}
 	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#canClaim(org.saga.SagaPlayer)
-	 */
-	public boolean canClaim(SagaPlayer sagaPlayer) {
-		
-		
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// Check role:
-		Proficiency role = playerRoles.get(sagaPlayer.getName());
-		if(role == null){
-			return false;
-		}
-		
-		// Check permission:
-		return role.hasSettlementPermission(SettlementPermission.CLAIM);
-		
-		
-	}
-
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#canAbandon(org.saga.SagaPlayer)
-	 */
-	@Override
-	public boolean canAbandon(SagaPlayer sagaPlayer) {
-
-		
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-
-		// Check role:
-		Proficiency role = playerRoles.get(sagaPlayer.getName());
-		if(role == null){
-			return false;
-		}
-		
-		// Check permission:
-		return role.hasSettlementPermission(SettlementPermission.ABANDON);
-			
-		
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#canDelete(org.saga.SagaPlayer)
-	 */
-	@Override
-	public boolean canDisolve(SagaPlayer sagaPlayer) {
-		
-
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-
-		// Check role:
-		Proficiency role = playerRoles.get(sagaPlayer.getName());
-		if(role == null){
-			return false;
-		}
-		
-		// Check permission:
-		return role.hasSettlementPermission(SettlementPermission.DISOLVE);
-		
-		
-	}
-
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#canBuild(org.saga.SagaPlayer)
-	 */
-	@Override
-	public boolean canBuildBuildings(SagaPlayer sagaPlayer) {
-		
-
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// Check role:
-		Proficiency role = playerRoles.get(sagaPlayer.getName());
-		if(role == null){
-			return false;
-		}
-		
-		// Check permission:
-		return role.hasSettlementPermission(SettlementPermission.BUILD_BUILDING);
-		
-		
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#canInvite(org.saga.SagaPlayer)
-	 */
-	@Override
-	public boolean canInvite(SagaPlayer sagaPlayer) {
-		
-
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// Check role:
-		Proficiency role = playerRoles.get(sagaPlayer.getName());
-		if(role == null){
-			return false;
-		}
-		
-		// Check permission:
-		return role.hasSettlementPermission(SettlementPermission.INVITE);
-		
-		
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#canClaimChunkGroup(org.saga.SagaPlayer)
-	 */
-	@Override
-	public boolean canClaimChunkGroup(SagaPlayer sagaPlayer) {
-		return getPlayerCount() == 0;
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#canKick(org.saga.SagaPlayer)
-	 */
-	@Override
-	public boolean canKick(SagaPlayer sagaPlayer) {
-
-
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// Check role:
-		Proficiency role = playerRoles.get(sagaPlayer.getName());
-		if(role == null){
-			return false;
-		}
-		
-		// Check permission:
-		return role.hasSettlementPermission(SettlementPermission.KICK);
-		
-		
-	}
-
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#canSetBuilding(org.saga.SagaPlayer, org.saga.buildings.Building)
-	 */
-	@Override
-	public boolean canSetBuilding(SagaPlayer sagaPlayer, Building building) {
-
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// Check role:
-		Proficiency role = playerRoles.get(sagaPlayer.getName());
-		if(role == null){
-			return false;
-		}
-		
-		// Check permission:
-		return role.hasSettlementPermission(SettlementPermission.SET_BUILDING);
-		
-	}
-
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#canSetBuilding(org.saga.SagaPlayer, org.saga.buildings.Building)
-	 */
-	@Override
-	public boolean canRemoveBuilding(SagaPlayer sagaPlayer, Building building) {
-
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// Check role:
-		Proficiency role = playerRoles.get(sagaPlayer.getName());
-		if(role == null){
-			return false;
-		}
-		
-		// Check permission:
-		return role.hasSettlementPermission(SettlementPermission.REMOVE_BUILDING);
-		
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#canDeclareOwner(org.saga.SagaPlayer)
-	 */
-	@Override
-	public boolean canDeclareOwner(SagaPlayer sagaPlayer) {
-		
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		return !hasOwner() && isMember(sagaPlayer);
-		
-	}
-
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#canSetBuilding(org.saga.SagaPlayer, org.saga.buildings.Building)
-	 */
-	public boolean canSetRole(SagaPlayer sagaPlayer) {
-
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// Check role:
-		Proficiency role = playerRoles.get(sagaPlayer.getName());
-		if(role == null){
-			return false;
-		}
-		
-		// Check permission:
-		return role.hasSettlementPermission(SettlementPermission.SET_ROLE);
-		
-	}
-	
-	@Override
-	public boolean canRename(SagaPlayer sagaPlayer) {
-
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// Check role:
-		Proficiency role = playerRoles.get(sagaPlayer.getName());
-		if(role == null){
-			return false;
-		}
-		
-		// Check permission:
-		return role.hasSettlementPermission(SettlementPermission.RENAME);
-		
-	}
-
-
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#canKick(org.saga.SagaPlayer)
-	 */
-	@Override
-	public boolean canSpawn(SagaPlayer sagaPlayer) {
-
-
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// Check membership:
-		return isMember(sagaPlayer);
-		
-		
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#canHurtAnimals(org.saga.player.SagaPlayer)
-	 */
-	@Override
-	public boolean canHurtAnimals(SagaPlayer sagaPlayer) {
-
-
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// Check membership:
-		return isMember(sagaPlayer);
-		
-		
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#canHurtAnimals(org.saga.player.SagaPlayer)
-	 */
-	@Override
-	public boolean canTrample(SagaPlayer sagaPlayer) {
-
-
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// Check membership:
-		return isMember(sagaPlayer);
-		
-		
-	}
-
-	@Override
-	public boolean canUseCommand(SagaPlayer sagaPlayer, String command) {
-		
-		if(super.canUseCommand(sagaPlayer, command)) return true;
-
-		return isMember(sagaPlayer);
-	
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#canUseSplashPotion(org.saga.player.SagaPlayer, java.lang.Short)
-	 */
-	@Override
-	public boolean canUsePotion(SagaPlayer sagaPlayer, Short durability) {
-	
-		if(BalanceConfiguration.config().getHarmfulSplashPotions().contains(durability)) return false;
-
-		return true;
-	
-	}
-
 	
 	
 	// Information:
@@ -969,6 +620,8 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	}
 	
 	
+	
+	// Types:
 	/**
 	 * Settlement permissions.
 	 * 
@@ -977,23 +630,25 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	 */
 	public enum SettlementPermission{
 		
+		ACCESS_WAREHOUSE,
 		BUILD,
 		BUILD_BUILDING,
 		CLAIM,
+		CLAIM_SETTLEMENT,
 		ABANDON,
-		DISOLVE,
+		DECLARE_OWNER,
+		DISSOLVE,
 		INVITE,
 		KICK,
 		SET_ROLE,
 		SET_BUILDING,
 		REMOVE_BUILDING,
 		RENAME,
-		
 		MANAGE_BUILDINGS,
 		MANAGE_HOMES,
 		MANAGE_TRADING_POST,
-		ACCESS_WAREHOUSE;
-		
+		MEMBER_COMMAND,
+		SPAWN;
 		
 	}
 	

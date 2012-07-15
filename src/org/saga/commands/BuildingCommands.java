@@ -1043,7 +1043,7 @@ public class BuildingCommands {
 		}
 		
 		// Permission:
-		if( !selectedChunkGroup.canSpawn(sagaPlayer) ){
+		if( !selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.SPAWN) ){
 			sagaPlayer.message(SagaMessages.noPermission());
 			return;
 		}

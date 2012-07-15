@@ -58,14 +58,14 @@
   {"name":"noble",
     "type":"ROLE",
     "hierarchyLevel":"10",
-    "settlementPermissions":["BUILD","BUILD_BUILDING","CLAIM","INVITE","ABANDON","KICK","SET_BUILDING","REMOVE_BUILDING","RENAME"],
+    "settlementPermissions":["BUILD","BUILD_BUILDING","CLAIM","INVITE","ABANDON","KICK","SET_BUILDING","REMOVE_BUILDING","RENAME","SPAWN","MEMBER_COMMAND"],
     "factionPermissions":[]
   },
 
   {"name":"commoner",
     "type":"ROLE",
     "hierarchyLevel":"1",
-    "settlementPermissions":["BUILD"],
+    "settlementPermissions":["BUILD","SPAWN","MEMBER_COMMAND"],
     "factionPermissions":[]
   },
 

@@ -24,6 +24,7 @@ import org.saga.messages.SagaMessages;
 import org.saga.messages.SettlementEffects;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;
+import org.saga.settlements.Settlement.SettlementPermission;
 import org.saga.settlements.SettlementDefinition;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
@@ -167,7 +168,7 @@ public class ChunkGroupCommands {
 		}
 	   	
 	   	// Permissions:
-	   	if(!selectedChunkGroup.canClaim(sagaPlayer)){
+	   	if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.CLAIM)){
 	   		sagaPlayer.message(SagaMessages.noPermission());
 	   		return;
 	   	}
@@ -177,7 +178,7 @@ public class ChunkGroupCommands {
 	   	if(selectedChunkGroup instanceof Settlement){
 	   		selectedSettlement = (Settlement) selectedChunkGroup;
 	   	}
-	   	if(selectedSettlement == null || !selectedSettlement.isClaimAvailable()){
+	   	if(selectedSettlement == null || !selectedSettlement.isClaimsAvailable()){
 	   		sagaPlayer.message(ChunkGroupMessages.notEnoughClaims());
 	   		return;
 	   	}
@@ -239,7 +240,7 @@ public class ChunkGroupCommands {
 		}
 
 		// Permission:
-		if(!selectedChunkGroup.canClaimChunkGroup(sagaPlayer)){
+		if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.CLAIM_SETTLEMENT)){
 			sagaPlayer.message(SagaMessages.noPermission());
 			return;
 		}
@@ -251,7 +252,7 @@ public class ChunkGroupCommands {
     	}
 		
 		// Already in chunk group:
-		if(selectedChunkGroup.hasPlayer(sagaPlayer.getName())){
+		if(selectedChunkGroup.hasMember(sagaPlayer.getName())){
 			sagaPlayer.message(ChunkGroupMessages.alreadyInTheChunkGroup(selectedChunkGroup));
 			return;
 		}
@@ -309,7 +310,7 @@ public class ChunkGroupCommands {
 	   	ChunkGroup selectedGroup = selectedChunk.getChunkGroup();
 	   	
 	   	// Permissions:
-	   	if(!selectedGroup.canAbandon(sagaPlayer)){
+	   	if(!selectedGroup.hasPermission(sagaPlayer, SettlementPermission.ABANDON)){
 	   		sagaPlayer.message(SagaMessages.noPermission());
 	   		return;
 	   	}
@@ -393,13 +394,13 @@ public class ChunkGroupCommands {
 		
 		
 		// Permission:
-		if( !selectedChunkGroup.canInvite(sagaPlayer) ){
+		if( !selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.INVITE) ){
 			sagaPlayer.message(SagaMessages.noPermission());
 			return;
 		}
 		
 		// Already a member:
-		if(selectedChunkGroup.hasPlayer( selectedPlayer.getName()) ){
+		if(selectedChunkGroup.hasMember( selectedPlayer.getName()) ){
 		
 			sagaPlayer.message( ChunkGroupMessages.alreadyInTheChunkGroup(selectedPlayer, selectedChunkGroup) );
 			// Unforce:
@@ -549,14 +550,14 @@ public class ChunkGroupCommands {
 			
 		}
 		
-		// Permission:
-		if(!selectedChunkGroup.canQuit(sagaPlayer)){
-			sagaPlayer.message(SagaMessages.noPermission());
-			return;
-		}
+//		// Permission:
+//		if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.QUIT)){
+//			sagaPlayer.message(SagaMessages.noPermission());
+//			return;
+//		}
 
 		// Not a member:
-		if( !selectedChunkGroup.hasPlayer(sagaPlayer.getName()) ){
+		if( !selectedChunkGroup.hasMember(sagaPlayer.getName()) ){
 			sagaPlayer.message(ChunkGroupMessages.notChunkGroupMember(selectedChunkGroup));
 			return;
 		}
@@ -640,7 +641,7 @@ public class ChunkGroupCommands {
 		}
 		
 		// Permission:
-		if(!selectedChunkGroup.canKick(sagaPlayer)){
+		if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.KICK)){
 			sagaPlayer.message(SagaMessages.noPermission());
 			return;
 		}
@@ -655,7 +656,7 @@ public class ChunkGroupCommands {
 		}
 		
 		// Target in the faction:
-		if(!selectedChunkGroup.hasPlayer(kickedPlayer.getName())){
+		if(!selectedChunkGroup.hasMember(kickedPlayer.getName())){
 			sagaPlayer.message(ChunkGroupMessages.playerNotChunkGroupMember(kickedPlayer, selectedChunkGroup));
 			// Unforce:
 			Saga.plugin().unforceSagaPlayer(tragetName);
@@ -1108,7 +1109,7 @@ public class ChunkGroupCommands {
 		}
 		
 		// Permission:
-		if(!selectedChunkGroup.canDeclareOwner(sagaPlayer)){
+		if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.DECLARE_OWNER)){
 			sagaPlayer.message(SagaMessages.noPermission());
 			return;
 		}
@@ -1180,7 +1181,7 @@ public class ChunkGroupCommands {
 		}
 		
 		// Permission:
-		if(!selectedChunkGroup.canSetBuilding(sagaPlayer, selectedBuilding)){
+		if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.SET_BUILDING)){
 			sagaPlayer.message(SagaMessages.noPermission(selectedChunkGroup));
 			return;
 		}
@@ -1249,7 +1250,7 @@ public class ChunkGroupCommands {
 		}
 		
 		// Permission:
-		if(!selectedChunkGroup.canRemoveBuilding(sagaPlayer, selectedBuilding)){
+		if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.REMOVE_BUILDING)){
 			sagaPlayer.message(SagaMessages.noPermission(selectedChunkGroup));
 			return;
 		}
@@ -1324,7 +1325,7 @@ public class ChunkGroupCommands {
 		Settlement selectedSettlement = (Settlement) selectedChunkGroup;
 
 		// Permission:
-		if(!selectedSettlement.canSetRole(sagaPlayer)){
+		if(!selectedSettlement.hasPermission(sagaPlayer, SettlementPermission.SET_ROLE)){
 			sagaPlayer.message(SagaMessages.noPermission(selectedChunkGroup));
 			return;
 		}
@@ -1415,7 +1416,7 @@ public class ChunkGroupCommands {
 		}
 
 		// Permission:
-		if(!selectedChunkGroup.canRename(sagaPlayer)){
+		if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.RENAME)){
 			sagaPlayer.message(SagaMessages.noPermission(selectedChunkGroup));
 			return;
 		}
@@ -1554,7 +1555,7 @@ public class ChunkGroupCommands {
 		}
 	   	
 	   	// Permissions:
-	   	if(!selectedChunkGroup.canDisolve(sagaPlayer)){
+	   	if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.DISSOLVE)){
 	   		sagaPlayer.message(SagaMessages.noPermission(selectedChunkGroup));
 	   		return;
 	   	}

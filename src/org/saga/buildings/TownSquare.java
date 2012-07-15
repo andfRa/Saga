@@ -1,26 +1,18 @@
 package org.saga.buildings;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 import org.bukkit.Location;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.util.Vector;
-import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.chunkGroups.ChunkGroup;
-import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.messages.BuildingMessages;
-import org.saga.messages.ChunkGroupMessages;
-import org.saga.messages.SagaMessages;
 import org.saga.player.SagaPlayer;
-import org.sk89q.Command;
-import org.sk89q.CommandContext;
-import org.sk89q.CommandPermissions;
 
 public class TownSquare extends Building{
 
@@ -201,88 +193,6 @@ public class TownSquare extends Building{
 		
 	}
 	
-	
-	// Commands:
-	@Command(
-            aliases = {"sspawn"},
-            usage = "",
-            flags = "",
-            desc = "Spawn in your settlement town square.",
-            min = 0,
-            max = 1)
-	@CommandPermissions({"saga.user.settlement.building.townsquare.spawn"})
-	public static void spawn(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-		
-		ChunkGroup selectedChunkGroup = null;
-		
-		// Arguments:
-		if(args.argsLength() == 1){
-			
-			// Chunk group:
-			String groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
-			selectedChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(groupName);
-			if(selectedChunkGroup == null){
-				sagaPlayer.message(ChunkGroupMessages.noChunkGroup(groupName));
-				return;
-			}
-			
-		}else{
-			
-			// Chunk group:
-			selectedChunkGroup = sagaPlayer.getChunkGroup();
-			if(selectedChunkGroup == null){
-				sagaPlayer.message( ChunkGroupMessages.noChunkGroup() );
-				return;
-			}
-			
-		}
-		
-		// Permission:
-		if( !selectedChunkGroup.canSpawn(sagaPlayer) ){
-			sagaPlayer.message(SagaMessages.noPermission());
-			return;
-		}
-		
-		ArrayList<TownSquare> selectedBuildings = selectedChunkGroup.getBuildings(TownSquare.class);
-		
-		if(selectedBuildings.size() == 0){
-			sagaPlayer.message(noTownSquare(selectedChunkGroup));
-			return;
-		}
-		
-		Integer smallestCooldown = Integer.MAX_VALUE;
-		TownSquare selectedBuilding = null;
-		
-		for (TownSquare townSquare : selectedBuildings) {
-			
-			selectedBuilding = townSquare;
-			break;
-			
-		}
-		
-		// Everything on cool down:
-		if(selectedBuilding == null){
-			sagaPlayer.message(BuildingMessages.cooldown(Building.getName(TownSquare.class), smallestCooldown));
-			return;
-		}
-		
-		// Prepare chunk:
-		selectedBuilding.prepareChunk();
-		
-		// Location:
-		Location spawnLocation = selectedBuilding.getSpawnLocation();
-		if(spawnLocation == null){
-			SagaLogger.severe(selectedBuilding, sagaPlayer + " player failed to respawn at " + selectedBuilding.getDisplayName());
-			sagaPlayer.error("failed to respawn");
-			return;
-		}
-		
-		// Teleport:
-		sagaPlayer.teleport(spawnLocation);
-		
-	
-	}
 	
 	
 	// Messages:

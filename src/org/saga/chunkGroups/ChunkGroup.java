@@ -24,6 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.Building;
+import org.saga.config.BalanceConfiguration;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
@@ -104,6 +105,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	transient private Boolean isSavingEnabled;
 
 	
+	
 	// Bonuses:
 	/**
 	 * Forced pvp protection.
@@ -114,6 +116,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	 * Unlimited claims.
 	 */
 	private Boolean unlimitedClaimBonus;
+	
 	
 
 	// Properties:
@@ -128,14 +131,8 @@ public class ChunkGroup extends SagaCustomSerialization{
 	private Boolean lavaSpread;
 	
 	
-	// Initialisation:
-	/**
-	 * Used by gson.
-	 * 
-	 */
-	private ChunkGroup() {
-	}
 	
+	// Initialisation:
 	/**
 	 * Sets name and ID.
 	 * 
@@ -276,19 +273,9 @@ public class ChunkGroup extends SagaCustomSerialization{
 			integrity = false;
 		}
 		
-		return integrity && completeExtended();
+		return integrity;
 		
 		
-	}
-
-	/**
-	 * Completes extending class variable.
-	 * Should be overridden.
-	 * 
-	 * @return integrity
-	 */
-	protected boolean completeExtended() {
-		return true;
 	}
 
 	/**
@@ -911,7 +898,8 @@ public class ChunkGroup extends SagaCustomSerialization{
 	}
 
 	
-	// Player:
+	
+	// Players:
 	/**
 	 * Gets players associated.
 	 * 
@@ -931,30 +919,30 @@ public class ChunkGroup extends SagaCustomSerialization{
 	}
 	
 	/**
-	 * Gets the registered players.
+	 * Gets the registered members.
 	 * 
-	 * @return the registered players
+	 * @return registered members
 	 */
-	public ArrayList<SagaPlayer> getRegisteredPlayers() {
+	public ArrayList<SagaPlayer> getRegisteredMembers() {
 		return new ArrayList<SagaPlayer>(registeredPlayers);
 	}
 	
 	/**
-	 * Gets the registered player count
+	 * Gets the registered members count.
 	 * 
-	 * @return registered player count
+	 * @return registered members count
 	 */
-	public int getRegisteredPlayerCount() {
+	public int getRegisteredMemberCount() {
 		return registeredPlayers.size();
 	}
 	
 	/**
-	 * Checks if the player is on the chunk groups list.
+	 * Checks if the member is on the chunk groups list.
 	 * 
 	 * @param playerName player name
-	 * @return true if player is on the list
+	 * @return true if member is on the list
 	 */
-	public boolean hasPlayer(String playerName) {
+	public boolean hasMember(String playerName) {
 		
 
 		boolean registered = players.contains(playerName);
@@ -970,24 +958,24 @@ public class ChunkGroup extends SagaCustomSerialization{
 	}
 	
 	/**
-	 * Checks if the player is registered.
+	 * Checks if the member is registered.
 	 * 
 	 * @param sagaPlayer saga player
-	 * @return true if player is registered
+	 * @return true if member is registered
 	 */
-	public boolean hasRegisteredPlayer(SagaPlayer sagaPlayer) {
+	public boolean hasRegisteredMember(SagaPlayer sagaPlayer) {
 		
 		return registeredPlayers.contains(sagaPlayer);
 
 	}
 	
 	/**
-	 * Checks if the player is registered.
+	 * Checks if the member is registered.
 	 * 
 	 * @param playerName player name
-	 * @return true if player is registered
+	 * @return true if member is registered
 	 */
-	public boolean hasRegisteredPlayer(String playerName) {
+	public boolean hasRegisteredMember(String playerName) {
 		
 		for (int i = 0; i < registeredPlayers.size(); i++) {
 			if(registeredPlayers.get(i).getName().equals(playerName)) return true;
@@ -1006,7 +994,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	public boolean isMember(SagaPlayer sagaPlayer) {
 
 		
-		boolean iMember = hasPlayer(sagaPlayer.getName());
+		boolean iMember = hasMember(sagaPlayer.getName());
 		if(iMember) return true;
 		
 		ArrayList<SagaFaction> factions = getRegisteredFactions();
@@ -1030,13 +1018,12 @@ public class ChunkGroup extends SagaCustomSerialization{
 		for (String memberName : members) {
 			
 			if(memberName.equalsIgnoreCase(name)) return memberName;
-
-//			if(memberName.toLowerCase().contains(name)) name = memberName;
 			
 		}
 		return name;
 
 	}
+	
 	
 	
 	// Time:
@@ -1064,6 +1051,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 		
 	}
+	
 	
 	/**
 	 * Check if the player is active.
@@ -1164,6 +1152,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	}
 	
 	
+	
 	// Owners:
 	/**
 	 * Checks if the player counts as the owner of the settlement.
@@ -1214,6 +1203,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	}
 	
 	
+	
 	// Factions:
 	/**
 	 * Gets factions associated.
@@ -1253,6 +1243,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	}
 
 	
+	
 	// Permissions:
 	/**
 	 * Checks if the player has permission.
@@ -1266,187 +1257,6 @@ public class ChunkGroup extends SagaCustomSerialization{
 		return false;
 	}
 
-	/**
-	 * Checks if the player can build everywhere.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if the player can build
-	 */
-	public boolean canBuildBuildings(SagaPlayer sagaPlayer) {
-		return false;
-	}
-	
-	/**
-	 * Checks if the player can claim a chunk.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if the player can claim
-	 */
-	public boolean canClaim(SagaPlayer sagaPlayer) {
-		return false;
-	}
-	
-	/**
-	 * Checks if the player can abandon a chunk.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if the player can abandon
-	 */
-	public boolean canAbandon(SagaPlayer sagaPlayer) {
-		return false;
-	}
-	
-	/**
-	 * Checks if the player can delete the group.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if the player can delete
-	 */
-	public boolean canDisolve(SagaPlayer sagaPlayer) {
-		return false;
-	}
-
-	/**
-	 * Checks if the player has permission to invite.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if can invite
-	 */
-	public boolean canInvite(SagaPlayer sagaPlayer) {
-		return false;
-	}
-
-	/**
-	 * Checks if the player has permission to kick.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if can kick
-	 */
-	public boolean canKick(SagaPlayer sagaPlayer) {
-		return false;
-	}
-	
-	/**
-	 * Checks if the player has permission to quit.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if can quit
-	 */
-	public boolean canQuit(SagaPlayer sagaPlayer) {
-		return true;
-	}
-
-	/**
-	 * Checks if the chunk group can be claimed.
-	 * 
-	 * @param sagaPlayer saga player.
-	 * @return true if can be claimed
-	 */
-	public boolean canClaimChunkGroup(SagaPlayer sagaPlayer) {
-		return false;
-	}
-
-	/**
-	 * Checks if the player can set buildings.
-	 * 
-	 * @param sagaPlayer saga player.
-	 * @param building building
-	 * @return true if can be claimed
-	 */
-	public boolean canSetBuilding(SagaPlayer sagaPlayer, Building building) {
-		return false;
-	}
-	
-	/**
-	 * Checks if the player can remove buildings.
-	 * 
-	 * @param sagaPlayer saga player.
-	 * @param building building
-	 * @return true if can be claimed
-	 */
-	public boolean canRemoveBuilding(SagaPlayer sagaPlayer, Building building) {
-		return false;
-	}
-	
-	/**
-	 * Check if the player can declare owners.
-	 * 
-	 * @param sagaPlayer
-	 * @return
-	 */
-	public boolean canDeclareOwner(SagaPlayer sagaPlayer) {
-		return false;
-	}
-
-	/**
-	 * Checks if the player has permission to rename.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if can set color
-	 */
-	public boolean canRename(SagaPlayer sagaPlayer) {
-
-		return false;
-	}
-
-	/**
-	 * Checks if the player has permission to spawn.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if can spawn
-	 */
-	public boolean canSpawn(SagaPlayer sagaPlayer) {
-		return false;
-	}
-
-	/**
-	 * Checks if the player has permission to hurt animals.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if can hurt animals
-	 */
-	public boolean canHurtAnimals(SagaPlayer sagaPlayer) {
-		return true;
-	}
-	
-	/**
-	 * Checks if the player has permission to trample crops.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if can trample
-	 */
-	public boolean canTrample(SagaPlayer sagaPlayer) {
-		return false;
-	}
-
-	/**
-	 * Checks if the player has permission to use the command.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @param command comand
-	 * @return true if can use command
-	 */
-	public boolean canUseCommand(SagaPlayer sagaPlayer, String command) {
-		
-		if(ChunkGroupConfiguration.config().checkMemberOnlyCommand(command) && !sagaPlayer.isAdminMode()){
-			return false;
-		}
-		return true;
-		
-	}
-
-	/**
-	 * Checks if the player has permission to use potions.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @param durability durability
-	 * @return true if can use potion
-	 */
-	public boolean canUsePotion(SagaPlayer sagaPlayer, Short durability) {
-		
-		return false;
-		
-	}
 	
 	
 	// Bonuses:
@@ -1483,6 +1293,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	}
 	
 	
+	
 	// Messages:
 	/**
 	 * Broadcast a message to all members.
@@ -1502,8 +1313,9 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 	}
 	
+	
 
-	// Getters:
+	// Identification:
 	/**
 	 * Gets chunk group ID.
 	 * 
@@ -1531,6 +1343,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 		return name;
 	}
 
+	
 	
 	// Events:
 	/**
@@ -1572,7 +1385,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	
 	// Member events:
 	/**
-	 * Member respawn event.
+	 * Called when a member respawns.
 	 * 
 	 * @param sagaPlayer saga player
 	 * @param event event
@@ -1590,7 +1403,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	}
 	
 	/**
-	 * Member join event.
+	 * Called when a member joins.
 	 * 
 	 * @param sagaPlayer saga player
 	 * @param event event
@@ -1607,6 +1420,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 		
 	}
+	
 	
 	
 	// Block events:
@@ -1687,7 +1501,9 @@ public class ChunkGroup extends SagaCustomSerialization{
     	String command = event.getMessage().split(" ")[0].replace("/", "");
     	
     	// Permission:
-    	if(!canUseCommand(sagaPlayer, command)){
+    	if(ChunkGroupConfiguration.config().checkMemberOnlyCommand(command) && 
+    			!hasPermission(sagaPlayer, SettlementPermission.MEMBER_COMMAND)
+    	){
     		sagaPlayer.message(SagaMessages.noCommandPermission(this, command));
     		event.setCancelled(true);
     		return;
@@ -1729,7 +1545,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 
 			Short durability = item.getDurability();
 			
-			if(!canUsePotion(sagaPlayer, durability)){
+			if(BalanceConfiguration.config().getHarmfulSplashPotions().contains(durability)){
 				event.setUseItemInHand(Result.DENY);
 				sagaPlayer.message(SagaMessages.noPermission(this));
 				event.getPlayer().updateInventory();
@@ -1797,7 +1613,6 @@ public class ChunkGroup extends SagaCustomSerialization{
 	
 	
 	
-	
     // Other:
 	/* 
 	 * (non-Javadoc)
@@ -1809,6 +1624,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 		return getId() + "(" + getName() + ")";
 	}
 	
+
 	
 	// Control:
 	/**
@@ -1832,7 +1648,8 @@ public class ChunkGroup extends SagaCustomSerialization{
 	}
 
 	
-	// Load save
+	
+	// Load save:
 	/**
 	 * Loads and a faction from disc.
 	 * 
@@ -1850,20 +1667,20 @@ public class ChunkGroup extends SagaCustomSerialization{
 			
 		} catch (FileNotFoundException e) {
 			
-			SagaLogger.info(SagaFaction.class, "missing data for " + id + " ID");
-			config = new ChunkGroup();
+			SagaLogger.info(ChunkGroup.class, "missing data for " + id + " ID");
+			config = new ChunkGroup("invalid");
 			
 		} catch (IOException e) {
 			
-			SagaLogger.severe(SagaFaction.class, "failed to read data for " + id + " ID");
-			config = new ChunkGroup();
+			SagaLogger.severe(ChunkGroup.class, "failed to read data for " + id + " ID");
+			config = new ChunkGroup("invalid");
 			config.disableSaving();
 			
 		} catch (JsonParseException e) {
 			
-			SagaLogger.severe(SagaFaction.class, "failed to parse data for " + id + " ID: " + e.getClass().getSimpleName() + "");
+			SagaLogger.severe(ChunkGroup.class, "failed to parse data for " + id + " ID: " + e.getClass().getSimpleName() + "");
 			SagaLogger.info("Parse message: " + e.getMessage());
-			config = new ChunkGroup();
+			config = new ChunkGroup("invalid");
 			config.disableSaving();
 			
 		}
