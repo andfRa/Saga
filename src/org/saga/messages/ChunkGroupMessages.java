@@ -558,7 +558,7 @@ public class ChunkGroupMessages {
 		}
 		
 		// Column names:
-		table.addLine(new String[]{GeneralMessages.columnTitle("building"), GeneralMessages.columnTitle("next req.")});
+		table.addLine(new String[]{GeneralMessages.columnTitle("building"), GeneralMessages.columnTitle("status")});
 		
 		// Column values:
 		if(definitions.length != 0){
@@ -567,30 +567,41 @@ public class ChunkGroupMessages {
 				
 				// Values:
 				String name = names[j];
-				String requirements = requirements(definitions[j], levels[j]);
+				String status = "";
 
-				if(requirements.length() == 0) requirements = "-";
-				
-				// Multiple buildings:
-				Integer totalBuildings = settlement.getTotalBuildings(names[j]);
-				Integer usedBuildings = settlement.getUsedBuildings(names[j]);
-				if(totalBuildings != 1){
-					name = name + " " + usedBuildings + "/" + totalBuildings;
+				// Requirements met:
+				if(definitions[j].checkRequirements(settlement, 1)){
+					
+					// Multiple buildings:
+					Integer totalBuildings = settlement.getTotalBuildings(names[j]);
+					Integer usedBuildings = settlement.getUsedBuildings(names[j]);
+					
+					// Set:
+					if(usedBuildings > 0){
+						name = veryPositive + name;
+						status = veryPositive + "set";
+
+						if(totalBuildings != 1){
+							status = status + " " + usedBuildings + "/" + totalBuildings;
+						}
+					
+					}
+					
+					// Available:
+					else{
+						status = "available";
+					}
+					
+					
 				}
 				
-				// Not available:
-				if(!definitions[j].checkRequirements(settlement, 1)){
+				// Requirements not met:
+				else{
 					name = unavailable + name;
-					requirements = unavailable + requirements;
-				}
-				
-				// Already set:
-				if(usedBuildings > 0){
-					name = veryPositive + name;
-					requirements = veryPositive + requirements;
+					status = unavailable + "(" + requirements(definitions[j], 1) + ")";
 				}
 					
-				table.addLine(new String[]{name, requirements});
+				table.addLine(new String[]{name, status});
 			
 			}
 			
