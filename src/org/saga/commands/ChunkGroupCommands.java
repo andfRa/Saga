@@ -9,6 +9,7 @@ import org.saga.SagaLogger;
 import org.saga.buildings.Building;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupManager;
+import org.saga.chunkGroups.ChunkGroupToggleable;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.config.EconomyConfiguration;
@@ -1659,90 +1660,158 @@ public class ChunkGroupCommands {
 	}
 	
 	@Command(
-            aliases = {"astoggleclaims"},
-            usage = "[settlement name]",
+            aliases = {"asenable"},
+            usage = "[settlement name] <option>",
             flags = "",
-            desc = "Toggle unlimited claims for the settlement.",
-            min = 0,
-            max = 1
+            desc = "Enable option.",
+            min = 1,
+            max = 2
 	)
-	@CommandPermissions({"saga.admin.settlement.toggleunlimitedclaim"})
-	public static void toggleUnlimitedClaim(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	@CommandPermissions({"saga.admin.settlement.options.set.all"})
+	public static void enableOption(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
-		ChunkGroup selectedChunkGroup = null;
+		ChunkGroup selChunkGroup = null;
+		ChunkGroupToggleable option = null;
+
+		String aOption = null;
 		
 		// Arguments:
-		if(args.argsLength() == 1){
-			
-			selectedChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(args.getString(0));
-			if(selectedChunkGroup == null){
-			sagaPlayer.message( ChunkGroupMessages.noChunkGroup(args.getString(0)) );
-				return;
-			}
+		switch (args.argsLength()) {
+			case 2:
+				
+				// Chunk group:
+				selChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(args.getString(0));
+				if(selChunkGroup == null){
+					sagaPlayer.message( ChunkGroupMessages.noChunkGroup(args.getString(0)) );
+					return;
+				}
+				
+				// Option:
+				aOption = args.getString(1);
+				option = ChunkGroupToggleable.match(aOption);
+				if(option == null){
+					sagaPlayer.message(ChunkGroupMessages.optionInvalid(args.getString(1)));
+					sagaPlayer.message(ChunkGroupMessages.optionInvalidInfo());
+					return;
+				}
+				
+				break;
 
+			default:
 			
-		}else{
-			
-			selectedChunkGroup = sagaPlayer.getChunkGroup();
-			if(selectedChunkGroup == null){
-				sagaPlayer.message(ChunkGroupMessages.noChunkGroup());
-				return;
-			}
-			
+				// Chunk group:
+				selChunkGroup = sagaPlayer.getChunkGroup();
+				if(selChunkGroup == null){
+					sagaPlayer.message(ChunkGroupMessages.noChunkGroup());
+					return;
+				}
+				
+				// Option:
+				aOption = args.getString(0);
+				option = ChunkGroupToggleable.match(aOption);
+				if(option == null){
+					sagaPlayer.message(ChunkGroupMessages.optionInvalid(aOption));
+					sagaPlayer.message(ChunkGroupMessages.optionInvalidInfo());
+					return;
+				}
+				
+				break;
+				
 		}
 		
-		// Toggle:
-		selectedChunkGroup.toggleUnlimitedClaim();
+		// Already enabled:
+		if(selChunkGroup.isOptionEnabled(option)){
+			sagaPlayer.message(ChunkGroupMessages.optionAlreadyEnabled(selChunkGroup, option));
+			return;
+		}
+		
+		// Enable:
+		selChunkGroup.enableOption(option);
 		
 		// Inform:
-		sagaPlayer.message(ChunkGroupMessages.toggleUnlimitedClaim(selectedChunkGroup));
+		sagaPlayer.message(ChunkGroupMessages.optionToggle(selChunkGroup, option));
 		
 		
 	}
 	
 	@Command(
-            aliases = {"astogglepvp"},
-            usage = "[settlement name]",
+            aliases = {"asdisable"},
+            usage = "[settlement name] <option>",
             flags = "",
-            desc = "Toggle pvp protection for the settlement.",
-            min = 0,
-            max = 1
+            desc = "Disable option.",
+            min = 1,
+            max = 2
 	)
-	@CommandPermissions({"saga.admin.settlement.togglepvpprotection"})
-	public static void togglePvp(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	@CommandPermissions({"saga.admin.settlement.options.set.all"})
+	public static void disableOption(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
-		ChunkGroup selectedChunkGroup = null;
+		ChunkGroup selChunkGroup = null;
+		ChunkGroupToggleable option = null;
+		
+		String aOption = null;
 		
 		// Arguments:
-		if(args.argsLength() == 1){
-			
-			selectedChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(args.getString(0));
-			if(selectedChunkGroup == null){
-			sagaPlayer.message( ChunkGroupMessages.noChunkGroup(args.getString(0)) );
-				return;
-			}
+		switch (args.argsLength()) {
+			case 2:
+				
+				// Chunk group:
+				selChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(args.getString(0));
+				if(selChunkGroup == null){
+					sagaPlayer.message( ChunkGroupMessages.noChunkGroup(args.getString(0)) );
+					return;
+				}
+				
+				// Option:
+				aOption = args.getString(1);
+				option = ChunkGroupToggleable.match(aOption);
+				if(option == null){
+					sagaPlayer.message(ChunkGroupMessages.optionInvalid(args.getString(1)));
+					sagaPlayer.message(ChunkGroupMessages.optionInvalidInfo());
+					return;
+				}
+				
+				break;
 
+			default:
 			
-		}else{
-			
-			selectedChunkGroup = sagaPlayer.getChunkGroup();
-			if(selectedChunkGroup == null){
-				sagaPlayer.message(ChunkGroupMessages.noChunkGroup());
-				return;
-			}
-			
+				// Chunk group:
+				selChunkGroup = sagaPlayer.getChunkGroup();
+				if(selChunkGroup == null){
+					sagaPlayer.message(ChunkGroupMessages.noChunkGroup());
+					return;
+				}
+				
+				// Option:
+				aOption = args.getString(0);
+				option = ChunkGroupToggleable.match(aOption);
+				if(option == null){
+					sagaPlayer.message(ChunkGroupMessages.optionInvalid(aOption));
+					sagaPlayer.message(ChunkGroupMessages.optionInvalidInfo());
+					return;
+				}
+				
+				break;
+				
 		}
 		
-		// Toggle:
-		selectedChunkGroup.togglePvpProtectionBonus();
+		// Already disabled:
+		if(!selChunkGroup.isOptionEnabled(option)){
+			sagaPlayer.message(ChunkGroupMessages.optionAlreadyDisabled(selChunkGroup, option));
+			return;
+		}
+		
+		// Disabled:
+		selChunkGroup.disableOption(option);
 		
 		// Inform:
-		sagaPlayer.message(ChunkGroupMessages.togglePvp(selectedChunkGroup));
+		sagaPlayer.message(ChunkGroupMessages.optionToggle(selChunkGroup, option));
 		
 		
 	}
+	
+	
 	
 	public static boolean validateName(String str) {
 

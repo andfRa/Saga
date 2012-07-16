@@ -4,13 +4,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
 import org.saga.buildings.Building;
 import org.saga.buildings.BuildingDefinition;
 import org.saga.chunkGroups.ChunkGroup;
+import org.saga.chunkGroups.ChunkGroupToggleable;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.commands.ChunkGroupCommands;
 import org.saga.config.ChunkGroupConfiguration;
@@ -1083,26 +1083,56 @@ public class ChunkGroupMessages {
 		
 	}
 	
-	// Bonuses:
-	public static String togglePvp(ChunkGroup chunkGroup) {
+	
+	
+	// Options:
+	public static String optionToggle(ChunkGroup chunkGroup, ChunkGroupToggleable option) {
 		
-		if(chunkGroup.hasPvpProtectionBonus()){
-			return positive + "Enabled pvp protection for " + chunkGroup.getName() + ".";
+		if(chunkGroup.isOptionEnabled(option)){
+			return positive + "Enabled " + option + " for " + chunkGroup.getName() + ".";
 		}else{
-			return positive + "Disabled pvp protection for " + chunkGroup.getName() + ".";
+			return positive + "Disabled " + option + " for " + chunkGroup.getName() + ".";
 		}
 
 	}
 	
-	public static String toggleUnlimitedClaim(ChunkGroup chunkGroup) {
+	public static String optionAlreadyEnabled(ChunkGroup chunkGroup, ChunkGroupToggleable option){
 		
-		if(chunkGroup.hasUnlimitedClaimBonus()){
-			return positive + "Enabled unlimited claim points for " + chunkGroup.getName() + ".";
-		}else{
-			return positive + "Disabled unlimited claim points for " + chunkGroup.getName() + ".";
-		}
-
+		return negative + "Option " + option.toString() + " is already enabled for " + chunkGroup.getName() + " settlement.";
+		
 	}
+	
+	public static String optionAlreadyDisabled(ChunkGroup chunkGroup, ChunkGroupToggleable option){
+		
+		return negative + "Option " + option.toString() + " is already disabled for " + chunkGroup.getName() + " settlement.";
+		
+	}
+	
+	public static String optionInvalid(String option){
+		
+		return negative + "Option " + option + " is not valid.";
+		
+	}
+	
+	public static String optionInvalidInfo(){
+		
+		
+		ChunkGroupToggleable[] options = ChunkGroupToggleable.values();
+		ArrayList<String> validOptions = new ArrayList<String>();
+		for (int i = 0; i < options.length; i++) {
+			
+			validOptions.add(options[i].toString().replace(" ", SagaMessages.spaceSymbol));
+			
+		}
+		
+		return normal1 + "Valid options: " + TextUtil.flatten(validOptions) + ".";
+
+		
+	}
+	
+	
+	
+	
 	
 	
 	// Move:

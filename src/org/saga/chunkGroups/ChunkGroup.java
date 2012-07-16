@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Hashtable;
 
 import org.bukkit.Chunk;
@@ -106,7 +107,12 @@ public class ChunkGroup extends SagaCustomSerialization{
 
 	
 	
-	// Bonuses:
+	// Options:
+	/**
+	 * Toggle options.
+	 */
+	private HashSet<ChunkGroupToggleable> toggleOptions;
+	
 	/**
 	 * Forced pvp protection.
 	 */
@@ -141,18 +147,21 @@ public class ChunkGroup extends SagaCustomSerialization{
 	 */
 	public ChunkGroup(String name){
 		
+		
 		this.name = name;
 		this.id = ChunkGroupManager.manager().getUnusedChunkGroupId();
-		players = new ArrayList<String>();
-		factions = new ArrayList<Integer>();
-		groupChunks = new ArrayList<SagaChunk>();
-		isSavingEnabled = true;
-		owner = "";
-		lastOnlineDates = new Hashtable<String, Date>();
-		pvpProtectionBonus = false;
-		unlimitedClaimBonus = false;
-		fireSpread = false;
-		lavaSpread = false;
+		this.players = new ArrayList<String>();
+		this.factions = new ArrayList<Integer>();
+		this.groupChunks = new ArrayList<SagaChunk>();
+		this.isSavingEnabled = true;
+		this.owner = "";
+		this.lastOnlineDates = new Hashtable<String, Date>();
+		this.pvpProtectionBonus = false;
+		this.unlimitedClaimBonus = false;
+		this.fireSpread = false;
+		this.lavaSpread = false;
+		this.toggleOptions = new HashSet<ChunkGroupToggleable>();
+		
 		
 	}
 	
@@ -249,18 +258,6 @@ public class ChunkGroup extends SagaCustomSerialization{
 			
 		}
 		
-		// Bonuses:
-		if(pvpProtectionBonus == null){
-			SagaLogger.nullField(this, "this");
-			pvpProtectionBonus = false;
-			integrity = false;
-		}
-		if(unlimitedClaimBonus == null){
-			SagaLogger.nullField(this, "unlimitedClaimBonus");
-			unlimitedClaimBonus = false;
-			integrity = false;
-		}
-		
 		// Properties:
 		if(fireSpread == null){
 			SagaLogger.nullField(this, "fireSpread");
@@ -270,6 +267,25 @@ public class ChunkGroup extends SagaCustomSerialization{
 		if(lavaSpread == null){
 			SagaLogger.nullField(this, "lavaSpread");
 			lavaSpread = false;
+			integrity = false;
+		}
+		
+		if(toggleOptions == null){
+//			SagaLogger.nullField(this, "toggleOptions");
+			toggleOptions = new HashSet<ChunkGroupToggleable>();
+			
+			// TODO: Remove options migration
+			if(pvpProtectionBonus != null && pvpProtectionBonus){
+				toggleOptions.add(ChunkGroupToggleable.PVP_PROTECTION);
+			}
+			if(unlimitedClaimBonus != null && unlimitedClaimBonus){
+				toggleOptions.add(ChunkGroupToggleable.UNLIMITED_CLAIMS);
+			}
+			
+//			integrity = false;
+		}
+		if(toggleOptions.remove(null)){
+			SagaLogger.nullField(this, "toggleOptions element");
 			integrity = false;
 		}
 		
@@ -1261,18 +1277,53 @@ public class ChunkGroup extends SagaCustomSerialization{
 	
 	// Bonuses:
 	/**
+	 * Checks if the option is enabled.
+	 * 
+	 * @param option toggle option
+	 * @return true if enabled
+	 */
+	public boolean isOptionEnabled(ChunkGroupToggleable option) {
+
+		return toggleOptions.contains(option);
+
+	}
+	
+	/**
+	 * Enables option.
+	 * 
+	 * @param option toggle option
+	 */
+	public void enableOption(ChunkGroupToggleable option) {
+
+		toggleOptions.add(option);
+
+	}
+	
+	/**
+	 * Disables option.
+	 * 
+	 * @param option toggle option
+	 */
+	public void disableOption(ChunkGroupToggleable option) {
+
+		toggleOptions.remove(option);
+
+	}
+	
+	
+	/**
 	 * Gets the forcedPvpProtection.
 	 * 
 	 * @return the forcedPvpProtection
 	 */
-	public Boolean hasPvpProtectionBonus() {
+	public Boolean hasPvpProtectionBonus2() {
 		return pvpProtectionBonus;
 	}
 
 	/**
 	 * Toggles the forcedPvpProtection.
 	 */
-	public void togglePvpProtectionBonus() {
+	public void togglePvpProtectionBonus2() {
 		this.pvpProtectionBonus = !pvpProtectionBonus;
 	}
 
@@ -1281,14 +1332,14 @@ public class ChunkGroup extends SagaCustomSerialization{
 	 * 
 	 * @return the enabledUnlimitedClaim
 	 */
-	public Boolean hasUnlimitedClaimBonus() {
+	public Boolean hasUnlimitedClaimBonus2() {
 		return unlimitedClaimBonus;
 	}
 
 	/**
 	 * Toggles the enabledUnlimitedClaim.
 	 */
-	public void toggleUnlimitedClaim() {
+	public void toggleUnlimitedClaim2() {
 		this.unlimitedClaimBonus = !unlimitedClaimBonus;
 	}
 	
@@ -1567,7 +1618,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	void onEntityDamage(SagaEntityDamageEvent event, SagaChunk locationChunk){
 
 		// Deny pvp:
-		if(hasPvpProtectionBonus()) event.addPvpOverride(PvPOverride.SAFE_AREA_DENY);
+		if(isOptionEnabled(ChunkGroupToggleable.PVP_PROTECTION)) event.addPvpOverride(PvPOverride.SAFE_AREA_DENY);
 		
 	}
 	

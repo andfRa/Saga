@@ -12,6 +12,7 @@ import org.saga.SagaLogger;
 import org.saga.buildings.Building;
 import org.saga.buildings.BuildingDefinition;
 import org.saga.chunkGroups.ChunkGroup;
+import org.saga.chunkGroups.ChunkGroupToggleable;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.config.ProficiencyConfiguration;
@@ -500,7 +501,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	 * @return true if available
 	 */
 	public boolean isClaimsAvailable() {
-		return getAvailableClaims() > 0 || hasUnlimitedClaimBonus();
+		return getAvailableClaims() > 0 || isOptionEnabled(ChunkGroupToggleable.UNLIMITED_CLAIMS);
 	}
 	
 	
