@@ -39,6 +39,7 @@
     "permissions":{"noble":"HIGH"},
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":2,"y1":1.0,"x2":50,"y2":1.0},
+    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "description":"Enables settlement spawn command: /sspawn."
   },
 
@@ -55,6 +56,7 @@
     "permissions":{"commoner":"LOW","noble":"HIGH"},
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":7,"y1":1.0,"x2":50,"y2":1.0},
+    "storageAreas":{"x1":1,"y1":3.0,"x2":3,"y2":9.0},
     "description":"Limits chest access to settlement members."
   },
 
@@ -73,7 +75,8 @@
     "permissions":{"councilman":"LOW","trader apprentice":"LOW","trader journeyman":"MEDIUM","master trader":"HIGH"},
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":4,"y1":1.0,"x2":50,"y2":1.0},
-    "description":"Allows to sell, buy, export and impor items."
+    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "description":"Allows to sell, buy, export and import items."
   },
 
   "barracks":{
@@ -89,6 +92,7 @@
     "permissions":{"noble":"HIGH"},
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":10,"y1":1.0,"x2":50,"y2":1.0},
+    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "description":"Trains warrior related attributes."
   },
 
@@ -105,6 +109,7 @@
     "permissions":{"noble":"HIGH"},
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":15,"y1":1.0,"x2":50,"y2":1.0},
+    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "description":"Records player kills and deaths."
   },
 
@@ -121,6 +126,7 @@
     "permissions":{"noble":"HIGH"},
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":10,"y1":1.0,"x2":50,"y2":1.0},
+    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "description":"Trains rogue related attributes."
   },
 
@@ -137,6 +143,7 @@
     "permissions":{"noble":"HIGH"},
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":10,"y1":1.0,"x2":50,"y2":1.0},
+    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "description":"Trains mage related attributes. Recharges guardian stones."
   },
 
@@ -153,6 +160,7 @@
     "permissions":{"noble":"HIGH"},
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":5,"y1":1.0,"x2":50,"y2":8.0},
+    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "description":"Stops mobs from spawning within a certain claimed area."
   },
 
@@ -169,6 +177,7 @@
     "permissions":{"noble":"HIGH"},
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":0,"y1":1.0,"x2":200,"y2":1000.0},
+    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "description":"Limits build access to settlement owner and residents, /baddresident and /bremoveresident to add and remove residents."
   },
 
@@ -185,6 +194,7 @@
     "permissions":{"noble":"HIGH"},
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":20,"y1":1.0,"x2":50,"y2":5.0},
+    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "description":"Regenerates lost experience."
   },
 
@@ -201,6 +211,7 @@
     "permissions":{"noble":"HIGH"},
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
+    "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":3.0},
     "description":"Trains woodsman related attributes."
   },
 
@@ -217,6 +228,7 @@
     "permissions":{"noble":"HIGH"},
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
+    "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":3.0},
     "description":"Trains miner related attributes."
   },
 
@@ -233,6 +245,7 @@
     "permissions":{"noble":"HIGH"},
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
+    "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":3.0},
     "description":"Trains farmer related attributes, prevents animals from being killed and soil from being trampled."
   },
 
@@ -249,6 +262,7 @@
     "permissions":{"noble":"HIGH"},
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
+    "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":3.0},
     "description":"Trains blacksmith related attributes."
   }
 

@@ -72,6 +72,13 @@ public class BuildingDefinition {
 	private TwoPointFunction available;
 	
 	
+	// Crafting:
+	/**
+	 * Number of storage areas available.
+	 */
+	private TwoPointFunction storageAreas;
+	
+	
 	// Info:
 	/**
 	 * Description.
@@ -223,6 +230,13 @@ public class BuildingDefinition {
 			integrity = false;
 		}
 		integrity = available.complete() && integrity;
+		
+		if(storageAreas == null){
+			storageAreas = new TwoPointFunction(0.0);
+			SagaLogger.nullField(BuildingDefinition.class, "storageAreas");
+			integrity = false;
+		}
+		integrity = storageAreas.complete() && integrity;
 		
 		if(description == null){
 			description = "<no description>";
@@ -458,6 +472,19 @@ public class BuildingDefinition {
 		
 	}
 
+	
+	
+	// Crafting:
+	/**
+	 * Gets the total amount of storage areas available.
+	 * 
+	 * @param buildingLevel building level
+	 * @return storage areas available
+	 */
+	public Integer getTotalStorages(Integer buildingLevel) {
+		return storageAreas.intValue(buildingLevel);
+	}
+	
 	
 	
 	// Info:

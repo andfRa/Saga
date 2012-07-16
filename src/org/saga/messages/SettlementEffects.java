@@ -1,9 +1,13 @@
 package org.saga.messages;
 
+import java.util.ArrayList;
+
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.saga.buildings.Building;
+import org.saga.buildings.storage.StorageArea;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.player.SagaPlayer;
 
@@ -157,6 +161,29 @@ public class SettlementEffects {
 		
 		
 	}
+	
+	public static void playStoreAreaCreate(SagaPlayer sagaPlayer, StorageArea storeArea) {
+		
+		
+		ArrayList<Block> blocks = storeArea.getAllStorage();
+		
+		for (Block block : blocks) {
+			
+			Location location = new Location(block.getWorld(), block.getX() + 0.5, block.getY() + 0.5, block.getZ() + 0.5);
+			
+			sagaPlayer.playGlobalEffect(Effect.MOBSPAWNER_FLAMES, 0, location);
+			
+		}
+		
+	}
+	
+	public static void playStoreAreaRemove(SagaPlayer sagaPlayer, StorageArea storeArea) {
+		
+		playStoreAreaCreate(sagaPlayer, storeArea);
+		
+	}
+		
+
 	
 	
 }

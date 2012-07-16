@@ -691,7 +691,18 @@ public class SagaChunk {
 	 * @param sagaPlayer saga player
 	 */
 	public void onBlockPlace(BlockPlaceEvent event, SagaPlayer sagaPlayer) {
-		
+
+		if(bld != null){
+			
+			Block targetBlock = event.getBlock();
+			
+			// Storage area:
+			if(bld.checkStorageArea(targetBlock)){
+				bld.handleStore(event, sagaPlayer);
+			}
+			
+		}
+
 	}
 	
 	/**
@@ -703,10 +714,16 @@ public class SagaChunk {
 	public void onBlockBreak(BlockBreakEvent event, SagaPlayer sagaPlayer) {
 		
 
-		// Sign:
 		if(bld != null){
 			
 			Block targetBlock = event.getBlock();
+			
+			// Storage area:
+			if(bld.checkStorageArea(targetBlock)){
+				bld.handleWithdraw(event, sagaPlayer);
+			}
+			
+			// Sign:
 			if((targetBlock.getState() instanceof Sign)){
 						
 				bld.handleSignRemove(sagaPlayer, (Sign)targetBlock.getState(), event);

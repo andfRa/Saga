@@ -133,9 +133,10 @@ public class RelativeShape {
 	 * @param anchor anchor location
 	 * @param orientation orientation
 	 * @param level level
+	 * @param pFilter shape filter
 	 * @return shape
 	 */
-	public ArrayList<Block> getBlocks(Location anchor, Orientation orientation, Integer level) {
+	public ArrayList<Block> getBlocks(Location anchor, Orientation orientation, Integer level, ShapeFilter pFilter) {
 		
 		
 		ArrayList<Block> blocks = new ArrayList<Block>();
@@ -144,7 +145,7 @@ public class RelativeShape {
 			
 			Block block = anchor.getBlock().getRelative(getXOffset(orientation, i), getYOffset(orientation, i), getZOffset(orientation, i));
 			
-			if(filter != null && !filter.checkBlock(block)) continue;
+			if(pFilter != null && !pFilter.checkBlock(block)) continue;
 			
 			Integer reqLevel = reqLevels.get(i);
 			if(reqLevel != -1 && level < reqLevel) continue;
@@ -158,6 +159,18 @@ public class RelativeShape {
 		
 	}
 
+	/**
+	 * Gets the blocks of the shape.
+	 * 
+	 * @param anchor anchor location
+	 * @param orientation orientation
+	 * @param level level
+	 * @return shape
+	 */
+	public ArrayList<Block> getBlocks(Location anchor, Orientation orientation, Integer level) {
+		return getBlocks(anchor, orientation, level, this.filter);
+	}
+	
 	/**
 	 * Gets x offset.
 	 * 

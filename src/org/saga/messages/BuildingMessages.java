@@ -67,14 +67,67 @@ public class BuildingMessages {
 
 	
 	
-	
-	// General commands:
+	// General buildings:
 	public static String invalidBuilding(String correctBuildingName, String command){
 		
 		return negative + command + " can only be used from a " + correctBuildingName + ".";
 		
 	}
 	
+	public static String noBuilding(){
+		
+		return negative + "No building on this chunk of land.";
+		
+	}
+	
+	
+	
+	// Storage:
+	public static String storeAreaOverlap(){
+		
+		return negative + "Storage areas can't overlap.";
+		
+	}
+	
+	public static String storeAreaSingleChunk(){
+		
+		return negative + "Storage area must be on the same chunk of land.";
+		
+	}
+	
+	public static String storeAreaAdded(Building building){
+		
+		return positive + "Storage area added to " + building.getName() + ".";
+		
+	}
+
+	public static String storeAreaRemoved(Building building){
+		
+		return positive + "Storage area removed from " + building.getName() + ".";
+		
+	}
+	
+	public static String storeAreaNotFound(Building building){
+		
+		return negative + "Storage area not found.";
+		
+	}
+
+	public static String storeAreasUnavailable(Building building){
+		return negative + "No storage areas available for " + building.getName() + ".";
+	}
+	
+	public static String stored(Material material, Building building) {
+
+		return positive + "Stored " + EconomyMessages.material(material) + ".";
+
+	}
+	
+	public static String withdrew(Material material, Building building) {
+
+		return positive + "Withdrew " + EconomyMessages.material(material) + ".";
+
+	}
 	
 	
 	

@@ -2,6 +2,7 @@ package org.saga.commands;
 
 import java.util.ArrayList;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -12,6 +13,7 @@ import org.saga.buildings.Building;
 import org.saga.buildings.Home;
 import org.saga.buildings.TownSquare;
 import org.saga.buildings.TradingPost;
+import org.saga.buildings.storage.StorageArea;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
@@ -23,6 +25,7 @@ import org.saga.messages.BuildingMessages;
 import org.saga.messages.ChunkGroupMessages;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.SagaMessages;
+import org.saga.messages.SettlementEffects;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement.SettlementPermission;
 import org.sk89q.Command;
@@ -33,7 +36,200 @@ import org.sk89q.CommandPermissions;
 public class BuildingCommands {
 
 	
+	// General:
+	@Command(
+			aliases = {"baddstorage","baddstore"},
+			usage = "",
+			flags = "",
+			desc = "Add a storage area to the building.",
+			min = 0,
+			max = 0
+	)
+	@CommandPermissions({"saga.user.building.storage.add"})
+	public static void addStorage(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	
 
+		// Retrieve Saga chunk:
+		SagaChunk selChunk = sagaPlayer.getSagaChunk();
+		if(selChunk == null){
+			sagaPlayer.message(ChunkGroupMessages.chunkNotClaimed());
+			return;
+		}
+		
+		// Retrieve building:
+		Building selBuilding = selChunk.getBuilding();
+		if(selBuilding == null){
+			sagaPlayer.message(BuildingMessages.noBuilding());
+			return;
+		}
+	
+		// Available storage areas:
+		if(selBuilding.getAvailableStorageAreas() < 1){
+			sagaPlayer.message(BuildingMessages.storeAreasUnavailable(selBuilding));
+			return;
+		}
+		
+		// Create storage:
+		StorageArea newStoreArea = new StorageArea(sagaPlayer);
+	
+		// Check overlap:
+		if(selBuilding.checkOverlap(newStoreArea)){
+			sagaPlayer.message(BuildingMessages.storeAreaOverlap());
+			return;
+		}
+		
+		// Multiple chunks:
+		ArrayList<SagaChunk> sagaChunks = newStoreArea.getSagaChunks();
+		if(sagaChunks.size() > 1 || !sagaChunks.get(0).equals(selChunk)){
+			sagaPlayer.message(BuildingMessages.storeAreaSingleChunk());
+			return;
+		}
+		
+		// Add:
+		selBuilding.addStorageArea(newStoreArea);
+		
+		// Inform:
+		sagaPlayer.message(BuildingMessages.storeAreaAdded(selBuilding));
+		
+		// Effect:
+		SettlementEffects.playStoreAreaCreate(sagaPlayer, newStoreArea);
+		
+		
+	}
+	
+	@Command(
+			aliases = {"bremovestorage","bremovestore"},
+			usage = "",
+			flags = "",
+			desc = "Remove a storage area to the building.",
+			min = 0,
+			max = 0
+	)
+	@CommandPermissions({"saga.user.building.storage.remove"})
+	public static void removeStorage(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	
+
+		// Retrieve Saga chunk:
+		SagaChunk selChunk = sagaPlayer.getSagaChunk();
+		if(selChunk == null){
+			sagaPlayer.message(ChunkGroupMessages.chunkNotClaimed());
+			return;
+		}
+		
+		// Retrieve building:
+		Building selBuilding = selChunk.getBuilding();
+		if(selBuilding == null){
+			sagaPlayer.message(BuildingMessages.noBuilding());
+			return;
+		}
+	
+		// Retrieve storage:
+		StorageArea storageArea = selBuilding.getStorageArea(sagaPlayer.getLocation());
+		
+		// No storage area:
+		if(storageArea == null){
+			sagaPlayer.message(BuildingMessages.storeAreaNotFound(selBuilding));
+			return;
+		}
+		
+		// Remove:
+		selBuilding.removeStorageArea(storageArea);
+		
+		// Inform:
+		sagaPlayer.message(BuildingMessages.storeAreaRemoved(selBuilding));
+		
+		// Effect:
+		SettlementEffects.playStoreAreaRemove(sagaPlayer, storageArea);
+		
+		
+	}
+	
+	
+	// Building storage:
+	@Command(
+			aliases = {"bstore"},
+			usage = "",
+			flags = "",
+			desc = "Stores an item.",
+			min = 0,
+			max = 0
+	)
+	@CommandPermissions({"saga.admib.building.storage.store"})
+	public static void store(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+		
+		// TODO: Remove test command
+
+		// Retrieve Saga chunk:
+		SagaChunk selChunk = sagaPlayer.getSagaChunk();
+		if(selChunk == null){
+			sagaPlayer.message(ChunkGroupMessages.chunkNotClaimed());
+			return;
+		}
+		
+		// Retrieve building:
+		Building selBuilding = selChunk.getBuilding();
+		if(selBuilding == null){
+			sagaPlayer.message(BuildingMessages.noBuilding());
+			return;
+		}
+	
+		// Store:
+		ItemStack toStore = new ItemStack(Material.COAL_ORE, 3);
+		selBuilding.storeBlock(toStore);
+		
+		if(toStore.getAmount() == 0){
+			sagaPlayer.message(ChatColor.DARK_GREEN + "stored ");
+		}else{
+			sagaPlayer.message(ChatColor.RED + "storage full, " + toStore.getAmount() + " remaining");
+		}
+		
+		
+	}
+	
+	@Command(
+			aliases = {"bwithdraw"},
+			usage = "",
+			flags = "",
+			desc = "Withdraws an item from storage.",
+			min = 0,
+			max = 0
+	)
+	@CommandPermissions({"saga.admin.building.storage.withdraw"})
+	public static void withdraw(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+		
+		// TODO: Remove test command
+
+		// Retrieve Saga chunk:
+		SagaChunk selChunk = sagaPlayer.getSagaChunk();
+		if(selChunk == null){
+			sagaPlayer.message(ChunkGroupMessages.chunkNotClaimed());
+			return;
+		}
+		
+		// Retrieve building:
+		Building selBuilding = selChunk.getBuilding();
+		if(selBuilding == null){
+			sagaPlayer.message(BuildingMessages.noBuilding());
+			return;
+		}
+	
+		// Store:
+		ItemStack fromStore = new ItemStack(Material.COAL_ORE, 0);
+		selBuilding.withdrawBlock(fromStore, 5);
+		
+		if(fromStore.getAmount() == 0){
+			sagaPlayer.message(ChatColor.RED + "item not found ");
+		}else{
+			sagaPlayer.message(ChatColor.DARK_GREEN + "item retrieved");
+		}
+		
+		
+	}
+	
+	
+	
 	// Arena:
 	@Command(
 			aliases = {"btop"},

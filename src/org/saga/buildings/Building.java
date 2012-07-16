@@ -3,14 +3,17 @@ package org.saga.buildings;
 import java.util.ArrayList;
 
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.signs.AbilitySign;
@@ -18,10 +21,12 @@ import org.saga.buildings.signs.AttributeSign;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.BuildingSign.SignException;
 import org.saga.buildings.signs.BuildingSign.SignStatus;
+import org.saga.buildings.storage.StorageArea;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
+import org.saga.exceptions.InvalidLocationException;
 import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.listeners.events.SagaEntityDamageEvent;
@@ -45,6 +50,13 @@ public abstract class Building extends SagaCustomSerialization{
 	 */
 	private ArrayList<BuildingSign> signs;
 	
+	
+	/**
+	 * Storage areas.
+	 */
+	private ArrayList<StorageArea> storage;
+	
+	
 	/**
 	 * Origin chunk.
 	 */
@@ -54,6 +66,7 @@ public abstract class Building extends SagaCustomSerialization{
 	 * Building definition.
 	 */
 	transient private BuildingDefinition definition;
+	
 	
 	/**
 	 * True if the building is enabled.
@@ -73,6 +86,7 @@ public abstract class Building extends SagaCustomSerialization{
 		this.definition = definition;
 		this.level = 0;
 		this.signs = new ArrayList<BuildingSign>();
+		this.storage = new ArrayList<StorageArea>();
 		
 	}
 	
@@ -112,8 +126,30 @@ public abstract class Building extends SagaCustomSerialization{
 			try {
 				signs.get(i).complete(this);
 			} catch (SignException e) {
-				SagaLogger.nullField(this, "failed to initialise signs field element: " + e.getClass().getSimpleName() + ":" + e.getMessage());
+				SagaLogger.severe(this, "failed to initialise signs field element: " + e.getClass().getSimpleName() + ":" + e.getMessage());
 				signs.remove(i);
+				i--;
+				continue;
+			}
+			
+		}
+		
+		if(storage == null){
+			storage = new ArrayList<StorageArea>();
+			SagaLogger.nullField(this, "storage");
+			integrity = false;
+		}
+		if(storage.remove(null)){
+			SagaLogger.nullField(this, "storage element");
+			integrity = false;
+		}
+		for (int i = 0; i < storage.size(); i++) {
+			
+			try {
+				storage.get(i).complete();
+			} catch (InvalidLocationException e) {
+				SagaLogger.severe(this, "failed to initialise storage field element: " + e.getClass().getSimpleName() + ":" + e.getMessage());
+				storage.remove(i);
 				i--;
 				continue;
 			}
@@ -500,6 +536,242 @@ public abstract class Building extends SagaCustomSerialization{
 	
 	
 	
+	// Storage areas:
+	/**
+	 * Gets all storage areas.
+	 * 
+	 * @return
+	 */
+	public ArrayList<StorageArea> getStorageAreas() {
+		return new ArrayList<StorageArea>(storage);
+	}
+	
+	/**
+	 * Adds a storage area.
+	 * 
+	 * @param storeArea storage area
+	 */
+	public void addStorageArea(StorageArea storeArea) {
+
+		storage.add(storeArea);
+
+	}
+	
+	/**
+	 * Removes a storage area.
+	 * 
+	 * @param storeArea storage area to remove
+	 */
+	public void removeStorageArea(StorageArea storeArea) {
+
+		storage.remove(storeArea);
+
+	}
+	
+	
+	/**
+	 * Gets a storage area at the given location.
+	 * 
+	 * @param location location
+	 * @return storage area at the given location, null if none
+	 */
+	public StorageArea getStorageArea(Location location) {
+
+		
+		Block block = location.getBlock();
+		
+		ArrayList<StorageArea> allSorage = getStorageAreas();
+
+		for (StorageArea storageArea : allSorage) {
+			
+			if(storageArea.checkBelongs(block)) return storageArea;
+			
+		}
+		
+		return null;
+		
+		
+	}
+	
+	/**
+	 * Removes a storage area from the given location.
+	 * 
+	 * @param location location
+	 */
+	public void removeStorageArea(Location location) {
+
+		Block block = location.getBlock();
+		
+		ArrayList<StorageArea> allSorage = getStorageAreas();
+
+		for (StorageArea storageArea : allSorage) {
+			
+			if(storageArea.checkBelongs(block)){
+				storage.remove(storageArea);
+			}
+			
+		}
+	}
+	
+	
+	/**
+	 * Gets the amount of storage areas used.
+	 * 
+	 * @return amount of storage areas
+	 */
+	public Integer getUsedStorageAreas() {
+		return storage.size();
+	}
+	
+	/**
+	 * Gets the total amount of storage areas.
+	 * 
+	 * @return total amount of storage areas
+	 */
+	public Integer getTotalStorageAreas() {
+		return getDefinition().getTotalStorages(getLevel());
+	}
+	
+	/**
+	 * Gets the amount of storage areas available.
+	 * 
+	 * @return amount of storage areas available
+	 */
+	public Integer getAvailableStorageAreas() {
+		return getTotalStorageAreas() - getUsedStorageAreas();
+	}
+	
+	
+	
+	/**
+	 * Checks if the storage area overlaps with existing storage areas.
+	 * 
+	 * @param otherStoreArea storage area to check
+	 * @return true if overlaps with others
+	 */
+	public boolean checkOverlap(StorageArea otherStoreArea) {
+
+		
+		ArrayList<StorageArea> allSorage = getStorageAreas();
+
+		for (StorageArea storageArea : allSorage) {
+			
+			if(storageArea.checkOverlap(otherStoreArea)) return true;
+			
+		}
+		
+		return false;
+		
+		
+	}
+	
+	/**
+	 * Check if the block is a part of a storage area.
+	 * 
+	 * @param block block
+	 * @return true if part of storage area.
+	 */
+	public boolean checkStorageArea(Block block) {
+
+		
+		ArrayList<StorageArea> allSorage = getStorageAreas();
+
+		for (StorageArea storageArea : allSorage) {
+			
+			if(storageArea.checkBelongs(block)) return true;
+			
+		}
+		
+		return false;
+		
+		
+	}
+
+	
+	/**
+	 * Adds blocks to storage.
+	 * 
+	 * @param blocks to add
+	 * @return blocks to add
+	 */
+	public ItemStack storeBlock(ItemStack toStore) {
+
+		
+		ArrayList<StorageArea> allSorage = getStorageAreas();
+
+		for (StorageArea storageArea : allSorage) {
+			
+			if(toStore.getAmount() == 0) return toStore;
+			
+			storageArea.storeBlock(toStore);
+			
+		}
+		
+		if(toStore.getAmount() > 0) System.out.println("STORAGE FULL");
+		
+		return toStore;
+		
+
+	}
+	
+	/**
+	 * Withdraws blocks from the storage.
+	 * 
+	 * @param fromStore withdrawn blocks
+	 * @param amount requested amount
+	 * @return withdrawn blocks
+	 */
+	public ItemStack withdrawBlock(ItemStack fromStore, int amount) {
+
+		
+		ArrayList<StorageArea> allSorage = getStorageAreas();
+
+		for (StorageArea storageArea : allSorage) {
+			
+			if(fromStore.getAmount() >= amount) return fromStore;
+			
+			storageArea.withdrawBlock(fromStore, amount);
+			
+		}
+		
+		return fromStore;
+		
+
+	}
+
+	
+	/**
+	 * Handles block withdraw.
+	 * 
+	 * @param event event
+	 * @param sagaPlayer saga player
+	 */
+	public void handleStore(BlockPlaceEvent event, SagaPlayer sagaPlayer) {
+
+		
+		// Inform:
+		sagaPlayer.message(BuildingMessages.stored(event.getBlock().getType(), this));
+		
+
+	}
+	
+	/**
+	 * Handles block withdraw.
+	 * 
+	 * @param event event
+	 * @param sagaPlayer saga player
+	 */
+	public void handleWithdraw(BlockBreakEvent event, SagaPlayer sagaPlayer) {
+
+		
+		// Inform:
+		sagaPlayer.message(BuildingMessages.withdrew(event.getBlock().getType(), this));
+		
+
+	}
+	
+	
+	
 	// Stats and description:
 	/**
 	 * Gets the building specific stats.
@@ -822,6 +1094,7 @@ public abstract class Building extends SagaCustomSerialization{
 		if(getChunkGroup() != null && !getChunkGroup().hasPermission(event.getSagaPlayer(), SettlementPermission.BUILD_BUILDING)) event.addBuildOverride(BuildOverride.BUILDING_DENY);
 		
 	}
+
 	
 
 	// Member events:

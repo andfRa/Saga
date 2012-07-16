@@ -16,10 +16,15 @@ public class BlockFilter implements ShapeFilter{
 	 */
 	private HashSet<Material> materials = new HashSet<Material>();
 
-	
-	// Initialization:
 	/**
-	 * Initializes.
+	 * If true then the check will return the reverse result.
+	 */
+	private boolean flip = false;
+	
+	
+	// Initialisation:
+	/**
+	 * Initialises.
 	 * 
 	 */
 	public BlockFilter() {
@@ -36,6 +41,19 @@ public class BlockFilter implements ShapeFilter{
 		
 	}
 	
+	/**
+	 * Flips the check result.
+	 * 
+	 */
+	public void flip() {
+
+		flip = true;
+
+	}
+	
+	
+	
+	// Filtering:
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -43,10 +61,10 @@ public class BlockFilter implements ShapeFilter{
 	 */
 	@Override
 	public boolean checkBlock(Block block) {
-		
+	
+		if(flip) return !materials.contains(block.getType());
 		
 		return materials.contains(block.getType());
-
 		
 	}
 	
