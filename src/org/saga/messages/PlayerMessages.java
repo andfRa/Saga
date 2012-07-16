@@ -3,6 +3,7 @@ package org.saga.messages;
 import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
+import org.saga.config.BalanceConfiguration;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.player.GuardianRune;
@@ -15,7 +16,7 @@ import org.saga.utility.TextUtil;
 public class PlayerMessages {
 
 	
-	// Colors:
+	// Colours:
 	public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 	
 	public static ChatColor positive = ChatColor.GREEN;
@@ -37,6 +38,7 @@ public class PlayerMessages {
 	public static ChatColor frameTitle = normal2;
 	
 	
+	
 	// General:
 	public static String coinsNeeded(Double required) {
 		
@@ -46,13 +48,13 @@ public class PlayerMessages {
 	
 	
 	
-	
 	// Inventory:
 	public static String inventoryFullDropping() {
 		
 		return negative + "Inventory full, dropped items on the ground.";
 		
 	}
+	
 	
 	
 	// Proficiencies:
@@ -119,6 +121,7 @@ public class PlayerMessages {
 	}
 	
 
+	
 	// Skills:
 	public static String limitReached(String skillName) {
 		
@@ -142,6 +145,7 @@ public class PlayerMessages {
 		return negative + "Not enough skill points.";
 		
 	}
+	
 	
 	
 	// Respec:
@@ -185,6 +189,7 @@ public class PlayerMessages {
 		
 	}
 	
+	
 
 	// Player versus player:
 	public static String pvpOverride(SagaEntityDamageEvent event){
@@ -221,12 +226,14 @@ public class PlayerMessages {
 	}
 	
 	
+	
 	// Experience:
 	public static String deathExpInfo(){
 		
 		return normal1 + "Visit a temple to regain some of your lost experience.";
 		
 	}
+	
 	
 	
 	// Guardian rune:
@@ -251,13 +258,11 @@ public class PlayerMessages {
 		
 	}
 	
-	
 	public static String notChargedInfo(GuardianRune rune) {
 
 		return normal1 + "Guardian rune can be recharged at an academy.";
 		
 	}
-	
 	
 	public static String notEmpty(GuardianRune rune) {
 
@@ -265,28 +270,21 @@ public class PlayerMessages {
 		
 	}
 	
-	
-	
 	public static String disabled(GuardianRune rune) {
 		return positive + "Disabled guardian rune.";
 	}
-	
 
 	public static String enabled(GuardianRune rune) {
 		return positive + "Enabled guardian rune.";
 	}
 	
-	
 	public static String alreadyEnabled(GuardianRune stone) {
 		return negative + "The guardian rune is already enabled.";
 	}
 	
-	
 	public static String alreadyDisabled(GuardianRune stone) {
 		return negative + "The guardian rune is already disabled.";
 	}
-	
-
 	
 	public static String recharged(GuardianRune rune, Double price) {
 		
@@ -309,9 +307,19 @@ public class PlayerMessages {
 	public static String alreadyRecharged(GuardianRune stone) {
 		return negative + "The guardian rune is already recharged.";
 	}
+	
+	
+	
+	// Special:
+	public static String specialChatMessage(String name, String message) {
 
-	
-	
+		ChatColor nameColor = BalanceConfiguration.config().specialChatNameColor;
+		ChatColor messageColor = BalanceConfiguration.config().specialChatMessageColor;
+		String namedMessage = messageColor + ">" + nameColor + name + messageColor + "< " + message;
+		
+		return namedMessage;
+		
+	}
 	
 	
 	
@@ -375,7 +383,7 @@ public class PlayerMessages {
 	
 	
 	/**
-	 * Contains different colors.
+	 * Contains different colours.
 	 * 
 	 * @author andf
 	 *
@@ -383,7 +391,7 @@ public class PlayerMessages {
 	public static class ColorCircle{
 		
 		
-		ArrayList<ChatColor> colors = new ArrayList<ChatColor>();
+		ArrayList<ChatColor> colours = new ArrayList<ChatColor>();
 		
 		private int index = 0;
 		
@@ -392,18 +400,18 @@ public class PlayerMessages {
 		}
 		
 		
-		public ColorCircle addColor(ChatColor color){
-			colors.add(color);
+		public ColorCircle addColor(ChatColor colour){
+			colours.add(colour);
 			return this;
 		}
 		
 		public ChatColor nextColor() {
-			if(colors.size() == 0) return normal1;
+			if(colours.size() == 0) return normal1;
 			index++;
-			if(index >= colors.size()){
+			if(index >= colours.size()){
 				index = 0;
 			}
-			return colors.get(index);
+			return colours.get(index);
 		}
 		
 		/**

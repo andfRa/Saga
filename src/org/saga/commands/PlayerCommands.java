@@ -1,6 +1,11 @@
 package org.saga.commands;
 
+import java.util.Enumeration;
+
 import org.saga.Saga;
+import org.saga.SagaLogger;
+import org.saga.dependencies.PermissionsManager;
+import org.saga.messages.AdminMessages;
 import org.saga.messages.ChunkGroupMessages;
 import org.saga.messages.InfoMessages;
 import org.saga.messages.PlayerMessages;
@@ -53,6 +58,7 @@ public class PlayerCommands {
 	}
 	
 
+	
 	// Guardian stone:
 	@Command(
 			aliases = {"disableguardianrune","grdisable"},
@@ -109,6 +115,50 @@ public class PlayerCommands {
 		
 		
 	}
+	
+	
+	
+	// Special chat:
+	@Command(
+            aliases = {"b"},
+            usage = "<message>",
+            flags = "",
+            desc = "Sends a message in the special chat.",
+            min = 1)
+	@CommandPermissions({"saga.special.chat"})
+	public static void specialChat(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+
+		// Send special message:
+		String message = PlayerMessages.specialChatMessage(sagaPlayer.getName(), args.getJoinedStrings(0));
+		
+		chatMessage(message);
+		
+		
+	}
+	
+	private static void chatMessage(String message) {
+
+
+		// Send the message to all players who have the correct permission:
+		Enumeration<SagaPlayer> allPlayers = Saga.plugin().getLoadedPlayers();
+		
+		while (allPlayers.hasMoreElements()) {
+			
+			SagaPlayer loadedPlayer = allPlayers.nextElement();
+			
+			if(PermissionsManager.hasPermission(loadedPlayer, PermissionsManager.SPECIAL_CHAT_PERMISSION)){
+				loadedPlayer.message(message);
+			}
+			
+		}
+		
+		// Log:
+		SagaLogger.message(message);
+
+		
+	}
+	
 	
 	
 	// Info:

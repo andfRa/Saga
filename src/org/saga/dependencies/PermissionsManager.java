@@ -39,6 +39,11 @@ public class PermissionsManager {
 	public static String ADMIN_CHAT_PERMISSION = "saga.admin.chat";
 	
 	/**
+	 * Permission for saga special chat.
+	 */
+	public static String SPECIAL_CHAT_PERMISSION = "saga.special.chat";
+	
+	/**
 	 * Permission for building in the wilderness.
 	 */
 	public static String WILDERNESS_BUILD_PERMISSION = "saga.user.wilderness.build";

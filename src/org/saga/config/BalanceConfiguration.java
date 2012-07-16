@@ -42,7 +42,7 @@ public class BalanceConfiguration {
 	public Integer saveInterval;
 	
 	
-	// Other
+	// Chat:
 	/**
 	 * Administrator chat name colour.
 	 */
@@ -52,6 +52,17 @@ public class BalanceConfiguration {
 	 * Administrator chat colour.
 	 */
 	public ChatColor adminChatMessageColor;
+	
+	/**
+	 * Special chat name colour.
+	 */
+	public ChatColor specialChatNameColor;
+	
+	/**
+	 * Special chat colour.
+	 */
+	public ChatColor specialChatMessageColor;
+	
 	
 
 	// Terrain damage:
@@ -111,7 +122,7 @@ public class BalanceConfiguration {
 			SagaLogger.nullField(getClass(), "saveInterval");
 			saveInterval= 60;
 		}
-		
+
 		if(adminChatNameColor == null){
 			SagaLogger.nullField(getClass(), "adminChatNameColor");
 			adminChatNameColor = ChatColor.DARK_GREEN;
@@ -121,10 +132,15 @@ public class BalanceConfiguration {
 			SagaLogger.nullField(getClass(), "adminChatMessageColor");
 			adminChatMessageColor = ChatColor.GREEN;
 		}
+
+		if(specialChatNameColor == null){
+			SagaLogger.nullField(getClass(), "specialChatNameColor");
+			specialChatNameColor = ChatColor.DARK_BLUE;
+		}
 		
-		if(adminChatMessageColor == null){
-			SagaLogger.nullField(getClass(), "adminChatMessageColor");
-			adminChatMessageColor = ChatColor.GREEN;
+		if(specialChatMessageColor == null){
+			SagaLogger.nullField(getClass(), "specialChatMessageColor");
+			specialChatMessageColor = ChatColor.BLUE;
 		}
 		
 		if(stopCreeperExplosions == null){
