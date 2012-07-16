@@ -274,13 +274,13 @@ public class BuildingDefinition {
 	}
 	
 	/**
-	 * Gets the total available roles.
+	 * Gets the amount or roles available.
 	 * 
 	 * @param roleName role name
 	 * @param level level
-	 * @return amount of available roles
+	 * @return amount of roles available
 	 */
-	public Integer getTotalRoles(String roleName, Integer level) {
+	public Integer getAvailableRoles(String roleName, Integer level) {
 		
 		
 		TwoPointFunction amount = roleAmounts.get(roleName);
@@ -308,7 +308,7 @@ public class BuildingDefinition {
 		
 		while (roleNames.hasMoreElements()) {
 			String roleName = (String) roleNames.nextElement();
-			if(getTotalRoles(roleName, level) > 0){
+			if(getAvailableRoles(roleName, level) > 0){
 				roles.add(roleName);
 			}
 		}
@@ -437,7 +437,7 @@ public class BuildingDefinition {
 	 * @param level building level
 	 * @return number of buildings
 	 */
-	public Integer getAvailableCount(Integer level) {
+	public Integer getAvailableAmount(Integer level) {
 		
 		return available.intValue(level);
 
@@ -476,12 +476,12 @@ public class BuildingDefinition {
 	
 	// Crafting:
 	/**
-	 * Gets the total amount of storage areas available.
+	 * Gets the amount of storage areas available.
 	 * 
 	 * @param buildingLevel building level
 	 * @return storage areas available
 	 */
-	public Integer getTotalStorages(Integer buildingLevel) {
+	public Integer getAvailableStorages(Integer buildingLevel) {
 		return storageAreas.intValue(buildingLevel);
 	}
 	

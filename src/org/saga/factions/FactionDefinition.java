@@ -56,13 +56,13 @@ public class FactionDefinition {
 	
 	// Ranks:
 	/**
-	 * Gets the total available ranks.
+	 * Gets the total ranks available.
 	 * 
 	 * @param rankName rank name
 	 * @param level settlement level
-	 * @return amount of enabled ranks
+	 * @return amount of ranks available
 	 */
-	public Integer getTotalRanks(String rankName, Short level) {
+	public Integer getAvailableRanks(String rankName, Short level) {
 		
 		TwoPointFunction amount = enabledRanks.get(rankName);
 		if(amount == null || amount.getXMin() > level){
@@ -88,7 +88,7 @@ public class FactionDefinition {
 		
 		while (rankNames.hasMoreElements()) {
 			String rankName = (String) rankNames.nextElement();
-			if(getTotalRanks(rankName, level) > 0){
+			if(getAvailableRanks(rankName, level) > 0){
 				ranks.add(rankName);
 			}
 		}

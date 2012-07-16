@@ -573,8 +573,8 @@ public class ChunkGroupMessages {
 				if(definitions[j].checkRequirements(settlement, 1)){
 					
 					// Multiple buildings:
-					Integer totalBuildings = settlement.getTotalBuildings(names[j]);
-					Integer usedBuildings = settlement.getUsedBuildings(names[j]);
+					Integer totalBuildings = settlement.getAvailableBuildings(names[j]);
+					Integer usedBuildings = settlement.getTotalBuildings(names[j]);
 					
 					// Set:
 					if(usedBuildings > 0){
@@ -663,11 +663,11 @@ public class ChunkGroupMessages {
 			for (ProficiencyDefinition definition : definitions) {
 				
 				String name = definition.getName();
-				String available = settlement.getUsedRoles(name) + "/" + settlement.getTotalRoles(name);
+				String available = settlement.getUsedRoles(name) + "/" + settlement.getAvailableRoles(name);
 				
-				if(settlement.getAvailableRoles(name) > 0){
+				if(settlement.getRemainingRoles(name) > 0){
 					available = positive + available;
-				}else if(settlement.getAvailableRoles(name) < 0){
+				}else if(settlement.getRemainingRoles(name) < 0){
 					available = negative + available;
 				}
 				

@@ -599,12 +599,12 @@ public class ChunkGroup extends SagaCustomSerialization{
 	
 	
 	/**
-	 * Gets the amount of buildings with the given name. 
+	 * Gets the total amount of buildings with the given name. 
 	 * 
 	 * @param buildingName building name
-	 * @return amount used
+	 * @return total amount
 	 */
-	public Integer getUsedBuildings(String buildingName) {
+	public Integer getTotalBuildings(String buildingName) {
 
 
 		// Total buildings:
@@ -626,26 +626,26 @@ public class ChunkGroup extends SagaCustomSerialization{
 	}
 
 	/**
-	 * Gets the total possible amount of buildings. 
-	 * 
-	 * @param buildingName building name
-	 * @return total buildings amount amount
-	 */
-	public Integer getTotalBuildings(String buildingName) {
-		
-		return 0;
-		
-	}
-	
-	/**
 	 * Gets the amount of available buildings. 
 	 * 
 	 * @param buildingName building name
 	 * @return amount available
 	 */
 	public Integer getAvailableBuildings(String buildingName) {
+		
+		return 0;
+		
+	}
+	
+	/**
+	 * Gets the amount of remaining buildings. 
+	 * 
+	 * @param buildingName building name
+	 * @return amount remaining
+	 */
+	public Integer getRemainingBuildings(String buildingName) {
 
-		return getTotalBuildings(buildingName) - getUsedBuildings(buildingName);
+		return getAvailableBuildings(buildingName) - getTotalBuildings(buildingName);
 		
 	}
 	
@@ -657,7 +657,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	 */
 	public boolean isBuildingAvailable(String buildingName) {
 		
-		return getAvailableBuildings(buildingName) > 0;
+		return getRemainingBuildings(buildingName) > 0;
 		
 	}
 	

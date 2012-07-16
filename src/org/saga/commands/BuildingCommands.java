@@ -63,8 +63,8 @@ public class BuildingCommands {
 			return;
 		}
 	
-		// Available storage areas:
-		if(selBuilding.getAvailableStorageAreas() < 1){
+		// Remaining storage areas:
+		if(selBuilding.getRemainingStorageAreas() < 1){
 			sagaPlayer.message(BuildingMessages.storeAreasUnavailable(selBuilding));
 			return;
 		}

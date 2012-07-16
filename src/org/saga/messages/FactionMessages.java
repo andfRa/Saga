@@ -414,7 +414,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 			}
 			firstElement = false;
 			
-			rString.append(role + " " + faction.getUsedRanks(role) + "/" + faction.getTotalRanks(role));
+			rString.append(role + " " + faction.getUsedRanks(role) + "/" + faction.getAvailableRanks(role));
 			
 		}
 		

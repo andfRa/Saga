@@ -624,21 +624,21 @@ public abstract class Building extends SagaCustomSerialization{
 	}
 	
 	/**
-	 * Gets the total amount of storage areas.
-	 * 
-	 * @return total amount of storage areas
-	 */
-	public Integer getTotalStorageAreas() {
-		return getDefinition().getTotalStorages(getLevel());
-	}
-	
-	/**
 	 * Gets the amount of storage areas available.
 	 * 
 	 * @return amount of storage areas available
 	 */
 	public Integer getAvailableStorageAreas() {
-		return getTotalStorageAreas() - getUsedStorageAreas();
+		return getDefinition().getAvailableStorages(getLevel());
+	}
+	
+	/**
+	 * Gets the amount of storage areas remaining.
+	 * 
+	 * @return amount of storage areas remaining
+	 */
+	public Integer getRemainingStorageAreas() {
+		return getAvailableStorageAreas() - getUsedStorageAreas();
 	}
 	
 	

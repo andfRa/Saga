@@ -190,20 +190,20 @@ public class SettlementDefinition{
 	}
 	
 	/**
-	 * Gets the total available roles.
+	 * Gets the amount of roles available.
 	 * 
 	 * @param roleName role name
 	 * @param level level
-	 * @return amount of available roles
+	 * @return amount of roles available
 	 */
-	public Integer getTotalRoles(String roleName, Integer level) {
+	public Integer getAvailableRoles(String roleName, Integer level) {
 		
 		
 		TwoPointFunction amount = roles.get(roleName);
 		if(amount == null || amount.getXMin() > level){
 			return 0;
 		}
-		return new Double(amount.value(level)).intValue();
+		return amount.intValue(level);
 		
 		
 	}

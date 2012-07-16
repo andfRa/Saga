@@ -1258,56 +1258,6 @@ public class SagaFaction implements SecondTicker{
 		return definition;
 	}
 	
-	/**
-	 * Gets the total amount of ranks with the given name
-	 * 
-	 * @param rankName rank name
-	 * @return
-	 */
-	public Integer getTotalRanks(String rankName) {
-		
-		if(rankName.equals(FactionConfiguration.config().factionDefaultRank)){
-			return getMemberCount() - getInactiveMemberCount();
-		}
-		
-		return getDefinition().getTotalRanks( rankName, getLevel() );
-		
-	}
-
-	/**
-	 * Gets the amount of used ranks.
-	 * 
-	 * @param rankName rank name
-	 * @return amount of used ranks
-	 */
-	public Integer getUsedRanks(String rankName) {
-		
-		Integer total = 0;
-		Enumeration<String> players = playerRanks.keys();
-		while (players.hasMoreElements()) {
-			
-			String player = players.nextElement();
-			Proficiency rank = playerRanks.get(player);
-			
-			if(rankName.equals(rank.getName()))total ++;
-			
-		}
- 		
-		return total;
-		
-	}
-	
-	/**
-	 * Gets the amount of used ranks.
-	 * 
-	 * @param rankName rank name
-	 * @return amount of used available ranks
-	 */
-	public Integer getAvailableRanks(String rankName) {
-		
-		return getTotalRanks(rankName) - getUsedRanks(rankName);
-		
-	}
 	
 	/**
 	 * Gets available ranks
@@ -1320,6 +1270,26 @@ public class SagaFaction implements SecondTicker{
 		return enabledRanks;
 		
 	}
+
+	/**
+	 * Gets the available ranks.
+	 * 
+	 * @return all available ranks
+	 */
+	public HashSet<String> getRanks() {
+		
+		HashSet<String> ranks = new HashSet<String>();
+		
+		// Add default rank:
+		ranks.add(FactionConfiguration.config().factionDefaultRank);
+		
+		// Add all ranks:
+		ranks.addAll(getDefinition().getAllRanks(getLevel()));
+		
+		return ranks;
+		
+	}
+	
 	
 	/**
 	 * Adds a rank to the player.
@@ -1369,22 +1339,6 @@ public class SagaFaction implements SecondTicker{
 	
 			
 	}
-
-	/**
-	 * Checks if the given rank is available.
-	 * 
-	 * @param rankName rank name
-	 * @return true if available
-	 */
-	public boolean isRankAvailable(String rankName) {
-		
-		if(rankName.equals(FactionConfiguration.config().factionDefaultRank)){
-			return true;
-		}
-		
-		return getAvailableRanks(rankName) > 0;
-		
-	}
 	
 	/**
 	 * Gets a player rank.
@@ -1397,27 +1351,77 @@ public class SagaFaction implements SecondTicker{
 		return playerRanks.get(name);
 		
 	}
+	
 
 	/**
-	 * Gets the available ranks.
+	 * Gets the amount of ranks used.
 	 * 
-	 * @return all available ranks
+	 * @param rankName rank name
+	 * @return amount of ranks used
 	 */
-	public HashSet<String> getRanks() {
+	public Integer getUsedRanks(String rankName) {
 		
-		HashSet<String> ranks = new HashSet<String>();
-		
-		// Add default role:
-		ranks.add(FactionConfiguration.config().factionDefaultRank);
-		
-		// Add all roles:
-		ranks.addAll(getDefinition().getAllRanks(getLevel()));
-		
-		return ranks;
+		Integer total = 0;
+		Enumeration<String> players = playerRanks.keys();
+		while (players.hasMoreElements()) {
+			
+			String player = players.nextElement();
+			Proficiency rank = playerRanks.get(player);
+			
+			if(rankName.equals(rank.getName()))total ++;
+			
+		}
+ 		
+		return total;
 		
 	}
 	
+	/**
+	 * Gets the amount of ranks available
+	 * 
+	 * @param rankName rank name
+	 * @return amont of ranks available
+	 */
+	public Integer getAvailableRanks(String rankName) {
+		
+		if(rankName.equals(FactionConfiguration.config().factionDefaultRank)){
+			return getMemberCount() - getInactiveMemberCount();
+		}
+		
+		return getDefinition().getAvailableRanks( rankName, getLevel() );
+		
+	}
 
+	/**
+	 * Gets the amount of ranks remaining.
+	 * 
+	 * @param rankName rank name
+	 * @return amount of ranks remaining
+	 */
+	public Integer getRemainingRanks(String rankName) {
+		
+		return getAvailableRanks(rankName) - getUsedRanks(rankName);
+		
+	}
+	
+	/**
+	 * Checks if the given rank is available.
+	 * 
+	 * @param rankName rank name
+	 * @return true if available
+	 */
+	public boolean isRankAvailable(String rankName) {
+		
+		if(rankName.equals(FactionConfiguration.config().factionDefaultRank)){
+			return true;
+		}
+		
+		return getRemainingRanks(rankName) > 0;
+		
+	}
+
+	
+	
 	// Clock:
 	/**
 	 * Starts the clock.
