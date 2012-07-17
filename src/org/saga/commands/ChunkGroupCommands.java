@@ -9,7 +9,6 @@ import org.saga.SagaLogger;
 import org.saga.buildings.Building;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupManager;
-import org.saga.chunkGroups.ChunkGroupToggleable;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.ChunkGroupConfiguration;
 import org.saga.config.EconomyConfiguration;
@@ -40,16 +39,17 @@ public class ChunkGroupCommands {
 	public static Integer minimumNameLenght = 3;
 	
 	
-
+	
+	// Territory:
 	@Command(
-	            aliases = {"ssettle", "settle"},
-	            usage = "<settlement name>",
-	            flags = "",
-	            desc = "Create a new settlement.",
-	            min = 1,
-	            max = 1
-	        )
-		@CommandPermissions({"saga.user.settlement.create"})
+		aliases = {"ssettle", "settle"},
+		usage = "<settlement name>",
+		flags = "",
+		desc = "Create a new settlement.",
+		min = 1,
+		max = 1
+	)
+	@CommandPermissions({"saga.user.settlement.create"})
 	public static void settle(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 	
 		
@@ -110,15 +110,15 @@ public class ChunkGroupCommands {
 		
 	}
 	
-	 @Command(
-	            aliases = {"sclaim", "claim"},
-	            usage = "[settlement name]",
-	            flags = "",
-	            desc = "Claim a chunk of land adjacent to a settlement.",
-	            min = 0,
-	            max = 1
-	        )
-		@CommandPermissions({"saga.user.settlement.claim"})
+	@Command(
+		aliases = {"sclaim", "claim"},
+		usage = "[settlement name]",
+		flags = "",
+		desc = "Claim the chunk of land.",
+		min = 0,
+		max = 1
+	)
+	@CommandPermissions({"saga.user.settlement.claim"})
 	public static void claim(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
@@ -203,16 +203,77 @@ public class ChunkGroupCommands {
 		
 		
 	}
+
+	@Command(
+		aliases = {"abandon", "unclaim", "sabandon", "sunclaim"},
+		usage = "",
+		flags = "",
+		desc = "Abandon the chunk of land. Delete the settlement if no land is left.",
+		min = 0,
+		max = 0
+	)
+	@CommandPermissions({"saga.user.settlement.abandon"})
+	public static void abandon(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+			
+		// Location chunk:
+	   	SagaChunk selectedChunk = sagaPlayer.getSagaChunk();
+	   	Location location = sagaPlayer.getLocation();
+	   	if(location == null){
+	   		SagaLogger.severe(ChunkGroupCommands.class, "saga player location is null for " + sagaPlayer.getName());
+	   		sagaPlayer.error("failed to retrieve "+ sagaPlayer +" player location");
+	   		return;
+	   	}
+	   	
+	   	// Unclaimed:
+	   	if(selectedChunk == null){
+			sagaPlayer.message(ChunkGroupMessages.chunkNotClaimed());
+			return;
+		}
+	   	
+	   	// Chunk group:
+	   	ChunkGroup selectedGroup = selectedChunk.getChunkGroup();
+	   	
+	   	// Permissions:
+	   	if(!selectedGroup.hasPermission(sagaPlayer, SettlementPermission.ABANDON)){
+	   		sagaPlayer.message(SagaMessages.noPermission());
+	   		return;
+	   	}
+	   	
+		// Remove chunk from the chunk group:
+		selectedGroup.removeChunk(selectedChunk);
+		
+		// Inform:
+		if(sagaPlayer.getChunkGroup() == selectedGroup){
+			sagaPlayer.message(ChunkGroupMessages.abandoned(selectedChunk));
+		}else{
+			sagaPlayer.message(ChunkGroupMessages.abandoned(selectedChunk, selectedGroup));
+		}
+		
+		// Refresh:
+		selectedChunk.refresh();
+		
+		// Play effect:
+		SettlementEffects.playAbandon(sagaPlayer, selectedChunk);
+		
+		// Delete if none left:
+		if( selectedGroup.getSize() == 0 ){
+			selectedGroup.delete();
+			Saga.broadcast(ChunkGroupMessages.dissolved(sagaPlayer, selectedGroup));
+		}
+		
+		
+	}
 	
-	 @Command(
-	            aliases = {"sclaimsettlement"},
-	            usage = "[settlement name]",
-	            flags = "",
-	            desc = "Claim an empty settlement.",
-	            min = 0,
-	            max = 1
-	        )
-		@CommandPermissions({"saga.admin.settlement.claim"})
+	@Command(
+		aliases = {"sclaimsettlement"},
+		usage = "[settlement name]",
+		flags = "",
+		desc = "Claim an empty settlement.",
+		min = 0,
+		max = 1
+	)
+	@CommandPermissions({"saga.admin.settlement.claim"})
 	public static void claimChunkGroup(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
@@ -279,75 +340,160 @@ public class ChunkGroupCommands {
 		
 		 
 	}
-	 
-	@Command(
-	            aliases = {"sabandon", "sunclaim"},
-	            usage = "",
-	            flags = "",
-	            desc = "Abandon the chunk of settlement land you are currently standing on. Delete if no land is left.",
-	            min = 0,
-	            max = 0
-	        )
-	@CommandPermissions({"saga.user.settlement.abandon"})
-	public static void abandon(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
-			
-		// Location chunk:
-	   	SagaChunk selectedChunk = sagaPlayer.getSagaChunk();
-	   	Location location = sagaPlayer.getLocation();
-	   	if(location == null){
-	   		SagaLogger.severe(ChunkGroupCommands.class, "saga player location is null for " + sagaPlayer.getName());
-	   		sagaPlayer.error("failed to retrieve "+ sagaPlayer +" player location");
-	   		return;
-	   	}
-	   	
-	   	// Unclaimed:
+	
+	
+	// Buildings:
+	@Command(
+		aliases = {"ssetbuilding","setbuilding","bset"},
+		usage = "<building_name>",
+		flags = "",
+		desc = "Sets a building on the chunk of land.",
+		min = 1,
+		max = 1
+		)
+	@CommandPermissions({"saga.user.settlement.building.set"})
+	public static void setBuilding(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+
+		String buildingName = null;
+		ChunkGroup selectedChunkGroup = null;
+
+		// Arguments:
+		buildingName = args.getString(0).replace(SagaMessages.spaceSymbol, " ").toLowerCase();
+		
+		// Selected chunk:
+		SagaChunk selectedChunk = sagaPlayer.getSagaChunk();
 	   	if(selectedChunk == null){
-			sagaPlayer.message(ChunkGroupMessages.chunkNotClaimed());
+			sagaPlayer.message(BuildingMessages.notOnClaimedLand(selectedChunkGroup));
 			return;
 		}
-	   	
-	   	// Chunk group:
-	   	ChunkGroup selectedGroup = selectedChunk.getChunkGroup();
-	   	
-	   	// Permissions:
-	   	if(!selectedGroup.hasPermission(sagaPlayer, SettlementPermission.ABANDON)){
-	   		sagaPlayer.message(SagaMessages.noPermission());
+		
+	   	// Selected chunk group:
+	   	selectedChunkGroup = selectedChunk.getChunkGroup();
+
+	   	// Valid building:
+	   	if(ChunkGroupConfiguration.config().getBuildingDefinition(buildingName) == null){
+	   		sagaPlayer.message(BuildingMessages.invalidBuilding(buildingName));
 	   		return;
 	   	}
 	   	
-		// Remove chunk from the chunk group:
-		selectedGroup.removeChunk(selectedChunk);
-		
-		// Inform:
-		if(sagaPlayer.getChunkGroup() == selectedGroup){
-			sagaPlayer.message(ChunkGroupMessages.abandoned(selectedChunk));
-		}else{
-			sagaPlayer.message(ChunkGroupMessages.abandoned(selectedChunk, selectedGroup));
+		// Building:
+		Building selectedBuilding;
+		try {
+			selectedBuilding = ChunkGroupConfiguration.config().createBuilding(buildingName);
+		} catch (InvalidBuildingException e) {
+			SagaLogger.severe(ChunkGroupCommands.class, sagaPlayer + " tried to set a building with missing definition");
+			sagaPlayer.error("definition missing for " + buildingName + " building");
+			return;
+		}
+		if(selectedBuilding == null){
+			sagaPlayer.message(BuildingMessages.invalidBuilding(buildingName));
+			return;
 		}
 		
-		// Refresh:
-		selectedChunk.refresh();
+		// Permission:
+		if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.SET_BUILDING)){
+			sagaPlayer.message(SagaMessages.noPermission(selectedChunkGroup));
+			return;
+		}
+
+		// Existing building:
+		if(selectedChunk.getBuilding() != null){
+			sagaPlayer.message(BuildingMessages.oneBuildingAllowed(selectedChunkGroup));
+			return;
+		}
+
+		// Building available:
+		if(!selectedChunkGroup.isBuildingAvailable(buildingName)){
+			sagaPlayer.message(BuildingMessages.unavailable(selectedBuilding));
+			return;
+		}
+		
+		// Set building:
+		selectedChunk.setBuilding(selectedBuilding);
+
+		// Inform:
+		if(sagaPlayer.getChunkGroup() == selectedChunkGroup){
+			sagaPlayer.message(ChunkGroupMessages.setBuilding(selectedBuilding));
+		}else{
+			sagaPlayer.message(ChunkGroupMessages.setBuilding(selectedBuilding, selectedChunkGroup));
+		}
 		
 		// Play effect:
-		SettlementEffects.playAbandon(sagaPlayer, selectedChunk);
+		SettlementEffects.playBuildingSet(sagaPlayer, selectedBuilding);
 		
-		// Delete if none left:
-		if( selectedGroup.getSize() == 0 ){
-			selectedGroup.delete();
-			Saga.broadcast(ChunkGroupMessages.dissolved(sagaPlayer, selectedGroup));
-		}
-		
-		
+
 	}
 	
 	@Command(
-            aliases = {"sinvite"},
-            usage = "[settlement name] <player name>",
-            flags = "",
-            desc = "Invite a player to join a settlement.",
-            min = 1,
-            max = 2)
+		aliases = {"sremovebuilding","abandonbuilding","bremove"},
+		usage = "[settlement name]",
+		flags = "",
+		desc = "Abandons a building on the chunk of land.",
+		min = 0,
+		max = 0
+		)
+	@CommandPermissions({"saga.user.settlement.building.remove"})
+	public static void removeBuilding(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+
+		ChunkGroup selectedChunkGroup = null;
+		
+		// Arguments:
+		selectedChunkGroup = getLocationChunkGroup(sagaPlayer);
+		if(selectedChunkGroup == null){
+			sagaPlayer.message(ChunkGroupMessages.noChunkGroup());
+			return;
+		}
+		
+		// Selected chunk:
+		SagaChunk selectedChunk = sagaPlayer.getSagaChunk();
+	   	if(selectedChunk == null){
+			sagaPlayer.message(BuildingMessages.notOnClaimedLand(selectedChunkGroup));
+			return;
+		}
+		
+		// Existing building:
+		Building selectedBuilding = selectedChunk.getBuilding();
+		if(selectedBuilding == null){
+			sagaPlayer.message(ChunkGroupMessages.noBuilding());
+			return;
+		}
+		
+		// Permission:
+		if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.REMOVE_BUILDING)){
+			sagaPlayer.message(SagaMessages.noPermission(selectedChunkGroup));
+			return;
+		}
+
+		// Inform:
+		if(sagaPlayer.getChunkGroup() == selectedChunkGroup){
+			sagaPlayer.message(ChunkGroupMessages.removedBuilding(selectedBuilding));
+		}else{
+			sagaPlayer.message(ChunkGroupMessages.removedBuilding(selectedBuilding, selectedChunkGroup));
+		}
+
+		// Play effect:
+		SettlementEffects.playBuildingRemove(sagaPlayer, selectedBuilding);
+		
+		// Remove building:
+		selectedChunk.removeBuilding();
+
+		
+	}
+
+	
+	
+	// Members:
+	@Command(
+		aliases = {"sinvite"},
+		usage = "[settlement name] <player name>",
+		flags = "",
+		desc = "Invite a player to join the settlement.",
+		min = 1,
+		max = 2
+	)
 	@CommandPermissions({"saga.user.settlement.invite"})
 	public static void invite(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
@@ -436,12 +582,13 @@ public class ChunkGroupCommands {
 	}
 	
 	@Command(
-            aliases = {"saccept"},
-            usage = "<settlement name>",
-            flags = "",
-            desc = "Accept a settlement invitation.",
-            min = 0,
-            max = 1)
+		aliases = {"saccept"},
+		usage = "<settlement name>",
+		flags = "",
+		desc = "Accept a settlement invitation.",
+		min = 0,
+		max = 1
+	)
 	@CommandPermissions({"saga.user.settlement.accept"})
 	public static void accept(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
@@ -502,12 +649,13 @@ public class ChunkGroupCommands {
 	}
 
 	@Command(
-            aliases = {"sdeclineall", "sdecline"},
-            usage = "",
-            flags = "",
-            desc = "Decline all settlement join invitations.",
-            min = 0,
-            max = 0)
+		aliases = {"sdeclineall", "sdecline"},
+		usage = "",
+		flags = "",
+		desc = "Decline all settlement join invitations.",
+		min = 0,
+		max = 0
+	)
 	@CommandPermissions({"saga.user.settlement.decline"})
 	public static void decline(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
@@ -525,13 +673,13 @@ public class ChunkGroupCommands {
 	}
 
 	@Command(
-            aliases = {"settlementquit"},
-            usage = "",
-            flags = "",
-            desc = "Quit settlement.",
-            min = 0,
-            max = 0
-		)
+		aliases = {"settlementquit"},
+		usage = "",
+		flags = "",
+		desc = "Quit the settlement.",
+		min = 0,
+		max = 0
+	)
 	@CommandPermissions({"saga.user.settlement.quit"})
 	public static void quit(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
@@ -599,13 +747,13 @@ public class ChunkGroupCommands {
 	}
 	
 	@Command(
-            aliases = {"skick"},
-            usage = "[settlement name] <player name>",
-            flags = "",
-            desc = "Kick a member out of the settlement.",
-            min = 1,
-            max = 2
-		)
+		aliases = {"skick"},
+		usage = "[settlement name] <player name>",
+		flags = "",
+		desc = "Kick a member from the settlement.",
+		min = 1,
+		max = 2
+	)
 	@CommandPermissions({"saga.user.settlement.kick"})
 	public static void kick(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
@@ -709,369 +857,14 @@ public class ChunkGroupCommands {
 		
 		
 	}
-	
-	@Command(
-            aliases = {"slist"},
-            usage = "[settlement name]",
-            flags = "",
-            desc = "Lists all players in the settlement.",
-            min = 0,
-            max = 1
-		)
-	@CommandPermissions({"saga.user.settlement.list"})
-	public static void list(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-
-		ChunkGroup selectedChunkGroup = null;
-
-		// Arguments:
-		if(args.argsLength() == 1){
-			
-			// Chunk group:
-			String groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
-			selectedChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(groupName);
-			if(selectedChunkGroup == null){
-				sagaPlayer.message(ChunkGroupMessages.noChunkGroup(groupName));
-				return;
-			}
-			
-		}else{
-			
-			// Chunk group:
-			selectedChunkGroup = sagaPlayer.getChunkGroup();
-			if(selectedChunkGroup == null){
-				sagaPlayer.message( ChunkGroupMessages.noChunkGroup() );
-				return;
-			}
-			
-		}
-		
-		// Is a settlement:
-		if(! (selectedChunkGroup instanceof Settlement) ){
-			sagaPlayer.message(ChunkGroupMessages.notSettlement(selectedChunkGroup));
-			return;
-		}
-		Settlement selectedSettlement = (Settlement) selectedChunkGroup;
-		
-		// Inform:
-		sagaPlayer.message(ChunkGroupMessages.list(sagaPlayer, selectedSettlement));
-		
-		
-	}
 
 	@Command(
-            aliases = {"sstats"},
-            usage = "[settlement name] [page]",
-            flags = "",
-            desc = "Lists settlement stats.",
-            min = 0,
-            max = 2
-		)
-	@CommandPermissions({"saga.user.settlement.stats"})
-	public static void stats(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-		
-		Integer page = null;
-		Settlement selectedSettlement = null;
-		
-		ChunkGroup selectedChunkGroup = null;
-		String sPage = null;
-		String groupName = null;
-		
-		// Arguments:
-		switch (args.argsLength()) {
-			
-			case 2:
-				
-				// Chunk group:
-				groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
-				selectedChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(groupName);
-				if(selectedChunkGroup == null){
-					sagaPlayer.message(ChunkGroupMessages.noChunkGroup(groupName));
-					return;
-				}
-				
-				// Page:
-				sPage = args.getString(1);
-				try {
-					page = Integer.parseInt(sPage);
-				}
-				catch (NumberFormatException e) {
-					sagaPlayer.message(ChunkGroupMessages.invalidInteger(sPage));
-					return;
-				}
-				break;
-
-			case 1:
-
-				// Chunk group:
-				selectedChunkGroup = sagaPlayer.getChunkGroup();
-				if(selectedChunkGroup == null){
-					sagaPlayer.message( ChunkGroupMessages.noChunkGroup() );
-					return;
-				}
-
-				// Page:
-				sPage = args.getString(0);
-				try {
-					page = Integer.parseInt(sPage);
-				}
-				catch (NumberFormatException e) {
-					sagaPlayer.message(ChunkGroupMessages.invalidInteger(sPage));
-					return;
-				}
-				
-				break;
-
-			default:
-
-				// Chunk group:
-				selectedChunkGroup = sagaPlayer.getChunkGroup();
-				if(selectedChunkGroup == null){
-					sagaPlayer.message(ChunkGroupMessages.noChunkGroup());
-					return;
-				}
-				
-				// Page:
-				page = 1;
-				
-				break;
-				
-		}
-		
-		// Is a settlement:
-		if(! (selectedChunkGroup instanceof Settlement) ){
-			sagaPlayer.message(ChunkGroupMessages.notSettlement(selectedChunkGroup));
-			return;
-		}
-		selectedSettlement = (Settlement) selectedChunkGroup;
-		
-		// Inform:
-		sagaPlayer.message(ChunkGroupMessages.stats(sagaPlayer, selectedSettlement, page -1));
-		
-		
-	}
-	
-	@Command(
-            aliases = {"settlementfactioninvite", "sfinvite"},
-            usage = "[settlement name] <faction name>",
-            flags = "",
-            desc = "Invite a faction to join your settlement.",
-            min = 1,
-            max = 2)
-	@CommandPermissions({"saga.user.settlement.faction.invite"})
-	public static void factionInvite(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-//	
-//		ChunkGroup selectedChunkGroup = null;
-//		SagaFaction selectedFaction = null;
-//		
-//
-//		// Selected chunk group:
-//		if(args.argsLength() == 2){
-//			selectedChunkGroup = getChunkGroup(args.getString(0));
-//			if(selectedChunkGroup == null){
-//				sagaPlayer.sendMessage( ChunkGroupMessages.noChunkGroup() );
-//				return;
-//			}
-//		}else{
-//			selectedChunkGroup = getChunkGroup(sagaPlayer);
-//			if(selectedChunkGroup == null){
-//				sagaPlayer.sendMessage( ChunkGroupMessages.noChunkGroup(args.getString(0)) );
-//				return;
-//			}
-//		}
-//		
-//		// Faction:
-//		String factionName = null;
-//		if(args.argsLength() == 2){
-//			factionName = args.getString(1);
-//			selectedFaction = FactionManager.getFactionManager().factionWithName(args.getString(1));
-//		}else{
-//			factionName = args.getString(0);
-//			selectedFaction = FactionManager.getFactionManager().factionWithName(args.getString(0));
-//		}
-//		
-//		// Non-existent faction:
-//		if(selectedFaction == null){
-//			sagaPlayer.sendMessage(FactionMessages.nonExistentFaction(factionName));
-//			return;
-//		}
-//		
-//		// Permission:
-//		if( !selectedChunkGroup.canInvite(sagaPlayer) ){
-//			sagaPlayer.sendMessage(SagaMessages.noPermission());
-//			return;
-//		}
-//		
-//		// Already a member:
-//		if(selectedChunkGroup.hasFaction(selectedFaction.getId())){
-//			sagaPlayer.sendMessage( ChunkGroupMessages.alreadyInTheChunkGroup(selectedFaction, selectedChunkGroup) );
-//			return;
-//		}
-//		
-//		// Already invited:
-//		if(selectedFaction.hasChunkGrouInvite(selectedChunkGroup.getId())){
-//			sagaPlayer.sendMessage( ChunkGroupMessages.alreadyInvited(selectedFaction, selectedChunkGroup) );
-//			return;
-//		}
-//		
-//		// Add invite:
-//		selectedFaction.addChunkGroupInvitation(selectedChunkGroup.getId());
-//		
-//		// Inform:
-//		selectedFaction.broadcast(ChunkGroupMessages.beenInvited(selectedFaction, selectedChunkGroup));
-//		selectedChunkGroup.broadcast(ChunkGroupMessages.invited(selectedFaction, selectedChunkGroup));
-//		
-		
-	}
-
-	@Command(
-            aliases = {"settlementfactionaccpet", "sfaccept"},
-            usage = "<settlement name>",
-            flags = "",
-            desc = "Accept a settlement invitation.",
-            min = 0,
-            max = 1)
-	@CommandPermissions({"saga.user.settlement.faction.accept"})
-	public static void factionAccept(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-		
-//		SagaFaction selectedFaction = null;
-//		String chunkGroupName = null;
-//		ChunkGroup selectedChunkGroup = null;
-//
-//		if(args.argsLength() >= 1){
-//			chunkGroupName = args.getString(0);
-//		}
-//		
-//		// Part of a faction:
-//		if(sagaPlayer.getFactionCount() == 0){
-//			sagaPlayer.sendMessage(FactionMessages.noFaction());
-//			return;
-//		}
-//			
-//		// Faction selection:
-//		ArrayList<SagaFaction> selectedFactions = sagaPlayer.getSelectedFactions();
-//		if(selectedFactions.size() != 1){
-//			sagaPlayer.sendMessage( FactionMessages.mustSelectOneFaction() );
-//			return;
-//		}
-//		selectedFaction = selectedFactions.get(0);
-//
-//		// Permission:
-//		if( !selectedFaction.canSettlementAccept(sagaPlayer) ){
-//			sagaPlayer.sendMessage(FactionMessages.noPermission(selectedFaction));
-//			return;
-//		}
-//		
-//    	// No invites:
-//		ArrayList<ChunkGroup> groupsInvited = getChunkGroups(selectedFaction.getChunkGroupInvites());
-//    	if(groupsInvited.size() == 0){
-//    		sagaPlayer.sendMessage(ChunkGroupMessages.factionNoInvites(selectedFaction));
-//    		return;
-//    	}
-//    	
-//    	// Chunk group selection:
-//    	if(chunkGroupName == null){
-//    		selectedChunkGroup = groupsInvited.get( groupsInvited.size()-1 );
-//    	}else 
-//    	for (ChunkGroup chunkGroup : groupsInvited) {
-//			if(chunkGroup.getName().equals(chunkGroupName)){
-//				selectedChunkGroup = chunkGroup;
-//				break;
-//			}
-//		}
-//    	
-//    	// Invalid chunk group selection:
-//    	if(selectedChunkGroup == null){
-//    		sagaPlayer.sendMessage(ChunkGroupMessages.factionNoInvites(selectedFaction, chunkGroupName));
-//    		return;
-//    	}
-//    	
-//    	// Inform:
-//    	selectedChunkGroup.broadcast(ChunkGroupMessages.joined(selectedFaction, selectedChunkGroup));
-//		selectedFaction.broadcast(ChunkGroupMessages.haveJoined(selectedFaction, selectedChunkGroup));
-//    	
-//    	// Add faction to chunk group:
-////    	ChunkGroupManager.manager().addFaction(selectedChunkGroup, selectedFaction);
-////    	ChunkGroupManager.manager().registerFaction(selectedChunkGroup, selectedFaction);
-//    	
-//    	// Decline every invitation:
-//    	ArrayList<Integer> chunkGroupIds = selectedFaction.getChunkGroupInvites();
-//    	for (int i = 0; i < chunkGroupIds.size(); i++) {
-//    		selectedFaction.removeChunkGroupInvitation(chunkGroupIds.get(i));
-//		}
-    	
-    	
-	}
-
-	@Command(
-            aliases = {"settlementfactionquit","sfquit"},
-            usage = "",
-            flags = "",
-            desc = "Quit current settlement.",
-            min = 0,
-            max = 1
-		)
-	@CommandPermissions({"saga.user.settlement.faction.quit"})
-	public static void factionQuit(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-//
-//		// Part of a faction:
-//		if(sagaPlayer.getFactionCount() == 0){
-//			sagaPlayer.sendMessage(FactionMessages.noFaction());
-//			return;
-//		}
-//			
-//		// Faction selection:
-//		ArrayList<SagaFaction> selectedFactions = sagaPlayer.getSelectedFactions();
-//		if(selectedFactions.size() != 1){
-//			sagaPlayer.sendMessage( FactionMessages.mustSelectOneFaction() );
-//			return;
-//		}
-//		SagaFaction selectedFaction = selectedFactions.get(0);
-//		
-//		
-//		
-//		
-//		
-//		
-//		
-//		
-//		
-//		// Chunk group selection:
-//		SagaChunk selectedChunk = sagaPlayer.getSagaChunk();
-//		ChunkGroup selectedChunkGroup = null;
-//		if(selectedChunk != null) selectedChunkGroup = selectedChunk.getChunkGroup();
-//		if(selectedChunkGroup == null){
-//			sagaPlayer.sendMessage( ChunkGroupMessages.notInChunkGroup() );
-//			return;
-//		}
-//
-//		// Not a member:
-//		if( !selectedChunkGroup.hasRegisteredMember(sagaPlayer) ){
-//			sagaPlayer.sendMessage(ChunkGroupMessages.notChunkGroupMember(selectedChunkGroup));
-//			return;
-//		}
-//		
-//		// Quit:
-//		selectedChunkGroup.removePlayer(sagaPlayer);
-//		
-//		// Inform:
-//		selectedChunkGroup.broadcast(ChunkGroupMessages.quit(sagaPlayer, selectedChunkGroup));
-//		sagaPlayer.sendMessage(ChunkGroupMessages.haveQuit(sagaPlayer, selectedChunkGroup));
-		
-		
-	}
-	
-	@Command(
-            aliases = {"sdeclareowner"},
-            usage = "[settlement name] <player name>",
-            flags = "",
-            desc = "Declares someone as the new settlement owner.",
-            min = 1,
-            max = 2
+		aliases = {"sdeclareowner"},
+		usage = "[settlement name] <player name>",
+		flags = "",
+		desc = "Declares someone as the new settlement owner.",
+		min = 1,
+		max = 2
 		)
 	@CommandPermissions({"saga.user.settlement.declareowner"})
 	public static void declareOwner(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
@@ -1138,153 +931,14 @@ public class ChunkGroupCommands {
 		
    		
 	}
-	
-	@Command(
-            aliases = {"ssetbuilding","setbuilding","bset"},
-            usage = "<building_name>",
-            flags = "",
-            desc = "Sets a building on this chunk of land.",
-            min = 1,
-            max = 1
-		)
-	@CommandPermissions({"saga.user.settlement.building.set"})
-	public static void setBuilding(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-
-		String buildingName = null;
-		ChunkGroup selectedChunkGroup = null;
-
-		// Arguments:
-		buildingName = args.getString(0).replace(SagaMessages.spaceSymbol, " ").toLowerCase();
-		
-		// Selected chunk:
-		SagaChunk selectedChunk = sagaPlayer.getSagaChunk();
-	   	if(selectedChunk == null){
-			sagaPlayer.message(BuildingMessages.notOnClaimedLand(selectedChunkGroup));
-			return;
-		}
-		
-	   	// Selected chunk group:
-	   	selectedChunkGroup = selectedChunk.getChunkGroup();
-
-	   	// Valid building:
-	   	if(ChunkGroupConfiguration.config().getBuildingDefinition(buildingName) == null){
-	   		sagaPlayer.message(BuildingMessages.invalidBuilding(buildingName));
-	   		return;
-	   	}
-	   	
-		// Building:
-		Building selectedBuilding;
-		try {
-			selectedBuilding = ChunkGroupConfiguration.config().createBuilding(buildingName);
-		} catch (InvalidBuildingException e) {
-			SagaLogger.severe(ChunkGroupCommands.class, sagaPlayer + " tried to set a building with missing definition");
-			sagaPlayer.error("definition missing for " + buildingName + " building");
-			return;
-		}
-		if(selectedBuilding == null){
-			sagaPlayer.message(BuildingMessages.invalidBuilding(buildingName));
-			return;
-		}
-		
-		// Permission:
-		if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.SET_BUILDING)){
-			sagaPlayer.message(SagaMessages.noPermission(selectedChunkGroup));
-			return;
-		}
-
-		// Existing building:
-		if(selectedChunk.getBuilding() != null){
-			sagaPlayer.message(BuildingMessages.oneBuildingAllowed(selectedChunkGroup));
-			return;
-		}
-
-		// Building available:
-		if(!selectedChunkGroup.isBuildingAvailable(buildingName)){
-			sagaPlayer.message(BuildingMessages.unavailable(selectedBuilding));
-			return;
-		}
-		
-		// Set building:
-		selectedChunk.setBuilding(selectedBuilding);
-
-		// Inform:
-		if(sagaPlayer.getChunkGroup() == selectedChunkGroup){
-			sagaPlayer.message(ChunkGroupMessages.setBuilding(selectedBuilding));
-		}else{
-			sagaPlayer.message(ChunkGroupMessages.setBuilding(selectedBuilding, selectedChunkGroup));
-		}
-		
-		// Play effect:
-		SettlementEffects.playBuildingSet(sagaPlayer, selectedBuilding);
-		
-
-	}
-	
-	@Command(
-            aliases = {"sremovebuilding","abanonbuilding","bremove"},
-            usage = "[settlement name]",
-            flags = "",
-            desc = "Abandons a building on this chunk of land.",
-            min = 0,
-            max = 0
-		)
-	@CommandPermissions({"saga.user.settlement.building.remove"})
-	public static void removeBuilding(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-
-		ChunkGroup selectedChunkGroup = null;
-		
-		// Arguments:
-		selectedChunkGroup = getLocationChunkGroup(sagaPlayer);
-		if(selectedChunkGroup == null){
-			sagaPlayer.message(ChunkGroupMessages.noChunkGroup());
-			return;
-		}
-		
-		// Selected chunk:
-		SagaChunk selectedChunk = sagaPlayer.getSagaChunk();
-	   	if(selectedChunk == null){
-			sagaPlayer.message(BuildingMessages.notOnClaimedLand(selectedChunkGroup));
-			return;
-		}
-		
-		// Existing building:
-		Building selectedBuilding = selectedChunk.getBuilding();
-		if(selectedBuilding == null){
-			sagaPlayer.message(ChunkGroupMessages.noBuilding());
-			return;
-		}
-		
-		// Permission:
-		if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.REMOVE_BUILDING)){
-			sagaPlayer.message(SagaMessages.noPermission(selectedChunkGroup));
-			return;
-		}
-
-		// Inform:
-		if(sagaPlayer.getChunkGroup() == selectedChunkGroup){
-			sagaPlayer.message(ChunkGroupMessages.removedBuilding(selectedBuilding));
-		}else{
-			sagaPlayer.message(ChunkGroupMessages.removedBuilding(selectedBuilding, selectedChunkGroup));
-		}
-
-		// Play effect:
-		SettlementEffects.playBuildingRemove(sagaPlayer, selectedBuilding);
-		
-		// Remove building:
-		selectedChunk.removeBuilding();
-
-		
-	}
 
 	@Command(
-            aliases = {"ssetrole"},
-            usage = "<player name> <role_name>",
-            flags = "",
-            desc = "Set a settlement members role.",
-            min = 2,
-            max = 3
+		aliases = {"ssetrole"},
+		usage = "<player name> <role_name>",
+		flags = "",
+		desc = "Set a role for the settlement member.",
+		min = 2,
+		max = 3
 	)
 	@CommandPermissions({"saga.user.settlement.setrole"})
 	public static void setRole(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
@@ -1381,13 +1035,214 @@ public class ChunkGroupCommands {
 		
 	}
 	
+	
+	
+	// Stats:
 	@Command(
-			aliases = {"srename"},
-			usage = "[settlement name] <new settlement name>",
-			flags = "",
-			desc = "Rename the settlement.",
-			min = 1,
-			max = 2
+		aliases = {"sstats"},
+		usage = "[settlement name] [page]",
+		flags = "",
+		desc = "Show settlement stats.",
+		min = 0,
+		max = 2
+	)
+	@CommandPermissions({"saga.user.settlement.stats"})
+	public static void stats(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+		
+		Integer page = null;
+		Settlement selectedSettlement = null;
+		
+		ChunkGroup selectedChunkGroup = null;
+		String sPage = null;
+		String groupName = null;
+		
+		// Arguments:
+		switch (args.argsLength()) {
+			
+			case 2:
+				
+				// Chunk group:
+				groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
+				selectedChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(groupName);
+				if(selectedChunkGroup == null){
+					sagaPlayer.message(ChunkGroupMessages.noChunkGroup(groupName));
+					return;
+				}
+				
+				// Page:
+				sPage = args.getString(1);
+				try {
+					page = Integer.parseInt(sPage);
+				}
+				catch (NumberFormatException e) {
+					sagaPlayer.message(ChunkGroupMessages.invalidInteger(sPage));
+					return;
+				}
+				break;
+
+			case 1:
+
+				// Chunk group:
+				selectedChunkGroup = sagaPlayer.getChunkGroup();
+				if(selectedChunkGroup == null){
+					sagaPlayer.message( ChunkGroupMessages.noChunkGroup() );
+					return;
+				}
+
+				// Page:
+				sPage = args.getString(0);
+				try {
+					page = Integer.parseInt(sPage);
+				}
+				catch (NumberFormatException e) {
+					sagaPlayer.message(ChunkGroupMessages.invalidInteger(sPage));
+					return;
+				}
+				
+				break;
+
+			default:
+
+				// Chunk group:
+				selectedChunkGroup = sagaPlayer.getChunkGroup();
+				if(selectedChunkGroup == null){
+					sagaPlayer.message(ChunkGroupMessages.noChunkGroup());
+					return;
+				}
+				
+				// Page:
+				page = 1;
+				
+				break;
+				
+		}
+		
+		// Is a settlement:
+		if(! (selectedChunkGroup instanceof Settlement) ){
+			sagaPlayer.message(ChunkGroupMessages.notSettlement(selectedChunkGroup));
+			return;
+		}
+		selectedSettlement = (Settlement) selectedChunkGroup;
+		
+		// Inform:
+		sagaPlayer.message(ChunkGroupMessages.stats(sagaPlayer, selectedSettlement, page -1));
+		
+		
+	}
+
+	@Command(
+		aliases = {"slist"},
+		usage = "[settlement name]",
+		flags = "",
+		desc = "Lists settlement members.",
+		min = 0,
+		max = 1
+		)
+	@CommandPermissions({"saga.user.settlement.list"})
+	public static void list(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+
+		ChunkGroup selectedChunkGroup = null;
+
+		// Arguments:
+		if(args.argsLength() == 1){
+			
+			// Chunk group:
+			String groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
+			selectedChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(groupName);
+			if(selectedChunkGroup == null){
+				sagaPlayer.message(ChunkGroupMessages.noChunkGroup(groupName));
+				return;
+			}
+			
+		}else{
+			
+			// Chunk group:
+			selectedChunkGroup = sagaPlayer.getChunkGroup();
+			if(selectedChunkGroup == null){
+				sagaPlayer.message( ChunkGroupMessages.noChunkGroup() );
+				return;
+			}
+			
+		}
+		
+		// Is a settlement:
+		if(! (selectedChunkGroup instanceof Settlement) ){
+			sagaPlayer.message(ChunkGroupMessages.notSettlement(selectedChunkGroup));
+			return;
+		}
+		Settlement selectedSettlement = (Settlement) selectedChunkGroup;
+		
+		// Inform:
+		sagaPlayer.message(ChunkGroupMessages.list(sagaPlayer, selectedSettlement));
+		
+		
+	}
+	
+	
+	
+	// Info:
+	@Command(
+		aliases = {"squit"},
+		usage = "",
+		flags = "",
+		desc = "Wrong command to quit the settlement.",
+		min = 0,
+		max = 0
+		)
+	@CommandPermissions({"saga.user.faction.quit"})
+	public static void wrongQuit(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+		
+		// Inform:
+		sagaPlayer.message(ChunkGroupMessages.wrongQuit());
+		
+		
+	}
+
+	@Command(
+		aliases = {"shelp"},
+		usage = "[page number]",
+		flags = "",
+		desc = "Display settlement help.",
+		min = 0,
+		max = 1
+	)
+	@CommandPermissions({"saga.user.settlement.help"})
+	public static void help(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		
+		Integer page = null;
+		
+		// Arguments:
+		if(args.argsLength() == 1){
+			try {
+				page = Integer.parseInt(args.getString(0));
+			} catch (NumberFormatException e) {
+				sagaPlayer.message(ChunkGroupMessages.invalidPage(args.getString(0)));
+				return;
+			}
+		}else{
+			page = 0;
+		}
+		
+		// Inform:
+		sagaPlayer.message(InfoMessages.shelp(page - 1));
+
+		
+	}
+
+	
+	
+	// Other:
+	@Command(
+		aliases = {"srename"},
+		usage = "[settlement name] <new settlement name>",
+		flags = "",
+		desc = "Rename the settlement.",
+		min = 1,
+		max = 2
 	)
 	@CommandPermissions({"saga.user.settlement.rename"})
 	public static void rename(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
@@ -1471,367 +1326,53 @@ public class ChunkGroupCommands {
 	    	
 	}
 	
-	// Info:
 	@Command(
-            aliases = {"squit"},
-            usage = "",
-            flags = "",
-            desc = "Quit settlement.",
-            min = 0,
-            max = 0
-		)
-	@CommandPermissions({"saga.user.faction.quit"})
-	public static void wrongQuit(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-		
-		// Inform:
-		sagaPlayer.message(ChunkGroupMessages.wrongQuit());
-		
-		
-	}
-
-	@Command(
-			aliases = {"shelp"},
-			usage = "[page number]",
-			flags = "",
-			desc = "Display settlement help.",
-			min = 0,
-			max = 1
+		aliases = {"map"},
+		usage = "",
+		flags = "",
+		desc = "Show a map of all claimed land.",
+		min = 0,
+		max = 0
 	)
-	@CommandPermissions({"saga.user.settlement.help"})
-	public static void help(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	@CommandPermissions({"saga.user.map"})
+	public static void map(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
-		
-		Integer page = null;
-		
-		// Arguments:
-		if(args.argsLength() == 1){
-			try {
-				page = Integer.parseInt(args.getString(0));
-			} catch (NumberFormatException e) {
-				sagaPlayer.message(ChunkGroupMessages.invalidPage(args.getString(0)));
-				return;
-			}
-		}else{
-			page = 0;
-		}
-		
-		// Inform:
-		sagaPlayer.message(InfoMessages.shelp(page - 1));
-
-		
-	}
-
-	
-	
-	// Admin:
-	@Command(
-            aliases = {"sdissolve"},
-            usage = "[settlement name]",
-            flags = "",
-            desc = "Dissolve the settlement.",
-            min = 0,
-            max = 1
-        )
-        @CommandPermissions({"saga.user.settlement.delete"})
-	public static void disolve(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-		
-		ChunkGroup selectedChunkGroup = null;
-
-		// Arguments:
-		if(args.argsLength() == 1){
-			
-			// Chunk group:
-			String groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
-			selectedChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(groupName);
-			if(selectedChunkGroup == null){
-				sagaPlayer.message(ChunkGroupMessages.noChunkGroup(groupName));
-				return;
-			}
-			
-		}else{
-			
-			// Chunk group:
-			selectedChunkGroup = sagaPlayer.getChunkGroup();
-			if(selectedChunkGroup == null){
-				sagaPlayer.message( ChunkGroupMessages.noChunkGroup() );
-				return;
-			}
-			
-		}
-	   	
-	   	// Permissions:
-	   	if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.DISSOLVE)){
-	   		sagaPlayer.message(SagaMessages.noPermission(selectedChunkGroup));
-	   		return;
-	   	}
-
-	   	// Level too high:
-	   	if(selectedChunkGroup instanceof Settlement){
-	   		
-	   		Settlement selectedSettlement = (Settlement) selectedChunkGroup;
-	   		
-	   		if(selectedSettlement.getLevel() >= ChunkGroupConfiguration.config().noDeleteLevel){
-
-	   			sagaPlayer.message(ChunkGroupMessages.informSettlementAboveLevelDelete());
-				return;
-				
-			}
-	   		
-	   	}
-	   	
-		// Delete:
-	   	selectedChunkGroup.delete();
-			
-		// Inform:
-		Saga.broadcast(ChunkGroupMessages.dissolved(sagaPlayer, selectedChunkGroup));
-		
-	
-	}
-	
-	@Command(
-            aliases = {"assetlevel"},
-            usage = "[settlement name] <level>",
-            flags = "",
-            desc = "Set settlement level.",
-            min = 1,
-            max = 2
-	)
-	@CommandPermissions({"saga.admin.settlement.setlevel"})
-	public static void setlevel(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-
-		Integer level = null;
-		ChunkGroup selectedChunkGroup = null;
-
-		// Arguments:
-		if(args.argsLength() == 2){
-			
-			// Chunk group:
-			String groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
-			selectedChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(groupName);
-			if(selectedChunkGroup == null){
-				sagaPlayer.message(ChunkGroupMessages.noChunkGroup(groupName));
-				return;
-			}
-
-			try {
-				level = Integer.parseInt(args.getString(1));
-			} catch (NumberFormatException e) {
-				sagaPlayer.message(ChunkGroupMessages.invalidInteger(args.getString(1)));
-				return;
-			}
-			
-		}else{
-			
-			// Chunk group:
-			selectedChunkGroup = sagaPlayer.getChunkGroup();
-			if(selectedChunkGroup == null){
-				sagaPlayer.message( ChunkGroupMessages.noChunkGroup() );
-				return;
-			}
-
-			try {
-				level = Integer.parseInt(args.getString(0));
-			} catch (NumberFormatException e) {
-				sagaPlayer.message(ChunkGroupMessages.invalidInteger(args.getString(0)));
-				return;
-			}
-			
-		}
-		
-		// Is a settlement:
-		if(!(selectedChunkGroup instanceof Settlement)){
-			sagaPlayer.message(ChunkGroupMessages.notSettlement(selectedChunkGroup));
-			return;
-		}
-		Settlement selectedSettlement = (Settlement) selectedChunkGroup;
-
-		// Set level:
-		selectedSettlement.setLevel(level);
-		
-		// Inform:
-		selectedChunkGroup.broadcast(ChunkGroupMessages.settlementLevel(selectedSettlement));
-		if(selectedChunkGroup != sagaPlayer.getChunkGroup()){
-			sagaPlayer.message(ChunkGroupMessages.setLevel(selectedSettlement));
-		}
-		
-	}
-	
-	@Command(
-            aliases = {"asenable"},
-            usage = "[settlement name] <option>",
-            flags = "",
-            desc = "Enable option.",
-            min = 1,
-            max = 2
-	)
-	@CommandPermissions({"saga.admin.settlement.options.set.all"})
-	public static void enableOption(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-
-		ChunkGroup selChunkGroup = null;
-		ChunkGroupToggleable option = null;
-
-		String aOption = null;
-		
-		// Arguments:
-		switch (args.argsLength()) {
-			case 2:
-				
-				// Chunk group:
-				selChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(args.getString(0));
-				if(selChunkGroup == null){
-					sagaPlayer.message( ChunkGroupMessages.noChunkGroup(args.getString(0)) );
-					return;
-				}
-				
-				// Option:
-				aOption = args.getString(1);
-				option = ChunkGroupToggleable.match(aOption);
-				if(option == null){
-					sagaPlayer.message(ChunkGroupMessages.optionInvalid(args.getString(1)));
-					sagaPlayer.message(ChunkGroupMessages.optionInvalidInfo());
-					return;
-				}
-				
-				break;
-
-			default:
-			
-				// Chunk group:
-				selChunkGroup = sagaPlayer.getChunkGroup();
-				if(selChunkGroup == null){
-					sagaPlayer.message(ChunkGroupMessages.noChunkGroup());
-					return;
-				}
-				
-				// Option:
-				aOption = args.getString(0);
-				option = ChunkGroupToggleable.match(aOption);
-				if(option == null){
-					sagaPlayer.message(ChunkGroupMessages.optionInvalid(aOption));
-					sagaPlayer.message(ChunkGroupMessages.optionInvalidInfo());
-					return;
-				}
-				
-				break;
-				
-		}
-		
-		// Already enabled:
-		if(selChunkGroup.isOptionEnabled(option)){
-			sagaPlayer.message(ChunkGroupMessages.optionAlreadyEnabled(selChunkGroup, option));
-			return;
-		}
-		
-		// Enable:
-		selChunkGroup.enableOption(option);
-		
-		// Inform:
-		sagaPlayer.message(ChunkGroupMessages.optionToggle(selChunkGroup, option));
-		
-		
-	}
-	
-	@Command(
-            aliases = {"asdisable"},
-            usage = "[settlement name] <option>",
-            flags = "",
-            desc = "Disable option.",
-            min = 1,
-            max = 2
-	)
-	@CommandPermissions({"saga.admin.settlement.options.set.all"})
-	public static void disableOption(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-
-		ChunkGroup selChunkGroup = null;
-		ChunkGroupToggleable option = null;
-		
-		String aOption = null;
-		
-		// Arguments:
-		switch (args.argsLength()) {
-			case 2:
-				
-				// Chunk group:
-				selChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(args.getString(0));
-				if(selChunkGroup == null){
-					sagaPlayer.message( ChunkGroupMessages.noChunkGroup(args.getString(0)) );
-					return;
-				}
-				
-				// Option:
-				aOption = args.getString(1);
-				option = ChunkGroupToggleable.match(aOption);
-				if(option == null){
-					sagaPlayer.message(ChunkGroupMessages.optionInvalid(args.getString(1)));
-					sagaPlayer.message(ChunkGroupMessages.optionInvalidInfo());
-					return;
-				}
-				
-				break;
-
-			default:
-			
-				// Chunk group:
-				selChunkGroup = sagaPlayer.getChunkGroup();
-				if(selChunkGroup == null){
-					sagaPlayer.message(ChunkGroupMessages.noChunkGroup());
-					return;
-				}
-				
-				// Option:
-				aOption = args.getString(0);
-				option = ChunkGroupToggleable.match(aOption);
-				if(option == null){
-					sagaPlayer.message(ChunkGroupMessages.optionInvalid(aOption));
-					sagaPlayer.message(ChunkGroupMessages.optionInvalidInfo());
-					return;
-				}
-				
-				break;
-				
-		}
-		
-		// Already disabled:
-		if(!selChunkGroup.isOptionEnabled(option)){
-			sagaPlayer.message(ChunkGroupMessages.optionAlreadyDisabled(selChunkGroup, option));
-			return;
-		}
-		
-		// Disabled:
-		selChunkGroup.disableOption(option);
-		
-		// Inform:
-		sagaPlayer.message(ChunkGroupMessages.optionToggle(selChunkGroup, option));
-		
-		
+    	sagaPlayer.message(SagaMessages.map(sagaPlayer, sagaPlayer.getLocation()));
+            
 	}
 	
 	
 	
-	public static boolean validateName(String str) {
+	// Utility:
+	/**
+	 * Validates building name.
+	 * 
+	 * @param name building name
+	 * @return true if valid
+	 */
+	public static boolean validateName(String name) {
 
-         if(org.saga.utility.TextUtil.getComparisonString(str).length() < minimumNameLenght ) {
-        	 return false;
-         }
+		
+		if(org.saga.utility.TextUtil.getComparisonString(name).length() < minimumNameLenght ) {
+			return false;
+		}
 
-         if(str.length() > maximumNameLength) {
-        	 return false;
-         }
+		if(name.length() > maximumNameLength) {
+			return false;
+		}
 
-         for (char c : str.toCharArray()) {
-                 if ( ! org.saga.utility.TextUtil.substanceChars.contains(String.valueOf(c))) {
-                	 return false;
-                 }
-         }
+		for (char c : name.toCharArray()) {
+			
+			if ( ! org.saga.utility.TextUtil.substanceChars.contains(String.valueOf(c))) {
+				return false;
+			}
+			
+		}
 
-         return true;
+		return true;
 
- }
+         
+	}
 	
 	/**
 	 * Gets the chunk group the player is standing on.
