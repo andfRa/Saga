@@ -10,7 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Clock;
-import org.saga.Clock.TimeOfDayTicker;
+import org.saga.Clock.DaytimeTicker;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.TradingPost;
@@ -24,7 +24,7 @@ import org.saga.saveload.WriterReader;
 import com.google.gson.JsonParseException;
 
 
-public class EconomyManager implements TimeOfDayTicker{
+public class EconomyManager implements DaytimeTicker{
 
 	
 	/**
@@ -102,7 +102,7 @@ public class EconomyManager implements TimeOfDayTicker{
 	 * @see org.saga.Clock.TimeOfDayTicker#timeOfDayTick(org.saga.Clock.TimeOfDayTicker.TimeOfDay)
 	 */
 	@Override
-	public void timeOfDayTick(TimeOfDay timeOfDay) {
+	public void timeOfDayTick(Daytime timeOfDay) {
 		
 		
 //		if(!timeOfDay.equals(TimeOfDay.SUNRISE)){
@@ -472,7 +472,7 @@ public class EconomyManager implements TimeOfDayTicker{
 		}
 		
 		// Enable clock:
-		Clock.clock().registerTimeOfDayTick(instance);
+		Clock.clock().registerTick(instance);
 		
 		instances.add(instance);
 		

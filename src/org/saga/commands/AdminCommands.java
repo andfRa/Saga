@@ -8,10 +8,11 @@ package org.saga.commands;
 import java.util.Enumeration;
 
 import org.bukkit.ChatColor;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Clock;
-import org.saga.Clock.TimeOfDayTicker.TimeOfDay;
+import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.chunkGroups.ChunkGroup;
@@ -822,17 +823,24 @@ public class AdminCommands {
 	
 	// Time of day:
 	@Command(
-		aliases = {"asunt","asunrisetick"},
+		aliases = {"anextdaytime","anexttime"},
 		usage = "",
 		flags = "",
-		desc = "Force a sunrise tick.",
+		desc = "Force next daytime.",
 		min = 0,
 		max = 0
 	)
-	@CommandPermissions({"saga.admin.forcetick"})
-	public static void forceSunriseTick(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	@CommandPermissions({"saga.admin.forcenexdaytime"})
+	public static void forceNextDaytime(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
-		Clock.clock().forceTick(TimeOfDay.SUNRISE);
+
+		// Next daytime:
+		World world = sagaPlayer.getLocation().getWorld();
+		Daytime daytime = Clock.clock().forceNextDaytime(world);
+		
+		// Inform:
+		sagaPlayer.message(AdminMessages.nextDaytime(world, daytime));
+		
 		
 	}
 	

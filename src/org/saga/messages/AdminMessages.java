@@ -1,6 +1,8 @@
 package org.saga.messages;
 
 import org.bukkit.ChatColor;
+import org.bukkit.World;
+import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.BalanceConfiguration;
 import org.saga.config.ExperienceConfiguration;
@@ -29,7 +31,6 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 	public static ChatColor normal2 = ChatColor.YELLOW;
 
 	
-	
 
 	// Levels:
 	public static String levelSet(Integer level, SagaPlayer sagaPlayer){
@@ -44,7 +45,6 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 		return negative + level + " is out of range. Allowed range: 0 - " + ExperienceConfiguration.config().maximumLevel + ".";
 	}
 
-	
 	
 	
 	// Attributes:
@@ -63,7 +63,6 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 	public static String attributeOutOfRange(String score){
 		return negative + score + " is out of range. Allowed range: 0 - " + AttributeConfiguration.config().maxAttributeScore + ".";
 	}
-	
 	
 	
 	
@@ -91,7 +90,6 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 		return negative + "Admin mode already disabled.";
 		
 	}
-	
 
 	
 	
@@ -99,7 +97,6 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 	public static String statsTargetName(SagaPlayer sagaPlayer) {
 		return positive + "Stats for " + sagaPlayer.getName() + ".";
 	}
-	
 	
 	
 	
@@ -116,6 +113,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 		
 	}
 	
+	
 
 	// Saving loading:
 	public static String saving() {
@@ -125,7 +123,6 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 	public static String saved() {
 		return veryPositive + "Saving complete.";
 	}
-	
 	
 	
 	
@@ -140,9 +137,18 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 		
 	}
 	
-	public static void chatnWarning(String message) {
+	public static void chatWarning(String message) {
 
 		chatMessage("WARNING", message);
+		
+	}
+
+	
+	
+	// Time:
+	public static String nextDaytime(World world, Daytime daytime) {
+
+		return positive + "Daytime set to " + daytime + " for world " + world.getName() + ".";
 		
 	}
 

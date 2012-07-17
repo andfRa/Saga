@@ -8,11 +8,11 @@ import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Monster;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.saga.Clock;
-import org.saga.Clock.TimeOfDayTicker;
+import org.saga.Clock.DaytimeTicker;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.exceptions.InvalidBuildingException;
 
-public class Watchtower extends Building implements TimeOfDayTicker{
+public class Watchtower extends Building implements DaytimeTicker{
 
 	// TODO: Improve watchtower
 	
@@ -85,7 +85,7 @@ public class Watchtower extends Building implements TimeOfDayTicker{
 		
 		super.enable();
 		
-		Clock.clock().registerTimeOfDayTick(this);
+		Clock.clock().registerTick(this);
 		
 		// Protect:
 		if(getSagaChunk() == null){
@@ -213,11 +213,11 @@ public class Watchtower extends Building implements TimeOfDayTicker{
 	 * @see org.saga.Clock.TimeOfDayTicker#timeOfDayTick(org.saga.Clock.TimeOfDayTicker.TimeOfDay)
 	 */
 	@Override
-	public void timeOfDayTick(TimeOfDay timeOfDay) {
+	public void timeOfDayTick(Daytime timeOfDay) {
 		
 		
 		// Reset the report each morning:
-		if(timeOfDay.equals(TimeOfDay.SUNRISE)){
+		if(timeOfDay.equals(Daytime.SUNRISE)){
 			mobReport = new Hashtable<String, Integer>();
 			return;
 		}

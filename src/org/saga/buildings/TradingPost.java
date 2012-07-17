@@ -16,7 +16,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Clock;
-import org.saga.Clock.TimeOfDayTicker;
+import org.saga.Clock.DaytimeTicker;
 import org.saga.SagaLogger;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.BuySign;
@@ -37,7 +37,7 @@ import org.saga.messages.BuildingMessages;
 import org.saga.player.SagaPlayer;
 
 
-public class TradingPost extends Building implements Trader, TimeOfDayTicker{
+public class TradingPost extends Building implements Trader, DaytimeTicker{
 	
 	// TODO: Improve trading post
 	
@@ -273,7 +273,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		super.enable();
 
 		// Register clock:
-		Clock.clock().registerTimeOfDayTick(this);
+		Clock.clock().registerTick(this);
 		
 		
 	}
@@ -435,7 +435,7 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 	 * @see org.saga.Clock.TimeOfDayTicker#timeOfDayTick(org.saga.Clock.TimeOfDayTicker.TimeOfDay)
 	 */
 	@Override
-	public void timeOfDayTick(TimeOfDay timeOfDay) {
+	public void timeOfDayTick(Daytime timeOfDay) {
 
 		
 		if(!isEnabled()){
@@ -443,17 +443,17 @@ public class TradingPost extends Building implements Trader, TimeOfDayTicker{
 		}
 		
 		// Reset report before sunrise:
-		if(timeOfDay.equals(TimeOfDay.SUNRISE)){
+		if(timeOfDay.equals(Daytime.SUNRISE)){
 			restReport();
 		}
 		
 		// Trade deals at sunrise:
-		if(timeOfDay.equals(TimeOfDay.SUNRISE)){
+		if(timeOfDay.equals(Daytime.SUNRISE)){
 			doDeals();
 		}
 		
 		// Select deals:
-		if(isAutomated() && timeOfDay.equals(TimeOfDay.MIDDAY)){
+		if(isAutomated() && timeOfDay.equals(Daytime.MIDDAY)){
 			selectDeals();
 		}
 		

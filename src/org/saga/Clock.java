@@ -6,11 +6,18 @@ import java.util.Hashtable;
 import java.util.List;
 
 import org.bukkit.World;
-import org.saga.Clock.TimeOfDayTicker.TimeOfDay;
+import org.saga.Clock.DaytimeTicker.Daytime;
 
 
 public class Clock implements Runnable{
 
+	
+	/**
+	 * Lag delay compensation.
+	 */
+	private final static Integer LAG_COMPENSATION = 120;
+
+	
 	
 	/**
 	 * Instance.
@@ -43,35 +50,44 @@ public class Clock implements Runnable{
 	
 	
 	/**
-	 * Instances that will receive a tick every second.
+	 * Second tick instances.
 	 */
-	private HashSet<SecondTicker> second = new HashSet<SecondTicker>();
+	private HashSet<SecondTicker> seconds = new HashSet<SecondTicker>();
 
 	/**
-	 * Instances that will receive a tick every minute.
+	 * Minute tick instances.
 	 */
-	private HashSet<MinuteTicker> minute = new HashSet<MinuteTicker>();
+	private HashSet<MinuteTicker> minutes = new HashSet<MinuteTicker>();
 
 	/**
-	 * Instances that will receive a tick every hour.
+	 * Hour tick instances.
 	 */
-	private HashSet<HourTicker> hour = new HashSet<HourTicker>();
+	private HashSet<HourTicker> hours = new HashSet<HourTicker>();
 
 	/**
-	 * Instances that will receive at certain parts of the day.
+	 * Daytime tick instances.
 	 */
-	private HashSet<TimeOfDayTicker> timeOfDays = new HashSet<TimeOfDayTicker>();
+	private HashSet<DaytimeTicker> daytimes = new HashSet<DaytimeTicker>();
 
-	private Hashtable<String, Long> previousWorldTime = new Hashtable<String, Long>();
+	/**
+	 * Previous daytime.
+	 */
+	private Hashtable<String, Daytime> prevDaytimes = new Hashtable<String, Clock.DaytimeTicker.Daytime>();
 	
+	
+	
+	// Initialisation:
 	/**
-	 * Initialises the clock.
+	 * Creates a clock.
 	 * 
 	 */
 	public Clock() {
 
 	}
 	
+	
+	
+	// Ticking:
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -81,16 +97,16 @@ public class Clock implements Runnable{
 	synchronized public void run() {
 		
 		
-//		String time = Saga.plugin().getServer().getWorld("world").getTime() +"";
-//		System.out.println("time=" + time.substring(0,time.length() -3)+":"+time.substring(time.length() -3));
+		String time = Saga.plugin().getServer().getWorld("world").getTime() +"";
+		System.out.println("time=" + time);
 		
 		// Seconds:
 		HashSet<SecondTicker> removeTickers = new HashSet<Clock.SecondTicker>();
 		
-		synchronized (second) {
+		synchronized (seconds) {
 			
 			secondsCycle ++;
-			ArrayList<SecondTicker> second = new ArrayList<Clock.SecondTicker>(this.second);
+			ArrayList<SecondTicker> second = new ArrayList<Clock.SecondTicker>(this.seconds);
 			for (int i = 0; i < second.size(); i++) {
 				
 				 if(!second.get(i).clockSecondTick()){
@@ -102,18 +118,18 @@ public class Clock implements Runnable{
 		}
 		
 		for (SecondTicker ticker : removeTickers) {
-			second.remove(ticker);
+			seconds.remove(ticker);
 		}
 		
 		// Minutes:
-		synchronized (minute) {
+		synchronized (minutes) {
 			
 			if(secondsCycle > 59){
 				secondsCycle = 0;
 				minutesCycle++;
 				// Minutes:
 //				Saga.info("Minute tick for " + minute.size() + " registered instances.");
-				ArrayList<MinuteTicker> minute = new ArrayList<Clock.MinuteTicker>(this.minute);
+				ArrayList<MinuteTicker> minute = new ArrayList<Clock.MinuteTicker>(this.minutes);
 				for (int i = 0; i < minute.size(); i++) {
 					minute.get(i).clockMinuteTick();
 				}
@@ -122,13 +138,13 @@ public class Clock implements Runnable{
 		}
 		
 		// Hours:
-		synchronized (hour) {
+		synchronized (hours) {
 
 			if(minutesCycle > 59){
 				minutesCycle = 0;
 				hoursCycle ++;
 				// Hours:
-				ArrayList<HourTicker> hour = new ArrayList<HourTicker>(this.hour);
+				ArrayList<HourTicker> hour = new ArrayList<HourTicker>(this.hours);
 				SagaLogger.info("Hour tick for " + hour.size() + " registered instances.");
 				for (int i = 0; i < hour.size(); i++) {
 					hour.get(i).clockHourTick();
@@ -141,31 +157,88 @@ public class Clock implements Runnable{
 		}
 
 		// Time of day:
-		synchronized (timeOfDays) {
+		synchronized (daytimes) {
 			
-			sendTimeOfDayTicks();
+			sendDaytimeTicks();
 			
 		}
 		
 
 	}
 
-
 	/**
-	 * Registers a second ticker.
+	 * Sends daytime ticks.
+	 * 
+	 */
+	private void sendDaytimeTicks() {
+
+		
+		List<World> worlds = Saga.plugin().getServer().getWorlds();
+		
+		for (World world : worlds) {
+			
+			String worldName = world.getName();
+			
+			Daytime prevDaytime = prevDaytimes.get(worldName);
+			Daytime currDaytime = Daytime.getDaytime(world.getTime());
+			
+			// Tick only if daytime changed:
+			if(currDaytime != Daytime.NONE && prevDaytime != currDaytime){
+				
+				ArrayList<DaytimeTicker> daytimes = new ArrayList<DaytimeTicker>(this.daytimes);
+				for (DaytimeTicker ticker : daytimes) {
+					
+					if(ticker.checkWorld(worldName)) ticker.timeOfDayTick(currDaytime);
+					
+				}
+				
+			}
+			
+			// Update previous:
+			prevDaytimes.put(worldName, currDaytime);
+			
+			
+		}
+		
+		
+	}
+	
+	/**
+	 * Forces next daytime.
+	 * 
+	 * @param world world
+	 * @return next daytime
+	 */
+	public Daytime forceNextDaytime(World world) {
+
+		
+		Daytime nextDaytime = Daytime.getNextDaytime(world.getTime());
+		
+		world.setTime(nextDaytime.getTime());
+		
+		return nextDaytime;
+		
+		
+	}
+
+	
+
+	// Registering:
+	/**
+	 * Registers ticking.
 	 * 
 	 * @param ticker ticker
 	 */
 	public void registerSecondTick(SecondTicker ticker) {
 
 		
-		synchronized (second) {
+		synchronized (seconds) {
 			
-			if(second.contains(ticker)){
+			if(seconds.contains(ticker)){
 				SagaLogger.severe(getClass(), "tried to register an already registered second ticker");
 				return;
 			}
-			second.add(ticker);
+			seconds.add(ticker);
 		
 		}
 		
@@ -173,20 +246,20 @@ public class Clock implements Runnable{
 	}
 
 	/**
-	 * Unregisters a second ticker.
+	 * Unregisters ticking.
 	 * 
 	 * @param ticker ticker
 	 */
 	public void unregisterSecondTick(SecondTicker ticker) {
 
 		
-		synchronized (second) {
+		synchronized (seconds) {
 		
-			if(!second.contains(ticker)){
+			if(!seconds.contains(ticker)){
 				SagaLogger.severe(getClass(), "tried to unregister an non-registered second ticker");
 				return;
 			}
-			second.remove(ticker);
+			seconds.remove(ticker);
 			
 			
 		}
@@ -196,42 +269,41 @@ public class Clock implements Runnable{
 	
 	
 	/**
-	 * Registers a hour ticker.
+	 * Registers ticking.
 	 * 
 	 * @param ticker ticker
 	 */
 	public void registerMinuteTick(MinuteTicker ticker) {
 
 		
-		synchronized (minute) {
+		synchronized (minutes) {
 
-			if(minute.contains(ticker)){
+			if(minutes.contains(ticker)){
 				SagaLogger.severe(getClass(), "tried to register an already registered minute ticker");
 				return;
 			}
-			minute.add(ticker);
+			minutes.add(ticker);
 			
 		}
 		
 		
 	}
-	
 
 	/**
-	 * Unregisters a hour ticker.
+	 * Unregisters ticking.
 	 * 
 	 * @param ticker ticker
 	 */
 	public void unregisterMinuteTick(MinuteTicker ticker) {
 
 		
-		synchronized (minute) {
+		synchronized (minutes) {
 
-			if(!minute.contains(ticker)){
+			if(!minutes.contains(ticker)){
 				SagaLogger.severe(getClass(), "tried to unregister an non-registered minute ticker");
 				return;
 			}
-			minute.remove(ticker);
+			minutes.remove(ticker);
 			
 		}
 		
@@ -240,20 +312,20 @@ public class Clock implements Runnable{
 
 	
 	/**
-	 * Registers a hour ticker.
+	 * Registers ticking.
 	 * 
 	 * @param ticker ticker
 	 */
 	public void registerHourTick(HourTicker ticker) {
 
 		
-		synchronized (hour) {
+		synchronized (hours) {
 			
-			if(minute.contains(ticker)){
+			if(minutes.contains(ticker)){
 				SagaLogger.severe(getClass(), "tried to register an already registered hour ticker");
 				return;
 			}
-			hour.add(ticker);
+			hours.add(ticker);
 			
 		}
 		
@@ -261,20 +333,20 @@ public class Clock implements Runnable{
 	}
 
 	/**
-	 * Unregisters a hour ticker.
+	 * Unregisters ticking.
 	 * 
 	 * @param ticker ticker
 	 */
 	public void unregisterHourTick(HourTicker ticker) {
 
 		
-		synchronized (hour) {
+		synchronized (hours) {
 
-			if(!hour.contains(ticker)){
+			if(!hours.contains(ticker)){
 				SagaLogger.severe(getClass(), "tried to unregister an non-registered hour ticker");
 				return;
 			}
-			hour.remove(ticker);
+			hours.remove(ticker);
 				
 		}
 		
@@ -283,20 +355,20 @@ public class Clock implements Runnable{
 
 	
 	/**
-	 * Unregisters a time of day ticker.
+	 * Registers ticking.
 	 * 
 	 * @param ticker ticker
 	 */
-	public void registerTimeOfDayTick(TimeOfDayTicker ticker) {
+	public void registerTick(DaytimeTicker ticker) {
 
 		
-		synchronized (timeOfDays) {
+		synchronized (daytimes) {
 
-			if(timeOfDays.contains(ticker)){
+			if(daytimes.contains(ticker)){
 				SagaLogger.severe(getClass(), "tried to register an already registered time of day ticker");
 				return;
 			}
-			timeOfDays.add(ticker);
+			daytimes.add(ticker);
 			
 		}
 		
@@ -304,128 +376,47 @@ public class Clock implements Runnable{
 	}
 	
 	/**
-	 * Unregisters a hour ticker.
+	 * Unregisters ticking.
 	 * 
 	 * @param ticker ticker
 	 */
-	public void unregisterTimeOfDayTick(TimeOfDayTicker ticker) {
+	public void unregisterTimeOfDayTick(DaytimeTicker ticker) {
 
 		
-		synchronized (timeOfDays) {
+		synchronized (daytimes) {
 		
-			if(!timeOfDays.contains(ticker)){
+			if(!daytimes.contains(ticker)){
 				SagaLogger.severe(getClass(), "tried to unregister an non-registered time of day ticker");
 				return;
 			}
-			timeOfDays.remove(ticker);
+			daytimes.remove(ticker);
 			
 		}
 		
 		
 	}
 	
-	/**
-	 * Sends time of day ticks.
-	 * 
-	 */
-	private void sendTimeOfDayTicks() {
-
-		
-		List<World> worlds = Saga.plugin().getServer().getWorlds();
-		for (World world : worlds) {
-			
-			// Hardcode ignore skylands:
-			if(world.getName().equals("world_the_end") || world.getName().equals("world_skylands")){
-				continue;
-			}
-			
-			String worldName = world.getName();
-			Long previousTime = previousWorldTime.get(worldName);
-			Long currentTime = world.getTime();
-			if(previousTime == null){
-				previousTime = world.getTime();
-				previousWorldTime.put(worldName, previousTime);
-			}
-			TimeOfDay timeOfDay = null;
-			
-			long timePassed = 0;
-			if(currentTime < previousTime){
-				timePassed = Math.abs(currentTime + (24000 - previousTime));
-			}else{
-				timePassed = Math.abs(currentTime - previousTime);
-			}
-			if(timePassed > 2000){
-				SagaLogger.warning(Clock.class, "time of day tick skipped too much");
-				previousWorldTime.put(worldName, currentTime);
-				return;
-			}
-			
-			// Dawn:
-			if( previousTime < 12300 && currentTime >= 12300){
-				timeOfDay = TimeOfDay.DAWN;
-			}
-			// Midnight:
-			else if( previousTime < 18075 && currentTime >= 18075){
-				timeOfDay = TimeOfDay.MIDNIGHT;
-			}
-			// Midday:
-			else if( previousTime < 6225 && currentTime >= 6225){
-				timeOfDay = TimeOfDay.MIDDAY;
-			}
-			// Sunrise:
-			else if( previousTime < 23850 && currentTime >= 23850){
-				timeOfDay = TimeOfDay.SUNRISE;
-			}
-			
-			if(timeOfDay != null){
-				SagaLogger.info(timeOfDay.name() + " for " + worldName + " world.");
-				ArrayList<TimeOfDayTicker> timeOfDays = new ArrayList<TimeOfDayTicker>(this.timeOfDays);
-				for (TimeOfDayTicker ticker : timeOfDays) {
-					
-					if(ticker.checkWorld(worldName)) ticker.timeOfDayTick(timeOfDay);
-					
-				}
-			}
-			
-			previousWorldTime.put(worldName, currentTime);
-			
-		}
-		
-		
-	}
 	
-	/**
-	 * Forces a time of day tick.
-	 * 
-	 * @param timeOfDay time of day tick
-	 */
-	public void forceTick(TimeOfDay timeOfDay) {
-
-		
-		for (TimeOfDayTicker ticker : timeOfDays) {
-			
-			List<World> worlds = Saga.plugin().getServer().getWorlds();
-			for (World world : worlds) {
-				
-				if(ticker.checkWorld(world.getName())) ticker.timeOfDayTick(timeOfDay);
-				
-			}
-			
-			
-		}
-
-		
-	}
 	
+	// Loading and unloading:
 	/**
 	 * Loads the clock.
 	 * 
 	 */
 	public static void load() {
 
+		
+		// Initialisation:
 		Clock clock = new Clock();
 		Saga.plugin().getServer().getScheduler().scheduleAsyncRepeatingTask(Saga.plugin(),clock , 200L, 20L);
 		instance = clock;
+		
+		// Initial daytimes:
+		List<World> worlds = Saga.plugin().getServer().getWorlds();
+		for (World world : worlds) {
+			clock.prevDaytimes.put(world.getName(), Daytime.getDaytime(world.getTime()));
+		}
+		
 		
 	}
 	
@@ -435,15 +426,20 @@ public class Clock implements Runnable{
 	 */
 	public static void unload() {
 
-		instance.second = null;
-		instance.minute = null;
-		instance.hour = null;
-		instance.timeOfDays = null;
+		
+		instance.seconds = null;
+		instance.minutes = null;
+		instance.hours = null;
+		instance.daytimes = null;
+		instance.prevDaytimes = null;
 		instance = null;
+		
 		
 	}
 	
 	
+	
+	// Types:
 	public static interface SecondTicker{
 		
 		
@@ -481,7 +477,7 @@ public class Clock implements Runnable{
 		
 	}
 	
-	public static interface TimeOfDayTicker{
+	public static interface DaytimeTicker{
 		
 		
 		/**
@@ -489,7 +485,7 @@ public class Clock implements Runnable{
 		 * 
 		 * @param timeOfDay time of day
 		 */
-		public void timeOfDayTick(TimeOfDay timeOfDay);
+		public void timeOfDayTick(Daytime timeOfDay);
 
 		/**
 		 * Checks if the world is correct.
@@ -500,19 +496,128 @@ public class Clock implements Runnable{
 		public boolean checkWorld(String worldName);
 		
 		
-		public static enum TimeOfDay{
+		/**
+		 * Represents daytime.
+		 * 
+		 * @author andf
+		 *
+		 */
+		public static enum Daytime{
 			
 			
-			SUNRISE,
-			MIDDAY,
-			DAWN,
-			MIDNIGHT,
-			ALL;
+			MIDDAY(6225L),
+			SUNSET(12300L),
+			MIDNIGHT(18075L),
+			SUNRISE(23850L),
+			NONE(0L);
+			
+
+			
+			/**
+			 * Time.
+			 */
+			private Long time;
 			
 			
+			
+			/**
+			 * Sets constants.
+			 * 
+			 * @param time time
+			 * @param next next daytime
+			 */
+			private Daytime(Long time) {
+
+				this.time = time;
+
+			}
+			
+			
+			
+			/**
+			 * Gets the time.
+			 * 
+			 * @return the time
+			 */
+			public Long getTime() {
+			
+			
+				return time;
+			}
+
+			/**
+			 * Gets the daytime.
+			 * 
+			 * @param time world time
+			 * @return corresponding daytime, {@link Daytime#NONE} if none
+			 */
+			public static Daytime getDaytime(Long time) {
+
+				// Midday:
+				if(time > MIDDAY.getTime() && time < MIDDAY.getTime() + LAG_COMPENSATION){
+					return MIDDAY; 
+				}
+
+				// Sunset:
+				if(time > SUNSET.getTime() && time < SUNSET.getTime() + LAG_COMPENSATION){
+					return SUNSET; 
+				}
+
+				// Midnight:
+				if(time > MIDNIGHT.getTime() && time < MIDNIGHT.getTime() + LAG_COMPENSATION){
+					return MIDNIGHT; 
+				}
+
+				if(time < SUNRISE.getTime() - 24000 + LAG_COMPENSATION) time+= 24000;
+				
+				// Sunrise:
+				if(time > SUNRISE.getTime() && time < SUNRISE.getTime() + LAG_COMPENSATION){
+					return SUNRISE; 
+				}
+				
+				return NONE;
+				
+
+			}
+			
+			/**
+			 * Gets next daytime.
+			 * 
+			 * @param time time
+			 * @return next daytime
+			 */
+			public static Daytime getNextDaytime(Long time) {
+
+				
+				Daytime[] values = values();
+				
+				for (int i = 0; i < values.length; i++) {
+					if(values[i].getTime() > time) return values[i];
+				}
+				
+				return values[0];
+				
+				
+			}
+			
+			
+			
+			/* 
+			 * (non-Javadoc)
+			 * 
+			 * @see java.lang.Enum#toString()
+			 */
+			@Override
+			public String toString() {
+				
+				return super.toString().replace("_", " ").toLowerCase();
+
+			}
+
 		}
 		
 		
 	}
+	
 	
 }

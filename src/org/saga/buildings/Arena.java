@@ -12,7 +12,7 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
-import org.saga.Clock.TimeOfDayTicker;
+import org.saga.Clock.DaytimeTicker;
 import org.saga.SagaLogger;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.ChunkGroupConfiguration;
@@ -23,7 +23,7 @@ import org.saga.messages.BuildingMessages;
 import org.saga.player.SagaPlayer;
 
 
-public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
+public class Arena extends Building implements DaytimeTicker, SecondTicker{
 
 
 	/**
@@ -112,7 +112,7 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 		super.enable();
 
 		// Register clock:
-		Clock.clock().registerTimeOfDayTick(this);
+		Clock.clock().registerTick(this);
 		
 		
 	}
@@ -289,7 +289,7 @@ public class Arena extends Building implements TimeOfDayTicker, SecondTicker{
 	 * @see org.saga.Clock.TimeOfDayTicker#timeOfDayTick(org.saga.Clock.TimeOfDayTicker.TimeOfDay)
 	 */
 	@Override
-	public void timeOfDayTick(TimeOfDay timeOfDay) {
+	public void timeOfDayTick(Daytime timeOfDay) {
 
 		
 		if(!isEnabled()){
