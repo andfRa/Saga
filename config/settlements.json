@@ -40,6 +40,10 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":2,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "craftable":{},
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "performTime":"NONE",
+    "craftTime":"NONE",
     "description":"Enables settlement spawn command: /sspawn."
   },
 
@@ -57,6 +61,10 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":7,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":3.0,"x2":3,"y2":9.0},
+    "craftable":{},
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "performTime":"NONE",
+    "craftTime":"NONE",
     "description":"Limits chest access to settlement members."
   },
 
@@ -76,6 +84,10 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":4,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "craftable":{},
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "performTime":"NONE",
+    "craftTime":"NONE",
     "description":"Allows to sell, buy, export and import items."
   },
 
@@ -93,6 +105,10 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":10,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "craftable":{},
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "performTime":"NONE",
+    "craftTime":"NONE",
     "description":"Trains warrior related attributes."
   },
 
@@ -110,6 +126,10 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":15,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "craftable":{},
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "performTime":"NONE",
+    "craftTime":"NONE",
     "description":"Records player kills and deaths."
   },
 
@@ -127,6 +147,10 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":10,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "craftable":{},
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "performTime":"NONE",
+    "craftTime":"NONE",
     "description":"Trains rogue related attributes."
   },
 
@@ -144,6 +168,10 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":10,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "craftable":{},
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "performTime":"NONE",
+    "craftTime":"NONE",
     "description":"Trains mage related attributes. Recharges guardian stones."
   },
 
@@ -161,6 +189,10 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":5,"y1":1.0,"x2":50,"y2":8.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "craftable":{},
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "performTime":"NONE",
+    "craftTime":"NONE",
     "description":"Stops mobs from spawning within a certain claimed area."
   },
 
@@ -178,6 +210,10 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":0,"y1":1.0,"x2":200,"y2":1000.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "craftable":{},
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "performTime":"NONE",
+    "craftTime":"NONE",
     "description":"Limits build access to settlement owner and residents, /baddresident and /bremoveresident to add and remove residents."
   },
 
@@ -195,6 +231,10 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":20,"y1":1.0,"x2":50,"y2":5.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "craftable":{},
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "performTime":"NONE",
+    "craftTime":"NONE",
     "description":"Regenerates lost experience."
   },
 
@@ -212,6 +252,10 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":3.0},
+    "craftable":{},
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "performTime":"NONE",
+    "craftTime":"NONE",
     "description":"Trains woodsman related attributes."
   },
 
@@ -229,6 +273,14 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":3.0},
+    "craftable":{
+      "0.6":{"mat":"COAL_ORE","amount":1,"data":0},
+      "0.3":{"mat":"IRON_ORE","amount":1,"data":0},
+      "0.1":{"mat":"DIAMOND_ORE","amount":1,"data":0}
+    },
+    "craftAmount":{"x1":1,"y1":1,"x2":3,"y2":5},
+    "performTime":"NONE",
+    "craftTime":"MIDDAY",
     "description":"Trains miner related attributes."
   },
 
@@ -246,6 +298,10 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":3.0},
+    "craftable":{},
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "performTime":"NONE",
+    "craftTime":"NONE",
     "description":"Trains farmer related attributes, prevents animals from being killed and soil from being trampled."
   },
 
@@ -263,6 +319,10 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":3.0},
+    "craftable":{},
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "performTime":"NONE",
+    "craftTime":"NONE",
     "description":"Trains blacksmith related attributes."
   }
 

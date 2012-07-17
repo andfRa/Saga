@@ -272,10 +272,6 @@ public class TradingPost extends Building implements Trader, DaytimeTicker{
 		
 		super.enable();
 
-		// Register clock:
-		Clock.clock().registerTick(this);
-		
-		
 	}
 	
 	/* 
@@ -289,7 +285,23 @@ public class TradingPost extends Building implements Trader, DaytimeTicker{
 		super.disable();
 
 		// Register clock:
-		Clock.clock().unregisterTimeOfDayTick(this);
+		Clock.clock().unregisterDaytimeTick(this);
+		
+	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.buildings.Building#perform()
+	 */
+	@Override
+	public void perform() {
+
+		
+		restReport();
+		doDeals();
+		selectDeals();
+		
 		
 	}
 	
@@ -427,59 +439,8 @@ public class TradingPost extends Building implements Trader, DaytimeTicker{
 		
 	}
 	
-	
-	// Time:
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.Clock.TimeOfDayTicker#timeOfDayTick(org.saga.Clock.TimeOfDayTicker.TimeOfDay)
-	 */
-	@Override
-	public void timeOfDayTick(Daytime timeOfDay) {
 
-		
-		if(!isEnabled()){
-			return;
-		}
-		
-		// Reset report before sunrise:
-		if(timeOfDay.equals(Daytime.SUNRISE)){
-			restReport();
-		}
-		
-		// Trade deals at sunrise:
-		if(timeOfDay.equals(Daytime.SUNRISE)){
-			doDeals();
-		}
-		
-		// Select deals:
-		if(isAutomated() && timeOfDay.equals(Daytime.MIDDAY)){
-			selectDeals();
-		}
-		
-		
-	}
 	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.Clock.TimeOfDayTicker#checkWorld(java.lang.String)
-	 */
-	@Override
-	public boolean checkWorld(String worldName) {
-
-		
-		SagaChunk sagaChunk = getSagaChunk();		
-		if(sagaChunk == null){
-			return false;
-		}
-		
-		return sagaChunk.getWorldName().equals(worldName);
-		
-		
-	}
-	
-
 	// Signs:
 	/* 
 	 * (non-Javadoc)

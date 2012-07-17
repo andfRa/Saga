@@ -14,8 +14,10 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
+import org.saga.Clock;
 import org.saga.Saga;
 import org.saga.SagaLogger;
+import org.saga.Clock.DaytimeTicker;
 import org.saga.buildings.signs.AbilitySign;
 import org.saga.buildings.signs.AttributeSign;
 import org.saga.buildings.signs.BuildingSign;
@@ -35,9 +37,10 @@ import org.saga.messages.SagaMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.SagaCustomSerialization;
 import org.saga.settlements.Settlement.SettlementPermission;
+import org.saga.utility.RandomItemBlueprint;
 import org.sk89q.CommandContext;
 
-public abstract class Building extends SagaCustomSerialization{
+public abstract class Building extends SagaCustomSerialization implements DaytimeTicker{
 
 
 	/**
@@ -69,9 +72,9 @@ public abstract class Building extends SagaCustomSerialization{
 	
 	
 	/**
-	 * True if the building is enabled.
+	 * Craftable items.
 	 */
-	transient private boolean isEnabled = false;
+	transient private RandomItemBlueprint craftable;
 	
 	
 	
@@ -87,6 +90,7 @@ public abstract class Building extends SagaCustomSerialization{
 		this.level = 0;
 		this.signs = new ArrayList<BuildingSign>();
 		this.storage = new ArrayList<StorageArea>();
+		craftable = new RandomItemBlueprint(getDefinition().getCraftable());
 		
 	}
 	
@@ -155,6 +159,9 @@ public abstract class Building extends SagaCustomSerialization{
 			}
 			
 		}
+		
+		// Craftables:
+		craftable = new RandomItemBlueprint(getDefinition().getCraftable());
 		
 		// Refresh signs:
 		refreshSigns();
@@ -707,8 +714,6 @@ public abstract class Building extends SagaCustomSerialization{
 			
 		}
 		
-		if(toStore.getAmount() > 0) System.out.println("STORAGE FULL");
-		
 		return toStore;
 		
 
@@ -941,7 +946,8 @@ public abstract class Building extends SagaCustomSerialization{
 	 * @return the level
 	 */
 	public Integer getLevel() {
-		return level.intValue();
+		return 1;
+//		return level.intValue();
 	}
 	
 	/**
@@ -962,7 +968,7 @@ public abstract class Building extends SagaCustomSerialization{
 	 */
 	public void enable() {
 		
-		this.isEnabled = true;
+		Clock.clock().registerDaytimeTick(this);
 		
 	}
 	
@@ -971,21 +977,83 @@ public abstract class Building extends SagaCustomSerialization{
 	 * 
 	 */
 	public void disable() {
-		
-		this.isEnabled = false;
+
+		Clock.clock().unregisterDaytimeTick(this);
 		
 	}
 
 	/**
-	 * True if the building is enabled.
+	 * Performs buildings operations.
 	 * 
-	 * @return true if enabled
 	 */
-	public boolean isEnabled() {
-		return isEnabled;
+	public void perform() {
+
+	}
+
+	
+	
+	// Craftable:
+	/**
+	 * Handles crafting.
+	 * 
+	 */
+	private void handleCrafting() {
+
+		
+		// Chunk not loaded:
+		if(!getSagaChunk().isChunkLoaded()) return;
+		
+		// Nothing to craft:
+		if(craftable.size() == 0){
+			return;
+		}
+		
+		// Craft items:
+		Integer toCraft = getDefinition().getCraftAmount(getLevel());
+		
+		for (int i = 0; i < toCraft; i++) {
+			
+			ItemStack item = craftable.nextItem();
+			
+			storeBlock(item);
+			
+		}
+		
+		
 	}
 	
 	
+	
+	// Clock:
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.Clock.DaytimeTicker#daytimeTick(org.saga.Clock.DaytimeTicker.Daytime)
+	 */
+	@Override
+	public final void daytimeTick(Daytime daytime) {
+
+		
+		// Perform:
+		if(daytime == getDefinition().getPerformTime()) perform();
+		
+		// Handle crafting:
+		if(daytime == getDefinition().getCraftTime()) handleCrafting();
+		
+		
+	}
+
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.Clock.DaytimeTicker#checkWorld(java.lang.String)
+	 */
+	@Override
+	public final boolean checkWorld(String worldName) {
+		return getSagaChunk().getWorldName().equals(worldName);
+	}
+
+
 	
 	// Events:
 	 /**
@@ -1130,6 +1198,7 @@ public abstract class Building extends SagaCustomSerialization{
 
 		
 	}
+	
 	
 	
 	// Utility:

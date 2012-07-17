@@ -12,7 +12,6 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
-import org.saga.Clock.DaytimeTicker;
 import org.saga.SagaLogger;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.ChunkGroupConfiguration;
@@ -23,7 +22,7 @@ import org.saga.messages.BuildingMessages;
 import org.saga.player.SagaPlayer;
 
 
-public class Arena extends Building implements DaytimeTicker, SecondTicker{
+public class Arena extends Building implements SecondTicker{
 
 
 	/**
@@ -111,10 +110,6 @@ public class Arena extends Building implements DaytimeTicker, SecondTicker{
 		
 		super.enable();
 
-		// Register clock:
-		Clock.clock().registerTick(this);
-		
-		
 	}
 	
 	/* 
@@ -128,7 +123,7 @@ public class Arena extends Building implements DaytimeTicker, SecondTicker{
 		super.disable();
 
 		// Disable time of day clock:
-		Clock.clock().unregisterTimeOfDayTick(this);
+		Clock.clock().unregisterDaytimeTick(this);
 
 		// Disable second clock:
 		if(count > 0){
@@ -283,41 +278,6 @@ public class Arena extends Building implements DaytimeTicker, SecondTicker{
 	
 	
 	// Time:
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.Clock.TimeOfDayTicker#timeOfDayTick(org.saga.Clock.TimeOfDayTicker.TimeOfDay)
-	 */
-	@Override
-	public void timeOfDayTick(Daytime timeOfDay) {
-
-		
-		if(!isEnabled()){
-			return;
-		}
-
-		
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.Clock.TimeOfDayTicker#checkWorld(java.lang.String)
-	 */
-	@Override
-	public boolean checkWorld(String worldName) {
-
-		
-		SagaChunk sagaChunk = getSagaChunk();		
-		if(sagaChunk == null){
-			return false;
-		}
-		
-		return sagaChunk.getWorldName().equals(worldName);
-		
-		
-	}
-	
 	/* 
 	 * (non-Javadoc)
 	 * 

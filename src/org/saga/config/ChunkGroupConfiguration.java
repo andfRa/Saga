@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
-import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 
@@ -36,21 +35,25 @@ public class ChunkGroupConfiguration {
 		return instance;
 	}
 	
-	
 
 	
-	// Leveling:
+	// Definitions:
 	/**
 	 * Settlement definition.
 	 */
 	private SettlementDefinition settlementDefinition;
 	
 	/**
+	 * Building definitions.
+	 */
+	private Hashtable<String, BuildingDefinition> buildingDefinitions;
+	
+	
+	// Levels:
+	/**
 	 * Level when automatic delete is disabled.
 	 */
 	public Integer noDeleteLevel;
-
-	
 	
 
 	// Time:
@@ -60,13 +63,7 @@ public class ChunkGroupConfiguration {
 	public Short inactiveSetDays;
 	
 	
-	
-	// Buildings:
-	/**
-	 * Building definitions.
-	 */
-	private Hashtable<String, BuildingDefinition> buildingDefinitions;
-	
+	// Signs:
 	/**
 	 * Sign for arena top.
 	 */
@@ -91,7 +88,6 @@ public class ChunkGroupConfiguration {
 	 * Colour for invalid signs.
 	 */
 	public ChatColor invalidSignColor;
-
 	
 	
 	// Formation:
@@ -99,7 +95,6 @@ public class ChunkGroupConfiguration {
 	 * Amount of members needed for the chunk group to form.
 	 */
 	public Integer formationAmount;
-	
 	
 	
 	// Commands:
@@ -112,100 +107,75 @@ public class ChunkGroupConfiguration {
 	
 	// Initialisation:
 	/**
-	 * Fixes all fields.
+	 * Completes the configuration.
 	 * 
 	 * @return true if everything was correct.
 	 */
-	public boolean complete() {
+	public void complete() {
 		
-		
-		boolean integrity=true;
-		String config = "chunk group configuration";
 
 		if(settlementDefinition == null){
-			SagaLogger.severe("Failed to initialize settlementDefinitions field for " + config + ". Setting default.");
+			SagaLogger.nullField(getClass(), "settlementDefinition");
 			settlementDefinition = SettlementDefinition.defaultDefinition();
-			integrity=false;
 		}
-		integrity = settlementDefinition.complete() && integrity;
+		settlementDefinition.complete();
 		
 		if(noDeleteLevel == null){
-			SagaLogger.severe(getClass(), "noDeleteLevel field failed to initialize");
+			SagaLogger.nullField(getClass(), "noDeleteLevel");
 			noDeleteLevel = 5;
-			integrity=false;
 		}
 		
 		if(inactiveSetDays == null){
-			SagaLogger.severe(config + " failed to initialize inactiveSetDays field. Setting default.");
+			SagaLogger.nullField(getClass(), "inactiveSetDays");
 			inactiveSetDays = 1;
-			integrity=false;
 		}
 		
 		if(buildingDefinitions == null){
-			SagaLogger.severe(config + " failed to initialize buildingDefinitions field. Adding two examples.");
+			SagaLogger.nullField(getClass(), "buildingDefinitions");
 			buildingDefinitions = new Hashtable<String, BuildingDefinition>();
-			integrity=false;
 		}
-		Enumeration<String> buildingNames = buildingDefinitions.keys();
-		while (buildingNames.hasMoreElements()) {
-			String building = buildingNames.nextElement();
-			BuildingDefinition definition = buildingDefinitions.get(building);
-			if(definition == null){
-				SagaLogger.severe(config + " failed to initialize buildingDefinitions element. Removing element.");
-				buildingDefinitions.remove(building);
-				integrity=false;
-				continue;
-			}
-			integrity = definition.complete() && integrity;
+		Collection<BuildingDefinition> definitions = buildingDefinitions.values();
+		for (BuildingDefinition definition : definitions) {
+			definition.complete();
 		}
 
 		if(arenaTopSign == null){
-			SagaLogger.severe(this.getClass(), "failed to initialize arenaTopSign field");
+			SagaLogger.nullField(getClass(), "arenaTopSign");
 			arenaTopSign= ChatColor.AQUA + "=[TOP]=";
-			integrity=false;
 		}
 		
 		if(arenaCountdownSign == null){
-			SagaLogger.severe(this.getClass(), "failed to initialize arenaCountdownSign field");
+			SagaLogger.nullField(getClass(), "arenaCountdownSign");
 			arenaCountdownSign= ChatColor.AQUA + "=[COUNT]=";
-			integrity=false;
 		}
 		
 		if(enabledSignColor == null){
-			SagaLogger.severe(this.getClass(), "failed to initialize enabledSignColor field");
+			SagaLogger.nullField(getClass(), "enabledSignColor");
 			enabledSignColor = ChatColor.DARK_GREEN;
-			integrity=false;
 		}
 		
 		if(disabledSignColor == null){
-			SagaLogger.severe(this.getClass(), "failed to initialize disabledSignColor field");
+			SagaLogger.nullField(getClass(), "disabledSignColor");
 			disabledSignColor = ChatColor.DARK_GRAY;
-			integrity=false;
 		}
 		
 		if(invalidSignColor == null){
-			SagaLogger.severe(this.getClass(), "failed to initialize invalidSignColor field");
+			SagaLogger.nullField(getClass(), "invalidSignColor");
 			invalidSignColor = ChatColor.DARK_RED;
-			integrity=false;
 		}
 		
 		if(formationAmount == null){
-			SagaLogger.severe(this.getClass(), "formationAmount field failed to initialize");
+			SagaLogger.nullField(getClass(), "formationAmount");
 			formationAmount = 2;
-			integrity=false;
 		}
 		
 		if(memberOnlyCommands == null){
-			SagaLogger.severe(this.getClass(), "memberOnlyCommands field failed to initialize");
+			SagaLogger.nullField(getClass(), "memberOnlyCommands");
 			memberOnlyCommands = new HashSet<String>();
-			integrity=false;
 		}
 		if(memberOnlyCommands.remove(null)){
-			SagaLogger.severe(this.getClass(), "memberOnlyCommands field element failed to initialize");
-			integrity=false;
+			SagaLogger.nullField(getClass(), "memberOnlyCommands");
 		}
-		
-		return integrity;
 		
 		
 	}
@@ -285,6 +255,8 @@ public class ChunkGroupConfiguration {
 	}
 	
 	
+	
+	// Commands:
 	/**
 	 * Checks if the command is member only.
 	 * 
@@ -299,7 +271,7 @@ public class ChunkGroupConfiguration {
 	
 	
 	
-	// Load unload:
+	// Loading and unloading:
 	/**
 	 * Loads configuration.
 	 * 

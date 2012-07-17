@@ -93,11 +93,6 @@ public class ChunkGroup extends SagaCustomSerialization{
 	 */
 	private Hashtable<String, Date> lastOnlineDates;
 	
-	/**
-	 * True if the chunk group is enabled.
-	 */
-	transient private boolean isEnabled = false;
-	
 	
 	// Control:
 	/**
@@ -300,13 +295,12 @@ public class ChunkGroup extends SagaCustomSerialization{
 	 */
 	public void enable() {
 		
-		this.isEnabled = true;
 		
 		// Enable all buildings:
 		ArrayList<Building> buildings = getBuildings();
 		for (Building building : buildings) {
 			
-			if(!building.isEnabled()) building.enable();
+			building.enable();
 			
 		}
 		
@@ -318,25 +312,15 @@ public class ChunkGroup extends SagaCustomSerialization{
 	 */
 	public void disable() {
 		
-		this.isEnabled = false;
 
 		// Enable all buildings:
 		ArrayList<Building> buildings = getBuildings();
 		for (Building building : buildings) {
 			
-			if(building.isEnabled()) building.disable();
+			building.disable();
 			
 		}
 		
-	}
-
-	/**
-	 * True if the building is enabled.
-	 * 
-	 * @return true if enabled
-	 */
-	public boolean isEnabled() {
-		return isEnabled;
 	}
 	
 	

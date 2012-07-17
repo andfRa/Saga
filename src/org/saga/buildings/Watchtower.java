@@ -37,6 +37,7 @@ public class Watchtower extends Building implements DaytimeTicker{
 	transient Hashtable<String, Integer> mobReport = null;
 	
 
+	
 	// Initialisation:
 	/**
 	 * Creates a building from the definition.
@@ -85,8 +86,6 @@ public class Watchtower extends Building implements DaytimeTicker{
 		
 		super.enable();
 		
-		Clock.clock().registerTick(this);
-		
 		// Protect:
 		if(getSagaChunk() == null){
 			return;
@@ -107,12 +106,29 @@ public class Watchtower extends Building implements DaytimeTicker{
 		
 		super.disable();
 		
-		Clock.clock().unregisterTimeOfDayTick(this);
+		Clock.clock().unregisterDaytimeTick(this);
 		
 		// Unprotect:
 		this.protectedChunks = new ArrayList<SagaChunk>();
 		
 	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.buildings.Building#perform()
+	 */
+	@Override
+	public void perform() {
+		
+		
+		// Reset the report:
+		mobReport = new Hashtable<String, Integer>();
+		
+		
+	}
+
+	
 	
 	
 	/**
@@ -162,7 +178,7 @@ public class Watchtower extends Building implements DaytimeTicker{
 	}
 	
 	
-	// Report:
+	
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -204,40 +220,6 @@ public class Watchtower extends Building implements DaytimeTicker{
 		
 		return rList;
 		
-		
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.Clock.TimeOfDayTicker#timeOfDayTick(org.saga.Clock.TimeOfDayTicker.TimeOfDay)
-	 */
-	@Override
-	public void timeOfDayTick(Daytime timeOfDay) {
-		
-		
-		// Reset the report each morning:
-		if(timeOfDay.equals(Daytime.SUNRISE)){
-			mobReport = new Hashtable<String, Integer>();
-			return;
-		}
-		
-		
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.Clock.TimeOfDayTicker#checkWorld(java.lang.String)
-	 */
-	@Override
-	public boolean checkWorld(String worldName) {
-		
-		SagaChunk originChunk = getSagaChunk();
-		
-		if(originChunk == null) return false;
-		
-		return originChunk.getWorldName().equals(worldName);
 		
 	}
 	

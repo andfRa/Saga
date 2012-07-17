@@ -102,7 +102,7 @@ public class EconomyManager implements DaytimeTicker{
 	 * @see org.saga.Clock.TimeOfDayTicker#timeOfDayTick(org.saga.Clock.TimeOfDayTicker.TimeOfDay)
 	 */
 	@Override
-	public void timeOfDayTick(Daytime timeOfDay) {
+	public void daytimeTick(Daytime timeOfDay) {
 		
 		
 //		if(!timeOfDay.equals(TimeOfDay.SUNRISE)){
@@ -472,7 +472,7 @@ public class EconomyManager implements DaytimeTicker{
 		}
 		
 		// Enable clock:
-		Clock.clock().registerTick(instance);
+		Clock.clock().registerDaytimeTick(instance);
 		
 		instances.add(instance);
 		
@@ -565,7 +565,7 @@ public class EconomyManager implements DaytimeTicker{
 		save(worldName);
 		
 		// Disable clock:
-		Clock.clock().unregisterTimeOfDayTick(instance);
+		Clock.clock().unregisterDaytimeTick(instance);
 		
 		
 	}

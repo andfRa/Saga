@@ -4,9 +4,13 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Map.Entry;
+import java.util.Set;
 
+import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.SagaLogger;
 import org.saga.settlements.Settlement;
+import org.saga.utility.ItemBlueprint;
 import org.saga.utility.TwoPointFunction;
 
 public class BuildingDefinition {
@@ -78,6 +82,28 @@ public class BuildingDefinition {
 	 */
 	private TwoPointFunction storageAreas;
 	
+	/**
+	 * Items crafted by the buildings.
+	 */
+	private Hashtable<Double, ItemBlueprint> craftable;
+	
+	/**
+	 * Amount of items crafted.
+	 */
+	private TwoPointFunction craftAmount;
+
+	
+	// Timings:
+	/**
+	 * Perform time.
+	 */
+	private Daytime performTime;
+	
+	/**
+	 * Craft time.
+	 */
+	private Daytime craftTime;
+	
 	
 	// Info:
 	/**
@@ -103,14 +129,11 @@ public class BuildingDefinition {
 	}
 
 	/**
-	 * Completes.
+	 * Completes the definition.
 	 * 
-	 * @return integrity
 	 */
-	public boolean complete() {
-		
+	public void complete() {
 
-		boolean integrity=true;
 		
 		if(className == null){
 			SagaLogger.nullField(this, "className");
@@ -120,32 +143,28 @@ public class BuildingDefinition {
 		if(levelFunction == null){
 			levelFunction = new TwoPointFunction(10000.0);
 			SagaLogger.nullField(BuildingDefinition.class, "levelFunction");
-			integrity = false;
 		}
-		integrity = levelFunction.complete() && integrity;
+		levelFunction.complete();
 		
 		if(this.roleAmounts == null){
 			this.roleAmounts = new Hashtable<String, TwoPointFunction>();
 			SagaLogger.nullField(BuildingDefinition.class, "roleAmounts");
-			integrity = false;
 		}
 		Enumeration<String> proficiencies = this.roleAmounts.keys();
 		while (proficiencies.hasMoreElements()) {
 			String proficiency = (String) proficiencies.nextElement();
-			integrity = this.roleAmounts.get(proficiency).complete() && integrity;
+			this.roleAmounts.get(proficiency).complete();
 		}
 		
 		if(professions == null){
 			professions = new ArrayList<String>();
 			SagaLogger.nullField(BuildingDefinition.class, "professions");
-			integrity = false;
 		}
 		for (int i = 0; i < professions.size(); i++) {
 			if(professions.get(i) == null){
 				professions.remove(i);
 				i--;
 				SagaLogger.nullField(BuildingDefinition.class, "professions element");
-				integrity = false;
 				continue;
 			}
 		}
@@ -153,14 +172,12 @@ public class BuildingDefinition {
 		if(classes == null){
 			classes = new ArrayList<String>();
 			SagaLogger.nullField(BuildingDefinition.class, "classes");
-			integrity = false;
 		}
 		for (int i = 0; i < classes.size(); i++) {
 			if(classes.get(i) == null){
 				classes.remove(i);
 				i--;
 				SagaLogger.nullField(this, "classes element");
-				integrity = false;
 				continue;
 			}
 		}
@@ -168,14 +185,12 @@ public class BuildingDefinition {
 		if(roles == null){
 			roles = new ArrayList<String>();
 			SagaLogger.nullField(BuildingDefinition.class, "roles");
-			integrity = false;
 		}
 		for (int i = 0; i < roles.size(); i++) {
 			if(roles.get(i) == null){
 				roles.remove(i);
 				i--;
 				SagaLogger.nullField(BuildingDefinition.class, "roles element");
-				integrity = false;
 				continue;
 			}
 		}
@@ -183,14 +198,12 @@ public class BuildingDefinition {
 		if(ranks == null){
 			ranks = new ArrayList<String>();
 			SagaLogger.nullField(BuildingDefinition.class, "ranks");
-			integrity = false;
 		}
 		for (int i = 0; i < ranks.size(); i++) {
 			if(ranks.get(i) == null){
 				ranks.remove(i);
 				i--;
 				SagaLogger.nullField(BuildingDefinition.class, "ranks element");
-				integrity = false;
 				continue;
 			}
 		}
@@ -198,60 +211,79 @@ public class BuildingDefinition {
 		if(attributes == null){
 			attributes = new HashSet<String>();
 			SagaLogger.nullField(BuildingDefinition.class, "attributes");
-			integrity = false;
 		}
 		
 		if(attributes.remove(null)){
 			SagaLogger.nullField(BuildingDefinition.class, "attributes element");
-			integrity = false;
 		}
 		
 		if(abilities == null){
 			abilities = new HashSet<String>();
 			SagaLogger.nullField(BuildingDefinition.class, "abilities");
-			integrity = false;
 		}
 		
 		if(abilities.remove(null)){
 			SagaLogger.nullField(BuildingDefinition.class, "abilities element");
-			integrity = false;
 		}
 		
 		if(coinCost == null){
 			coinCost = new TwoPointFunction(10000.0);
 			SagaLogger.nullField(BuildingDefinition.class, "coinCost");
-			integrity = false;
 		}
-		integrity = coinCost.complete() && integrity;
+		coinCost.complete();
 		
 		if(available == null){
 			available = new TwoPointFunction(0.0);
 			SagaLogger.nullField(BuildingDefinition.class, "available");
-			integrity = false;
 		}
-		integrity = available.complete() && integrity;
+		available.complete();
+		
 		
 		if(storageAreas == null){
 			storageAreas = new TwoPointFunction(0.0);
 			SagaLogger.nullField(BuildingDefinition.class, "storageAreas");
-			integrity = false;
 		}
-		integrity = storageAreas.complete() && integrity;
+		storageAreas.complete();
+		
+		
+		if(craftable == null){
+			craftable = new Hashtable<Double, ItemBlueprint>();
+			SagaLogger.nullField(BuildingDefinition.class, "craftable");
+		}
+		Set<Entry<Double, ItemBlueprint>> craEntries = craftable.entrySet();
+		for (Entry<Double, ItemBlueprint> entry : craEntries) {
+			entry.getValue().complete();
+		}
+		
+		if(craftAmount == null){
+			craftAmount = new TwoPointFunction(0.0);
+			SagaLogger.nullField(BuildingDefinition.class, "craftAmount");
+		}
+		craftAmount.complete();
+		
+		
+		if(performTime == null){
+			performTime = Daytime.NONE;
+			SagaLogger.nullField(BuildingDefinition.class, "performTime");
+		}
+		
+		if(craftTime == null){
+			craftTime = Daytime.NONE;
+			SagaLogger.nullField(BuildingDefinition.class, "craftTime");
+		}
+		
 		
 		if(description == null){
 			description = "<no description>";
 			SagaLogger.nullField(BuildingDefinition.class, "description");
-			integrity = false;
 		}
-		
-		return integrity;
 		
 		
 	}
 	
 	
 	
-	// Interaction:
+	// Naming:
 	/**
 	 * Gets the class name.
 	 * 
@@ -485,6 +517,46 @@ public class BuildingDefinition {
 		return storageAreas.intValue(buildingLevel);
 	}
 	
+	/**
+	 * Gets craftable items table.
+	 * 
+	 * @return craftable items table
+	 */
+	public Hashtable<Double, ItemBlueprint> getCraftable() {
+		return new Hashtable<Double, ItemBlueprint>(craftable);
+	}
+	
+	/**
+	 * Gets the amount of crafted items.
+	 * 
+	 * @param level building level
+	 * @return amount of crafted items
+	 */
+	public Integer getCraftAmount(Integer level) {
+		return craftAmount.intValue(level);
+	}
+	
+	
+	
+	// Timings:
+	/**
+	 * Gets the perform time.
+	 * 
+	 * @return perform time
+	 */
+	public Daytime getPerformTime() {
+		return performTime;
+	}
+
+	/**
+	 * Gets the craft time.
+	 * 
+	 * @return craft time
+	 */
+	public Daytime getCraftTime() {
+		return craftTime;
+	}
+	
 	
 	
 	// Info:
@@ -496,8 +568,8 @@ public class BuildingDefinition {
 	public String getDescription() {
 		return description;
 	}
-
 	
+
 	
 	// Other:
 	/* 

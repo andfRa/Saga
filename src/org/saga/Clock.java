@@ -97,8 +97,8 @@ public class Clock implements Runnable{
 	synchronized public void run() {
 		
 		
-		String time = Saga.plugin().getServer().getWorld("world").getTime() +"";
-		System.out.println("time=" + time);
+//		String time = Saga.plugin().getServer().getWorld("world").getTime() +"";
+//		System.out.println("time=" + time);
 		
 		// Seconds:
 		HashSet<SecondTicker> removeTickers = new HashSet<Clock.SecondTicker>();
@@ -188,7 +188,7 @@ public class Clock implements Runnable{
 				ArrayList<DaytimeTicker> daytimes = new ArrayList<DaytimeTicker>(this.daytimes);
 				for (DaytimeTicker ticker : daytimes) {
 					
-					if(ticker.checkWorld(worldName)) ticker.timeOfDayTick(currDaytime);
+					if(ticker.checkWorld(worldName)) ticker.daytimeTick(currDaytime);
 					
 				}
 				
@@ -359,13 +359,13 @@ public class Clock implements Runnable{
 	 * 
 	 * @param ticker ticker
 	 */
-	public void registerTick(DaytimeTicker ticker) {
+	public void registerDaytimeTick(DaytimeTicker ticker) {
 
 		
 		synchronized (daytimes) {
 
 			if(daytimes.contains(ticker)){
-				SagaLogger.severe(getClass(), "tried to register an already registered time of day ticker");
+				SagaLogger.severe(getClass(), "tried to register an already registered daytime ticker");
 				return;
 			}
 			daytimes.add(ticker);
@@ -380,7 +380,7 @@ public class Clock implements Runnable{
 	 * 
 	 * @param ticker ticker
 	 */
-	public void unregisterTimeOfDayTick(DaytimeTicker ticker) {
+	public void unregisterDaytimeTick(DaytimeTicker ticker) {
 
 		
 		synchronized (daytimes) {
@@ -483,9 +483,9 @@ public class Clock implements Runnable{
 		/**
 		 * A clock tick.
 		 * 
-		 * @param timeOfDay time of day
+		 * @param daytime daytime
 		 */
-		public void timeOfDayTick(Daytime timeOfDay);
+		public void daytimeTick(Daytime daytime);
 
 		/**
 		 * Checks if the world is correct.
