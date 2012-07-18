@@ -26,7 +26,8 @@
 
 "buildingDefinitions":{
 
-  "town square":{
+  {
+    "name":"town square",
     "className":"org.saga.buildings.TownSquare",
     "levelFunction":{"x1":0,"y1":3.0,"x2":5,"y2":6.0},
     "professions":[],
@@ -48,7 +49,8 @@
     "resource":""
   },
 
-  "warehouse":{
+  {
+    "name":"warehouse",
     "className":"org.saga.buildings.Warehouse",
     "levelFunction":{"x1":0,"y1":3.0,"x2":5,"y2":6.0},
     "professions":[],
@@ -70,7 +72,8 @@
     "resource":""
   },
 
-  "trading post":{
+  {
+    "name":"trading post",
     "className":"org.saga.buildings.TradingPost",
     "levelFunction":{"x1":0,"y1":4.0,"x2":5,"y2":7.0},
     "professions":[],
@@ -94,7 +97,8 @@
     "resource":""
   },
 
-  "barracks":{
+  {
+    "name":"barracks",
     "className":"org.saga.buildings.Barracks",
     "levelFunction":{"x1":0,"y1":3.0,"x2":5,"y2":6.0},
     "professions":[],
@@ -116,7 +120,8 @@
     "resource":""
   },
 
-  "arena":{
+  {
+    "name":"arena",
     "className":"org.saga.buildings.Arena",
     "levelFunction":{"x1":0,"y1":3.0,"x2":5,"y2":6.0},
     "professions":[],
@@ -138,7 +143,8 @@
     "resource":""
   },
 
-  "tavern":{
+  {
+    "name":"tavern",
     "className":"org.saga.buildings.Tavern",
     "levelFunction":{"x1":0,"y1":3.0,"x2":5,"y2":6.0},
     "professions":[],
@@ -160,7 +166,8 @@
     "resource":""
   },
 
-  "academy":{
+  {
+    "name":"academy",
     "className":"org.saga.buildings.Academy",
     "levelFunction":{"x1":0,"y1":90.0,"x2":5,"y2":15.0},
     "professions":[],
@@ -182,7 +189,8 @@
     "resource":""
   },
 
-  "watchtower":{
+  {
+    "name":"watchtower",
     "className":"org.saga.buildings.Watchtower",
     "levelFunction":{"x1":0,"y1":3.0,"x2":5,"y2":6.0},
     "professions":[],
@@ -204,7 +212,8 @@
     "resource":""
   },
 
-  "home":{
+  {
+    "name":"home",
     "className":"org.saga.buildings.Home",
     "levelFunction":{"x1":0,"y1":3.0,"x2":5,"y2":6.0},
     "professions":[],
@@ -226,7 +235,8 @@
     "resource":""
   },
 
-  "temple":{
+  {
+    "name":"temple",
     "className":"org.saga.buildings.Temple",
     "levelFunction":{"x1":0,"y1":10.0,"x2":5,"y2":20.0},
     "professions":[],
@@ -248,7 +258,8 @@
     "resource":""
   },
 
-  "woodsman camp":{
+  {
+    "name":"woodsman camp",
     "className":"org.saga.buildings.WoodsmanCamp",
     "levelFunction":{"x1":0,"y1":10.0,"x2":5,"y2":20.0},
     "professions":["woodsman"],
@@ -270,7 +281,8 @@
     "resource":""
   },
 
-  "mine shaft":{
+  {
+    "name":"mine shaft",
     "className":"org.saga.buildings.MineShaft",
     "levelFunction":{"x1":0,"y1":10.0,"x2":5,"y2":20.0},
     "professions":["miner"],
@@ -296,7 +308,8 @@
     "resource":"ores"
   },
 
-  "farm":{
+  {
+    "name":"farm",
     "className":"org.saga.buildings.Farm",
     "levelFunction":{"x1":0,"y1":10.0,"x2":5,"y2":20.0},
     "professions":[],
@@ -318,7 +331,8 @@
     "resource":""
   },
 
-  "forge":{
+  {
+    "name":"forge",
     "className":"org.saga.buildings.Forge",
     "levelFunction":{"x1":0,"y1":10.0,"x2":5,"y2":20.0},
     "professions":[],

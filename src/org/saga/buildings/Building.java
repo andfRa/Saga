@@ -42,6 +42,11 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 
 
 	/**
+	 * Name.
+	 */
+	private String name;
+	
+	/**
 	 * Building level.
 	 */
 	private Short level;
@@ -84,11 +89,12 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 */
 	public Building(BuildingDefinition definition) {
 		
+		this.name = definition.getName();
 		this.definition = definition;
 		this.level = 0;
 		this.signs = new ArrayList<BuildingSign>();
 		this.storage = new ArrayList<StorageArea>();
-		resources = new RandomItemBlueprint(getDefinition().getCraftable());
+		this.resources = new RandomItemBlueprint(getDefinition().getCraftable());
 		
 	}
 	
@@ -104,14 +110,19 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		
 		boolean integrity = true;
 		
-		if(level == null){
-			level = 0;
-			SagaLogger.severe("level field for " + this + " building. Setting default.");
+		if(name == null){
+			name = "default";
+			SagaLogger.nullField(this, "name");
 			integrity = false;
 		}
 		
-		// Definition:
-		definition = SettlementConfiguration.config().getBuildingDefinition(getName());
+		if(level == null){
+			level = 0;
+			SagaLogger.nullField(this, "level");
+			integrity = false;
+		}
+		
+		definition = SettlementConfiguration.config().getBuildingDefinition(name);
 		if(definition == null){
 			SagaLogger.severe(this, "missing definition");
 			integrity = false;
@@ -163,6 +174,13 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		
 		// Refresh signs:
 		refreshSigns();
+		
+		// Fix className:
+		if(!get_className().equals(definition.getClassName())){
+			SagaLogger.severe(this, "building and definition className fields don't match");
+			SagaLogger.info(this, "building _className=" + get_className() + ", definition className=" + definition.getClassName());
+			set_className(definition.getClassName());
+		}
 		
 		return integrity;
 		
@@ -217,7 +235,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 * @return the name
 	 */
 	public final String getName() {
-		return getName(getClass());
+		return getDefinition().getName();
 	}
 	
 	/**

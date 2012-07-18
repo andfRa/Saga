@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
 import org.saga.SagaLogger;
@@ -46,7 +45,7 @@ public class SettlementConfiguration {
 	/**
 	 * Building definitions.
 	 */
-	private Hashtable<String, BuildingDefinition> buildingDefinitions;
+	private HashSet<BuildingDefinition> buildingDefinitions;
 	
 	
 	// Levels:
@@ -122,10 +121,9 @@ public class SettlementConfiguration {
 		
 		if(buildingDefinitions == null){
 			SagaLogger.nullField(getClass(), "buildingDefinitions");
-			buildingDefinitions = new Hashtable<String, BuildingDefinition>();
+			buildingDefinitions = new HashSet<BuildingDefinition>();
 		}
-		Collection<BuildingDefinition> definitions = buildingDefinitions.values();
-		for (BuildingDefinition definition : definitions) {
+		for (BuildingDefinition definition : buildingDefinitions) {
 			definition.complete();
 		}
 
@@ -219,7 +217,11 @@ public class SettlementConfiguration {
 	 */
 	public BuildingDefinition getBuildingDefinition(String name) {
 
-		return buildingDefinitions.get(name);
+		for (BuildingDefinition definition : buildingDefinitions) {
+			if(definition.getName().equals(name)) return definition;
+		}
+		
+		return null;
 		
 	}
 	
@@ -230,7 +232,13 @@ public class SettlementConfiguration {
 	 */
 	public Collection<String> getBuildingNames() {
 		
-		return buildingDefinitions.keySet();
+		HashSet<String> names = new HashSet<String>();
+		
+		for (BuildingDefinition definition : buildingDefinitions) {
+			names.add(definition.getName());
+		}
+		
+		return names;
 		
 	}
 	

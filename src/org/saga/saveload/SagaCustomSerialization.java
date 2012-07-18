@@ -2,12 +2,13 @@ package org.saga.saveload;
 
 public class SagaCustomSerialization {
 
+	
 	/**
 	 * Class name used for serialisation.
 	 */
-	@SuppressWarnings("unused")
-	private final String _className;
+	private String _className;
 
+	
 	
 	/**
 	 * Sets class name.
@@ -16,5 +17,26 @@ public class SagaCustomSerialization {
 	protected SagaCustomSerialization() {
 		_className = getClass().getName();
 	}
+	
+	
+	
+	/**
+	 * Gets the _className used during serialisation.
+	 * 
+	 * @return _className
+	 */
+	public String get_className() {
+		return _className;
+	}
+	
+	/**
+	 * Sets _className.
+	 * 
+	 * @param _className new _className
+	 */
+	public void set_className(String _className) {
+		this._className = _className;
+	}
+	
 	
 }

@@ -15,6 +15,11 @@ import org.saga.utility.TwoPointFunction;
 
 public class BuildingDefinition {
 
+	
+	/**
+	 * Building name.
+	 */
+	private String name;
 
 	/**
 	 * Building class.
@@ -139,6 +144,11 @@ public class BuildingDefinition {
 	 */
 	public void complete() {
 
+		
+		if(name == null){
+			SagaLogger.nullField(this, "name");
+			name = "invalid";
+		}
 		
 		if(className == null){
 			SagaLogger.nullField(this, "className");
@@ -294,6 +304,15 @@ public class BuildingDefinition {
 	
 	
 	// Naming:
+	/**
+	 * Gets building name.
+	 * 
+	 * @return building name
+	 */
+	public String getName() {
+		return name;
+	}
+	
 	/**
 	 * Gets the class name.
 	 * 
