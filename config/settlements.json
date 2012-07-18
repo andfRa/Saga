@@ -29,7 +29,7 @@
 {
     "name":"lumber camp",
     "buildingClass":"org.saga.buildings.SimpleBuilding",
-    "levelFunction":{"x1":0,"y1":10.0,"x2":5,"y2":20.0},
+    "levelFunction":{"x1":0,"y1":10.0,"x2":3,"y2":20.0},
     "professions":["lumberjack"],
     "classes":[],
     "roles":[],
@@ -38,7 +38,7 @@
     "attributes":[],
     "abilities":["chop down"],
     "permissions":{"noble":"HIGH"},
-    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
+    "coinCost":{"x1":0,"y1":0},
     "available":{"x1":0,"y1":1.0},
     "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":3.0},
     "resources":[
@@ -47,13 +47,69 @@
       {"mat":"LOG","amount":1,"data":2, "weight":0.25},
       {"mat":"LOG","amount":1,"data":3, "weight":0.25}
     ],
-    "resourceAmount":{"x1":1,"y1":1,"x2":50,"y2":3},
+    "resourceAmount":{"x1":1,"y1":1,"x2":3,"y2":3},
     "performTime":"NONE",
     "resourceTime":"MIDDAY",
     "description":"",
     "resource":"logs"
   },
 
+  {
+    "name":"farm",
+    "buildingClass":"org.saga.buildings.Farm",
+    "levelFunction":{"x1":0,"y1":10.0,"x2":3,"y2":20.0},
+    "professions":[],
+    "classes":[],
+    "roles":[],
+    "ranks":[],
+    "roleAmounts":{},
+    "attributes":[],
+    "abilities":["harvest"],
+    "permissions":{"noble":"HIGH"},
+    "coinCost":{"x1":0,"y1":0},
+    "available":{"x1":5,"y1":1.0},
+    "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":3.0},
+    "resources":[
+      {"mat":"WHEAT","amount":1,"data":0, "weight":0.60},
+      {"mat":"SUGAR_CANE","amount":1,"data":1, "weight":0.30},
+      {"mat":"NETHER_STALK","amount":1,"data":2, "weight":0.10}
+    ],
+    "resourceAmount":{"x1":1,"y1":4,"x2":3,"y2":12},
+    "performTime":"NONE",
+    "resourceTime":"MIDDAY",
+    "description":"",
+    "resource":"crops"
+  },
+  
+  {
+    "name":"mine",
+    "buildingClass":"org.saga.buildings.SimpleBuilding",
+    "levelFunction":{"x1":0,"y1":10.0,"x2":5,"y2":20.0},
+    "professions":["miner"],
+    "classes":[],
+    "roles":[],
+    "ranks":[],
+    "roleAmounts":{},
+    "attributes":[],
+    "abilities":["heavy swing"],
+    "permissions":{"noble":"HIGH"},
+    "coinCost":{"x1":0,"y1":0},
+    "available":{"x1":10,"y1":1.0},
+    "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
+    "resources":[
+      {"mat":"COAL_ORE","amount":1,"data":0, "weight":0.45},
+      {"mat":"IRON_ORE","amount":1,"data":0, "weight":0.40},
+      {"mat":"GOLD_ORE","amount":1,"data":0, "weight":0.1},
+      {"mat":"LAPIS_ORE","amount":1,"data":0, "weight":0.025},
+      {"mat":"DIAMOND_ORE","amount":1,"data":0, "weight":0.025}
+    ],
+    "resourceAmount":{"x1":1,"y1":1,"x2":3,"y2":5},
+    "performTime":"NONE",
+    "resourceTime":"MIDDAY",
+    "description":"",
+    "resource":"ores"
+  },
+  
 
 
   {
@@ -285,52 +341,6 @@
     "performTime":"NONE",
     "resourceTime":"NONE",
     "description":"Regenerates lost experience.",
-    "resource":""
-  },
-
-  {
-    "name":"mine shaft",
-    "buildingClass":"org.saga.buildings.SimpleBuilding",
-    "levelFunction":{"x1":0,"y1":10.0,"x2":5,"y2":20.0},
-    "professions":["miner"],
-    "classes":[],
-    "roles":[],
-    "ranks":[],
-    "roleAmounts":{},
-    "attributes":[],
-    "abilities":["heavy swing"],
-    "permissions":{"noble":"HIGH"},
-    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
-    "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":3.0},
-    "resources":[],
-    "resourceAmount":{"x1":1,"y1":1,"x2":3,"y2":5},
-    "performTime":"NONE",
-    "resourceTime":"MIDDAY",
-    "description":"Trains miner related attributes.",
-    "resource":"ores"
-  },
-
-  {
-    "name":"farm",
-    "buildingClass":"org.saga.buildings.Farm",
-    "levelFunction":{"x1":0,"y1":10.0,"x2":5,"y2":20.0},
-    "professions":[],
-    "classes":[],
-    "roles":[],
-    "ranks":[],
-    "roleAmounts":{},
-    "attributes":[],
-    "abilities":["harvest"],
-    "permissions":{"noble":"HIGH"},
-    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
-    "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":3.0},
-    "resources":[],
-    "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
-    "performTime":"NONE",
-    "resourceTime":"NONE",
-    "description":"Trains farmer related attributes, prevents animals from being killed and soil from being trampled.",
     "resource":""
   },
 
