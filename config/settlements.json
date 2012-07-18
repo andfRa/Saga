@@ -26,9 +26,39 @@
 
 "buildingDefinitions":[
 
+{
+    "name":"lumber camp",
+    "buildingClass":"org.saga.buildings.SimpleBuilding",
+    "levelFunction":{"x1":0,"y1":10.0,"x2":5,"y2":20.0},
+    "professions":["lumberjack"],
+    "classes":[],
+    "roles":[],
+    "ranks":[],
+    "roleAmounts":{},
+    "attributes":[],
+    "abilities":["chop down"],
+    "permissions":{"noble":"HIGH"},
+    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
+    "available":{"x1":0,"y1":1.0},
+    "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":3.0},
+    "resources":[
+      {"mat":"LOG","amount":1,"data":0, "weight":0.25},
+      {"mat":"LOG","amount":1,"data":1, "weight":0.25},
+      {"mat":"LOG","amount":1,"data":2, "weight":0.25},
+      {"mat":"LOG","amount":1,"data":3, "weight":0.25}
+    ],
+    "resourceAmount":{"x1":1,"y1":1,"x2":50,"y2":3},
+    "performTime":"NONE",
+    "resourceTime":"MIDDAY",
+    "description":"",
+    "resource":"logs"
+  },
+
+
+
   {
     "name":"town square",
-    "className":"org.saga.buildings.TownSquare",
+    "buildingClass":"org.saga.buildings.TownSquare",
     "levelFunction":{"x1":0,"y1":3.0,"x2":5,"y2":6.0},
     "professions":[],
     "classes":[],
@@ -41,7 +71,7 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":2,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "resources":{},
+    "resources":[],
     "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
     "performTime":"NONE",
     "resourceTime":"NONE",
@@ -51,7 +81,7 @@
 
   {
     "name":"warehouse",
-    "className":"org.saga.buildings.Warehouse",
+    "buildingClass":"org.saga.buildings.Warehouse",
     "levelFunction":{"x1":0,"y1":3.0,"x2":5,"y2":6.0},
     "professions":[],
     "classes":[],
@@ -64,7 +94,7 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":7,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":3.0,"x2":3,"y2":9.0},
-    "resources":{},
+    "resources":[],
     "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
     "performTime":"NONE",
     "resourceTime":"NONE",
@@ -74,7 +104,7 @@
 
   {
     "name":"trading post",
-    "className":"org.saga.buildings.TradingPost",
+    "buildingClass":"org.saga.buildings.TradingPost",
     "levelFunction":{"x1":0,"y1":4.0,"x2":5,"y2":7.0},
     "professions":[],
     "classes":[],
@@ -89,7 +119,7 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":4,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "resources":{},
+    "resources":[],
     "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
     "performTime":"NONE",
     "resourceTime":"NONE",
@@ -99,7 +129,7 @@
 
   {
     "name":"barracks",
-    "className":"org.saga.buildings.Barracks",
+    "buildingClass":"org.saga.buildings.SimpleBuilding",
     "levelFunction":{"x1":0,"y1":3.0,"x2":5,"y2":6.0},
     "professions":[],
     "classes":["warrior"],
@@ -112,7 +142,7 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":10,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "resources":{},
+    "resources":[],
     "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
     "performTime":"NONE",
     "resourceTime":"NONE",
@@ -122,7 +152,7 @@
 
   {
     "name":"arena",
-    "className":"org.saga.buildings.Arena",
+    "buildingClass":"org.saga.buildings.Arena",
     "levelFunction":{"x1":0,"y1":3.0,"x2":5,"y2":6.0},
     "professions":[],
     "classes":[],
@@ -135,7 +165,7 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":15,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "resources":{},
+    "resources":[],
     "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
     "performTime":"NONE",
     "resourceTime":"NONE",
@@ -145,7 +175,7 @@
 
   {
     "name":"tavern",
-    "className":"org.saga.buildings.Tavern",
+    "buildingClass":"org.saga.buildings.SimpleBuilding",
     "levelFunction":{"x1":0,"y1":3.0,"x2":5,"y2":6.0},
     "professions":[],
     "classes":["rogue"],
@@ -158,7 +188,7 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":10,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "resources":{},
+    "resources":[],
     "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
     "performTime":"NONE",
     "resourceTime":"NONE",
@@ -168,7 +198,7 @@
 
   {
     "name":"academy",
-    "className":"org.saga.buildings.Academy",
+    "buildingClass":"org.saga.buildings.Academy",
     "levelFunction":{"x1":0,"y1":90.0,"x2":5,"y2":15.0},
     "professions":[],
     "classes":["mage"],
@@ -181,7 +211,7 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":10,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "resources":{},
+    "resources":[],
     "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
     "performTime":"NONE",
     "resourceTime":"NONE",
@@ -191,7 +221,7 @@
 
   {
     "name":"watchtower",
-    "className":"org.saga.buildings.Watchtower",
+    "buildingClass":"org.saga.buildings.Watchtower",
     "levelFunction":{"x1":0,"y1":3.0,"x2":5,"y2":6.0},
     "professions":[],
     "classes":[],
@@ -204,7 +234,7 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":5,"y1":1.0,"x2":50,"y2":8.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "resources":{},
+    "resources":[],
     "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
     "performTime":"NONE",
     "resourceTime":"NONE",
@@ -214,7 +244,7 @@
 
   {
     "name":"home",
-    "className":"org.saga.buildings.Home",
+    "buildingClass":"org.saga.buildings.Home",
     "levelFunction":{"x1":0,"y1":3.0,"x2":5,"y2":6.0},
     "professions":[],
     "classes":[],
@@ -227,7 +257,7 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":0,"y1":1.0,"x2":200,"y2":1000.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "resources":{},
+    "resources":[],
     "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
     "performTime":"NONE",
     "resourceTime":"NONE",
@@ -237,7 +267,7 @@
 
   {
     "name":"temple",
-    "className":"org.saga.buildings.Temple",
+    "buildingClass":"org.saga.buildings.Temple",
     "levelFunction":{"x1":0,"y1":10.0,"x2":5,"y2":20.0},
     "professions":[],
     "classes":[],
@@ -250,7 +280,7 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":20,"y1":1.0,"x2":50,"y2":5.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "resources":{},
+    "resources":[],
     "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
     "performTime":"NONE",
     "resourceTime":"NONE",
@@ -259,31 +289,8 @@
   },
 
   {
-    "name":"woodsman camp",
-    "className":"org.saga.buildings.WoodsmanCamp",
-    "levelFunction":{"x1":0,"y1":10.0,"x2":5,"y2":20.0},
-    "professions":["woodsman"],
-    "classes":[],
-    "roles":[],
-    "ranks":[],
-    "roleAmounts":{},
-    "attributes":[],
-    "abilities":["chop down"],
-    "permissions":{"noble":"HIGH"},
-    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
-    "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":3.0},
-    "resources":{},
-    "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
-    "performTime":"NONE",
-    "resourceTime":"NONE",
-    "description":"Trains woodsman related attributes.",
-    "resource":""
-  },
-
-  {
     "name":"mine shaft",
-    "className":"org.saga.buildings.MineShaft",
+    "buildingClass":"org.saga.buildings.SimpleBuilding",
     "levelFunction":{"x1":0,"y1":10.0,"x2":5,"y2":20.0},
     "professions":["miner"],
     "classes":[],
@@ -296,11 +303,7 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":3.0},
-    "resources":{
-      "0.6":{"mat":"COAL_ORE","amount":1,"data":0},
-      "0.3":{"mat":"IRON_ORE","amount":1,"data":0},
-      "0.1":{"mat":"DIAMOND_ORE","amount":1,"data":0}
-    },
+    "resources":[],
     "resourceAmount":{"x1":1,"y1":1,"x2":3,"y2":5},
     "performTime":"NONE",
     "resourceTime":"MIDDAY",
@@ -310,7 +313,7 @@
 
   {
     "name":"farm",
-    "className":"org.saga.buildings.Farm",
+    "buildingClass":"org.saga.buildings.Farm",
     "levelFunction":{"x1":0,"y1":10.0,"x2":5,"y2":20.0},
     "professions":[],
     "classes":[],
@@ -323,7 +326,7 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":3.0},
-    "resources":{},
+    "resources":[],
     "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
     "performTime":"NONE",
     "resourceTime":"NONE",
@@ -333,7 +336,7 @@
 
   {
     "name":"forge",
-    "className":"org.saga.buildings.Forge",
+    "buildingClass":"org.saga.buildings.SimpleBuilding",
     "levelFunction":{"x1":0,"y1":10.0,"x2":5,"y2":20.0},
     "professions":[],
     "classes":[],
@@ -346,7 +349,7 @@
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":3.0},
-    "resources":{},
+    "resources":[],
     "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
     "performTime":"NONE",
     "resourceTime":"NONE",
