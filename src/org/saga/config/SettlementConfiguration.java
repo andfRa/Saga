@@ -195,7 +195,7 @@ public class SettlementConfiguration {
 		
 		try {
 			
-			Class<?> cl = Class.forName(definition.getClassName());
+			Class<?> cl = Class.forName(definition.getBuildingClass());
 			Class<? extends Building> clca = cl.asSubclass(Building.class);
 			Constructor<? extends Building> co = clca.getConstructor(BuildingDefinition.class);
 			return co.newInstance(definition);

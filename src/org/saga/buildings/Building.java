@@ -177,10 +177,10 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		refreshSigns();
 		
 		// Fix className:
-		if(!get_className().equals(definition.getClassName())){
+		if(!get_className().equals(definition.getBuildingClass())){
 			SagaLogger.severe(this, "building and definition className fields don't match");
-			SagaLogger.info(this, "building _className=" + get_className() + ", definition className=" + definition.getClassName());
-			set_className(definition.getClassName());
+			SagaLogger.info(this, "_className=" + get_className() + ", buildingClass=" + definition.getBuildingClass());
+			set_className(definition.getBuildingClass());
 		}
 		
 		return integrity;

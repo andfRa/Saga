@@ -24,7 +24,7 @@ public class BuildingDefinition {
 	/**
 	 * Building class.
 	 */
-	private String className;
+	private String buildingClass;
 
 	/**
 	 * Building specific function.
@@ -150,9 +150,9 @@ public class BuildingDefinition {
 			name = "invalid";
 		}
 		
-		if(className == null){
-			SagaLogger.nullField(this, "className");
-			className = "invalid";
+		if(buildingClass == null){
+			SagaLogger.nullField(this, "buildingClass");
+			buildingClass = "invalid";
 		}
 		
 		if(levelFunction == null){
@@ -318,8 +318,8 @@ public class BuildingDefinition {
 	 * 
 	 * @return class name
 	 */
-	public String getClassName() {
-		return className;
+	public String getBuildingClass() {
+		return buildingClass;
 	}
 
 	
@@ -617,8 +617,7 @@ public class BuildingDefinition {
 	 */
 	@Override
 	public String toString() {
-		if(className == null) return "null";
-		return className;
+		return getName();
 	}
 	
 }
