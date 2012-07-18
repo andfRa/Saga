@@ -105,7 +105,7 @@ public class SettlementConfiguration {
 		
 
 		if(definition == null){
-			SagaLogger.nullField(getClass(), "settlementDefinition");
+			SagaLogger.nullField(getClass(), "definition");
 			definition = SettlementDefinition.defaultDefinition();
 		}
 		definition.complete();
