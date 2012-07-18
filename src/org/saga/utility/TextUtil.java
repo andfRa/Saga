@@ -477,6 +477,9 @@ public class TextUtil {
 		
 	}
 	
+	public static String className(Class<?> clazz) {
+		return clazz.getSimpleName().replaceAll("(\\p{Ll})(\\p{Lu})","$1 $2").toLowerCase();
+	}
 	
 }
 

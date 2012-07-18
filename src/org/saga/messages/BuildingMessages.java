@@ -422,7 +422,7 @@ public class BuildingMessages {
 	// Town square:
 	public static String noTownSquare(ChunkGroup chunkGroup){
 		
-		return BuildingMessages.negative + "" + chunkGroup.getName() + " deosen't have a " + TownSquare.getName(TownSquare.class) + ".";
+		return BuildingMessages.negative + "" + chunkGroup.getName() + " deosen't have a " + TextUtil.className(TownSquare.class) + ".";
 		
 	}
 	

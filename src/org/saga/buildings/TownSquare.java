@@ -6,12 +6,10 @@ import org.bukkit.Location;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.util.Vector;
 import org.saga.SagaLogger;
-import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
-import org.saga.messages.BuildingMessages;
 import org.saga.player.SagaPlayer;
 
 public class TownSquare extends Building{
@@ -192,16 +190,6 @@ public class TownSquare extends Building{
 		}
 		
 	}
-	
-	
-	
-	// Messages:
-	public static String noTownSquare(ChunkGroup chunkGroup){
-		
-		return BuildingMessages.negative + "" + chunkGroup.getName() + " deosen't have a " + TownSquare.getName(TownSquare.class) + ".";
-		
-	}
-	
 	
 	
 }

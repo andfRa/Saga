@@ -28,6 +28,7 @@ import org.saga.messages.SagaMessages;
 import org.saga.messages.SettlementEffects;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement.SettlementPermission;
+import org.saga.utility.TextUtil;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
 import org.sk89q.CommandPermissions;
@@ -1263,7 +1264,7 @@ public class BuildingCommands {
 		
 		// Everything on cool down:
 		if(selectedBuilding == null){
-			sagaPlayer.message(BuildingMessages.cooldown(Building.getName(TownSquare.class), smallestCooldown));
+			sagaPlayer.message(BuildingMessages.cooldown(TextUtil.className(TownSquare.class), smallestCooldown));
 			return;
 		}
 		

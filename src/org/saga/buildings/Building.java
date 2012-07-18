@@ -36,6 +36,7 @@ import org.saga.player.SagaPlayer;
 import org.saga.saveload.SagaCustomSerialization;
 import org.saga.settlements.Settlement.SettlementPermission;
 import org.saga.utility.RandomItemBlueprint;
+import org.saga.utility.TextUtil;
 import org.sk89q.CommandContext;
 
 public abstract class Building extends SagaCustomSerialization implements DaytimeTicker{
@@ -111,7 +112,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		boolean integrity = true;
 		
 		if(name == null){
-			name = getName(getClass());
+			name = TextUtil.className(getClass());
 			SagaLogger.nullField(this, "name");
 			integrity = false;
 		}
@@ -247,16 +248,6 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		return getName();
 	}
 	
-	/**
-	 * Gets the name.
-	 * 
-	 * @param buildingClass building class
-	 * @return the name
-	 */
-	public static String getName(Class<? extends Building> buildingClass) {
-		return buildingClass.getSimpleName().replaceAll("(\\p{Ll})(\\p{Lu})","$1 $2").toLowerCase();
-	}
-
 	/**
 	 * Gets the level.
 	 * 
@@ -1052,7 +1043,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 			building = sagaChunk.getBuilding();
 		}
 		if(building == null){
-			throw new Throwable(BuildingMessages.invalidBuilding(getName(buildingClass), args.getCommand()));
+			throw new Throwable(BuildingMessages.invalidBuilding(TextUtil.className(buildingClass), args.getCommand()));
 		}
 		
 		// Correct building:
@@ -1060,7 +1051,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		try {
 			selectedBuilding = buildingClass.cast(building);
 		} catch (ClassCastException e) {
-			throw new Throwable(BuildingMessages.invalidBuilding(getName(buildingClass), args.getCommand()));
+			throw new Throwable(BuildingMessages.invalidBuilding(TextUtil.className(buildingClass), args.getCommand()));
 		} 
 		
 		return selectedBuilding;
