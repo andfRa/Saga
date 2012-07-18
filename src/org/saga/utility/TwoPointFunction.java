@@ -13,10 +13,11 @@ public class TwoPointFunction {
 	private static Random RANDOM = new Random();
 	
 	
+	
 	/**
 	 * Multiplier function x1.
 	 */
-	private Short x1;
+	private Double x1;
 	
 	/**
 	 * Multiplier function y1.
@@ -26,7 +27,7 @@ public class TwoPointFunction {
 	/**
 	 * Multiplier function x2.
 	 */
-	private Short x2;
+	private Double x2;
 	
 	/**
 	 * Multiplier function y2
@@ -34,14 +35,8 @@ public class TwoPointFunction {
 	private Double y2;
 	
 	
-	/**
-	 * Used by gson.
-	 * 
-	 */
-	@SuppressWarnings("unused")
-	private TwoPointFunction() {
-	}
 	
+	// Initialisation:
 	/**
 	 * Sets constant value.
 	 * 
@@ -49,15 +44,15 @@ public class TwoPointFunction {
 	 */
 	public TwoPointFunction(Double value){
 
-		this.x1 = 0;
+		this.x1 = 0.0;
 		this.y1 = value;
-		this.x2 = 1;
+		this.x2 = 1.0;
 		this.y2 = value;
 		
 	}
 
 	/**
-	 * Sets function y values at min and max points.
+	 * Sets function values at min and max points.
 	 * 
 	 * 
 	 * @param x1 x1
@@ -65,12 +60,17 @@ public class TwoPointFunction {
 	 * @param x2 x2
 	 * @param y2 y2
 	 */
-	public TwoPointFunction(Short x1, Double y1, Short x2, Double y2){
+	public TwoPointFunction(Double x1, Double y1, Double x2, Double y2){
 
 		this.x1 = x1;
 		this.y1 = y1;
 		this.x2 = x2;
 		this.y2 = y2;
+		
+		if(x1 == x2){
+			x2++;
+			SagaLogger.severe(getClass(), "infinite slope in constructor");
+		}
 		
 	}
 	
@@ -83,9 +83,9 @@ public class TwoPointFunction {
 		
 		
 		boolean integrity = true;
-		// Fields:
+		
 		if(x1 == null){
-			x1 = 0;
+			x1 = 0.0;
 			SagaLogger.nullField(getClass(), "x1");
 			integrity = false;
 		}
@@ -95,14 +95,15 @@ public class TwoPointFunction {
 			integrity = false;
 		}
 		if(x2 == null){
-			x2 = 1;
-			SagaLogger.nullField(getClass(), "x2");
-			integrity = false;
+			x2 = x1 + 1.0;
 		}
 		if(y2 == null){
-			y2 = 1.0;
-			SagaLogger.nullField(getClass(), "y2");
-			integrity = false;
+			y2 = y1;
+		}
+		
+		if(x1 == x2){
+			x2++;
+			SagaLogger.severe(getClass(), "infinite slope in complete");
 		}
 
 		return integrity;
@@ -111,12 +112,14 @@ public class TwoPointFunction {
 	}
 
 
+	
+	// Values:
 	/**
 	 * Calculates the value for the given y value.
 	 * 
 	 * @param x x value
 	 */
-	public Double value(Short x) {
+	public Double value(Double x) {
 		
 		
 		if(x > x2){
@@ -125,11 +128,6 @@ public class TwoPointFunction {
 		
 		if(x < x1){
 			x = x1;
-		}
-		
-		if(x2 - x1 == 0){
-			SagaLogger.severe(getClass(), "infinite slope");
-			return 0.0;
 		}
 		
 		double k= (y2 - y1)/(x2-x1);
@@ -146,7 +144,7 @@ public class TwoPointFunction {
 	 */
 	public Double value(Integer x) {
 		
-		return value(x.shortValue());
+		return value(x.doubleValue());
 		
 	}
 	
@@ -157,7 +155,7 @@ public class TwoPointFunction {
 	 */
 	public Integer intValue(Integer x) {
 		
-		return value(x.shortValue()).intValue();
+		return value(x.doubleValue()).intValue();
 		
 	}
 	
@@ -168,20 +166,10 @@ public class TwoPointFunction {
 	 */
 	public Integer intValueCeil(Integer x) {
 		
-		return (int)Math.ceil(value(x.shortValue()));
+		return (int)Math.ceil(value(x.doubleValue()));
 		
 	}
 	
-	/**
-	 * Calculates the value for the given y value.
-	 * 
-	 * @param x x value
-	 */
-	public Double value(Double x) {
-		
-		return value(x.shortValue());
-		
-	}
 	
 	/**
 	 * Calculates the random integer value for the given x value.
@@ -217,14 +205,13 @@ public class TwoPointFunction {
 	}
 	
 	
-	
 	/**
 	 * Gets the minimum x value.
 	 * 
 	 * @return x requirement
 	 */
-	public Short getXMin() {
-		return x1;
+	public Integer getXMin() {
+		return x1.intValue();
 	}
 	
 	/**
@@ -232,12 +219,13 @@ public class TwoPointFunction {
 	 * 
 	 * @return maximum value
 	 */
-	public Short getXMax() {
-		return x2;
+	public Integer getXMax() {
+		return x2.intValue();
 	}
 	
 	
-	// Util:
+	
+	// Utility:
 	/**
 	 * Generates rounds a integer and adds random damage of one.
 	 * 
@@ -274,6 +262,7 @@ public class TwoPointFunction {
 			
 		
 	}
+	
 	
 
 	// Other:

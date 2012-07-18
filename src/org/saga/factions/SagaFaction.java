@@ -1522,7 +1522,7 @@ public class SagaFaction implements SecondTicker{
 			return 0;
 		}
 		
-		return FactionConfiguration.config().levelsPerActivePlayers.value(active.shortValue()).shortValue();
+		return FactionConfiguration.config().levelsPerActivePlayers.value(active).shortValue();
 		
 	}
 

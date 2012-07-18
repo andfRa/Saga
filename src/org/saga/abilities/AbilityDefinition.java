@@ -261,7 +261,7 @@ public class AbilityDefinition{
 	 * @return the cooldown
 	 */
 	public Integer getCooldown(Integer level) {
-		return cooldown.value(level.shortValue()).intValue();
+		return cooldown.value(level).intValue();
 	}
 	
 	/**
@@ -270,7 +270,7 @@ public class AbilityDefinition{
 	 * @return the active for
 	 */
 	public Integer getActiveFor(Integer level) {
-		return active.value(level.shortValue()).intValue();
+		return active.value(level).intValue();
 	}
 
 	

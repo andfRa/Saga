@@ -68,7 +68,7 @@ public class FactionDefinition {
 		if(amount == null || amount.getXMin() > level){
 			return 0;
 		}
-		return new Double(amount.value(level)).intValue();
+		return new Double(amount.value(level.intValue())).intValue();
 		
 		
 	}
