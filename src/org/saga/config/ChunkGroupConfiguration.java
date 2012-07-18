@@ -41,7 +41,7 @@ public class ChunkGroupConfiguration {
 	/**
 	 * Settlement definition.
 	 */
-	private SettlementDefinition settlementDefinition;
+	private SettlementDefinition definition;
 	
 	/**
 	 * Building definitions.
@@ -64,16 +64,6 @@ public class ChunkGroupConfiguration {
 	
 	
 	// Signs:
-	/**
-	 * Sign for arena top.
-	 */
-	public String arenaTopSign;
-	
-	/**
-	 * Sign for arena top.
-	 */
-	public String arenaCountdownSign;
-	
 	/**
 	 * Colour for enabled signs.
 	 */
@@ -114,11 +104,11 @@ public class ChunkGroupConfiguration {
 	public void complete() {
 		
 
-		if(settlementDefinition == null){
+		if(definition == null){
 			SagaLogger.nullField(getClass(), "settlementDefinition");
-			settlementDefinition = SettlementDefinition.defaultDefinition();
+			definition = SettlementDefinition.defaultDefinition();
 		}
-		settlementDefinition.complete();
+		definition.complete();
 		
 		if(noDeleteLevel == null){
 			SagaLogger.nullField(getClass(), "noDeleteLevel");
@@ -139,16 +129,6 @@ public class ChunkGroupConfiguration {
 			definition.complete();
 		}
 
-		if(arenaTopSign == null){
-			SagaLogger.nullField(getClass(), "arenaTopSign");
-			arenaTopSign= ChatColor.AQUA + "=[TOP]=";
-		}
-		
-		if(arenaCountdownSign == null){
-			SagaLogger.nullField(getClass(), "arenaCountdownSign");
-			arenaCountdownSign= ChatColor.AQUA + "=[COUNT]=";
-		}
-		
 		if(enabledSignColor == null){
 			SagaLogger.nullField(getClass(), "enabledSignColor");
 			enabledSignColor = ChatColor.DARK_GREEN;
@@ -190,7 +170,7 @@ public class ChunkGroupConfiguration {
 	 */
 	public SettlementDefinition getSettlementDefinition() {
 
-		return settlementDefinition;
+		return definition;
 		
 	}
 	
