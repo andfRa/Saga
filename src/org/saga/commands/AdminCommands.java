@@ -478,7 +478,7 @@ public class AdminCommands {
 	}
 	
 	@Command(
-		aliases = {"asenable"},
+		aliases = {"asenableoption", "aenableopt"},
 		usage = "[settlement name] <option>",
 		flags = "",
 		desc = "Enable settlement option.",
@@ -554,7 +554,7 @@ public class AdminCommands {
 	}
 	
 	@Command(
-		aliases = {"asdisable"},
+		aliases = {"asdisableoption", "adisableopt"},
 		usage = "[settlement name] <option>",
 		flags = "",
 		desc = "Disable settlement option.",
