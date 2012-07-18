@@ -930,9 +930,9 @@ public class SagaChunk {
 		
 		
 		if(getBuilding() != null){
-			return "" + world + " (" + x + ", " + z + ")" + " " + getBuilding();
+			return "(" + world + ", " + x + ", " + z + ")" + "_{" + getBuilding().getName() + ", " + getChunkGroup().getName() + "}";
 		}else{
-			return  "" + world + " (" + x + ", " + z + ")";
+			return  "(" + world + ", " + x + ", " + z + ")" + "_{" + getChunkGroup().getName() + "}";
 		}
 		
 		

@@ -394,7 +394,7 @@ public class ChunkGroupManager {
 		SagaChunk z = x.get(sagaChunk.getZ());
 		
 		if(z != null){
-			SagaLogger.severe(this, "tried to add an aready existing " + sagaChunk + " to chunk group managers chunk shortcut");
+			SagaLogger.severe(getClass(), "overlap between " + z + " and " + sagaChunk + " Saga chunks");
 			return;
 		}
 		

@@ -24,7 +24,7 @@
 "inactiveSetDays":7,
 
 
-"buildingDefinitions":{
+"buildingDefinitions":[
 
   {
     "name":"town square",
@@ -354,7 +354,7 @@
     "resource":""
   }
 
-},
+],
 
 "arenaTopSign":"§b\u003d[TOP]\u003d",
 "arenaCountdownSign":"§b\u003d[COUNT]\u003d",

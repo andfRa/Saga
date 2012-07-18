@@ -111,7 +111,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		boolean integrity = true;
 		
 		if(name == null){
-			name = "default";
+			name = getName(getClass());
 			SagaLogger.nullField(this, "name");
 			integrity = false;
 		}
@@ -235,7 +235,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 * @return the name
 	 */
 	public final String getName() {
-		return getDefinition().getName();
+		return name;
 	}
 	
 	/**
