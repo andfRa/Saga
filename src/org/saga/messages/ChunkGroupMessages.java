@@ -7,6 +7,7 @@ import java.util.Enumeration;
 import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
+import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.buildings.Building;
 import org.saga.buildings.BuildingDefinition;
 import org.saga.chunkGroups.ChunkGroup;
@@ -578,18 +579,24 @@ public class ChunkGroupMessages {
 					
 					// Set:
 					if(usedBuildings > 0){
+						
+						// Status:
+						status = resources(definitions[j], levels[j]);
+						if(status.length() == 0) status = "set";
+						
+						// Colours:
 						name = veryPositive + name;
-						status = veryPositive + "set";
-
+						status = veryPositive + status;
+						
 						if(totalBuildings != 1){
-							status = status + " " + usedBuildings + "/" + totalBuildings;
+							name = name + " " + usedBuildings + "/" + totalBuildings;
 						}
 					
 					}
 					
 					// Available:
 					else{
-						status = "available";
+						status = "not set";
 					}
 					
 					
@@ -614,6 +621,26 @@ public class ChunkGroupMessages {
 		return table;
 		
 		
+	}
+	
+	private static String resources(BuildingDefinition definition, Integer level){
+		
+		
+		// Amount:
+		Integer amount = definition.getResourceAmount(level);
+		if(amount < 1) return "";
+		
+		// Daytime:
+		Daytime daytime = definition.getResourceTime();
+		if(daytime == Daytime.NONE) return "";
+		
+		// Resource:
+		String resource = definition.getResource();
+		if(resource.length() == 0) resource = "items";
+		
+		return amount + " " + resource + " at " + daytime;
+		
+				
 	}
 	
 	private static String requirements(BuildingDefinition definition, Integer buildingLevel){

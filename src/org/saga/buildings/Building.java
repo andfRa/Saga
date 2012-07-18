@@ -70,9 +70,9 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	
 	
 	/**
-	 * Craftable items.
+	 * Craftable resources.
 	 */
-	transient private RandomItemBlueprint craftable;
+	transient private RandomItemBlueprint resources;
 	
 	
 	
@@ -88,7 +88,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		this.level = 0;
 		this.signs = new ArrayList<BuildingSign>();
 		this.storage = new ArrayList<StorageArea>();
-		craftable = new RandomItemBlueprint(getDefinition().getCraftable());
+		resources = new RandomItemBlueprint(getDefinition().getCraftable());
 		
 	}
 	
@@ -158,8 +158,8 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 			
 		}
 		
-		// Craftables:
-		craftable = new RandomItemBlueprint(getDefinition().getCraftable());
+		// Resources:
+		resources = new RandomItemBlueprint(getDefinition().getCraftable());
 		
 		// Refresh signs:
 		refreshSigns();
@@ -828,16 +828,16 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		if(!getSagaChunk().isChunkLoaded()) return;
 		
 		// Nothing to craft:
-		if(craftable.size() == 0){
+		if(resources.size() == 0){
 			return;
 		}
 		
-		// Craft items:
-		Integer toCraft = getDefinition().getCraftAmount(getLevel());
+		// Craft resources:
+		Integer toCraft = getDefinition().getResourceAmount(getLevel());
 		
 		for (int i = 0; i < toCraft; i++) {
 			
-			ItemStack item = craftable.nextItem();
+			ItemStack item = resources.nextItem();
 			
 			storeBlock(item);
 			
@@ -862,7 +862,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		if(daytime == getDefinition().getPerformTime()) perform();
 		
 		// Handle crafting:
-		if(daytime == getDefinition().getCraftTime()) handleCrafting();
+		if(daytime == getDefinition().getResourceTime()) handleCrafting();
 		
 		
 	}

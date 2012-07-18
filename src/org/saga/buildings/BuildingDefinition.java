@@ -83,14 +83,14 @@ public class BuildingDefinition {
 	private TwoPointFunction storageAreas;
 	
 	/**
-	 * Items crafted by the buildings.
+	 * Resources crafted by the building.
 	 */
-	private Hashtable<Double, ItemBlueprint> craftable;
+	private Hashtable<Double, ItemBlueprint> resources;
 	
 	/**
-	 * Amount of items crafted.
+	 * Amount of resources crafted.
 	 */
-	private TwoPointFunction craftAmount;
+	private TwoPointFunction resourceAmount;
 
 	
 	// Timings:
@@ -100,9 +100,9 @@ public class BuildingDefinition {
 	private Daytime performTime;
 	
 	/**
-	 * Craft time.
+	 * Resources craft time.
 	 */
-	private Daytime craftTime;
+	private Daytime resourceTime;
 	
 	
 	// Info:
@@ -110,6 +110,11 @@ public class BuildingDefinition {
 	 * Description.
 	 */
 	private String description;
+	
+	/**
+	 * Resource that is crafted.
+	 */
+	private String resource;
 	
 	
 	
@@ -246,20 +251,20 @@ public class BuildingDefinition {
 		storageAreas.complete();
 		
 		
-		if(craftable == null){
-			craftable = new Hashtable<Double, ItemBlueprint>();
-			SagaLogger.nullField(BuildingDefinition.class, "craftable");
+		if(resources == null){
+			resources = new Hashtable<Double, ItemBlueprint>();
+			SagaLogger.nullField(BuildingDefinition.class, "resources");
 		}
-		Set<Entry<Double, ItemBlueprint>> craEntries = craftable.entrySet();
+		Set<Entry<Double, ItemBlueprint>> craEntries = resources.entrySet();
 		for (Entry<Double, ItemBlueprint> entry : craEntries) {
 			entry.getValue().complete();
 		}
 		
-		if(craftAmount == null){
-			craftAmount = new TwoPointFunction(0.0);
-			SagaLogger.nullField(BuildingDefinition.class, "craftAmount");
+		if(resourceAmount == null){
+			resourceAmount = new TwoPointFunction(0.0);
+			SagaLogger.nullField(BuildingDefinition.class, "resourceAmount");
 		}
-		craftAmount.complete();
+		resourceAmount.complete();
 		
 		
 		if(performTime == null){
@@ -267,15 +272,20 @@ public class BuildingDefinition {
 			SagaLogger.nullField(BuildingDefinition.class, "performTime");
 		}
 		
-		if(craftTime == null){
-			craftTime = Daytime.NONE;
-			SagaLogger.nullField(BuildingDefinition.class, "craftTime");
+		if(resourceTime == null){
+			resourceTime = Daytime.NONE;
+			SagaLogger.nullField(BuildingDefinition.class, "resources");
 		}
 		
 		
 		if(description == null){
 			description = "<no description>";
 			SagaLogger.nullField(BuildingDefinition.class, "description");
+		}
+		
+		if(resource == null){
+			resource = "";
+			SagaLogger.nullField(BuildingDefinition.class, "resource");
 		}
 		
 		
@@ -523,17 +533,17 @@ public class BuildingDefinition {
 	 * @return craftable items table
 	 */
 	public Hashtable<Double, ItemBlueprint> getCraftable() {
-		return new Hashtable<Double, ItemBlueprint>(craftable);
+		return new Hashtable<Double, ItemBlueprint>(resources);
 	}
 	
 	/**
-	 * Gets the amount of crafted items.
+	 * Gets the amount of crafted resources.
 	 * 
 	 * @param level building level
-	 * @return amount of crafted items
+	 * @return amount of crafted resources
 	 */
-	public Integer getCraftAmount(Integer level) {
-		return craftAmount.intValue(level);
+	public Integer getResourceAmount(Integer level) {
+		return resourceAmount.intValue(level);
 	}
 	
 	
@@ -553,8 +563,8 @@ public class BuildingDefinition {
 	 * 
 	 * @return craft time
 	 */
-	public Daytime getCraftTime() {
-		return craftTime;
+	public Daytime getResourceTime() {
+		return resourceTime;
 	}
 	
 	
@@ -567,6 +577,15 @@ public class BuildingDefinition {
 	 */
 	public String getDescription() {
 		return description;
+	}
+	
+	/**
+	 * Gets the buildings resource.
+	 * 
+	 * @return building resource
+	 */
+	public String getResource() {
+		return resource;
 	}
 	
 
