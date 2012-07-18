@@ -10,7 +10,7 @@ import org.saga.buildings.Building;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
-import org.saga.config.ChunkGroupConfiguration;
+import org.saga.config.SettlementConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
 import org.saga.exceptions.InvalidBuildingException;
@@ -373,7 +373,7 @@ public class ChunkGroupCommands {
 	   	selectedChunkGroup = selectedChunk.getChunkGroup();
 
 	   	// Valid building:
-	   	if(ChunkGroupConfiguration.config().getBuildingDefinition(buildingName) == null){
+	   	if(SettlementConfiguration.config().getBuildingDefinition(buildingName) == null){
 	   		sagaPlayer.message(BuildingMessages.invalidBuilding(buildingName));
 	   		return;
 	   	}
@@ -381,7 +381,7 @@ public class ChunkGroupCommands {
 		// Building:
 		Building selectedBuilding;
 		try {
-			selectedBuilding = ChunkGroupConfiguration.config().createBuilding(buildingName);
+			selectedBuilding = SettlementConfiguration.config().createBuilding(buildingName);
 		} catch (InvalidBuildingException e) {
 			SagaLogger.severe(ChunkGroupCommands.class, sagaPlayer + " tried to set a building with missing definition");
 			sagaPlayer.error("definition missing for " + buildingName + " building");
@@ -725,7 +725,7 @@ public class ChunkGroupCommands {
 			
 			if(selectedChunkGroup.getPlayerCount() == 0){
 
-				if(selectedsettlement.getLevel() < ChunkGroupConfiguration.config().noDeleteLevel){
+				if(selectedsettlement.getLevel() < SettlementConfiguration.config().noDeleteLevel){
 
 					// Delete:
 					selectedsettlement.delete();
@@ -837,7 +837,7 @@ public class ChunkGroupCommands {
 			
 			if(selectedChunkGroup.getPlayerCount() == 0){
 
-				if(selectedsettlement.getLevel() < ChunkGroupConfiguration.config().noDeleteLevel){
+				if(selectedsettlement.getLevel() < SettlementConfiguration.config().noDeleteLevel){
 
 					// Delete:
 					selectedsettlement.delete();

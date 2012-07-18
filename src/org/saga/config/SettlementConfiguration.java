@@ -18,20 +18,20 @@ import org.saga.settlements.SettlementDefinition;
 
 import com.google.gson.JsonParseException;
 
-public class ChunkGroupConfiguration {
+public class SettlementConfiguration {
 
 
 	/**
 	 * Instance of the configuration.
 	 */
-	transient private static ChunkGroupConfiguration instance;
+	transient private static SettlementConfiguration instance;
 	
 	/**
 	 * Gets the instance.
 	 * 
 	 * @return instance
 	 */
-	public static ChunkGroupConfiguration config() {
+	public static SettlementConfiguration config() {
 		return instance;
 	}
 	
@@ -187,7 +187,7 @@ public class ChunkGroupConfiguration {
 	public Building createBuilding(String name) throws InvalidBuildingException {
 
 		
-		BuildingDefinition definition = ChunkGroupConfiguration.config().getBuildingDefinition(name);
+		BuildingDefinition definition = SettlementConfiguration.config().getBuildingDefinition(name);
 		
 		if(definition == null){
 			
@@ -257,29 +257,29 @@ public class ChunkGroupConfiguration {
 	 * 
 	 * @return configuration
 	 */
-	public static ChunkGroupConfiguration load(){
+	public static SettlementConfiguration load(){
 
 		
-		ChunkGroupConfiguration config;
+		SettlementConfiguration config;
 		try {
 			
-			config = WriterReader.read(Directory.CHUNKGROUP_CONFIG, ChunkGroupConfiguration.class);
+			config = WriterReader.read(Directory.CHUNKGROUP_CONFIG, SettlementConfiguration.class);
 			
 		} catch (FileNotFoundException e) {
 			
 			SagaLogger.severe(BalanceConfiguration.class, "configuration not found");
-			config = new ChunkGroupConfiguration();
+			config = new SettlementConfiguration();
 			
 		} catch (IOException e) {
 			
-			SagaLogger.severe(ChunkGroupConfiguration.class, "failed to read configuration: " + e.getClass().getSimpleName());
-			config = new ChunkGroupConfiguration();
+			SagaLogger.severe(SettlementConfiguration.class, "failed to read configuration: " + e.getClass().getSimpleName());
+			config = new SettlementConfiguration();
 			
 		} catch (JsonParseException e) {
 
-			SagaLogger.severe(ChunkGroupConfiguration.class, "failed to parse configuration: " + e.getClass().getSimpleName());
+			SagaLogger.severe(SettlementConfiguration.class, "failed to parse configuration: " + e.getClass().getSimpleName());
 			SagaLogger.info("message: " + e.getMessage());
-			config = new ChunkGroupConfiguration();
+			config = new SettlementConfiguration();
 			
 		}
 		

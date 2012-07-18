@@ -19,7 +19,7 @@ import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.ChunkGroupToggleable;
 import org.saga.config.AttributeConfiguration;
-import org.saga.config.ChunkGroupConfiguration;
+import org.saga.config.SettlementConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.dependencies.PermissionsManager;
 import org.saga.dependencies.spout.ClientManager;
@@ -390,7 +390,7 @@ public class AdminCommands {
 	   		
 	   		Settlement selectedSettlement = (Settlement) selectedChunkGroup;
 	   		
-	   		if(selectedSettlement.getLevel() >= ChunkGroupConfiguration.config().noDeleteLevel){
+	   		if(selectedSettlement.getLevel() >= SettlementConfiguration.config().noDeleteLevel){
 
 	   			sagaPlayer.message(ChunkGroupMessages.informSettlementAboveLevelDelete());
 				return;

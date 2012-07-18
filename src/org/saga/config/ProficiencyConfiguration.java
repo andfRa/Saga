@@ -193,12 +193,12 @@ public class ProficiencyConfiguration {
 			
 		} catch (IOException e) {
 			
-			SagaLogger.severe(ChunkGroupConfiguration.class, "failed to read configuration: " + e.getClass().getSimpleName());
+			SagaLogger.severe(SettlementConfiguration.class, "failed to read configuration: " + e.getClass().getSimpleName());
 			config = new ProficiencyConfiguration();
 			
 		} catch (JsonParseException e) {
 
-			SagaLogger.severe(ChunkGroupConfiguration.class, "failed to parse configuration: " + e.getClass().getSimpleName());
+			SagaLogger.severe(SettlementConfiguration.class, "failed to parse configuration: " + e.getClass().getSimpleName());
 			SagaLogger.info("message: " + e.getMessage());
 			config = new ProficiencyConfiguration();
 			

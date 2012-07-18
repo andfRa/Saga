@@ -14,7 +14,7 @@ import org.saga.buildings.BuildingDefinition;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupToggleable;
 import org.saga.chunkGroups.SagaChunk;
-import org.saga.config.ChunkGroupConfiguration;
+import org.saga.config.SettlementConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
 import org.saga.listeners.events.SagaBuildEvent;
@@ -68,7 +68,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		level = 0;
 		exp = 0.0;
 		playerRoles = new Hashtable<String, Proficiency>();
-		definition = ChunkGroupConfiguration.config().getSettlementDefinition();
+		definition = SettlementConfiguration.config().getSettlementDefinition();
 		
 	}
 
@@ -120,7 +120,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		}
 		
 		// Definition:
-		definition = ChunkGroupConfiguration.config().getSettlementDefinition();
+		definition = SettlementConfiguration.config().getSettlementDefinition();
 		
 		return integrity;
 		
@@ -516,7 +516,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	public Integer getAvailableBuildings(String buildingName) {
 
 
-		BuildingDefinition definition = ChunkGroupConfiguration.config().getBuildingDefinition(buildingName);
+		BuildingDefinition definition = SettlementConfiguration.config().getBuildingDefinition(buildingName);
 		
 		if(definition == null) return 0;
 		

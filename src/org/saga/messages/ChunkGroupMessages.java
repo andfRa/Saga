@@ -13,7 +13,7 @@ import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupToggleable;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.commands.ChunkGroupCommands;
-import org.saga.config.ChunkGroupConfiguration;
+import org.saga.config.SettlementConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.factions.SagaFaction;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
@@ -276,7 +276,7 @@ public class ChunkGroupMessages {
 	}
 	
 	public static String levelTooHighDelete() {
-		return negative + "Settlements above level " + ChunkGroupConfiguration.config().noDeleteLevel + " can't be deleted.";
+		return negative + "Settlements above level " + SettlementConfiguration.config().noDeleteLevel + " can't be deleted.";
 	}
 
 	// Invite join leave messages:
@@ -541,10 +541,10 @@ public class ChunkGroupMessages {
 		StringTable table = new StringTable(colours);
 		
 		// Retrieve buildings:
-		String[] names = ChunkGroupConfiguration.config().getBuildingNames().toArray(new String[0]);
+		String[] names = SettlementConfiguration.config().getBuildingNames().toArray(new String[0]);
 		BuildingDefinition[] definitions = new BuildingDefinition[names.length];
 		for (int i = 0; i < definitions.length; i++) {
-			definitions[i] = ChunkGroupConfiguration.config().getBuildingDefinition(names[i]);
+			definitions[i] = SettlementConfiguration.config().getBuildingDefinition(names[i]);
 		}
 		
 		// Levels:
@@ -1063,7 +1063,7 @@ public class ChunkGroupMessages {
 	
 	// Inform:
 	public static String informSettlementAboveLevelDelete() {
-		return normal1 + "Settlement with level " + ChunkGroupConfiguration.config().noDeleteLevel + " and above can only be deleted by unclaiming everything.";
+		return normal1 + "Settlement with level " + SettlementConfiguration.config().noDeleteLevel + " and above can only be deleted by unclaiming everything.";
 	}
 	
 	public static String informAccept() {

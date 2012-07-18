@@ -14,7 +14,7 @@ import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.SagaLogger;
 import org.saga.chunkGroups.SagaChunk;
-import org.saga.config.ChunkGroupConfiguration;
+import org.saga.config.SettlementConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
@@ -398,12 +398,12 @@ public class Arena extends Building implements SecondTicker{
 		
 		// Top sign:
 		if(event.getLine(0).equalsIgnoreCase(TOP_SIGN)){
-			event.setLine(0, ChunkGroupConfiguration.config().enabledSignColor + TOP_SIGN);
+			event.setLine(0, SettlementConfiguration.config().enabledSignColor + TOP_SIGN);
 		}
 		
 		// Count down sign:
 		if(event.getLine(0).equalsIgnoreCase(COUNTDOWN_SIGN)){
-			event.setLine(0, ChunkGroupConfiguration.config().enabledSignColor + COUNTDOWN_SIGN);
+			event.setLine(0, SettlementConfiguration.config().enabledSignColor + COUNTDOWN_SIGN);
 		}
 		
 		

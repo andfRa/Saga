@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.Building;
-import org.saga.config.ChunkGroupConfiguration;
+import org.saga.config.SettlementConfiguration;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.SagaCustomSerialization;
 
@@ -198,17 +198,17 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 		switch (status) {
 			case ENABLED:
 				
-				sign.setLine(0, ChunkGroupConfiguration.config().enabledSignColor + getName());
+				sign.setLine(0, SettlementConfiguration.config().enabledSignColor + getName());
 				break;
 
 			case DISABLED:
 				
-				sign.setLine(0, ChunkGroupConfiguration.config().disabledSignColor + getName());
+				sign.setLine(0, SettlementConfiguration.config().disabledSignColor + getName());
 				break;
 
 			case INVALIDATED:
 
-				sign.setLine(0, ChunkGroupConfiguration.config().invalidSignColor + getName());
+				sign.setLine(0, SettlementConfiguration.config().invalidSignColor + getName());
 				break;
 
 			default:

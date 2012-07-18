@@ -16,7 +16,7 @@ import org.saga.Clock.HourTicker;
 import org.saga.SagaLogger;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.BalanceConfiguration;
-import org.saga.config.ChunkGroupConfiguration;
+import org.saga.config.SettlementConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
@@ -1116,7 +1116,7 @@ public class StatisticsManager implements HourTicker{
 			
 		} catch (IOException e) {
 			
-			SagaLogger.severe(ChunkGroupConfiguration.class, "failed to read statistics: " + e.getClass().getSimpleName());
+			SagaLogger.severe(SettlementConfiguration.class, "failed to read statistics: " + e.getClass().getSimpleName());
 			SagaLogger.info("message: " + e.getMessage());
 			
 			SagaLogger.severe(StatisticsManager.class, "write failed ");

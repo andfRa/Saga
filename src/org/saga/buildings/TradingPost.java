@@ -23,7 +23,7 @@ import org.saga.buildings.signs.BuySign;
 import org.saga.buildings.signs.SellSign;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.SagaChunk;
-import org.saga.config.ChunkGroupConfiguration;
+import org.saga.config.SettlementConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.economy.EconomyManager;
 import org.saga.economy.EconomyManager.InvalidWorldException;
@@ -1180,17 +1180,17 @@ public class TradingPost extends Building implements Trader, DaytimeTicker{
 		
 		// Goods sign:
 		if(event.getLine(0).equalsIgnoreCase(GOODS_SIGN)){
-			event.setLine(0, ChunkGroupConfiguration.config().enabledSignColor + GOODS_SIGN);
+			event.setLine(0, SettlementConfiguration.config().enabledSignColor + GOODS_SIGN);
 		}
 
 		// Goods sign:
 		else if(event.getLine(0).equalsIgnoreCase(DEALS_SIGN)){
-			event.setLine(0, ChunkGroupConfiguration.config().enabledSignColor + DEALS_SIGN);
+			event.setLine(0, SettlementConfiguration.config().enabledSignColor + DEALS_SIGN);
 		}
 	
 		// Report sign:
 		else if(event.getLine(0).equalsIgnoreCase(REPORT_SIGN)){
-			event.setLine(0, ChunkGroupConfiguration.config().enabledSignColor + REPORT_SIGN);
+			event.setLine(0, SettlementConfiguration.config().enabledSignColor + REPORT_SIGN);
 		}
 	
 		

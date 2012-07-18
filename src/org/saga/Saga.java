@@ -20,7 +20,7 @@ import org.saga.commands.PlayerCommands;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.BalanceConfiguration;
-import org.saga.config.ChunkGroupConfiguration;
+import org.saga.config.SettlementConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.FactionConfiguration;
@@ -116,7 +116,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         AttributeConfiguration.load();
         AbilityConfiguration.unload();
         BalanceConfiguration.unload();
-        ChunkGroupConfiguration.unload();
+        SettlementConfiguration.unload();
         EconomyConfiguration.unload();
         FactionConfiguration.unload();
         Clock.unload(); // Needs access to Saga.pluging()
@@ -174,7 +174,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         AbilityConfiguration.load();
         AttributeConfiguration.load();
         ProficiencyConfiguration.load(); // Needs access to experience info.
-        ChunkGroupConfiguration.load();
+        SettlementConfiguration.load();
         EconomyConfiguration.load();
         FactionConfiguration.load();
         

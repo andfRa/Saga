@@ -23,7 +23,7 @@ import org.saga.buildings.signs.BuildingSign.SignException;
 import org.saga.buildings.storage.StorageArea;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.SagaChunk;
-import org.saga.config.ChunkGroupConfiguration;
+import org.saga.config.SettlementConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.exceptions.InvalidLocationException;
 import org.saga.listeners.events.SagaBuildEvent;
@@ -110,7 +110,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		}
 		
 		// Definition:
-		definition = ChunkGroupConfiguration.config().getBuildingDefinition(getName());
+		definition = SettlementConfiguration.config().getBuildingDefinition(getName());
 		if(definition == null){
 			SagaLogger.severe(this, "missing definition");
 			integrity = false;

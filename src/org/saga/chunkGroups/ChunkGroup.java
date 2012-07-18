@@ -25,7 +25,7 @@ import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.Building;
 import org.saga.config.BalanceConfiguration;
-import org.saga.config.ChunkGroupConfiguration;
+import org.saga.config.SettlementConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.factions.SagaFaction;
@@ -564,7 +564,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	 * @return true if formed
 	 */
 	public boolean isFormed() {
-		return getActivePlayerCount() >= ChunkGroupConfiguration.config().formationAmount;
+		return getActivePlayerCount() >= SettlementConfiguration.config().formationAmount;
 	}
 	
 	
@@ -1062,7 +1062,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 
 		
 		Calendar inactivateCalendar = Calendar.getInstance();
-		inactivateCalendar.add(Calendar.DAY_OF_MONTH, - ChunkGroupConfiguration.config().inactiveSetDays);
+		inactivateCalendar.add(Calendar.DAY_OF_MONTH, - SettlementConfiguration.config().inactiveSetDays);
 		Date inactivateDate = inactivateCalendar.getTime();
 		Date logoutDate = getPlayerLogOutDate(playerName);
 		
@@ -1124,7 +1124,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 
 		
 		Calendar inactivateCalendar = Calendar.getInstance();
-		inactivateCalendar.add(Calendar.DAY_OF_MONTH, - ChunkGroupConfiguration.config().inactiveSetDays);
+		inactivateCalendar.add(Calendar.DAY_OF_MONTH, - SettlementConfiguration.config().inactiveSetDays);
 		Date inactivateDate = inactivateCalendar.getTime();
 		ArrayList<Boolean> areActive = new ArrayList<Boolean>();
 		
@@ -1532,7 +1532,7 @@ public class ChunkGroup extends SagaCustomSerialization{
     	String command = event.getMessage().split(" ")[0].replace("/", "");
     	
     	// Permission:
-    	if(ChunkGroupConfiguration.config().checkMemberOnlyCommand(command) && 
+    	if(SettlementConfiguration.config().checkMemberOnlyCommand(command) && 
     			!hasPermission(sagaPlayer, SettlementPermission.MEMBER_COMMAND)
     	){
     		sagaPlayer.message(SagaMessages.noCommandPermission(this, command));
