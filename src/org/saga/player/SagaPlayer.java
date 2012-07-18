@@ -33,7 +33,6 @@ import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
-import org.saga.constants.PlayerDefaults;
 import org.saga.dependencies.PermissionsManager;
 import org.saga.economy.EconomyManager.TransactionType;
 import org.saga.economy.InventoryUtil;
@@ -234,7 +233,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 		// Fields:
 		if(name == null){
-			name = PlayerDefaults.name;
+			name = "none";
 		}
 		
 		if(level == null){

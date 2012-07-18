@@ -12,8 +12,6 @@ import org.saga.abilities.Ability;
 import org.saga.buildings.Building;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.chunkGroups.ChunkGroup;
-import org.saga.constants.IOConstants;
-import org.saga.constants.IOConstants.WriteReadType;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -204,7 +202,7 @@ public class WriterReader {
 		
 		// Remove extensions:
 		for (int i = 0; i < names.length; i++) {
-			names[i] = names[i].replaceAll(IOConstants.FILE_EXTENTENSION, "");
+			names[i] = names[i].replaceAll(Directory.FILE_EXTENTENSION, "");
 		}
 		
 		return names;
@@ -246,7 +244,7 @@ public class WriterReader {
 		// Rename if target exists:
 		for (int i = 1; i < 1000; i++) {
 			if (newFile.exists()) {
-				newFile.renameTo(new File(WriteReadType.SETTLEMENT_DELETED.getDirectory() + name + "(" + i + ")" + IOConstants.FILE_EXTENTENSION));
+				newFile.renameTo(new File(dir.getDeletedDirectory() + dir.getFilename().replace(NAME_SUBS, name + " (" + i + ")")));
 			}else{
 				break;
 			}
