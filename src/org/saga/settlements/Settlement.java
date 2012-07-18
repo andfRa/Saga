@@ -633,6 +633,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		
 		
 		ACCESS_WAREHOUSE,
+		ACCESS_STORAGE,
 		BUILD,
 		BUILD_BUILDING,
 		CLAIM,

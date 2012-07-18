@@ -6,6 +6,7 @@ import java.util.HashSet;
 import org.bukkit.Chunk;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Chest;
 import org.bukkit.inventory.ItemStack;
 import org.saga.SagaLogger;
 import org.saga.chunkGroups.ChunkGroupManager;
@@ -34,6 +35,11 @@ public class StorageArea {
 	 * Filter for not empty space.
 	 */
 	private final static BlockFilter FULL_FILTER = createFullFilter();
+	
+	/**
+	 * Filter for chests.
+	 */
+	private final static BlockFilter CHEST_FILTER = createChestFilter();
 	
 	
 	/**
@@ -178,6 +184,7 @@ public class StorageArea {
 		
 	}
 	
+	
 	/**
 	 * Adds blocks to storage.
 	 * 
@@ -229,7 +236,7 @@ public class StorageArea {
 
 			Block storeBlock = blocks.get(i);
 		
-			if(fromStore.getAmount() > amount) break;
+			if(fromStore.getAmount() >= amount) break;
 			
 			storeBlock.setType(Material.AIR);
 			
@@ -242,6 +249,89 @@ public class StorageArea {
 		
 	}
 
+	
+	/**
+	 * Adds blocks to storage.
+	 * 
+	 * @param items to add
+	 * @return remaining items
+	 */
+	public ItemStack storeItem(ItemStack toStore) {
+
+		
+		// Not item:
+		if(toStore.getType().isBlock()) return toStore;
+		
+		// Get chests:
+		ArrayList<Block> blocks = SHAPE.getBlocks(anchor.getLocation(), orientation, 0, CHEST_FILTER);
+		
+		ArrayList<Chest> chests = new ArrayList<Chest>();
+		for (Block block : blocks) {
+			if(block.getState() instanceof Chest) chests.add((Chest) block.getState());
+		}
+
+		for (Chest chest : chests) {
+			
+			ItemStack remaining = chest.getBlockInventory().addItem(toStore).get(0);
+			
+			if(remaining == null){
+				toStore.setAmount(0);
+			}else{
+				toStore.setAmount(remaining.getAmount());
+			}
+			
+		}
+		
+		return toStore;
+		
+		
+	}
+	
+
+	/**
+	 * Withdraw items from the storage.
+	 * 
+	 * @param fromStore withdrawn items
+	 * @param amount requested amount
+	 * @return withdrawn items
+	 */
+	public ItemStack withdrawItem(ItemStack fromStore, Integer amount) {
+
+		
+		// Not item:
+		if(fromStore.getType().isBlock()) return fromStore;
+		
+		// Get chests:
+		ArrayList<Block> blocks = SHAPE.getBlocks(anchor.getLocation(), orientation, 0, CHEST_FILTER);
+		
+		ArrayList<Chest> chests = new ArrayList<Chest>();
+		for (Block block : blocks) {
+			if(block.getState() instanceof Chest) chests.add((Chest) block.getState());
+		}
+
+		for (Chest chest : chests) {
+
+			if(fromStore.getAmount() >= amount) break;
+			
+			ItemStack toRemove = fromStore.clone();
+			toRemove.setAmount(amount - toRemove.getAmount());
+			
+			ItemStack remaining = chest.getBlockInventory().removeItem(toRemove).get(0);
+			
+			if(remaining == null){
+				fromStore.setAmount(amount);
+			}else{
+				fromStore.setAmount(amount - remaining.getAmount());
+			}
+			
+		}
+		
+		return fromStore;
+		
+		
+	}
+
+	
 	
 	
 	// Shape:
@@ -335,6 +425,20 @@ public class StorageArea {
 		BlockFilter filter = new BlockFilter();
 		filter.addMaterial(Material.AIR);
 		filter.flip();
+		
+		return filter;
+		
+	}
+	
+	/**
+	 * Creates a filter for only chest blocks.
+	 * 
+	 * @return filter for only chest blocks
+	 */
+	private static BlockFilter createChestFilter() {
+
+		BlockFilter filter = new BlockFilter();
+		filter.addMaterial(Material.CHEST);
 		
 		return filter;
 		

@@ -156,9 +156,14 @@ public class SagaBuildEvent {
 		
 		ADMIN_ALLOW(true),
 		ADMIN_DENY(false),
+		
 		OPEN_STORAGE_AREA_ALLOW(true),
+		STORAGE_AREA_DENY(false),
+		
 		CHUNK_GROUP_DENY(false),
+		
 		SETTLEMENT_OWNER_ALLOW(true),
+		
 		HOME_RESIDENT_ALLOW(true),
 		HOME_DENY(false),
 		

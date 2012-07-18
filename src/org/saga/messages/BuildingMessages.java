@@ -118,14 +118,24 @@ public class BuildingMessages {
 	}
 	
 	public static String stored(Material material, Building building) {
-
+		
+		if(material == Material.CHEST) return positive + "Added item storage.";
+		
 		return positive + "Stored " + EconomyMessages.material(material) + ".";
 
 	}
 	
 	public static String withdrew(Material material, Building building) {
 
+		if(material == Material.CHEST) return positive + "Removed item storage.";
+		
 		return positive + "Withdrew " + EconomyMessages.material(material) + ".";
+
+	}
+	
+	public static String openedItemStore() {
+
+		return positive + "Opened item storage.";
 
 	}
 	

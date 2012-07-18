@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
+import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
@@ -692,13 +693,33 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		
 		ArrayList<StorageArea> allSorage = getStorageAreas();
 
-		for (StorageArea storageArea : allSorage) {
+		// Blocks:
+		if(toStore.getType().isBlock()){
 			
-			if(toStore.getAmount() == 0) return toStore;
-			
-			storageArea.storeBlock(toStore);
+			for (StorageArea storageArea : allSorage) {
+				
+				if(toStore.getAmount() == 0) return toStore;
+				
+				storageArea.storeBlock(toStore);
+				
+			}
 			
 		}
+		
+		// Items:
+		else{
+			
+			for (StorageArea storageArea : allSorage) {
+				
+				if(toStore.getAmount() == 0) return toStore;
+				
+				storageArea.storeItem(toStore);
+				
+			}
+			
+		}
+		
+		
 		
 		return toStore;
 		
@@ -717,11 +738,29 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		
 		ArrayList<StorageArea> allSorage = getStorageAreas();
 
-		for (StorageArea storageArea : allSorage) {
+		// Blocks:
+		if(fromStore.getType().isBlock()){
 			
-			if(fromStore.getAmount() >= amount) return fromStore;
+			for (StorageArea storageArea : allSorage) {
+				
+				if(fromStore.getAmount() >= amount) return fromStore;
+				
+				storageArea.withdrawBlock(fromStore, amount);
+				
+			}
 			
-			storageArea.withdrawBlock(fromStore, amount);
+		}
+		
+		// Items:
+		else{
+
+			for (StorageArea storageArea : allSorage) {
+				
+				if(fromStore.getAmount() >= amount) return fromStore;
+				
+				storageArea.withdrawItem(fromStore, amount);
+				
+			}
 			
 		}
 		
@@ -745,7 +784,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		
 
 	}
-	
+
 	/**
 	 * Handles block withdraw.
 	 * 
@@ -759,6 +798,30 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		sagaPlayer.message(BuildingMessages.withdrew(event.getBlock().getType(), this));
 		
 
+	}
+	
+	/**
+	 * Handles item storage open
+	 * 
+	 * @param event event
+	 * @param sagaPlayer saga player
+	 */
+	public void handleItemStorageOpen(PlayerInteractEvent event, SagaPlayer sagaPlayer) {
+		
+		
+		// Permission:
+		if(!getChunkGroup().hasPermission(sagaPlayer, SettlementPermission.ACCESS_STORAGE)){
+			sagaPlayer.message(SagaMessages.noPermission(this));
+			event.setCancelled(true);
+			event.setUseInteractedBlock(Result.DENY);
+			event.setUseItemInHand(Result.DENY);
+			return;
+		}		
+		
+		// Inform:
+		sagaPlayer.message(BuildingMessages.openedItemStore());
+		
+		
 	}
 	
 	
@@ -994,17 +1057,27 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 */
 	public void onBuild(SagaBuildEvent event) {
 
+		
 		// Add building build override:
 		if(getChunkGroup() != null && !getChunkGroup().hasPermission(event.getSagaPlayer(), SettlementPermission.BUILD_BUILDING)) event.addBuildOverride(BuildOverride.BUILDING_DENY);
-		
 
-		// Free storage area:
-		if(getChunkGroup().isOptionEnabled(ChunkGroupToggleable.OPEN_STORAGE_AREAS)){
+		// Storage area:
+		Block block = event.getBlock();
+		if(block != null && checkStorageArea(block)){
 			
-			Block block = event.getBlock();
-			if(block != null && checkStorageArea(block)) event.addBuildOverride(BuildOverride.OPEN_STORAGE_AREA_ALLOW);
+			// Storage area deny:
+			if(!getChunkGroup().hasPermission(event.getSagaPlayer(), SettlementPermission.ACCESS_STORAGE)){
+				event.addBuildOverride(BuildOverride.STORAGE_AREA_DENY);
+			}
+			
+			// Free storage area:
+			if(getChunkGroup().isOptionEnabled(ChunkGroupToggleable.OPEN_STORAGE_AREAS)) event.addBuildOverride(BuildOverride.OPEN_STORAGE_AREA_ALLOW);				
+			
 			
 		}
+		
+		
+		
 		
 		
 	}

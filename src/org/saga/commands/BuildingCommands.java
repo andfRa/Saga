@@ -155,7 +155,7 @@ public class BuildingCommands {
 			min = 0,
 			max = 0
 	)
-	@CommandPermissions({"saga.admib.building.storage.store"})
+	@CommandPermissions({"saga.admin.building.storage.store"})
 	public static void store(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
@@ -176,7 +176,7 @@ public class BuildingCommands {
 		}
 	
 		// Store:
-		ItemStack toStore = new ItemStack(Material.COAL_ORE, 3);
+		ItemStack toStore = new ItemStack(Material.IRON_AXE, 3);
 		selBuilding.storeBlock(toStore);
 		
 		if(toStore.getAmount() == 0){
@@ -217,13 +217,13 @@ public class BuildingCommands {
 		}
 	
 		// Store:
-		ItemStack fromStore = new ItemStack(Material.COAL_ORE, 0);
+		ItemStack fromStore = new ItemStack(Material.IRON_AXE, 0);
 		selBuilding.withdrawBlock(fromStore, 5);
 		
 		if(fromStore.getAmount() == 0){
 			sagaPlayer.message(ChatColor.RED + "item not found ");
 		}else{
-			sagaPlayer.message(ChatColor.DARK_GREEN + "item retrieved");
+			sagaPlayer.message(ChatColor.DARK_GREEN + "" + fromStore.getAmount() + "items retrieved");
 		}
 		
 		

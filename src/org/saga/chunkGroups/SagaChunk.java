@@ -11,6 +11,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.EntityBlockFormEvent;
@@ -583,9 +584,22 @@ public class SagaChunk {
 		// Forward to chunk group:
 		getChunkGroup().onPlayerInteract(event, sagaPlayer, this);
 		
-		// Forward to building:
-		if(bld != null) bld.onPlayerInteract(event, sagaPlayer);
+		if(bld != null){
+			
+			// Forward to building:
+			bld.onPlayerInteract(event, sagaPlayer);
+			
+			// Storage area:
+			Block block = event.getClickedBlock();
+			if(event.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.CHEST && bld.checkStorageArea(block)){
+				
+				bld.handleItemStorageOpen(event, sagaPlayer);
+				
+			}
+			
+		}
     	
+
     	
     }
 	
@@ -762,16 +776,6 @@ public class SagaChunk {
      * @param sagaChunk saga chunk
      */
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event, SagaPlayer sagaPlayer) {
-    	
-
-		// Canceled:
-		if(event.isCancelled()){
-			return;
-		}
-
-		// Canceled:
-		if(event.isCancelled()) return;
-
 		
     }
 	
