@@ -10,19 +10,16 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Clock;
+import org.saga.Clock.DaytimeTicker;
 import org.saga.Saga;
 import org.saga.SagaLogger;
-import org.saga.Clock.DaytimeTicker;
 import org.saga.buildings.signs.AbilitySign;
 import org.saga.buildings.signs.AttributeSign;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.BuildingSign.SignException;
-import org.saga.buildings.signs.BuildingSign.SignStatus;
 import org.saga.buildings.storage.StorageArea;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.SagaChunk;
@@ -211,6 +208,56 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	}
 	
 	
+
+	// General:
+	/**
+	 * Gets the name.
+	 * 
+	 * @return the name
+	 */
+	public final String getName() {
+		return getName(getClass());
+	}
+	
+	/**
+	 * Gets the display name for this building.
+	 * 
+	 * @return
+	 */
+	public String getDisplayName() {
+		return getName();
+	}
+	
+	/**
+	 * Gets the name.
+	 * 
+	 * @param buildingClass building class
+	 * @return the name
+	 */
+	public static String getName(Class<? extends Building> buildingClass) {
+		return buildingClass.getSimpleName().replaceAll("(\\p{Ll})(\\p{Lu})","$1 $2").toLowerCase();
+	}
+
+	/**
+	 * Gets the level.
+	 * 
+	 * @return the level
+	 */
+	public Integer getLevel() {
+		return 1;
+//		return level.intValue();
+	}
+	
+	/**
+	 * Gets building definition.
+	 * 
+	 * @return building definition
+	 */
+	public BuildingDefinition getDefinition() {
+		return definition;
+	}
+	
+	
 	
 	// Building signs:
 	/**
@@ -284,6 +331,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		
 	}
 	
+	
 	/**
 	 * Check if the sign is a building sign.
 	 * 
@@ -333,12 +381,13 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		
 	}
 
+	
 	/**
-	 * Gets the signs.
+	 * Gets all building signs signs.
 	 * 
-	 * @return the signs
+	 * @return building signs
 	 */
-	public ArrayList<BuildingSign> getSigns() {
+	public ArrayList<BuildingSign> getBuildingSigns() {
 		return new ArrayList<BuildingSign>(signs);
 	}
 	
@@ -348,10 +397,10 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 * @param signClass sign class
 	 * @return the signs
 	 */
-	public <T extends BuildingSign> ArrayList<T> getSigns(Class<T> signClass){
+	public <T extends BuildingSign> ArrayList<T> getBuildingSigns(Class<T> signClass){
 		
 		
-		ArrayList<BuildingSign> allSigns = getSigns();
+		ArrayList<BuildingSign> allSigns = getBuildingSigns();
 		ArrayList<T> rSigns = new ArrayList<T>();
 		
 		for (BuildingSign buildingSign : allSigns) {
@@ -415,27 +464,8 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		
 		
 	}
+
 	
-	/**
-	 * Gets a building sign.
-	 * 
-	 * @param sign sign
-	 * @return building sign, null if not found
-	 */
-	protected BuildingSign buildingSignFor(Sign sign) {
-
-		
-		return buildingSignAt(sign.getBlock().getLocation());
-		
-//		for (int i = 0; i < signs.size(); i++) {
-//			if(signs.get(i).isWrapped(sign)){
-//				return signs.get(i);
-//			}
-//		}
-//		return null;
-		
-	}
-
 	/**
 	 * Gets a building sign at given location.
 	 * 
@@ -455,59 +485,6 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		
 	}
 
-	/**
-	 * Gets the enabled signs with the given name.
-	 * 
-	 * @param name sign name
-	 * @return enabled signs with the given name
-	 */
-	public ArrayList<BuildingSign> getEnabledSigns(String name) {
-		
-		
-		ArrayList<BuildingSign> enabledSigns = new ArrayList<BuildingSign>();
-		
-		ArrayList<BuildingSign> buildingSigns = getSigns();
-		
-		for (BuildingSign buildingSign : buildingSigns) {
-			
-			if(buildingSign.getName().equals(name) && buildingSign.getStatus() == SignStatus.ENABLED){
-				enabledSigns.add(buildingSign);
-			}
-			
-		}
-
-		return enabledSigns;
-		
-		
-	}
-	
-
-	/**
-	 * Gets the valid signs with the given name.
-	 * 
-	 * @param name sign name
-	 * @return enabled signs with the given name
-	 */
-	public ArrayList<BuildingSign> getValidSigns(String name) {
-		
-		
-		ArrayList<BuildingSign> validSigns = new ArrayList<BuildingSign>();
-		
-		ArrayList<BuildingSign> buildingSigns = getSigns();
-		
-		for (BuildingSign buildingSign : buildingSigns) {
-			
-			if(buildingSign.getName().equals(name) && buildingSign.getStatus() != SignStatus.INVALIDATED){
-				validSigns.add(buildingSign);
-			}
-			
-		}
-
-		return validSigns;
-		
-		
-	}
-
 	
 	/**
 	 * Refreshes all signs.
@@ -516,7 +493,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	public void refreshSigns() {
 
 		
-		ArrayList<BuildingSign> signs = getSigns();
+		ArrayList<BuildingSign> signs = getBuildingSigns();
 		
 		for (BuildingSign buildingSign : signs) {
 			buildingSign.refresh();
@@ -532,7 +509,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	public void removeSigns() {
 
 		
-		ArrayList<BuildingSign> signs = getSigns();
+		ArrayList<BuildingSign> signs = getBuildingSigns();
 		
 		for (BuildingSign buildingSign : signs) {
 			removeBuildingSign(buildingSign);
@@ -647,7 +624,6 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	public Integer getRemainingStorageAreas() {
 		return getAvailableStorageAreas() - getUsedStorageAreas();
 	}
-	
 	
 	
 	/**
@@ -807,159 +783,6 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	}
 
 	
-	/**
-	 * Checks if the player can create a sign.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @param event sign change event
-	 * @return true if the sign can be made
-	 */
-	public boolean canCreateSign2(SagaPlayer sagaPlayer, SignChangeEvent event) {
-		
-//		if(isBuildingSign(event.getLine(0))) return checkBuildingPermission(sagaPlayer, BuildingPermission.LOW);
-		
-		return true;
-		
-	}
-	
-	/**
-	 * Checks if the player can remove a sign.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @param event sign building sign
-	 * @return true if the sign can be removed
-	 */
-	public boolean canRemoveSign2(SagaPlayer sagaPlayer, BuildingSign sign) {
-
-//		if(isBuildingSign(sign.getName())) return checkBuildingPermission(sagaPlayer, BuildingPermission.LOW);
-		
-		return true;
-		
-	}
-	
-	/**
-	 * Checks if the player can train.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if the player can train
-	 */
-	public boolean canTrain(SagaPlayer sagaPlayer) {
-		
-		
-		ChunkGroup chunkGroup = getChunkGroup();
-		if(chunkGroup == null) return false;
-		
-		// Is member:
-//		return chunkGroup.isMember(sagaPlayer);
-		return true;
-		
-	}
-	
-	/**
-	 * Checks if the player can respec.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if the player can recpec
-	 */
-	public boolean canRespec(SagaPlayer sagaPlayer) {
-		
-		
-		ChunkGroup chunkGroup = getChunkGroup();
-		if(chunkGroup == null) return false;
-		
-		// Is member:
-//		return chunkGroup.isMember(sagaPlayer);
-		return true;
-		
-	}
-	
-	/**
-	 * Checks if the player can select abilities.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if the player can select abilities
-	 */
-	public boolean canSelect(SagaPlayer sagaPlayer) {
-		
-		
-		ChunkGroup chunkGroup = getChunkGroup();
-		if(chunkGroup == null) return false;
-		
-		// Is member:
-//		return chunkGroup.isMember(sagaPlayer);
-		return true;
-		
-	}
-	
-	/**
-	 * Checks if the player can learn an ability.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if the player can learn an ability
-	 */
-	public boolean canLearn(SagaPlayer sagaPlayer) {
-		
-		
-		ChunkGroup chunkGroup = getChunkGroup();
-		if(chunkGroup == null) return false;
-		
-		// Is member:
-//		return chunkGroup.isMember(sagaPlayer);
-		return true;
-		
-	}
-	
-	
-	
-	// Interaction:
-	/**
-	 * Gets the name.
-	 * 
-	 * @return the name
-	 */
-	public final String getName() {
-		return getName(getClass());
-	}
-	
-	/**
-	 * Gets the display name for this building.
-	 * 
-	 * @return
-	 */
-	public String getDisplayName() {
-		return getName();
-	}
-	
-	/**
-	 * Gets the name.
-	 * 
-	 * @param buildingClass building class
-	 * @return the name
-	 */
-	public static String getName(Class<? extends Building> buildingClass) {
-		return buildingClass.getSimpleName().replaceAll("(\\p{Ll})(\\p{Lu})","$1 $2").toLowerCase();
-	}
-
-	/**
-	 * Gets the level.
-	 * 
-	 * @return the level
-	 */
-	public Integer getLevel() {
-		return 1;
-//		return level.intValue();
-	}
-	
-	/**
-	 * Gets building definition.
-	 * 
-	 * @return building definition
-	 */
-	public BuildingDefinition getDefinition() {
-		return definition;
-	}
-	
-
 	
 	// Updates:
 	/**
@@ -1055,7 +878,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 
 
 	
-	// Events:
+	// Interact events:
 	 /**
      * Called when a player interacts with something in the building.
      * 
@@ -1079,18 +902,10 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
     	
     	
     }
-	
-    /**
-	 * Called when a sign changes
-	 * 
-	 * @param event event
-	 * @param sagaPlayer saga player
-	 */
-	public void onSignChange(SignChangeEvent event, SagaPlayer sagaPlayer) {
-		
-		
-	}
+
     
+    
+	// Spawn events:
 	/**
 	 * Called when a creature spawns on the saga chunk.
 	 * 
@@ -1101,6 +916,17 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		
 	}
 	
+	/**
+	 * Member respawn event.
+	 * 
+	 * @param sagaPlayer saga player
+	 * @param event event
+	 */
+	public void onMemberRespawn(SagaPlayer sagaPlayer, PlayerRespawnEvent event) {
+
+		
+	}
+
 	
 	
 	// Entity damage events:
@@ -1163,42 +989,17 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		
 	}
 
-	
-
-	// Member events:
-	/**
-	 * Member respawn event.
+    /**
+	 * Called when a sign changes
 	 * 
-	 * @param sagaPlayer saga player
 	 * @param event event
+	 * @param sagaPlayer saga player
 	 */
-	public void onMemberRespawn(SagaPlayer sagaPlayer, PlayerRespawnEvent event) {
-
+	public void onSignChange(SignChangeEvent event, SagaPlayer sagaPlayer) {
+		
 		
 	}
-	
-	/**
-	 * Member join event.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @param event event
-	 */
-	public void onMemberJoin(SagaPlayer sagaPlayer, PlayerJoinEvent event) {
-
-		
-	}
-	
-	/**
-	 * Member respawn event.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @param event event
-	 */
-	public void onMemberQuit(SagaPlayer sagaPlayer, PlayerQuitEvent event) {
-
-		
-	}
-	
+    
 	
 	
 	// Utility:

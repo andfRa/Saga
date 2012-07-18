@@ -19,7 +19,6 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
@@ -1418,7 +1417,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	}
 	
 	
-	// Member events:
+	// Spawn events:
 	/**
 	 * Called when a member respawns.
 	 * 
@@ -1436,26 +1435,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 		
 	}
-	
-	/**
-	 * Called when a member joins.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @param event event
-	 */
-	public void onMemberJoin(SagaPlayer sagaPlayer, PlayerJoinEvent event) {
 
-		// TODO: Remove event.
-		
-		// Send to all buildings:
-		for (int i = 0; i < groupChunks.size(); i++) {
-			Building building = groupChunks.get(i).getBuilding();
-			if(building != null) building.onMemberJoin(sagaPlayer, event);
-		}
-		
-		
-	}
-	
 	
 	
 	// Block events:
@@ -1524,6 +1504,22 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 	}
 
+	/**
+	 * Called when a block is broken in the chunk.
+	 * 
+	 * @param event event
+	 * @param sagaPlayer saga player
+	 */
+	public void onBuild(SagaBuildEvent event) {
+		
+		// Deny building:
+		event.addBuildOverride(BuildOverride.CHUNK_GROUP_DENY);
+		
+	}
+
+	
+	
+	// Command events:
     /**
      * Called when a player performs a command.
      * 
@@ -1546,19 +1542,6 @@ public class ChunkGroup extends SagaCustomSerialization{
 
     }
     
-    /**
-	 * Called when a block is broken in the chunk.
-	 * 
-	 * @param event event
-	 * @param sagaPlayer saga player
-	 */
-	public void onBuild(SagaBuildEvent event) {
-		
-		// Deny building:
-		event.addBuildOverride(BuildOverride.CHUNK_GROUP_DENY);
-		
-	}
-
 	
 	
 	// Interact events:
@@ -1592,6 +1575,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
     }
 
+    
     
     // Damage events:
 	/**

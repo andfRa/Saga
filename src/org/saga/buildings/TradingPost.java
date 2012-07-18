@@ -693,7 +693,7 @@ public class TradingPost extends Building implements Trader, DaytimeTicker{
 
 		
 		ArrayList<Material> materials = new ArrayList<Material>();
-		ArrayList<BuySign> bSigns = getSigns(BuySign.class);
+		ArrayList<BuySign> bSigns = getBuildingSigns(BuySign.class);
 		
 		for (BuySign bSign : bSigns) {
 			
@@ -745,7 +745,7 @@ public class TradingPost extends Building implements Trader, DaytimeTicker{
 
 		
 		ArrayList<Material> materials = new ArrayList<Material>();
-		ArrayList<SellSign> bSigns = getSigns(SellSign.class);
+		ArrayList<SellSign> bSigns = getBuildingSigns(SellSign.class);
 		
 		for (SellSign bSign : bSigns) {
 			
@@ -1151,14 +1151,14 @@ public class TradingPost extends Building implements Trader, DaytimeTicker{
 	
 		
 		// Sell signs:
-		ArrayList<BuildingSign> sellSigns = getValidSigns(SellSign.SIGN_NAME);
+		ArrayList<SellSign> sellSigns = getBuildingSigns(SellSign.class);
 
 		for (BuildingSign buildingSign : sellSigns) {
 			buildingSign.refresh();
 		}
 
 		// Buy signs:
-		ArrayList<BuildingSign> buySigns = getValidSigns(BuySign.SIGN_NAME);
+		ArrayList<BuySign> buySigns = getBuildingSigns(BuySign.class);
 
 		for (BuildingSign buildingSign : buySigns) {
 			buildingSign.refresh();
