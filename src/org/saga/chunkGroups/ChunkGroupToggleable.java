@@ -3,6 +3,7 @@ package org.saga.chunkGroups;
 public enum ChunkGroupToggleable {
 
 	
+	OPEN_STORAGE_AREAS,
 	PVP_PROTECTION,
 	UNLIMITED_CLAIMS;
 

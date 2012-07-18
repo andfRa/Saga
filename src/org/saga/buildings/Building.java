@@ -22,6 +22,7 @@ import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.BuildingSign.SignException;
 import org.saga.buildings.storage.StorageArea;
 import org.saga.chunkGroups.ChunkGroup;
+import org.saga.chunkGroups.ChunkGroupToggleable;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.SettlementConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
@@ -984,8 +985,18 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 */
 	public void onBuild(SagaBuildEvent event) {
 
-		// Add override:
+		// Add building build override:
 		if(getChunkGroup() != null && !getChunkGroup().hasPermission(event.getSagaPlayer(), SettlementPermission.BUILD_BUILDING)) event.addBuildOverride(BuildOverride.BUILDING_DENY);
+		
+
+		// Free storage area:
+		if(getChunkGroup().isOptionEnabled(ChunkGroupToggleable.OPEN_STORAGE_AREAS)){
+			
+			Block block = event.getBlock();
+			if(block != null && checkStorageArea(block)) event.addBuildOverride(BuildOverride.OPEN_STORAGE_AREA_ALLOW);
+			
+		}
+		
 		
 	}
 

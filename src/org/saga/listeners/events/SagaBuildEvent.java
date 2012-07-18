@@ -2,8 +2,10 @@ package org.saga.listeners.events;
 
 import java.util.PriorityQueue;
 
+import org.bukkit.block.Block;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.Event.Result;
+import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.chunkGroups.SagaChunk;
@@ -106,6 +108,19 @@ public class SagaBuildEvent {
 	}
 	
 	/**
+	 * Gets the block.
+	 * 
+	 * @return block, null if none
+	 */
+	public Block getBlock() {
+		
+		if(event instanceof BlockEvent) return ((BlockEvent) event).getBlock();
+		
+		return null;
+		
+	}
+	
+	/**
 	 * Gets the top override.
 	 * 
 	 * @return top override, NONE if none
@@ -141,6 +156,7 @@ public class SagaBuildEvent {
 		
 		ADMIN_ALLOW(true),
 		ADMIN_DENY(false),
+		OPEN_STORAGE_AREA_ALLOW(true),
 		CHUNK_GROUP_DENY(false),
 		SETTLEMENT_OWNER_ALLOW(true),
 		HOME_RESIDENT_ALLOW(true),
