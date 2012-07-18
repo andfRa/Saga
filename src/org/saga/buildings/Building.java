@@ -95,7 +95,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		this.level = 0;
 		this.signs = new ArrayList<BuildingSign>();
 		this.storage = new ArrayList<StorageArea>();
-		this.resources = new RandomItemBlueprint(getDefinition().getCraftable());
+		this.resources = new RandomItemBlueprint(getDefinition().getResources());
 		
 	}
 	
@@ -171,7 +171,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		}
 		
 		// Resources:
-		resources = new RandomItemBlueprint(getDefinition().getCraftable());
+		resources = new RandomItemBlueprint(getDefinition().getResources());
 		
 		// Refresh signs:
 		refreshSigns();

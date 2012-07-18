@@ -1,10 +1,8 @@
 package org.saga.utility;
 
-import java.util.Hashtable;
-import java.util.Map.Entry;
+import java.util.HashSet;
 import java.util.NavigableMap;
 import java.util.Random;
-import java.util.Set;
 import java.util.TreeMap;
 
 import org.bukkit.inventory.ItemStack;
@@ -49,12 +47,12 @@ public class RandomItemBlueprint {
 	/**
 	 * Creates the item randomiser.
 	 * 
-	 * @param weigtedBlueprints item blueprints with weights
+	 * @param blueprints item blueprints
 	 */
-	public RandomItemBlueprint(Hashtable<Double, ItemBlueprint> weigtedBlueprints) {
+	public RandomItemBlueprint(HashSet<ItemBlueprint> blueprints) {
 		
 		this();
-		add(weigtedBlueprints);
+		add(blueprints);
 		
 	}
 
@@ -64,13 +62,12 @@ public class RandomItemBlueprint {
 	/**
 	 * Adds an item blueprint.
 	 * 
-	 * @param weight item probability weight
-	 * @param itemBlueprint item blueprint
+	 * @param itemBlueprint item blueprint, zero weight blueprints ignored
 	 */
-	public void add(double weight, ItemBlueprint itemBlueprint) {
+	public void add(ItemBlueprint itemBlueprint) {
 		
-		if (weight <= 0) return;
-		total += weight;
+		if (itemBlueprint.getWeight() <= 0) return;
+		total += itemBlueprint.getWeight();
 		map.put(total, itemBlueprint);
 		
 	}
@@ -78,17 +75,12 @@ public class RandomItemBlueprint {
 	/**
 	 * Adds all item blueprints from the table.
 	 * 
-	 * @param weigtBlueprints item blueprints and corresponding weights
-	 * @param xVal function x value
+	 * @param blueprints item blueprints
 	 */
-	public void add(Hashtable<Double, ItemBlueprint> weigtedBlueprints) {
+	public void add(HashSet<ItemBlueprint> blueprints) {
 		
-		Set<Entry<Double, ItemBlueprint>> entries = weigtedBlueprints.entrySet();
-		
-		for (Entry<Double, ItemBlueprint> entry : entries) {
-			
-			add(entry.getKey(), entry.getValue());
-			
+		for (ItemBlueprint blueprint : blueprints) {
+			add(blueprint);
 		}
 		
 	}

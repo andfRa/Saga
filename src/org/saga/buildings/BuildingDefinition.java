@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.SagaLogger;
@@ -90,7 +88,7 @@ public class BuildingDefinition {
 	/**
 	 * Resources crafted by the building.
 	 */
-	private Hashtable<Double, ItemBlueprint> resources;
+	private HashSet<ItemBlueprint> resources;
 	
 	/**
 	 * Amount of resources crafted.
@@ -262,12 +260,11 @@ public class BuildingDefinition {
 		
 		
 		if(resources == null){
-			resources = new Hashtable<Double, ItemBlueprint>();
+			resources = new HashSet<ItemBlueprint>();
 			SagaLogger.nullField(BuildingDefinition.class, "resources");
 		}
-		Set<Entry<Double, ItemBlueprint>> craEntries = resources.entrySet();
-		for (Entry<Double, ItemBlueprint> entry : craEntries) {
-			entry.getValue().complete();
+		for (ItemBlueprint resource : resources) {
+			resource.complete();
 		}
 		
 		if(resourceAmount == null){
@@ -551,8 +548,8 @@ public class BuildingDefinition {
 	 * 
 	 * @return craftable items table
 	 */
-	public Hashtable<Double, ItemBlueprint> getCraftable() {
-		return new Hashtable<Double, ItemBlueprint>(resources);
+	public HashSet<ItemBlueprint> getResources() {
+		return new HashSet<ItemBlueprint>(resources);
 	}
 	
 	/**

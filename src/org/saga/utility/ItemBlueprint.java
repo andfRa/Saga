@@ -1,12 +1,8 @@
 package org.saga.utility;
 
-import java.util.Hashtable;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.saga.SagaLogger;
-
-import com.google.gson.Gson;
 
 public class ItemBlueprint {
 
@@ -26,6 +22,11 @@ public class ItemBlueprint {
 	 */
 	private Byte data = null;
 	
+	/**
+	 * Probability weight.
+	 */
+	private Double weight = null;
+	
 	// TODO: Add enchantments to ItemData
 	
 	/**
@@ -34,12 +35,14 @@ public class ItemBlueprint {
 	 * @param mat material
 	 * @param amount amount
 	 * @param data data
+	 * @param weight probability weight
 	 */
-	public ItemBlueprint(Material mat, Integer amount, Byte data) {
+	public ItemBlueprint(Material mat, Integer amount, Byte data, Double weight) {
 	
 		this.mat = mat;
 		this.amount = amount;
 		this.data = data;
+		this.weight = weight;
 	
 	}
 	
@@ -63,6 +66,10 @@ public class ItemBlueprint {
 		
 		if(data == null){
 			data = 0;
+		}
+		
+		if(weight == null){
+			weight = 0.0;
 		}
 		
 		
@@ -91,6 +98,16 @@ public class ItemBlueprint {
 	}
 	
 	/**
+	 * Gets probability weight.
+	 * 
+	 * @return probability weight
+	 */
+	public Double getWeight() {
+		return weight;
+	}
+	
+	
+	/**
 	 * Creates an item from the blueprint.
 	 * 
 	 * @return item stack
@@ -101,17 +118,5 @@ public class ItemBlueprint {
 		
 	}
 	
-	
-	public static void main(String[] args) {
-		
-		Gson gson = new Gson();
-		
-		Hashtable<ItemBlueprint, TwoPointFunction> data = new Hashtable<ItemBlueprint, TwoPointFunction>();
-		data.put(new ItemBlueprint(Material.COAL_ORE, 1, (byte)0), new TwoPointFunction(1.0));
-		
-		System.out.println(gson.toJson(data));
-		
-		
-	}
 	
 }
