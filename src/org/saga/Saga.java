@@ -27,7 +27,6 @@ import org.saga.config.FactionConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.dependencies.PermissionsManager;
 import org.saga.dependencies.spout.ClientManager;
-import org.saga.dependencies.spout.SpoutStatsPopup;
 import org.saga.economy.EconomyManager;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;

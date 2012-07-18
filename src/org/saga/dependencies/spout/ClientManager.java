@@ -1,18 +1,19 @@
 package org.saga.dependencies.spout;
 
-import org.getspout.spoutapi.SpoutServer;
 import org.saga.player.SagaPlayer;
 
 public class ClientManager {
-	/**
-	 * Manager instance.
-	 */
-	private static ClientManager manager;
-
-	/**
-	 * Spout.
-	 */
-	private SpoutServer spoutServer = null;
+	
+	
+//	/**
+//	 * Manager instance.
+//	 */
+//	private static ClientManager manager;
+//
+//	/**
+//	 * Spout.
+//	 */
+//	private SpoutServer spoutServer = null;
 	
 	
 	// Spout client:
@@ -46,8 +47,8 @@ public class ClientManager {
 	public static void enable() {
 
 		
-		manager = new ClientManager();
-
+//		manager = new ClientManager();
+//
 //		final PluginManager pluginManager = Saga.plugin().getServer().getPluginManager();
 //		Plugin plugin = null;
 //		
@@ -85,7 +86,7 @@ public class ClientManager {
 	 */
 	public static void disable() {
 		
-		manager = null;
+//		manager = null;
 
 	}
 

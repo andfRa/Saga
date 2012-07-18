@@ -11,7 +11,6 @@ import org.getspout.spoutapi.gui.GenericPopup;
 import org.getspout.spoutapi.gui.WidgetAnchor;
 import org.saga.Saga;
 import org.saga.config.AttributeConfiguration;
-import org.saga.dependencies.spout.buttons.PopupCloseButton;
 import org.saga.player.SagaPlayer;
 
 

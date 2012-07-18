@@ -5,7 +5,6 @@ import java.util.Enumeration;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.dependencies.PermissionsManager;
-import org.saga.messages.AdminMessages;
 import org.saga.messages.ChunkGroupMessages;
 import org.saga.messages.InfoMessages;
 import org.saga.messages.PlayerMessages;
