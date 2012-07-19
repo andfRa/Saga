@@ -414,25 +414,15 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		
 		
 		if(roleName.equals(getDefinition().defaultRole)){
-			return getPlayerCount() - getInactivePlayerCount();
+			return getPlayerCount();
 		}
 		
-		Integer total = 0;
+		Integer available = 0;
 		
 		// Settlement roles:
-		total += getDefinition().getAvailableRoles(roleName, getLevel());
+		available += getDefinition().getAvailableRoles(roleName, getLevel());
 		
-		// Buildings roles:
-		ArrayList<SagaChunk> groupChunks = getGroupChunks();
-		for (SagaChunk sagaChunk : groupChunks) {
-			
-			Building building = sagaChunk.getBuilding();
-			if(building == null) continue;
-			total += building.getDefinition().getAvailableRoles(roleName, building.getLevel());
-			
-		}
-		
-		return total;
+		return available;
 		
 	}
 	

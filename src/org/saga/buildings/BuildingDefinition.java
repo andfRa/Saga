@@ -1,9 +1,7 @@
 package org.saga.buildings;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.Hashtable;
 
 import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.SagaLogger;
@@ -24,23 +22,9 @@ public class BuildingDefinition {
 	 */
 	private String buildingClass;
 
-	/**
-	 * Building specific function.
-	 */
-	private TwoPointFunction levelFunction;
 
 	
 	// Proficiencies:
-	/**
-	 * Available professions for the building.
-	 */
-	private ArrayList<String> professions;
-
-	/**
-	 * Available classes for the building.
-	 */
-	private ArrayList<String> classes;
-	
 	/**
 	 * Available roles hierarchy for the building.
 	 */
@@ -51,11 +35,6 @@ public class BuildingDefinition {
 	 */
 	private ArrayList<String> ranks;
 
-	/**
-	 * Roles for the building.
-	 */
-	private Hashtable<String, TwoPointFunction> roleAmounts;
-	
 	/**
 	 * Attributes.
 	 */
@@ -125,14 +104,11 @@ public class BuildingDefinition {
 	/**
 	 * Initialises.
 	 * 
-	 * @param pointCost
-	 * @param moneyCost
-	 * @param levelFunction
+	 * @param name building name
 	 */
-	public BuildingDefinition(TwoPointFunction pointCost, TwoPointFunction moneyCost, TwoPointFunction levelFunction) {
+	public BuildingDefinition(String name) {
 		
-		this.coinCost = moneyCost;
-		this.levelFunction = levelFunction;
+		this.name = name;
 		
 	}
 
@@ -151,48 +127,6 @@ public class BuildingDefinition {
 		if(buildingClass == null){
 			SagaLogger.nullField(this, "buildingClass");
 			buildingClass = "invalid";
-		}
-		
-		if(levelFunction == null){
-			levelFunction = new TwoPointFunction(10000.0);
-			SagaLogger.nullField(BuildingDefinition.class, "levelFunction");
-		}
-		levelFunction.complete();
-		
-		if(this.roleAmounts == null){
-			this.roleAmounts = new Hashtable<String, TwoPointFunction>();
-			SagaLogger.nullField(BuildingDefinition.class, "roleAmounts");
-		}
-		Enumeration<String> proficiencies = this.roleAmounts.keys();
-		while (proficiencies.hasMoreElements()) {
-			String proficiency = (String) proficiencies.nextElement();
-			this.roleAmounts.get(proficiency).complete();
-		}
-		
-		if(professions == null){
-			professions = new ArrayList<String>();
-			SagaLogger.nullField(BuildingDefinition.class, "professions");
-		}
-		for (int i = 0; i < professions.size(); i++) {
-			if(professions.get(i) == null){
-				professions.remove(i);
-				i--;
-				SagaLogger.nullField(BuildingDefinition.class, "professions element");
-				continue;
-			}
-		}
-		
-		if(classes == null){
-			classes = new ArrayList<String>();
-			SagaLogger.nullField(BuildingDefinition.class, "classes");
-		}
-		for (int i = 0; i < classes.size(); i++) {
-			if(classes.get(i) == null){
-				classes.remove(i);
-				i--;
-				SagaLogger.nullField(this, "classes element");
-				continue;
-			}
 		}
 		
 		if(roles == null){
@@ -330,75 +264,9 @@ public class BuildingDefinition {
 	public ArrayList<String> getRoles() {
 		return new ArrayList<String>(roles);
 	}
-	
-	/**
-	 * Gets the amount or roles available.
-	 * 
-	 * @param roleName role name
-	 * @param level level
-	 * @return amount of roles available
-	 */
-	public Integer getAvailableRoles(String roleName, Integer level) {
-		
-		
-		TwoPointFunction amount = roleAmounts.get(roleName);
-		if(amount == null || amount.getXMin() > level){
-			return 0;
-		}
-		return new Double(amount.value(level)).intValue();
-		
-		
-	}
-	
-	/**
-	**
-	 * Gets all role names enabled by this building
-	 * 
-	 * @param level building level
-	 * @return enabled role names
-	 */
-	public HashSet<String> getRoles(Integer level) {
-		
-		
-		HashSet<String> roles = new HashSet<String>();
-		
-		Enumeration<String> roleNames =  this.roleAmounts.keys();
-		
-		while (roleNames.hasMoreElements()) {
-			String roleName = (String) roleNames.nextElement();
-			if(getAvailableRoles(roleName, level) > 0){
-				roles.add(roleName);
-			}
-		}
-		
-		return roles;
-
-		
-	}
-
 
 	
 	// Proficiencies:
-	/**
-	 * Check if the building has a promotion profession.
-	 * 
-	 * @param professionName profession name
-	 * @return true if has a profession to promote to
-	 */
-	public boolean hasProfession(String professionName) {
-		return professions.contains(professionName);
-	}
-
-	/**
-	 * Check if the building has a promotion class.
-	 * 
-	 * @param className class name
-	 * @return true if has a class to promote to
-	 */
-	public boolean hasClass(String className) {
-		return classes.contains(className);
-	}
-	
 	/**
 	 * Check if the building has a promotion rank.
 	 * 
@@ -418,40 +286,8 @@ public class BuildingDefinition {
 	public boolean hasRole(String roleName) {
 		return roles.contains(roleName);
 	}
-	
-	/**
-	 * Gets the professions.
-	 * 
-	 * @return the professions
-	 */
-	public ArrayList<String> getProfessions() {
-		return new ArrayList<String>(professions);
-	}
-	
-	/**
-	 * Gets the classes.
-	 * 
-	 * @return the classes
-	 */
-	public ArrayList<String> getClasses() {
-		return new ArrayList<String>(classes);
-	}
-	
-	
-	/**
-	 * Gets classes and professions.
-	 * 
-	 * @return classes and professions
-	 */
-	public ArrayList<String> getSelectable2() {
 
-		ArrayList<String> result = getProfessions();
-		result.addAll(getClasses());
-		return result;
-		
-	}
 	
-
 	
 	// Attributes:
 	/**
