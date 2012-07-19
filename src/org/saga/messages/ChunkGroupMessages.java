@@ -638,7 +638,7 @@ public class ChunkGroupMessages {
 		String resource = definition.getResource();
 		if(resource.length() == 0) resource = "items";
 		
-		return amount + " " + resource + " at " + daytime;
+		return amount + " " + resource + "/" + daytime;
 		
 				
 	}
