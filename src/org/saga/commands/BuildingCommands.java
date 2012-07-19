@@ -177,7 +177,7 @@ public class BuildingCommands {
 	
 		// Store:
 		ItemStack toStore = new ItemStack(Material.IRON_AXE, 3);
-		selBuilding.storeBlock(toStore);
+		selBuilding.store(toStore);
 		
 		if(toStore.getAmount() == 0){
 			sagaPlayer.message(ChatColor.DARK_GREEN + "stored ");
@@ -218,7 +218,7 @@ public class BuildingCommands {
 	
 		// Store:
 		ItemStack fromStore = new ItemStack(Material.IRON_AXE, 0);
-		selBuilding.withdrawBlock(fromStore, 5);
+		selBuilding.withdraw(fromStore, 5);
 		
 		if(fromStore.getAmount() == 0){
 			sagaPlayer.message(ChatColor.RED + "item not found ");

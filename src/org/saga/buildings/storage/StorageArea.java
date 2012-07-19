@@ -272,6 +272,8 @@ public class StorageArea {
 
 		for (Chest chest : chests) {
 			
+			if(toStore.getAmount() < 1) return toStore;
+			
 			ItemStack remaining = chest.getBlockInventory().addItem(toStore).get(0);
 			
 			if(remaining == null){

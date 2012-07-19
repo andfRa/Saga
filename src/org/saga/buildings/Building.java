@@ -688,7 +688,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 * @param blocks to add
 	 * @return blocks to add
 	 */
-	public ItemStack storeBlock(ItemStack toStore) {
+	public ItemStack store(ItemStack toStore) {
 
 		
 		ArrayList<StorageArea> allSorage = getStorageAreas();
@@ -733,7 +733,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 * @param amount requested amount
 	 * @return withdrawn blocks
 	 */
-	public ItemStack withdrawBlock(ItemStack fromStore, int amount) {
+	public ItemStack withdraw(ItemStack fromStore, int amount) {
 
 		
 		ArrayList<StorageArea> allSorage = getStorageAreas();
@@ -911,7 +911,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 			
 			ItemStack item = resources.nextItem();
 			
-			storeBlock(item);
+			store(item);
 			
 		}
 		

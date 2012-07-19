@@ -40,14 +40,14 @@
     "permissions":{"noble":"HIGH"},
     "coinCost":{"x1":0,"y1":0},
     "available":{"x1":0,"y1":1.0},
-    "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":3.0},
+    "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
     "resources":[
       {"mat":"LOG","amount":1,"data":0, "weight":0.25},
       {"mat":"LOG","amount":1,"data":1, "weight":0.25},
       {"mat":"LOG","amount":1,"data":2, "weight":0.25},
       {"mat":"LOG","amount":1,"data":3, "weight":0.25}
     ],
-    "resourceAmount":{"x1":1,"y1":1,"x2":3,"y2":3},
+    "resourceAmount":{"x1":1,"y1":6,"x2":3,"y2":12},
     "performTime":"NONE",
     "resourceTime":"MIDDAY",
     "description":"",
@@ -74,7 +74,7 @@
       {"mat":"SUGAR_CANE","amount":1,"data":1, "weight":0.30},
       {"mat":"NETHER_STALK","amount":1,"data":2, "weight":0.10}
     ],
-    "resourceAmount":{"x1":1,"y1":4,"x2":3,"y2":12},
+    "resourceAmount":{"x1":1,"y1":8,"x2":3,"y2":16},
     "performTime":"NONE",
     "resourceTime":"MIDDAY",
     "description":"",
@@ -95,15 +95,15 @@
     "permissions":{"noble":"HIGH"},
     "coinCost":{"x1":0,"y1":0},
     "available":{"x1":10,"y1":1.0},
-    "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
+    "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":1.0},
     "resources":[
-      {"mat":"COAL_ORE","amount":1,"data":0, "weight":0.45},
-      {"mat":"IRON_ORE","amount":1,"data":0, "weight":0.40},
-      {"mat":"GOLD_ORE","amount":1,"data":0, "weight":0.1},
-      {"mat":"LAPIS_ORE","amount":1,"data":0, "weight":0.025},
-      {"mat":"DIAMOND_ORE","amount":1,"data":0, "weight":0.025}
+      {"mat":"COAL_ORE","amount":1,"data":0, "weight":0.35},
+      {"mat":"IRON_ORE","amount":1,"data":0, "weight":0.25},
+      {"mat":"GOLD_ORE","amount":1,"data":0, "weight":0.2},
+      {"mat":"LAPIS_ORE","amount":1,"data":0, "weight":0.12},
+      {"mat":"DIAMOND_ORE","amount":1,"data":0, "weight":0.08}
     ],
-    "resourceAmount":{"x1":1,"y1":1,"x2":3,"y2":5},
+    "resourceAmount":{"x1":1,"y1":3,"x2":3,"y2":6},
     "performTime":"NONE",
     "resourceTime":"MIDDAY",
     "description":"",
