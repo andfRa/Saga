@@ -162,6 +162,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 			
 			try {
 				storage.get(i).complete();
+				storage.get(i).setSize(definition.getStorageSize());
 			} catch (InvalidLocationException e) {
 				SagaLogger.severe(this, "failed to initialise storage field element: " + e.getClass().getSimpleName() + ":" + e.getMessage());
 				storage.remove(i);
@@ -549,7 +550,8 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	public void addStorageArea(StorageArea storeArea) {
 
 		storage.add(storeArea);
-
+		storeArea.setSize(definition.getStorageSize());
+		
 	}
 	
 	/**

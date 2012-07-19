@@ -52,6 +52,10 @@ public class StorageArea {
 	 */
 	private Orientation orientation;
 	
+	/**
+	 * Storage area size.
+	 */
+	transient private Integer size;
 	
 	
 	// Initialisation:
@@ -65,6 +69,7 @@ public class StorageArea {
 		
 		anchor = new SagaLocation(sagaPlayer.getLocation());
 		orientation = sagaPlayer.getOrientation();
+		size = 1;
 		
 
 	}
@@ -87,10 +92,20 @@ public class StorageArea {
 			SagaLogger.nullField(this, "anchor");
 			orientation = Orientation.NORTH;
 		}
+		
+		size = 1;
 
 		
 	}
 	
+	/**
+	 * Sets storage size.
+	 * 
+	 * @param size size
+	 */
+	public void setSize(Integer size) {
+		this.size = size;
+	}
 	
 	
 	// Positioning:
@@ -103,7 +118,7 @@ public class StorageArea {
 	public boolean checkBelongs(Block pBlock) {
 
 		
-		ArrayList<Block> blocks = SHAPE.getBlocks(anchor.getLocation(), orientation, 0);
+		ArrayList<Block> blocks = SHAPE.getBlocks(anchor.getLocation(), orientation, size);
 		
 		// Check:
 		for (Block block : blocks) {
@@ -147,7 +162,7 @@ public class StorageArea {
 	public ArrayList<SagaChunk> getSagaChunks() {
 
 		
-		ArrayList<Block> blocks = SHAPE.getBlocks(anchor.getLocation(), orientation, 0);
+		ArrayList<Block> blocks = SHAPE.getBlocks(anchor.getLocation(), orientation, size);
 		
 		// Bukkit chunks:
 		HashSet<Chunk> bukkitChunks = new HashSet<Chunk>();
@@ -180,7 +195,7 @@ public class StorageArea {
 	 */
 	public ArrayList<Block> getAllStorage() {
 
-		return SHAPE.getBlocks(anchor.getLocation(), orientation, 0);
+		return SHAPE.getBlocks(anchor.getLocation(), orientation, size);
 		
 	}
 	
@@ -198,7 +213,7 @@ public class StorageArea {
 		if(!toStore.getType().isBlock()) return toStore;
 		
 		// Add block:
-		ArrayList<Block> blocks = SHAPE.getBlocks(anchor.getLocation(), orientation, 0, EMPTY_FILTER);
+		ArrayList<Block> blocks = SHAPE.getBlocks(anchor.getLocation(), orientation, size, EMPTY_FILTER);
 
 		for (Block storeBlock : blocks) {
 			
@@ -230,7 +245,7 @@ public class StorageArea {
 		if(!fromStore.getType().isBlock()) return fromStore;
 		
 		// Withdraw block:
-		ArrayList<Block> blocks = SHAPE.getBlocks(anchor.getLocation(), orientation, 0, FULL_FILTER);
+		ArrayList<Block> blocks = SHAPE.getBlocks(anchor.getLocation(), orientation, size, FULL_FILTER);
 
 		for (int i = blocks.size() - 1; i >= 0; i--) {
 
@@ -263,7 +278,7 @@ public class StorageArea {
 		if(toStore.getType().isBlock()) return toStore;
 		
 		// Get chests:
-		ArrayList<Block> blocks = SHAPE.getBlocks(anchor.getLocation(), orientation, 0, CHEST_FILTER);
+		ArrayList<Block> blocks = SHAPE.getBlocks(anchor.getLocation(), orientation, size, CHEST_FILTER);
 		
 		ArrayList<Chest> chests = new ArrayList<Chest>();
 		for (Block block : blocks) {
@@ -304,7 +319,7 @@ public class StorageArea {
 		if(fromStore.getType().isBlock()) return fromStore;
 		
 		// Get chests:
-		ArrayList<Block> blocks = SHAPE.getBlocks(anchor.getLocation(), orientation, 0, CHEST_FILTER);
+		ArrayList<Block> blocks = SHAPE.getBlocks(anchor.getLocation(), orientation, size, CHEST_FILTER);
 		
 		ArrayList<Chest> chests = new ArrayList<Chest>();
 		for (Block block : blocks) {
@@ -348,55 +363,99 @@ public class StorageArea {
 		RelativeShape shape = new RelativeShape();
 		
 		// First layer:
-		shape.addOffset(-1, 0, -1, 0);
-		shape.addOffset(-1, 0, 0, 0);
-		shape.addOffset(-1, 0, 1, 0);
-		
-		shape.addOffset(-2, 0, -1, 0);
-		shape.addOffset(-2, 0, 0, 0);
-		shape.addOffset(-2, 0, 1, 0);
-		
-		shape.addOffset(-3, 0, -1, 0);
-		shape.addOffset(-3, 0, 0, 0);
-		shape.addOffset(-3, 0, 1, 0);
-		
-		shape.addOffset(-4, 0, -1, 0);
-		shape.addOffset(-4, 0, 0, 0);
-		shape.addOffset(-4, 0, 1, 0);
+		shape.addOffset(-2, 0, 0, 3);
+		shape.addOffset(-1, 0, -1, 13);
+		shape.addOffset(-1, 0, 1, 2);
+		shape.addOffset(-1, 0, 0, 1);
+		shape.addOffset(-3, 0, 0, 5);
+		shape.addOffset(-2, 0, -1, 14);
+		shape.addOffset(-3, 0, -1, 15);
+		shape.addOffset(-4, 0, -1, 16);
+		shape.addOffset(-2, 0, 1, 4);
+		shape.addOffset(-3, 0, 1, 6);
+		shape.addOffset(-4, 0, 0, 17);
+		shape.addOffset(-4, 0, 1, 18);
 		
 		// Second layer:
-		shape.addOffset(-1, 1, -1, 0);
-		shape.addOffset(-1, 1, 0, 0);
-		shape.addOffset(-1, 1, 1, 0);
-		
-		shape.addOffset(-2, 1, -1, 0);
-		shape.addOffset(-2, 1, 0, 0);
-		shape.addOffset(-2, 1, 1, 0);
-		
-		shape.addOffset(-3, 1, -1, 0);
-		shape.addOffset(-3, 1, 0, 0);
-		shape.addOffset(-3, 1, 1, 0);
-
-		shape.addOffset(-4, 1, -1, 0);
-		shape.addOffset(-4, 1, 0, 0);
-		shape.addOffset(-4, 1, 1, 0);
+		shape.addOffset(-1, 1, -1, 19);
+		shape.addOffset(-4, 1, -1, 22);
+		shape.addOffset(-1, 1, 0, 7);
+		shape.addOffset(-3, 1, -1, 21);
+		shape.addOffset(-2, 1, 1, 10);
+		shape.addOffset(-3, 1, 0, 11);
+		shape.addOffset(-2, 1, -1, 20);
+		shape.addOffset(-2, 1, 0, 9);
+		shape.addOffset(-3, 1, 1, 12);
+		shape.addOffset(-4, 1, 0, 23);
+		shape.addOffset(-1, 1, 1, 8);
+		shape.addOffset(-4, 1, 1, 24);
 		
 		// Third layer:
-		shape.addOffset(-1, 2, -1, 0);
-		shape.addOffset(-1, 2, 0, 0);
-		shape.addOffset(-1, 2, 1, 0);
+		shape.addOffset(-1, 2, -1, 31);
+		shape.addOffset(-1, 2, 1, 26);
+		shape.addOffset(-2, 2, 1, 28);
+		shape.addOffset(-3, 2, 1, 30);
+		shape.addOffset(-1, 2, 0, 25);
+		shape.addOffset(-3, 2, -1, 33);
+		shape.addOffset(-2, 2, -1, 32);
+		shape.addOffset(-4, 2, -1, 34);
+		shape.addOffset(-3, 2, 0, 29);
+		shape.addOffset(-4, 2, 0, 35);
+		shape.addOffset(-2, 2, 0, 27);
+		shape.addOffset(-4, 2, 1, 36);
 		
-		shape.addOffset(-2, 2, -1, 0);
-		shape.addOffset(-2, 2, 0, 0);
-		shape.addOffset(-2, 2, 1, 0);
-		
-		shape.addOffset(-3, 2, -1, 0);
-		shape.addOffset(-3, 2, 0, 0);
-		shape.addOffset(-3, 2, 1, 0);
-
-		shape.addOffset(-4, 2, -1, 0);
-		shape.addOffset(-4, 2, 0, 0);
-		shape.addOffset(-4, 2, 1, 0);
+		// Not randomised backup:
+//
+//		// First layer:
+//		shape.addOffset(-1, 0, -1, 13);
+//		shape.addOffset(-1, 0, 0, 1);
+//		shape.addOffset(-1, 0, 1, 2);
+//		
+//		shape.addOffset(-2, 0, -1, 14);
+//		shape.addOffset(-2, 0, 0, 3);
+//		shape.addOffset(-2, 0, 1, 4);
+//		
+//		shape.addOffset(-3, 0, -1, 15);
+//		shape.addOffset(-3, 0, 0, 5);
+//		shape.addOffset(-3, 0, 1, 6);
+//		
+//		shape.addOffset(-4, 0, -1, 16);
+//		shape.addOffset(-4, 0, 0, 17);
+//		shape.addOffset(-4, 0, 1, 18);
+//		
+//		// Second layer:
+//		shape.addOffset(-1, 1, -1, 19);
+//		shape.addOffset(-1, 1, 0, 7);
+//		shape.addOffset(-1, 1, 1, 8);
+//		
+//		shape.addOffset(-2, 1, -1, 20);
+//		shape.addOffset(-2, 1, 0, 9);
+//		shape.addOffset(-2, 1, 1, 10);
+//		
+//		shape.addOffset(-3, 1, -1, 21);
+//		shape.addOffset(-3, 1, 0, 11);
+//		shape.addOffset(-3, 1, 1, 12);
+//
+//		shape.addOffset(-4, 1, -1, 22);
+//		shape.addOffset(-4, 1, 0, 23);
+//		shape.addOffset(-4, 1, 1, 24);
+//		
+//		// Third layer:
+//		shape.addOffset(-1, 2, -1, 31);
+//		shape.addOffset(-1, 2, 0, 25);
+//		shape.addOffset(-1, 2, 1, 26);
+//		
+//		shape.addOffset(-2, 2, -1, 32);
+//		shape.addOffset(-2, 2, 0, 27);
+//		shape.addOffset(-2, 2, 1, 28);
+//		
+//		shape.addOffset(-3, 2, -1, 33);
+//		shape.addOffset(-3, 2, 0, 29);
+//		shape.addOffset(-3, 2, 1, 30);
+//
+//		shape.addOffset(-4, 2, -1, 34);
+//		shape.addOffset(-4, 2, 0, 35);
+//		shape.addOffset(-4, 2, 1, 36);
 		
 		return shape;
 

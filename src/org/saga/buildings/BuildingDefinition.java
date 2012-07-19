@@ -65,6 +65,11 @@ public class BuildingDefinition {
 	private TwoPointFunction storageAreas;
 	
 	/**
+	 * Storage area size.
+	 */
+	private Integer storageSize;
+	
+	/**
 	 * Resources crafted by the building.
 	 */
 	private HashSet<ItemBlueprint> resources;
@@ -192,6 +197,10 @@ public class BuildingDefinition {
 		}
 		storageAreas.complete();
 		
+		if(storageSize == null){
+			storageSize = 1;
+			SagaLogger.nullField(BuildingDefinition.class, "storageSize");
+		}
 		
 		if(resources == null){
 			resources = new HashSet<ItemBlueprint>();
@@ -377,6 +386,15 @@ public class BuildingDefinition {
 	 */
 	public Integer getAvailableStorages(Integer buildingLevel) {
 		return storageAreas.intValue(buildingLevel);
+	}
+	
+	/**
+	 * Gets the size of the storage area.
+	 * 
+	 * @return storage area size
+	 */
+	public Integer getStorageSize() {
+		return storageSize;
 	}
 	
 	/**
