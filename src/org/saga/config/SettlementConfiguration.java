@@ -3,6 +3,7 @@ package org.saga.config;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -45,7 +46,7 @@ public class SettlementConfiguration {
 	/**
 	 * Building definitions.
 	 */
-	private HashSet<BuildingDefinition> buildingDefinitions;
+	private ArrayList<BuildingDefinition> buildingDefinitions;
 	
 	
 	// Levels:
@@ -121,7 +122,7 @@ public class SettlementConfiguration {
 		
 		if(buildingDefinitions == null){
 			SagaLogger.nullField(getClass(), "buildingDefinitions");
-			buildingDefinitions = new HashSet<BuildingDefinition>();
+			buildingDefinitions = new ArrayList<BuildingDefinition>();
 		}
 		for (BuildingDefinition definition : buildingDefinitions) {
 			definition.complete();
@@ -224,6 +225,18 @@ public class SettlementConfiguration {
 		return null;
 		
 	}
+	
+	/**
+	 * Gets definition for the given building.
+	 * 
+	 * @return building definitions
+	 */
+	public ArrayList<BuildingDefinition> getBuildingDefinitions() {
+
+		return new ArrayList<BuildingDefinition>(buildingDefinitions);
+		
+	}
+	
 	
 	/**
 	 * Gets all building names.

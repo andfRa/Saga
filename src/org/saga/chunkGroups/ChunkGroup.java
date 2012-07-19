@@ -709,6 +709,28 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 	}
 	
+	
+	/**
+	 * Gets the building level.
+	 * 
+	 * @param buildingName building name
+	 * @return building level
+	 */
+	public Integer getBuildingLevel(String buildingName) {
+
+		for (SagaChunk sagaChunk : groupChunks) {
+			
+			Building building = sagaChunk.getBuilding();
+			if(building == null) continue;
+			
+			if(building.getName().equals(buildingName)) return building.getLevel();
+			
+		}
+		
+		return 0;
+		
+	}
+	
 
 	
 	// Todo methods:

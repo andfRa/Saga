@@ -1,6 +1,7 @@
 package org.saga.messages;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -14,8 +15,8 @@ import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupToggleable;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.commands.ChunkGroupCommands;
-import org.saga.config.SettlementConfiguration;
 import org.saga.config.ProficiencyConfiguration;
+import org.saga.config.SettlementConfiguration;
 import org.saga.factions.SagaFaction;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.messages.PlayerMessages.ColorCircle;
@@ -542,21 +543,16 @@ public class ChunkGroupMessages {
 		StringTable table = new StringTable(colours);
 		
 		// Retrieve buildings:
-		String[] names = SettlementConfiguration.config().getBuildingNames().toArray(new String[0]);
-		BuildingDefinition[] definitions = new BuildingDefinition[names.length];
-		for (int i = 0; i < definitions.length; i++) {
-			definitions[i] = SettlementConfiguration.config().getBuildingDefinition(names[i]);
-		}
+		BuildingDefinition[] definitions = SettlementConfiguration.config().getBuildingDefinitions().toArray(new BuildingDefinition[0]);
 		
-		// Levels:
-		Integer[] levels = new Integer[names.length];
-		for (int i = 0; i < levels.length; i++) {
-			
-			Building building = settlement.getFirstBuilding(names[i]);
-			levels[i] = 0;
-			if(building != null) levels[i] = building.getLevel();
-			
-		}
+		// Sort required by level:
+		Comparator<BuildingDefinition> comparator = new Comparator<BuildingDefinition>() {
+			@Override
+			public int compare(BuildingDefinition arg0, BuildingDefinition arg1) {
+				return arg0.getRequiredLevel() - arg1.getRequiredLevel();
+			}
+		};
+		Arrays.sort(definitions, comparator);
 		
 		// Column names:
 		table.addLine(new String[]{GeneralMessages.columnTitle("building"), GeneralMessages.columnTitle("status")});
@@ -567,21 +563,23 @@ public class ChunkGroupMessages {
 			for (int j = 0; j < definitions.length; j++) {
 				
 				// Values:
-				String name = names[j];
+				String name = definitions[j].getName();
 				String status = "";
-
+				
+				Integer level = settlement.getBuildingLevel(name);
+				
 				// Requirements met:
 				if(definitions[j].checkRequirements(settlement, 1)){
 					
 					// Multiple buildings:
-					Integer totalBuildings = settlement.getAvailableBuildings(names[j]);
-					Integer usedBuildings = settlement.getTotalBuildings(names[j]);
+					Integer totalBuildings = settlement.getAvailableBuildings(name);
+					Integer usedBuildings = settlement.getTotalBuildings(name);
 					
 					// Set:
 					if(usedBuildings > 0){
 						
 						// Status:
-						status = resources(definitions[j], levels[j]);
+						status = resources(definitions[j], level);
 						if(status.length() == 0) status = "set";
 						
 						// Colours:
@@ -651,8 +649,6 @@ public class ChunkGroupMessages {
 		// Level:
 		Integer reqLevel = definition.getRequiredLevel();
 		if(reqLevel > 0) result.append("lvl " + reqLevel);
-		
-		if(result.length() > 0) result.append(", ");
 		
 		return result.toString();
 		
