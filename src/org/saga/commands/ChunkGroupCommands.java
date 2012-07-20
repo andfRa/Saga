@@ -397,6 +397,12 @@ public class ChunkGroupCommands {
 			sagaPlayer.message(SagaMessages.noPermission(selectedChunkGroup));
 			return;
 		}
+		
+		// Building points:
+		if(selectedChunkGroup.getRemainingBuildPoints() < selectedBuilding.getDefinition().getBuildPoints()){
+			sagaPlayer.message(ChunkGroupMessages.notEnoughBuildingPoints(selectedBuilding));
+			return;
+		}
 
 		// Existing building:
 		if(selectedChunk.getBuilding() != null){

@@ -478,7 +478,22 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	}
 	
 	
+	
+	// Building points:
+	/**
+	 * Gets the amount of building points available.
+	 * 
+	 * @return amount building points available
+	 */
+	public Integer getAvailableBuildPoints() {
+		
+		
+		return getDefinition().getBuildPoints(getLevel());
+		
+		
+	}
 
+	
 	
 	// Claiming:
 	/**

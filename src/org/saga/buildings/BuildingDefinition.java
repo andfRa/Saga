@@ -48,6 +48,11 @@ public class BuildingDefinition {
 	
 	// Availability:
 	/**
+	 * Building points.
+	 */
+	private Integer buildPoints;
+	
+	/**
 	 * Coin cost.
 	 */
 	private TwoPointFunction coinCost;
@@ -176,6 +181,11 @@ public class BuildingDefinition {
 		
 		if(abilities.remove(null)){
 			SagaLogger.nullField(BuildingDefinition.class, "abilities element");
+		}
+		
+		if(buildPoints == null){
+			buildPoints = 1;
+			SagaLogger.nullField(BuildingDefinition.class, "buildPoints");
 		}
 		
 		if(coinCost == null){
@@ -334,6 +344,15 @@ public class BuildingDefinition {
 	
 	
 	// Availability:
+	/**
+	 * Gets the amount of building points required.
+	 * 
+	 * @return amount of building points
+	 */
+	public Integer getBuildPoints() {
+		return buildPoints;
+	}
+	
 	/**
 	 * Gets the number of available buildings.
 	 * 

@@ -519,8 +519,8 @@ public class ChunkGroupMessages {
 		// Claims:
 		table.addLine("claims", settlement.getUsedClaimed() + "/" + settlement.getTotalClaims(), 0);
 		
-		// Upgrades:
-		table.addLine("upgrades", 0 + "/" + 0, 0);
+		// Building points:
+		table.addLine("build points", settlement.getUsedBuildPoints() + "/" + settlement.getAvailableBuildPoints(), 0);
 		
 		// Owner:
 		if(settlement.hasOwner()){
@@ -1106,8 +1106,8 @@ public class ChunkGroupMessages {
 		return anouncment + settlement.getName() + " settlement is now level " + settlement.getLevel() + ".";
 	}
 	
-	public static String notEnoughBuildingPoints(ChunkGroup chunkGroup, Integer available, Integer cost) {
-		return negative + "Not enough building points. You need " + (cost - available) + " aditional points.";
+	public static String notEnoughBuildingPoints(Building building) {
+		return negative + "Not enough build points.";
 	}
 
 	public static String noBuilding() {

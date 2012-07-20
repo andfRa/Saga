@@ -19,7 +19,7 @@ public class SettlementDefinition{
 	/**
 	 * The amount of building points.
 	 */
-	private TwoPointFunction buildingPoints;
+	private TwoPointFunction buildPoints;
 	
 	/**
 	 * Enabled roles.
@@ -75,14 +75,14 @@ public class SettlementDefinition{
 		boolean integrity=true;
 		
 		if(activePlayers == null){
-			SagaLogger.nullField(this, "activePlayers field");
+			SagaLogger.nullField(this, "activePlayers");
 			activePlayers = new TwoPointFunction(0.0);
 			integrity = false;
 		}
 		
-		if(buildingPoints == null){
-			SagaLogger.nullField(this, "buildingPoints field");
-			buildingPoints = new TwoPointFunction(0.0);
+		if(buildPoints == null){
+			SagaLogger.nullField(this, "buildPoints");
+			buildPoints = new TwoPointFunction(0.0);
 			integrity=false;
 		}
 		
@@ -156,8 +156,8 @@ public class SettlementDefinition{
 	 * @param level level
 	 * @return building points
 	 */
-	public Integer getBuildingPoints(Integer level) {
-		return buildingPoints.value(level).intValue();
+	public Integer getBuildPoints(Integer level) {
+		return buildPoints.value(level).intValue();
 	}
 
 	

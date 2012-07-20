@@ -311,6 +311,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	}
 	
 	
+	
 	// Chunk group management:
 	/**
 	 * Adds a new chunk group.
@@ -518,6 +519,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	}
 	
 	
+	
 	// Interaction:
 	/**
 	 * Sets the name
@@ -546,6 +548,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 		return groupChunks.size();
 	}
 
+	
 	
 	// Buildings:
 	/**
@@ -710,6 +713,51 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 	}
 	
+	
+
+	// Building points:
+	/**
+	 * Gets the amount of building points used.
+	 * 
+	 * @return amount of building points used
+	 */
+	public Integer getUsedBuildPoints() {
+		
+		
+		Integer total = 0;
+		ArrayList<Building> buildings = getBuildings();
+		
+		for (Building building : buildings) {
+			total+= building.getDefinition().getBuildPoints();
+		}
+ 		
+		return total;
+		
+		
+	}
+
+	/**
+	 * Gets the amount of building points available.
+	 * 
+	 * @return amount building points available
+	 */
+	public Integer getAvailableBuildPoints() {
+		
+		return 0;
+		
+	}
+	
+	/**
+	 * Gets the amount of building points remaining.
+	 * 
+	 * @return amount of building points remaining
+	 */
+	public Integer getRemainingBuildPoints() {
+		
+		return getAvailableBuildPoints() - getUsedBuildPoints();
+		
+	}
+
 
 	
 	// Todo methods:
