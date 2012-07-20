@@ -99,21 +99,21 @@ public class PlayerListener implements Listener {
 
     	Player player = event.getPlayer();
 
-    	// Forward to Saga:
-    	SagaPlayer sagaPlayer = Saga.plugin().unloadSagaPlayer(player.getName());
-    	
-    	// Invalid player:
+    	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(player.getName());
     	if(sagaPlayer == null){
     		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerQuit, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
     	}
+    	
+    	// Forward to chunk group:
+    	if(sagaPlayer.getChunkGroup() != null) sagaPlayer.getChunkGroup().onMemberQuit(event, sagaPlayer);
+    	
+    	// Unload player:
+    	Saga.plugin().unloadSagaPlayer(player.getName());
 
 		// Statistics:
     	StatisticsManager.manager().setLevel(sagaPlayer);
     	StatisticsManager.manager().setAttributes(sagaPlayer);
-    	
-    	// Forward to chunk group:
-    	if(sagaPlayer.hasChunkGroup()) sagaPlayer.getChunkGroup().onMemberQuit(event, sagaPlayer);
     	
     	// Remove player:
     	sagaPlayer.removePlayer();
