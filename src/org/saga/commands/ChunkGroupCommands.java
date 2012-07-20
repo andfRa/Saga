@@ -1359,7 +1359,7 @@ public class ChunkGroupCommands {
 	public static boolean validateName(String name) {
 
 		
-		if(org.saga.utility.TextUtil.getComparisonString(name).length() < minimumNameLenght ) {
+		if(org.saga.utility.text.TextUtil.getComparisonString(name).length() < minimumNameLenght ) {
 			return false;
 		}
 
@@ -1369,7 +1369,7 @@ public class ChunkGroupCommands {
 
 		for (char c : name.toCharArray()) {
 			
-			if ( ! org.saga.utility.TextUtil.substanceChars.contains(String.valueOf(c))) {
+			if ( ! org.saga.utility.text.TextUtil.substanceChars.contains(String.valueOf(c))) {
 				return false;
 			}
 			

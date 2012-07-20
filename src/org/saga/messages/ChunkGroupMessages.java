@@ -26,8 +26,8 @@ import org.saga.player.ProficiencyDefinition;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;
 import org.saga.settlements.SettlementDefinition;
-import org.saga.utility.StringTable;
-import org.saga.utility.TextUtil;
+import org.saga.utility.text.StringTable;
+import org.saga.utility.text.TextUtil;
 
 
 public class ChunkGroupMessages {

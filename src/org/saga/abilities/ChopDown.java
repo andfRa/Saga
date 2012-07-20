@@ -13,7 +13,7 @@ import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
 import org.saga.messages.PlayerMessages;
 import org.saga.statistics.StatisticsManager;
-import org.saga.utility.TextUtil;
+import org.saga.utility.text.TextUtil;
 
 public class ChopDown extends Ability{
 

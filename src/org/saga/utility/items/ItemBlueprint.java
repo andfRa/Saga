@@ -1,4 +1,4 @@
-package org.saga.utility;
+package org.saga.utility.items;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;

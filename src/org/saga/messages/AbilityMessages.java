@@ -3,7 +3,7 @@ package org.saga.messages;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.saga.abilities.Ability;
-import org.saga.utility.TextUtil;
+import org.saga.utility.text.TextUtil;
 
 public class AbilityMessages {
 

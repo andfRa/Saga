@@ -36,8 +36,8 @@ import org.saga.messages.SagaMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.SagaCustomSerialization;
 import org.saga.settlements.Settlement.SettlementPermission;
-import org.saga.utility.RandomItemBlueprint;
-import org.saga.utility.TextUtil;
+import org.saga.utility.items.RandomItemBlueprint;
+import org.saga.utility.text.TextUtil;
 import org.sk89q.CommandContext;
 
 public abstract class Building extends SagaCustomSerialization implements DaytimeTicker{

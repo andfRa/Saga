@@ -14,9 +14,9 @@ import org.saga.messages.PlayerMessages.ColorCircle;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
 import org.saga.utility.MathUtil;
-import org.saga.utility.StringBook;
-import org.saga.utility.StringTable;
-import org.saga.utility.TextUtil;
+import org.saga.utility.text.StringBook;
+import org.saga.utility.text.StringTable;
+import org.saga.utility.text.TextUtil;
 
 
 

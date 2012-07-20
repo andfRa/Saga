@@ -18,9 +18,9 @@ import org.saga.economy.Trader;
 import org.saga.economy.Transaction;
 import org.saga.messages.PlayerMessages.ColorCircle;
 import org.saga.player.SagaPlayer;
-import org.saga.utility.StringBook;
-import org.saga.utility.StringTable;
-import org.saga.utility.TextUtil;
+import org.saga.utility.text.StringBook;
+import org.saga.utility.text.StringTable;
+import org.saga.utility.text.TextUtil;
 
 
 public class EconomyMessages {

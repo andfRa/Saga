@@ -16,8 +16,8 @@ import org.saga.factions.SagaFaction;
 import org.saga.messages.PlayerMessages.ColorCircle;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
-import org.saga.utility.StringTable;
-import org.saga.utility.TextUtil;
+import org.saga.utility.text.StringTable;
+import org.saga.utility.text.TextUtil;
 
 public class StatsMessages {
 

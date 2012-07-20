@@ -1574,7 +1574,7 @@ public class FactionCommands {
 
 	public static boolean validateName(String str) {
 
-         if(org.saga.utility.TextUtil.getComparisonString(str).length() < minimumNameLenght ) {
+         if(org.saga.utility.text.TextUtil.getComparisonString(str).length() < minimumNameLenght ) {
         	 return false;
          }
 
@@ -1583,7 +1583,7 @@ public class FactionCommands {
          }
 
          for (char c : str.toCharArray()) {
-                 if ( ! org.saga.utility.TextUtil.substanceChars.contains(String.valueOf(c))) {
+                 if ( ! org.saga.utility.text.TextUtil.substanceChars.contains(String.valueOf(c))) {
                 	 return false;
                  }
          }

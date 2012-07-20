@@ -6,8 +6,8 @@ import java.util.HashSet;
 import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.SagaLogger;
 import org.saga.settlements.Settlement;
-import org.saga.utility.ItemBlueprint;
 import org.saga.utility.TwoPointFunction;
+import org.saga.utility.items.ItemBlueprint;
 
 public class BuildingDefinition {
 

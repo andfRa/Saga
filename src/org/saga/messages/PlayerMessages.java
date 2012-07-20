@@ -10,7 +10,7 @@ import org.saga.player.GuardianRune;
 import org.saga.player.Proficiency;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.SagaPlayer;
-import org.saga.utility.TextUtil;
+import org.saga.utility.text.TextUtil;
 
 
 public class PlayerMessages {

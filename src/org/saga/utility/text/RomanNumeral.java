@@ -1,4 +1,4 @@
-package org.saga.utility;
+package org.saga.utility.text;
 
 //Program: Convert from binary (decimal) to roman numerals.
 //This is the model without any user interface.

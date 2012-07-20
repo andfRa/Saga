@@ -1,4 +1,4 @@
-package org.saga.utility;
+package org.saga.utility.text;
 
 import java.util.ArrayList;
 

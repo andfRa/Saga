@@ -1,4 +1,4 @@
-package org.saga.utility;
+package org.saga.utility.text;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -12,6 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.saga.messages.PlayerMessages.ColorCircle;
+import org.saga.utility.MathUtil;
 
 public class TextUtil {
 	

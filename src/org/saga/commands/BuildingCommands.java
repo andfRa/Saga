@@ -28,7 +28,7 @@ import org.saga.messages.SagaMessages;
 import org.saga.messages.SettlementEffects;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement.SettlementPermission;
-import org.saga.utility.TextUtil;
+import org.saga.utility.text.TextUtil;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
 import org.sk89q.CommandPermissions;

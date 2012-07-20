@@ -2,8 +2,8 @@ package org.saga.messages;
 
 import org.bukkit.ChatColor;
 import org.saga.abilities.Ability;
-import org.saga.utility.RomanNumeral;
-import org.saga.utility.TextUtil;
+import org.saga.utility.text.RomanNumeral;
+import org.saga.utility.text.TextUtil;
 
 public class GeneralMessages {
 

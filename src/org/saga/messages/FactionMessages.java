@@ -12,7 +12,7 @@ import org.saga.factions.FactionManager;
 import org.saga.factions.SagaFaction;
 import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
-import org.saga.utility.TextUtil;
+import org.saga.utility.text.TextUtil;
 
 
 public class FactionMessages {

@@ -10,7 +10,7 @@ import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.SagaMap;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;
-import org.saga.utility.TextUtil;
+import org.saga.utility.text.TextUtil;
 
 
 public class SagaMessages {

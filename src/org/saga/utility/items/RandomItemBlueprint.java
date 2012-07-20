@@ -1,4 +1,4 @@
-package org.saga.utility;
+package org.saga.utility.items;
 
 import java.util.HashSet;
 import java.util.NavigableMap;

@@ -16,7 +16,7 @@ import org.saga.messages.AbilityMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.SagaCustomSerialization;
 import org.saga.statistics.StatisticsManager;
-import org.saga.utility.TextUtil;
+import org.saga.utility.text.TextUtil;
 
 public abstract class Ability extends SagaCustomSerialization implements SecondTicker{
 

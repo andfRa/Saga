@@ -15,9 +15,9 @@ import org.saga.config.AttributeConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.messages.PlayerMessages.ColorCircle;
-import org.saga.utility.RomanNumeral;
-import org.saga.utility.StringBook;
-import org.saga.utility.StringTable;
+import org.saga.utility.text.RomanNumeral;
+import org.saga.utility.text.StringBook;
+import org.saga.utility.text.StringTable;
 
 public class InfoMessages {
 
