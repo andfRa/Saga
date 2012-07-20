@@ -87,6 +87,9 @@ public class PlayerListener implements Listener {
     	// Set player:
     	sagaPlayer.setPlayer(player);
     	
+    	// Forward to chunk group:
+    	if(sagaPlayer.hasChunkGroup()) sagaPlayer.getChunkGroup().onMemberJoin(event, sagaPlayer);
+    	
         
     }
 
@@ -108,6 +111,9 @@ public class PlayerListener implements Listener {
 		// Statistics:
     	StatisticsManager.manager().setLevel(sagaPlayer);
     	StatisticsManager.manager().setAttributes(sagaPlayer);
+    	
+    	// Forward to chunk group:
+    	if(sagaPlayer.hasChunkGroup()) sagaPlayer.getChunkGroup().onMemberQuit(event, sagaPlayer);
     	
     	// Remove player:
     	sagaPlayer.removePlayer();

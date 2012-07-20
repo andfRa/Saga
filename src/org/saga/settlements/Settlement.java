@@ -1,10 +1,13 @@
 package org.saga.settlements;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Hashtable;
 
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.saga.Clock;
 import org.saga.Clock.MinuteTicker;
 import org.saga.Saga;
@@ -46,6 +49,12 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	private Double exp;
 	
 	/**
+	 * Player last seen dates.
+	 */
+	private Hashtable<String, Date> lastSeen;
+	
+	
+	/**
 	 * True if the minute tick is registered.
 	 */
 	transient boolean isTicking = false;
@@ -68,6 +77,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		level = 0;
 		exp = 0.0;
 		playerRoles = new Hashtable<String, Proficiency>();
+		lastSeen = new Hashtable<String, Date>();
 		definition = SettlementConfiguration.config().getSettlementDefinition();
 		
 	}
@@ -92,6 +102,12 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		if(exp == null){
 			SagaLogger.nullField(this, "exp "+ this +" levelProgress");
 			exp = 0.0;
+			integrity = false;
+		}
+		
+		if(lastSeen == null){
+			SagaLogger.nullField(this, "lastSeen");
+			lastSeen = new Hashtable<String, Date>();
 			integrity = false;
 		}
 		
@@ -208,6 +224,9 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 			SagaLogger.severe(this, "failed to set " + getDefinition().defaultRole + " role, because the role name is invalid");
 		}
 		
+		// Last seen:
+		lastSeen.put(sagaPlayer.getName(), Calendar.getInstance().getTime());
+		
 		
 	}
 	
@@ -225,9 +244,13 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		
 		// Forward:
 		super.removePlayer(sagaPlayer);
+
+		// Last seen:
+		lastSeen.remove(sagaPlayer.getName());
 		
 		
 	}
+
 	
 	
 	// Leveling:
@@ -283,7 +306,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	 * @return experience speed
 	 */
 	public Double getExpSpeed() {
-		return getDefinition().getExpSpeed(getActivePlayerCount());
+		return getDefinition().getExpSpeed(countActiveMembers());
 	}
 	
 	
@@ -555,6 +578,105 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 
 	
 	
+	// Active members:
+	/**
+	 * Gets player last seen date.
+	 * 
+	 * @param name player name
+	 * @return last seen date
+	 */
+	public Date getLastSeen(String name) {
+		
+		
+		// Online:
+		if(hasRegisteredMember(name)) return Calendar.getInstance().getTime();
+		
+		// Offline:
+		Date lastDate = lastSeen.get(name);
+		if(lastDate == null){
+			SagaLogger.severe(this, "last seen date not found for " + name + " player");
+			Calendar.getInstance().getTime();
+		}
+		
+		return lastDate;
+		
+		
+	}
+	
+	/**
+	 * Checks if the member is active.
+	 * 
+	 * @param name player name
+	 * @return true if active
+	 */
+	public boolean isMemberActive(String name) {
+
+		
+		Calendar inactiveCal = Calendar.getInstance();
+		inactiveCal.add(Calendar.DAY_OF_MONTH, - SettlementConfiguration.config().inactiveSetDays);
+		
+		Date inactivate = inactiveCal.getTime();
+		Date lastSeen = getLastSeen(name);
+		
+		return !inactivate.after(lastSeen);
+		
+		
+	}
+
+	/**
+	 * Gets inactive member count.
+	 * 
+	 * @return inactive member count
+	 */
+	public int countInactiveMembers() {
+
+		
+		int inactive = 0;
+		ArrayList<String> players = getPlayers();
+		
+		for (String playerName : players) {
+			
+			if(!isMemberActive(playerName)) inactive++;
+			
+		}
+		
+		return inactive;
+		
+		
+	}
+	
+	/**
+	 * Gets active member count.
+	 * 
+	 * @return active member count
+	 */
+	public int countActiveMembers() {
+
+		
+		int active = 0;
+		ArrayList<String> players = getPlayers();
+		
+		for (String playerName : players) {
+			
+			if(isMemberActive(playerName)) active++;
+			
+		}
+		
+		return active;
+		
+		
+	}
+	
+	/**
+	 * Checks if the settlement has enough active members.
+	 * 
+	 * @return true if enough active members
+	 */
+	public boolean checkActiveMembers() {
+		return countActiveMembers() >= getDefinition().getActivePlayers(getLevel());
+	}
+	
+	
 	// Events:
 	/* 
 	 * (non-Javadoc)
@@ -569,6 +691,18 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		
 	}
 	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.chunkGroups.ChunkGroup#onMemberQuit(org.bukkit.event.player.PlayerQuitEvent, org.saga.player.SagaPlayer)
+	 */
+	@Override
+	public void onMemberQuit(PlayerQuitEvent event, SagaPlayer sagaPlayer) {
+
+		// Update last seen:
+		lastSeen.put(sagaPlayer.getName(), Calendar.getInstance().getTime());
+	
+	}
 
 	
 	// Clock:
@@ -582,7 +716,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 
 		
 		// Level progress:
-		if(level < getDefinition().getMaxLevel() && definition.canLevelUp(this)){
+		if(level < getDefinition().getMaxLevel() && checkActiveMembers()){
 			
 			exp += getExpSpeed();
 			

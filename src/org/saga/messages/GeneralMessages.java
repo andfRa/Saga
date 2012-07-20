@@ -65,7 +65,7 @@ public class GeneralMessages {
 		return title.toUpperCase();
 	}
 	
-	public static String tableitle(String title) {
+	public static String tableTitle(String title) {
 		return title.toUpperCase();
 	}
 

@@ -3,10 +3,7 @@ package org.saga.chunkGroups;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.Hashtable;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -19,6 +16,8 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
@@ -87,11 +86,6 @@ public class ChunkGroup extends SagaCustomSerialization{
 	 */
 	private String owner;
 
-	/**
-	 * Player logout dates.
-	 */
-	private Hashtable<String, Date> lastOnlineDates;
-	
 	
 	// Control:
 	/**
@@ -149,7 +143,6 @@ public class ChunkGroup extends SagaCustomSerialization{
 		this.groupChunks = new ArrayList<SagaChunk>();
 		this.isSavingEnabled = true;
 		this.owner = "";
-		this.lastOnlineDates = new Hashtable<String, Date>();
 		this.pvpProtectionBonus = false;
 		this.unlimitedClaimBonus = false;
 		this.fireSpread = false;
@@ -211,13 +204,8 @@ public class ChunkGroup extends SagaCustomSerialization{
 			owner = "";
 			integrity = false;
 		}
-		if(lastOnlineDates == null){
-			SagaLogger.nullField(this, "lastOnlineDates");
-			lastOnlineDates = new Hashtable<String, Date>();
-			integrity = false;
-		}
 		
-		// Transient fields:
+		// Transient:
 		registeredPlayers = new ArrayList<SagaPlayer>();
 		registeredFactions = new ArrayList<SagaFaction>();
 		isSavingEnabled = true;
@@ -558,15 +546,6 @@ public class ChunkGroup extends SagaCustomSerialization{
 		return groupChunks.size();
 	}
 
-	/**
-	 * Checks if the faction is formed.
-	 * 
-	 * @return true if formed
-	 */
-	public boolean isFormed() {
-		return getActivePlayerCount() >= SettlementConfiguration.config().formationAmount;
-	}
-	
 	
 	// Buildings:
 	/**
@@ -778,6 +757,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	}
 	
 
+	
 	// Player and faction management:
 	/**
 	 * Adds a player.
@@ -912,9 +892,6 @@ public class ChunkGroup extends SagaCustomSerialization{
 		// Unregister chunk group:
 		sagaPlayer.unregisterChunkGroup(this);
 		
-		// Add log out date:
-		lastOnlineDates.put(sagaPlayer.getName(), Calendar.getInstance().getTime());
-		
 		
 	}
 
@@ -1043,133 +1020,6 @@ public class ChunkGroup extends SagaCustomSerialization{
 		}
 		return name;
 
-	}
-	
-	
-	
-	// Time:
-	/**
-	 * Gets player logout date.
-	 * 
-	 * @param playerName player name
-	 * @return log out date, null if not found, saga players date if registered
-	 */
-	private Date getPlayerLogOutDate(String playerName) {
-		
-		
-		// Online players:
-		for (int i = 0; i < registeredPlayers.size(); i++) {
-			if(registeredPlayers.get(i).getName().equalsIgnoreCase(playerName)) return Calendar.getInstance().getTime();
-		}
-		
-		// Offline players:
-		Date logOutDate = lastOnlineDates.get(playerName);
-		if(logOutDate != null){
-			return logOutDate;
-		}
-		
-		return null;
-		
-		
-	}
-	
-	
-	/**
-	 * Check if the player is active.
-	 * 
-	 * @param playerName player name
-	 * @return true if active
-	 */
-	public boolean isPlayerActive(String playerName) {
-
-		
-		Calendar inactivateCalendar = Calendar.getInstance();
-		inactivateCalendar.add(Calendar.DAY_OF_MONTH, - SettlementConfiguration.config().inactiveSetDays);
-		Date inactivateDate = inactivateCalendar.getTime();
-		Date logoutDate = getPlayerLogOutDate(playerName);
-		
-		if(logoutDate == null){
-			return false;
-		}
-		
-		return !inactivateDate.after(logoutDate);
-		
-		
-	}
-	
-	/**
-	 * Gets inactive player count.
-	 * 
-	 * @return inactive player count
-	 */
-	public int getInactivePlayerCount() {
-
-		
-		int inactivePlayers = 0;
-		ArrayList<String> players = getPlayers();
-		for (String playerName : players) {
-			if(!isPlayerActive(playerName)){
-				inactivePlayers++;
-			}
-		}
-		return inactivePlayers;
-		
-		
-	}
-	
-	/**
-	 * Gets active player count.
-	 * 
-	 * @return inactive player count
-	 */
-	public int getActivePlayerCount() {
-
-		
-		int activePlayers = 0;
-		ArrayList<String> players = getPlayers();
-		for (String playerName : players) {
-			if(isPlayerActive(playerName)){
-				activePlayers++;
-			}
-		}
-		return activePlayers;
-		
-		
-	}
-	
-	/**
-	 * Gets the boolean list of players that specifies if the player is inactive.
-	 * 
-	 * @return inactive active player list
-	 */
-	public ArrayList<Boolean> arePlayersActive() {
-
-		
-		Calendar inactivateCalendar = Calendar.getInstance();
-		inactivateCalendar.add(Calendar.DAY_OF_MONTH, - SettlementConfiguration.config().inactiveSetDays);
-		Date inactivateDate = inactivateCalendar.getTime();
-		ArrayList<Boolean> areActive = new ArrayList<Boolean>();
-		
-		ArrayList<String> players = getPlayers();
-		for (String playerName : players) {
-			
-			Date logoutDate = getPlayerLogOutDate(playerName);
-			if(logoutDate == null){
-				SagaLogger.severe(this, "failed to retrieve player log out date");
-				logoutDate = Calendar.getInstance().getTime();
-			}
-			
-			if(inactivateDate.after(logoutDate)){
-				areActive.add(false);
-			}else{
-				areActive.add(true);
-			}
-			
-		}
-		
-		return areActive;
-		
-		
 	}
 	
 	
@@ -1438,27 +1288,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 	}
 	
-	
-	// Spawn events:
-	/**
-	 * Called when a member respawns.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @param event event
-	 */
-	public void onMemberRespawn(SagaPlayer sagaPlayer, PlayerRespawnEvent event) {
 
-		
-		// Forward to all buildings:
-		for (int i = 0; i < groupChunks.size(); i++) {
-			Building building = groupChunks.get(i).getBuilding();
-			if(building != null) building.onMemberRespawn(sagaPlayer, event);
-		}
-		
-		
-	}
-
-	
 	
 	// Block events:
 	/**
@@ -1605,7 +1435,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	 * 
 	 * @param event event
 	 */
-	void onEntityDamage(SagaEntityDamageEvent event, SagaChunk locationChunk){
+	public void onEntityDamage(SagaEntityDamageEvent event, SagaChunk locationChunk){
 
 		// Deny pvp:
 		if(isOptionEnabled(ChunkGroupToggleable.PVP_PROTECTION)) event.addPvpOverride(PvPOverride.SAFE_AREA_DENY);
@@ -1620,7 +1450,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	 * @param damaged damaged saga player
 	 * @param locationChunk chunk where the pvp occurred
 	 */
-	void onPvpKill(SagaPlayer attacker, SagaPlayer defender, SagaChunk locationChunk){
+	public void onPvpKill(SagaPlayer attacker, SagaPlayer defender, SagaChunk locationChunk){
 		
 	}
 
@@ -1633,7 +1463,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	 * @param sagaPlayer saga player
 	 * @param last last chunk group, null if none
 	 */
-	void onPlayerEnter(SagaPlayer sagaPlayer, ChunkGroup last) {
+	public void onPlayerEnter(SagaPlayer sagaPlayer, ChunkGroup last) {
 
 		sagaPlayer.message(ChunkGroupMessages.entered(this));
 
@@ -1645,11 +1475,55 @@ public class ChunkGroup extends SagaCustomSerialization{
 	 * @param sagaPlayer saga player
 	 * @param next next chunk group, null if none
 	 */
-	void onPlayerLeave(SagaPlayer sagaPlayer, ChunkGroup next) {
+	public void onPlayerLeave(SagaPlayer sagaPlayer, ChunkGroup next) {
 
 		if(next == null) sagaPlayer.message(ChunkGroupMessages.left(this));
 
 
+	}
+	
+	
+	// Member events:
+	/**
+	 * Called when a member joins the game.
+	 * 
+	 * @param event event
+	 * @param sagaPlayer saga player
+	 */
+	public void onMemberJoin(PlayerJoinEvent event, SagaPlayer sagaPlayer) {
+
+
+
+	}
+	
+	/**
+	 * Called when a member quits the game.
+	 * 
+	 * @param event event
+	 * @param sagaPlayer saga player
+	 */
+	public void onMemberQuit(PlayerQuitEvent event, SagaPlayer sagaPlayer) {
+
+
+
+	}
+
+	/**
+	 * Called when a member respawns.
+	 * 
+	 * @param sagaPlayer saga player
+	 * @param event event
+	 */
+	public void onMemberRespawn(SagaPlayer sagaPlayer, PlayerRespawnEvent event) {
+
+		
+		// Forward to all buildings:
+		for (int i = 0; i < groupChunks.size(); i++) {
+			Building building = groupChunks.get(i).getBuilding();
+			if(building != null) building.onMemberRespawn(sagaPlayer, event);
+		}
+		
+		
 	}
 	
 	

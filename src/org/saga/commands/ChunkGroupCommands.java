@@ -1301,7 +1301,7 @@ public class ChunkGroupCommands {
 	    }
 	    
 	    Double cost = EconomyConfiguration.config().chunkGroupRenameCost;
-		if(selectedChunkGroup.isFormed() && cost > 0){
+		if(cost > 0){
 
 		    // Check coins:
 		    if(sagaPlayer.getCoins() < cost){

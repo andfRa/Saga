@@ -25,6 +25,7 @@ import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.ProficiencyDefinition;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;
+import org.saga.settlements.SettlementDefinition;
 import org.saga.utility.StringTable;
 import org.saga.utility.TextUtil;
 
@@ -492,6 +493,14 @@ public class ChunkGroupMessages {
 				// Levels and claims:
 				result.append(levelClaims(settlement).createTable());
 
+				result.append("\n");
+				result.append("\n");
+				
+				// Active members:
+				result.append(GeneralMessages.tableTitle("required"));
+				result.append("\n");
+				result.append(requirements(settlement).createTable());
+				
 				break;
 				
 		}
@@ -529,6 +538,29 @@ public class ChunkGroupMessages {
 		// Exp per minute:
 		table.addLine("EXP/minute", settlement.getExpSpeed().toString(), 2);
 		
+		table.collapse();
+		
+		return table;
+		
+		
+	}
+	
+	private static StringTable requirements (Settlement settlement){
+		
+		
+		ColorCircle colours = new ColorCircle().addColor(normal1).addColor(normal2);
+		StringTable table = new StringTable(colours);
+		
+		SettlementDefinition definition = settlement.getDefinition();
+		Integer level = settlement.getLevel();
+		
+		// Active players:
+		Integer active = settlement.countActiveMembers();
+		if(settlement.checkActiveMembers()){
+			table.addLine(positive + "members", positive + active.toString() + "/" + definition.getActivePlayers(level).toString(), 0);
+		}else{
+			table.addLine(negative + "members", negative + active.toString() + "/" + definition.getActivePlayers(level).toString(), 0);
+		}
 		table.collapse();
 		
 		return table;
@@ -724,7 +756,7 @@ public class ChunkGroupMessages {
 			
 			rString.append(normalColor.nextColor() + "Online: " + settlement.getRegisteredMemberCount() + "/" + settlement.getPlayerCount());
 
-			int inactiveCount = settlement.getInactivePlayerCount();
+			int inactiveCount = settlement.countInactiveMembers();
 			if(inactiveCount != 0){
 				rString.append(" Inactive: " + inactiveCount);
 			}
@@ -828,7 +860,7 @@ public class ChunkGroupMessages {
 				// Names:
 				for (int j = 0; j < playerNames.size(); j++) {
 					if( j != 0 ) eString.append(", ");
-					eString.append( playerNameElement(playerNames.get(j), settlement, messageColor, settlement.isPlayerActive(playerNames.get(j))) );
+					eString.append( playerNameElement(playerNames.get(j), settlement, messageColor, settlement.isMemberActive(playerNames.get(j))) );
 				}
 				
 			}
@@ -845,7 +877,7 @@ public class ChunkGroupMessages {
 			
 			for (int i = 0; i < zeroHighlMembers.size(); i++) {
 				if(i != 0) rString.append(", ");
-				rString.append(playerNameElement(zeroHighlMembers.get(i), settlement, messageColor, settlement.isPlayerActive(zeroHighlMembers.get(i))) );
+				rString.append(playerNameElement(zeroHighlMembers.get(i), settlement, messageColor, settlement.isMemberActive(zeroHighlMembers.get(i))) );
 			}
 			
 		}

@@ -137,26 +137,7 @@ public class SettlementDefinition{
 	
 
 	
-	// Interaction:
-	/**
-	 * Check if the settlement can level up.
-	 * 
-	 * @param settlement settlement
-	 * @return true if can level up
-	 */
-	public boolean canLevelUp(Settlement settlement) {
-
-		
-//		// Active players:
-//		if(settlement.getActivePlayerCount() < activePlayers.value(settlement.getLevel())){
-//			return false;
-//		}
-		
-		return true;
-		
-		
-	}
-
+	// Requirements:
 	/**
 	 * Gets the activePlayers.
 	 * 
@@ -167,6 +148,8 @@ public class SettlementDefinition{
 		return activePlayers.value(level).intValue();
 	}
 
+	
+	// Building points:
 	/**
 	 * Get building points.
 	 * 
