@@ -729,8 +729,6 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	public ItemStack withdraw(ItemStack fromStore, int amount) {
 
 		
-		System.out.println("withdrawing " + amount +" " +  fromStore + " from " + getName());
-		
 		ArrayList<StorageArea> allSorage = getStorageAreas();
 
 		// Blocks:
@@ -816,8 +814,6 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		// Withdraw from related buildings:
 		for (Building building : buildings) {
 
-			System.out.println("RELAT: withdrawing " + amount +" " +  fromStore + " from " + building.getName());
-			
 			if(fromStore.getAmount() >= amount) return fromStore;
 				
 			building.withdraw(fromStore, amount);

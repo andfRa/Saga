@@ -40,10 +40,10 @@
     "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
     "storageSize":36,
     "recipes":[
-      {"from":[{"mat":"STONE","amount":1,"data":0}],"to":[{"mat":"LOG","amount":1,"data":0}], "weight":0.25},
-      {"from":[{"mat":"STONE","amount":1,"data":0}],"to":[{"mat":"LOG","amount":1,"data":1}], "weight":0.25},
-      {"from":[{"mat":"STONE","amount":1,"data":0}],"to":[{"mat":"LOG","amount":1,"data":2}], "weight":0.25},
-      {"from":[{"mat":"STONE","amount":1,"data":0}],"to":[{"mat":"LOG","amount":1,"data":3}], "weight":0.25}
+      {"to":[{"mat":"LOG","amount":1,"data":0}], "weight":0.25},
+      {"to":[{"mat":"LOG","amount":1,"data":1}], "weight":0.25},
+      {"to":[{"mat":"LOG","amount":1,"data":2}], "weight":0.25},
+      {"to":[{"mat":"LOG","amount":1,"data":3}], "weight":0.25}
     ],
     "resourceAmount":{"x1":1,"y1":6,"x2":3,"y2":12},
     "relatedBuildings":["mine"],
