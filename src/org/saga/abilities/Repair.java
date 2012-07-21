@@ -9,7 +9,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
-import org.saga.SagaLogger;
 import org.saga.messages.AbilityMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
@@ -25,12 +24,12 @@ public class Repair extends Ability{
 	/**
 	 * Enchantment level cost key.
 	 */
-	private static String ENCHANTMENT_COST_KEY = "enchantment cost";
+	private static String ENCHANTMENT_COST_KEY = "ench level cost";
 	
 	/**
-	 * Enchantment repair maximum.
+	 * Enchantment repair multiplier.
 	 */
-	private static String ENCHANTMENT_REPAIR_KEY = "enchantment repair";
+	private static String ENCHANTMENT_REPAIR_KEY = "ench multiplier";
 	
 	
 	// Initialisation:
@@ -74,24 +73,20 @@ public class Repair extends Ability{
 		
 		// Requirements:
 		Material usedMaterial = getRepairMaterial(item.getType());
-		Integer itemEnchLevel = getItemEnchantLevel(item);
-		Integer levelsMaxReq = getDefinition().getFunction(ENCHANTMENT_COST_KEY).intValueCeil(itemEnchLevel);
-		Integer levelsReq = getDefinition().getFunction(ENCHANTMENT_COST_KEY).randomIntValue(itemEnchLevel);
-		Double enchantMax = getDefinition().getFunction(ENCHANTMENT_REPAIR_KEY).value(itemEnchLevel);
-		Short maxDurability = (short) (item.getType().getMaxDurability() * enchantMax);
-		short repair = (short)(maxDurability * getRepairPercent(item.getType()));
+		Integer enchScore = getItemEnchantLevel(item);
+		
+		// Enchant requirements:
+		Integer enchLevelsMax = getDefinition().getFunction(ENCHANTMENT_COST_KEY).intValueCeil(enchScore);
+		Integer enchLevels = getDefinition().getFunction(ENCHANTMENT_COST_KEY).randomIntValue(enchScore);
+		Double enchMult = getDefinition().getFunction(ENCHANTMENT_REPAIR_KEY).value(enchScore);
+		
+		// Repair amount:
+		short repair = (short)(item.getType().getMaxDurability() * getRepairPercent(item.getType()));
+		if(enchScore > 0) repair*= enchMult;
 		
 		// Normalise:
 		if(item.getDurability() - repair < 0){
 			repair = item.getDurability();
-		}
-		if(enchantMax > 1){
-			enchantMax = 1.0;
-			SagaLogger.severe(this, ENCHANTMENT_REPAIR_KEY + " function values must be between 0 and 1");
-		}
-		if(enchantMax < 0){
-			enchantMax = 0.0;
-			SagaLogger.severe(this, ENCHANTMENT_REPAIR_KEY + " function must be between 0 and 1");
 		}
 		
 		// Already repaired:
@@ -100,44 +95,34 @@ public class Repair extends Ability{
 			return false;
 		}
 
-		// Enchanted items:
-		if(itemEnchLevel > 0){
-			
-			// Enchantment repair maximum:
-			if((double)(item.getType().getMaxDurability() - item.getDurability()) / (double)item.getType().getMaxDurability() >= enchantMax){
-				sagaPlayer.message(AbilityMessages.cantRepairEnch());
-				return false;
-			}
-
-			// Used levels:
-			if(player.getLevel() < levelsMaxReq){
-				sagaPlayer.message(AbilityMessages.repairLevelsRequired(levelsMaxReq));
-				return false;
-			}
-			
-			// Use enchant points:
-			player.setLevel(getScore() - levelsReq);
-			
-		}
-		
 		// Can't be repaired:
 		if(repair == 0 || usedMaterial == Material.AIR){
 			sagaPlayer.message(AbilityMessages.cantRepair(item.getType()));
 			return false;
 		}
 
-		// Consume:
+		// Check item consumption:
 		if(!checkCost(usedMaterial, 1)){
 			sagaPlayer.message(AbilityMessages.insufficientItems(this, usedMaterial, 1));
 			return false;
 		}
-		Boolean consume = getDefinition().getFunction(CONSUME_CHANCE_KEY).randomBooleanValue(skillLevel);
-		if(consume){
 
-			// Use items:
-			useItems(usedMaterial, 1);
-				
+		// Check enchant levels:
+		if(enchScore > 0){
+
+			if(player.getLevel() < enchLevelsMax){
+				sagaPlayer.message(AbilityMessages.repairLevelsRequired(enchLevelsMax));
+				return false;
+			}
+			
 		}
+		
+		// Use enchant levels:
+		if(enchScore > 0) player.setLevel(player.getLevel() - enchLevels);
+
+		// Use items:
+		Boolean consume = getDefinition().getFunction(CONSUME_CHANCE_KEY).randomBooleanValue(skillLevel);
+		if(consume) useItems(usedMaterial, 1);
 		
 		// Repair:
 		item.setDurability((short) (item.getDurability() - repair));
@@ -145,7 +130,9 @@ public class Repair extends Ability{
 		// Play effect:
 		Location location = event.getClickedBlock().getLocation();
 		Random random = new Random();
+		
 		sagaPlayer.playGlobalEffect(Effect.STEP_SOUND, Material.IRON_BLOCK.getId(), location);
+		
 		for (int i = 5; i <= 12; i++) {
 			
 			if(random.nextBoolean()) continue;

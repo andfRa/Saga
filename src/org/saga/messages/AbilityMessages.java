@@ -60,17 +60,14 @@ public class AbilityMessages {
 		
 	}
 	
-	public static String cantRepairEnch() {
+	public static String repairLevelsRequired(Integer levels) {
 		
-		return negative + "Items enchantment is too powerful to repair any further.";
+		if(levels == 0){
+			return negative + levels.toString() + " enchant level required.";
+		}
+		return negative + levels.toString() + " enchant levels required.";
 		
 	}
-
-	public static String repairLevelsRequired(Integer levels) {
-	
-	return negative + levels.toString() + " enchant levels required to repair this item.";
-	
-}
 
 	
 	

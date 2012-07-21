@@ -117,8 +117,8 @@
     },
     "functions":{
       "consume chance":{"x1":1,"y1":1.0,"x2":3,"y2":0.35},
-      "enchantment cost":{"x1":1,"y1":0.0,"x2":10,"y2":2.5},
-      "enchantment repair":{"x1":1,"y1":0.85,"x2":5,"y2":0.15}
+      "ench level cost":{"x1":1,"y1":0.5,"x2":15,"y2":2.0},
+      "ench multiplier":{"x1":1,"y1":0.85,"x2":15,"y2":0.05}
     },
     "description":"Repairs items.",
     "usage":"rclick iron block"
