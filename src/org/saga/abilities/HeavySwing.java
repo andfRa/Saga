@@ -338,6 +338,9 @@ public class HeavySwing extends Ability{
 		filter.addMaterial(Material.DIAMOND_ORE);
 		filter.addMaterial(Material.REDSTONE_ORE);
 		
+		filter.addMaterial(Material.NETHERRACK);
+		filter.addMaterial(Material.ENDER_STONE);
+		
 		return filter;
 		
 		
