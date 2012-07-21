@@ -58,6 +58,7 @@ public class StorageArea {
 	transient private Integer size;
 	
 	
+	
 	// Initialisation:
 	/**
 	 * Creates a storage area. Sets storage anchor location and orientation.
@@ -250,7 +251,9 @@ public class StorageArea {
 		for (int i = blocks.size() - 1; i >= 0; i--) {
 
 			Block storeBlock = blocks.get(i);
-		
+
+			if(storeBlock.getType() != fromStore.getType()) continue;
+			
 			if(fromStore.getAmount() >= amount) break;
 			
 			storeBlock.setType(Material.AIR);
@@ -303,7 +306,6 @@ public class StorageArea {
 		
 		
 	}
-	
 
 	/**
 	 * Withdraw items from the storage.
@@ -348,6 +350,62 @@ public class StorageArea {
 		
 	}
 
+	
+	/**
+	 * Counts the amount of items available.
+	 * 
+	 * @param item item
+	 * @return amount
+	 */
+	public Integer countStored(ItemStack item) {
+
+		
+		int amount = 0;
+
+		// Contents:
+		ArrayList<Block> blocks = SHAPE.getBlocks(anchor.getLocation(), orientation, size, FULL_FILTER);
+		
+		for (Block block : blocks) {
+			
+			// Chest:
+			if(block.getState() instanceof Chest){
+				
+				ItemStack[] inventory = ((Chest) block.getState()).getBlockInventory().getContents();
+				for (int i = 0; i < inventory.length; i++) {
+
+					if(inventory[i] == null) continue;
+					
+					// From https://github.com/Bukkit/CraftBukkit/blob/master/src/main/java/org/bukkit/craftbukkit/inventory/CraftInventory.java
+					boolean equals = item.getTypeId() == inventory[i].getTypeId() && item.getDurability() == inventory[i].getDurability() && item.getEnchantments().equals(inventory[i].getEnchantments());
+					
+					if(!equals) continue;
+					
+					amount+= inventory[i].getAmount();
+					
+				}
+				
+			}
+			
+			// Blocks:
+			else{
+				
+				// Material:
+				if(block.getType() != item.getType()) continue;
+
+				// Data:
+				if(block.getData() != item.getData().getData()) continue;
+				
+				amount+= 1;
+				
+			}
+			
+			
+		}
+		
+		return amount;
+		
+		
+	}
 	
 	
 	

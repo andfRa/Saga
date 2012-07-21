@@ -2,7 +2,6 @@ package org.saga.commands;
 
 import java.util.ArrayList;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -37,7 +36,7 @@ import org.sk89q.CommandPermissions;
 public class BuildingCommands {
 
 	
-	// General:
+	// General building storage:
 	@Command(
 			aliases = {"baddstorage","baddstore"},
 			usage = "",
@@ -146,90 +145,6 @@ public class BuildingCommands {
 	}
 	
 	
-	// Building storage:
-	@Command(
-			aliases = {"bstore"},
-			usage = "",
-			flags = "",
-			desc = "Stores an item.",
-			min = 0,
-			max = 0
-	)
-	@CommandPermissions({"saga.admin.building.storage.store"})
-	public static void store(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-		
-		// TODO: Remove test command
-
-		// Retrieve Saga chunk:
-		SagaChunk selChunk = sagaPlayer.getSagaChunk();
-		if(selChunk == null){
-			sagaPlayer.message(ChunkGroupMessages.chunkNotClaimed());
-			return;
-		}
-		
-		// Retrieve building:
-		Building selBuilding = selChunk.getBuilding();
-		if(selBuilding == null){
-			sagaPlayer.message(BuildingMessages.noBuilding());
-			return;
-		}
-	
-		// Store:
-		ItemStack toStore = new ItemStack(Material.IRON_AXE, 3);
-		selBuilding.store(toStore);
-		
-		if(toStore.getAmount() == 0){
-			sagaPlayer.message(ChatColor.DARK_GREEN + "stored ");
-		}else{
-			sagaPlayer.message(ChatColor.RED + "storage full, " + toStore.getAmount() + " remaining");
-		}
-		
-		
-	}
-	
-	@Command(
-			aliases = {"bwithdraw"},
-			usage = "",
-			flags = "",
-			desc = "Withdraws an item from storage.",
-			min = 0,
-			max = 0
-	)
-	@CommandPermissions({"saga.admin.building.storage.withdraw"})
-	public static void withdraw(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-		
-		// TODO: Remove test command
-
-		// Retrieve Saga chunk:
-		SagaChunk selChunk = sagaPlayer.getSagaChunk();
-		if(selChunk == null){
-			sagaPlayer.message(ChunkGroupMessages.chunkNotClaimed());
-			return;
-		}
-		
-		// Retrieve building:
-		Building selBuilding = selChunk.getBuilding();
-		if(selBuilding == null){
-			sagaPlayer.message(BuildingMessages.noBuilding());
-			return;
-		}
-	
-		// Store:
-		ItemStack fromStore = new ItemStack(Material.IRON_AXE, 0);
-		selBuilding.withdraw(fromStore, 5);
-		
-		if(fromStore.getAmount() == 0){
-			sagaPlayer.message(ChatColor.RED + "item not found ");
-		}else{
-			sagaPlayer.message(ChatColor.DARK_GREEN + "" + fromStore.getAmount() + "items retrieved");
-		}
-		
-		
-	}
-	
-	
 	
 	// Arena:
 	@Command(
@@ -277,6 +192,7 @@ public class BuildingCommands {
 	
 	}
 
+	
 
 	// Home:
 	@Command(
@@ -381,6 +297,7 @@ public class BuildingCommands {
 		
 	
 	}
+	
 	
 	
 	// Trading post:

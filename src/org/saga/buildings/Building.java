@@ -36,7 +36,8 @@ import org.saga.messages.SagaMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.SagaCustomSerialization;
 import org.saga.settlements.Settlement.SettlementPermission;
-import org.saga.utility.items.RandomItemBlueprint;
+import org.saga.utility.items.RandomRecipe;
+import org.saga.utility.items.RecepieBlueprint;
 import org.saga.utility.text.TextUtil;
 import org.sk89q.CommandContext;
 
@@ -76,12 +77,6 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	transient private BuildingDefinition definition;
 	
 	
-	/**
-	 * Craftable resources.
-	 */
-	transient private RandomItemBlueprint resources;
-	
-	
 	
 	// Initialisation:
 	/**
@@ -96,7 +91,6 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		this.level = 0;
 		this.signs = new ArrayList<BuildingSign>();
 		this.storage = new ArrayList<StorageArea>();
-		this.resources = new RandomItemBlueprint(getDefinition().getResources());
 		
 	}
 	
@@ -171,9 +165,6 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 			}
 			
 		}
-		
-		// Resources:
-		resources = new RandomItemBlueprint(getDefinition().getResources());
 		
 		// Refresh signs:
 		refreshSigns();
@@ -738,6 +729,8 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	public ItemStack withdraw(ItemStack fromStore, int amount) {
 
 		
+		System.out.println("withdrawing " + amount +" " +  fromStore + " from " + getName());
+		
 		ArrayList<StorageArea> allSorage = getStorageAreas();
 
 		// Blocks:
@@ -771,6 +764,106 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 
 	}
 
+
+	/**
+	 * Counts the amount of items available.
+	 * 
+	 * @param item item
+	 * @return amount
+	 */
+	public Integer countStored(ItemStack item) {
+
+		
+		int amount = 0;
+		
+		ArrayList<StorageArea> allSorage = getStorageAreas();
+
+		// Blocks:
+		for (StorageArea storageArea : allSorage) {
+				
+			amount+= storageArea.countStored(item);
+				
+		}
+		
+		return amount;
+		
+		
+	}
+	
+	
+
+	/**
+	 * Withdraws blocks from the storage. Also looks in related buildings.
+	 * 
+	 * @param fromStore withdrawn blocks
+	 * @param amount requested amount
+	 * @return withdrawn blocks
+	 */
+	public ItemStack withdrawRelat(ItemStack fromStore, int amount) {
+
+
+		// Buildings:
+		ArrayList<Building> buildings = new ArrayList<Building>();
+		ArrayList<String> bldgNames = getDefinition().getRelatedBuildings();
+		
+		for (String bldgName : bldgNames) {
+			buildings.addAll(getChunkGroup().getBuildings(bldgName));
+		}
+		
+		// Withdraw from this building:
+		withdraw(fromStore, amount);
+		
+		// Withdraw from related buildings:
+		for (Building building : buildings) {
+
+			System.out.println("RELAT: withdrawing " + amount +" " +  fromStore + " from " + building.getName());
+			
+			if(fromStore.getAmount() >= amount) return fromStore;
+				
+			building.withdraw(fromStore, amount);
+				
+		}
+		
+		return fromStore;
+		
+		
+	}
+
+
+	/**
+	 * Counts the amount of items available. Also looks in related buildings.
+	 * 
+	 * @param item item
+	 * @return amount
+	 */
+	public Integer countStoredRelat(ItemStack item) {
+
+		
+		int amount = 0;
+		
+		// Buildings:
+		ArrayList<Building> buildings = new ArrayList<Building>();
+		ArrayList<String> bldgNames = getDefinition().getRelatedBuildings();
+		
+		for (String bldgName : bldgNames) {
+			buildings.addAll(getChunkGroup().getBuildings(bldgName));
+		}
+		
+		// Count for this building:
+		amount+= countStored(item);
+		
+		// Count for related buildings:
+		for (Building building : buildings) {
+
+			amount+= building.countStored(item);
+			
+		}
+		
+		return amount;
+		
+		
+	}
+	
 	
 	/**
 	 * Handles block withdraw.
@@ -888,39 +981,72 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 
 	}
 
-	
-	
-	// Craftable:
 	/**
-	 * Handles crafting.
+	 * Performs crafting based on recipes.
 	 * 
 	 */
-	private void handleCrafting() {
+	private void produce() {
 
 		
 		// Chunk not loaded:
 		if(!getSagaChunk().isChunkLoaded()) return;
 		
-		// Nothing to craft:
-		if(resources.size() == 0){
-			return;
-		}
+		// Recipes:
+		RandomRecipe recipes = new RandomRecipe(getDefinition().getRecipes());
 		
-		// Craft resources:
+		// Craft:
 		Integer toCraft = getDefinition().getResourceAmount(getLevel());
 		
-		for (int i = 0; i < toCraft; i++) {
+		while(recipes.size() > 0 && toCraft > 0){
 			
-			ItemStack item = resources.nextItem();
+			// Next recipe:
+			RecepieBlueprint recipe = recipes.nextRecipe();
 			
-			store(item);
+			// Check amounts:
+			ArrayList<ItemStack> from = recipe.createFrom();
+			
+			boolean req = true;
+			for (ItemStack fromStack : from) {
+				
+				if(countStoredRelat(fromStack) < fromStack.getAmount()){
+					req = false;
+					break;
+				}
+				
+			}
+			
+			// Requirements not met:
+			if(!req){
+				recipes.remove(recipe);
+				continue;
+			}
+			
+			ArrayList<ItemStack> to = recipe.createTo();
+			
+			// Take:
+			for (ItemStack fromStack : from) {
+				
+				int amount = fromStack.getAmount();
+				fromStack.setAmount(0);
+				withdrawRelat(fromStack, amount);
+				
+				if(fromStack.getAmount() != amount) SagaLogger.severe(this, "requested and retrieved amounts dont match for " + fromStack.getType());
+				
+			}
+			
+			// Craft:
+			for (ItemStack toStack : to) {
+				store(toStack);
+			}
+			
+			toCraft--;
 			
 		}
 		
 		
 	}
 	
-	
+
 	
 	// Clock:
 	/* 
@@ -936,7 +1062,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		if(daytime == getDefinition().getPerformTime()) perform();
 		
 		// Handle crafting:
-		if(daytime == getDefinition().getResourceTime()) handleCrafting();
+		if(daytime == getDefinition().getResourceTime()) produce();
 		
 		
 	}

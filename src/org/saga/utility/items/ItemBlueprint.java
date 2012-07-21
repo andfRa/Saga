@@ -22,11 +22,6 @@ public class ItemBlueprint {
 	 */
 	private Byte data = null;
 	
-	/**
-	 * Probability weight.
-	 */
-	private Double weight = null;
-	
 	// TODO: Add enchantments to ItemData
 	
 	/**
@@ -37,12 +32,11 @@ public class ItemBlueprint {
 	 * @param data data
 	 * @param weight probability weight
 	 */
-	public ItemBlueprint(Material mat, Integer amount, Byte data, Double weight) {
+	public ItemBlueprint(Material mat, Integer amount, Byte data) {
 	
 		this.mat = mat;
 		this.amount = amount;
 		this.data = data;
-		this.weight = weight;
 	
 	}
 	
@@ -66,10 +60,6 @@ public class ItemBlueprint {
 		
 		if(data == null){
 			data = 0;
-		}
-		
-		if(weight == null){
-			weight = 0.0;
 		}
 		
 		
@@ -96,16 +86,6 @@ public class ItemBlueprint {
 	public Byte getData() {
 		return data;
 	}
-	
-	/**
-	 * Gets probability weight.
-	 * 
-	 * @return probability weight
-	 */
-	public Double getWeight() {
-		return weight;
-	}
-	
 	
 	/**
 	 * Creates an item from the blueprint.

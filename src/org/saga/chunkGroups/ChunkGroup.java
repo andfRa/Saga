@@ -642,6 +642,30 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 	}
 	
+
+	/**
+	 * Gets the first building with the given name.
+	 * 
+	 * @param buildingName building name
+	 * @return buildings with the given name
+	 */
+	public ArrayList<Building> getBuildings(String buildingName) {
+
+		
+		ArrayList<Building> buildings = new ArrayList<Building>();
+		
+		for (SagaChunk sagaChunk : groupChunks) {
+			
+			Building building = sagaChunk.getBuilding();
+			if(building == null) continue;
+			
+			if(building.getName().equals(buildingName)) buildings.add(building);
+			
+		}
+		
+		return buildings;
+		
+	}
 	
 	/**
 	 * Gets all buildings instance of the given class.

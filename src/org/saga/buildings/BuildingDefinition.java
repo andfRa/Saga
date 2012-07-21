@@ -7,7 +7,7 @@ import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.SagaLogger;
 import org.saga.settlements.Settlement;
 import org.saga.utility.TwoPointFunction;
-import org.saga.utility.items.ItemBlueprint;
+import org.saga.utility.items.RecepieBlueprint;
 
 public class BuildingDefinition {
 
@@ -75,15 +75,20 @@ public class BuildingDefinition {
 	private Integer storageSize;
 	
 	/**
-	 * Resources crafted by the building.
+	 * Recipes for the building.
 	 */
-	private HashSet<ItemBlueprint> resources;
+	private HashSet<RecepieBlueprint> recipes;
 	
 	/**
 	 * Amount of resources crafted.
 	 */
 	private TwoPointFunction resourceAmount;
 
+	/**
+	 * Related buildings.
+	 */
+	private ArrayList<String> relatedBuildings;
+	
 	
 	// Timings:
 	/**
@@ -212,12 +217,12 @@ public class BuildingDefinition {
 			SagaLogger.nullField(BuildingDefinition.class, "storageSize");
 		}
 		
-		if(resources == null){
-			resources = new HashSet<ItemBlueprint>();
-			SagaLogger.nullField(BuildingDefinition.class, "resources");
+		if(recipes == null){
+			recipes = new HashSet<RecepieBlueprint>();
+			SagaLogger.nullField(BuildingDefinition.class, "recipes");
 		}
-		for (ItemBlueprint resource : resources) {
-			resource.complete();
+		for (RecepieBlueprint recipe : recipes) {
+			recipe.complete();
 		}
 		
 		if(resourceAmount == null){
@@ -226,6 +231,10 @@ public class BuildingDefinition {
 		}
 		resourceAmount.complete();
 		
+		if(relatedBuildings == null){
+			relatedBuildings = new ArrayList<String>();
+			SagaLogger.nullField(BuildingDefinition.class, "relatedBuildings");
+		}
 		
 		if(performTime == null){
 			performTime = Daytime.NONE;
@@ -417,12 +426,12 @@ public class BuildingDefinition {
 	}
 	
 	/**
-	 * Gets craftable items table.
+	 * Gets building recipes.
 	 * 
-	 * @return craftable items table
+	 * @return building recipes
 	 */
-	public HashSet<ItemBlueprint> getResources() {
-		return new HashSet<ItemBlueprint>(resources);
+	public HashSet<RecepieBlueprint> getRecipes() {
+		return new HashSet<RecepieBlueprint>(recipes);
 	}
 	
 	/**
@@ -435,6 +444,14 @@ public class BuildingDefinition {
 		return resourceAmount.intValue(level);
 	}
 	
+	/**
+	 * Gets all related buildings.
+	 * 
+	 * @return related buildings
+	 */
+	public ArrayList<String> getRelatedBuildings() {
+		return new ArrayList<String>(relatedBuildings);
+	}
 	
 	
 	// Timings:
