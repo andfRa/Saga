@@ -36,7 +36,7 @@ public class Dart extends Ability{
 
 		// Shoot:
 		SagaPlayer sagaPlayer = getSagaPlayer();
-		sagaPlayer.shootArrow(getDefinition().getFunction(SPEED_KEY).value(getModifiedScore()));
+		sagaPlayer.shootArrow(getDefinition().getFunction(SPEED_KEY).value(getScore()));
 
 		// Statistics:
 		StatisticsManager.manager().onAbilityUse(getName(), 0.0);

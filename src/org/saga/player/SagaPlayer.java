@@ -340,35 +340,65 @@ public class SagaPlayer implements SecondTicker, Trader{
 	}
 	
 	/**
-	 * Gets the score for the giver attribute.
+	 * Gets the score for the given attribute.
 	 * 
-	 * @param name attribute name
+	 * @param attrName attribute name
 	 * @return attribute score
 	 */
-	public Integer getAttributeScore(String name) {
+	public Integer getAttributeScore(String attrName) {
 
-		Integer multiplier = attributeScores.get(name);
-		if(multiplier == null) return 0;
-		return multiplier;
+		Integer score = attributeScores.get(attrName);
+		if(score == null) return 0;
+		return score;
 
+	}
+	
+	/**
+	 * Gets the modified score for the given attribute. Includes bonuses.
+	 * 
+	 * @param attrName attribute name
+	 * @return attribute score
+	 */
+	public Integer getModifiedAttrScore(String attrName) {
+
+		
+		Integer score = attributeScores.get(attrName);
+		if(score == null) score = 0;
+		
+		return score + getAttrScoreBonus(attrName);
+
+		
 	}
 
 	/**
-	 * Gets the score for the giver ability.
+	 * Gets the bonus for the given attribute.
 	 * 
-	 * @param name ability name
-	 * @return ability score
+	 * @param name attribute name
+	 * @return attribute bonus
 	 */
-	public Integer getAbilityScore(String name) {
+	public Integer getAttrScoreBonus(String attrName) {
 
 		
-		Ability ability = getAbility(name);
-		if(ability == null) return 0;
+		Integer bonus = 0;
+		Proficiency prof = null;
 		
-		return ability.getDefinition().getScore(this);
-
+		// Ask role:
+		prof = getRole();
+		if(prof != null){
+			bonus+= prof.getDefinition().getAttributeBonus(attrName);
+		}
+		
+		// Ask rank:
+		prof = getRank();
+		if(prof != null){
+			bonus+= prof.getDefinition().getAttributeBonus(attrName);
+		}
+		
+		return bonus;
+		
 		
 	}
+	
 	
 	/**
 	 * Gets the used attribute points.
@@ -443,6 +473,23 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 		return null;
 		
+		
+	}
+	
+	/**
+	 * Gets the score for the giver ability.
+	 * 
+	 * @param name ability name
+	 * @return ability score
+	 */
+	public Integer getAbilityScore(String name) {
+
+		
+		Ability ability = getAbility(name);
+		if(ability == null) return 0;
+		
+		return ability.getDefinition().getScore(this);
+
 		
 	}
 	

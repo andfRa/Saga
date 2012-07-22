@@ -47,9 +47,9 @@ public class GeneralMessages {
 	
 	public static String scoreAbility(Ability ability) {
 
-		if(ability.getModifiedScore() <= 0) return ability.getName();
+		if(ability.getScore() <= 0) return ability.getName();
 		
-		return scoreAbility(ability.getName(), ability.getModifiedScore());
+		return scoreAbility(ability.getName(), ability.getScore());
 
 	}
 	

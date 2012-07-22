@@ -86,7 +86,7 @@ public class ChopDown extends Ability{
 		}
 		
 		// Tree to big:
-		Integer treeSize = getDefinition().getFunction(TREE_SIZE_KEY).value(getModifiedScore()).intValue();
+		Integer treeSize = getDefinition().getFunction(TREE_SIZE_KEY).value(getScore()).intValue();
 		if(treeSize < blocks.size()){
 			
 			getSagaPlayer().message(notStroungEnough(blocks.size(), treeSize));

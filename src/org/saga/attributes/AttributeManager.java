@@ -40,7 +40,7 @@ public class AttributeManager {
 	public void onAttack(SagaEntityDamageEvent event) {
 
 		for (Attribute attribute : attributes) {
-			attribute.triggerAttack(event, sagaPlayer.getAttributeScore(attribute.getName()));
+			attribute.triggerAttack(event, sagaPlayer.getModifiedAttrScore(attribute.getName()));
 		}
 
 	}
@@ -53,7 +53,7 @@ public class AttributeManager {
 	public void onDefend(SagaEntityDamageEvent event) {
 
 		for (Attribute attribute : attributes) {
-			attribute.triggerDefence(event, sagaPlayer.getAttributeScore(attribute.getName()));
+			attribute.triggerDefence(event, sagaPlayer.getModifiedAttrScore(attribute.getName()));
 		}
 
 	}
@@ -66,7 +66,7 @@ public class AttributeManager {
 	public void onBlockBreak(SagaBlockBreakEvent event) {
 
 		for (Attribute attribute : attributes) {
-			attribute.triggerBreak(event, sagaPlayer.getAttributeScore(attribute.getName()));
+			attribute.triggerBreak(event, sagaPlayer.getModifiedAttrScore(attribute.getName()));
 		}
 
 	}

@@ -64,7 +64,7 @@ public class HeavySwing extends Ability{
 		
 		ItemStack itemHand = event.getItem();
 		Player player = event.getPlayer();
-		Integer abilityLevel = getModifiedScore();
+		Integer abilityLevel = getScore();
 
 		// Drops:
 		boolean triggered = false;

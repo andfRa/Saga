@@ -68,7 +68,7 @@ public class Repair extends Ability{
 			return false;
 		}
 		
-		Integer skillLevel = getModifiedScore();
+		Integer skillLevel = getScore();
 		SagaPlayer sagaPlayer = getSagaPlayer();
 		
 		// Requirements:

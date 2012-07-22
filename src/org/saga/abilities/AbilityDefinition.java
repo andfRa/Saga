@@ -289,7 +289,7 @@ public class AbilityDefinition{
 		
 		for (String attrName : attributeNames) {
 			
-			if(sagaPlayer.getAttributeScore(attrName) < attributeRequirements.get(attrName).intValue(abilityScore)){
+			if(sagaPlayer.getModifiedAttrScore(attrName) < attributeRequirements.get(attrName).intValue(abilityScore)){
 				return false;
 			}
 			

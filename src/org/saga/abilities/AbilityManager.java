@@ -52,7 +52,7 @@ public class AbilityManager {
 		// Only add abilities if the requirements are met:
 		for (Ability ability : allAbilities) {
 			
-			if(ability.getModifiedScore() > 0){
+			if(ability.getScore() > 0){
 				abilities.add(ability);
 			}
 			

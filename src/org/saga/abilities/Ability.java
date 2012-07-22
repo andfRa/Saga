@@ -214,18 +214,6 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	}
 
 	/**
-	 * Gets the modified ability score. Includes bonuses.
-	 * 
-	 * @return ability score
-	 */
-	public Integer getModifiedScore() {
-		
-		// TODO: Add bonuses to abilities
-		return getDefinition().getScore(sagaPlayer);
-		
-	}
-	
-	/**
 	 * Gets the maximum ability score.
 	 * 
 	 * @return ability score
@@ -262,7 +250,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 * @return the total cooldown
 	 */
 	public Integer getTotalCooldown() {
-		return getDefinition().getCooldown(getModifiedScore());
+		return getDefinition().getCooldown(getScore());
 	}
 
 	/**
@@ -294,7 +282,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 
 		
 		Material material = definition.getUsedItem();
-		Integer amount = definition.getUsedAmount(getModifiedScore());
+		Integer amount = definition.getUsedAmount(getScore());
 		
 		// Nothing to remove.
 		if(material.equals(Material.AIR) || amount == 0) return;
@@ -349,7 +337,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		PlayerInventory inventory = sagaPlayer.getPlayer().getInventory();
 		
 		Material usedItem = getDefinition().getUsedItem();
-		Integer usedAmount = getDefinition().getUsedAmount(getModifiedScore());
+		Integer usedAmount = getDefinition().getUsedAmount(getScore());
 		
 		if(usedItem == Material.AIR) return true;
 		
@@ -384,7 +372,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 */
 	protected void startCooldown() {
 
-		this.cooldown = definition.getCooldown(getModifiedScore());
+		this.cooldown = definition.getCooldown(getScore());
 		
 		// Start clock:
 		if(!clock) startClock();
@@ -424,10 +412,10 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 			
 		}
 		
-		if(getModifiedScore() < 1) return false;
+		if(getScore() < 1) return false;
 		
 		if(!checkCost()){
-			sagaPlayer.message(AbilityMessages.insufficientItems(this, definition.getUsedItem(), definition.getUsedAmount(getModifiedScore())));
+			sagaPlayer.message(AbilityMessages.insufficientItems(this, definition.getUsedItem(), definition.getUsedAmount(getScore())));
 			return false;
 		}
 

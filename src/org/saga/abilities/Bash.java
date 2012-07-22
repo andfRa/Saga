@@ -55,7 +55,7 @@ public class Bash extends Ability{
 		
 		// Determine disarm:
 		Random random = new Random();
-		double disarm = getDefinition().getFunction(DISARM_CHANCE_KEY).value(getModifiedScore());
+		double disarm = getDefinition().getFunction(DISARM_CHANCE_KEY).value(getScore());
 		if(random.nextDouble() > disarm) return false;
 		
 		// Slots:
@@ -87,7 +87,7 @@ public class Bash extends Ability{
 		defender.updateInventory();
 		
 		// Effect:
-		AbilityEffects.playMinorAbility(getSagaPlayer(), getModifiedScore());
+		AbilityEffects.playMinorAbility(getSagaPlayer(), getScore());
 		
 		// Statistics:
 		StatisticsManager.manager().onAbilityUse(getName(), 0.0);

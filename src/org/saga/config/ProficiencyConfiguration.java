@@ -92,7 +92,7 @@ public class ProficiencyConfiguration {
 				continue;
 			}	
 			
-			integrity = definitions.get(i).complete() && integrity;
+			definitions.get(i).complete();
 				
 		}
 		

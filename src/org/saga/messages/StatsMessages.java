@@ -99,11 +99,25 @@ public class StatsMessages {
 		
 		// Attributes:
 		ArrayList<String> attrNames = AttributeConfiguration.config().getAttributeNames();
-		for (String attribute : attrNames) {
+		for (String attrName : attrNames) {
 			
-			String score = format.format(sagaPlayer.getAttributeScore(attribute));
-			String scoreMax = format.format(AttributeConfiguration.config().maxAttributeScore);
-			table.addLine(attribute, score + "/" + scoreMax, 0);
+			Integer attrBonus = sagaPlayer.getAttrScoreBonus(attrName);
+			Integer attrScore = sagaPlayer.getAttributeScore(attrName);
+			
+			String scoreCurr = format.format(attrScore + attrBonus);
+			String scoreMax = format.format(AttributeConfiguration.config().maxAttributeScore + attrBonus);
+			
+			String score = scoreCurr + "/" + scoreMax;
+			
+			// Colours:
+			if(attrBonus > 0){
+				score = positive + score;
+			}
+			else if(attrBonus < 0){
+				score = negative + score;
+			}
+			
+			table.addLine(attrName, score, 0);
 			
 		}
 		
@@ -207,7 +221,7 @@ public class StatsMessages {
     			String name = GeneralMessages.scoreAbility(ability);
     			String status = "";
     			
-    			if(ability.getModifiedScore() <= 0){
+    			if(ability.getScore() <= 0){
     				name = unavailable + name;
     				status = unavailable + "(" + requirements(ability.getDefinition(), 1) + ")";
     			}

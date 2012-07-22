@@ -66,7 +66,7 @@ public class Harvest extends Ability{
 		Location dropLocation = event.getPlayer().getLocation();
 		
 		// Skill functions:
-		Integer range = getDefinition().getFunction(RANGE_KEY).randomIntValue(getModifiedScore());
+		Integer range = getDefinition().getFunction(RANGE_KEY).randomIntValue(getScore());
 		
 		// Get shape:
 		RelativeShape shape = SPAHPE;

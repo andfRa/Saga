@@ -1,5 +1,7 @@
 package org.saga.player;
 
+import java.util.Hashtable;
+
 import org.saga.SagaLogger;
 import org.saga.factions.SagaFaction.FactionPermission;
 import org.saga.player.Proficiency.ProficiencyType;
@@ -31,6 +33,11 @@ public class ProficiencyDefinition{
 	private Short hierarchyLevel;
 
 	/**
+	 * Attribute bonuses.
+	 */
+	private Hashtable<String, Integer> attributeBonuses;
+	
+	/**
 	 * Settlement permissions.
 	 */
 	private SettlementPermission[] settlementPermissions;
@@ -61,44 +68,41 @@ public class ProficiencyDefinition{
 	}
 	
 	/**
-	 * Completes the definition. Abilities need to be added.
+	 * Fixes all problematic fields.
 	 * 
-	 * @return integrity.
 	 */
-	public boolean complete() {
+	public void complete() {
 
-		
-		boolean integrity=true;
 		
 		if(name == null){
 			name = "";
 			SagaLogger.nullField(this, "name");
-			integrity=false;
 		}
+		
 		if(type == null){
 			type = ProficiencyType.INVALID;
 			SagaLogger.nullField(this, "type");
-			integrity=false;
 		}
+		
 		if(hierarchyLevel == null){
 			hierarchyLevel = 0;
 			SagaLogger.nullField(this, "hierarchyLevel");
-			integrity=false;
+		}
+		
+		if(attributeBonuses == null){
+			attributeBonuses = new Hashtable<String, Integer>();
+			SagaLogger.nullField(this, "attributeBonuses");
 		}
 		
 		if(settlementPermissions == null){
 			settlementPermissions = new SettlementPermission[0];
 			SagaLogger.nullField(this, "settlementPermissions");
-			integrity=false;
 		}
 		
 		if(factionPermissions == null){
 			factionPermissions = new FactionPermission[0];
 			SagaLogger.nullField(this, "factionPermissions");
-			integrity=false;
 		}
-		
-		return integrity;
 		
 		
 	}
@@ -167,6 +171,24 @@ public class ProficiencyDefinition{
 		}
 		return false;
 		
+		
+	}
+	
+	
+	
+	// Bonuses:
+	/**
+	 * Gets attribute bonus.
+	 * 
+	 * @param attrName attribute name
+	 * @return attribute bonus
+	 */
+	public Integer getAttributeBonus(String attrName) {
+		
+		Integer bonus = attributeBonuses.get(attrName);
+		if(bonus == null) return 0;
+		
+		return bonus;
 		
 	}
 	
