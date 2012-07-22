@@ -1,15 +1,5 @@
 {
 
-"startingScores":{
-  "chop down":1,
-  "harvest":1,
-  "heavy swing":1,
-  "repair":1,
-
-  "fireball":1,
-  "dart":1 
-},
-
 "maxAbilityScore":3,
 
 "definitions":[
