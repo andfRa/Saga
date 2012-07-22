@@ -102,7 +102,7 @@ public class StatsMessages {
 		for (String attrName : attrNames) {
 			
 			Integer attrBonus = sagaPlayer.getAttrScoreBonus(attrName);
-			Integer attrScore = sagaPlayer.getAttributeScore(attrName);
+			Integer attrScore = sagaPlayer.getRawAttributeScore(attrName);
 			
 			String scoreCurr = format.format(attrScore + attrBonus);
 			String scoreMax = format.format(AttributeConfiguration.config().maxAttributeScore + attrBonus);

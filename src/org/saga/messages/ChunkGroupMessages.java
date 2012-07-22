@@ -2,10 +2,7 @@ package org.saga.messages;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.Enumeration;
-import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
 import org.saga.Clock.DaytimeTicker.Daytime;
@@ -20,7 +17,6 @@ import org.saga.config.SettlementConfiguration;
 import org.saga.factions.SagaFaction;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.messages.PlayerMessages.ColorCircle;
-import org.saga.player.Proficiency;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.ProficiencyDefinition;
 import org.saga.player.SagaPlayer;
@@ -31,10 +27,9 @@ import org.saga.utility.text.TextUtil;
 
 
 public class ChunkGroupMessages {
-
 	
 
-	// Colors:
+	// Colours:
 	public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 	
 	public static ChatColor positive = ChatColor.GREEN;
@@ -282,6 +277,8 @@ public class ChunkGroupMessages {
 		return negative + "Settlements above level " + SettlementConfiguration.config().noDeleteLevel + " can't be deleted.";
 	}
 
+	
+	
 	// Invite join leave messages:
 	public static String beenInvited(SagaPlayer sagaPlayer, ChunkGroup settlement) {
 		return anouncment + "You have been invited to " + settlement.getName() + " settlement.";
@@ -292,30 +289,12 @@ public class ChunkGroupMessages {
 	}
 	
 	
-	public static String beenInvited(SagaFaction sagaFaction, ChunkGroup settlement) {
-		return sagaFaction.getSecondaryColor() + "The faction was invited to " + settlement.getName() + " settlement.";
-	}
-	
-	public static String invited(SagaFaction sagaFaction, ChunkGroup settlement) {
-		return anouncment + "" + name(sagaFaction, anouncment) + " was invited to the settlement.";
-	}
-	
-	
 	public static String haveJoined(SagaPlayer sagaPlayer, ChunkGroup settlement) {
 		return anouncment + "You joined " +settlement.getName() + " settlement.";
 	}
 	
 	public static String joined(SagaPlayer sagaPlayer, ChunkGroup settlement) {
 		return anouncment + sagaPlayer.getName() + " has joined the settlement.";
-	}
-	
-	
-	public static String haveJoined(SagaFaction sagaFaction, ChunkGroup settlement) {
-		return sagaFaction.getSecondaryColor() + "The faction joined " +settlement.getName() + " settlement.";
-	}
-	
-	public static String joined(SagaFaction sagaFaction, ChunkGroup settlement) {
-		return anouncment + "" + name(sagaFaction, anouncment) + " faction has joined the settlement.";
 	}
 	
 	
@@ -378,15 +357,8 @@ public class ChunkGroupMessages {
 	}
 
 	
+	
 	// Invite join  leave restrictions:
-	public static String noFactionInvites() {
-		return negative + "The faction doesn't have a settlement invitation.";
-	}
-	
-	public static String noFactionInvites(String factionName) {
-		return negative + "The factions doesn't have an invitation to " + factionName + " settlement.";
-	}
-	
 	public static String playerNoInvites(SagaPlayer sagaPlayer) {
 		return negative + "You don't have a settlement invitation.";
 	}
@@ -428,33 +400,21 @@ public class ChunkGroupMessages {
 	public static String nonExistantPlayer(String playerName) {
 		return negative + playerName + " doesn't exist.";
 	}
-	
-	public static String nonExistantFaction(String factionName) {
-		return negative + factionName + " faction doesn't exist.";
-	}
-	
-	public static String alreadyInTheChunkGroup(SagaFaction sagaFaction, ChunkGroup group) {
-		return negative + name(sagaFaction, negative) + " faction is already a part of the settlement.";
-	}
-	
+
 	public static String alreadyInTheChunkGroup(SagaPlayer sagaPlayer, ChunkGroup group) {
-		return negative + name(sagaPlayer, negative) + " is already a part of the settlement.";
+		return negative + sagaPlayer.getName() + " is already a part of the settlement.";
 	}
 	
 	public static String alreadyInTheChunkGroup(ChunkGroup group) {
 		return negative + "You already are a part of the settlement.";
 	}
 
-	public static String alreadyInvited(SagaFaction sagaFaction, ChunkGroup group) {
-		return negative + name(sagaFaction, negative) + " is already a invited to the settlement.";
-	}
-	
 	public static String alreadyInvited(SagaPlayer sagaPlayer, ChunkGroup group) {
-		return negative + name(sagaPlayer, negative) + " is already a invited to the settlement.";
+		return negative + sagaPlayer.getName() + " is already a invited to the settlement.";
 	}
 	
 	public static String playerNotChunkGroupMember(SagaPlayer sagaPlayer, ChunkGroup chunkGroup) {
-		return negative + name(sagaPlayer, negative) + " isn't part of the settlement.";
+		return negative + sagaPlayer.getName() + " isn't part of the settlement.";
 	}
 	
 	public static String haveCunkGroup() {
@@ -466,7 +426,7 @@ public class ChunkGroupMessages {
 	// Stats:
 	public static String stats(SagaPlayer sagaPlayer, Settlement settlement, Integer page) {
 		
-		// TODO: bonuses
+		
 		StringBuffer result = new StringBuffer();
 		
 		switch (page) {
@@ -481,7 +441,7 @@ public class ChunkGroupMessages {
 			// Roles:	
 			case 2:
 				
-				result.append(roles(settlement).createTable());
+				result.append(listMembers(settlement));
 				
 				break;
 				
@@ -533,7 +493,7 @@ public class ChunkGroupMessages {
 		table.addLine("level", settlement.getLevel() + "/" + settlement.getDefinition().getMaxLevel(), 2);
 
 		// Next exp:
-		table.addLine("next EXP", settlement.getRemainingExp().toString(), 2);
+		table.addLine("next EXP", settlement.getRemainingExp().intValue() + "", 2);
 
 		// Exp per minute:
 		table.addLine("EXP/minute", settlement.getExpSpeed().toString(), 2);
@@ -687,294 +647,129 @@ public class ChunkGroupMessages {
 		
 	}
 	
-	private static StringTable roles(Settlement settlement){
-		
-		
-		ColorCircle colours = new ColorCircle().addColor(normal1).addColor(normal2);
-		StringTable table = new StringTable(colours);
-		
-		// Definitions:
-		ArrayList<String> names = ProficiencyConfiguration.config().getProficiencyNames(ProficiencyType.ROLE);
-		ArrayList<ProficiencyDefinition> definitions = new ArrayList<ProficiencyDefinition>();
-		for (String name : names) {
-			definitions.add(ProficiencyConfiguration.config().getDefinition(name));
-		}
-		
-		// Sort by hierarchy:
-		Comparator<ProficiencyDefinition> comparator = new Comparator<ProficiencyDefinition>() {
-			@Override
-			public int compare(ProficiencyDefinition o1, ProficiencyDefinition o2) {
-				return o2.getHierarchyLevel() - o1.getHierarchyLevel();
-			}
-		};
-		Collections.sort(definitions, comparator);
-		
-		// Column names:
-		table.addLine(new String[]{GeneralMessages.columnTitle("role"), GeneralMessages.columnTitle("assigned")});
-		
-		// Column values:
-		if(definitions.size() != 0){
-			
-			for (ProficiencyDefinition definition : definitions) {
-				
-				String name = definition.getName();
-				String available = settlement.getUsedRoles(name) + "/" + settlement.getAvailableRoles(name);
-				
-				if(settlement.getRemainingRoles(name) > 0){
-					available = positive + available;
-				}else if(settlement.getRemainingRoles(name) < 0){
-					available = negative + available;
-				}
-				
-				table.addLine(new String[]{name, available});
-				
-			}
-			
-			
-		}else{
-			table.addLine(new String[]{"-", "-"});
-		}
-		
-		table.collapse();
-		
-		return table;
-		
-		
-	}
-
-	
 	public static String list(SagaPlayer sagaPlayer, Settlement settlement) {
 		
 		
-		StringBuffer rString = new StringBuffer();
-		ColorCircle normalColor = new ColorCircle().addColor(normal1).addColor(normal2);
+		StringBuffer result = new StringBuffer();
+		ColorCircle colours = new ColorCircle().addColor(normal1).addColor(normal2);
 		
-		// Online total inactive:
-		if(settlement.getPlayerCount() > 0){
-			
-			if(rString.length() > 0) rString.append("\n");
-			
-			rString.append(normalColor.nextColor() + "Online: " + settlement.getRegisteredMemberCount() + "/" + settlement.getPlayerCount());
-
-			int inactiveCount = settlement.countInactiveMembers();
-			if(inactiveCount != 0){
-				rString.append(" Inactive: " + inactiveCount);
-			}
-			
-		}
+		result.append(listMembers(settlement));
 		
-		// Players:
-		if(settlement.getPlayerCount() > 0){
-			
-			if(rString.length() > 0) rString.append("\n");
-			
-			rString.append( listPlayersElement(sagaPlayer, settlement, normalColor.nextColor()) );
-
-		}
-		
-		// Factions:
-		if(settlement.getFactions().size() > 0){
-			
-			if(rString.length() > 0) rString.append("\n");
-			
-			rString.append( listFactionsElement(settlement, normalColor.nextColor()) );
-			
-		}
-		
-		return TextUtil.frame(settlement.getName() + " members", rString.toString(), normalColor.nextColor());
+		return TextUtil.frame(settlement.getName() + " members", result.toString(), colours.nextColor());
 		
 		
 	}
 	
-	private static String listPlayersElement(SagaPlayer sagaPlayer, Settlement settlement, ChatColor messageColor){
+	private static String listMembers(Settlement settlement){
 		
-
-		// Fill roles table:
-		Short maxHierarchyLevel = 0;
-		Hashtable<Short, Hashtable<String, ArrayList<String>>> roleTable = new Hashtable<Short, Hashtable<String,ArrayList<String>>>();
-		ArrayList<String> zeroHighlMembers = new ArrayList<String>(settlement.getPlayers());
-		for (int i = 0; i < zeroHighlMembers.size(); i++) {
-			String name = zeroHighlMembers.get(i);
-			Proficiency role = settlement.getRole(name);
-			if(role == null) continue;
-			zeroHighlMembers.remove(i);
-			i--;
-			String roleName = role.getName();
-			Short hierarchyLevel = role.getHierarchy();
+		
+		StringBuffer result = new StringBuffer();
+		
+		ChatColor general = normal1;
+		ChatColor normal = normal2;
+		
+		int hMin = settlement.getDefinition().getHierarchyMin();
+		int hMax = settlement.getDefinition().getHierarchyMax();
+		
+		// Hierarchy levels:
+		for (int hierarchy = hMax; hierarchy >= hMin; hierarchy--) {
 			
-			// Hierarchy:
-			if(hierarchyLevel > maxHierarchyLevel){
-				maxHierarchyLevel = hierarchyLevel;
+			if(result.length() > 0){
+				result.append("\n");
+				result.append("\n");
 			}
 			
-			// Hierarchy level:
-			Hashtable<String, ArrayList<String>> hierLevelRoles = roleTable.get(hierarchyLevel);
-			if(hierLevelRoles == null){
-				hierLevelRoles = new Hashtable<String, ArrayList<String>>();
-				roleTable.put(hierarchyLevel, hierLevelRoles);
-			}
-
-			// Player names:
-			ArrayList<String> playerNames = hierLevelRoles.get(roleName);
-			if(playerNames == null){
-				playerNames = new ArrayList<String>();
-				hierLevelRoles.put(roleName, playerNames);
-			}
+			// Group name:
+			String groupName = settlement.getDefinition().getHierarchyName(hierarchy);
+			if(groupName.length() == 0) groupName = "-";
+			result.append(GeneralMessages.tableTitle(general + groupName));
 			
-			// Add:
-			playerNames.add(name);
-			
-		}
-		
-		StringBuffer rString = new StringBuffer();
-		
-		// Add above zero highlight players:
-		for (Short i = maxHierarchyLevel ; i >= 0 ; i--) {
-			
-			// All roles for hierarchy level:
-			Hashtable<String, ArrayList<String>> highlRoles = roleTable.get(i);
-			if(highlRoles == null) continue;
-			
-			if(rString.length() != 0){
-				rString.append("\n");
+			// Role amounts:
+			if(hierarchy != settlement.getDefinition().getHierarchyMin()){
+				
+				String amounts = settlement.getUsedRoles(hierarchy) + "/" + settlement.getAvailableRoles(hierarchy);
+				
+				if(settlement.isRoleAvailable(hierarchy)){
+					amounts = positive + amounts;
+				}else{
+					amounts = negative + amounts;
+				}
+				
+				result.append(" " + amounts);
+				
+			}else{
+				
+				String amounts = settlement.getUsedRoles(hierarchy) + "/-";
+				result.append(" " + amounts);
+				
 			}
 			
 			// All roles:
-			Enumeration<String> roleNames = highlRoles.keys();
-			StringBuffer eString = new StringBuffer();
-			while(roleNames.hasMoreElements()){
+			StringBuffer resultRoles = new StringBuffer();
+			
+			ArrayList<ProficiencyDefinition> roles = ProficiencyConfiguration.config().getDefinitions(ProficiencyType.ROLE, hierarchy);
+			
+			for (ProficiencyDefinition definition : roles) {
 				
-				String roleName = roleNames.nextElement();
-				ArrayList<String> playerNames = highlRoles.get(roleName);
+				// Members:
+				if(resultRoles.length() > 0) resultRoles.append("\n");
 				
-				// Title:
-				if(eString.length() != 0){
-					eString.append(" ");
-				}
-				if(playerNames.size() == 1){
-					eString.append(capitalize(roleName) + ": ");
+				String roleName = definition.getName();
+				ArrayList<String> members = settlement.getMembersForRoles(roleName);
+				
+				// Colour members:
+				colourMembers(members, settlement);
+				
+				// Add members:
+				resultRoles.append(normal);
+				
+				resultRoles.append(roleName + ": ");
+				
+				if(members.size() != 0){
+					resultRoles.append(TextUtil.flatten(members));
 				}else{
-					eString.append(capitalize(roleName + "s") + ": ");
-				}
-				
-				// Names:
-				for (int j = 0; j < playerNames.size(); j++) {
-					if( j != 0 ) eString.append(", ");
-					eString.append( playerNameElement(playerNames.get(j), settlement, messageColor, settlement.isMemberActive(playerNames.get(j))) );
+					resultRoles.append("none");
 				}
 				
 			}
-			rString.append(eString);
+			
+			result.append("\n");
+			
+			// Add roles:
+			result.append(resultRoles);
 			
 		}
 		
-		// Add zero highlight players:
-		if(zeroHighlMembers.size() > 0){
-			
-			if(rString.length() > 0){
-				rString.append("\n");
-			}
-			
-			for (int i = 0; i < zeroHighlMembers.size(); i++) {
-				if(i != 0) rString.append(", ");
-				rString.append(playerNameElement(zeroHighlMembers.get(i), settlement, messageColor, settlement.isMemberActive(zeroHighlMembers.get(i))) );
-			}
-			
-		}
-		
-		return messageColor + rString.toString();
+		return result.toString();
 		
 		
 	}
 
-	private static String listFactionsElement(Settlement settlement, ChatColor messageColor){
+	private static void colourMembers(ArrayList<String> members, Settlement settlement){
 		
-		
-		StringBuffer rString = new StringBuffer();
-		
-		ArrayList<SagaFaction> factions = settlement.getRegisteredFactions();
-		
-		if(factions.size() == 0){
-			rString.append("Factions: none");
-		}else if(factions.size() == 1){
-			rString.append("Faction: ");
-		}else{
-			rString.append("Faction: ");
-			rString.append("\n");
+		for (int i = 0; i < members.size(); i++) {
+			members.set(i, member(members.get(i), settlement));
 		}
-		
-		for (int i = 0; i < factions.size(); i++) {
-			// Faction:
-			if(i != 0 ) rString.append(", ");
-			rString.append(name(factions.get(i), messageColor));
-			// Faction players:
-			rString.append("(");
-			ArrayList<String> factionPlayers = factions.get(i).getMembers();
-			for (int j = 0; j < factionPlayers.size(); j++) {
-				if(j != 0 ) rString.append(", ");
-				rString.append(playerNameElement(factionPlayers.get(j), factions.get(i), messageColor));
-			}
-			rString.append(")");
-		}
-		
-		return messageColor + rString.toString();
-		
 		
 	}
 	
-	private static String playerNameElement(String playerName, Settlement settlement, ChatColor messageColor, boolean isActive){
+	private static String member(String name, Settlement settlement){
 		
 		
-		StringBuffer rString = new StringBuffer();
-		ChatColor offlineColor = ChatColor.GRAY;
-		ChatColor inactiveColor = ChatColor.DARK_GRAY;
-		
-		// Name:
-		if(!isActive){
-			
-			rString.append(inactiveColor + playerName + messageColor);
-			
+		// Active:
+		if(!settlement.isMemberActive(name)){
+			return unavailable + "" + ChatColor.STRIKETHROUGH + name + normal1;
 		}
-		else if(!settlement.hasRegisteredMember(playerName)){
-			
-			rString.append(offlineColor + playerName + messageColor);
-			
+		
+		// Offline:
+		else if(!settlement.hasRegisteredMember(name)){
+			return unavailable + name + normal1;
 		}
+		
+		// Normal:
 		else{
-		
-			rString.append(messageColor + playerName + messageColor);
-			
+			return normal1 + name;
 		}
-		
-//		// Faction:
-//		SagaFaction playerFaction = settlement.getPlayerFaction(playerName);
-//		if(playerFaction != null){
-//			rString.append(":" + firstLetter(playerFaction.getName()) + "");
-//		}
-		
-		return rString.toString();
-		
-		
-	}
-
-	private static String playerNameElement(String playerName, SagaFaction faction, ChatColor messageColor){
-		
-		
-		StringBuffer rString = new StringBuffer();
-		ChatColor offlineColor = ChatColor.DARK_GRAY;
-		
-		// Name:
-		if(!faction.isRegisteredMember(playerName)){
-			
-			rString.append(offlineColor + playerName + messageColor);
-			
-		}else{
-		
-			rString.append(messageColor + playerName + messageColor);
-			
-		}
-		
-		return rString.toString();
 		
 		
 	}
@@ -983,36 +778,7 @@ public class ChunkGroupMessages {
 	
 	// Roles:
 	public static String invalidRole(String roleName){
-		return negative + roleName + " is an invalid role.";
-	}
-	
-	public static String alreadyHasRole(String targetName){
-		return negative + targetName + " already has a role.";
-	}
-	
-	public static String cantPromote(String roleName, Building building){
-		return negative + TextUtil.capitalize(building.getDisplayName()) + " can't promote a " + roleName + ".";
-	}
-	
-	public static String cantDemote(String roleName, Building building){
-		return negative + TextUtil.capitalize(building.getDisplayName()) + " can't demote a " + roleName + ".";
-	}
-
-	public static String cantPromoteTo(String roleName, Building building){
-		return negative + TextUtil.capitalize(building.getDisplayName()) + " can't promote to " + roleName + ".";
-	}
-	
-	public static String cantDemoteTo(String roleName, Building building){
-		return negative + TextUtil.capitalize(building.getDisplayName()) + " can't demote to " + roleName + ".";
-	}
-	
-	
-	public static String finalRole(String targetName, Building building){
-		return negative + TextUtil.capitalize(building.getDisplayName()) + " can't be used to promote " + targetName + " any further.";
-	}
-	
-	public static String noRole(SagaPlayer targetPlayer, Settlement settlement){
-		return negative + targetPlayer.getName() + " doesn't have a role.";
+		return negative + "Role " + roleName + " isn't valid.";
 	}
 	
 	public static String newRole(SagaPlayer sagaPlayer, ChunkGroup settlement, String roleName) {
@@ -1027,83 +793,11 @@ public class ChunkGroupMessages {
 		
 	}
 	
-	public static String promotedToRoleBroadcast(SagaPlayer sagaPlayer, SagaPlayer promotedSagaPlayer, ChunkGroup settlement, String roleName) {
-		
-		if(sagaPlayer == promotedSagaPlayer){
-			return anouncment + sagaPlayer.getName() + " promoted himself to " + roleName + ".";
-		}
-		
-		return anouncment + sagaPlayer.getName() + " promoted " + promotedSagaPlayer.getName() + " to " + roleName + ".";
-		
-	}
-	
-	public static String demotedToRoleBroadcast(SagaPlayer sagaPlayer, SagaPlayer promotedSagaPlayer, ChunkGroup settlement, String roleName) {
-		
-		if(sagaPlayer == promotedSagaPlayer){
-			return anouncment + sagaPlayer.getName() + " demoted himself to " + roleName + ".";
-		}
-		
-		return anouncment + sagaPlayer.getName() + " demoted " + promotedSagaPlayer.getName() + " to " + roleName + ".";
-		
-	}
-	
-	public static String canSetRoleTo(ArrayList<String> promote) {
-
-		
-		StringBuffer rString = new StringBuffer();
-		for (String profession : promote) {
-			if(rString.length() != 0 ) rString.append(", ");
-			rString.append(profession);
-		}
-		
-		if(promote.size() == 0){
-			return negative + "You can't set roles.";
-		}
-		
-		if(promote.size() == 1){
-			return negative + "You only can only set " + rString.toString() + " role.";
-		}
-		
-		return negative + "You only can only set " + rString.toString() + " roles.";
-		
-		
-	}
-	
-	public static String canSetRoleFrom(ArrayList<String> promote) {
-
-		
-		StringBuffer rString = new StringBuffer();
-		for (String profession : promote) {
-			if(rString.length() != 0 ) rString.append(", ");
-			rString.append(profession);
-		}
-		
-		if(promote.size() == 0){
-			return negative + "You can't set roles.";
-		}
-		
-		if(promote.size() == 1){
-			return negative + "Target needs to have " + rString.toString() + " role.";
-		}
-		
-		return negative + "Target needs to have one of " + rString.toString() + " roles.";
-		
-		
-	}
 	
 	
-	public static String noRoles(Building building) {
-		return negative + "" + TextUtil.capitalize(building.getDisplayName()) + " doesen't offer any roles.";
-	}
-	
-	public static String roleMustBeLower() {
-		return negative + "Only lower roles can be promoted.";
-	}
-	
-	
-	// Leveling:
-	public static String settlementLevel(Settlement settlement) {
-		return anouncment + settlement.getName() + " settlement is now level " + settlement.getLevel() + ".";
+	// Levels and building points:
+	public static String settleLevelBcast(Settlement settlement) {
+		return anouncment + "Settlement " + settlement.getName() + " is now level " + settlement.getLevel() + ".";
 	}
 	
 	public static String notEnoughBuildingPoints(Building building) {
@@ -1125,10 +819,6 @@ public class ChunkGroupMessages {
 		return normal1 + "Use /saccept to accept a settlement invitation.";
 	}
 	
-	// Pvp:
-	public static String safeArea() {
-		return negative + "Pvp allowed in a safe area.";
-	}
 	
 	
 	// Rename:
@@ -1187,9 +877,6 @@ public class ChunkGroupMessages {
 	
 	
 	
-	
-	
-	
 	// Move:
 	public static String entered(ChunkGroup chunkGroup) {
 		
@@ -1204,13 +891,13 @@ public class ChunkGroupMessages {
 	}
 	
 	
+	
 	// Info:
 	public static String wrongQuit() {
 		
 		return negative + "Because /squit and /fquit are similar, this command isn't used. Please use /settlementquit instead.";
 		
 	}
-
 
 	
 	
@@ -1222,6 +909,7 @@ public class ChunkGroupMessages {
 	}
 	
 	
+	
 	// Creating:
 	public static String invalidName() {
 		
@@ -1229,29 +917,5 @@ public class ChunkGroupMessages {
 		
 	}
 	
-	// Utility:
-	private static String capitalize(String string) {
-
-		if(string.length()>=1){
-			return string.substring(0, 1).toUpperCase() + string.substring(1);
-		}else{
-			return string.toUpperCase();
-		}
-		
-	}
-	
-	private static String name(SagaFaction sagaFaction, ChatColor messageColor){
-		
-		return sagaFaction.getPrimaryColor() + sagaFaction.getName() + messageColor;
-		
-	}
-	
-	private static String name(SagaPlayer sagaPlayer, ChatColor messageColor){
-		
-		return messageColor + sagaPlayer.getName() + messageColor;
-		
-	}
-	
-
 	
 }

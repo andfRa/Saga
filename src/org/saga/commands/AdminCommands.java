@@ -470,7 +470,7 @@ public class AdminCommands {
 		selectedSettlement.setLevel(level);
 		
 		// Inform:
-		selectedChunkGroup.broadcast(ChunkGroupMessages.settlementLevel(selectedSettlement));
+		selectedChunkGroup.broadcast(ChunkGroupMessages.settleLevelBcast(selectedSettlement));
 		if(selectedChunkGroup != sagaPlayer.getChunkGroup()){
 			sagaPlayer.message(ChunkGroupMessages.setLevel(selectedSettlement));
 		}

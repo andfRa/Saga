@@ -30,7 +30,7 @@ public class ProficiencyDefinition{
 	/**
 	 * Profession hierarchy level.
 	 */
-	private Short hierarchyLevel;
+	private Integer hierarchyLevel;
 
 	/**
 	 * Attribute bonuses.
@@ -133,7 +133,7 @@ public class ProficiencyDefinition{
 	 * 
 	 * @return the highlight
 	 */
-	public Short getHierarchyLevel() {
+	public Integer getHierarchyLevel() {
 		return hierarchyLevel;
 	}
 

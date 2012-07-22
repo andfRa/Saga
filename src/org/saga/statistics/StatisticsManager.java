@@ -908,7 +908,7 @@ public class StatisticsManager implements HourTicker{
 		ArrayList<String> attributes = AttributeConfiguration.config().getAttributeNames();
 		for (String attribute : attributes) {
 			
-			Integer score = sagaPlayer.getAttributeScore(attribute);
+			Integer score = sagaPlayer.getRawAttributeScore(attribute);
 			if(score <= 0) continue;
 			setAttribute2(sagaPlayer, attribute, score);
 			

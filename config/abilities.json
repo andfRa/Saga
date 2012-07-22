@@ -33,7 +33,7 @@
       "precision":{"x1":1,"y1":5.0,"x2":3,"y2":45.0},
       "willpower":{"x1":1,"y1":3.0,"x2":3,"y2":25.0}
     },
-    "functions":{"range":{"x1":1,"y1":10.0,"x2":3,"y2":60.0}},
+    "functions":{"range":{"x1":1,"y1":20.0,"x2":3,"y2":60.0}},
     "description":"Cuts wheat and reeds.",
     "usage":"rclick w/ hoe"
   },

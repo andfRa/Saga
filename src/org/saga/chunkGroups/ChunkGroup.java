@@ -379,7 +379,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 		disable();
 		
 		// Remove all player:
-		ArrayList<String> players = getPlayers();
+		ArrayList<String> players = getMembers();
 		for (String player : players) {
 			
 			try {
@@ -969,22 +969,22 @@ public class ChunkGroup extends SagaCustomSerialization{
 
 	
 	
-	// Players:
+	// Members:
 	/**
-	 * Gets players associated.
+	 * Gets members associated.
 	 * 
-	 * @return player names
+	 * @return member names
 	 */
-	public ArrayList<String> getPlayers() {
+	public ArrayList<String> getMembers() {
 		return new ArrayList<String>(players);
 	}
 	
 	/**
-	 * Gets the player count
+	 * Gets the member count
 	 * 
-	 * @return player count
+	 * @return member count
 	 */
-	public int getPlayerCount() {
+	public int getMemberCount() {
 		return players.size();
 	}
 	
@@ -1084,7 +1084,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	 */
 	public String matchName(String name) {
 		
-		ArrayList<String> members = getPlayers();
+		ArrayList<String> members = getMembers();
 		for (String memberName : members) {
 			
 			if(memberName.equalsIgnoreCase(name)) return memberName;

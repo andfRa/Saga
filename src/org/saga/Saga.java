@@ -357,6 +357,9 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     	// Register chunk groups:
     	ChunkGroupManager.manager().playerLoaded(sagaPlayer);
     	
+    	// Update:
+    	sagaPlayer.update();
+    	
     	return sagaPlayer;
     	
     	

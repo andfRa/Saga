@@ -5,37 +5,6 @@
 
 "definitions":[
   
-  {"name":"miner",
-    "type":"PROFESSION",
-    "hierarchyLevel":"1",
-    "attributeBonuses":{},
-    "settlementPermissions":[],
-    "factionPermissions":[]
-  },
-
-  {"name":"woodsman",
-    "type":"PROFESSION",
-    "hierarchyLevel":"1",
-    "attributeBonuses":{},
-    "settlementPermissions":[],
-    "factionPermissions":[]
-  },
-
-  {"name":"farmer",
-    "type":"PROFESSION",
-    "hierarchyLevel":"1",
-    "attributeBonuses":{},
-    "settlementPermissions":[],
-    "factionPermissions":[]
-  },
-
-  {"name":"blacksmith",
-    "type":"PROFESSION",
-    "hierarchyLevel":"1",
-    "attributeBonuses":{},
-    "settlementPermissions":[],
-    "factionPermissions":[]
-  },
 
   {"name":"warrior",
     "type":"CLASS",
@@ -62,21 +31,55 @@
   },
 
 
-  {"name":"noble",
+
+  {"name":"lord",
     "type":"ROLE",
-    "hierarchyLevel":"10",
+    "hierarchyLevel":"3",
     "attributeBonuses":{},
     "settlementPermissions":["BUILD","BUILD_BUILDING","CLAIM","INVITE","ABANDON","KICK","SET_BUILDING","REMOVE_BUILDING","RENAME","SPAWN","MEMBER_COMMAND","ADD_RESIDENT","REMOVE_RESIDENT","MANAGE_PRICES","MANAGE_DEALS","ACCESS_STORAGE"],
     "factionPermissions":[]
   },
 
-  {"name":"commoner",
+  {"name":"miner",
+    "type":"ROLE",
+    "hierarchyLevel":"2",
+    "attributeBonuses":{"toughness":6,"strength":4},
+    "settlementPermissions":[],
+    "factionPermissions":[]
+  },
+
+  {"name":"woodcutter",
+    "type":"ROLE",
+    "hierarchyLevel":"2",
+    "attributeBonuses":{"strength":6,"precision":4},
+    "settlementPermissions":[],
+    "factionPermissions":[]
+  },
+
+  {"name":"farmer",
+    "type":"ROLE",
+    "hierarchyLevel":"2",
+    "attributeBonuses":{"precision":6,"willpower":4},
+    "settlementPermissions":[],
+    "factionPermissions":[]
+  },
+
+  {"name":"blacksmith",
+    "type":"ROLE",
+    "hierarchyLevel":"2",
+    "attributeBonuses":{"willpower":6,"toughness":4},
+    "settlementPermissions":[],
+    "factionPermissions":[]
+  },
+
+  {"name":"settler",
     "type":"ROLE",
     "hierarchyLevel":"1",
     "attributeBonuses":{},
     "settlementPermissions":["BUILD","SPAWN","MEMBER_COMMAND"],
     "factionPermissions":[]
   },
+
 
 
   {"name":"grandmaster",
@@ -110,6 +113,7 @@
     "settlementPermissions":[],
     "factionPermissions":[]
   }
+  
 ]
 
 }

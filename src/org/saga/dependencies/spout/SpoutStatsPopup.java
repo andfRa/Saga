@@ -39,7 +39,7 @@ public class SpoutStatsPopup extends GenericPopup{
 			attrNames.addChild(new GenericLabel(attribute));
 			
 			// Attribute values:
-			String score = format.format(sagaPlayer.getAttributeScore(attribute));
+			String score = format.format(sagaPlayer.getRawAttributeScore(attribute));
 			String scoreMax = format.format(AttributeConfiguration.config().maxAttributeScore);
 			attrVals.addChild(new GenericLabel(score + "/" + scoreMax));
 			

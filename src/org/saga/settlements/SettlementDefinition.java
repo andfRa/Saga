@@ -1,8 +1,8 @@
 package org.saga.settlements;
 
-import java.util.ArrayList;
-import java.util.Enumeration;
+import java.util.Collection;
 import java.util.Hashtable;
+import java.util.Set;
 
 import org.saga.SagaLogger;
 import org.saga.utility.TwoPointFunction;
@@ -20,12 +20,16 @@ public class SettlementDefinition{
 	 * The amount of building points.
 	 */
 	private TwoPointFunction buildPoints;
-	
+
 	/**
-	 * Enabled roles.
+	 * Hierarchy.
 	 */
-	private Hashtable<String, TwoPointFunction> roles;
-	
+	private Hashtable<Integer, TwoPointFunction> hierarchy;
+
+	/**
+	 * Hierarchy level names.
+	 */
+	private Hashtable<Integer, String> hierarchyNames;
 	
 	/**
 	 * Experience requirement.
@@ -86,15 +90,20 @@ public class SettlementDefinition{
 			integrity=false;
 		}
 		
-		if(roles == null){
-			roles = new Hashtable<String, TwoPointFunction>();
-			SagaLogger.nullField(this, "roles");
+		if(hierarchy == null){
+			hierarchy = new Hashtable<Integer, TwoPointFunction>();
+			SagaLogger.nullField(this, "hierarchy");
 			integrity = false;
 		}
-		Enumeration<String> eRoles = roles.keys();
-		while (eRoles.hasMoreElements()) {
-			String role = (String) eRoles.nextElement();
-			integrity = roles.get(role).complete() && integrity;
+		Collection<TwoPointFunction> roleAmounts = hierarchy.values();
+		for (TwoPointFunction function : roleAmounts) {
+			function.complete();
+		}
+		
+		if(hierarchyNames == null){
+			hierarchyNames = new Hashtable<Integer, String>();
+			SagaLogger.nullField(this, "hierarchyNames");
+			integrity = false;
 		}
 		
 		if(levelUpExp == null){
@@ -166,27 +175,70 @@ public class SettlementDefinition{
 	/**
 	 * Gets the building role hierarchy.
 	 * 
-	 * @return promotion hierarchy
+	 * @return hierarchyLevel hierarchy level
 	 */
-	public ArrayList<String> getRoles() {
-		return new ArrayList<String>(roles.keySet());
+	public Integer getAvailableRoles(Integer settlLevel, Integer hierarchyLevel) {
+		
+		
+		TwoPointFunction function = hierarchy.get(hierarchyLevel);
+		if(function == null) return 0;
+		
+		return function.intValue(settlLevel);
+		
+		
 	}
 	
 	/**
-	 * Gets the amount of roles available.
+	 * Gets hierarchy level name.
 	 * 
-	 * @param roleName role name
-	 * @param level level
-	 * @return amount of roles available
+	 * @param hierarchy hierarchy level
+	 * @return hierarchy level name, null if none
 	 */
-	public Integer getAvailableRoles(String roleName, Integer level) {
+	public String getHierarchyName(Integer hierarchy) {
 		
+		String roleName = hierarchyNames.get(hierarchy);
+		if(roleName == null) return null;
 		
-		TwoPointFunction amount = roles.get(roleName);
-		if(amount == null || amount.getXMin() > level){
-			return 0;
+		return roleName;
+		
+	}
+	
+	/**
+	 * Gets max hierarchy level.
+	 * 
+	 * @return max hierarchy level
+	 */
+	public Integer getHierarchyMax() {
+
+		
+		Integer maxHierarchy = 0;
+		Set<Integer> roleHierarchy = hierarchy.keySet();
+		
+		for (Integer hierarchy : roleHierarchy) {
+			if(hierarchy > maxHierarchy) maxHierarchy = hierarchy;
 		}
-		return amount.intValue(level);
+		
+		return maxHierarchy;
+		
+		
+	}
+
+	/**
+	 * Gets min hierarchy level.
+	 * 
+	 * @return min hierarchy level
+	 */
+	public Integer getHierarchyMin() {
+
+		
+		Integer minHierarchy = -1;
+		Set<Integer> roleHierarchy = hierarchy.keySet();
+		
+		for (Integer hierarchy : roleHierarchy) {
+			if(hierarchy < minHierarchy || minHierarchy == -1) minHierarchy = hierarchy;
+		}
+		
+		return minHierarchy;
 		
 		
 	}

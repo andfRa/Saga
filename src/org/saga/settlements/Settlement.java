@@ -2,6 +2,7 @@ package org.saga.settlements;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -12,14 +13,12 @@ import org.saga.Clock;
 import org.saga.Clock.MinuteTicker;
 import org.saga.Saga;
 import org.saga.SagaLogger;
-import org.saga.buildings.Building;
 import org.saga.buildings.BuildingDefinition;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupToggleable;
-import org.saga.chunkGroups.SagaChunk;
-import org.saga.config.SettlementConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
+import org.saga.config.SettlementConfiguration;
 import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.messages.ChunkGroupMessages;
@@ -138,6 +137,24 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		// Definition:
 		definition = SettlementConfiguration.config().getSettlementDefinition();
 		
+
+		// Fix roles:
+		try {
+			
+			ArrayList<String> members = getMembers();
+			
+			for (String member : members) {
+				
+				if(getRole(member) != null) continue;
+				
+				Proficiency role = ProficiencyConfiguration.config().createProficiency(getDefinition().defaultRole);
+				playerRoles.put(member, role);
+			}
+			
+		} catch (InvalidProficiencyException e) {
+			SagaLogger.severe(this, "failed to set " + getDefinition().defaultRole + " role, because the role name is invalid");
+		}
+		
 		return integrity;
 		
 		
@@ -195,7 +212,8 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 
 		// Set owners role:
 		try {
-			settlement.setRole(owner, settlement.getDefinition().ownerRole);
+			Proficiency role = ProficiencyConfiguration.config().createProficiency(settlement.getDefinition().ownerRole);
+			settlement.setRole(owner, role);
 		} catch (InvalidProficiencyException e) {
 			SagaLogger.severe(settlement, "failed to set " + settlement.getDefinition().ownerRole + " role, because the role name is invalid");
 		}
@@ -219,7 +237,8 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 
 		// Set default role:
 		try {
-			setRole(sagaPlayer, getDefinition().defaultRole);
+			Proficiency role = ProficiencyConfiguration.config().createProficiency(getDefinition().defaultRole);
+			setRole(sagaPlayer, role);
 		} catch (InvalidProficiencyException e) {
 			SagaLogger.severe(this, "failed to set " + getDefinition().defaultRole + " role, because the role name is invalid");
 		}
@@ -316,27 +335,21 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	 * Adds a role to the player.
 	 * 
 	 * @param sagaPlayer saga player
-	 * @param roleName role name
-	 * @throws InvalidProficiencyException thrown if the role name is invalid
+	 * @param role role
 	 */
-	public void setRole(SagaPlayer sagaPlayer, String roleName) throws InvalidProficiencyException {
+	public void setRole(SagaPlayer sagaPlayer, Proficiency role) {
 
 		
-		// Void role:
-		if(roleName.equals("")){
-			return;
-		}
-		
 		// Clear previous role:
-		if( playerRoles.get(sagaPlayer.getName()) != null ){
+		if(playerRoles.get(sagaPlayer.getName()) != null){
 			clearRole(sagaPlayer);
 		}
 		
-		// Create role:
-		Proficiency role = ProficiencyConfiguration.config().createProficiency(roleName);
-
 		// Add to settlement:
 		playerRoles.put(sagaPlayer.getName(), role);
+		
+		// Update:
+		sagaPlayer.update();
 		
 		
 	}
@@ -357,8 +370,11 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 
 		// Remove from settlement:
 		playerRoles.remove(sagaPlayer.getName());
+
+		// Update:
+		sagaPlayer.update();
 		
-			
+		
 	}
 
 	/**
@@ -382,23 +398,23 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		
 		HashSet<String> roles = new HashSet<String>();
 		
-		// Add default role:
-		roles.add(getDefinition().defaultRole);
-		
-		// Add settlement roles:
-		roles.addAll(getDefinition().getRoles());
-		
-		// Add building roles:
-		ArrayList<SagaChunk> groupChunks = getGroupChunks();
-		for (SagaChunk sagaChunk : groupChunks) {
-			
-			Building building = sagaChunk.getBuilding();
-			if(building == null) continue;
-			
-			ArrayList<String> promotions = building.getDefinition().getRoles();
-			roles.addAll(promotions);
-			
-		}
+//		// Add default role:
+//		roles.add(getDefinition().defaultRole);
+//		
+//		// Add settlement roles:
+//		roles.addAll(getDefinition().getRoles());
+//		
+//		// Add building roles:
+//		ArrayList<SagaChunk> groupChunks = getGroupChunks();
+//		for (SagaChunk sagaChunk : groupChunks) {
+//			
+//			Building building = sagaChunk.getBuilding();
+//			if(building == null) continue;
+//			
+//			ArrayList<String> promotions = building.getDefinition().getRoles();
+//			roles.addAll(promotions);
+//			
+//		}
 		
 		return roles;
 		
@@ -407,22 +423,21 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	/**
 	 * Gets the amount of roles used.
 	 * 
-	 * @param roleName role name
+	 * @param hierarchy role hierarchy level
 	 * @return amount of roles used
 	 */
-	public Integer getUsedRoles(String roleName) {
+	public Integer getUsedRoles(Integer hierarchy) {
 		
 		Integer total = 0;
-		Enumeration<String> players = playerRoles.keys();
-		while (players.hasMoreElements()) {
+		
+		Collection<Proficiency> roles = playerRoles.values();
+		
+		for (Proficiency role : roles) {
 			
-			String player = players.nextElement();
-			Proficiency role = playerRoles.get(player);
-			
-			if(roleName.equals(role.getName()))total ++;
-			
+			if(role.getHierarchy() == hierarchy) total++;
+
 		}
- 		
+		
 		return total;
 		
 	}
@@ -430,53 +445,63 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	/**
 	 * Gets the amount of roles available.
 	 * 
-	 * @param roleName role name
-	 * @return amount roles available
+	 * @param hierarchy role hierarchy level
+	 * @return
 	 */
-	public Integer getAvailableRoles(String roleName) {
-		
-		
-		if(roleName.equals(getDefinition().defaultRole)){
-			return getPlayerCount();
-		}
-		
-		Integer available = 0;
-		
-		// Settlement roles:
-		available += getDefinition().getAvailableRoles(roleName, getLevel());
-		
-		return available;
+	public Integer getAvailableRoles(Integer hierarchy) {
+
+		return getDefinition().getAvailableRoles(getLevel(), hierarchy);
 		
 	}
 	
 	/**
 	 * Gets the amount of roles remaining.
 	 * 
-	 * @param roleName role name
+	 * @param hierarchy role hierarchy level
 	 * @return amount of roles remaining
 	 */
-	public Integer getRemainingRoles(String roleName) {
+	public Integer getRemainingRoles(Integer hierarchy) {
 		
-		return getAvailableRoles(roleName) - getUsedRoles(roleName);
+		return getAvailableRoles(hierarchy) - getUsedRoles(hierarchy);
 		
 	}
 
 	/**
 	 * Checks if the given role is available.
 	 * 
-	 * @param roleName role name
+	 * @param hierarchy role hierarchy level
 	 * @return true if available
 	 */
-	public boolean isRoleAvailable(String roleName) {
+	public boolean isRoleAvailable(Integer hierarchy) {
 		
-		if(roleName.equals(getDefinition().defaultRole)){
-			return true;
-		}
+		if(hierarchy == getDefinition().getHierarchyMin()) return true;
 		
-		return getRemainingRoles(roleName) > 0;
+		return getRemainingRoles(hierarchy) > 0;
 		
 	}
 	
+	/**
+	 * Gets members with the given role.
+	 * 
+	 * @param roleName role name
+	 * @return players with the given role
+	 */
+	public ArrayList<String> getMembersForRoles(String roleName) {
+
+		ArrayList<String> filtMembers = new ArrayList<String>();
+		ArrayList<String> allMembers = getMembers();
+		
+		for (String member : allMembers) {
+			
+			Proficiency role = getRole(member);
+			if(role != null && role.getName().equals(roleName)) filtMembers.add(member);
+			
+		}
+		
+		return filtMembers;
+		
+		
+	}
 	
 	
 	// Building points:
@@ -647,7 +672,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 
 		
 		int inactive = 0;
-		ArrayList<String> players = getPlayers();
+		ArrayList<String> players = getMembers();
 		
 		for (String playerName : players) {
 			
@@ -669,7 +694,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 
 		
 		int active = 0;
-		ArrayList<String> players = getPlayers();
+		ArrayList<String> players = getMembers();
 		
 		for (String playerName : players) {
 			
@@ -740,7 +765,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 			levelUp();
 
 			// Inform:
-			Saga.broadcast(ChunkGroupMessages.settlementLevel(this));
+			Saga.broadcast(ChunkGroupMessages.settleLevelBcast(this));
 			
 		}
 		

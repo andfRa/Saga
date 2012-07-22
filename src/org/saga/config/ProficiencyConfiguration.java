@@ -41,12 +41,15 @@ public class ProficiencyConfiguration {
 	public Boolean initialClass;
 	
 	
+	
 	// Proficiencies.
 	/**
 	 * Proficiency definitions.
 	 */
 	private ArrayList<ProficiencyDefinition> definitions;
 
+	
+	
 	// Initialisation:
 	/**
 	 * Used by gson.
@@ -124,30 +127,27 @@ public class ProficiencyConfiguration {
 	}
 	
 	/**
-	 * Gets a proficiency.
+	 * Gets proficiency definitions.
 	 * 
-	 * @param name proficiency name
-	 * @return proficiency, null if not found
-	 * @throws InvalidProficiencyException when there is no proficiency associated with the given name
+	 * @param type proficiency type
+	 * @param hierarchy hierarchy level
+	 * @return proficiencies with given type and hierarchy level
 	 */
-	public Proficiency createProficiency(String name) throws InvalidProficiencyException{
+	public ArrayList<ProficiencyDefinition> getDefinitions(ProficiencyType type, Integer hierarchy){
 		
-
-		ProficiencyDefinition definition = ProficiencyConfiguration.config().getDefinition(name);
+		ArrayList<ProficiencyDefinition> definitions = new ArrayList<ProficiencyDefinition>(this.definitions);
+		ArrayList<ProficiencyDefinition> filteredDefs = new ArrayList<ProficiencyDefinition>();
 		
-		if(definition == null){
+		for (ProficiencyDefinition definition : definitions) {
 			
-			throw new InvalidProficiencyException(name, "missing definition");
+			if(definition.getType() == type && definition.getHierarchyLevel() == hierarchy) filteredDefs.add(definition);
 			
 		}
 		
-		return new Proficiency(definition);
-		
+		return filteredDefs;
 		
 	}
-	
-	
-	
+
 	/**
 	 * Gets proficiency names for the given type.
 	 * 
@@ -171,6 +171,31 @@ public class ProficiencyConfiguration {
 		
 	}
 	
+	
+	/**
+	 * Gets a proficiency.
+	 * 
+	 * @param name proficiency name
+	 * @return proficiency, null if not found
+	 * @throws InvalidProficiencyException when there is no proficiency associated with the given name
+	 */
+	public Proficiency createProficiency(String name) throws InvalidProficiencyException{
+		
+
+		ProficiencyDefinition definition = ProficiencyConfiguration.config().getDefinition(name);
+		
+		if(definition == null){
+			
+			throw new InvalidProficiencyException(name, "missing definition");
+			
+		}
+		
+		return new Proficiency(definition);
+		
+		
+	}
+	
+
 	
 	// Load unload:
 	/**
@@ -221,6 +246,7 @@ public class ProficiencyConfiguration {
 	public static void unload(){
 		instance = null;
 	}
+	
 	
 	
 	// Types:

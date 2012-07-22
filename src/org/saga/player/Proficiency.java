@@ -114,7 +114,7 @@ public class Proficiency {
 	 * 
 	 * @return the highlight
 	 */
-	public Short getHierarchy() {
+	public Integer getHierarchy() {
 		return definition.getHierarchyLevel();
 	}
 

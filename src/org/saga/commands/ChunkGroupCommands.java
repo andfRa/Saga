@@ -10,9 +10,10 @@ import org.saga.buildings.Building;
 import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
-import org.saga.config.SettlementConfiguration;
 import org.saga.config.EconomyConfiguration;
+import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
+import org.saga.config.SettlementConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.messages.BuildingMessages;
@@ -22,10 +23,10 @@ import org.saga.messages.FactionMessages;
 import org.saga.messages.InfoMessages;
 import org.saga.messages.SagaMessages;
 import org.saga.messages.SettlementEffects;
+import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;
 import org.saga.settlements.Settlement.SettlementPermission;
-import org.saga.settlements.SettlementDefinition;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
 import org.sk89q.CommandPermissions;
@@ -319,22 +320,29 @@ public class ChunkGroupCommands {
 			return;
 		}
 		
-		// Set owner role:
-		if(selectedChunkGroup instanceof Settlement){
-
-			SettlementDefinition definition = ((Settlement) selectedChunkGroup).getDefinition();
-			
-			try {
-				((Settlement) selectedChunkGroup).setRole(sagaPlayer, definition.ownerRole);
-			} catch (InvalidProficiencyException e) {
-				SagaLogger.severe(ChunkGroupCommands.class, "failed to add " + definition.ownerRole + " proficiency to a chunk group, because the proficiency name is invalid");
-			}
-			
-		}
-		
 		// Add to chunk group:
 		selectedChunkGroup.addPlayer(sagaPlayer);
 		
+		// Set owner role:
+		if(selectedChunkGroup instanceof Settlement){
+
+			Settlement selectedSettlement = (Settlement) selectedChunkGroup;
+			String roleName = selectedSettlement.getDefinition().ownerRole;
+			
+			// Get role:
+			Proficiency role;
+			try {
+				role = ProficiencyConfiguration.config().createProficiency(roleName);
+			} catch (InvalidProficiencyException e) {
+				sagaPlayer.message(ChunkGroupMessages.invalidRole(roleName));
+				return;
+			}
+			
+			// Set role:
+			selectedSettlement.setRole(sagaPlayer, role);
+			
+		}
+
 		// Inform:
 		sagaPlayer.message(ChunkGroupMessages.claimedChunkGroupBroadcast(sagaPlayer, selectedChunkGroup));
 		
@@ -729,7 +737,7 @@ public class ChunkGroupCommands {
 			
 			Settlement selectedsettlement = (Settlement) selectedChunkGroup;
 			
-			if(selectedChunkGroup.getPlayerCount() == 0){
+			if(selectedChunkGroup.getMemberCount() == 0){
 
 				if(selectedsettlement.getLevel() < SettlementConfiguration.config().noDeleteLevel){
 
@@ -841,7 +849,7 @@ public class ChunkGroupCommands {
 			
 			Settlement selectedsettlement = (Settlement) selectedChunkGroup;
 			
-			if(selectedChunkGroup.getPlayerCount() == 0){
+			if(selectedChunkGroup.getMemberCount() == 0){
 
 				if(selectedsettlement.getLevel() < SettlementConfiguration.config().noDeleteLevel){
 
@@ -1013,24 +1021,28 @@ public class ChunkGroupCommands {
 			Saga.plugin().unforceSagaPlayer(targetName);
 			return;
 		}
-		
-		// Rank available:
-		if(!selectedSettlement.isRoleAvailable(roleName)){
-			sagaPlayer.message(ChunkGroupMessages.roleNotAvailable(roleName));
-			// Unforce:
-			Saga.plugin().unforceSagaPlayer(targetName);
-			return;
-		}
-		
-		// Set rank:
+
+		// Get role:
+		Proficiency role;
 		try {
-			selectedSettlement.setRole(targetPlayer, roleName);
+			role = ProficiencyConfiguration.config().createProficiency(roleName);
 		} catch (InvalidProficiencyException e) {
 			sagaPlayer.message(ChunkGroupMessages.invalidRole(roleName));
 			// Unforce:
 			Saga.plugin().unforceSagaPlayer(targetName);
 			return;
 		}
+		
+		// Role available:
+		if(!selectedSettlement.isRoleAvailable(role.getHierarchy())){
+			sagaPlayer.message(ChunkGroupMessages.roleNotAvailable(roleName));
+			// Unforce:
+			Saga.plugin().unforceSagaPlayer(targetName);
+			return;
+		}
+		
+		// Set role:
+		selectedSettlement.setRole(targetPlayer, role);
 		
 		// Inform:
 		selectedChunkGroup.broadcast(ChunkGroupMessages.newRole(targetPlayer, selectedSettlement, roleName));

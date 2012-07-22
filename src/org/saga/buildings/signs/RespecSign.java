@@ -126,7 +126,7 @@ public class RespecSign extends BuildingSign{
 	protected void onRightClick(SagaPlayer sagaPlayer) {
 
 		String attribute = getFirstParameter();
-		Integer attributeScore = sagaPlayer.getAttributeScore(attribute);
+		Integer attributeScore = sagaPlayer.getRawAttributeScore(attribute);
 		
 		// Already minimum:
 		if(attributeScore <= 0){

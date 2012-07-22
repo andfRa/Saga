@@ -560,8 +560,8 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		
 
 		// Fill roles table:
-		Short maxHierarchyLevel = 0;
-		Hashtable<Short, Hashtable<String, ArrayList<String>>> roleTable = new Hashtable<Short, Hashtable<String,ArrayList<String>>>();
+		Integer maxHierarchyLevel = 0;
+		Hashtable<Integer, Hashtable<String, ArrayList<String>>> roleTable = new Hashtable<Integer, Hashtable<String,ArrayList<String>>>();
 		ArrayList<String> zeroHighlMembers = new ArrayList<String>(faction.getMembers());
 		for (int i = 0; i < zeroHighlMembers.size(); i++) {
 			String name = zeroHighlMembers.get(i);
@@ -570,7 +570,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 			zeroHighlMembers.remove(i);
 			i--;
 			String roleName = role.getName();
-			Short hierarchyLevel = role.getHierarchy();
+			Integer hierarchyLevel = role.getHierarchy();
 			
 			// Hierarchy:
 			if(hierarchyLevel > maxHierarchyLevel){
@@ -599,7 +599,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		StringBuffer rString = new StringBuffer();
 		
 		// Add above zero highlight players:
-		for (Short i = maxHierarchyLevel ; i >= 0 ; i--) {
+		for (Integer i = maxHierarchyLevel ; i >= 0 ; i--) {
 			
 			// All roles for hierarchy level:
 			Hashtable<String, ArrayList<String>> highlRoles = roleTable.get(i);

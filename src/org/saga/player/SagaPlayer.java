@@ -318,6 +318,15 @@ public class SagaPlayer implements SecondTicker, Trader{
 	}
 
 	
+	// Updating:
+	/**
+	 * Updates everything.
+	 * 
+	 */
+	public void update() {
+		abilityManager.update();
+	}
+	
 	
 	
 	// Attributes:
@@ -345,7 +354,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * @param attrName attribute name
 	 * @return attribute score
 	 */
-	public Integer getAttributeScore(String attrName) {
+	public Integer getRawAttributeScore(String attrName) {
 
 		Integer score = attributeScores.get(attrName);
 		if(score == null) return 0;
@@ -354,12 +363,12 @@ public class SagaPlayer implements SecondTicker, Trader{
 	}
 	
 	/**
-	 * Gets the modified score for the given attribute. Includes bonuses.
+	 * Gets the score for the given attribute. Includes bonuses.
 	 * 
 	 * @param attrName attribute name
 	 * @return attribute score
 	 */
-	public Integer getModifiedAttrScore(String attrName) {
+	public Integer getAttributeScore(String attrName) {
 
 		
 		Integer score = attributeScores.get(attrName);
@@ -477,7 +486,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	}
 	
 	/**
-	 * Gets the score for the giver ability.
+	 * Gets the score for the giver ability. Includes bonuses.
 	 * 
 	 * @param name ability name
 	 * @return ability score

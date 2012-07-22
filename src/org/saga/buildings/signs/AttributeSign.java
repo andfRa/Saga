@@ -122,7 +122,7 @@ public class AttributeSign extends BuildingSign{
 	protected void onRightClick(SagaPlayer sagaPlayer) {
 
 		String attribute = getFirstParameter();
-		Integer attributeScore = sagaPlayer.getAttributeScore(attribute) + 1;
+		Integer attributeScore = sagaPlayer.getRawAttributeScore(attribute) + 1;
 		
 		// Already maximum:
 		if(attributeScore > AttributeConfiguration.config().maxAttributeScore){

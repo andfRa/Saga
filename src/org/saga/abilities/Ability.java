@@ -214,7 +214,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	}
 
 	/**
-	 * Gets the maximum ability score.
+	 * Gets the ability score.
 	 * 
 	 * @return ability score
 	 */
@@ -223,7 +223,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		return sagaPlayer.getAbilityScore(getName());
 
 	}
-
+	
 	/**
 	 * Gets the active.
 	 * 
