@@ -3,21 +3,6 @@
 "maxAbilityScore":3,
 
 "definitions":[
-  {"className":"org.saga.abilities.Bash",
-    "name":"bash",
-    "activationItem":["DIAMOND_SWORD","GOLD_SWORD","IRON_SWORD","STONE_SWORD"],
-    "activationAction":"NONE",
-    "usedItem":"AIR",
-    "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "cooldown":{"x1":1,"y1":10.0,"x2":3,"y2":5.0},
-    "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
-    "attributeRequirements":{
-      "strength":{"x1":1,"y1":5.0,"x2":3,"y2":45.0}
-    },
-    "functions":{"disarm chance":{"x1":1,"y1":0.8,"x2":3,"y2":0.8}},
-    "description":"Shifts targets sword.",
-    "usage":"random chance"
-  },
 
   {"className":"org.saga.abilities.ChopDown",
     "name":"chop down",
@@ -29,7 +14,7 @@
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
     "attributeRequirements":{
       "strength":{"x1":1,"y1":5.0,"x2":3,"y2":45.0},
-      "precision":{"x1":1,"y1":0.0,"x2":3,"y2":25.0}
+      "precision":{"x1":1,"y1":3.0,"x2":3,"y2":25.0}
     },
     "functions":{"tree size":{"x1":1,"y1":10.0,"x2":3,"y2":50.0}},
     "description":"Chops down a tree.",
@@ -46,45 +31,33 @@
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
     "attributeRequirements":{
       "precision":{"x1":1,"y1":5.0,"x2":3,"y2":45.0},
-      "willpower":{"x1":1,"y1":0.0,"x2":3,"y2":25.0}
+      "willpower":{"x1":1,"y1":3.0,"x2":3,"y2":25.0}
     },
     "functions":{"range":{"x1":1,"y1":10.0,"x2":3,"y2":60.0}},
     "description":"Cuts wheat and reeds.",
     "usage":"rclick w/ hoe"
   },
 
-  {"className":"org.saga.abilities.Dart",
-    "name":"dart",
-    "activationItem":["ARROW"],
+  {"className":"org.saga.abilities.HeavySwing",
+    "name":"heavy swing",
+    "activationItem":["DIAMOND_PICKAXE","GOLD_PICKAXE","IRON_PICKAXE"],
     "activationAction":"RIGHT_CLICK",
-    "usedItem":"ARROW",
-    "usedAmount":{"x1":1,"y1":1.0,"x2":3,"y2":1.0},
-    "cooldown":{"x1":1,"y1":5.0,"x2":3,"y2":2.0},
+    "usedItem":"AIR",
+    "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "cooldown":{"x1":1,"y1":25.0,"x2":3,"y2":10.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
     "attributeRequirements":{
-      "precision":{"x1":1,"y1":5.0,"x2":3,"y2":45.0}
+      "toughness":{"x1":1,"y1":5.0,"x2":3,"y2":45.0},
+      "strength":{"x1":1,"y1":3.0,"x2":3,"y2":25.0}
     },
-    "functions":{"speed":{"x1":1,"y1":1.0,"x2":3,"y2":3.0}},
-    "description":"Shoots an arrow.",
-    "usage":"rclick w/ arrow"
-  },
-
-  {"className":"org.saga.abilities.Fireball",
-    "name":"fireball",
-    "activationItem":["COAL"],
-    "activationAction":"RIGHT_CLICK",
-    "usedItem":"COAL",
-    "usedAmount":{"x1":1,"y1":1.0,"x2":3,"y2":1.0},
-    "cooldown":{"x1":1,"y1":5.0,"x2":3,"y2":2.0},
-    "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
-    "attributeRequirements":{
-      "willpower":{"x1":1,"y1":5.0,"x2":3,"y2":45.0}
+    "functions":{
+      "size":{"x1":0,"y1":1.0,"x2":3,"y2":60.0},
+      "crumble":{"x1":0,"y1":5.0,"x2":50,"y2":10.0}
     },
-    "functions":{"speed":{"x1":1,"y1":0.70,"x2":3,"y2":2.0}},
-    "description":"Shoots a fireball.",
-    "usage":"rclick w/ coal"
+    "description":"Breaks stone.",
+    "usage":"rclick stone w/ pickaxe"
   },
-
+  
   {"className":"org.saga.abilities.Repair",
     "name":"repair",
     "activationItem":["DIAMOND_HELMET","DIAMOND_CHESTPLATE","DIAMOND_LEGGINGS","DIAMOND_BOOTS",
@@ -103,7 +76,7 @@
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
     "attributeRequirements":{
       "willpower":{"x1":1,"y1":5.0,"x2":3,"y2":45.0},
-      "toughness":{"x1":1,"y1":0.0,"x2":3,"y2":25.0}
+      "toughness":{"x1":1,"y1":3.0,"x2":3,"y2":25.0}
     },
     "functions":{
       "consume chance":{"x1":1,"y1":1.0,"x2":3,"y2":0.35},
@@ -112,27 +85,58 @@
     },
     "description":"Repairs items.",
     "usage":"rclick iron block"
-  },
+  },  
 
-  {"className":"org.saga.abilities.HeavySwing",
-    "name":"heavy swing",
-    "activationItem":["DIAMOND_PICKAXE","GOLD_PICKAXE","IRON_PICKAXE"],
-    "activationAction":"RIGHT_CLICK",
+  
+  
+  {"className":"org.saga.abilities.Bash",
+    "name":"bash",
+    "activationItem":["DIAMOND_SWORD","GOLD_SWORD","IRON_SWORD","STONE_SWORD"],
+    "activationAction":"NONE",
     "usedItem":"AIR",
     "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "cooldown":{"x1":1,"y1":25.0,"x2":3,"y2":10.0},
+    "cooldown":{"x1":1,"y1":10.0,"x2":3,"y2":5.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
     "attributeRequirements":{
-      "toughness":{"x1":1,"y1":5.0,"x2":3,"y2":45.0},
-      "strength":{"x1":1,"y1":0.0,"x2":3,"y2":25.0}
+      "strength":{"x1":1,"y1":8.0,"x2":3,"y2":45.0}
     },
-    "functions":{
-      "size":{"x1":0,"y1":1.0,"x2":3,"y2":60.0},
-      "crumble":{"x1":0,"y1":5.0,"x2":50,"y2":10.0}
+    "functions":{"disarm chance":{"x1":1,"y1":0.8,"x2":3,"y2":0.8}},
+    "description":"Shifts targets sword.",
+    "usage":"random chance"
+  },
+  
+  {"className":"org.saga.abilities.Dart",
+    "name":"dart",
+    "activationItem":["ARROW"],
+    "activationAction":"RIGHT_CLICK",
+    "usedItem":"ARROW",
+    "usedAmount":{"x1":1,"y1":1.0,"x2":3,"y2":1.0},
+    "cooldown":{"x1":1,"y1":5.0,"x2":3,"y2":2.0},
+    "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
+    "attributeRequirements":{
+      "precision":{"x1":1,"y1":8.0,"x2":3,"y2":45.0}
     },
-    "description":"Breaks stone.",
-    "usage":"rclick stone w/ pickaxe"
+    "functions":{"speed":{"x1":1,"y1":1.0,"x2":3,"y2":3.0}},
+    "description":"Shoots an arrow.",
+    "usage":"rclick w/ arrow"
+  },
+
+  {"className":"org.saga.abilities.Fireball",
+    "name":"fireball",
+    "activationItem":["COAL"],
+    "activationAction":"RIGHT_CLICK",
+    "usedItem":"COAL",
+    "usedAmount":{"x1":1,"y1":1.0,"x2":3,"y2":1.0},
+    "cooldown":{"x1":1,"y1":5.0,"x2":3,"y2":2.0},
+    "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
+    "attributeRequirements":{
+      "willpower":{"x1":1,"y1":8.0,"x2":3,"y2":45.0}
+    },
+    "functions":{"speed":{"x1":1,"y1":0.70,"x2":3,"y2":2.0}},
+    "description":"Shoots a fireball.",
+    "usage":"rclick w/ coal"
   }
+  
 ]
 
 }
