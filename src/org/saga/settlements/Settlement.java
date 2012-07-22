@@ -636,6 +636,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		if(lastDate == null){
 			SagaLogger.severe(this, "last seen date not found for " + name + " player");
 			lastDate = Calendar.getInstance().getTime();
+			lastSeen.put(name, lastDate);
 		}
 		
 		return lastDate;

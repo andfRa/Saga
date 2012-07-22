@@ -36,7 +36,7 @@
     "type":"ROLE",
     "hierarchyLevel":"3",
     "attributeBonuses":{},
-    "settlementPermissions":["BUILD","BUILD_BUILDING","CLAIM","INVITE","ABANDON","KICK","SET_BUILDING","REMOVE_BUILDING","RENAME","SPAWN","MEMBER_COMMAND","ADD_RESIDENT","REMOVE_RESIDENT","MANAGE_PRICES","MANAGE_DEALS","ACCESS_STORAGE"],
+    "settlementPermissions":["BUILD","BUILD_BUILDING","CLAIM","INVITE","ABANDON","KICK","SET_BUILDING","REMOVE_BUILDING","RENAME","SPAWN","MEMBER_COMMAND","ADD_RESIDENT","REMOVE_RESIDENT","MANAGE_PRICES","MANAGE_DEALS","ACCESS_WAREHOUSE","ACCESS_STORAGE"],
     "factionPermissions":[]
   },
 
@@ -44,7 +44,7 @@
     "type":"ROLE",
     "hierarchyLevel":"2",
     "attributeBonuses":{"toughness":6,"strength":4},
-    "settlementPermissions":[],
+    "settlementPermissions":["BUILD","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE"],
     "factionPermissions":[]
   },
 
@@ -52,7 +52,7 @@
     "type":"ROLE",
     "hierarchyLevel":"2",
     "attributeBonuses":{"strength":6,"precision":4},
-    "settlementPermissions":[],
+    "settlementPermissions":["BUILD","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE"],
     "factionPermissions":[]
   },
 
@@ -60,7 +60,7 @@
     "type":"ROLE",
     "hierarchyLevel":"2",
     "attributeBonuses":{"precision":6,"willpower":4},
-    "settlementPermissions":[],
+    "settlementPermissions":["BUILD","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE"],
     "factionPermissions":[]
   },
 
@@ -68,7 +68,7 @@
     "type":"ROLE",
     "hierarchyLevel":"2",
     "attributeBonuses":{"willpower":6,"toughness":4},
-    "settlementPermissions":[],
+    "settlementPermissions":["BUILD","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE"],
     "factionPermissions":[]
   },
 
