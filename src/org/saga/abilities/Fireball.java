@@ -52,7 +52,7 @@ public class Fireball extends Ability{
 //		Location shootLocation1 = event.getPlayer().getEyeLocation().add(shootDirection).add(pendicularDirection.multiply( 0.75)).add(new Vector(0, -0.75, 0));
 		Location shootLocation1 = event.getPlayer().getEyeLocation().add(shootDirection);
 
-		sagaPlayer.shootFireball(getDefinition().getFunction(SPEED_KEY).value(getEffectiveScore()), shootLocation1);
+		sagaPlayer.shootFireball(getDefinition().getFunction(SPEED_KEY).value(getModifiedScore()), shootLocation1);
 
 		// Statistics:
 		StatisticsManager.manager().onAbilityUse(getName(), 0.0);

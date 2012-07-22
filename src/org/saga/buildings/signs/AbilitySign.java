@@ -1,15 +1,10 @@
 package org.saga.buildings.signs;
 
 import org.bukkit.block.Sign;
-import org.saga.SagaLogger;
-import org.saga.abilities.Ability;
 import org.saga.buildings.Building;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.EconomyConfiguration;
-import org.saga.messages.AbilityEffects;
 import org.saga.messages.BuildingMessages;
-import org.saga.messages.EconomyMessages;
-import org.saga.messages.GeneralMessages;
 import org.saga.player.SagaPlayer;
 
 
@@ -129,50 +124,50 @@ public class AbilitySign extends BuildingSign{
 	@Override
 	protected void onRightClick(SagaPlayer sagaPlayer) {
 
-		
-		String abilityName = getFirstParameter();
-		Integer abilityScore = sagaPlayer.getAbilityScore(abilityName) + 1;
-		
-		// Already maximum:
-		if(abilityScore > AbilityConfiguration.config().maxAbilityScore){
-			sagaPlayer.message(BuildingMessages.abilityMaxReached(abilityName));
-			return;
-		}
-		
-		// Ability:
-		Ability ability = sagaPlayer.getAbility(abilityName);
-		if(ability == null){
-			SagaLogger.severe(this, "failed to retrieve " + abilityName + " ability from " + sagaPlayer.getName());
-			sagaPlayer.error("Failed to retrieve " + abilityName + " ability.");
-			return;
-		}
-		
-		// Requirements:
-		if(!ability.getDefinition().checkAttributes(sagaPlayer, abilityScore)){
-			sagaPlayer.message(BuildingMessages.abilityReqNotMet(ability, abilityScore));
-			return;
-		}
-
-		// Enough coins:
-		Double cost = EconomyConfiguration.config().getAbilityUpgradeCost(abilityName, abilityScore);
-		if(sagaPlayer.getCoins() < cost){
-			sagaPlayer.message(EconomyMessages.notEnoughCoins(cost, sagaPlayer.getCoins()));
-			return;
-		}
-		
-		// Take coins:
-		sagaPlayer.removeCoins(cost);
-		sagaPlayer.message(GeneralMessages.coinsSpent(cost));
-		
-		// Upgrade:
-		sagaPlayer.setAbilityScore(abilityName, abilityScore);
-		
-		// Inform:
-		sagaPlayer.message(BuildingMessages.abilityUpgraded(abilityName, abilityScore));
-		
-		// Play effect:
-		AbilityEffects.playSign(sagaPlayer);
-		
+//		
+//		String abilityName = getFirstParameter();
+//		Integer abilityScore = sagaPlayer.getAbilityScore(abilityName) + 1;
+//		
+//		// Already maximum:
+//		if(abilityScore > AbilityConfiguration.config().maxAbilityScore){
+//			sagaPlayer.message(BuildingMessages.abilityMaxReached(abilityName));
+//			return;
+//		}
+//		
+//		// Ability:
+//		Ability ability = sagaPlayer.getAbility(abilityName);
+//		if(ability == null){
+//			SagaLogger.severe(this, "failed to retrieve " + abilityName + " ability from " + sagaPlayer.getName());
+//			sagaPlayer.error("Failed to retrieve " + abilityName + " ability.");
+//			return;
+//		}
+//		
+//		// Requirements:
+//		if(!ability.getDefinition().checkAttributes(sagaPlayer, abilityScore)){
+//			sagaPlayer.message(BuildingMessages.abilityReqNotMet(ability, abilityScore));
+//			return;
+//		}
+//
+//		// Enough coins:
+//		Double cost = EconomyConfiguration.config().getAbilityUpgradeCost(abilityName, abilityScore);
+//		if(sagaPlayer.getCoins() < cost){
+//			sagaPlayer.message(EconomyMessages.notEnoughCoins(cost, sagaPlayer.getCoins()));
+//			return;
+//		}
+//		
+//		// Take coins:
+//		sagaPlayer.removeCoins(cost);
+//		sagaPlayer.message(GeneralMessages.coinsSpent(cost));
+//		
+//		// Upgrade:
+//		sagaPlayer.setAbilityScore(abilityName, abilityScore);
+//		
+//		// Inform:
+//		sagaPlayer.message(BuildingMessages.abilityUpgraded(abilityName, abilityScore));
+//		
+//		// Play effect:
+//		AbilityEffects.playSign(sagaPlayer);
+//		
 		
 	}
 	

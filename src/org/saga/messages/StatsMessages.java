@@ -197,9 +197,7 @@ public class StatsMessages {
 
 		
 		StringTable table = new StringTable(new ColorCircle().addColor(normal1).addColor(normal2));
-		HashSet<Ability> allAbilities = sagaPlayer.getAvailableAbilities();
-		
-		
+		HashSet<Ability> allAbilities = sagaPlayer.getAbilities();
 		
     	// Add abilities:
     	if(allAbilities.size() > 0){
@@ -209,7 +207,7 @@ public class StatsMessages {
     			String name = GeneralMessages.scoreAbility(ability);
     			String status = "";
     			
-    			if(ability.getEffectiveScore() <= 0){
+    			if(ability.getModifiedScore() <= 0){
     				name = unavailable + name;
     				status = unavailable + "(" + requirements(ability.getDefinition(), 1) + ")";
     			}

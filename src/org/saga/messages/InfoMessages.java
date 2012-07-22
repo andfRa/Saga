@@ -6,7 +6,6 @@ import org.bukkit.ChatColor;
 import org.saga.abilities.AbilityDefinition;
 import org.saga.attributes.Attribute;
 import org.saga.buildings.TradingPost;
-import org.saga.buildings.signs.AbilitySign;
 import org.saga.buildings.signs.AttributeSign;
 import org.saga.buildings.signs.GuardianRuneSign;
 import org.saga.buildings.signs.SellSign;
@@ -170,8 +169,8 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		
 		// Ability upgrades:
 		book.addLine(
-			"Some abilities can be upgraded by interacting with " + AbilitySign.SIGN_NAME + " signs. " +
-			"Upgrading makes abilities more efficient and decreases cooldowns."
+			"Abilities can be upgraded by increasing attributes. " +
+			"Upgraded abilities are more efficient and have lower cooldown times."
 		);
 		
 		book.addLine("");

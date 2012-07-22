@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.bukkit.Material;
 import org.saga.SagaLogger;
+import org.saga.config.AbilityConfiguration;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.TwoPointFunction;
 
@@ -336,7 +337,28 @@ public class AbilityDefinition{
 
 	}
 	
-	
+	/**
+	 * Gets players ability score.
+	 * 
+	 * @param sagaPlayer saga player
+	 * @return ability score
+	 */
+	public Integer getScore(SagaPlayer sagaPlayer) {
+
+		
+		int prevScore = 0;
+		
+		for (int score = 1; score <= AbilityConfiguration.config().maxAbilityScore; score++) {
+			
+			if(!checkAttributes(sagaPlayer, score)) return prevScore;
+			prevScore = score;
+			
+		}
+		
+		return prevScore;
+		
+		
+	}
 	
 	
 	// Info:

@@ -88,11 +88,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 */
 	private Hashtable<String, Integer> attributeScores;
 	
-	/**
-	 * Ability scores.
-	 */
-	private Hashtable<String, Integer> abilityScores;
-
 	
 	// Abilities:
 	/**
@@ -218,7 +213,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 		this.abilities = new ArrayList<Ability>();
 		syncAbilities();
 		this.attributeScores = new Hashtable<String, Integer>();
-		this.abilityScores = AbilityConfiguration.config().getStartingScores();
 		this.abilityManager = new AbilityManager(this);
 		this.attributeManager = new AttributeManager(this);
 		
@@ -315,11 +309,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 			SagaLogger.nullField(this, "attributeScores");
 		}
 		
-		if(abilityScores == null){
-			abilityScores = new Hashtable<String, Integer>();
-			SagaLogger.nullField(this, "abilityScores");
-		}
-		
 		// Transient:
 		this.clockEnabled = false;
 		this.attributeManager = new AttributeManager(this);
@@ -372,10 +361,13 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 */
 	public Integer getAbilityScore(String name) {
 
-		Integer abilityLevel = abilityScores.get(name);
-		if(abilityLevel == null) return 0;
-		return abilityLevel;
+		
+		Ability ability = getAbility(name);
+		if(ability == null) return 0;
+		
+		return ability.getDefinition().getScore(this);
 
+		
 	}
 	
 	/**
@@ -474,30 +466,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 	}
 
 	/**
-	 * Gets abilities that have a positive score.
-	 * 
-	 * @return available abilities
-	 */
-	public HashSet<Ability> getAvailableAbilities() {
-		
-		
-		HashSet<Ability> abilities = getAbilities();
-		HashSet<Ability> availableAbilities = new HashSet<Ability>();
-		
-		for (Ability ability : abilities) {
-			
-			if(getAbilityScore(ability.getName()) > 0){
-				availableAbilities.add(ability);
-			}
-			
-		}
-		
-		return availableAbilities;
-		
-		
-	}
-	
-	/**
 	 * Creates and adds all missing abilities.
 	 * 
 	 */
@@ -523,18 +491,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 
 	}
 
-	/**
-	 * Sets ability score.
-	 * 
-	 * @param ability ability name
-	 * @param score score
-	 */
-	public void setAbilityScore(String ability, Integer score) {
-		this.abilityScores.put(ability, score);
-		abilityManager.update();
-	}
-	
-	
 	
 	
 	// Player:

@@ -214,23 +214,14 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	}
 
 	/**
-	 * Gets the effective ability score.
-	 * Lowers the level until it meets the requirements.
+	 * Gets the modified ability score. Includes bonuses.
 	 * 
-	 * @return ability score, 0 if the requirements can't be met
+	 * @return ability score
 	 */
-	public Integer getEffectiveScore() {
-
-		int max = sagaPlayer.getAbilityScore(getName());
+	public Integer getModifiedScore() {
 		
-		for (int abilityLevel = max; abilityLevel >= 0; abilityLevel--) {
-		
-			if(definition.checkAttributes(sagaPlayer, abilityLevel)) return abilityLevel;
-			
-		}
-		
-		return 0;
-
+		// TODO: Add bonuses to abilities
+		return getDefinition().getScore(sagaPlayer);
 		
 	}
 	
@@ -271,7 +262,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 * @return the total cooldown
 	 */
 	public Integer getTotalCooldown() {
-		return getDefinition().getCooldown(getEffectiveScore());
+		return getDefinition().getCooldown(getModifiedScore());
 	}
 
 	/**
@@ -303,7 +294,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 
 		
 		Material material = definition.getUsedItem();
-		Integer amount = definition.getUsedAmount(getEffectiveScore());
+		Integer amount = definition.getUsedAmount(getModifiedScore());
 		
 		// Nothing to remove.
 		if(material.equals(Material.AIR) || amount == 0) return;
@@ -358,7 +349,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		PlayerInventory inventory = sagaPlayer.getPlayer().getInventory();
 		
 		Material usedItem = getDefinition().getUsedItem();
-		Integer usedAmount = getDefinition().getUsedAmount(getEffectiveScore());
+		Integer usedAmount = getDefinition().getUsedAmount(getModifiedScore());
 		
 		if(usedItem == Material.AIR) return true;
 		
@@ -393,7 +384,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 */
 	protected void startCooldown() {
 
-		this.cooldown = definition.getCooldown(getEffectiveScore());
+		this.cooldown = definition.getCooldown(getModifiedScore());
 		
 		// Start clock:
 		if(!clock) startClock();
@@ -433,10 +424,10 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 			
 		}
 		
-		if(getEffectiveScore() < 1) return false;
+		if(getModifiedScore() < 1) return false;
 		
 		if(!checkCost()){
-			sagaPlayer.message(AbilityMessages.insufficientItems(this, definition.getUsedItem(), definition.getUsedAmount(getEffectiveScore())));
+			sagaPlayer.message(AbilityMessages.insufficientItems(this, definition.getUsedItem(), definition.getUsedAmount(getModifiedScore())));
 			return false;
 		}
 

@@ -53,7 +53,7 @@ public class Force extends Ability{
 		
 
 		SagaPlayer sagaPlayer = getSagaPlayer();
-		Integer abilityLevel = getEffectiveScore();
+		Integer abilityLevel = getModifiedScore();
 		
 		Player player = sagaPlayer.getPlayer();
 		if(player == null){
@@ -62,7 +62,7 @@ public class Force extends Ability{
 		}
 		
 		// Get entities:
-		double radius = getDefinition().getFunction(RADIUS_KEY).randomIntValue(getEffectiveScore());
+		double radius = getDefinition().getFunction(RADIUS_KEY).randomIntValue(getModifiedScore());
 		double radiusSquared = radius*radius;
 		
 		List<Entity> entities = player.getNearbyEntities(radius, 4, radius);
