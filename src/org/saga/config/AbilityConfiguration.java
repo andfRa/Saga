@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
-import java.util.Hashtable;
 
 import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
@@ -34,12 +33,6 @@ public class AbilityConfiguration {
 	
 	
 	
-	
-	/**
-	 * Starting ability scores.
-	 */
-	private Hashtable<String, Integer> startingScores;
-	
 	/**
 	 * Maximum ability score.
 	 */
@@ -52,7 +45,6 @@ public class AbilityConfiguration {
 	
 	
 	
-	
 	// Initialisation:
 	/**
 	 * Completes construction.
@@ -60,11 +52,6 @@ public class AbilityConfiguration {
 	 */
 	public void complete() {
 		
-		
-		if(startingScores == null){
-			startingScores = new Hashtable<String, Integer>();
-			SagaLogger.nullField(getClass(), "startingScores");
-		}
 		
 		if(maxAbilityScore == null){
 			maxAbilityScore = 0;
@@ -97,7 +84,6 @@ public class AbilityConfiguration {
 		
 	}
 
-	
 	
 	
 	// Interaction:
@@ -179,17 +165,6 @@ public class AbilityConfiguration {
 		return abilityNames;
 		
 	}
-	
-	
-	/**
-	 * Gets the startingScores.
-	 * 
-	 * @return the startingScores
-	 */
-	public Hashtable<String, Integer> getStartingScores() {
-		return new Hashtable<String, Integer>(startingScores);
-	}
-
 	
 	
 	
