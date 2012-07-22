@@ -1,14 +1,9 @@
 package org.saga.player;
 
 
-import java.util.ArrayList;
-import java.util.HashSet;
-
 import org.saga.SagaLogger;
-import org.saga.abilities.Ability;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
-import org.saga.exceptions.InvalidAbilityException;
 import org.saga.factions.SagaFaction.FactionPermission;
 import org.saga.settlements.Settlement.SettlementPermission;
 
@@ -20,20 +15,9 @@ public class Proficiency {
 	 * Profession name.
 	 */
 	private String name;
-
-	/**
-	 * Selected abilities.
-	 */
-	private HashSet<String> selectedAbilities;
 	
 	/**
-	 * Second abilities.
-	 */
-	private ArrayList<Ability> abilities;
-	
-	
-	/**
-	 * Contains all information needed for the proficiency.
+	 * Proficiency definition.
 	 */
 	transient private ProficiencyDefinition definition;
 	
@@ -55,26 +39,20 @@ public class Proficiency {
 		
 		this.name = definition.getName();
 		this.definition = definition;
-		abilities = new ArrayList<Ability>();
-		selectedAbilities = new HashSet<String>();
 		
 	}
 	
 	/**
 	 * Completes.
 	 * 
-	 * @return integrity
 	 * @throws InvalidProficiencyException if the definition can not be found
 	 */
-	public boolean complete() throws InvalidProficiencyException {
+	public void complete() throws InvalidProficiencyException {
 		
-		
-		boolean integrity = true;
 		
 		if(name == null){
 			name = "null proficiency";
 			SagaLogger.nullField(this, "name");
-			integrity = false;
 		}
 
 		// Retrieve definition:
@@ -82,39 +60,6 @@ public class Proficiency {
 		if(definition == null){
 			throw new InvalidProficiencyException(getName());
 		}
-		
-		// First abilities:
-		if(abilities == null){
-			abilities = new ArrayList<Ability>();
-			SagaLogger.nullField(this, "abilities");
-			integrity = false;
-		}
-		for (int i = 0; i < abilities.size(); i++) {
-			
-			if(abilities.get(i) == null){
-				SagaLogger.severe(this, "abilities field element");
-				abilities.remove(i);
-				i--;
-				continue;
-			}
-			
-			try {
-				integrity = abilities.get(i).complete() && integrity;
-			} catch (InvalidAbilityException e) {
-				SagaLogger.severe(this, "failed to complete abilities field element: " + e.getClass().getSimpleName() + ":" + e.getMessage());
-				abilities.remove(i);
-				i--;
-				continue;
-			}
-			
-		}
-		if(selectedAbilities == null){
-			selectedAbilities = new HashSet<String>();
-			SagaLogger.nullField(this, "selectedAbilities");
-			integrity = false;
-		}
-		
-		return integrity;
 		
 		
 	}
@@ -128,23 +73,8 @@ public class Proficiency {
 		
 		this.sagaPlayer= sagaPlayer;
 		
-		for (Ability ability : abilities) {
-			ability.setPlayer(sagaPlayer);
-		}
-		
 	}
 
-	/**
-	 * Creates a proficiency based on definition.
-	 * 
-	 * @param definition definition
-	 */
-	public static Proficiency create(ProficiencyDefinition definition){
-		
-		return new Proficiency(definition);
-		
-	}
-	
 	
 	// Interaction:
 	/**
@@ -164,10 +94,6 @@ public class Proficiency {
 	 */
 	public void fixName() {
 		
-		if(name.equals("rouge")){
-			name = "rogue";
-		}
-		
 
 	}
 	
@@ -180,24 +106,15 @@ public class Proficiency {
 		return definition;
 	}
 
-	/**
-	 * Gets proficiency type.
-	 * 
-	 * @return proficiency type
-	 */
-	public ProficiencyType getType(){
-		return definition.getType();
-	}
-
 	
 	
-	// Profession definition:
+	// Definition:
 	/**
 	 * Gets the highlight.
 	 * 
 	 * @return the highlight
 	 */
-	public Short getHierarchyLevel() {
+	public Short getHierarchy() {
 		return definition.getHierarchyLevel();
 	}
 

@@ -570,7 +570,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 			zeroHighlMembers.remove(i);
 			i--;
 			String roleName = role.getName();
-			Short hierarchyLevel = role.getHierarchyLevel();
+			Short hierarchyLevel = role.getHierarchy();
 			
 			// Hierarchy:
 			if(hierarchyLevel > maxHierarchyLevel){

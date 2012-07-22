@@ -7,7 +7,6 @@ import org.saga.config.BalanceConfiguration;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.player.GuardianRune;
-import org.saga.player.Proficiency;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.text.TextUtil;
@@ -52,71 +51,6 @@ public class PlayerMessages {
 	public static String inventoryFullDropping() {
 		
 		return negative + "Inventory full, dropped items on the ground.";
-		
-	}
-	
-	
-	
-	// Proficiencies:
-	public static String proficiencySelected(Proficiency proficiency, Double coinCost) {
-		
-		
-		if(coinCost > 0){
-			return positive + "Selected " + proficiency.getName() + " " + proficiency.getType().getName() + " for " + EconomyMessages.coins(coinCost) + ".";
-		}else{
-			return positive + "Selected " + proficiency.getName() + " " + proficiency.getType().getName() + ".";
-		}
-		
-		
-	}
-	
-	public static String alreadySelected(Proficiency proficiency) {
-		
-		
-		return negative + "A " + proficiency.getName() + " " + proficiency.getType().getName() + " is already selected.";
-		
-		
-	}
-	
-	public static String proficiencyRemoved(Proficiency proficiency) {
-		
-		return positive + "Removed " + proficiency.getName() + " " + proficiency.getType().getName() + ".";
-		
-	}
-	
-	public static String oneProficAllowed(ProficiencyType proficType) {
-		
-		return negative + "Only one " + proficType.getName() + " is allowed.";
-		
-	}
-	
-	public static String levelsNeeded(Integer levels, Proficiency proficiency) {
-		
-		return negative + levels.toString() + " level points are required to select " + proficiency.getName() + " " + proficiency.getType().getName() + ".";
-		
-	}
-	
-	public static String coinsNeeded(Double coins, Proficiency proficiency) {
-		
-		return negative + EconomyMessages.coins(coins) + " are needed to select " + proficiency.getName() + " " + proficiency.getType().getName() + ".";
-		
-	}
-	
-	public static String invalidProficiency(String name) {
-		
-		return negative + name + " isn't a valid proficiency.";
-		
-	}
-	
-	public static String removedProficiency(Proficiency profession){
-		
-		return positive + "Removed " + profession.getName() + " " + profession.getType().getName() + ".";
-		
-	}
-	
-	public static String noProficiency(ProficiencyType type){
-		
-		return negative + "No " + type.getName() + " is selected.";
 		
 	}
 	
