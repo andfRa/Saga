@@ -135,7 +135,26 @@
     "functions":{"speed":{"x1":1,"y1":0.70,"x2":3,"y2":2.0}},
     "description":"Shoots a fireball.",
     "usage":"rclick w/ coal"
-  }
+  },
+
+  {"className":"org.saga.abilities.Force",
+    "name":"force",
+    "activationItem":["BOOK"],
+    "activationAction":"RIGHT_CLICK",
+    "usedItem":"AIR",
+    "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "cooldown":{"x1":0,"y1":18.0,"x2":50,"y2":5.0},
+    "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
+    "attributeRequirements":{
+      "warding":{"x1":1,"y1":8.0,"x2":3,"y2":45.0}
+    },
+    "functions":{
+      "radius":{"x1":0,"y1":4.5,"x2":50,"y2":9.0},
+      "power":{"x1":0,"y1":1.2,"x2":50,"y2":2.0}
+    },
+    "description":"Pushes back.",
+    "usage":"rclick w/ book"
+  } 
   
 ]
 
