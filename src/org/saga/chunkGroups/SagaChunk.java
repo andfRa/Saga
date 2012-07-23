@@ -968,6 +968,59 @@ public class SagaChunk {
 	}
 
 	/**
+	 * Gets all adjacent Saga chunks.
+	 * 
+	 * @param bukkitChunk bukkit chunk
+	 * @return all adjacent saga chunks
+	 */
+	public static ArrayList<SagaChunk> getAllAdjacent(Chunk bukkitChunk) {
+
+		
+		SagaChunk sagaChunk = null;
+		ArrayList<SagaChunk> sagaChunks = new ArrayList<SagaChunk>();
+		
+		int x = bukkitChunk.getX();
+		int z = bukkitChunk.getZ();
+		String world = bukkitChunk.getWorld().getName();
+		
+		// x + 1:
+		sagaChunk = ChunkGroupManager.manager().getSagaChunk(world, x+1, z-1);
+		if(sagaChunk != null) sagaChunks.add(sagaChunk);
+		
+		sagaChunk = ChunkGroupManager.manager().getSagaChunk(world, x+1, z);
+		if(sagaChunk != null) sagaChunks.add(sagaChunk);
+		
+		sagaChunk = ChunkGroupManager.manager().getSagaChunk(world, x+1, z+1);
+		if(sagaChunk != null) sagaChunks.add(sagaChunk);
+
+		// x:
+		sagaChunk = ChunkGroupManager.manager().getSagaChunk(world, x, z-1);
+		if(sagaChunk != null) sagaChunks.add(sagaChunk);
+		
+		sagaChunk = ChunkGroupManager.manager().getSagaChunk(world, x, z);
+		if(sagaChunk != null) sagaChunks.add(sagaChunk);
+		
+		sagaChunk = ChunkGroupManager.manager().getSagaChunk(world, x, z+1);
+		if(sagaChunk != null) sagaChunks.add(sagaChunk);
+		
+		// x - 1:
+		sagaChunk = ChunkGroupManager.manager().getSagaChunk(world, x-1, z-1);
+		if(sagaChunk != null) sagaChunks.add(sagaChunk);
+		
+		sagaChunk = ChunkGroupManager.manager().getSagaChunk(world, x-1, z);
+		if(sagaChunk != null) sagaChunks.add(sagaChunk);
+		
+		sagaChunk = ChunkGroupManager.manager().getSagaChunk(world, x-1, z+1);
+		if(sagaChunk != null) sagaChunks.add(sagaChunk);
+		
+		return sagaChunks;
+		
+		
+	}
+	
+	
+
+	/**
 	 * Checks if the chunk is a chunk group border.
 	 * 
 	 * @return true if border

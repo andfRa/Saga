@@ -276,6 +276,10 @@ public class ChunkGroupMessages {
 		return negative + "Settlements above level " + SettlementConfiguration.config().noDeleteLevel + " can't be deleted.";
 	}
 
+	public static String claimAdjacentDeny() {
+		return negative + "Can't claim land adjacent to other settlements.";
+	}
+
 	
 	
 	// Invite join leave messages:

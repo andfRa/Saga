@@ -71,13 +71,24 @@ public class ChunkGroupCommands {
 			sagaPlayer.message(ChunkGroupMessages.chunkClaimed());
 			return;
 		}
+
+		// Adjacent:
+		ArrayList<SagaChunk> adjacent = SagaChunk.getAllAdjacent(location.getChunk());
+		for (SagaChunk sagaChunk : adjacent) {
+			
+			if(sagaChunk.getChunkGroup() != null){
+				sagaPlayer.message(ChunkGroupMessages.claimAdjacentDeny());
+				return;
+			}
+			
+		}
 		
 		// Settles:
 		if(sagaPlayer.hasChunkGroup()){
 			sagaPlayer.message(ChunkGroupMessages.oneChunkGroupAllowed());
 			return;
 		}
-	
+		
 		// Fix spaces:
 		while(settlementName.contains("  ")){
 			settlementName = settlementName.replaceAll("  ", " ");
@@ -161,6 +172,17 @@ public class ChunkGroupCommands {
 	   	if(locationChunk != null){
 			sagaPlayer.message(ChunkGroupMessages.chunkClaimed());
 			return;
+		}
+	   	
+		// Adjacent:
+		ArrayList<SagaChunk> adjacent = SagaChunk.getAllAdjacent(location.getChunk());
+		for (SagaChunk sagaChunk : adjacent) {
+			
+			if(sagaChunk.getChunkGroup() != selectedChunkGroup){
+				sagaPlayer.message(ChunkGroupMessages.claimAdjacentDeny());
+				return;
+			}
+			
 		}
 	   	
 		// Not adjacent:
@@ -1409,6 +1431,6 @@ public class ChunkGroupCommands {
 		return sagaChunk.getChunkGroup();
 		
 	}
-
+	
 	
 }
