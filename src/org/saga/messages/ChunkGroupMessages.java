@@ -5,7 +5,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import org.bukkit.ChatColor;
-import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.buildings.Building;
 import org.saga.buildings.BuildingDefinition;
 import org.saga.chunkGroups.ChunkGroup;
@@ -558,7 +557,7 @@ public class ChunkGroupMessages {
 				String name = definitions[j].getName();
 				String status = "";
 				
-				Integer level = settlement.getBuildingLevel(name);
+				Integer score = settlement.getBuildingLevel(name);
 				
 				// Requirements met:
 				if(definitions[j].checkRequirements(settlement, 1)){
@@ -571,12 +570,12 @@ public class ChunkGroupMessages {
 					if(usedBuildings > 0){
 						
 						// Status:
-						status = resources(definitions[j], level);
+						status = definitions[j].getEffect(score);
 						if(status.length() == 0) status = "set";
 						
 						// Colours:
-						name = veryPositive + name;
-						status = veryPositive + status;
+						name = positive + name;
+						status = positive + status;
 						
 						if(totalBuildings != 1){
 							name = name + " " + usedBuildings + "/" + totalBuildings;
@@ -611,26 +610,6 @@ public class ChunkGroupMessages {
 		return table;
 		
 		
-	}
-	
-	private static String resources(BuildingDefinition definition, Integer level){
-		
-		
-		// Amount:
-		Integer amount = definition.getResourceAmount(level);
-		if(amount < 1) return "";
-		
-		// Daytime:
-		Daytime daytime = definition.getResourceTime();
-		if(daytime == Daytime.NONE) return "";
-		
-		// Resource:
-		String resource = definition.getResource();
-		if(resource.length() == 0) resource = "items";
-		
-		return amount + " " + resource + "/" + daytime;
-		
-				
 	}
 	
 	private static String requirements(BuildingDefinition definition, Integer buildingLevel){

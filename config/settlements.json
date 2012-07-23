@@ -4,7 +4,7 @@
 
   "activePlayers":{"x1":0,"y1":0,"x2":49,"y2":25.0},
 
-  "buildPoints":{"x1":0,"y1":1.0,"x2":50,"y2":25.0},
+  "buildPoints":{"x1":0,"y1":5.0,"x2":50,"y2":50.0},
 
   "hierarchy":{
     "1":{"x1":1,"y1":5.0,"x2":50,"y2":50.0},
@@ -21,7 +21,7 @@
   "levelUpExp":{"x1":0,"y1":30.0,"x2":50,"y2":100000.0},
   "expSpeed":{"x1":1,"y1":1.0,"x2":10,"y2":5.5},
 
-  "claims":{"x1":0,"y1":4.0,"x2":25,"y2":150.0},
+  "claims":{"x1":0,"y1":4.0,"x2":50,"y2":250.0},
   
   "ownerRole":"lord",
   "defaultRole":"settler"
@@ -36,7 +36,7 @@
 
 "buildingDefinitions":[
 
-{
+  {
     "name":"lumber camp",
     "buildingClass":"org.saga.buildings.SimpleBuilding",
     "roles":[],
@@ -44,7 +44,7 @@
     "roleAmounts":{},
     "attributes":[],
     "abilities":["chop down"],
-    "buildPoints":5,
+    "buildPoints":4,
     "coinCost":{"x1":0,"y1":0},
     "available":{"x1":0,"y1":1.0},
     "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
@@ -55,12 +55,12 @@
       {"to":[{"mat":"LOG","amount":1,"data":2}], "weight":0.25},
       {"to":[{"mat":"LOG","amount":1,"data":3}], "weight":0.25}
     ],
-    "resourceAmount":{"x1":1,"y1":6,"x2":3,"y2":12},
-    "relatedBuildings":["mine"],
+    "craftAmount":{"x1":1,"y1":6,"x2":3,"y2":12},
+    "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"MIDDAY",
     "description":"",
-    "resource":"logs"
+    "effect":"#craft_daytime: #caft_amount x logs"
   },
 
   {
@@ -73,20 +73,23 @@
     "abilities":["harvest"],
     "buildPoints":2,
     "coinCost":{"x1":0,"y1":0},
-    "available":{"x1":5,"y1":1.0},
+    "available":{"x1":5,"y1":1.0,"x2":50,"y2":6},
     "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
     "storageSize":1,
     "recipes":[
-      {"to":[{"mat":"WHEAT","amount":1,"data":0}], "weight":0.60},
-      {"to":[{"mat":"SUGAR_CANE","amount":1,"data":1}], "weight":0.30},
-      {"to":[{"mat":"NETHER_STALK","amount":1,"data":2}], "weight":0.10}
+      {"to":[{"mat":"WHEAT","amount":1,"data":0}], "weight":0.50},
+      {"to":[{"mat":"SUGAR_CANE","amount":1,"data":0}], "weight":0.30},
+      {"to":[{"mat":"NETHER_STALK","amount":1,"data":0}], "weight":0.05},
+      {"to":[{"mat":"PORK","amount":1,"data":0}], "weight":0.05},
+      {"to":[{"mat":"RAW_BEEF","amount":1,"data":0}], "weight":0.05},
+      {"to":[{"mat":"RAW_CHICKEN","amount":1,"data":0}], "weight":0.05}
     ],
-    "resourceAmount":{"x1":1,"y1":4,"x2":3,"y2":8},
+    "craftAmount":{"x1":1,"y1":4,"x2":3,"y2":8},
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"MIDDAY",
     "description":"",
-    "resource":"crops"
+    "effect":"#craft_daytime: #caft_amount x crops/raw meat"
   },
   
   {
@@ -97,7 +100,7 @@
     "roleAmounts":{},
     "attributes":[],
     "abilities":["heavy swing"],
-    "buildPoints":5,
+    "buildPoints":6,
     "coinCost":{"x1":0,"y1":0},
     "available":{"x1":10,"y1":1.0},
     "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
@@ -109,14 +112,190 @@
       {"to":[{"mat":"LAPIS_ORE","amount":1,"data":0}], "weight":0.12},
       {"to":[{"mat":"DIAMOND_ORE","amount":1,"data":0}], "weight":0.08}
     ],
-    "resourceAmount":{"x1":1,"y1":3,"x2":3,"y2":6},
+    "craftAmount":{"x1":1,"y1":3,"x2":3,"y2":6},
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"MIDDAY",
     "description":"",
-    "resource":"ores"
+    "effect":"#craft_daytime: #caft_amount x ore"
   },
   
+  {
+    "name":"lumber mill",
+    "buildingClass":"org.saga.buildings.SimpleBuilding",
+    "roles":[],
+    "ranks":[],
+    "roleAmounts":{},
+    "attributes":[],
+    "abilities":[],
+    "buildPoints":4,
+    "coinCost":{"x1":0,"y1":0},
+    "available":{"x1":17,"y1":1.0},
+    "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
+    "storageSize":36,
+    "recipes":[
+      {"from":[{"mat":"LOG","amount":1,"data":0}],"to":[{"mat":"WOOD","amount":2,"data":0}], "weight":0.25},
+      {"from":[{"mat":"LOG","amount":1,"data":1}],"to":[{"mat":"WOOD","amount":2,"data":1}], "weight":0.25},
+      {"from":[{"mat":"LOG","amount":1,"data":2}],"to":[{"mat":"WOOD","amount":2,"data":2}], "weight":0.25},
+      {"from":[{"mat":"LOG","amount":1,"data":3}],"to":[{"mat":"WOOD","amount":2,"data":3}], "weight":0.25}
+    ],
+    "craftAmount":{"x1":1,"y1":6,"x2":3,"y2":12},
+    "relatedBuildings":["lumber camp"],
+    "performTime":"NONE",
+    "resourceTime":"SUNSET",
+    "description":"",
+    "effect":"#craft_daytime: #caft_amount x logs to wood"
+  },
+
+  {
+    "name":"inn",
+    "buildingClass":"org.saga.buildings.SimpleBuilding",
+    "roles":[],
+    "ranks":[],
+    "roleAmounts":{},
+    "attributes":[],
+    "abilities":[],
+    "buildPoints":4,
+    "coinCost":{"x1":0,"y1":0},
+    "available":{"x1":22,"y1":1.0},
+    "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
+    "storageSize":1,
+    "recipes":[
+      {"from":[{"mat":"WHEAT","amount":3,"data":0}],"to":[{"mat":"BREAD","amount":2,"data":0}], "weight":0.30},
+      {"from":[{"mat":"WHEAT","amount":3,"data":0}],"to":[{"mat":"COOKIE","amount":2,"data":0}], "weight":0.10},
+      {"from":[{"mat":"PORK","amount":1,"data":0}],"to":[{"mat":"GRILLED_PORK","amount":1,"data":0}], "weight":0.20},
+      {"from":[{"mat":"RAW_BEEF","amount":1,"data":0}],"to":[{"mat":"COOKED_BEEF","amount":1,"data":0}], "weight":0.20},
+      {"from":[{"mat":"RAW_CHICKEN","amount":1,"data":0}],"to":[{"mat":"COOKED_CHICKEN","amount":1,"data":0}], "weight":0.20}
+    ],
+    "craftAmount":{"x1":1,"y1":6,"x2":3,"y2":12},
+    "relatedBuildings":["farm"],
+    "performTime":"NONE",
+    "resourceTime":"SUNSET",
+    "description":"",
+    "effect":"#craft_daytime: #caft_amount x wheat/meat to food"
+  },
+  
+  {
+    "name":"refinery",
+    "buildingClass":"org.saga.buildings.SimpleBuilding",
+    "roles":[],
+    "ranks":[],
+    "roleAmounts":{},
+    "attributes":[],
+    "abilities":["heavy swing"],
+    "buildPoints":6,
+    "coinCost":{"x1":0,"y1":0},
+    "available":{"x1":27,"y1":1.0},
+    "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
+    "storageSize":1,
+    "recipes":[
+      {"from":[{"mat":"COAL_ORE","amount":2,"data":0}],"to":[{"mat":"COAL","amount":3,"data":0}], "weight":0.35},
+      {"from":[{"mat":"IRON_ORE","amount":2,"data":0}],"to":[{"mat":"IRON_INGOT","amount":3,"data":0}], "weight":0.25},
+      {"from":[{"mat":"GOLD_ORE","amount":2,"data":0}],"to":[{"mat":"GOLD_INGOT","amount":3,"data":0}], "weight":0.20},
+      {"from":[{"mat":"LAPIS_ORE","amount":1,"data":0}],"to":[{"mat":"INK_SACK","amount":8,"data":4}], "weight":0.12},
+      {"from":[{"mat":"DIAMOND_ORE","amount":2,"data":0}],"to":[{"mat":"DIAMOND","amount":3,"data":0}], "weight":0.8}
+    ],
+    "craftAmount":{"x1":1,"y1":3,"x2":3,"y2":6},
+    "relatedBuildings":["mine"],
+    "performTime":"NONE",
+    "resourceTime":"SUNSET",
+    "description":"",
+    "effect":"#craft_daytime: #caft_amount x ore refined"
+  },
+
+  {
+    "name":"brickworks",
+    "buildingClass":"org.saga.buildings.SimpleBuilding",
+    "roles":[],
+    "ranks":[],
+    "roleAmounts":{},
+    "attributes":[],
+    "abilities":[],
+    "buildPoints":4,
+    "coinCost":{"x1":0,"y1":0},
+    "available":{"x1":30,"y1":1.0},
+    "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
+    "storageSize":36,
+    "recipes":[
+      {"to":[{"mat":"BRICK","amount":1,"data":0}], "weight":0.50},
+      {"to":[{"mat":"SMOOTH_BRICK","amount":1,"data":0}], "weight":0.50}
+    ],
+    "craftAmount":{"x1":1,"y1":4,"x2":3,"y2":8},
+    "relatedBuildings":[],
+    "performTime":"NONE",
+    "resourceTime":"SUNSET",
+    "description":"",
+    "effect":"#craft_daytime: #caft_amount x bricks"
+  },
+  
+
+
+  {
+    "name":"barracks",
+    "buildingClass":"org.saga.buildings.SimpleBuilding",
+    "roles":[],
+    "ranks":[],
+    "roleAmounts":{},
+    "attributes":["strength","toughness"],
+    "abilities":["bash"],
+    "buildPoints":3,
+    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
+    "available":{"x1":10,"y1":1.0},
+    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "storageSize":0,
+    "recipes":[],
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "relatedBuildings":[],
+    "performTime":"NONE",
+    "resourceTime":"NONE",
+    "description":"",
+    "effect":""
+  },
+
+  {
+    "name":"archery range",
+    "buildingClass":"org.saga.buildings.SimpleBuilding",
+    "roles":[],
+    "ranks":[],
+    "roleAmounts":{},
+    "attributes":["precision","luck"],
+    "abilities":["dart"],
+    "buildPoints":3,
+    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
+    "available":{"x1":20,"y1":1.0},
+    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "storageSize":0,
+    "recipes":[],
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "relatedBuildings":[],
+    "performTime":"NONE",
+    "resourceTime":"NONE",
+    "description":"Trains rogue related attributes.",
+    "effect":""
+  },
+
+  {
+    "name":"academy",
+    "buildingClass":"org.saga.buildings.Academy",
+    "roles":[],
+    "ranks":[],
+    "roleAmounts":{},
+    "attributes":["willpower","warding"],
+    "abilities":["fireball"],
+    "buildPoints":3,
+    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
+    "available":{"x1":25,"y1":1.0},
+    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "storageSize":0,
+    "recipes":[],
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "relatedBuildings":[],
+    "performTime":"NONE",
+    "resourceTime":"NONE",
+    "description":"",
+    "effect":""
+  },
+
 
 
   {
@@ -133,146 +312,12 @@
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "storageSize":0,
     "recipes":[],
-    "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"NONE",
     "description":"Enables settlement spawn command: /sspawn.",
-    "resource":""
-  },
-
-  {
-    "name":"warehouse",
-    "buildingClass":"org.saga.buildings.Warehouse",
-    "roles":[],
-    "ranks":[],
-    "roleAmounts":{},
-    "attributes":[],
-    "abilities":[],
-    "buildPoints":5,
-    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":7,"y1":1.0,"x2":50,"y2":1.0},
-    "storageAreas":{"x1":1,"y1":3.0,"x2":3,"y2":9.0},
-    "storageSize":0,
-    "recipes":[],
-    "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
-    "relatedBuildings":[],
-    "performTime":"NONE",
-    "resourceTime":"NONE",
-    "description":"Limits chest access to settlement members.",
-    "resource":""
-  },
-
-  {
-    "name":"trading post",
-    "buildingClass":"org.saga.buildings.TradingPost",
-    "roles":["master trader"],
-    "ranks":[],
-    "roleAmounts":{
-      "master trader":{"x1":0,"y1":1.0,"x2":5,"y2":2.0}
-    },
-    "attributes":[],
-    "abilities":[],
-    "buildPoints":5,
-    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":4,"y1":1.0,"x2":50,"y2":1.0},
-    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "storageSize":0,
-    "recipes":[],
-    "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
-    "relatedBuildings":[],
-    "performTime":"NONE",
-    "resourceTime":"NONE",
-    "description":"Allows to sell, buy, export and import items.",
-    "resource":""
-  },
-
-  {
-    "name":"barracks",
-    "buildingClass":"org.saga.buildings.SimpleBuilding",
-    "roles":[],
-    "ranks":[],
-    "roleAmounts":{},
-    "attributes":["strength","toughness"],
-    "abilities":["bash"],
-    "buildPoints":5,
-    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":10,"y1":1.0,"x2":50,"y2":1.0},
-    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "storageSize":0,
-    "recipes":[],
-    "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
-    "relatedBuildings":[],
-    "performTime":"NONE",
-    "resourceTime":"NONE",
-    "description":"Trains warrior related attributes.",
-    "resource":""
-  },
-
-  {
-    "name":"arena",
-    "buildingClass":"org.saga.buildings.Arena",
-    "roles":[],
-    "ranks":[],
-    "roleAmounts":{},
-    "attributes":[],
-    "abilities":[],
-    "buildPoints":5,
-    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":15,"y1":1.0,"x2":50,"y2":1.0},
-    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "storageSize":0,
-    "recipes":[],
-    "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
-    "relatedBuildings":[],
-    "performTime":"NONE",
-    "resourceTime":"NONE",
-    "description":"Records player kills and deaths.",
-    "resource":""
-  },
-
-  {
-    "name":"tavern",
-    "buildingClass":"org.saga.buildings.SimpleBuilding",
-    "roles":[],
-    "ranks":[],
-    "roleAmounts":{},
-    "attributes":["precision","luck"],
-    "abilities":["dart"],
-    "buildPoints":5,
-    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":10,"y1":1.0,"x2":50,"y2":1.0},
-    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "storageSize":0,
-    "recipes":[],
-    "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
-    "relatedBuildings":[],
-    "performTime":"NONE",
-    "resourceTime":"NONE",
-    "description":"Trains rogue related attributes.",
-    "resource":""
-  },
-
-  {
-    "name":"academy",
-    "buildingClass":"org.saga.buildings.Academy",
-    "roles":[],
-    "ranks":[],
-    "roleAmounts":{},
-    "attributes":["willpower","warding"],
-    "abilities":["fireball"],
-    "buildPoints":5,
-    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":10,"y1":1.0,"x2":50,"y2":1.0},
-    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "storageSize":0,
-    "recipes":[],
-    "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
-    "relatedBuildings":[],
-    "performTime":"NONE",
-    "resourceTime":"NONE",
-    "description":"Trains mage related attributes. Recharges guardian stones.",
-    "resource":""
+    "effect":"command: /sspawn"
   },
 
   {
@@ -283,19 +328,43 @@
     "roleAmounts":{},
     "attributes":[],
     "abilities":[],
-    "buildPoints":5,
+    "buildPoints":1,
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":5,"y1":1.0,"x2":50,"y2":8.0},
+    "available":{"x1":7,"y1":1.0,"x2":50,"y2":5.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "storageSize":0,
     "recipes":[],
-    "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"NONE",
-    "description":"Stops mobs from spawning within a certain claimed area.",
-    "resource":""
+    "description":"",
+    "effect":""
   },
+  
+  {
+    "name":"arena",
+    "buildingClass":"org.saga.buildings.Arena",
+    "roles":[],
+    "ranks":[],
+    "roleAmounts":{},
+    "attributes":[],
+    "abilities":[],
+    "buildPoints":5,
+    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
+    "available":{"x1":12,"y1":1.0},
+    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "storageSize":0,
+    "recipes":[],
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "relatedBuildings":[],
+    "performTime":"NONE",
+    "resourceTime":"NONE",
+    "description":"",
+    "effect":""
+  },
+
+
 
   {
     "name":"home",
@@ -305,62 +374,18 @@
     "roleAmounts":{},
     "attributes":[],
     "abilities":[],
-    "buildPoints":5,
+    "buildPoints":0,
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":0,"y1":1.0,"x2":200,"y2":1000.0},
+    "available":{"x1":0,"y1":1.0,"x2":50,"y2":100.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "storageSize":0,
     "recipes":[],
-    "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"NONE",
-    "description":"Limits build access to settlement owner and residents, /baddresident and /bremoveresident to add and remove residents.",
-    "resource":""
-  },
-
-  {
-    "name":"temple",
-    "buildingClass":"org.saga.buildings.Temple",
-    "roles":[],
-    "ranks":[],
-    "roleAmounts":{},
-    "attributes":[],
-    "abilities":[],
-    "buildPoints":5,
-    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":20,"y1":1.0,"x2":50,"y2":5.0},
-    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "storageSize":0,
-    "recipes":[],
-    "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
-    "relatedBuildings":[],
-    "performTime":"NONE",
-    "resourceTime":"NONE",
-    "description":"Regenerates lost experience.",
-    "resource":""
-  },
-
-  {
-    "name":"forge",
-    "buildingClass":"org.saga.buildings.SimpleBuilding",
-    "roles":[],
-    "ranks":[],
-    "roleAmounts":{},
-    "attributes":[],
-    "abilities":["repair"],
-    "buildPoints":5,
-    "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":5,"y1":1.0,"x2":50,"y2":1.0},
-    "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":3.0},
-    "storageSize":0,
-    "recipes":[],
-    "resourceAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
-    "relatedBuildings":[],
-    "performTime":"NONE",
-    "resourceTime":"NONE",
-    "description":"Trains blacksmith related attributes.",
-    "resource":""
+    "description":"",
+    "effect":""
   }
 
 ],

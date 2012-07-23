@@ -684,6 +684,9 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	public ItemStack store(ItemStack toStore) {
 
 		
+		// Load chunk if needed:
+		if(!getSagaChunk().isChunkLoaded()) getSagaChunk().loadChunk();
+		
 		ArrayList<StorageArea> allSorage = getStorageAreas();
 
 		// Blocks:
@@ -728,6 +731,9 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 */
 	public ItemStack withdraw(ItemStack fromStore, int amount) {
 
+
+		// Load chunk if needed:
+		if(!getSagaChunk().isChunkLoaded()) getSagaChunk().loadChunk();
 		
 		ArrayList<StorageArea> allSorage = getStorageAreas();
 
@@ -984,14 +990,14 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	private void produce() {
 
 		
-		// Chunk not loaded:
+		// Only loaded:
 		if(!getSagaChunk().isChunkLoaded()) return;
 		
 		// Recipes:
 		RandomRecipe recipes = new RandomRecipe(getDefinition().getRecipes());
 		
 		// Craft:
-		Integer toCraft = getDefinition().getResourceAmount(getLevel());
+		Integer toCraft = getDefinition().getCraftAmount(getLevel());
 		
 		while(recipes.size() > 0 && toCraft > 0){
 			
@@ -1057,8 +1063,8 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		// Perform:
 		if(daytime == getDefinition().getPerformTime()) perform();
 		
-		// Handle crafting:
-		if(daytime == getDefinition().getResourceTime()) produce();
+		// Produce:
+		if(daytime == getDefinition().getCraftTime()) produce();
 		
 		
 	}

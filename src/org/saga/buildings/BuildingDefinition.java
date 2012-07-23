@@ -13,6 +13,17 @@ public class BuildingDefinition {
 
 	
 	/**
+	 * Replace string for craft amount.
+	 */
+	public final static String CRAFT_AMOUNT_REPLACE = "#caft_amount";
+	
+	/**
+	 * Replace string for craft daytime.
+	 */
+	public final static String CRAFT_DAYTIME_REPLACE = "#craft_daytime";
+	
+	
+	/**
 	 * Building name.
 	 */
 	private String name;
@@ -82,7 +93,7 @@ public class BuildingDefinition {
 	/**
 	 * Amount of resources crafted.
 	 */
-	private TwoPointFunction resourceAmount;
+	private TwoPointFunction craftAmount;
 
 	/**
 	 * Related buildings.
@@ -109,9 +120,9 @@ public class BuildingDefinition {
 	private String description;
 	
 	/**
-	 * Resource that is crafted.
+	 * Building effect.
 	 */
-	private String resource;
+	private String effect;
 	
 	
 	
@@ -225,11 +236,11 @@ public class BuildingDefinition {
 			recipe.complete();
 		}
 		
-		if(resourceAmount == null){
-			resourceAmount = new TwoPointFunction(0.0);
-			SagaLogger.nullField(BuildingDefinition.class, "resourceAmount");
+		if(craftAmount == null){
+			craftAmount = new TwoPointFunction(0.0);
+			SagaLogger.nullField(BuildingDefinition.class, "craftAmount");
 		}
-		resourceAmount.complete();
+		craftAmount.complete();
 		
 		if(relatedBuildings == null){
 			relatedBuildings = new ArrayList<String>();
@@ -252,9 +263,9 @@ public class BuildingDefinition {
 			SagaLogger.nullField(BuildingDefinition.class, "description");
 		}
 		
-		if(resource == null){
-			resource = "";
-			SagaLogger.nullField(BuildingDefinition.class, "resource");
+		if(effect == null){
+			effect = "";
+			SagaLogger.nullField(BuildingDefinition.class, "effect");
 		}
 		
 		
@@ -440,8 +451,8 @@ public class BuildingDefinition {
 	 * @param level building level
 	 * @return amount of crafted resources
 	 */
-	public Integer getResourceAmount(Integer level) {
-		return resourceAmount.intValue(level);
+	public Integer getCraftAmount(Integer level) {
+		return craftAmount.intValue(level);
 	}
 	
 	/**
@@ -469,7 +480,7 @@ public class BuildingDefinition {
 	 * 
 	 * @return craft time
 	 */
-	public Daytime getResourceTime() {
+	public Daytime getCraftTime() {
 		return resourceTime;
 	}
 	
@@ -486,12 +497,17 @@ public class BuildingDefinition {
 	}
 	
 	/**
-	 * Gets the buildings resource.
+	 * Gets the building effect.
 	 * 
-	 * @return building resource
+	 * @return building effect
 	 */
-	public String getResource() {
-		return resource;
+	public String getEffect(Integer bldgScore) {
+		
+		return effect
+			.replaceAll(CRAFT_AMOUNT_REPLACE, getCraftAmount(bldgScore).toString())
+			.replaceAll(CRAFT_DAYTIME_REPLACE, getCraftTime().toString())
+		;
+		
 	}
 	
 
