@@ -9,11 +9,10 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
-import org.saga.config.ExperienceConfiguration;
 import org.saga.messages.PlayerMessages.ColorCircle;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
-import org.saga.utility.MathUtil;
+import org.saga.utility.Histogram;
 import org.saga.utility.text.StringBook;
 import org.saga.utility.text.StringTable;
 import org.saga.utility.text.TextUtil;
@@ -24,7 +23,7 @@ import org.saga.utility.text.TextUtil;
 public class StatisticsMessages {
 	
 
-	// Colors:
+	// Colours:
 	public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 	
 	public static ChatColor positive = ChatColor.GREEN;
@@ -44,8 +43,8 @@ public class StatisticsMessages {
 	public static ChatColor frame = ChatColor.DARK_GREEN;
 	
 	
-	
 
+	// Statistics:
 	public static String general() {
 	
 		
@@ -197,45 +196,6 @@ public class StatisticsMessages {
 		
 	}
 
-	public static String levels(int page) {
-	
-		
-		ColorCircle colour = new ColorCircle().addColor(normal1).addColor(normal2);
-		StringBook result = new StringBook("Level statistics", colour, 10);
-		
-		// Histogram data:
-		Double[] data = StatisticsManager.manager().getLevelHistogram(ExperienceConfiguration.config().maximumLevel, false);
-		Double maxVal = MathUtil.max(data);
-		
-		// No data:
-		if(maxVal <= 0.0){
-			
-			maxVal = 1.0;
-			
-			for (int i = 0; i < data.length; i++) {
-				data[i] = 1.0;
-			}
-			
-		}
-		
-		int height = 10;
-		MathUtil.multiply(data, height / maxVal);
-		
-		// Histogram:
-		ChatColor frameColor = ChatColor.DARK_GRAY;
-		ColorCircle histColours = new ColorCircle().addColor(ChatColor.LIGHT_PURPLE).addColor(ChatColor.DARK_AQUA);
-		result.addLine("");
-		result.addLine("LEVEL DISTRIBUTION");
-		result.addLine("  " + frameColor + TextUtil.repeat("..", ExperienceConfiguration.config().maximumLevel));
-		result.addLine(frameColor + "  |" + TextUtil.histogram(data, histColours).replaceAll("\n", frameColor + "|\n  |") + frameColor + "|");
-		result.addLine("  " + frameColor + TextUtil.repeat("..", ExperienceConfiguration.config().maximumLevel));
-		result.addLine("");
-		
-		return result.framed(page);
-		
-		
-	}
-	
 	public static String attributes() {
 		
 		
@@ -262,7 +222,6 @@ public class StatisticsMessages {
 		
 		
 	}
-		
 	
 	public static String exp(int page) {
 	
@@ -309,47 +268,6 @@ public class StatisticsMessages {
 		
 	}
 
-	public static String xrayDistrib(int page) {
-	
-		
-		ColorCircle colour = new ColorCircle().addColor(normal1).addColor(normal2);
-		StringBook result = new StringBook("X-ray distributions", colour, 10);
-		
-		// Histogram data:
-		Double[] data = StatisticsManager.manager().getVeinHistogram(Material.DIAMOND_ORE, 50, false);
-		Double maxVal = MathUtil.max(data);
-		
-		// No data:
-		if(maxVal <= 0.0){
-			
-			maxVal = 1.0;
-			
-			for (int i = 0; i < data.length; i++) {
-				data[i] = 1.0;
-			}
-			
-		}
-		
-		int height = 10;
-		MathUtil.multiply(data, height / maxVal);
-		
-		// Histogram:
-		ChatColor frameColor = ChatColor.DARK_GRAY;
-		ColorCircle histColours = new ColorCircle().addColor(ChatColor.LIGHT_PURPLE).addColor(ChatColor.DARK_AQUA);
-		result.addLine("");
-		result.addLine("DIAMOND RATIO DISTRIBUTION");
-		result.addLine("  " + frameColor + TextUtil.repeat("..", ExperienceConfiguration.config().maximumLevel));
-		result.addLine(frameColor + "  |" + TextUtil.histogram(data, histColours).replaceAll("\n", frameColor + "|\n  |") + frameColor + "|");
-		result.addLine("  " + frameColor + TextUtil.repeat("..", ExperienceConfiguration.config().maximumLevel));
-		result.addLine("");
-		
-		if(data.length > 0) result.addLine("Maximum: " + maxVal);
-		
-		return result.framed(page);
-		
-		
-	}
-	
 	public static String balance(int page) {
 
 		
@@ -406,6 +324,68 @@ public class StatisticsMessages {
 		
 	}
 	
+	
+	
+	// Histogram:
+	public static String histogram(String title, Double[] data, Integer width, Integer decimals) {
+
+		
+		ColorCircle colours = new ColorCircle() .addColor(normal2).addColor(normal1);
+		
+		ColorCircle hcolours = new ColorCircle()
+			.addColor(ChatColor.LIGHT_PURPLE)
+			.addColor(ChatColor.DARK_AQUA).addColor(ChatColor.DARK_AQUA).addColor(ChatColor.DARK_AQUA)
+			.addColor(ChatColor.DARK_AQUA).addColor(ChatColor.DARK_AQUA)
+			.addColor(ChatColor.LIGHT_PURPLE).addColor(ChatColor.LIGHT_PURPLE)
+			.addColor(ChatColor.LIGHT_PURPLE).addColor(ChatColor.LIGHT_PURPLE);
+		
+		ChatColor axisColour = ChatColor.DARK_GRAY;
+		ChatColor valsColour = ChatColor.YELLOW;
+		
+		StringTable table = new StringTable(colours);
+		
+		Histogram histogram = new Histogram(data);
+		
+		Integer[] ocurrances = histogram.createHistogram(width);
+		Integer[] bars = histogram.createHistogram(width, 99);
+		String[] values = histogram.createValues(width, decimals);
+		
+		// Title and first value:
+		table.addLine(new String[]{"", TextUtil.repeat(" ", 50), ""});
+		
+		for (int i = 0; i < ocurrances.length; i++) {
+			
+			table.addLine(new String[]{
+				valsColour + values[i],
+				axisColour + "_/ " + hcolours.nextColor() +
+				TextUtil.repeat("|", bars[i] + 1),
+				axisColour + "- " + valsColour + ocurrances[i].toString()
+			});
+			
+		}
+		
+		table.addLine(new String[]{valsColour + values[ocurrances.length], axisColour + "_/ " + hcolours.nextColor() + TextUtil.repeat(" ", 50), ""});
+		
+		table.collapse();
+		
+		return TextUtil.frame(title,colours.nextColor(), table.createTable(), table.calcTotalWidth());
+		
+		
+	}
+	
+	public static String histogram(String title, Integer[] data, Integer width, Integer decimals) {
+		
+		
+		Double[] dblData = new Double[data.length];
+		
+		for (int i = 0; i < dblData.length; i++) {
+			dblData[i] = data[i].doubleValue();
+		}
+		
+		return histogram(title, dblData, width, decimals);
+		
+		
+	}
 	
 	
 	

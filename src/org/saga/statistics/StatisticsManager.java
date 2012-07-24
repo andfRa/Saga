@@ -17,11 +17,9 @@ import org.saga.SagaLogger;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.BalanceConfiguration;
 import org.saga.config.SettlementConfiguration;
-import org.saga.config.ExperienceConfiguration;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
-import org.saga.utility.MathUtil;
 
 import com.google.gson.JsonParseException;
 
@@ -539,53 +537,9 @@ public class StatisticsManager implements HourTicker{
 	
 	
 	// Levels:
-	/**
-	 * Gets the histogram representing levels.
-	 * 
-	 * @param width width
-	 * @param normalize normalization
-	 * @param multiplier multiplier
-	 * @return histogram data
-	 */
-	public Double[] getLevelHistogram(Integer width, boolean normalize) {
+	public Integer[] getLevels() {
 
-		
-		if(width < 1) width = 1;
-		
-		Double step = (width.doubleValue() - 1.0) / ExperienceConfiguration.config().maximumLevel.doubleValue();
-
-		Double[] histogram = new Double[width];
-		for (int i = 0; i < histogram.length; i++) {
-			histogram[i] = 0.0;
-		}
-		
-		Collection<Integer> levels = playerLevels.values();
-		for (Integer level : levels) {
-			
-			if(level > ExperienceConfiguration.config().maximumLevel) continue;
-			
-			Integer index = new Double(level.doubleValue() * step).intValue();
-			histogram[index] = histogram[index] + 1;
-					
-		}
-		
-		if(normalize){
-			
-			Double sum = 0.0;
-			for (int i = 0; i < histogram.length; i++) {
-				sum += histogram[i];
-			}
-			
-			if(sum < 1) sum = 1.0;
-			
-			for (int i = 0; i < histogram.length; i++) {
-				histogram[i] = histogram[i] / sum;
-			}
-			
-		}
-		
-		return histogram;
-		
+		return playerLevels.values().toArray(new Integer[0]);
 		
 	}
 	
@@ -764,7 +718,6 @@ public class StatisticsManager implements HourTicker{
 		
 		
 	}
-	
 
 	
 	
@@ -816,7 +769,7 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 	
-	private Collection<Double> getAllVeinRatios(Material material) {
+	public Double[] getVeinRatios(Material material) {
 
 		
 		Collection<Double> ratios = new ArrayList<Double>();
@@ -826,58 +779,10 @@ public class StatisticsManager implements HourTicker{
 			ratios.add(getVeinRatio(name, material));
 		}
 		
-		return ratios;
+		return ratios.toArray(new Double[ratios.size()]);
 		
 		
 	}
-	
-	public Double[] getVeinHistogram(Material material, Integer width, boolean normalize) {
-
-		
-		if(width < 1) width = 1;
-		
-		Collection<Double> ratios = getAllVeinRatios(material);
-		Double maxRatio = MathUtil.max(ratios);
-		if(maxRatio < 0.00001) maxRatio = 0.00001;
-		
-		Double step = (width.doubleValue() - 1.0) / maxRatio;
-
-		Double[] histogram = new Double[width];
-		for (int i = 0; i < histogram.length; i++) {
-			histogram[i] = 0.0;
-		}
-		
-		for (Double ratio : ratios) {
-			
-			if(ratio == 0) continue;
-			
-			System.out.println("adding value:" + ratio + " to " + new Double(ratio * step).intValue());
-			
-			Integer index = new Double(ratio * step).intValue();
-			histogram[index] = histogram[index] + 1;
-					
-		}
-		
-		if(normalize){
-			
-			Double sum = 0.0;
-			for (int i = 0; i < histogram.length; i++) {
-				sum += histogram[i];
-			}
-			
-			if(sum < 1) sum = 1.0;
-			
-			for (int i = 0; i < histogram.length; i++) {
-				histogram[i] = histogram[i] / sum;
-			}
-			
-		}
-		
-		return histogram;
-		
-		
-	}
-	
 	
 	
 	

@@ -3,12 +3,15 @@
  * and open the template in the editor.
  */
 
-package org.saga.statistics;
+package org.saga.commands;
 
+import org.bukkit.Material;
 import org.saga.Saga;
 import org.saga.messages.ChunkGroupMessages;
+import org.saga.messages.EconomyMessages;
 import org.saga.messages.StatisticsMessages;
 import org.saga.player.SagaPlayer;
+import org.saga.statistics.StatisticsManager;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
 import org.sk89q.CommandPermissions;
@@ -53,40 +56,55 @@ public class StatisticsCommands {
 	}
 	
 	@Command(
-			aliases = {"stxraydistr","stxraytable"},
-			usage = "",
+			aliases = {"stxrayhistogram","stxraytable"},
+			usage = "[material]",
 			flags = "",
-			desc = "Show x-ray distribution statistics.",
+			desc = "Show x-ray distribution histogram.",
 			min = 0,
 			max = 1
 	)
 	@CommandPermissions({"saga.admin.statistics.xraydistributions"})
-	public static void xrayDistr(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	public static void xrayHistogram(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-    	// Arguments:
-		Integer page = null;
-    	if(args.argsLength() == 1){
-    		
-        	try {
-    			page = Integer.parseInt(args.getString(0));
-    		} catch (NumberFormatException e) {
-    			sagaPlayer.message(ChunkGroupMessages.invalidPage(args.getString(0)));
-    			return;
-    		}
-    		
-    	}else{
-    		
-    		page = 1;
-        	
-    	}
+		Material material = null;
+
+		// Arguments:
+		switch (args.argsLength()) {
+			
+			case 1:
+				
+				String strMaterial = args.getString(0);
+				material = Material.matchMaterial(strMaterial);
+				if(material == null){
+					try {
+						material = Material.getMaterial(Integer.parseInt(strMaterial));
+					} catch (NumberFormatException e) { }
+				}
+				if(material == null){
+					sagaPlayer.message(EconomyMessages.invalidMaterial(strMaterial));
+					return;
+				}
+				
+				break;
+
+			default:
+				
+				material = Material.DIAMOND_ORE;
+				
+				break;
+				
+		}
 		
-	    	// Inform:
-	    sagaPlayer.message(StatisticsMessages.xrayDistrib(page - 1));
-	        	
-	    sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
-	      
+    	// Data:
+    	Double[] data = StatisticsManager.manager().getVeinRatios(material);
+    	
+	    // Inform:
+    	sagaPlayer.message(StatisticsMessages.histogram("x-ray histogram: " + EconomyMessages.material(material), data, 10, 3));
 	    
+    	sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+    	
+    	
 	}
 	
 	
@@ -128,39 +146,25 @@ public class StatisticsCommands {
 	}
 	
 	@Command(
-			aliases = {"stlevels"},
+			aliases = {"stlevelhistogram", "stlevels"},
 			usage = "",
 			flags = "",
-			desc = "Show level statistics.",
+			desc = "Show level distribution histogram.",
 			min = 0,
-			max = 1
+			max = 0
 	)
 	@CommandPermissions({"saga.admin.statistics.level"})
 	public static void levels(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-    	// Arguments:
-		Integer page = null;
-    	if(args.argsLength() == 1){
-    		
-        	try {
-    			page = Integer.parseInt(args.getString(0));
-    		} catch (NumberFormatException e) {
-    			sagaPlayer.message(ChunkGroupMessages.invalidPage(args.getString(0)));
-    			return;
-    		}
-    		
-    	}else{
-    		
-    		page = 1;
-        	
-    	}
-		
-	    	// Inform:
-	    sagaPlayer.message(StatisticsMessages.levels(page - 1));
-	        	
-	    sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
-	      
+    	// Data:
+    	Integer[] data = StatisticsManager.manager().getLevels();
+    	
+	    // Inform:
+    	sagaPlayer.message(StatisticsMessages.histogram("level histogram", data, 10, 0));
+	    
+    	sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+	    
 	    
 	}
 

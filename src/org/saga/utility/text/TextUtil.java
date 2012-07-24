@@ -10,9 +10,8 @@ import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.entity.Player;
 import org.saga.messages.PlayerMessages.ColorCircle;
-import org.saga.utility.MathUtil;
+import org.saga.utility.ArrayUtil;
 
 public class TextUtil {
 	
@@ -43,31 +42,6 @@ public class TextUtil {
 	private static Double maxGapString = 1.25;
 	
 	
-	
-	public static String titleize(String str) {
-            /*String line = ChatColor.GOLD + repeat("_", 58);
-            String center = ".[ " + ChatColor.YELLOW + str + ChatColor.GOLD + " ].";
-            int pivot = line.length() / 2;
-            int eatLeft = center.length() / 2;
-            int eatRight = center.length() - eatLeft;
-            return line.substring(0, pivot - eatLeft) + center + line.substring(pivot + eatRight);*/
-            return titleize(str,ChatColor.GOLD,ChatColor.YELLOW);
-	}
-
-	public static String titleize(String str, ChatColor color1, ChatColor color2) {
-		
-		
-		String line = color1 + repeat("_", 58);
-		String center = "=[ " + color2 + str + color1 + " ]=";
-		int pivot = line.length() / 2;
-		int eatLeft = center.length() / 2;
-		int eatRight = center.length() - eatLeft;
-		return line.substring(0, pivot - eatLeft) + center + line.substring(pivot + eatRight);
-		
-		
-	}
-	
-	
 	public static String repeat(String s, int times) {
 	    
 		
@@ -76,7 +50,6 @@ public class TextUtil {
 		
 		
 	}
-
 	
 	public static String getMaterialName(Material material) {
 		
@@ -108,7 +81,6 @@ public class TextUtil {
 		return ret.toLowerCase();
 	}
 
-	
 	public static String capitalize(String string) {
 
 		if(string.length()>=1){
@@ -128,7 +100,6 @@ public class TextUtil {
 		}
 		
 	}
-
 
 	public static String fromSeconds(Integer secondsFull) {
 
@@ -373,6 +344,7 @@ public class TextUtil {
 	
 	private static Hashtable<String, Double> gapChars() {
 
+		
 		Hashtable<String, Double> sizeTable = new Hashtable<String, Double>();
 		
 		sizeTable.put(".", 1.0 / 2.0);
@@ -380,8 +352,8 @@ public class TextUtil {
 		sizeTable.put(" ", 1.0 / 1.0);
 		sizeTable.put("\"", 5.0 / 4.0);
 		
-		
 		return sizeTable;
+		
 		
 	}
 	
@@ -408,44 +380,13 @@ public class TextUtil {
 		
 		
 	}
-	
-	public static void messageLines2(String message, Player player) {
 
-
-//		String[] arrayMessage = Pattern.compile("\n").split(message);
-//		
-//		// Add lost colors after line brake:
-//		int lastColorIndex = -1;
-//		String colorString= "\u00A7";
-//		String color = "";
-//		
-//		for (int i = 1; i < arrayMessage.length; i++) {
-//			
-//			lastColorIndex = arrayMessage[i-1].lastIndexOf(colorString);
-//			
-//			if(lastColorIndex != -1 && (arrayMessage[i-1].length() - lastColorIndex - colorString.length()) >= 1 ){
-//				color = arrayMessage[i-1].substring(lastColorIndex, lastColorIndex + colorString.length()+1);
-//			}
-//			if(color.length() != 0){
-//				arrayMessage[i] = color + arrayMessage[i];
-//			}
-//			
-//		}
-//		
-//		for (int i = 0; i < arrayMessage.length; i++) {
-//			player.sendMessage(arrayMessage[i]);
-//		}
-		
-		player.sendMessage(message);
-		
-	}
-	
 	public static String histogram(Double[] data, ColorCircle colours) {
 
 		
 		StringBuffer result = new StringBuffer();
 		
-		Integer row = MathUtil.max(data).intValue();
+		Integer row = ArrayUtil.max(data).intValue();
 		
 		while (true) {
 			
@@ -481,6 +422,19 @@ public class TextUtil {
 	public static String className(Class<?> clazz) {
 		return clazz.getSimpleName().replaceAll("(\\p{Ll})(\\p{Lu})","$1 $2").toLowerCase();
 	}
+	
+	public static String round(Double doub, int decimals){
+
+		
+		DecimalFormat df = new DecimalFormat();
+		df.setMaximumFractionDigits(decimals);
+		df.setMinimumFractionDigits(decimals);
+		
+		return df.format(doub);
+		
+		
+	}
+	
 	
 }
 
