@@ -103,7 +103,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		
 		
 		ColorCircle messageColor = new ColorCircle().addColor(normal1).addColor(normal2);
-		StringBook book = new StringBook("player help", messageColor, 11);
+		StringBook book = new StringBook("player help", messageColor, 13);
 
 		int maxAttr = AttributeConfiguration.config().findMaxAttrPoints();
 		int minAttr = AttributeConfiguration.config().findMinAttrPoints();

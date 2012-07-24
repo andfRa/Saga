@@ -137,6 +137,22 @@
     "usage":"rclick w/ coal"
   },
 
+  {"className":"org.saga.abilities.Ignite",
+    "name":"ignite",
+    "activationItem":["COAL","AIR"],
+    "activationAction":"NONE",
+    "usedItem":"AIR",
+    "usedAmount":{"x1":1,"y1":0.0},
+    "cooldown":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "active":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "attributeRequirements":{
+      "willpower":{"x1":1,"y1":8.0,"x2":3,"y2":45.0}
+    },
+    "functions":{"fireticks":{"x1":1,"y1":60.0,"x2":3,"y2":140.0}},
+    "description":"Fireball ignites.",
+    "usage":"automatic"
+  },
+
   {"className":"org.saga.abilities.Force",
     "name":"force",
     "activationItem":["BOOK"],

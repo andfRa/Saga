@@ -59,7 +59,7 @@ public class StringBook {
 	 */
 	public void nextPage() {
 
-		while(lines.size() % pageSize != 0){
+		while((lines.size() - 1) % pageSize != 0){
 			addLine("");
 		}
 		

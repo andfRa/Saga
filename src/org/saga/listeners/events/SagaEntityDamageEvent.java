@@ -234,6 +234,15 @@ public class SagaEntityDamageEvent {
 		penetration+=amount;
 	}
 	
+	/**
+	 * Gets the projectile.
+	 * 
+	 * @return projectile, null if none
+	 */
+	public Projectile getProjectile() {
+		return projectile;
+	}
+	
 	
 	
 	// Types:
