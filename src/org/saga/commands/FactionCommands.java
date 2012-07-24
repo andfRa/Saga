@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.bukkit.ChatColor;
 import org.saga.Saga;
 import org.saga.config.EconomyConfiguration;
+import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.factions.FactionManager;
@@ -15,7 +16,9 @@ import org.saga.messages.EconomyMessages;
 import org.saga.messages.FactionMessages;
 import org.saga.messages.InfoMessages;
 import org.saga.messages.SagaMessages;
+import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
+import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.utility.SagaLocation;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
@@ -436,45 +439,87 @@ public class FactionCommands {
 	
 	@Command(
             aliases = {"fstats"},
-            usage = "[faction name or prefix]",
+            usage = "[faction name] [page]",
             flags = "",
             desc = "List faction stats.",
             min = 0,
-            max = 1
+            max = 2
         )
         @CommandPermissions({"saga.user.faction.stats"})
 	public static void stats(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
-	
+		
+		Integer page = null;
 		SagaFaction selectedFaction = null;
-
+		
+		String sPage = null;
+		String factionName = null;
+		
 		// Arguments:
-		 if(args.argsLength() == 1){
+		switch (args.argsLength()) {
 			
-			String factionName = args.getString(0).replace(SagaMessages.spaceSymbol, " ");
-			selectedFaction = FactionManager.manager().getFaction(factionName);
-			
-			if(selectedFaction == null){
-				sagaPlayer.message(FactionMessages.nonExistentFaction(factionName));
-				return;
-			}
-			
-			
-		}else{
-			 
-			selectedFaction = sagaPlayer.getFaction();
-			
-			if(selectedFaction == null){
-				sagaPlayer.message(FactionMessages.noFaction());
-				return;
-			}
-			
+			case 2:
+				
+				// Faction:
+				factionName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
+				selectedFaction = FactionManager.manager().getFaction(factionName);
+				if(selectedFaction == null){
+					sagaPlayer.message(FactionMessages.noFaction(factionName));
+					return;
+				}
+				
+				// Page:
+				sPage = args.getString(1);
+				try {
+					page = Integer.parseInt(sPage);
+				}
+				catch (NumberFormatException e) {
+					sagaPlayer.message(ChunkGroupMessages.invalidInteger(sPage));
+					return;
+				}
+				break;
+
+			case 1:
+
+				// Chunk group:
+				selectedFaction = sagaPlayer.getFaction();
+				if(selectedFaction == null){
+					sagaPlayer.message(FactionMessages.noFaction());
+					return;
+				}
+
+				// Page:
+				sPage = args.getString(0);
+				try {
+					page = Integer.parseInt(sPage);
+				}
+				catch (NumberFormatException e) {
+					sagaPlayer.message(ChunkGroupMessages.invalidInteger(sPage));
+					return;
+				}
+				
+				break;
+
+			default:
+
+				// Chunk group:
+				selectedFaction = sagaPlayer.getFaction();
+				if(selectedFaction == null){
+					sagaPlayer.message(FactionMessages.noFaction());
+					return;
+				}
+				
+				// Page:
+				page = 1;
+				
+				break;
+				
 		}
 		
 		// Inform:
-		sagaPlayer.message(FactionMessages.stats(selectedFaction));
+		sagaPlayer.message(FactionMessages.stats(selectedFaction, page -1));
 		
-	
+		
 	}
 	
 	@Command(
@@ -591,9 +636,28 @@ public class FactionCommands {
 			Saga.plugin().unforceSagaPlayer(targetName);
 			return;
 		}
+
+		// Create rank:
+		Proficiency rank;
+		try {
+			rank = ProficiencyConfiguration.config().createProficiency(rankName);
+		} catch (InvalidProficiencyException e) {
+			sagaPlayer.message(FactionMessages.invalidRank(rankName));
+			// Unforce:
+			Saga.plugin().unforceSagaPlayer(targetName);
+			return;
+		}
+
+		// Not a rank:
+		if(rank.getDefinition().getType() != ProficiencyType.RANK){
+			sagaPlayer.message(FactionMessages.invalidRank(rankName));
+			// Unforce:
+			Saga.plugin().unforceSagaPlayer(targetName);
+			return;
+		}
 		
 		// Rank available:
-		if(!selectedFaction.isRankAvailable(rankName)){
+		if(!selectedFaction.isRankAvailable(rank.getHierarchy())){
 			sagaPlayer.message(FactionMessages.rankUnavailable(selectedFaction, rankName));
 			// Unforce:
 			Saga.plugin().unforceSagaPlayer(targetName);
@@ -601,14 +665,7 @@ public class FactionCommands {
 		}
 		
 		// Set rank:
-		try {
-			selectedFaction.setRank(targetPlayer, rankName);
-		} catch (InvalidProficiencyException e) {
-			sagaPlayer.message(FactionMessages.invalidRank(selectedFaction, rankName));
-			// Unforce:
-			Saga.plugin().unforceSagaPlayer(targetName);
-			return;
-		}
+		selectedFaction.setRank(targetPlayer, rank);
 		
 		// Inform:
 		selectedFaction.broadcast(FactionMessages.newRank(selectedFaction, rankName, targetPlayer));
@@ -1327,7 +1384,7 @@ public class FactionCommands {
 	}
 	
 	// Create message:
-	String message = selectedFaction.getSecondaryColor() + "[" + selectedFaction.getPrimaryColor() + FactionMessages.rankedPlayer(selectedFaction, sagaPlayer) + selectedFaction.getSecondaryColor() + "] " + args.getJoinedStrings(0);
+	String message = selectedFaction.getColour2() + "[" + selectedFaction.getColour1() + FactionMessages.rankedPlayer(selectedFaction, sagaPlayer) + selectedFaction.getColour2() + "] " + args.getJoinedStrings(0);
 	
 	// Inform:
 	selectedFaction.broadcast(message);
@@ -1344,15 +1401,15 @@ public class FactionCommands {
 	
 	// Appearance:
 	@Command(
-            aliases = {"fsetprimarycolor","fsetprimary"},
-            usage = "<color>",
-            flags = "",
-            desc = "Sets the factions primary color.",
-            min = 1,
-            max = 4
-		)
-	@CommandPermissions({"saga.user.faction.setprimarycolor"})
-	public static void setPrimaryColor(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		aliases = {"fsetcolour1","fsetcolor1","fsetprimary"},
+		usage = "<colour>",
+		flags = "",
+		desc = "Sets the factions primary colour.",
+		min = 1,
+		max = 4
+	)
+	@CommandPermissions({"saga.user.faction.setcolour1"})
+	public static void setColour1(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
 		// Part of a faction:
@@ -1368,7 +1425,7 @@ public class FactionCommands {
 			return;
 		}
 		
-		// Retrieve color:
+		// Retrieve colour:
 		ChatColor color = null;
 		String colorName = args.getJoinedStrings(0);
 		String cColorName = colorName.replace(" ", "_").toUpperCase();
@@ -1388,23 +1445,23 @@ public class FactionCommands {
 		}
 		
 		// Set color:
-		selectedFaction.setPrimaryColor(color);
+		selectedFaction.setColor1(color);
 		
 		// Inform:
-		selectedFaction.broadcast(FactionMessages.primaryColorSet(selectedFaction));
+		selectedFaction.broadcast(FactionMessages.colour1Set(selectedFaction));
 		
 		
 	}
 	
 	@Command(
-            aliases = {"fsetsecondarycolor","fsetsecondary"},
-            usage = "<color>",
-            flags = "",
-            desc = "Sets the faction secondary color.",
-            min = 1,
-            max = 4
-		)
-	@CommandPermissions({"saga.user.faction.setsecondarycolor"})
+			aliases = {"fsetcolour2","fsetcolor2","fsetsecondary"},
+			usage = "<colour>",
+			flags = "",
+			desc = "Sets the factions primary colour.",
+			min = 1,
+			max = 4
+	)
+	@CommandPermissions({"saga.user.faction.setcolour2"})
 	public static void setSecondaryColor(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
@@ -1441,10 +1498,10 @@ public class FactionCommands {
 		}
 		
 		// Set color:
-		selectedFaction.setSecondaryColor(color);
+		selectedFaction.setColor2(color);
 		
 		// Inform:
-		selectedFaction.broadcast(FactionMessages.secondaryColorSet(selectedFaction));
+		selectedFaction.broadcast(FactionMessages.colour2Set(selectedFaction));
 		
 		
 	}

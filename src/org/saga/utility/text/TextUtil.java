@@ -144,9 +144,9 @@ public class TextUtil {
 
 	}
 
-	public static String color(ChatColor color, ChatColor messageColor) {
+	public static String colour(ChatColor color) {
 		
-		return color + color.name().toLowerCase().replace("_", " ") + messageColor;
+		return color + color.name().toLowerCase().replace("_", " ");
 		
 	}
 

@@ -14,6 +14,7 @@ import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.Saga;
 import org.saga.SagaLogger;
+import org.saga.config.ExperienceConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
@@ -21,6 +22,7 @@ import org.saga.exceptions.InvalidLocationException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
+import org.saga.messages.FactionMessages;
 import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
@@ -57,15 +59,27 @@ public class SagaFaction implements SecondTicker{
 	 */
 	transient private ArrayList<SagaPlayer> registeredMembers = new ArrayList<SagaPlayer>();
 
-	/**
-	 * Primary color.
-	 */
-	private ChatColor primaryColor;
 	
 	/**
-	 * Secondary color.
+	 * Settlement level.
 	 */
-	private ChatColor secondaryColor;
+	private Integer level;
+
+	/**
+	 * Experience.
+	 */
+	private Double exp;
+	
+	
+	/**
+	 * Primary colour.
+	 */
+	private ChatColor colour1;
+	
+	/**
+	 * Secondary colour.
+	 */
+	private ChatColor colour2;
 	
 	/**
 	 * Chunk group IDs.
@@ -127,6 +141,7 @@ public class SagaFaction implements SecondTicker{
 	private SagaLocation spawn;
 	
 	
+	
 	// Initialisation:
 	/**
 	 * Used by gson.
@@ -148,8 +163,10 @@ public class SagaFaction implements SecondTicker{
 		this.name = factionName;
 		members = new ArrayList<String>();
 		registeredMembers = new ArrayList<SagaPlayer>();
-		primaryColor = ChatColor.WHITE;
-		secondaryColor = ChatColor.WHITE;
+		level = 0;
+		exp = 0.0;
+		colour1 = ChatColor.WHITE;
+		colour2 = ChatColor.WHITE;
 		chunkGroups = new ArrayList<Integer>();
 		chunkGroupInvites = new ArrayList<Integer>();
 		playerRanks = new Hashtable<String, Proficiency>();
@@ -191,16 +208,28 @@ public class SagaFaction implements SecondTicker{
 			members = new ArrayList<String>();
 			integrity = false;
 		}
-		
-		if(primaryColor == null){
-			SagaLogger.nullField(this, "primaryColor");
-			primaryColor = ChatColor.WHITE;
+
+		if(level == null){
+			SagaLogger.nullField(this, "level");
+			level = 0;
 			integrity = false;
 		}
 		
-		if(secondaryColor == null){
-			SagaLogger.nullField(this, "secondaryColor");
-			secondaryColor = primaryColor;
+		if(exp == null){
+			SagaLogger.nullField(this, "exp "+ this +" levelProgress");
+			exp = 0.0;
+			integrity = false;
+		}
+		
+		if(colour1 == null){
+			SagaLogger.nullField(this, "colour1");
+			colour1 = ChatColor.WHITE;
+			integrity = false;
+		}
+		
+		if(colour2 == null){
+			SagaLogger.nullField(this, "colour2");
+			colour2 = colour1;
 			integrity = false;
 		}
 		
@@ -255,7 +284,7 @@ public class SagaFaction implements SecondTicker{
 		}
 		
 		// Transient:
-		definition = FactionConfiguration.config().factionDefinition;
+		definition = FactionConfiguration.config().definition;
 		clockEnabled = false;
 		
 		if(spawn != null){
@@ -265,7 +294,7 @@ public class SagaFaction implements SecondTicker{
 				startClock();
 			} catch (InvalidLocationException e) {
 				SagaLogger.severe(this, "invalid spawn point: " + spawn);
-				removeRallyPoint();
+				removeSpawnPoint();
 			}
 			
 		}
@@ -350,19 +379,20 @@ public class SagaFaction implements SecondTicker{
 		
 		// Save:
 		faction.save();
-		
-		// Set owners rank:
+
+		// Set owner rank:
 		try {
-			faction.setRank(owner, FactionConfiguration.config().factionOwnerRank);
+			Proficiency rank = ProficiencyConfiguration.config().createProficiency(faction.getDefinition().getOwnerRank());
+			faction.setRank(owner, rank);
 		} catch (InvalidProficiencyException e) {
-			SagaLogger.severe(faction, "failed to set " + FactionConfiguration.config().factionOwnerRank + " rank, because the rank name is invalid");
+			SagaLogger.severe(faction, "failed to set " + faction.getDefinition().getOwnerRank() + " rank, because the rank name is invalid");
 		}
-		
 		
 		return faction;
 		
 		
 	}
+	
 	
 	
 	// Members:
@@ -389,12 +419,12 @@ public class SagaFaction implements SecondTicker{
 		// Register player:
 		registerMember(sagaPlayer);
 
-
 		// Set default rank:
 		try {
-			setRank(sagaPlayer, FactionConfiguration.config().factionDefaultRank);
+			Proficiency rank = ProficiencyConfiguration.config().createProficiency(getDefinition().getDefaultRank());
+			setRank(sagaPlayer, rank);
 		} catch (InvalidProficiencyException e) {
-			SagaLogger.severe(this, "failed to set " + FactionConfiguration.config().factionDefaultRank + " rank, because the rank name is invalid");
+			SagaLogger.severe(this, "failed to set " + getDefinition().getDefaultRank() + " rank, because the rank name is invalid");
 		}
 		
 		
@@ -407,12 +437,6 @@ public class SagaFaction implements SecondTicker{
 	 */
 	public void removeMember(SagaPlayer sagaPlayer) {
 		
-		
-		// Check if not in this faction:
-		if(!members.contains(sagaPlayer.getName())){
-			SagaLogger.severe(this, "tried to remove a non-member " + sagaPlayer.getName() + " player");
-			return;
-		}
 
 		// Clear rank:
 		clearRank(sagaPlayer);
@@ -431,14 +455,6 @@ public class SagaFaction implements SecondTicker{
 		// Unregister player:
 		unregisterMember(sagaPlayer);
 
-		
-		
-		// Remove and unregister player to chunk groups:
-//		for (int i = 0; i < registeredChunkGroups.size(); i++) {
-//			ChunkGroupManager.manager().removeFactionPlayer(sagaPlayer, registeredChunkGroups.get(i), this);
-//			ChunkGroupManager.manager().unregisterFactionPlayer(sagaPlayer, registeredChunkGroups.get(i), this);
-//		}
-		
 		
 	}
 	
@@ -473,6 +489,7 @@ public class SagaFaction implements SecondTicker{
 		
 		
 	}
+	
 	
 	/**
 	 * Registers a member.
@@ -533,7 +550,6 @@ public class SagaFaction implements SecondTicker{
 		
 	}
 	
-	
 	/**
 	 * Checks if the payer is registered.
 	 * 
@@ -587,6 +603,7 @@ public class SagaFaction implements SecondTicker{
 		
 	}
 	
+	
 	/**
 	 * Gets the member count.
 	 * 
@@ -596,6 +613,15 @@ public class SagaFaction implements SecondTicker{
 		return members.size();
 	}
 
+	/**
+	 * Gets the registered member count.
+	 * 
+	 * @return amount of registered members
+	 */
+	public int getRegisteredMemberCount() {
+		return registeredMembers.size();
+	}
+	
 
 	/**
 	 * Gets the active member count.
@@ -604,16 +630,6 @@ public class SagaFaction implements SecondTicker{
 	 */
 	public int getActiveMemberCount() {
 		return members.size();
-	}
-
-	
-	/**
-	 * Gets the registered member count.
-	 * 
-	 * @return amount of registered members
-	 */
-	public int getRegisteredMemberCount() {
-		return registeredMembers.size();
 	}
 	
 	/**
@@ -654,6 +670,7 @@ public class SagaFaction implements SecondTicker{
 		return name;
 
 	}
+	
 	
 	
 	// Owner:
@@ -706,23 +723,57 @@ public class SagaFaction implements SecondTicker{
 	}
 	
 	
-	
-	// Messages:
+
+	// Leveling:
 	/**
-	 * Sends a faction message.
+	 * Gets settlement level.
 	 * 
-	 * @param message message
 	 */
-	public void message(String message) {
+	public Integer getLevel() {
+		return level;
+	}
+	
+	/**
+	 * Sets the level of the settlement.
+	 * 
+	 * @param level level
+	 */
+	public void setLevel(Integer level) {
 		
-		for (int i = 0; i < registeredMembers.size(); i++) {
-			registeredMembers.get(i).message(message);
-		}
+		// Set related fields:
+		this.level = level;
 		
 	}
 	
+	/**
+	 * Levels up the settlement.
+	 * 
+	 */
+	public void levelUp() {
+		setLevel(getLevel() + 1);
+	}
 	
-	// Interaction:
+	/**
+	 * Gets experience.
+	 * 
+	 * @return experience
+	 */
+	public Double getExp() {
+		return exp;
+	}
+
+	/**
+	 * Gets remaining experience.
+	 * 
+	 * @return remaining experience
+	 */
+	public Double getRemainingExp() {
+		return getDefinition().getLevelUpExp(getLevel()) - exp;
+	}
+
+	
+	
+	// Naming:
 	/**
 	 * Gets the factionName.
 	 * 
@@ -760,42 +811,56 @@ public class SagaFaction implements SecondTicker{
 	}
 
 	/**
-	 * Gets the primaryColor.
+	 * Gets the definition.
 	 * 
-	 * @return the primaryColor
+	 * @return definition
 	 */
-	public ChatColor getPrimaryColor() {
-		return primaryColor;
+	public FactionDefinition getDefinition() {
+		return definition;
+	}
+	
+	
+	
+	// Colours:
+	/**
+	 * Gets the colour 1.
+	 * 
+	 * @return colour 1
+	 */
+	public ChatColor getColour1() {
+		return colour1;
 	}
 
 	/**
-	 * Gets the secondaryColor.
+	 * Gets the colour 2.
 	 * 
-	 * @return the secondaryColor
+	 * @return colour 2
 	 */
-	public ChatColor getSecondaryColor() {
-		return secondaryColor;
+	public ChatColor getColour2() {
+		return colour2;
 	}
 	
 	/**
-	 * Sets the primaryColor.
+	 * Sets the first colour.
 	 * 
-	 * @param primaryColor the primaryColor to set
+	 * @param colour1 colour
 	 */
-	public void setPrimaryColor(ChatColor primaryColor) {
-		this.primaryColor = primaryColor;
+	public void setColor1(ChatColor colour1) {
+		this.colour1 = colour1;
 	}
-	
 
 	/**
-	 * Sets the secondaryColor.
+	 * Sets the second colour.
 	 * 
-	 * @param secondaryColor the secondaryColor to set
+	 * @param colour1 colour
 	 */
-	public void setSecondaryColor(ChatColor secondaryColor) {
-		this.secondaryColor = secondaryColor;
+	public void setColor2(ChatColor colour2) {
+		this.colour2 = colour2;
 	}
 
+	
+	
+	// Members:
 	/**
 	 * Gets the members.
 	 * 
@@ -813,7 +878,6 @@ public class SagaFaction implements SecondTicker{
 	public ArrayList<String> getActiveMembers() {
 		return new ArrayList<String>(members);
 	}
-
 	
 	/**
 	 * Gets all registered members.
@@ -832,6 +896,7 @@ public class SagaFaction implements SecondTicker{
 	public boolean isFormed() {
 		return getMemberCount() >= FactionConfiguration.config().formationAmount;
 	}
+	
 	
 	
 	// Allies enemies:
@@ -928,7 +993,6 @@ public class SagaFaction implements SecondTicker{
 		
 	}
 	
-	
 	/**
 	 * Gets the allies.
 	 * 
@@ -981,6 +1045,7 @@ public class SagaFaction implements SecondTicker{
 		return allyRequests.remove(id);
 		
 	}
+	
 	
 	
 	// Permissions:
@@ -1248,74 +1313,27 @@ public class SagaFaction implements SecondTicker{
 	}
 	
 	
+	
 	// Ranks:
-	/**
-	 * Gets the definition.
-	 * 
-	 * @return definition
-	 */
-	public FactionDefinition getDefinition() {
-		return definition;
-	}
-	
-	
-	/**
-	 * Gets available ranks
-	 * 
-	 * @return available ranks
-	 */
-	public HashSet<String> getAllRanks() {
-		
-		HashSet<String> enabledRanks = getDefinition().getAllRanks(getLevel());
-		return enabledRanks;
-		
-	}
-
-	/**
-	 * Gets the available ranks.
-	 * 
-	 * @return all available ranks
-	 */
-	public HashSet<String> getRanks() {
-		
-		HashSet<String> ranks = new HashSet<String>();
-		
-		// Add default rank:
-		ranks.add(FactionConfiguration.config().factionDefaultRank);
-		
-		// Add all ranks:
-		ranks.addAll(getDefinition().getAllRanks(getLevel()));
-		
-		return ranks;
-		
-	}
-	
-	
 	/**
 	 * Adds a rank to the player.
 	 * 
 	 * @param sagaPlayer saga player
-	 * @param rankName rank name
-	 * @throws InvalidProficiencyException thrown if the rank name is invalid
+	 * @param rank rank
 	 */
-	public void setRank(SagaPlayer sagaPlayer, String rankName) throws InvalidProficiencyException {
+	public void setRank(SagaPlayer sagaPlayer, Proficiency rank){
 
-		
-		// Void rank:
-		if(rankName.equals("")){
-			return;
-		}
 		
 		// Clear previous rank:
 		if( playerRanks.get(sagaPlayer.getName()) != null ){
 			clearRank(sagaPlayer);
 		}
 		
-		// Create rank:
-		Proficiency rank = ProficiencyConfiguration.config().createProficiency(rankName);
-
 		// Add to settlement:
 		playerRanks.put(sagaPlayer.getName(), rank);
+		
+		// Update:
+		sagaPlayer.update();
 		
 		
 	}
@@ -1323,7 +1341,7 @@ public class SagaFaction implements SecondTicker{
 	/**
 	 * Clears a rank from the player.
 	 * 
-	 * @param sagaPlayer sga player
+	 * @param sagaPlayer Saga player
 	 */
 	public void clearRank(SagaPlayer sagaPlayer) {
 	
@@ -1336,7 +1354,10 @@ public class SagaFaction implements SecondTicker{
 
 		// Remove from faction:
 		playerRanks.remove(sagaPlayer.getName());
-	
+
+		// Update:
+		sagaPlayer.update();
+		
 			
 	}
 	
@@ -1356,22 +1377,21 @@ public class SagaFaction implements SecondTicker{
 	/**
 	 * Gets the amount of ranks used.
 	 * 
-	 * @param rankName rank name
+	 * @param hierarchy hierarchy level
 	 * @return amount of ranks used
 	 */
-	public Integer getUsedRanks(String rankName) {
-		
+	public Integer getUsedRanks(Integer hierarchy) {
+
 		Integer total = 0;
-		Enumeration<String> players = playerRanks.keys();
-		while (players.hasMoreElements()) {
+		
+		Collection<Proficiency> ranks = playerRanks.values();
+		
+		for (Proficiency rank : ranks) {
 			
-			String player = players.nextElement();
-			Proficiency rank = playerRanks.get(player);
-			
-			if(rankName.equals(rank.getName()))total ++;
-			
+			if(rank.getHierarchy() == hierarchy) total++;
+
 		}
- 		
+		
 		return total;
 		
 	}
@@ -1382,25 +1402,21 @@ public class SagaFaction implements SecondTicker{
 	 * @param rankName rank name
 	 * @return amont of ranks available
 	 */
-	public Integer getAvailableRanks(String rankName) {
+	public Integer getAvailableRanks(Integer hierarchy) {
 		
-		if(rankName.equals(FactionConfiguration.config().factionDefaultRank)){
-			return getMemberCount() - getInactiveMemberCount();
-		}
-		
-		return getDefinition().getAvailableRanks( rankName, getLevel() );
+		return getDefinition().getAvailableRanks(getLevel(), hierarchy);
 		
 	}
 
 	/**
 	 * Gets the amount of ranks remaining.
 	 * 
-	 * @param rankName rank name
-	 * @return amount of ranks remaining
+	 * @param hierarchy hierarchy level
+	 * @return amount of remaining ranks
 	 */
-	public Integer getRemainingRanks(String rankName) {
+	public Integer getRemainingRanks(Integer hierarchy) {
 		
-		return getAvailableRanks(rankName) - getUsedRanks(rankName);
+		return getAvailableRanks(hierarchy) - getUsedRanks(hierarchy);
 		
 	}
 	
@@ -1410,16 +1426,40 @@ public class SagaFaction implements SecondTicker{
 	 * @param rankName rank name
 	 * @return true if available
 	 */
-	public boolean isRankAvailable(String rankName) {
+	public boolean isRankAvailable(Integer hierarchy) {
 		
-		if(rankName.equals(FactionConfiguration.config().factionDefaultRank)){
+		if(hierarchy == getDefinition().getHierarchyMin()){
 			return true;
 		}
 		
-		return getRemainingRanks(rankName) > 0;
+		return getRemainingRanks(hierarchy) > 0;
 		
 	}
+	
+	
+	/**
+	 * Gets members with the given rank.
+	 * 
+	 * @param rankName rank name
+	 * @return members with the given rank
+	 */
+	public ArrayList<String> getMembersForRanks(String rankName) {
 
+		ArrayList<String> filtMembers = new ArrayList<String>();
+		ArrayList<String> allMembers = getMembers();
+		
+		for (String member : allMembers) {
+			
+			Proficiency rank = getRank(member);
+			if(rank != null && rank.getName().equals(rankName)) filtMembers.add(member);
+			
+		}
+		
+		return filtMembers;
+		
+		
+	}
+	
 	
 	
 	// Clock:
@@ -1478,12 +1518,13 @@ public class SagaFaction implements SecondTicker{
 	}
 	
 	
-	// Rally point:
+	
+	// Spawn point:
 	/**
-	 * Removes the rally point.
+	 * Removes the spawn point.
 	 * 
 	 */
-	public void removeRallyPoint() {
+	public void removeSpawnPoint() {
 		spawn = null;
 	}
 	
@@ -1508,24 +1549,8 @@ public class SagaFaction implements SecondTicker{
 	}
 	
 	
-	// Settling:
-	/**
-	 * Gets faction level.
-	 * Calculated from member count divided 0.8.
-	 * 
-	 */
-	public Short getLevel() {
-		
-		Integer active = getActiveMemberCount();
-		
-		if(active < FactionConfiguration.config().levelsPerActivePlayers.getXMin()){
-			return 0;
-		}
-		
-		return FactionConfiguration.config().levelsPerActivePlayers.value(active).shortValue();
-		
-	}
-
+	
+	// Messages:
 	/**
 	 * Sends a message to all registered players.
 	 * 
@@ -1540,12 +1565,27 @@ public class SagaFaction implements SecondTicker{
 		
 	}
 	
+	/**
+	 * Sends a faction message.
+	 * 
+	 * @param message message
+	 */
+	public void message(String message) {
+		
+		for (int i = 0; i < registeredMembers.size(); i++) {
+			registeredMembers.get(i).message(message);
+		}
+		
+	}
+	
+	
 	
 	// Other:
 	@Override
 	public String toString() {
 		return getId() + "(" + getName() + ")";
 	}
+	
 	
 	
 	// Load save
@@ -1673,6 +1713,42 @@ public class SagaFaction implements SecondTicker{
 
 	
 	
+	// Kill events:
+	/**
+	 * Called when a player is killed by another player.
+	 * 
+	 * @param attacker player
+	 * @param defender defender player
+	 */
+	public void onPvpKill(SagaPlayer attacker, SagaPlayer defender){
+
+		
+		// Only when other faction member is killed:
+		SagaFaction attackerFaction = attacker.getFaction();
+		SagaFaction defenderFaction = defender.getFaction();
+		
+		if(!(attackerFaction != null && attackerFaction == this && defenderFaction != attackerFaction)) return;
+		
+		// Level progress:
+		if(level < getDefinition().getMaxLevel()){
+			
+			exp += ExperienceConfiguration.config().getExp(defender);
+			
+			if(getRemainingExp() > 0) return;
+			
+			levelUp();
+
+			// Inform:
+			Saga.broadcast(FactionMessages.factionLevelBcast(this));
+			
+		}
+		
+		
+	}
+	
+
+	
+	// Types:
 	/**
 	 * Faction permissions.
 	 * 
@@ -1687,8 +1763,6 @@ public class SagaFaction implements SecondTicker{
 		KICK,
 		SET_RANK,
 		SET_COLOR,
-		@Deprecated
-		RALLY,
 		SET_SPAWN,
 		RENAME,
 		FORM_ALLIANCE,

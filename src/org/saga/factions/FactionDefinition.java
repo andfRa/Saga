@@ -1,25 +1,45 @@
 package org.saga.factions;
 
-import java.util.Enumeration;
-import java.util.HashSet;
+import java.util.Collection;
 import java.util.Hashtable;
+import java.util.Set;
 
 import org.saga.SagaLogger;
-import org.saga.settlements.SettlementDefinition;
 import org.saga.utility.TwoPointFunction;
 
 public class FactionDefinition {
 
-	
+
+	/**
+	 * Rank assigned to joined members.
+	 */
+	private String defaultRank;
+
+	/**
+	 * Rank assigned to faction owner.
+	 */
+	private String ownerRank;
 	
 	
 	/**
-	 * Ranks that are enabled.
+	 * Hierarchy.
 	 */
-	private Hashtable<String, TwoPointFunction> enabledRanks;
+	private Hashtable<Integer, TwoPointFunction> hierarchy;
+
+	/**
+	 * Hierarchy level names.
+	 */
+	private Hashtable<Integer, String> hierarchyNames;
+	
+
+	/**
+	 * Experience requirement.
+	 */
+	private TwoPointFunction levelUpExp;
 
 	
-	// Initialization:
+	
+	// Initialisation:
 	/**
 	 * Used by gson.
 	 * 
@@ -28,28 +48,42 @@ public class FactionDefinition {
 	}
 
 	/**
-	 * Completes.
+	 * Fixes all problematic fields.
 	 * 
-	 * @return integrity
 	 */
-	public boolean complete() {
+	public void complete() {
 		
 
-		boolean integrity=true;
-		
-		if(enabledRanks == null){
-			enabledRanks = new Hashtable<String, TwoPointFunction>();
-			SagaLogger.nullField(SettlementDefinition.class, "enabledRanks");
-			integrity = false;
+		if(hierarchy == null){
+			hierarchy = new Hashtable<Integer, TwoPointFunction>();
+			SagaLogger.nullField(getClass(), "hierarchy");
 		}
-		Enumeration<String> eRanks = enabledRanks.keys();
-		while (eRanks.hasMoreElements()) {
-			String rank = (String) eRanks.nextElement();
-			integrity = enabledRanks.get(rank).complete() && integrity;
+		Collection<TwoPointFunction> roleAmounts = hierarchy.values();
+		for (TwoPointFunction function : roleAmounts) {
+			function.complete();
 		}
 		
-		return integrity;
+		if(hierarchyNames == null){
+			hierarchyNames = new Hashtable<Integer, String>();
+			SagaLogger.nullField(getClass(), "hierarchyNames");
+		}
 		
+		if(ownerRank == null){
+			SagaLogger.severe(getClass(), "ownerRank field not initialized");
+			defaultRank = "novice";
+		}
+		
+		if(defaultRank == null){
+			SagaLogger.severe(getClass(), "defaultRank field not initialized");
+			defaultRank = "warmaster";
+		}
+		
+		if(levelUpExp == null){
+			levelUpExp = new TwoPointFunction(10000.0);
+			SagaLogger.nullField(getClass(), "levelUpExp");
+		}
+		levelUpExp.complete();
+
 		
 	}
 	
@@ -58,45 +92,121 @@ public class FactionDefinition {
 	/**
 	 * Gets the total ranks available.
 	 * 
-	 * @param rankName rank name
-	 * @param level settlement level
+	 * @param factLevel faction level
+	 * @param hierarchyLevel hierarchy level
 	 * @return amount of ranks available
 	 */
-	public Integer getAvailableRanks(String rankName, Short level) {
+	public Integer getAvailableRanks(Integer factLevel, Integer hierarchyLevel) {
 		
-		TwoPointFunction amount = enabledRanks.get(rankName);
-		if(amount == null || amount.getXMin() > level){
-			return 0;
-		}
-		return new Double(amount.value(level.intValue())).intValue();
 		
+		TwoPointFunction function = hierarchy.get(hierarchyLevel);
+		if(function == null) return 0;
+		
+		return function.intValue(factLevel);
+		
+		
+	}
+
+	/**
+	 * Gets hierarchy level name.
+	 * 
+	 * @param hierarchy hierarchy level
+	 * @return hierarchy level name, null if none
+	 */
+	public String getHierarchyName(Integer hierarchy) {
+		
+		String roleName = hierarchyNames.get(hierarchy);
+		if(roleName == null) return null;
+		
+		return roleName;
 		
 	}
 	
 	/**
-	 * Gets all rank names enabled by this rank
+	 * Gets max hierarchy level.
 	 * 
-	 * @param level settlement level
-	 * @return enabled rank names
+	 * @return max hierarchy level
 	 */
-	public HashSet<String> getAllRanks(Short level) {
-		
-		
-		HashSet<String> ranks = new HashSet<String>();
-		
-		Enumeration<String> rankNames =  enabledRanks.keys();
-		
-		while (rankNames.hasMoreElements()) {
-			String rankName = (String) rankNames.nextElement();
-			if(getAvailableRanks(rankName, level) > 0){
-				ranks.add(rankName);
-			}
-		}
-		
-		return ranks;
+	public Integer getHierarchyMax() {
 
 		
+		Integer maxHierarchy = 0;
+		Set<Integer> roleHierarchy = hierarchy.keySet();
+		
+		for (Integer hierarchy : roleHierarchy) {
+			if(hierarchy > maxHierarchy) maxHierarchy = hierarchy;
+		}
+		
+		return maxHierarchy;
+		
+		
 	}
+
+	/**
+	 * Gets min hierarchy level.
+	 * 
+	 * @return min hierarchy level
+	 */
+	public Integer getHierarchyMin() {
+
+		
+		Integer minHierarchy = -1;
+		Set<Integer> roleHierarchy = hierarchy.keySet();
+		
+		for (Integer hierarchy : roleHierarchy) {
+			if(hierarchy < minHierarchy || minHierarchy == -1) minHierarchy = hierarchy;
+		}
+		
+		return minHierarchy;
+		
+		
+	}
+	
+	
+	/**
+	 * Gets the default rank.
+	 * 
+	 * @return default rank
+	 */
+	public String getDefaultRank() {
+		return defaultRank;
+	}
+	
+	/**
+	 * Gets owner rank.
+	 * 
+	 * @return owner rank
+	 */
+	public String getOwnerRank() {
+		return ownerRank;
+	}
+	
+	
+
+	// Experience:
+	/**
+	 * Gets experience requirement.
+	 * 
+	 * @param level faction level
+	 * @return experience requirement
+	 */
+	public Double getLevelUpExp(Integer level) {
+		
+		return levelUpExp.value(level);
+
+	}
+	
+	/**
+	 * Gets maximum level.
+	 * 
+	 * @return maximum level
+	 */
+	public Integer getMaxLevel() {
+
+		return levelUpExp.getXMax().intValue();
+
+	}
+	
 	
 	
 	// Other:
@@ -109,7 +219,6 @@ public class FactionDefinition {
 		
 		
 		FactionDefinition definition = new FactionDefinition();
-		definition.enabledRanks = new Hashtable<String, TwoPointFunction>();
 		return definition;
 		
 		

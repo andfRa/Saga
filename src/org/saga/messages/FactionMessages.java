@@ -2,16 +2,20 @@ package org.saga.messages;
 
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
 import org.saga.commands.FactionCommands;
 import org.saga.config.FactionConfiguration;
+import org.saga.config.ProficiencyConfiguration;
 import org.saga.factions.FactionManager;
 import org.saga.factions.SagaFaction;
+import org.saga.messages.PlayerMessages.ColorCircle;
 import org.saga.player.Proficiency;
+import org.saga.player.Proficiency.ProficiencyType;
+import org.saga.player.ProficiencyDefinition;
 import org.saga.player.SagaPlayer;
+import org.saga.utility.text.StringTable;
 import org.saga.utility.text.TextUtil;
 
 
@@ -40,10 +44,11 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 
 	public static ChatColor frame = ChatColor.DARK_GREEN;
 
+	
 
 	// General restriction:
 	public static String noPermission(SagaFaction faction){
-		return faction.getSecondaryColor() + "You dont have permission from " + faction(faction, faction.getSecondaryColor()) + " to do that.";
+		return faction.getColour2() + "You dont have permission from " + faction(faction, faction.getColour2()) + " to do that.";
 	}
 
 	public static String noFaction() {
@@ -51,7 +56,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	}
 	
 	public static String noFaction(String factionName) {
-		return negative + factionName + " doesn't exist.";
+		return negative + "Faction " + factionName + " doesn't exist.";
 	}
 	
 	public static String notFormed(SagaFaction faction) {
@@ -66,6 +71,14 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		
 	}
 
+	
+	
+	// Leveling:
+	public static String factionLevelBcast(SagaFaction faction) {
+		return anouncment + "Faction " + faction.getColour1() + faction.getName() + anouncment + " is now level " + faction.getLevel() + ".";
+	}
+	
+	
 	
 	// Faction restriction:
 	public static String mustSelectOneFaction() {
@@ -95,30 +108,32 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	}
 	
 	
+	
 	// Specific stats:
-	public static String primaryColorSet(SagaFaction faction) {
+	public static String colour1Set(SagaFaction faction) {
 
-		return faction.getSecondaryColor() + "Factions primary color set to " + TextUtil.color(faction.getPrimaryColor(), faction.getSecondaryColor());
+		return faction.getColour2() + "Factions colour I set to " + faction.getColour1() + TextUtil.colour(faction.getColour1()) + faction.getColour2() + ".";
 		
 	}
 	
-	public static String secondaryColorSet(SagaFaction faction) {
+	public static String colour2Set(SagaFaction faction) {
 
-		return faction.getSecondaryColor() + "Factions secondary color set to " + TextUtil.color(faction.getSecondaryColor(), faction.getSecondaryColor());
+		return faction.getColour2() + "Factions colour II set to " + faction.getColour2() + TextUtil.colour(faction.getColour2()) + faction.getColour2() + ".";
 		
 	}
 	
 
+	
 	// Create delete:
 	public static String created(SagaFaction faction) {
 
-		return faction.getSecondaryColor() + "Created " + faction(faction, faction.getSecondaryColor()) + " faction.";
+		return faction.getColour2() + "Created " + faction(faction, faction.getColour2()) + " faction.";
 		
 	}
 	
 	public static String deleted(SagaFaction faction) {
 
-		return faction.getSecondaryColor() + "Deleted " + faction(faction, faction.getSecondaryColor()) + " faction.";
+		return faction.getColour2() + "Deleted " + faction(faction, faction.getColour2()) + " faction.";
 		
 	}
 	
@@ -159,40 +174,41 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	}
 	
 
-	// Invite join leave messages:
+	
+	// Invite join leave broadcasts:
 	public static String beenInvited(SagaPlayer sagaPlayer, SagaFaction faction) {
-		return faction.getSecondaryColor() + "You have been invited to " + faction.getPrimaryColor() + faction.getName() + faction.getSecondaryColor() + " faction.";
+		return faction.getColour2() + "You have been invited to " + faction.getColour1() + faction.getName() + faction.getColour2() + " faction.";
 	}
 	
 	public static String invitedPlayer(SagaPlayer sagaPlayer, SagaFaction faction) {
-		return faction.getSecondaryColor() + "" + sagaPlayer.getName() + " was invited to the faction.";
+		return faction.getColour2() + "" + sagaPlayer.getName() + " was invited to the faction.";
 	}
 	
 	
 	public static String joinedFaction(SagaPlayer sagaPlayer, SagaFaction faction) {
-		return faction.getSecondaryColor() + "You joined " + faction.getPrimaryColor() + faction.getName() + faction.getSecondaryColor() + " faction.";
+		return faction.getColour2() + "You joined " + faction.getColour1() + faction.getName() + faction.getColour2() + " faction.";
 	}
 	
 	public static String playerJoined(SagaPlayer sagaPlayer, SagaFaction faction) {
-		return faction.getSecondaryColor() + sagaPlayer.getName() + " has joined the faction.";
+		return faction.getColour2() + sagaPlayer.getName() + " has joined the faction.";
 	}
 	
 	
 	public static String quitFaction(SagaPlayer sagaPlayer, SagaFaction sagaFaction) {
-		return sagaFaction.getSecondaryColor() + "You have quit your faction.";
+		return sagaFaction.getColour2() + "You have quit your faction.";
 	}
 	
 	public static String playerQuit(SagaPlayer sagaPlayer, SagaFaction sagaFaction) {
-		return sagaFaction.getSecondaryColor() + sagaPlayer.getName() + " has quit the faction.";
+		return sagaFaction.getColour2() + sagaPlayer.getName() + " has quit the faction.";
 	}
 
 	
 	public static String kickedFromFaction(SagaPlayer sagaPlayer, SagaFaction sagaFaction) {
-		return sagaFaction.getSecondaryColor() + "You have been kicked out of your faction.";
+		return sagaFaction.getColour2() + "You have been kicked out of your faction.";
 	}
 	
 	public static String playerKicked(SagaPlayer sagaPlayer, SagaFaction sagaFaction) {
-		return sagaFaction.getSecondaryColor() + sagaPlayer.getName() + " has been kicked from the faction.";
+		return sagaFaction.getColour2() + sagaPlayer.getName() + " has been kicked from the faction.";
 	}
 	
 	
@@ -204,6 +220,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		return negative + "Can't kick the owner.";
 	}
 	
+	
 	public static String notFactionMember(SagaPlayer sagaPlayer, SagaFaction faction) {
 		return negative + sagaPlayer.getName() + " isn't part of the faction.";
 	}
@@ -213,7 +230,8 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	}
 	
 	
-	// Invite join  leave restrictions:
+	
+	// Invite join leave:
 	public static String noInvites() {
 		return negative + "You don't have a faction invitation.";
 	}
@@ -254,7 +272,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		
 		for (int i = 0; i < factions.size(); i++) {
 			if( i != 0 ) rString.append(", ");
-			rString.append(factions.get(i).getPrimaryColor() + factions.get(i).getName() + messageColor);
+			rString.append(factions.get(i).getColour1() + factions.get(i).getName() + messageColor);
 		}
 		
 		if(factions.size() == 1){
@@ -277,14 +295,13 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	}
 	
 	public static String newOwner(SagaFaction faction, String name) {
-		return faction.getSecondaryColor() + name + " is the new owner of the faction.";
+		return faction.getColour2() + name + " is the new owner of the faction.";
 	}
 	
-	
-	// Inform:
 	public static String informAccept() {
 		return normal1 + "Use /faccept to accept a faction invitation.";
 	}
+	
 	
 	
 	// Other:
@@ -298,132 +315,256 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		return negative + name + " is already in use.";
 	}
 	
-	public static String invalidColor(String colorName) {
+	public static String invalidColor(String colourName) {
 		
-		return negative + colorName +" isn't a valid color.";
+		return negative + colourName +" isn't a valid colour.";
 		
 	}
 	
-	public static String possibleColors(ChatColor[] colors, SagaFaction faction) {
+	public static String possibleColors(ChatColor[] colours, SagaFaction faction) {
 		
 		
 		StringBuffer rString = new StringBuffer();
 		
-		if(colors.length == 0){
-			rString.append("Possible colors: none");
-		}else if(colors.length == 1){
-			rString.append("Possible color: ");
+		if(colours.length == 0){
+			rString.append("Possible colours: none");
+		}else if(colours.length == 1){
+			rString.append("Possible colour: ");
 		}else{
-			rString.append("Possible colors: ");
+			rString.append("Possible colours: ");
 		}
 		
-		for (int i = 0; i < colors.length; i++) {
+		for (int i = 0; i < colours.length; i++) {
 			
 			if( i!= 0) rString.append(", ");
 			
-			rString.append(colors[i].name().toLowerCase().replace("_", " "));
+			rString.append(colours[i].name().toLowerCase().replace("_", " "));
 			
 		}
 		
 		
-		rString.insert(0, faction.getSecondaryColor());
+		rString.insert(0, faction.getColour2());
 		
 		return rString.toString();
 		
 		
 	}
 	
-	public static String pvpFactionOnly() {
+
+	
+	// Stats:
+	public static String stats(SagaFaction faction, Integer page) {
 		
-		return negative + FactionConfiguration.config().pvpFactionOnlyMessage;
+		
+		StringBuffer result = new StringBuffer();
+		
+		switch (page) {
+
+			// Ranks:	
+			case 1:
+				
+				result.append(listMembers(faction));
+				
+				break;
+				
+			// Main stats:
+			default:
+				
+				page = 0;
+				
+				// Levels and claims:
+				result.append(main(faction).createTable());
+				
+				result.append("\n");
+				result.append("\n");
+				
+				// Allies:
+				result.append(allies(faction));
+				
+				break;
+				
+		}
+		
+		return TextUtil.frame(faction.getName() + " stats " + (page + 1) + "/" + 2, result.toString(), faction.getColour2());
+
 		
 	}
 	
-	
-	// Stats:
-	public static String stats(SagaFaction faction) {
+	private static StringTable main(SagaFaction faction){
 		
 		
-		StringBuffer rString = new StringBuffer();
-		ChatColor messageColor = faction.getSecondaryColor();
+		ColorCircle colours = new ColorCircle().addColor(faction.getColour2());
+		StringTable table = new StringTable(colours);
+		
+		// Colours:
+		table.addLine("colour I", faction.getColour1() + TextUtil.colour(faction.getColour1()), 0);
+		
+		// Building points:
+		table.addLine("colour II", faction.getColour2() + TextUtil.colour(faction.getColour2()), 0);
 		
 		// Owner:
-		ChatColor elementColor = messageColor;
 		if(faction.hasOwner()){
-			rString.append(elementColor);
-			rString.append("Owner: " + faction.getOwner());
+			table.addLine("owner", faction.getOwner(), 0);
 		}else{
-			rString.append("Owner: "+ veryNegative +"none" + elementColor);
+			table.addLine("owner", veryNegative + "none", 0);
 		}
 		
-		rString.append("\n");
+		// Level:
+		table.addLine("level", faction.getLevel() + "/" + faction.getDefinition().getMaxLevel(), 2);
+
+		// Next exp:
+		table.addLine("next EXP", faction.getRemainingExp().intValue() + "", 2);
+
+		table.collapse();
 		
-		// Colors:
-		rString.append("Primary color: " + TextUtil.color(faction.getPrimaryColor(), messageColor));
-		rString.append(" ");
-		rString.append("Secondary color: " + TextUtil.color(faction.getSecondaryColor(), messageColor));
+		return table;
 		
-		rString.append("\n");
 		
-		// Ranks:
-		rString.append(ranks(faction, messageColor));
+	}
+	
+	private static String allies(SagaFaction faction){
 		
-		rString.append("\n");
+		
+		StringBuffer result = new StringBuffer();
+
+		ArrayList<String> allies = FactionManager.manager().getFactionNames(faction.getAllies());
+		ArrayList<String> allyInvites = FactionManager.manager().getFactionNames(faction.getAllyInvites());
 		
 		// Allies:
-		ArrayList<String> allies = FactionManager.manager().getFactionNames(faction.getAllies());
-		rString.append("Allies: ");
+		result.append("allies: ");
 		if(allies.size() > 0){
-			rString.append(TextUtil.flatten(allies));
+			result.append(TextUtil.flatten(allies));
 		}else{
-			rString.append("none");
+			result.append("none");
 		}
 
 		// Ally invites:
-		ArrayList<String> allyInvites = FactionManager.manager().getFactionNames(faction.getAllyInvites());
 		if(allyInvites.size() > 0){
 			
-			rString.append(" Ally invites: " + TextUtil.flatten(allyInvites));
+			result.append("\n");
+			result.append("ally invites: " + TextUtil.flatten(allyInvites));
 			
 		}
 		
-		return TextUtil.frame(faction(faction, messageColor) + " stats", rString.toString(), messageColor);
+		return result.toString();
 		
 		
 	}
 	
-	private static String ranks(SagaFaction faction, ChatColor messageColor) {
+	private static String listMembers(SagaFaction faction){
 		
 		
-		StringBuffer rString = new StringBuffer();
-		HashSet<String> ranks = faction.getRanks();
+		StringBuffer result = new StringBuffer();
 		
-		if(ranks.size() == 0){
-			rString.append("Ranks: none");
-		}else if(ranks.size() == 0){
-			rString.append("Rank: ");
-		}else{
-			rString.append("Ranks: ");
-		}
+		ChatColor general = normal1;
+		ChatColor normal = normal2;
 		
-		boolean firstElement = true;
-		for (String role : ranks) {
+		int hMin = faction.getDefinition().getHierarchyMin();
+		int hMax = faction.getDefinition().getHierarchyMax();
+		
+		// Hierarchy levels:
+		for (int hierarchy = hMax; hierarchy >= hMin; hierarchy--) {
 			
-			if(!firstElement){
-				rString.append(", ");
+			if(result.length() > 0){
+				result.append("\n");
+				result.append("\n");
 			}
-			firstElement = false;
 			
-			rString.append(role + " " + faction.getUsedRanks(role) + "/" + faction.getAvailableRanks(role));
+			// Group name:
+			String groupName = faction.getDefinition().getHierarchyName(hierarchy);
+			if(groupName.length() == 0) groupName = "-";
+			result.append(GeneralMessages.tableTitle(general + groupName));
+			
+			// Rank amounts:
+			if(hierarchy != faction.getDefinition().getHierarchyMin()){
+				
+				String amounts = faction.getUsedRanks(hierarchy) + "/" + faction.getAvailableRanks(hierarchy);
+				
+				if(faction.isRankAvailable(hierarchy)){
+					amounts = positive + amounts;
+				}else{
+					amounts = negative + amounts;
+				}
+				
+				result.append(" " + amounts);
+				
+			}else{
+				
+				String amounts = faction.getUsedRanks(hierarchy) + "/-";
+				result.append(" " + amounts);
+				
+			}
+			
+			// All ranks:
+			StringBuffer resultRanks = new StringBuffer();
+			
+			ArrayList<ProficiencyDefinition> ranks = ProficiencyConfiguration.config().getDefinitions(ProficiencyType.RANK, hierarchy);
+			
+			for (ProficiencyDefinition definition : ranks) {
+				
+				// Members:
+				if(resultRanks.length() > 0) resultRanks.append("\n");
+				
+				String roleName = definition.getName();
+				ArrayList<String> members = faction.getMembersForRanks(roleName);
+				
+				// Colour members:
+				colourMembers(members, faction);
+				
+				// Add members:
+				resultRanks.append(normal);
+				
+				resultRanks.append(roleName + ": ");
+				
+				if(members.size() != 0){
+					resultRanks.append(TextUtil.flatten(members));
+				}else{
+					resultRanks.append("none");
+				}
+				
+			}
+			
+			result.append("\n");
+			
+			// Add roles:
+			result.append(resultRanks);
 			
 		}
 		
-		rString.insert(0, messageColor);
-		
-		return rString.toString();
+		return result.toString();
 		
 		
 	}
+
+	private static void colourMembers(ArrayList<String> members, SagaFaction faction){
+		
+		for (int i = 0; i < members.size(); i++) {
+			members.set(i, member(members.get(i), faction));
+		}
+		
+	}
+	
+	private static String member(String name, SagaFaction faction){
+		
+		
+		// Active:
+		if(!faction.isMemberActive(name)){
+			return unavailable + "" + ChatColor.STRIKETHROUGH + name + normal1;
+		}
+		
+		// Offline:
+		else if(!faction.isRegisteredMember(name)){
+			return unavailable + name + normal1;
+		}
+		
+		// Normal:
+		else{
+			return normal1 + name;
+		}
+		
+		
+	}
+
 	
 	
 	// Rename:
@@ -435,9 +576,10 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	
 	public static String renamed(SagaFaction faction) {
 
-		return faction.getSecondaryColor() + "Faction was renamed to " + faction(faction, faction.getSecondaryColor()) + ".";
+		return faction.getColour2() + "Faction was renamed to " + faction(faction, faction.getColour2()) + ".";
 		
 	}
+	
 	
 	
 	// Spawn:
@@ -449,21 +591,22 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	
 	public static String newSpawn(SagaFaction faction) {
 		
-		return faction.getSecondaryColor() + "New faction spawn point has been set.";
+		return faction.getColour2() + "New faction spawn point has been set.";
 		
 	}
 
 	
+	
 	// Ally:
 	public static String sentAlliance(SagaFaction faction, SagaFaction target) {
 		
-		return faction.getSecondaryColor() + "An alliance request was sent to " + faction(target, faction.getSecondaryColor()) + " faction.";
+		return faction.getColour2() + "An alliance request was sent to " + faction(target, faction.getColour2()) + " faction.";
 		
 	}
 	
 	public static String recievedAlliance(SagaFaction faction, SagaFaction source) {
 		
-		return faction.getSecondaryColor() + "Recieved an alliance request from " + faction(source, faction.getSecondaryColor()) + " faction.";
+		return faction.getColour2() + "Recieved an alliance request from " + faction(source, faction.getColour2()) + " faction.";
 		
 	}
 	
@@ -475,7 +618,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 
 	public static String declinedAllianceRequest(SagaFaction faction, SagaFaction target) {
 		
-		return faction.getSecondaryColor() + "Alliance request from " + faction(target, faction.getSecondaryColor()) + " faction was declined.";
+		return faction.getColour2() + "Alliance request from " + faction(target, faction.getColour2()) + " faction was declined.";
 		
 	}
 	
@@ -522,6 +665,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	}
 
 	
+	
 	// List:
 	public static String list(SagaFaction faction) {
 		
@@ -533,7 +677,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 			
 			if(rString.length() > 0) rString.append("\n");
 			
-			rString.append(faction.getSecondaryColor() + "Online: " + faction.getRegisteredMemberCount() + "/" + faction.getMemberCount());
+			rString.append(faction.getColour2() + "Online: " + faction.getRegisteredMemberCount() + "/" + faction.getMemberCount());
 
 			int inactiveCount = faction.getInactiveMemberCount();
 			if(inactiveCount != 0){
@@ -547,11 +691,11 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 			
 			if(rString.length() > 0) rString.append("\n");
 			
-			rString.append( listPlayersElement(faction, faction.getSecondaryColor()) );
+			rString.append( listPlayersElement(faction, faction.getColour2()) );
 
 		}
 		
-		return TextUtil.frame(faction(faction, faction.getSecondaryColor()) + " members", rString.toString(), faction.getSecondaryColor());
+		return TextUtil.frame(faction(faction, faction.getColour2()) + " members", rString.toString(), faction.getColour2());
 		
 		
 	}
@@ -677,7 +821,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		}
 		else{
 		
-			rString.append(faction.getPrimaryColor() + playerName + messageColor);
+			rString.append(faction.getColour1() + playerName + messageColor);
 			
 		}
 		
@@ -687,6 +831,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	}
 
 	
+	
 	// Info:
 	public static String wrongQuit() {
 		
@@ -695,16 +840,17 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	}
 	
 	
+	
 	// Rank:
 	public static String newRank(SagaFaction faction, String rankName, SagaPlayer targetPlayer) {
 		
-		return faction.getSecondaryColor() + targetPlayer.getName() + " is now a " + rankName + ".";
+		return faction.getColour2() + targetPlayer.getName() + " is now a " + rankName + ".";
 		
 	}
 	
-	public static String invalidRank(SagaFaction faction, String rankName) {
+	public static String invalidRank(String rankName) {
 		
-		return negative + rankName + " isn't a valid rank.";
+		return negative + "Rank " + rankName + " is invalid.";
 		
 	}
 	
@@ -715,10 +861,11 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	}
 	
 	
+	
 	// Utility:
 	public static String faction(SagaFaction faction, ChatColor messageColor) {
 		
-		return faction.getPrimaryColor() + faction.getName() + messageColor;
+		return faction.getColour1() + faction.getName() + messageColor;
 		
 	}
 	
@@ -733,5 +880,6 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		}
 		
 	}
+	
 	
 }

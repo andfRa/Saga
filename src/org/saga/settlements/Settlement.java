@@ -36,16 +36,16 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	 * Settlement level.
 	 */
 	private Integer level;
+
+	/**
+	 * Experience.
+	 */
+	private Double exp;
 	
 	/**
 	 * Player roles.
 	 */
 	private Hashtable<String, Proficiency> playerRoles;
-	
-	/**
-	 * Experience.
-	 */
-	private Double exp;
 	
 	/**
 	 * Player last seen dates.
@@ -230,10 +230,10 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	 * @see org.saga.chunkGroups.ChunkGroup#addPlayer3(org.saga.SagaPlayer)
 	 */
 	@Override
-	public void addPlayer(SagaPlayer sagaPlayer) {
+	public void addMember(SagaPlayer sagaPlayer) {
 
 
-		super.addPlayer(sagaPlayer);
+		super.addMember(sagaPlayer);
 
 		// Set default role:
 		try {
@@ -255,14 +255,14 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	 * @see org.saga.chunkGroups.ChunkGroup#removePlayer3(org.saga.SagaPlayer)
 	 */
 	@Override
-	public void removePlayer(SagaPlayer sagaPlayer) {
+	public void removeMember(SagaPlayer sagaPlayer) {
 		
 		
 		// Clear role:
 		clearRole(sagaPlayer);
 		
 		// Forward:
-		super.removePlayer(sagaPlayer);
+		super.removeMember(sagaPlayer);
 
 		// Last seen:
 		lastSeen.remove(sagaPlayer.getName());
@@ -394,7 +394,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	 * 
 	 * @return all available roles
 	 */
-	public HashSet<String> getRoles() {
+	public HashSet<String> getRoles2() {
 		
 		HashSet<String> roles = new HashSet<String>();
 		
@@ -480,11 +480,12 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 		
 	}
 	
+	
 	/**
 	 * Gets members with the given role.
 	 * 
 	 * @param roleName role name
-	 * @return players with the given role
+	 * @return members with the given role
 	 */
 	public ArrayList<String> getMembersForRoles(String roleName) {
 

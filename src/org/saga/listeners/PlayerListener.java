@@ -251,8 +251,8 @@ public class PlayerListener implements Listener {
     	SagaFaction sagaFaction = sagaPlayer.getFaction();
     	if(sagaFaction == null || !sagaFaction.isFormed()) return;
     	
-    	ChatColor primaryColor = sagaFaction.getPrimaryColor();
-    	ChatColor secondaryColor = sagaFaction.getSecondaryColor();
+    	ChatColor primaryColor = sagaFaction.getColour1();
+    	ChatColor secondaryColor = sagaFaction.getColour2();
     	ChatColor normalColor = ChatColor.WHITE;
     	
     	String formatString = event.getFormat();

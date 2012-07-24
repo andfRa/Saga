@@ -454,7 +454,7 @@ public class ChunkGroupMessages {
 				page = 0;
 				
 				// Levels and claims:
-				result.append(levelClaims(settlement).createTable());
+				result.append(main(settlement).createTable());
 
 				result.append("\n");
 				result.append("\n");
@@ -473,7 +473,7 @@ public class ChunkGroupMessages {
 		
 	}
 	
-	private static StringTable levelClaims(Settlement settlement){
+	private static StringTable main(Settlement settlement){
 		
 		
 		ColorCircle colours = new ColorCircle().addColor(normal1).addColor(normal2);
@@ -761,7 +761,7 @@ public class ChunkGroupMessages {
 	
 	// Roles:
 	public static String invalidRole(String roleName){
-		return negative + "Role " + roleName + " isn't valid.";
+		return negative + "Role " + roleName + " is invalid.";
 	}
 	
 	public static String newRole(SagaPlayer sagaPlayer, ChunkGroup settlement, String roleName) {

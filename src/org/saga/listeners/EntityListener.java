@@ -22,6 +22,7 @@ import org.saga.SagaLogger;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.BalanceConfiguration;
+import org.saga.factions.SagaFaction;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDeathEvent;
 import org.saga.listeners.events.SagaEventHandler;
@@ -148,11 +149,11 @@ public class EntityListener implements Listener{
 	public void onEntityDeath(EntityDeathEvent event) {
 
 		
-		SagaEntityDeathEvent eventS = new SagaEntityDeathEvent(event, event.getEntity());
+		SagaEntityDeathEvent sagaEvent = new SagaEntityDeathEvent(event, event.getEntity());
 		
-		SagaPlayer sagaDead = eventS.getLastDamageEvent().getDefenderPlayer();
-		SagaPlayer sagaAttacker = eventS.getLastDamageEvent().getAttackerPlayer();
-		Creature deadCreature =  eventS.getLastDamageEvent().getDefenderCreature();
+		SagaPlayer sagaDead = sagaEvent.getLastDamageEvent().getDefenderPlayer();
+		SagaPlayer sagaAttacker = sagaEvent.getLastDamageEvent().getAttackerPlayer();
+		Creature deadCreature =  sagaEvent.getLastDamageEvent().getDefenderCreature();
 		
 		// Player got killed by a player:
 		if(sagaDead != null && sagaAttacker != null){
@@ -161,12 +162,16 @@ public class EntityListener implements Listener{
 			Location location = sagaAttacker.getLocation();
 			Chunk chunk = location.getWorld().getChunkAt(location);
 			SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(chunk);
-			if(sagaChunk == null){
-				return;
-			}
 			
 			// Forward to chunk:
-			sagaChunk.onPvpKill(sagaAttacker, sagaDead);
+			if(sagaChunk != null) sagaChunk.onPvpKill(sagaAttacker, sagaDead);
+			
+			// Forward to faction:
+			SagaFaction attackerFaction = sagaAttacker.getFaction();
+			SagaFaction deadFaction = sagaDead.getFaction();
+			if(attackerFaction != null) attackerFaction.onPvpKill(sagaAttacker, sagaDead);
+			if(deadFaction != null && deadFaction != attackerFaction) deadFaction.onPvpKill(sagaAttacker, sagaDead);
+			
 			
 		}
 		
@@ -185,7 +190,7 @@ public class EntityListener implements Listener{
 		}
 		
 		// Apply event:
-		eventS.apply();
+		sagaEvent.apply();
 		
 		
 	}

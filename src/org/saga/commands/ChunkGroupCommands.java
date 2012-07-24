@@ -24,6 +24,7 @@ import org.saga.messages.InfoMessages;
 import org.saga.messages.SagaMessages;
 import org.saga.messages.SettlementEffects;
 import org.saga.player.Proficiency;
+import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;
 import org.saga.settlements.Settlement.SettlementPermission;
@@ -343,7 +344,7 @@ public class ChunkGroupCommands {
 		}
 		
 		// Add to chunk group:
-		selectedChunkGroup.addPlayer(sagaPlayer);
+		selectedChunkGroup.addMember(sagaPlayer);
 		
 		// Set owner role:
 		if(selectedChunkGroup instanceof Settlement){
@@ -673,7 +674,7 @@ public class ChunkGroupCommands {
 		sagaPlayer.message(ChunkGroupMessages.haveJoined(sagaPlayer, selectedChunkGroup));
 
     	// Add to chunk group:
-		selectedChunkGroup.addPlayer(sagaPlayer);
+		selectedChunkGroup.addMember(sagaPlayer);
     	
     	// Decline every invitation:
     	ArrayList<Integer> chunkGroupIds = sagaPlayer.getChunkGroupInvites();
@@ -748,7 +749,7 @@ public class ChunkGroupCommands {
 		}
 		
 		// Remove:
-		selectedChunkGroup.removePlayer(sagaPlayer);
+		selectedChunkGroup.removeMember(sagaPlayer);
 
 		// Inform:
 		selectedChunkGroup.broadcast(ChunkGroupMessages.quit(sagaPlayer, selectedChunkGroup));
@@ -857,7 +858,7 @@ public class ChunkGroupCommands {
 		}
 		
 		// Remove player:
-		selectedChunkGroup.removePlayer(kickedPlayer);
+		selectedChunkGroup.removeMember(kickedPlayer);
 		
 		// Unforce:
 		Saga.plugin().unforceSagaPlayer(tragetName);
@@ -1044,11 +1045,19 @@ public class ChunkGroupCommands {
 			return;
 		}
 
-		// Get role:
+		// Create role:
 		Proficiency role;
 		try {
 			role = ProficiencyConfiguration.config().createProficiency(roleName);
 		} catch (InvalidProficiencyException e) {
+			sagaPlayer.message(ChunkGroupMessages.invalidRole(roleName));
+			// Unforce:
+			Saga.plugin().unforceSagaPlayer(targetName);
+			return;
+		}
+		
+		// Not a role:
+		if(role.getDefinition().getType() != ProficiencyType.ROLE){
 			sagaPlayer.message(ChunkGroupMessages.invalidRole(roleName));
 			// Unforce:
 			Saga.plugin().unforceSagaPlayer(targetName);

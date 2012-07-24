@@ -352,7 +352,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 
 		// Add player:
-		chunkGroup.addPlayer(owner);
+		chunkGroup.addMember(owner);
 
 		// Set owner:
 		chunkGroup.setOwner(owner.getName());
@@ -384,7 +384,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 			
 			try {
 				SagaPlayer sagaPlayer = Saga.plugin().forceSagaPlayer(player);
-				removePlayer(sagaPlayer);
+				removeMember(sagaPlayer);
 				Saga.plugin().unforceSagaPlayer(player);
 			} catch (NonExistantSagaPlayerException e) {
 				SagaLogger.severe(this, "failed to remove " + player + " player");
@@ -881,7 +881,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	 * 
 	 * @param sagaPlayer saga player
 	 */
-	public void addPlayer(SagaPlayer sagaPlayer) {
+	public void addMember(SagaPlayer sagaPlayer) {
 
 
 		// Add player:
@@ -901,7 +901,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	 * 
 	 * @param playerName saga player
 	 */
-	public void removePlayer(SagaPlayer sagaPlayer) {
+	public void removeMember(SagaPlayer sagaPlayer) {
 		
 		
 		// Remove player:

@@ -7,7 +7,6 @@ import org.saga.SagaLogger;
 import org.saga.factions.FactionDefinition;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
-import org.saga.utility.TwoPointFunction;
 
 import com.google.gson.JsonParseException;
 
@@ -32,18 +31,13 @@ public class FactionConfiguration {
 	/**
 	 * Faction definition.
 	 */
-	public FactionDefinition factionDefinition;
+	public FactionDefinition definition;
 
 	/**
 	 * If true then only faction vs faction pvp is allowed.
 	 */
 	public Boolean factionOnlyPvp;
 	
-	/**
-	 * Message when pvp is denied.
-	 */
-	public String pvpFactionOnlyMessage;
-
 	/**
 	 * Prefix name separator.
 	 */
@@ -54,95 +48,41 @@ public class FactionConfiguration {
 	 */
 	public Integer formationAmount;
 	
-	/**
-	 * Rank assigned to joined members.
-	 */
-	public String factionDefaultRank;
-
-	/**
-	 * Rank assigned to faction owner.
-	 */
-	public String factionOwnerRank;
-
-	/**
-	 * Faction levels per active players.
-	 */
-	public TwoPointFunction levelsPerActivePlayers;
 	
-	// Initialization:
-	/**
-	 * Used by gson.
-	 */
-	public FactionConfiguration() {
-		
-	}
 	
+	// Initialisation:
 	/**
-	 * Goes trough all the fields and makes sure everything has been set after gson load.
-	 * If not, it fills the field with defaults.
+	 * Fixes all problematic fields.
 	 * 
-	 * @return true if everything was correct.
 	 */
-	public boolean complete() {
+	public void complete() {
 		
 		
-		boolean integrity = true;
+		if(definition == null){
+			SagaLogger.nullField(getClass(), "definition");
+			definition = FactionDefinition.defaultDefinition();
+		}
+		definition.complete();
 		
 		if(factionOnlyPvp == null){
-			SagaLogger.severe(getClass(), "failed to initialize factionOnlyPvp field");
+			SagaLogger.nullField(getClass(), "factionOnlyPvp");
 			factionOnlyPvp = true;
-			integrity=false;
-		}
-		
-		if(pvpFactionOnlyMessage == null){
-			SagaLogger.severe(getClass(), "failed to initialize pvpFactionOnlyMessage field");
-			pvpFactionOnlyMessage = "Only factions can take part in pvp.";
-			integrity=false;
 		}
 		
 		if(prefixNameSeparator == null){
-			SagaLogger.severe(getClass(), "failed to initialize prefixNameSeparator field");
+			SagaLogger.nullField(getClass(), "prefixNameSeparator");
 			prefixNameSeparator = "-";
-			integrity=false;
 		}
 		
 		if(formationAmount == null){
-			SagaLogger.severe(getClass(), "formationAmount field failed to initialize");
+			SagaLogger.nullField(getClass(), "formationAmount");
 			formationAmount = 3;
-			integrity=false;
 		}
 		
-		if(factionDefinition == null){
-			SagaLogger.severe(getClass(), "factionDefinition field not initialized");
-			factionDefinition = FactionDefinition.defaultDefinition();
-			integrity=false;
+		if(definition == null){
+			SagaLogger.nullField(getClass(), "definition");
+			definition = FactionDefinition.defaultDefinition();
 		}
-		
-		if(factionDefaultRank == null){
-			SagaLogger.severe(getClass(), "factionDefaultRank field not initialized");
-			factionDefaultRank = "novice";
-			integrity=false;
-		}
-		
-		if(factionOwnerRank == null){
-			SagaLogger.severe(getClass(), "factionDefaultRank field not initialized");
-			factionDefaultRank = "novice";
-			integrity=false;
-		}
-		
-		if(factionOwnerRank == null){
-			SagaLogger.severe(getClass(), "factionOwnerRank field not initialized");
-			factionOwnerRank = "grandmaster";
-			integrity=false;
-		}
-		
-		if(levelsPerActivePlayers == null){
-			SagaLogger.severe(getClass(), "levelsPerActivePlayers field not initialized");
-			levelsPerActivePlayers = new TwoPointFunction(1.0);
-			integrity=false;
-		}
-		
-		return integrity;
 		
 		
 	}
