@@ -35,7 +35,7 @@ import com.google.gson.JsonParseException;
  * @author andf
  *
  */
-public class SagaFaction implements SecondTicker{
+public class Faction implements SecondTicker{
 
 	
 	/**
@@ -147,7 +147,7 @@ public class SagaFaction implements SecondTicker{
 	 * Used by gson.
 	 * 
 	 */
-	private SagaFaction() {
+	private Faction() {
 	}
 	
 	/**
@@ -156,7 +156,7 @@ public class SagaFaction implements SecondTicker{
 	 * @param factionId faction ID
 	 * @param factionName faction name
 	 */
-	public SagaFaction(Integer factionId, String factionName) {
+	public Faction(Integer factionId, String factionName) {
 		
 		
 		this.id = factionId;
@@ -358,11 +358,11 @@ public class SagaFaction implements SecondTicker{
 	 * @param owner owner
 	 * @return
 	 */
-	public static SagaFaction create(String factionName, SagaPlayer owner) {
+	public static Faction create(String factionName, SagaPlayer owner) {
 
 		
 		// Create:
-		SagaFaction faction = new SagaFaction(FactionManager.manager().getUnusedFactoinId(), factionName);
+		Faction faction = new Faction(FactionManager.manager().getUnusedFactoinId(), factionName);
 		faction.complete();
 		
 		// Log:
@@ -984,12 +984,12 @@ public class SagaFaction implements SecondTicker{
 	/**
 	 * Checks if the faction is an ally.
 	 * 
-	 * @param sagaFaction saga faction
+	 * @param faction saga faction
 	 * @return true if ally
 	 */
-	public boolean isAlly(SagaFaction sagaFaction) {
+	public boolean isAlly(Faction faction) {
 		
-		return allies.contains(sagaFaction.getId());
+		return allies.contains(faction.getId());
 		
 	}
 	
@@ -1007,7 +1007,7 @@ public class SagaFaction implements SecondTicker{
 	 * 
 	 * @return the ally factions
 	 */
-	public Collection<SagaFaction> getAllyFactions() {
+	public Collection<Faction> getAllyFactions() {
 		
 		return FactionManager.manager().getFactions(getAllies());
 		
@@ -1595,31 +1595,31 @@ public class SagaFaction implements SecondTicker{
 	 * @param id faction ID in String form
 	 * @return saga faction
 	 */
-	public static SagaFaction load(String id) {
+	public static Faction load(String id) {
 
 		
 		// Load:
-		SagaFaction config;
+		Faction config;
 		try {
 			
-			config = WriterReader.read(Directory.FACTION_DATA, id, SagaFaction.class);
+			config = WriterReader.read(Directory.FACTION_DATA, id, Faction.class);
 			
 		} catch (FileNotFoundException e) {
 			
-			SagaLogger.info(SagaFaction.class, "missing data for " + id + " ID");
-			config = new SagaFaction();
+			SagaLogger.info(Faction.class, "missing data for " + id + " ID");
+			config = new Faction();
 			
 		} catch (IOException e) {
 			
-			SagaLogger.severe(SagaFaction.class, "failed to read data");
-			config = new SagaFaction();
+			SagaLogger.severe(Faction.class, "failed to read data");
+			config = new Faction();
 			config.disableSaving();
 			
 		} catch (JsonParseException e) {
 			
-			SagaLogger.severe(SagaFaction.class, "failed to parse data");
+			SagaLogger.severe(Faction.class, "failed to parse data");
 			SagaLogger.info("Parse message: " + e.getMessage());
-			config = new SagaFaction();
+			config = new Faction();
 			config.disableSaving();
 			
 		}
@@ -1724,8 +1724,8 @@ public class SagaFaction implements SecondTicker{
 
 		
 		// Only when other faction member is killed:
-		SagaFaction attackerFaction = attacker.getFaction();
-		SagaFaction defenderFaction = defender.getFaction();
+		Faction attackerFaction = attacker.getFaction();
+		Faction defenderFaction = defender.getFaction();
 		
 		if(!(attackerFaction != null && attackerFaction == this && defenderFaction != attackerFaction)) return;
 		

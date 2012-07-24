@@ -4,7 +4,7 @@ package org.saga.player;
 import org.saga.SagaLogger;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
-import org.saga.factions.SagaFaction.FactionPermission;
+import org.saga.factions.Faction.FactionPermission;
 import org.saga.settlements.Settlement.SettlementPermission;
 
 public class Proficiency {

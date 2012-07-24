@@ -9,7 +9,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.saga.SagaLogger;
 import org.saga.chunkGroups.SagaChunk.ChunkSide;
-import org.saga.factions.SagaFaction;
+import org.saga.factions.Faction;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
@@ -47,9 +47,9 @@ public class ChunkGroupManager {
 	/**
 	 * Registers a faction.
 	 * 
-	 * @param sagaFaction saga faction
+	 * @param faction saga faction
 	 */
-	public void factionLoaded(SagaFaction sagaFaction) {
+	public void factionLoaded(Faction faction) {
 
 ////		
 ////		// Get all chunk group IDs:
@@ -85,7 +85,7 @@ public class ChunkGroupManager {
 	 * 
 	 * @param sagaPlayer saga player
 	 */
-	public void factionUnloaded(SagaFaction sagaFaction) {
+	public void factionUnloaded(Faction faction) {
 
 //
 //		// Get all chunk group IDs:

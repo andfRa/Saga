@@ -31,7 +31,7 @@ import org.saga.chunkGroups.ChunkGroup;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.FactionConfiguration;
-import org.saga.factions.SagaFaction;
+import org.saga.factions.Faction;
 import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaEventHandler;
 import org.saga.player.GuardianRune;
@@ -248,16 +248,16 @@ public class PlayerListener implements Listener {
     	}
     	
     	// No faction or not formed yet:
-    	SagaFaction sagaFaction = sagaPlayer.getFaction();
-    	if(sagaFaction == null || !sagaFaction.isFormed()) return;
+    	Faction faction = sagaPlayer.getFaction();
+    	if(faction == null || !faction.isFormed()) return;
     	
-    	ChatColor primaryColor = sagaFaction.getColour1();
-    	ChatColor secondaryColor = sagaFaction.getColour2();
+    	ChatColor primaryColor = faction.getColour1();
+    	ChatColor secondaryColor = faction.getColour2();
     	ChatColor normalColor = ChatColor.WHITE;
     	
     	String formatString = event.getFormat();
     	
-    	formatString = formatString.replace("<", "<" + primaryColor + sagaFaction.getName() + FactionConfiguration.config().prefixNameSeparator + secondaryColor);
+    	formatString = formatString.replace("<", "<" + primaryColor + faction.getName() + FactionConfiguration.config().prefixNameSeparator + secondaryColor);
     	formatString = formatString.replace(">", normalColor.toString() + ">");
     	
     	try {

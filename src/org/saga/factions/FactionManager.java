@@ -34,7 +34,7 @@ public class FactionManager {
 	/**
 	 * Factions.
 	 */
-	private Hashtable<Integer, SagaFaction> factions = new Hashtable<Integer, SagaFaction>();
+	private Hashtable<Integer, Faction> factions = new Hashtable<Integer, Faction>();
 	
 
 	// Initialization:
@@ -65,7 +65,7 @@ public class FactionManager {
 		}
 
 		// Retrieve the faction:
-		SagaFaction faction = factions.get(factionId);
+		Faction faction = factions.get(factionId);
 		
 		// No longer exists:
 		if(faction == null){
@@ -95,7 +95,7 @@ public class FactionManager {
 
 
 		// Retrieve the faction:
-		SagaFaction faction = sagaPlayer.getFaction();
+		Faction faction = sagaPlayer.getFaction();
 
 		// No longer exists:
 		if(faction == null){
@@ -116,7 +116,7 @@ public class FactionManager {
 	 * @param factionId faction ID
 	 * @return saga faction, null if not found
 	 */
-	public SagaFaction getFaction(Integer factionId) {
+	public Faction getFaction(Integer factionId) {
 
 		return factions.get(factionId);
 		
@@ -128,14 +128,14 @@ public class FactionManager {
 	 * @param ids faction IDs
 	 * @return saga factions, empty if none
 	 */
-	public ArrayList<SagaFaction> getFactions(Collection<Integer> ids) {
+	public ArrayList<Faction> getFactions(Collection<Integer> ids) {
 
 		
-		ArrayList<SagaFaction> factions = new ArrayList<SagaFaction>();
+		ArrayList<Faction> factions = new ArrayList<Faction>();
 		
 		for (Integer id : ids) {
 			
-			SagaFaction faction = getFaction(id);
+			Faction faction = getFaction(id);
 			
 			if(faction != null) factions.add(faction);
 			
@@ -151,7 +151,7 @@ public class FactionManager {
      * @param name name
      * @return saga faction. null if not found
      */
-    public SagaFaction getFaction(String name) {
+    public Faction getFaction(String name) {
 
     	
         Iterator<Integer> ids = factions.keySet().iterator();
@@ -160,7 +160,7 @@ public class FactionManager {
 
             Integer id = ids.next();
 
-            SagaFaction faction = factions.get(id);
+            Faction faction = factions.get(id);
 
             if ( faction.getName().equals(name) ) {
                 return faction;
@@ -174,17 +174,17 @@ public class FactionManager {
     }
 	
 	
-	// SagaFaction methods:
+	// Faction methods:
 	/**
 	 * Adds a faction.
 	 * 
 	 * @param faction
 	 */
-	void addFaction(SagaFaction faction) {
+	void addFaction(Faction faction) {
 	
 		
 		// Add:
-		SagaFaction oldFaction = factions.put(faction.getId(), faction);
+		Faction oldFaction = factions.put(faction.getId(), faction);
 		if(oldFaction != null){
 			SagaLogger.severe(getClass(), "added an already existing faction " + oldFaction + " to the faction list");
 		}
@@ -200,7 +200,7 @@ public class FactionManager {
 	 * 
 	 * @param faction
 	 */
-	void removeFaction(SagaFaction faction) {
+	void removeFaction(Faction faction) {
 		
 		
 		// Remove:
@@ -252,7 +252,7 @@ public class FactionManager {
 		
 		for (Integer id : ids) {
 			
-			SagaFaction faction = getFaction(id);
+			Faction faction = getFaction(id);
 			
 			if(faction != null) factions.add(faction.getName());
 			
@@ -279,7 +279,7 @@ public class FactionManager {
 		// Load factions:
 		String[] ids = WriterReader.getAllIds(Directory.FACTION_DATA);
 		for (int i = 0; i < ids.length; i++) {
-			SagaFaction element = SagaFaction.load(ids[i]);
+			Faction element = Faction.load(ids[i]);
 			// Ignore all invalid IDs:
 			if(element.getId() < 0){
 				SagaLogger.severe(FactionManager.class, "can't load " + element + " faction, because it has an invalid ID");
@@ -305,9 +305,9 @@ public class FactionManager {
 		SagaLogger.info("Saving factions.");
 
 		// Save factions:
-		Collection<SagaFaction> factions = manager().factions.values();
-		for (SagaFaction sagaFaction : factions) {
-			sagaFaction.save();
+		Collection<Faction> factions = manager().factions.values();
+		for (Faction faction : factions) {
+			faction.save();
 		}
 		
 		

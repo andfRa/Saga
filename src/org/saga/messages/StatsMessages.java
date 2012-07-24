@@ -12,7 +12,7 @@ import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.factions.FactionManager;
-import org.saga.factions.SagaFaction;
+import org.saga.factions.Faction;
 import org.saga.messages.PlayerMessages.ColorCircle;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
@@ -292,10 +292,10 @@ public class StatsMessages {
     	// Factions:
     	table.addLine(GeneralMessages.columnTitle("faction invites"));
     	
-    	ArrayList<SagaFaction> factions = getFactions(sagaPlayer.getFactionInvites());
+    	ArrayList<Faction> factions = getFactions(sagaPlayer.getFactionInvites());
     	
-    	for (SagaFaction sagaFaction : factions) {
-			table.addLine(sagaFaction.getName());
+    	for (Faction faction : factions) {
+			table.addLine(faction.getName());
 		}
     	
     	if(factions.size() == 0){
@@ -322,16 +322,16 @@ public class StatsMessages {
 		
 	}
 	
-	private static ArrayList<SagaFaction> getFactions(ArrayList<Integer> ids) {
+	private static ArrayList<Faction> getFactions(ArrayList<Integer> ids) {
 
 
 		// Faction invites:
-		ArrayList<SagaFaction> factions = new ArrayList<SagaFaction>();
+		ArrayList<Faction> factions = new ArrayList<Faction>();
 		if(ids.size() > 0){
 			
 			for (int i = 0; i < ids.size(); i++) {
 			
-				SagaFaction faction = FactionManager.manager().getFaction(ids.get(i));
+				Faction faction = FactionManager.manager().getFaction(ids.get(i));
 				if( faction != null ){
 					factions.add(faction);
 				}else{

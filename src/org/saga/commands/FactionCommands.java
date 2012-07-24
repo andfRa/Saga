@@ -10,7 +10,7 @@ import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.factions.FactionManager;
-import org.saga.factions.SagaFaction;
+import org.saga.factions.Faction;
 import org.saga.messages.ChunkGroupMessages;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.FactionMessages;
@@ -77,7 +77,7 @@ public class FactionCommands {
 	    	}
 	    	
 	    	// Create faction:
-	    	SagaFaction faction = SagaFaction.create(name, sagaPlayer);
+	    	Faction faction = Faction.create(name, sagaPlayer);
 	    	
 	    	// Broadcast:
 	    	sagaPlayer.message(FactionMessages.created(faction));
@@ -97,7 +97,7 @@ public class FactionCommands {
 	public static void invite(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
-		SagaFaction selectedFaction = null;
+		Faction selectedFaction = null;
 		String playerName = null;
 		
 		// Arguments:
@@ -175,7 +175,7 @@ public class FactionCommands {
 	public static void accept(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-		SagaFaction selectedFaction = null;
+		Faction selectedFaction = null;
 		
 		// Part of a faction:
 		if(sagaPlayer.getFaction() != null){
@@ -194,7 +194,7 @@ public class FactionCommands {
 		if(args.argsLength() == 1){
 			
 			for (int i = 0; i < invitationIds.size(); i++) {
-				SagaFaction faction = FactionManager.manager().getFaction(invitationIds.get(i));
+				Faction faction = FactionManager.manager().getFaction(invitationIds.get(i));
 				if( faction != null && faction.getName().equals(args.getString(0)) ){
 					selectedFaction = faction;
 					break;
@@ -280,7 +280,7 @@ public class FactionCommands {
 	public static void kick(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
-		SagaFaction selectedFaction = sagaPlayer.getFaction();
+		Faction selectedFaction = sagaPlayer.getFaction();
 		String playerName = null;
 
 		// Arguments:
@@ -391,7 +391,7 @@ public class FactionCommands {
 		
 
 		// Part of a faction:
-		SagaFaction selectedFaction = sagaPlayer.getFaction();
+		Faction selectedFaction = sagaPlayer.getFaction();
 		if(selectedFaction == null){
 			
 			if(sagaPlayer.hasFaction()){
@@ -450,7 +450,7 @@ public class FactionCommands {
 
 		
 		Integer page = null;
-		SagaFaction selectedFaction = null;
+		Faction selectedFaction = null;
 		
 		String sPage = null;
 		String factionName = null;
@@ -534,7 +534,7 @@ public class FactionCommands {
 	public static void list(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 	
-	SagaFaction selectedFaction = null;
+	Faction selectedFaction = null;
 
 	// Arguments:
 	if(args.argsLength() == 1){
@@ -580,7 +580,7 @@ public class FactionCommands {
 		String rankName = null;
 		
 		// Part of a faction:
-		SagaFaction selectedFaction = sagaPlayer.getFaction();
+		Faction selectedFaction = sagaPlayer.getFaction();
 		if(selectedFaction == null){
 			sagaPlayer.message(FactionMessages.noFaction());
 			return;
@@ -688,7 +688,7 @@ public class FactionCommands {
 	public static void declareOwner(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
-		SagaFaction selectedFaction = null;
+		Faction selectedFaction = null;
 		String targetName = null;
 
 		// Arguments:
@@ -760,7 +760,7 @@ public class FactionCommands {
 	public static void rename(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 	    	
 		
-		SagaFaction selectedFaction = null;
+		Faction selectedFaction = null;
 		String name = null;
 		
 		// Arguments:
@@ -855,8 +855,8 @@ public class FactionCommands {
 	public static void allianceRequest(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 	    	
 		
-		SagaFaction selectedFaction = null;
-		SagaFaction targetFaction = null;
+		Faction selectedFaction = null;
+		Faction targetFaction = null;
 		
 		// Arguments:
 		if(args.argsLength() == 2){
@@ -943,8 +943,8 @@ public class FactionCommands {
 	public static void allianceAccept(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 	    	
 		
-		SagaFaction selectedFaction = null;
-		SagaFaction targetFaction = null;
+		Faction selectedFaction = null;
+		Faction targetFaction = null;
 		
 		// Arguments:
 		if(args.argsLength() == 2){
@@ -957,10 +957,10 @@ public class FactionCommands {
 				return;
 			}
 			
-			ArrayList<SagaFaction> targetFactions = FactionManager.manager().getFactions(selectedFaction.getAllyInvites());
+			ArrayList<Faction> targetFactions = FactionManager.manager().getFactions(selectedFaction.getAllyInvites());
 		
 			String targetName = args.getString(1).replace(SagaMessages.spaceSymbol, " ");
-			for (SagaFaction faction : targetFactions) {
+			for (Faction faction : targetFactions) {
 				
 				if(faction.getName().equalsIgnoreCase(targetName)){
 					targetFaction = faction;
@@ -985,10 +985,10 @@ public class FactionCommands {
 				return;
 			}
 			
-			ArrayList<SagaFaction> targetFactions = FactionManager.manager().getFactions(selectedFaction.getAllyInvites());
+			ArrayList<Faction> targetFactions = FactionManager.manager().getFactions(selectedFaction.getAllyInvites());
 		
 			String targetName = args.getString(0).replace(SagaMessages.spaceSymbol, " ");
-			for (SagaFaction faction : targetFactions) {
+			for (Faction faction : targetFactions) {
 				
 				if(faction.getName().equalsIgnoreCase(targetName)){
 					targetFaction = faction;
@@ -1013,7 +1013,7 @@ public class FactionCommands {
 				return;
 			}
 			
-			ArrayList<SagaFaction> targetFactions = FactionManager.manager().getFactions(selectedFaction.getAllyInvites());
+			ArrayList<Faction> targetFactions = FactionManager.manager().getFactions(selectedFaction.getAllyInvites());
 			
 			if(targetFactions.size() == 0){
 				sagaPlayer.message(FactionMessages.noAllianceRequest(selectedFaction));
@@ -1063,8 +1063,8 @@ public class FactionCommands {
 	public static void allianceDecline(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 	    	
 		
-		SagaFaction selectedFaction = null;
-		SagaFaction targetFaction = null;
+		Faction selectedFaction = null;
+		Faction targetFaction = null;
 		
 		// Arguments:
 		if(args.argsLength() == 2){
@@ -1077,10 +1077,10 @@ public class FactionCommands {
 				return;
 			}
 			
-			ArrayList<SagaFaction> targetFactions = FactionManager.manager().getFactions(selectedFaction.getAllyInvites());
+			ArrayList<Faction> targetFactions = FactionManager.manager().getFactions(selectedFaction.getAllyInvites());
 		
 			String targetName = args.getString(1).replace(SagaMessages.spaceSymbol, " ");
-			for (SagaFaction faction : targetFactions) {
+			for (Faction faction : targetFactions) {
 				
 				if(faction.getName().equalsIgnoreCase(targetName)){
 					targetFaction = faction;
@@ -1105,10 +1105,10 @@ public class FactionCommands {
 				return;
 			}
 			
-			ArrayList<SagaFaction> targetFactions = FactionManager.manager().getFactions(selectedFaction.getAllyInvites());
+			ArrayList<Faction> targetFactions = FactionManager.manager().getFactions(selectedFaction.getAllyInvites());
 		
 			String targetName = args.getString(0).replace(SagaMessages.spaceSymbol, " ");
-			for (SagaFaction faction : targetFactions) {
+			for (Faction faction : targetFactions) {
 				
 				if(faction.getName().equalsIgnoreCase(targetName)){
 					targetFaction = faction;
@@ -1133,7 +1133,7 @@ public class FactionCommands {
 				return;
 			}
 			
-			ArrayList<SagaFaction> targetFactions = FactionManager.manager().getFactions(selectedFaction.getAllyInvites());
+			ArrayList<Faction> targetFactions = FactionManager.manager().getFactions(selectedFaction.getAllyInvites());
 			
 			if(targetFactions.size() == 0){
 				sagaPlayer.message(FactionMessages.noAllianceRequest(selectedFaction));
@@ -1171,8 +1171,8 @@ public class FactionCommands {
 	public static void breakAlliance(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 	    	
 		
-		SagaFaction selectedFaction = null;
-		SagaFaction targetFaction = null;
+		Faction selectedFaction = null;
+		Faction targetFaction = null;
 		
 		// Arguments:
 		if(args.argsLength() == 2){
@@ -1249,7 +1249,7 @@ public class FactionCommands {
 		
 		
 		// Part of a faction:
-		SagaFaction selectedFaction = sagaPlayer.getFaction();
+		Faction selectedFaction = sagaPlayer.getFaction();
 		if(selectedFaction == null){
 			sagaPlayer.message(FactionMessages.noFaction());
 			return;
@@ -1309,7 +1309,7 @@ public class FactionCommands {
 		
 		
 		// Part of a faction:
-		SagaFaction selectedFaction = sagaPlayer.getFaction();
+		Faction selectedFaction = sagaPlayer.getFaction();
 		if(selectedFaction == null){
 			sagaPlayer.message(FactionMessages.noFaction());
 			return;
@@ -1366,7 +1366,7 @@ public class FactionCommands {
 	public static void chat(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 	
-	SagaFaction selectedFaction = null;
+	Faction selectedFaction = null;
 	
 	// Faction:
 	selectedFaction = sagaPlayer.getFaction();
@@ -1390,8 +1390,8 @@ public class FactionCommands {
 	selectedFaction.broadcast(message);
 	
 	// Inform allies:
-	Collection<SagaFaction> allyFactions = selectedFaction.getAllyFactions();
-	for (SagaFaction allyFaction : allyFactions) {
+	Collection<Faction> allyFactions = selectedFaction.getAllyFactions();
+	for (Faction allyFaction : allyFactions) {
 		allyFaction.broadcast(message);
 	}
 	
@@ -1413,7 +1413,7 @@ public class FactionCommands {
 		
 
 		// Part of a faction:
-		SagaFaction selectedFaction = sagaPlayer.getFaction();
+		Faction selectedFaction = sagaPlayer.getFaction();
 		if(selectedFaction == null){
 			sagaPlayer.message(FactionMessages.noFaction());
 			return;
@@ -1466,7 +1466,7 @@ public class FactionCommands {
 		
 
 		// Part of a faction:
-		SagaFaction selectedFaction = sagaPlayer.getFaction();
+		Faction selectedFaction = sagaPlayer.getFaction();
 		if(selectedFaction == null){
 			sagaPlayer.message(FactionMessages.noFaction());
 			return;
@@ -1557,7 +1557,7 @@ public class FactionCommands {
 	public static void disband(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
-		SagaFaction selectedFaction = null;
+		Faction selectedFaction = null;
 		
 		// Arguments:
 		if(args.argsLength() == 1){

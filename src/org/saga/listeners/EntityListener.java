@@ -22,7 +22,7 @@ import org.saga.SagaLogger;
 import org.saga.chunkGroups.ChunkGroupManager;
 import org.saga.chunkGroups.SagaChunk;
 import org.saga.config.BalanceConfiguration;
-import org.saga.factions.SagaFaction;
+import org.saga.factions.Faction;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDeathEvent;
 import org.saga.listeners.events.SagaEventHandler;
@@ -167,8 +167,8 @@ public class EntityListener implements Listener{
 			if(sagaChunk != null) sagaChunk.onPvpKill(sagaAttacker, sagaDead);
 			
 			// Forward to faction:
-			SagaFaction attackerFaction = sagaAttacker.getFaction();
-			SagaFaction deadFaction = sagaDead.getFaction();
+			Faction attackerFaction = sagaAttacker.getFaction();
+			Faction deadFaction = sagaDead.getFaction();
 			if(attackerFaction != null) attackerFaction.onPvpKill(sagaAttacker, sagaDead);
 			if(deadFaction != null && deadFaction != attackerFaction) deadFaction.onPvpKill(sagaAttacker, sagaDead);
 			

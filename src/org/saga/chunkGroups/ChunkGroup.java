@@ -27,7 +27,7 @@ import org.saga.config.BalanceConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
-import org.saga.factions.SagaFaction;
+import org.saga.factions.Faction;
 import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.listeners.events.SagaEntityDamageEvent;
@@ -79,7 +79,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 	/**
 	 * Registered factions.
 	 */
-	transient private ArrayList<SagaFaction> registeredFactions = new ArrayList<SagaFaction>();
+	transient private ArrayList<Faction> registeredFactions = new ArrayList<Faction>();
 	
 	/**
 	 * Chunk group owners.
@@ -207,7 +207,7 @@ public class ChunkGroup extends SagaCustomSerialization{
 		
 		// Transient:
 		registeredPlayers = new ArrayList<SagaPlayer>();
-		registeredFactions = new ArrayList<SagaFaction>();
+		registeredFactions = new ArrayList<Faction>();
 		isSavingEnabled = true;
 	
 		if(groupChunks == null){
@@ -788,19 +788,19 @@ public class ChunkGroup extends SagaCustomSerialization{
 	/**
 	 * Registers a faction.
 	 * 
-	 * @param sagaFaction saga faction
+	 * @param faction saga faction
 	 */
-	void registerFaction(SagaFaction sagaFaction) {
+	void registerFaction(Faction faction) {
 
 		
 		// Check list:
-		if(registeredFactions.contains(sagaFaction)){
+		if(registeredFactions.contains(faction)){
 			SagaLogger.severe(this, "tried to register an already registered faction");
 			return;
 		}
 		
 		// Register faction:
-		registeredFactions.add(sagaFaction);
+		registeredFactions.add(faction);
 
 		
 	}
@@ -811,19 +811,19 @@ public class ChunkGroup extends SagaCustomSerialization{
 	 * Used by SagaPlayer to create a connection with the faction.
 	 * Should not be used.
 	 * 
-	 * @param sagaFaction saga faction
+	 * @param faction saga faction
 	 */
-	void unregisterFaction(SagaFaction sagaFaction) {
+	void unregisterFaction(Faction faction) {
 
 		
 		// Check list:
-		if(!registeredFactions.contains(sagaFaction)){
+		if(!registeredFactions.contains(faction)){
 			SagaLogger.severe(this, "tried to unregister a non-registered faction");
 			return;
 		}
 
 		// Unregister faction:
-		registeredFactions.remove(sagaFaction);
+		registeredFactions.remove(faction);
 		
 		
 	}
@@ -1067,9 +1067,9 @@ public class ChunkGroup extends SagaCustomSerialization{
 		boolean iMember = hasMember(sagaPlayer.getName());
 		if(iMember) return true;
 		
-		ArrayList<SagaFaction> factions = getRegisteredFactions();
-		for (SagaFaction sagaFaction : factions) {
-			if(sagaFaction.isMember(sagaPlayer.getName())) return true;
+		ArrayList<Faction> factions = getRegisteredFactions();
+		for (Faction faction : factions) {
+			if(faction.isMember(sagaPlayer.getName())) return true;
 		}
 		return false;
 		
@@ -1162,18 +1162,18 @@ public class ChunkGroup extends SagaCustomSerialization{
 	 * 
 	 * @return the registered factions
 	 */
-	public ArrayList<SagaFaction> getRegisteredFactions() {
-		return new ArrayList<SagaFaction>(registeredFactions);
+	public ArrayList<Faction> getRegisteredFactions() {
+		return new ArrayList<Faction>(registeredFactions);
 	}
 
 	/**
 	 * Checks if the faction is registered.
 	 * 
-	 * @param sagaFaction saga faction
+	 * @param faction saga faction
 	 * @return true if registered
 	 */
-	public boolean isFactionRegistered(SagaFaction sagaFaction) {
-		return registeredFactions.contains(sagaFaction);
+	public boolean isFactionRegistered(Faction faction) {
+		return registeredFactions.contains(faction);
 	}
 
 	/**

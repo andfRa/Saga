@@ -39,7 +39,7 @@ import org.saga.economy.InventoryUtil;
 import org.saga.economy.TradeDeal;
 import org.saga.economy.Trader;
 import org.saga.exceptions.InvalidAbilityException;
-import org.saga.factions.SagaFaction;
+import org.saga.factions.Faction;
 import org.saga.messages.GeneralMessages.CustomColour;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.StatsMessages;
@@ -117,7 +117,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	/**
 	 * Registered factions.
 	 */
-	transient private SagaFaction faction;
+	transient private Faction faction;
 	
 	
 	// Chunk group:
@@ -839,7 +839,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * 
 	 * @param saga saga faction
 	 */
-	public void registerFaction(SagaFaction saga) {
+	public void registerFaction(Faction saga) {
 		
 		
 		// Check if already registered:
@@ -859,7 +859,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * 
 	 * @param faction saga faction
 	 */
-	public void unregisterFaction(SagaFaction faction) {
+	public void unregisterFaction(Faction faction) {
 		
 		
 		// Check if not registered:
@@ -894,17 +894,17 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * 
 	 * @return players faction, null if none
 	 */
-	public SagaFaction getFaction() {
+	public Faction getFaction() {
 		return faction;
 	}
 
 	/**
 	 * Sets a faction ID for the player.
 	 * 
-	 * @param sagaFaction saga faction
+	 * @param faction saga faction
 	 */
-	public void setFactionId(SagaFaction sagaFaction) {
-		factionId = sagaFaction.getId();
+	public void setFactionId(Faction faction) {
+		factionId = faction.getId();
 	}
 
 	/**
@@ -923,7 +923,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * @param faction faction
 	 * @return true if part of the faction
 	 */
-	public boolean hasFaction(SagaFaction faction) {
+	public boolean hasFaction(Faction faction) {
 		
 		return faction.equals(faction.getId());
 		

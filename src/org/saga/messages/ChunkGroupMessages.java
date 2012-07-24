@@ -13,7 +13,7 @@ import org.saga.chunkGroups.SagaChunk;
 import org.saga.commands.ChunkGroupCommands;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
-import org.saga.factions.SagaFaction;
+import org.saga.factions.Faction;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.messages.PlayerMessages.ColorCircle;
 import org.saga.player.Proficiency.ProficiencyType;
@@ -370,11 +370,11 @@ public class ChunkGroupMessages {
 		return negative + "You don't have an invitation to " + name + " settlement.";
 	}
 	
-	public static String factionNoInvites(SagaFaction sagaFaction) {
+	public static String factionNoInvites(Faction faction) {
 		return negative + "The faction doesn't have a settlement invitation.";
 	}
 	
-	public static String factionNoInvites(SagaFaction sagaFaction, String name) {
+	public static String factionNoInvites(Faction faction, String name) {
 		return negative + "The faction doesn't have an invitation to " + name + " settlement.";
 	}
 	
