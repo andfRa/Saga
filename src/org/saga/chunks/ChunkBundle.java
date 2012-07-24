@@ -767,6 +767,13 @@ public class ChunkBundle extends SagaCustomSerialization{
 		
 		buildingScores.put(bldgName, score);
 		
+		// Update players:
+		ArrayList<SagaPlayer> members = getRegisteredMembers();
+		
+		for (SagaPlayer sagaPlayer : members) {
+			sagaPlayer.update();
+		}
+		
 	}
 	
 	/**
@@ -777,6 +784,13 @@ public class ChunkBundle extends SagaCustomSerialization{
 	public void removeBuildingScore(String bldgName) {
 		
 		buildingScores.remove(bldgName);
+
+		// Update players:
+		ArrayList<SagaPlayer> members = getRegisteredMembers();
+
+		for (SagaPlayer sagaPlayer : members) {
+			sagaPlayer.update();
+		}
 		
 	}
 	

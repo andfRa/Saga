@@ -170,7 +170,8 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		// Ability upgrades:
 		book.addLine(
 			"Abilities can be upgraded by increasing attributes. " +
-			"Upgraded abilities are more efficient and have lower cooldown times."
+			"Upgraded abilities are more efficient and have lower cooldown times. " +
+			"Some abilities require certain buildings."
 		);
 		
 		book.addLine("");

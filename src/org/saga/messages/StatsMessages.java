@@ -2,6 +2,7 @@ package org.saga.messages;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 
 import org.bukkit.ChatColor;
@@ -11,11 +12,13 @@ import org.saga.chunks.ChunkBundle;
 import org.saga.chunks.ChunkBundleManager;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
+import org.saga.config.SettlementConfiguration;
 import org.saga.factions.FactionManager;
 import org.saga.factions.Faction;
 import org.saga.messages.PlayerMessages.ColorCircle;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
+import org.saga.utility.text.RomanNumeral;
 import org.saga.utility.text.StringTable;
 import org.saga.utility.text.TextUtil;
 
@@ -259,6 +262,7 @@ public class StatsMessages {
 		
 		StringBuffer result = new StringBuffer();
 		
+		// Attributes:
 		ArrayList<String> attributeNames = AttributeConfiguration.config().getAttributeNames();
 		
 		for (String attribute : attributeNames) {
@@ -269,6 +273,20 @@ public class StatsMessages {
 			if(result.length() > 0) result.append(", ");
 			
 			result.append(GeneralMessages.attrAbrev(attribute) + " " + reqScore);
+			
+		}
+		
+		// Buildings:
+		Collection<String> buildingNames = SettlementConfiguration.config().getBuildingNames();
+		
+		for (String building : buildingNames) {
+
+			Integer reqScore = ability.getBldgReq(building, abilityScore);
+			if(reqScore <= 0) continue;
+			
+			if(result.length() > 0) result.append(", ");
+			
+			result.append(building + " " + RomanNumeral.binaryToRoman(reqScore));
 			
 		}
 		
