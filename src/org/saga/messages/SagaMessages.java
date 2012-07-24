@@ -6,8 +6,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.saga.buildings.Building;
-import org.saga.chunkGroups.ChunkGroup;
-import org.saga.chunkGroups.SagaMap;
+import org.saga.chunks.ChunkBundle;
+import org.saga.chunks.SagaMap;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;
 import org.saga.utility.text.TextUtil;
@@ -58,8 +58,8 @@ public class SagaMessages {
 		return negative + "You don't have permission to do that.";
 	}
 	
-	public static String noPermission(ChunkGroup chunkGroup){
-		return negative + "You don't have permission to do that (" + chunkGroup.getName() + " settlement).";
+	public static String noPermission(ChunkBundle chunkBundle){
+		return negative + "You don't have permission to do that (" + chunkBundle.getName() + " settlement).";
 	}
 	
 	public static String noPermission(Building building){
@@ -70,8 +70,8 @@ public class SagaMessages {
 		return negative + "You don't have permission to do that (" + settlement.getName() + " settlement).";
 	}
 	
-	public static String noCommandPermission(ChunkGroup chunkGroup, String command){
-		return negative + "You don't have permission use " + command + " command (" + chunkGroup.getName() + " settlement).";
+	public static String noCommandPermission(ChunkBundle chunkBundle, String command){
+		return negative + "You don't have permission use " + command + " command (" + chunkBundle.getName() + " settlement).";
 	}
 	
 	

@@ -9,8 +9,8 @@ import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.inventory.ItemStack;
 import org.saga.SagaLogger;
-import org.saga.chunkGroups.ChunkGroupManager;
-import org.saga.chunkGroups.SagaChunk;
+import org.saga.chunks.ChunkBundleManager;
+import org.saga.chunks.SagaChunk;
 import org.saga.exceptions.InvalidLocationException;
 import org.saga.player.SagaPlayer;
 import org.saga.shape.BlockFilter;
@@ -177,7 +177,7 @@ public class StorageArea {
 		ArrayList<SagaChunk> sagaChunks = new ArrayList<SagaChunk>();
 		for (Chunk chunk : bukkitChunks) {
 			
-			sagaChunks.add(ChunkGroupManager.manager().getSagaChunk(chunk));
+			sagaChunks.add(ChunkBundleManager.manager().getSagaChunk(chunk));
 			
 		}
 		

@@ -27,9 +27,9 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
 import org.saga.SagaLogger;
-import org.saga.chunkGroups.ChunkGroup;
-import org.saga.chunkGroups.ChunkGroupManager;
-import org.saga.chunkGroups.SagaChunk;
+import org.saga.chunks.ChunkBundle;
+import org.saga.chunks.ChunkBundleManager;
+import org.saga.chunks.SagaChunk;
 import org.saga.config.FactionConfiguration;
 import org.saga.factions.Faction;
 import org.saga.listeners.events.SagaBuildEvent;
@@ -55,7 +55,7 @@ public class PlayerListener implements Listener {
 
     	// Get saga chunk:
     	Location location = event.getPlayer().getLocation();
-    	SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(location);
+    	SagaChunk sagaChunk = ChunkBundleManager.manager().getSagaChunk(location);
 
     	// Forward to chunk:
     	if(sagaChunk != null) sagaChunk.onPlayerCommandPreprocess(sagaPlayer, event);
@@ -88,7 +88,7 @@ public class PlayerListener implements Listener {
     	sagaPlayer.setPlayer(player);
     	
     	// Forward to chunk group:
-    	if(sagaPlayer.hasChunkGroup()) sagaPlayer.getChunkGroup().onMemberJoin(event, sagaPlayer);
+    	if(sagaPlayer.hasChunkBundle()) sagaPlayer.getChunkBundle().onMemberJoin(event, sagaPlayer);
     	
         
     }
@@ -106,7 +106,7 @@ public class PlayerListener implements Listener {
     	}
     	
     	// Forward to chunk group:
-    	if(sagaPlayer.getChunkGroup() != null) sagaPlayer.getChunkGroup().onMemberQuit(event, sagaPlayer);
+    	if(sagaPlayer.getChunkBundle() != null) sagaPlayer.getChunkBundle().onMemberQuit(event, sagaPlayer);
     	
     	// Unload player:
     	Saga.plugin().unloadSagaPlayer(player.getName());
@@ -134,10 +134,10 @@ public class PlayerListener implements Listener {
     	}
 
     	// Get chunk group:
-    	ChunkGroup chunkGroup = sagaPlayer.getChunkGroup();
+    	ChunkBundle chunkBundle = sagaPlayer.getChunkBundle();
     	
     	// Forward to chunk group:
-    	if(chunkGroup != null) chunkGroup.onMemberRespawn(sagaPlayer, event);
+    	if(chunkBundle != null) chunkBundle.onMemberRespawn(sagaPlayer, event);
 
     	// Restore rune:
 		if(!sagaPlayer.getGuardRune().isEmpty()){
@@ -203,7 +203,7 @@ public class PlayerListener implements Listener {
     	}else{
     		location = event.getPlayer().getLocation();
     	}
-    	SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
+    	SagaChunk sagaChunk = ChunkBundleManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
     	
     	// Invalid player:
     	if(sagaPlayer == null){
@@ -304,7 +304,7 @@ public class PlayerListener implements Listener {
     	if(x1 == x2 && y1 == y2 && z1 == z2) return;
     	
     	SagaChunk sagaChunk1 = sagaPlayer.lastSagaChunk;
-    	SagaChunk sagaChunk2 = ChunkGroupManager.manager().getSagaChunk(l2);
+    	SagaChunk sagaChunk2 = ChunkBundleManager.manager().getSagaChunk(l2);
     	
     	// No chunk change:
     	if(sagaChunk1 == sagaChunk2) return;

@@ -7,7 +7,7 @@ package org.saga.commands;
 
 import org.bukkit.Material;
 import org.saga.Saga;
-import org.saga.messages.ChunkGroupMessages;
+import org.saga.messages.SettlementMessages;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.StatisticsMessages;
 import org.saga.player.SagaPlayer;
@@ -127,7 +127,7 @@ public class StatisticsCommands {
         	try {
     			page = Integer.parseInt(args.getString(0));
     		} catch (NumberFormatException e) {
-    			sagaPlayer.message(ChunkGroupMessages.invalidPage(args.getString(0)));
+    			sagaPlayer.message(SettlementMessages.invalidPage(args.getString(0)));
     			return;
     		}
     		
@@ -205,7 +205,7 @@ public class StatisticsCommands {
         	try {
     			page = Integer.parseInt(args.getString(0));
     		} catch (NumberFormatException e) {
-    			sagaPlayer.message(ChunkGroupMessages.invalidPage(args.getString(0)));
+    			sagaPlayer.message(SettlementMessages.invalidPage(args.getString(0)));
     			return;
     		}
     		

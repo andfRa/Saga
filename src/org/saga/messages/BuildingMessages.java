@@ -10,7 +10,7 @@ import org.saga.buildings.Arena.ArenaPlayer;
 import org.saga.buildings.Building;
 import org.saga.buildings.TownSquare;
 import org.saga.buildings.TradingPost;
-import org.saga.chunkGroups.ChunkGroup;
+import org.saga.chunks.ChunkBundle;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
 import org.saga.economy.TradeDeal;
@@ -47,11 +47,11 @@ public class BuildingMessages {
 	
 
 	// Adding buildings:
-	public static String notOnClaimedLand(ChunkGroup chunkGroup) {
+	public static String notOnClaimedLand(ChunkBundle chunkBundle) {
 		return negative + "Buildings can only be on located on claimed land.";
 	}
 	
-	public static String oneBuildingAllowed(ChunkGroup chunkGroup) {
+	public static String oneBuildingAllowed(ChunkBundle chunkBundle) {
 		return negative + "A chunk of land can only have one building.";
 	}
 	
@@ -145,11 +145,11 @@ public class BuildingMessages {
 	public static String countdown(int count) {
 		
 		if(count == 0){
-			return ChunkGroupMessages.positive + "Fight!";
+			return SettlementMessages.positive + "Fight!";
 		}else if((count%2)==0){
-			return ChunkGroupMessages.normal1 + "" + count + ".";
+			return SettlementMessages.normal1 + "" + count + ".";
 		}else{
-			return ChunkGroupMessages.normal2 + "" + count + ".";
+			return SettlementMessages.normal2 + "" + count + ".";
 		}
 		
 	}
@@ -430,9 +430,9 @@ public class BuildingMessages {
 	
 	
 	// Town square:
-	public static String noTownSquare(ChunkGroup chunkGroup){
+	public static String noTownSquare(ChunkBundle chunkBundle){
 		
-		return BuildingMessages.negative + "" + chunkGroup.getName() + " deosen't have a " + TextUtil.className(TownSquare.class) + ".";
+		return BuildingMessages.negative + "" + chunkBundle.getName() + " deosen't have a " + TextUtil.className(TownSquare.class) + ".";
 		
 	}
 	
@@ -530,19 +530,19 @@ public class BuildingMessages {
 	
 	// Home:
 	public static String alreadyResident(String name) {
-		return ChunkGroupMessages.negative + name + " is already a resident.";
+		return SettlementMessages.negative + name + " is already a resident.";
 	}
 	
 	public static String notResident(String name) {
-		return ChunkGroupMessages.negative + name + " is not a resident.";
+		return SettlementMessages.negative + name + " is not a resident.";
 	}
 
 	public static String addedResident(String name) {
-		return ChunkGroupMessages.positive + "Added " + name + " to the resident list.";
+		return SettlementMessages.positive + "Added " + name + " to the resident list.";
 	}
 	
 	public static String removedResident(String name) {
-		return ChunkGroupMessages.positive + "Removed " + name + " from the resident list.";
+		return SettlementMessages.positive + "Removed " + name + " from the resident list.";
 	}
 
 	

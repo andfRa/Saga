@@ -22,9 +22,9 @@ import org.saga.buildings.signs.AttributeSign;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.BuildingSign.SignException;
 import org.saga.buildings.storage.StorageArea;
-import org.saga.chunkGroups.ChunkGroup;
-import org.saga.chunkGroups.ChunkGroupToggleable;
-import org.saga.chunkGroups.SagaChunk;
+import org.saga.chunks.ChunkBundle;
+import org.saga.chunks.ChunkBundleToggleable;
+import org.saga.chunks.SagaChunk;
 import org.saga.config.SettlementConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.exceptions.InvalidLocationException;
@@ -211,12 +211,12 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 * 
 	 * @return origin chunk group, null if not found
 	 */
-	public ChunkGroup getChunkGroup() {
+	public ChunkBundle getChunkBundle() {
 		
 		if(originChunk == null){
 			return null;
 		}
-		return originChunk.getChunkGroup();
+		return originChunk.getChunkBundle();
 		
 	}
 	
@@ -279,7 +279,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		}
 
 		// Permission
-		if(!getChunkGroup().hasPermission(sagaPlayer, SettlementPermission.BUILD_BUILDING)){
+		if(!getChunkBundle().hasPermission(sagaPlayer, SettlementPermission.BUILD_BUILDING)){
 			sagaPlayer.message(SagaMessages.noPermission(this));
 			return;
 		}
@@ -323,7 +323,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		if(buildingSign == null) return;
 
 		// Permission
-		if(!getChunkGroup().hasPermission(sagaPlayer, SettlementPermission.BUILD_BUILDING)){
+		if(!getChunkBundle().hasPermission(sagaPlayer, SettlementPermission.BUILD_BUILDING)){
 			sagaPlayer.message(SagaMessages.noPermission(this));
 			return;
 		}
@@ -811,7 +811,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		ArrayList<String> bldgNames = getDefinition().getRelatedBuildings();
 		
 		for (String bldgName : bldgNames) {
-			buildings.addAll(getChunkGroup().getBuildings(bldgName));
+			buildings.addAll(getChunkBundle().getBuildings(bldgName));
 		}
 		
 		// Withdraw from this building:
@@ -848,7 +848,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		ArrayList<String> bldgNames = getDefinition().getRelatedBuildings();
 		
 		for (String bldgName : bldgNames) {
-			buildings.addAll(getChunkGroup().getBuildings(bldgName));
+			buildings.addAll(getChunkBundle().getBuildings(bldgName));
 		}
 		
 		// Count for this building:
@@ -907,7 +907,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		
 		
 		// Permission:
-		if(!getChunkGroup().hasPermission(sagaPlayer, SettlementPermission.ACCESS_STORAGE)){
+		if(!getChunkBundle().hasPermission(sagaPlayer, SettlementPermission.ACCESS_STORAGE)){
 			sagaPlayer.message(SagaMessages.noPermission(this));
 			event.setCancelled(true);
 			event.setUseInteractedBlock(Result.DENY);
@@ -1189,19 +1189,19 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 
 		
 		// Add building build override:
-		if(getChunkGroup() != null && !getChunkGroup().hasPermission(event.getSagaPlayer(), SettlementPermission.BUILD_BUILDING)) event.addBuildOverride(BuildOverride.BUILDING_DENY);
+		if(getChunkBundle() != null && !getChunkBundle().hasPermission(event.getSagaPlayer(), SettlementPermission.BUILD_BUILDING)) event.addBuildOverride(BuildOverride.BUILDING_DENY);
 
 		// Storage area:
 		Block block = event.getBlock();
 		if(block != null && checkStorageArea(block)){
 			
 			// Storage area deny:
-			if(!getChunkGroup().hasPermission(event.getSagaPlayer(), SettlementPermission.ACCESS_STORAGE)){
+			if(!getChunkBundle().hasPermission(event.getSagaPlayer(), SettlementPermission.ACCESS_STORAGE)){
 				event.addBuildOverride(BuildOverride.STORAGE_AREA_DENY);
 			}
 			
 			// Free storage area:
-			if(getChunkGroup().isOptionEnabled(ChunkGroupToggleable.OPEN_STORAGE_AREAS)) event.addBuildOverride(BuildOverride.OPEN_STORAGE_AREA_ALLOW);				
+			if(getChunkBundle().isOptionEnabled(ChunkBundleToggleable.OPEN_STORAGE_AREAS)) event.addBuildOverride(BuildOverride.OPEN_STORAGE_AREA_ALLOW);				
 			
 			
 		}

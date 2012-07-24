@@ -19,8 +19,8 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.saga.Saga;
 import org.saga.SagaLogger;
-import org.saga.chunkGroups.ChunkGroupManager;
-import org.saga.chunkGroups.SagaChunk;
+import org.saga.chunks.ChunkBundleManager;
+import org.saga.chunks.SagaChunk;
 import org.saga.config.BalanceConfiguration;
 import org.saga.factions.Faction;
 import org.saga.listeners.events.SagaEntityDamageEvent;
@@ -104,7 +104,7 @@ public class EntityListener implements Listener{
 		}
 		
 		// Get saga chunk:
-		SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(event.getLocation());
+		SagaChunk sagaChunk = ChunkBundleManager.manager().getSagaChunk(event.getLocation());
 		
 		// Forward to saga chunk:
 		if(sagaChunk != null) sagaChunk.onEntityExplode(event);
@@ -117,7 +117,7 @@ public class EntityListener implements Listener{
 		
 
 		// Get saga chunk:
-		SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(event.getBlock().getLocation());
+		SagaChunk sagaChunk = ChunkBundleManager.manager().getSagaChunk(event.getBlock().getLocation());
 		
 		// Forward to saga chunk:
 		if(sagaChunk != null) sagaChunk.onEntityBlockForm(event);
@@ -137,7 +137,7 @@ public class EntityListener implements Listener{
     	}
 		
 		// Get saga chunk:
-		SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(event.getLocation());
+		SagaChunk sagaChunk = ChunkBundleManager.manager().getSagaChunk(event.getLocation());
 		
 		// Forward to saga chunk:
 		if(sagaChunk != null) sagaChunk.onCreatureSpawn(event);
@@ -161,7 +161,7 @@ public class EntityListener implements Listener{
 			// Get saga chunk:
 			Location location = sagaAttacker.getLocation();
 			Chunk chunk = location.getWorld().getChunkAt(location);
-			SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(chunk);
+			SagaChunk sagaChunk = ChunkBundleManager.manager().getSagaChunk(chunk);
 			
 			// Forward to chunk:
 			if(sagaChunk != null) sagaChunk.onPvpKill(sagaAttacker, sagaDead);

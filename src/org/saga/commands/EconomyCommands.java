@@ -11,7 +11,7 @@ import org.saga.economy.EconomyManager.InvalidWorldException;
 import org.saga.economy.TradeDeal;
 import org.saga.economy.TradeDeal.TradeDealType;
 import org.saga.exceptions.NonExistantSagaPlayerException;
-import org.saga.messages.ChunkGroupMessages;
+import org.saga.messages.SettlementMessages;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.InfoMessages;
 import org.saga.messages.SagaMessages;
@@ -275,7 +275,7 @@ public class EconomyCommands {
 			try {
 				page = Integer.parseInt(args.getString(0));
 			} catch (NumberFormatException e) {
-				sagaPlayer.message(ChunkGroupMessages.invalidPage(args.getString(0)));
+				sagaPlayer.message(SettlementMessages.invalidPage(args.getString(0)));
 				return;
 			}
 		}else{

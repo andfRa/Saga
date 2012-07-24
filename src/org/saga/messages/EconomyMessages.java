@@ -9,7 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.saga.buildings.TradingPost;
-import org.saga.chunkGroups.ChunkGroup;
+import org.saga.chunks.ChunkBundle;
 import org.saga.config.EconomyConfiguration;
 import org.saga.economy.EconomyManager.TransactionType;
 import org.saga.economy.TradeDeal;
@@ -143,13 +143,13 @@ public class EconomyMessages {
 	}
 	
 	// Transactions:
-	public static String addedTransactionBroadcast(Transaction transaction, ChunkGroup chunkGroup, SagaPlayer sagaPlayer) {
+	public static String addedTransactionBroadcast(Transaction transaction, ChunkBundle chunkBundle, SagaPlayer sagaPlayer) {
 		
 		return anouncment + sagaPlayer.getName() + " set up a new transaction: " + transaction.getType().name() + " " + transaction.getAmount() + " " + EconomyMessages.material(transaction.getMaterial()) + " for " + EconomyMessages.coins(transaction.getValue()) + " each.";
 		
 	}
 	
-	public static String removedTransactionBroadcast(TransactionType type, Material material, ChunkGroup chunkGroup, SagaPlayer sagaPlayer) {
+	public static String removedTransactionBroadcast(TransactionType type, Material material, ChunkBundle chunkBundle, SagaPlayer sagaPlayer) {
 		
 		return anouncment + sagaPlayer.getName() + " removed a transaction: " + type.name() + " " + EconomyMessages.material(material) + ".";
 		

@@ -10,10 +10,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.saga.Clock.MinuteTicker;
-import org.saga.chunkGroups.ChunkGroupManager;
+import org.saga.chunks.ChunkBundleManager;
 import org.saga.commands.AdminCommands;
 import org.saga.commands.BuildingCommands;
-import org.saga.commands.ChunkGroupCommands;
+import org.saga.commands.SettlementCommands;
 import org.saga.commands.EconomyCommands;
 import org.saga.commands.FactionCommands;
 import org.saga.commands.PlayerCommands;
@@ -106,7 +106,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     	
         // Managers:
         StatisticsManager.unload(); // Needs access to clock.
-        ChunkGroupManager.unload(); // Needs building manager.
+        ChunkBundleManager.unload(); // Needs building manager.
         FactionManager.unload(); // Needs access to chunk group manager.
         EconomyManager.unload();
         
@@ -179,7 +179,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         FactionConfiguration.load();
         
         // Managers:
-        ChunkGroupManager.load();
+        ChunkBundleManager.load();
         FactionManager.load(); // Needs access to chunk group manager.
         EconomyManager.load(); // Needs access to clock.
         StatisticsManager.load(); // Needs access to clock.
@@ -198,7 +198,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         //Register Command Classes to the command map
         commandMap.register(AdminCommands.class);
         commandMap.register(FactionCommands.class);
-        commandMap.register(ChunkGroupCommands.class);
+        commandMap.register(SettlementCommands.class);
         commandMap.register(EconomyCommands.class);
         commandMap.register(PlayerCommands.class);
         commandMap.register(StatisticsCommands.class);
@@ -355,7 +355,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     	FactionManager.manager().playerLoaded(sagaPlayer);
     	
     	// Register chunk groups:
-    	ChunkGroupManager.manager().playerLoaded(sagaPlayer);
+    	ChunkBundleManager.manager().playerLoaded(sagaPlayer);
     	
     	// Update:
     	sagaPlayer.update();
@@ -397,7 +397,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     	FactionManager.manager().playerUnloaded(sagaPlayer);
     	
     	// Register chunk groups:
-    	ChunkGroupManager.manager().playerUnloaded(sagaPlayer);
+    	ChunkBundleManager.manager().playerUnloaded(sagaPlayer);
     	
     	// Unload:
         sagaPlayer.unload();
@@ -558,7 +558,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
 
 
         // Save managers:
-        ChunkGroupManager.save();
+        ChunkBundleManager.save();
         FactionManager.save();
         EconomyManager.save();
     	StatisticsManager.save();

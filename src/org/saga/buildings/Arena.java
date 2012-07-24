@@ -13,7 +13,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.SagaLogger;
-import org.saga.chunkGroups.SagaChunk;
+import org.saga.chunks.SagaChunk;
 import org.saga.config.SettlementConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.listeners.events.SagaEntityDamageEvent;

@@ -7,10 +7,10 @@ import java.util.Comparator;
 import org.bukkit.ChatColor;
 import org.saga.buildings.Building;
 import org.saga.buildings.BuildingDefinition;
-import org.saga.chunkGroups.ChunkGroup;
-import org.saga.chunkGroups.ChunkGroupToggleable;
-import org.saga.chunkGroups.SagaChunk;
-import org.saga.commands.ChunkGroupCommands;
+import org.saga.chunks.ChunkBundle;
+import org.saga.chunks.ChunkBundleToggleable;
+import org.saga.chunks.SagaChunk;
+import org.saga.commands.SettlementCommands;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.factions.Faction;
@@ -25,7 +25,7 @@ import org.saga.utility.text.StringTable;
 import org.saga.utility.text.TextUtil;
 
 
-public class ChunkGroupMessages {
+public class SettlementMessages {
 	
 
 	// Colours:
@@ -54,8 +54,8 @@ public class ChunkGroupMessages {
 		return veryNegative + "" + buildingName + " building isn't fully defined.";
 	}
 	
-	public static String savingDisabledError(ChunkGroup chunkGroup){
-		return veryNegative + "Saving is disabled for " + chunkGroup.getName() + " settlement.";
+	public static String savingDisabledError(ChunkBundle chunkBundle){
+		return veryNegative + "Saving is disabled for " + chunkBundle.getName() + " settlement.";
 	}
 	
 	public static String proficiencyNotAvailable2(String proficiencyName){
@@ -70,12 +70,12 @@ public class ChunkGroupMessages {
 		return negative + name + " settlement doesen't exist.";
 	}
 	
-	public static String notSettlement(ChunkGroup group){
+	public static String notSettlement(ChunkBundle group){
 		return negative + group.getName() + " isn't a settlement.";
 	}
 	
-	public static String notChunkGroupMember(ChunkGroup chunkGroup){
-		return negative + "You aren't a part of " + chunkGroup.getName() + " settlement.";
+	public static String notChunkBundleMember(ChunkBundle chunkBundle){
+		return negative + "You aren't a part of " + chunkBundle.getName() + " settlement.";
 	}
 	
 	public static String isChunkGroupMember(ArrayList<String> names){
@@ -102,7 +102,7 @@ public class ChunkGroupMessages {
 		
 	}
 	
-	public static String notChunkGroupMember(ChunkGroup chunkGroup, String playerName){
+	public static String notChunkBundleMember(ChunkBundle chunkBundle, String playerName){
 		return negative + playerName + " isn't part of the settlement.";
 	}
 
@@ -122,8 +122,8 @@ public class ChunkGroupMessages {
 		return anouncment + name + " is the new owner of the settlement.";
 	}
 	
-	public static String claimedChunkGroupBroadcast(SagaPlayer sagaPlayer, ChunkGroup chunkGroup){
-		return anouncment + sagaPlayer.getName() + " has claimed " + chunkGroup.getName() + " settlement.";
+	public static String claimedChunkBundleBroadcast(SagaPlayer sagaPlayer, ChunkBundle chunkBundle){
+		return anouncment + sagaPlayer.getName() + " has claimed " + chunkBundle.getName() + " settlement.";
 	}
 
 	public static String invalidInteger(String amount) {
@@ -199,11 +199,11 @@ public class ChunkGroupMessages {
 	
 	
 	// Settling and dissolving:
-	public static String settled(SagaPlayer sagaPlayer, ChunkGroup settlement) {
+	public static String settled(SagaPlayer sagaPlayer, ChunkBundle settlement) {
 		return anouncment + settlement.getName() + " settlement was founded  by " + sagaPlayer.getName() + ".";
 	}
 
-	public static String dissolved(SagaPlayer sagaPlayer, ChunkGroup settlement) {
+	public static String dissolved(SagaPlayer sagaPlayer, ChunkBundle settlement) {
 		return anouncment + settlement.getName() + " settlement was dissolved by " + sagaPlayer.getName() + ".";
 	}
 
@@ -214,16 +214,16 @@ public class ChunkGroupMessages {
 		return normal1 +  "Claimed chunk.";
 	}
 	
-	public static String claimed(SagaChunk sagaChunk, ChunkGroup chunkGroup) {
-		return normal1 +  "Claimed chunk for " + chunkGroup.getName() + " settlement.";
+	public static String claimed(SagaChunk sagaChunk, ChunkBundle chunkBundle) {
+		return normal1 +  "Claimed chunk for " + chunkBundle.getName() + " settlement.";
 	}
 	
 	public static String abandoned(SagaChunk sagaChunk) {
 		return normal1 +  "Abandoned chunk.";
 	}
 	
-	public static String abandoned(SagaChunk sagaChunk, ChunkGroup chunkGroup) {
-		return normal1 +  "Abandoned chunk from " + chunkGroup.getName() + " settlement.";
+	public static String abandoned(SagaChunk sagaChunk, ChunkBundle chunkBundle) {
+		return normal1 +  "Abandoned chunk from " + chunkBundle.getName() + " settlement.";
 	}
 	
 	
@@ -233,16 +233,16 @@ public class ChunkGroupMessages {
 		return normal1 +  "Set " +  building.getName() + " building.";
 	}
 	
-	public static String setBuilding(Building building, ChunkGroup chunkGroup) {
-		return normal1 +  "Set " +  building.getName() + " building for " + chunkGroup.getName() + " settlement.";
+	public static String setBuilding(Building building, ChunkBundle chunkBundle) {
+		return normal1 +  "Set " +  building.getName() + " building for " + chunkBundle.getName() + " settlement.";
 	}
 	
 	public static String removedBuilding(Building building) {
 		return normal1 +  "Removed " +  building.getName() + " building.";
 	}
 	
-	public static String removedBuilding(Building building, ChunkGroup chunkGroup) {
-		return normal1 +  "Removed " +  building.getName() + " building from " + chunkGroup.getName() + " settlement.";
+	public static String removedBuilding(Building building, ChunkBundle chunkBundle) {
+		return normal1 +  "Removed " +  building.getName() + " building from " + chunkBundle.getName() + " settlement.";
 	}
 	
 	
@@ -283,38 +283,38 @@ public class ChunkGroupMessages {
 	
 	
 	// Invite join leave messages:
-	public static String beenInvited(SagaPlayer sagaPlayer, ChunkGroup settlement) {
+	public static String beenInvited(SagaPlayer sagaPlayer, ChunkBundle settlement) {
 		return anouncment + "You have been invited to " + settlement.getName() + " settlement.";
 	}
 	
-	public static String invited(SagaPlayer sagaPlayer, ChunkGroup settlement) {
+	public static String invited(SagaPlayer sagaPlayer, ChunkBundle settlement) {
 		return anouncment + sagaPlayer.getName() + " was invited to the settlement.";
 	}
 	
 	
-	public static String haveJoined(SagaPlayer sagaPlayer, ChunkGroup settlement) {
+	public static String haveJoined(SagaPlayer sagaPlayer, ChunkBundle settlement) {
 		return anouncment + "You joined " +settlement.getName() + " settlement.";
 	}
 	
-	public static String joined(SagaPlayer sagaPlayer, ChunkGroup settlement) {
+	public static String joined(SagaPlayer sagaPlayer, ChunkBundle settlement) {
 		return anouncment + sagaPlayer.getName() + " has joined the settlement.";
 	}
 	
 	
-	public static String haveQuit(SagaPlayer sagaPlayer, ChunkGroup settlement) {
+	public static String haveQuit(SagaPlayer sagaPlayer, ChunkBundle settlement) {
 		return anouncment + "You left from " + settlement.getName() + " settlement.";
 	}
 	
-	public static String quit(SagaPlayer sagaPlayer, ChunkGroup settlement) {
+	public static String quit(SagaPlayer sagaPlayer, ChunkBundle settlement) {
 		return anouncment + sagaPlayer.getName() + " has left the settlement.";
 	}
 
 	
-	public static String beenKicked(SagaPlayer sagaPlayer, ChunkGroup settlement) {
+	public static String beenKicked(SagaPlayer sagaPlayer, ChunkBundle settlement) {
 		return anouncment + "You have been kicked out of " + settlement.getName() + " settlement.";
 	}
 	
-	public static String kicked(SagaPlayer sagaPlayer, ChunkGroup settlement) {
+	public static String kicked(SagaPlayer sagaPlayer, ChunkBundle settlement) {
 		return anouncment + sagaPlayer.getName() + " has been kicked from the settlement.";
 	}
 
@@ -323,7 +323,7 @@ public class ChunkGroupMessages {
 		return normal1 + "Declined all settlement invitations.";
 	}
 
-	public static String pendingInvitations(SagaPlayer sagaPlayer, ArrayList<ChunkGroup> groups) {
+	public static String pendingInvitations(SagaPlayer sagaPlayer, ArrayList<ChunkBundle> groups) {
 		
 		
 		StringBuffer rString = new StringBuffer();
@@ -384,11 +384,11 @@ public class ChunkGroupMessages {
 		
 	}
 
-	public static String cantInviteYourself(SagaPlayer sagaPlayer, ChunkGroup chunkGroup) {
+	public static String cantInviteYourself(SagaPlayer sagaPlayer, ChunkBundle chunkBundle) {
 		return negative + "You can't invite yourself.";
 	}
 
-	public static String cantKickYourself(SagaPlayer sagaPlayer, ChunkGroup settlement) {
+	public static String cantKickYourself(SagaPlayer sagaPlayer, ChunkBundle settlement) {
 		return negative + "You can't kick yourself from the settlement.";
 	}
 
@@ -404,19 +404,19 @@ public class ChunkGroupMessages {
 		return negative + playerName + " doesn't exist.";
 	}
 
-	public static String alreadyInTheChunkGroup(SagaPlayer sagaPlayer, ChunkGroup group) {
+	public static String alreadyInTheChunkBundle(SagaPlayer sagaPlayer, ChunkBundle group) {
 		return negative + sagaPlayer.getName() + " is already a part of the settlement.";
 	}
 	
-	public static String alreadyInTheChunkGroup(ChunkGroup group) {
+	public static String alreadyInTheChunkBundle(ChunkBundle group) {
 		return negative + "You already are a part of the settlement.";
 	}
 
-	public static String alreadyInvited(SagaPlayer sagaPlayer, ChunkGroup group) {
+	public static String alreadyInvited(SagaPlayer sagaPlayer, ChunkBundle group) {
 		return negative + sagaPlayer.getName() + " is already a invited to the settlement.";
 	}
 	
-	public static String playerNotChunkGroupMember(SagaPlayer sagaPlayer, ChunkGroup chunkGroup) {
+	public static String playerNotChunkBundleMember(SagaPlayer sagaPlayer, ChunkBundle chunkBundle) {
 		return negative + sagaPlayer.getName() + " isn't part of the settlement.";
 	}
 	
@@ -764,7 +764,7 @@ public class ChunkGroupMessages {
 		return negative + "Role " + roleName + " is invalid.";
 	}
 	
-	public static String newRole(SagaPlayer sagaPlayer, ChunkGroup settlement, String roleName) {
+	public static String newRole(SagaPlayer sagaPlayer, ChunkBundle settlement, String roleName) {
 		
 		return anouncment + sagaPlayer.getName() + " is now a " + roleName + ".";
 		
@@ -805,34 +805,34 @@ public class ChunkGroupMessages {
 	
 	
 	// Rename:
-	public static String renamed(ChunkGroup chunkGroup) {
+	public static String renamed(ChunkBundle chunkBundle) {
 
-		return anouncment + "Settlement was renamed to " + chunkGroup.getName() + ".";
+		return anouncment + "Settlement was renamed to " + chunkBundle.getName() + ".";
 		
 	}
 	
 	
 	
 	// Options:
-	public static String optionToggle(ChunkGroup chunkGroup, ChunkGroupToggleable option) {
+	public static String optionToggle(ChunkBundle chunkBundle, ChunkBundleToggleable option) {
 		
-		if(chunkGroup.isOptionEnabled(option)){
-			return positive + "Enabled " + option + " for " + chunkGroup.getName() + ".";
+		if(chunkBundle.isOptionEnabled(option)){
+			return positive + "Enabled " + option + " for " + chunkBundle.getName() + ".";
 		}else{
-			return positive + "Disabled " + option + " for " + chunkGroup.getName() + ".";
+			return positive + "Disabled " + option + " for " + chunkBundle.getName() + ".";
 		}
 
 	}
 	
-	public static String optionAlreadyEnabled(ChunkGroup chunkGroup, ChunkGroupToggleable option){
+	public static String optionAlreadyEnabled(ChunkBundle chunkBundle, ChunkBundleToggleable option){
 		
-		return negative + "Option " + option.toString() + " is already enabled for " + chunkGroup.getName() + " settlement.";
+		return negative + "Option " + option.toString() + " is already enabled for " + chunkBundle.getName() + " settlement.";
 		
 	}
 	
-	public static String optionAlreadyDisabled(ChunkGroup chunkGroup, ChunkGroupToggleable option){
+	public static String optionAlreadyDisabled(ChunkBundle chunkBundle, ChunkBundleToggleable option){
 		
-		return negative + "Option " + option.toString() + " is already disabled for " + chunkGroup.getName() + " settlement.";
+		return negative + "Option " + option.toString() + " is already disabled for " + chunkBundle.getName() + " settlement.";
 		
 	}
 	
@@ -845,7 +845,7 @@ public class ChunkGroupMessages {
 	public static String optionInvalidInfo(){
 		
 		
-		ChunkGroupToggleable[] options = ChunkGroupToggleable.values();
+		ChunkBundleToggleable[] options = ChunkBundleToggleable.values();
 		ArrayList<String> validOptions = new ArrayList<String>();
 		for (int i = 0; i < options.length; i++) {
 			
@@ -861,15 +861,15 @@ public class ChunkGroupMessages {
 	
 	
 	// Move:
-	public static String entered(ChunkGroup chunkGroup) {
+	public static String entered(ChunkBundle chunkBundle) {
 		
-		return normal1 + "" + ChatColor.ITALIC + "Entered " + chunkGroup.getName() + " settlement.";
+		return normal1 + "" + ChatColor.ITALIC + "Entered " + chunkBundle.getName() + " settlement.";
 		
 	}
 	
-	public static String left(ChunkGroup chunkGroup) {
+	public static String left(ChunkBundle chunkBundle) {
 		
-		return normal1 + "" + ChatColor.ITALIC + "Left " + chunkGroup.getName() + " settlement.";
+		return normal1 + "" + ChatColor.ITALIC + "Left " + chunkBundle.getName() + " settlement.";
 		
 	}
 	
@@ -896,7 +896,7 @@ public class ChunkGroupMessages {
 	// Creating:
 	public static String invalidName() {
 		
-		return negative + "Name must be " + ChunkGroupCommands.minimumNameLenght + "-" + ChunkGroupCommands.maximumNameLength + ". Letters and numbers only.";
+		return negative + "Name must be " + SettlementCommands.minimumNameLenght + "-" + SettlementCommands.maximumNameLength + ". Letters and numbers only.";
 		
 	}
 	

@@ -5,7 +5,7 @@ import java.util.Enumeration;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.dependencies.PermissionsManager;
-import org.saga.messages.ChunkGroupMessages;
+import org.saga.messages.SettlementMessages;
 import org.saga.messages.InfoMessages;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.StatsMessages;
@@ -42,7 +42,7 @@ public class PlayerCommands {
 				page = Integer.parseInt(sPage);
 			}
 			catch (NumberFormatException e) {
-				sagaPlayer.message(ChunkGroupMessages.invalidInteger(sPage));
+				sagaPlayer.message(SettlementMessages.invalidInteger(sPage));
 				return;
 			}
 			
@@ -180,7 +180,7 @@ public class PlayerCommands {
 			try {
 				page = Integer.parseInt(args.getString(0));
 			} catch (NumberFormatException e) {
-				sagaPlayer.message(ChunkGroupMessages.invalidPage(args.getString(0)));
+				sagaPlayer.message(SettlementMessages.invalidPage(args.getString(0)));
 				return;
 			}
 		}else{

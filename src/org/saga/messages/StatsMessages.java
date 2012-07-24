@@ -7,8 +7,8 @@ import java.util.HashSet;
 import org.bukkit.ChatColor;
 import org.saga.abilities.Ability;
 import org.saga.abilities.AbilityDefinition;
-import org.saga.chunkGroups.ChunkGroup;
-import org.saga.chunkGroups.ChunkGroupManager;
+import org.saga.chunks.ChunkBundle;
+import org.saga.chunks.ChunkBundleManager;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.factions.FactionManager;
@@ -153,7 +153,7 @@ public class StatsMessages {
 		if(sagaPlayer.getFaction() != null) faction = sagaPlayer.getFaction().getName();
 
 		String settlement = "none";
-		if(sagaPlayer.getChunkGroup() != null) settlement = sagaPlayer.getChunkGroup().getName();
+		if(sagaPlayer.getChunkBundle() != null) settlement = sagaPlayer.getChunkBundle().getName();
 		
 		table.addLine("faction", faction, 0);
 		table.addLine("settlement", settlement, 2);
@@ -307,13 +307,13 @@ public class StatsMessages {
     	// Chunk groups:
     	table.addLine(GeneralMessages.columnTitle("settlement invites"));
     	
-    	ArrayList<ChunkGroup> chunkGroups = getSettlements(sagaPlayer.getChunkGroupInvites());
+    	ArrayList<ChunkBundle> chunkBundles = getSettlements(sagaPlayer.getChunkGroupInvites());
     	
-    	for (ChunkGroup chunkGroup : chunkGroups) {
-			table.addLine(chunkGroup.getName());
+    	for (ChunkBundle chunkBundle : chunkBundles) {
+			table.addLine(chunkBundle.getName());
 		}
     	
-    	if(chunkGroups.size() == 0){
+    	if(chunkBundles.size() == 0){
     		table.addLine("-");
     	}
     	
@@ -347,18 +347,18 @@ public class StatsMessages {
 		
 	}
 	
-	private static ArrayList<ChunkGroup> getSettlements(ArrayList<Integer> ids) {
+	private static ArrayList<ChunkBundle> getSettlements(ArrayList<Integer> ids) {
 
 
 		// Faction invites:
-		ArrayList<ChunkGroup> chunkGroups = new ArrayList<ChunkGroup>();
+		ArrayList<ChunkBundle> chunkBundles = new ArrayList<ChunkBundle>();
 		if(ids.size() > 0){
 			
 			for (int i = 0; i < ids.size(); i++) {
 			
-				ChunkGroup faction = ChunkGroupManager.manager().getChunkGroup(ids.get(i));
+				ChunkBundle faction = ChunkBundleManager.manager().getChunkBundle(ids.get(i));
 				if( faction != null ){
-					chunkGroups.add(faction);
+					chunkBundles.add(faction);
 				}else{
 					ids.remove(i);
 					i--;
@@ -367,7 +367,7 @@ public class StatsMessages {
 			}
 		}
 		
-		return chunkGroups;
+		return chunkBundles;
 		
 		
 	}

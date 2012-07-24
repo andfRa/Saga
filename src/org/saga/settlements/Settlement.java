@@ -14,14 +14,14 @@ import org.saga.Clock.MinuteTicker;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.BuildingDefinition;
-import org.saga.chunkGroups.ChunkGroup;
-import org.saga.chunkGroups.ChunkGroupToggleable;
+import org.saga.chunks.ChunkBundle;
+import org.saga.chunks.ChunkBundleToggleable;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
 import org.saga.config.SettlementConfiguration;
 import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
-import org.saga.messages.ChunkGroupMessages;
+import org.saga.messages.SettlementMessages;
 import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
 
@@ -29,7 +29,7 @@ import org.saga.player.SagaPlayer;
  * @author andf
  *
  */
-public class Settlement extends ChunkGroup implements MinuteTicker{
+public class Settlement extends ChunkBundle implements MinuteTicker{
 
 	
 	/**
@@ -84,7 +84,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	/* 
 	 * (non-Javadoc)
 	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#completeExtended()
+	 * @see org.saga.chunkGroups.ChunkBundle#completeExtended()
 	 */
 	@Override
 	public boolean complete() {
@@ -163,7 +163,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	/* 
 	 * (non-Javadoc)
 	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#delete()
+	 * @see org.saga.chunkGroups.ChunkBundle#delete()
 	 */
 	@Override
 	public void delete() {
@@ -178,7 +178,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	/* 
 	 * (non-Javadoc)
 	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#enable()
+	 * @see org.saga.chunkGroups.ChunkBundle#enable()
 	 */
 	@Override
 	public void enable() {
@@ -208,7 +208,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 
 		
 		// Forward:
-		ChunkGroup.create(settlement, owner);
+		ChunkBundle.create(settlement, owner);
 
 		// Set owners role:
 		try {
@@ -227,7 +227,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	/* 
 	 * (non-Javadoc)
 	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#addPlayer3(org.saga.SagaPlayer)
+	 * @see org.saga.chunkGroups.ChunkBundle#addPlayer3(org.saga.SagaPlayer)
 	 */
 	@Override
 	public void addMember(SagaPlayer sagaPlayer) {
@@ -252,7 +252,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	/* 
 	 * (non-Javadoc)
 	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#removePlayer3(org.saga.SagaPlayer)
+	 * @see org.saga.chunkGroups.ChunkBundle#removePlayer3(org.saga.SagaPlayer)
 	 */
 	@Override
 	public void removeMember(SagaPlayer sagaPlayer) {
@@ -555,7 +555,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	 * @return true if available
 	 */
 	public boolean isClaimsAvailable() {
-		return getAvailableClaims() > 0 || isOptionEnabled(ChunkGroupToggleable.UNLIMITED_CLAIMS);
+		return getAvailableClaims() > 0 || isOptionEnabled(ChunkBundleToggleable.UNLIMITED_CLAIMS);
 	}
 	
 	
@@ -564,7 +564,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	/* 
 	 * (non-Javadoc)
 	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#getTotalBuildings(java.lang.String)
+	 * @see org.saga.chunkGroups.ChunkBundle#getTotalBuildings(java.lang.String)
 	 */
 	@Override
 	public Integer getAvailableBuildings(String buildingName) {
@@ -585,7 +585,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	/* 
 	 * (non-Javadoc)
 	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#hasPermisson(org.saga.player.SagaPlayer, org.saga.settlements.Settlement.SettlementPermission)
+	 * @see org.saga.chunkGroups.ChunkBundle#hasPermisson(org.saga.player.SagaPlayer, org.saga.settlements.Settlement.SettlementPermission)
 	 */
 	public boolean hasPermission(SagaPlayer sagaPlayer, SettlementPermission permission) {
 
@@ -723,7 +723,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	/* 
 	 * (non-Javadoc)
 	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#onBuild(org.saga.listeners.events.SagaBuildEvent)
+	 * @see org.saga.chunkGroups.ChunkBundle#onBuild(org.saga.listeners.events.SagaBuildEvent)
 	 */
 	@Override
 	public void onBuild(SagaBuildEvent event) {
@@ -736,7 +736,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	/* 
 	 * (non-Javadoc)
 	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#onMemberQuit(org.bukkit.event.player.PlayerQuitEvent, org.saga.player.SagaPlayer)
+	 * @see org.saga.chunkGroups.ChunkBundle#onMemberQuit(org.bukkit.event.player.PlayerQuitEvent, org.saga.player.SagaPlayer)
 	 */
 	@Override
 	public void onMemberQuit(PlayerQuitEvent event, SagaPlayer sagaPlayer) {
@@ -767,7 +767,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 			levelUp();
 
 			// Inform:
-			Saga.broadcast(ChunkGroupMessages.settleLevelBcast(this));
+			Saga.broadcast(SettlementMessages.settleLevelBcast(this));
 			
 		}
 		
@@ -779,7 +779,7 @@ public class Settlement extends ChunkGroup implements MinuteTicker{
 	/* 
 	 * (non-Javadoc)
 	 * 
-	 * @see org.saga.chunkGroups.ChunkGroup#toString()
+	 * @see org.saga.chunkGroups.ChunkBundle#toString()
 	 */
 	@Override
 	public String toString() {

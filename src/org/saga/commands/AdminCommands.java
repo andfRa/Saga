@@ -15,9 +15,9 @@ import org.saga.Clock;
 import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.Saga;
 import org.saga.SagaLogger;
-import org.saga.chunkGroups.ChunkGroup;
-import org.saga.chunkGroups.ChunkGroupManager;
-import org.saga.chunkGroups.ChunkGroupToggleable;
+import org.saga.chunks.ChunkBundle;
+import org.saga.chunks.ChunkBundleManager;
+import org.saga.chunks.ChunkBundleToggleable;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.config.ExperienceConfiguration;
@@ -26,7 +26,7 @@ import org.saga.dependencies.spout.ClientManager;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;
 import org.saga.messages.AdminMessages;
-import org.saga.messages.ChunkGroupMessages;
+import org.saga.messages.SettlementMessages;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.SagaMessages;
 import org.saga.messages.StatsMessages;
@@ -69,7 +69,7 @@ public class AdminCommands {
 				page = Integer.parseInt(sPage);
 			}
 			catch (NumberFormatException e) {
-				sagaPlayer.message(ChunkGroupMessages.invalidInteger(sPage));
+				sagaPlayer.message(SettlementMessages.invalidInteger(sPage));
 				return;
 			}
 			
@@ -123,7 +123,7 @@ public class AdminCommands {
 				page = Integer.parseInt(sPage);
 			}
 			catch (NumberFormatException e) {
-				sagaPlayer.message(ChunkGroupMessages.invalidInteger(sPage));
+				sagaPlayer.message(SettlementMessages.invalidInteger(sPage));
 				return;
 			}
 			
@@ -188,7 +188,7 @@ public class AdminCommands {
 				try {
 					level = Integer.parseInt(args.getString(0));
 				} catch (NumberFormatException e) {
-					sagaPlayer.message(ChunkGroupMessages.invalidInteger(args.getString(1)));
+					sagaPlayer.message(SettlementMessages.invalidInteger(args.getString(1)));
 				}
 				
 				break;
@@ -200,7 +200,7 @@ public class AdminCommands {
 				try {
 					level = Integer.parseInt(args.getString(1));
 				} catch (NumberFormatException e) {
-					sagaPlayer.message(ChunkGroupMessages.invalidInteger(args.getString(1)));
+					sagaPlayer.message(SettlementMessages.invalidInteger(args.getString(1)));
 				}
 				
 				break;
@@ -215,7 +215,7 @@ public class AdminCommands {
 			
 		} catch (NonExistantSagaPlayerException e) {
 			
-			sagaPlayer.message(ChunkGroupMessages.nonExistantPlayer(playerName));
+			sagaPlayer.message(SettlementMessages.nonExistantPlayer(playerName));
 			return;
 			
 		}
@@ -273,7 +273,7 @@ public class AdminCommands {
 				try {
 					score = Integer.parseInt(args.getString(1));
 				} catch (NumberFormatException e) {
-					sagaPlayer.message(ChunkGroupMessages.invalidInteger(args.getString(1)));
+					sagaPlayer.message(SettlementMessages.invalidInteger(args.getString(1)));
 				}
 				
 				break;
@@ -287,7 +287,7 @@ public class AdminCommands {
 				try {
 					score = Integer.parseInt(args.getString(2));
 				} catch (NumberFormatException e) {
-					sagaPlayer.message(ChunkGroupMessages.invalidInteger(args.getString(1)));
+					sagaPlayer.message(SettlementMessages.invalidInteger(args.getString(1)));
 				}
 				
 				break;
@@ -302,7 +302,7 @@ public class AdminCommands {
 			
 		} catch (NonExistantSagaPlayerException e) {
 			
-			sagaPlayer.message(ChunkGroupMessages.nonExistantPlayer(playerName));
+			sagaPlayer.message(SettlementMessages.nonExistantPlayer(playerName));
 			return;
 			
 		}
@@ -355,44 +355,44 @@ public class AdminCommands {
 	public static void disolve(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-		ChunkGroup selectedChunkGroup = null;
+		ChunkBundle selectedChunkBundle = null;
 
 		// Arguments:
 		if(args.argsLength() == 1){
 			
 			// Chunk group:
 			String groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
-			selectedChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(groupName);
-			if(selectedChunkGroup == null){
-				sagaPlayer.message(ChunkGroupMessages.noChunkGroup(groupName));
+			selectedChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+			if(selectedChunkBundle == null){
+				sagaPlayer.message(SettlementMessages.noChunkGroup(groupName));
 				return;
 			}
 			
 		}else{
 			
 			// Chunk group:
-			selectedChunkGroup = sagaPlayer.getChunkGroup();
-			if(selectedChunkGroup == null){
-				sagaPlayer.message( ChunkGroupMessages.noChunkGroup() );
+			selectedChunkBundle = sagaPlayer.getChunkBundle();
+			if(selectedChunkBundle == null){
+				sagaPlayer.message( SettlementMessages.noChunkGroup() );
 				return;
 			}
 			
 		}
 	   	
 	   	// Permissions:
-	   	if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.DISSOLVE)){
-	   		sagaPlayer.message(SagaMessages.noPermission(selectedChunkGroup));
+	   	if(!selectedChunkBundle.hasPermission(sagaPlayer, SettlementPermission.DISSOLVE)){
+	   		sagaPlayer.message(SagaMessages.noPermission(selectedChunkBundle));
 	   		return;
 	   	}
 
 	   	// Level too high:
-	   	if(selectedChunkGroup instanceof Settlement){
+	   	if(selectedChunkBundle instanceof Settlement){
 	   		
-	   		Settlement selectedSettlement = (Settlement) selectedChunkGroup;
+	   		Settlement selectedSettlement = (Settlement) selectedChunkBundle;
 	   		
 	   		if(selectedSettlement.getLevel() >= SettlementConfiguration.config().noDeleteLevel){
 
-	   			sagaPlayer.message(ChunkGroupMessages.informSettlementAboveLevelDelete());
+	   			sagaPlayer.message(SettlementMessages.informSettlementAboveLevelDelete());
 				return;
 				
 			}
@@ -400,10 +400,10 @@ public class AdminCommands {
 	   	}
 	   	
 		// Delete:
-	   	selectedChunkGroup.delete();
+	   	selectedChunkBundle.delete();
 			
 		// Inform:
-		Saga.broadcast(ChunkGroupMessages.dissolved(sagaPlayer, selectedChunkGroup));
+		Saga.broadcast(SettlementMessages.dissolved(sagaPlayer, selectedChunkBundle));
 		
 	
 	}
@@ -421,58 +421,58 @@ public class AdminCommands {
 
 
 		Integer level = null;
-		ChunkGroup selectedChunkGroup = null;
+		ChunkBundle selectedChunkBundle = null;
 
 		// Arguments:
 		if(args.argsLength() == 2){
 			
 			// Chunk group:
 			String groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
-			selectedChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(groupName);
-			if(selectedChunkGroup == null){
-				sagaPlayer.message(ChunkGroupMessages.noChunkGroup(groupName));
+			selectedChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+			if(selectedChunkBundle == null){
+				sagaPlayer.message(SettlementMessages.noChunkGroup(groupName));
 				return;
 			}
 
 			try {
 				level = Integer.parseInt(args.getString(1));
 			} catch (NumberFormatException e) {
-				sagaPlayer.message(ChunkGroupMessages.invalidInteger(args.getString(1)));
+				sagaPlayer.message(SettlementMessages.invalidInteger(args.getString(1)));
 				return;
 			}
 			
 		}else{
 			
 			// Chunk group:
-			selectedChunkGroup = sagaPlayer.getChunkGroup();
-			if(selectedChunkGroup == null){
-				sagaPlayer.message( ChunkGroupMessages.noChunkGroup() );
+			selectedChunkBundle = sagaPlayer.getChunkBundle();
+			if(selectedChunkBundle == null){
+				sagaPlayer.message( SettlementMessages.noChunkGroup() );
 				return;
 			}
 
 			try {
 				level = Integer.parseInt(args.getString(0));
 			} catch (NumberFormatException e) {
-				sagaPlayer.message(ChunkGroupMessages.invalidInteger(args.getString(0)));
+				sagaPlayer.message(SettlementMessages.invalidInteger(args.getString(0)));
 				return;
 			}
 			
 		}
 		
 		// Is a settlement:
-		if(!(selectedChunkGroup instanceof Settlement)){
-			sagaPlayer.message(ChunkGroupMessages.notSettlement(selectedChunkGroup));
+		if(!(selectedChunkBundle instanceof Settlement)){
+			sagaPlayer.message(SettlementMessages.notSettlement(selectedChunkBundle));
 			return;
 		}
-		Settlement selectedSettlement = (Settlement) selectedChunkGroup;
+		Settlement selectedSettlement = (Settlement) selectedChunkBundle;
 
 		// Set level:
 		selectedSettlement.setLevel(level);
 		
 		// Inform:
-		selectedChunkGroup.broadcast(ChunkGroupMessages.settleLevelBcast(selectedSettlement));
-		if(selectedChunkGroup != sagaPlayer.getChunkGroup()){
-			sagaPlayer.message(ChunkGroupMessages.setLevel(selectedSettlement));
+		selectedChunkBundle.broadcast(SettlementMessages.settleLevelBcast(selectedSettlement));
+		if(selectedChunkBundle != sagaPlayer.getChunkBundle()){
+			sagaPlayer.message(SettlementMessages.setLevel(selectedSettlement));
 		}
 		
 	}
@@ -489,8 +489,8 @@ public class AdminCommands {
 	public static void enableOption(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
-		ChunkGroup selChunkGroup = null;
-		ChunkGroupToggleable option = null;
+		ChunkBundle selChunkBundle = null;
+		ChunkBundleToggleable option = null;
 
 		String aOption = null;
 		
@@ -499,18 +499,18 @@ public class AdminCommands {
 			case 2:
 				
 				// Chunk group:
-				selChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(args.getString(0));
-				if(selChunkGroup == null){
-					sagaPlayer.message( ChunkGroupMessages.noChunkGroup(args.getString(0)) );
+				selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(args.getString(0));
+				if(selChunkBundle == null){
+					sagaPlayer.message( SettlementMessages.noChunkGroup(args.getString(0)) );
 					return;
 				}
 				
 				// Option:
 				aOption = args.getString(1);
-				option = ChunkGroupToggleable.match(aOption);
+				option = ChunkBundleToggleable.match(aOption);
 				if(option == null){
-					sagaPlayer.message(ChunkGroupMessages.optionInvalid(args.getString(1)));
-					sagaPlayer.message(ChunkGroupMessages.optionInvalidInfo());
+					sagaPlayer.message(SettlementMessages.optionInvalid(args.getString(1)));
+					sagaPlayer.message(SettlementMessages.optionInvalidInfo());
 					return;
 				}
 				
@@ -519,18 +519,18 @@ public class AdminCommands {
 			default:
 			
 				// Chunk group:
-				selChunkGroup = sagaPlayer.getChunkGroup();
-				if(selChunkGroup == null){
-					sagaPlayer.message(ChunkGroupMessages.noChunkGroup());
+				selChunkBundle = sagaPlayer.getChunkBundle();
+				if(selChunkBundle == null){
+					sagaPlayer.message(SettlementMessages.noChunkGroup());
 					return;
 				}
 				
 				// Option:
 				aOption = args.getString(0);
-				option = ChunkGroupToggleable.match(aOption);
+				option = ChunkBundleToggleable.match(aOption);
 				if(option == null){
-					sagaPlayer.message(ChunkGroupMessages.optionInvalid(aOption));
-					sagaPlayer.message(ChunkGroupMessages.optionInvalidInfo());
+					sagaPlayer.message(SettlementMessages.optionInvalid(aOption));
+					sagaPlayer.message(SettlementMessages.optionInvalidInfo());
 					return;
 				}
 				
@@ -539,16 +539,16 @@ public class AdminCommands {
 		}
 		
 		// Already enabled:
-		if(selChunkGroup.isOptionEnabled(option)){
-			sagaPlayer.message(ChunkGroupMessages.optionAlreadyEnabled(selChunkGroup, option));
+		if(selChunkBundle.isOptionEnabled(option)){
+			sagaPlayer.message(SettlementMessages.optionAlreadyEnabled(selChunkBundle, option));
 			return;
 		}
 		
 		// Enable:
-		selChunkGroup.enableOption(option);
+		selChunkBundle.enableOption(option);
 		
 		// Inform:
-		sagaPlayer.message(ChunkGroupMessages.optionToggle(selChunkGroup, option));
+		sagaPlayer.message(SettlementMessages.optionToggle(selChunkBundle, option));
 		
 		
 	}
@@ -565,8 +565,8 @@ public class AdminCommands {
 	public static void disableOption(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
-		ChunkGroup selChunkGroup = null;
-		ChunkGroupToggleable option = null;
+		ChunkBundle selChunkBundle = null;
+		ChunkBundleToggleable option = null;
 		
 		String aOption = null;
 		
@@ -575,18 +575,18 @@ public class AdminCommands {
 			case 2:
 				
 				// Chunk group:
-				selChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(args.getString(0));
-				if(selChunkGroup == null){
-					sagaPlayer.message( ChunkGroupMessages.noChunkGroup(args.getString(0)) );
+				selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(args.getString(0));
+				if(selChunkBundle == null){
+					sagaPlayer.message( SettlementMessages.noChunkGroup(args.getString(0)) );
 					return;
 				}
 				
 				// Option:
 				aOption = args.getString(1);
-				option = ChunkGroupToggleable.match(aOption);
+				option = ChunkBundleToggleable.match(aOption);
 				if(option == null){
-					sagaPlayer.message(ChunkGroupMessages.optionInvalid(args.getString(1)));
-					sagaPlayer.message(ChunkGroupMessages.optionInvalidInfo());
+					sagaPlayer.message(SettlementMessages.optionInvalid(args.getString(1)));
+					sagaPlayer.message(SettlementMessages.optionInvalidInfo());
 					return;
 				}
 				
@@ -595,18 +595,18 @@ public class AdminCommands {
 			default:
 			
 				// Chunk group:
-				selChunkGroup = sagaPlayer.getChunkGroup();
-				if(selChunkGroup == null){
-					sagaPlayer.message(ChunkGroupMessages.noChunkGroup());
+				selChunkBundle = sagaPlayer.getChunkBundle();
+				if(selChunkBundle == null){
+					sagaPlayer.message(SettlementMessages.noChunkGroup());
 					return;
 				}
 				
 				// Option:
 				aOption = args.getString(0);
-				option = ChunkGroupToggleable.match(aOption);
+				option = ChunkBundleToggleable.match(aOption);
 				if(option == null){
-					sagaPlayer.message(ChunkGroupMessages.optionInvalid(aOption));
-					sagaPlayer.message(ChunkGroupMessages.optionInvalidInfo());
+					sagaPlayer.message(SettlementMessages.optionInvalid(aOption));
+					sagaPlayer.message(SettlementMessages.optionInvalidInfo());
 					return;
 				}
 				
@@ -615,16 +615,16 @@ public class AdminCommands {
 		}
 		
 		// Already disabled:
-		if(!selChunkGroup.isOptionEnabled(option)){
-			sagaPlayer.message(ChunkGroupMessages.optionAlreadyDisabled(selChunkGroup, option));
+		if(!selChunkBundle.isOptionEnabled(option)){
+			sagaPlayer.message(SettlementMessages.optionAlreadyDisabled(selChunkBundle, option));
 			return;
 		}
 		
 		// Disabled:
-		selChunkGroup.disableOption(option);
+		selChunkBundle.disableOption(option);
 		
 		// Inform:
-		sagaPlayer.message(ChunkGroupMessages.optionToggle(selChunkGroup, option));
+		sagaPlayer.message(SettlementMessages.optionToggle(selChunkBundle, option));
 		
 		
 	}
@@ -672,7 +672,7 @@ public class AdminCommands {
 			
 		} catch (NonExistantSagaPlayerException e) {
 			
-			sagaPlayer.message(ChunkGroupMessages.nonExistantPlayer(playerName));
+			sagaPlayer.message(SettlementMessages.nonExistantPlayer(playerName));
 			return;
 			
 		}

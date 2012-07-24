@@ -11,7 +11,7 @@ import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
 import org.saga.buildings.Building;
 import org.saga.buildings.signs.BuildingSign;
-import org.saga.chunkGroups.ChunkGroup;
+import org.saga.chunks.ChunkBundle;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -83,7 +83,7 @@ public class WriterReader {
 		// Gson:
         GsonBuilder gsonBuilder= new GsonBuilder();
         
-		gsonBuilder.registerTypeAdapter(ChunkGroup.class, new SagaCustomSerializer());
+		gsonBuilder.registerTypeAdapter(ChunkBundle.class, new SagaCustomSerializer());
 		gsonBuilder.registerTypeAdapter(Building.class, new SagaCustomSerializer());
 		gsonBuilder.registerTypeAdapter(BuildingSign.class, new SagaCustomSerializer());
 		

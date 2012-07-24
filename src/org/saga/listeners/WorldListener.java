@@ -5,8 +5,8 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
-import org.saga.chunkGroups.ChunkGroupManager;
-import org.saga.chunkGroups.SagaChunk;
+import org.saga.chunks.ChunkBundleManager;
+import org.saga.chunks.SagaChunk;
 
 public class WorldListener implements Listener{
 
@@ -15,7 +15,7 @@ public class WorldListener implements Listener{
 	public void onChunkLoadEvent(ChunkLoadEvent event) {
 
 		
-		SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(event.getChunk());
+		SagaChunk sagaChunk = ChunkBundleManager.manager().getSagaChunk(event.getChunk());
 
 		// Forward event:
 		if(sagaChunk != null) sagaChunk.onChunkLoad();

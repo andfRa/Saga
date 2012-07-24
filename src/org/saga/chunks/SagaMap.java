@@ -1,4 +1,4 @@
-package org.saga.chunkGroups;
+package org.saga.chunks;
 
 import java.util.ArrayList;
 
@@ -46,12 +46,12 @@ public class SagaMap {
 			StringBuffer row = new StringBuffer();
 			for (int dz = 0; dz > -width; dz--) {
 				
-				SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(location.getWorld().getName(), topLeftX + dx, topLeftZ + dz);
+				SagaChunk sagaChunk = ChunkBundleManager.manager().getSagaChunk(location.getWorld().getName(), topLeftX + dx, topLeftZ + dz);
 
-				ChunkGroup settlement = null;
+				ChunkBundle settlement = null;
 				
 				if (sagaChunk != null) {
-					settlement = sagaChunk.getChunkGroup();
+					settlement = sagaChunk.getChunkBundle();
 				}
 				
 				String symbol = "?";

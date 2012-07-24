@@ -1,4 +1,4 @@
-package org.saga.chunkGroups;
+package org.saga.chunks;
 
 
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public class SagaChunk {
     /**
      * Chunk group.
      */
-    transient private ChunkGroup chunkGroup = null;
+    transient private ChunkBundle chunkBundle = null;
     
     
     // Initialisation:
@@ -93,10 +93,10 @@ public class SagaChunk {
 	/**
 	 * Completes the initialisation.
 	 * 
-	 * @param chunkGroup origin chunk group
+	 * @param chunkBundle origin chunk group
 	 * @return integrity
 	 */
-	public boolean complete(ChunkGroup chunkGroup) {
+	public boolean complete(ChunkBundle chunkBundle) {
 
 		
 		boolean integrity=true;
@@ -122,7 +122,7 @@ public class SagaChunk {
 		}
 		
 		// Check chunk group:
-		this.chunkGroup = chunkGroup;
+		this.chunkBundle = chunkBundle;
 		
 		// Properties:
 		
@@ -130,6 +130,7 @@ public class SagaChunk {
 		
 		
 	}
+	
 	
 	
 	// Interaction:
@@ -160,14 +161,16 @@ public class SagaChunk {
 		return world;
 	}
 
+	
 	/**
 	 * Gets chunk group associated with this saga chunk.
 	 * 
 	 * @return chunk group.
 	 */
-	public ChunkGroup getChunkGroup() {
-		return chunkGroup;
+	public ChunkBundle getChunkBundle() {
+		return chunkBundle;
 	}
+	
 	
 	/**
 	 * Gets the chunk world.
@@ -213,6 +216,7 @@ public class SagaChunk {
         
     }
 	
+	
 	/**
 	 * Loads the bukkit chunk.
 	 * 
@@ -251,6 +255,7 @@ public class SagaChunk {
 		
 		
 	}
+	
 	
 	/**
 	 * Gets the saga chunk location. The location is the highest in the center of the chunk.
@@ -292,6 +297,7 @@ public class SagaChunk {
 		
 	}
 	
+	
 	/**
 	 * Broadcasts a message to all entities on the chunk.
 	 * 
@@ -314,6 +320,7 @@ public class SagaChunk {
 
 
     }
+	
 	
 	/**
 	 * Checks if the bukkit chunk represents a saga chunk.
@@ -338,6 +345,7 @@ public class SagaChunk {
 		return represents(location.getWorld().getChunkAt(location));
 		
 	}
+	
 	
 	/**
 	 * Sends a chunk refresh to all players on the chunk.
@@ -365,6 +373,7 @@ public class SagaChunk {
 		
 	}
 
+	
 	
 	// Building:
 	/**
@@ -424,6 +433,7 @@ public class SagaChunk {
 	}
 
 	
+	
 	// Adjacent:
 	/**
 	 * Gets all the adjacent saga chunks with the given radius
@@ -443,7 +453,7 @@ public class SagaChunk {
 				
 				if((dx*dx + dz*dz) > radiusSquared) continue;
 				
-				SagaChunk adjChunk = ChunkGroupManager.manager().getSagaChunk(getWorldName(), x + dx, z + dz);
+				SagaChunk adjChunk = ChunkBundleManager.manager().getSagaChunk(getWorldName(), x + dx, z + dz);
 				
 				if(adjChunk!= null) adjacent.add(adjChunk);
 				
@@ -543,119 +553,6 @@ public class SagaChunk {
 	}
 	
 	
-	// Events:
-	/**
-	 * Called when a sign changes
-	 * 
-	 * @param event event
-	 * @param sagaPlayer saga player
-	 */
-	public void onSignChange(SignChangeEvent event, SagaPlayer sagaPlayer) {
-
-		
-    	// Forward to building:
-    	Building building = getBuilding();
-    	if(building != null){
-    		
-    		building.onSignChange(event, sagaPlayer);
-
-			// Sign place:
-			if((event.getBlock().getState() instanceof Sign)){
-				
-				Sign sign = (Sign) event.getBlock().getState();
-				bld.handleSignPlace(sagaPlayer, sign, event);
-				
-			}
-    		
-    	}
-    	
-		
-	}
-	
-    /**
-     * Called when a player interacts with something on the chunk.
-     * 
-     * @param event event
-     * @param sagaPlayer saga player
-     */
-    public void onPlayerInteract(PlayerInteractEvent event, SagaPlayer sagaPlayer) {
-    	
-
-		// Forward to chunk group:
-		getChunkGroup().onPlayerInteract(event, sagaPlayer, this);
-		
-		if(bld != null){
-			
-			// Forward to building:
-			bld.onPlayerInteract(event, sagaPlayer);
-			
-			// Storage area:
-			Block block = event.getClickedBlock();
-			if(event.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.CHEST && bld.checkStorageArea(block)){
-				
-				bld.handleItemStorageOpen(event, sagaPlayer);
-				
-			}
-			
-		}
-    	
-
-    	
-    }
-	
-	/**
-	 * Called when an entity explodes on the chunk
-	 * 
-	 * @param event event
-	 */
-	public void onEntityExplode(EntityExplodeEvent event) {
-
-		
-		// Forward to chunk group:
-		ChunkGroup chunkGroup = getChunkGroup();
-		if(chunkGroup == null){
-			return;
-		}
-		chunkGroup.onEntityExplode(event, this);
-		
-		
-	}
-	
-	/**
-	 * Called when a creature spawns on the saga chunk.
-	 * 
-	 * @param event event
-	 */
-	public void onCreatureSpawn(CreatureSpawnEvent event) {
-
-
-		// Canceled:
-		if(event.isCancelled()){
-			return;
-		}
-		
-		// Forward to chunk group:
-		ChunkGroup chunkGroup = getChunkGroup();
-		if(chunkGroup == null){
-			return;
-		}
-		chunkGroup.onCreatureSpawn(event, this);
-		
-		
-	}
-
-	/**
-	 * Called when an entity forms blocks.
-	 * 
-	 * @param event event
-	 */
-	public void onEntityBlockForm(EntityBlockFormEvent event) {
-		
-		// Forward to chunk group:
-		getChunkGroup().onEntityBlockForm(event, this);
-		
-	}
-	
 	
 	// Damage events:
 	/**
@@ -667,7 +564,7 @@ public class SagaChunk {
 		
 
 		// Forward to chunk group:
-		getChunkGroup().onEntityDamage(event, this);
+		getChunkBundle().onEntityDamage(event, this);
 		
 		// Forward to building:
 		if(bld != null) bld.onEntityDamage(event);
@@ -687,7 +584,7 @@ public class SagaChunk {
 		
 
 		// Forward to chunk group:
-		getChunkGroup().onPvpKill(attacker, defender, this);
+		getChunkBundle().onPvpKill(attacker, defender, this);
 		
 		// Forward to building:
 		if(bld != null) bld.onPvPKill(attacker, defender);
@@ -761,11 +658,136 @@ public class SagaChunk {
 		if(bld != null) bld.onBuild(event);
 		
 		// Forward to chunk group:
-		if(chunkGroup != null) chunkGroup.onBuild(event);
+		if(chunkBundle != null) chunkBundle.onBuild(event);
 		
 		
 	}
 
+	
+
+	// Sign events:
+	/**
+	 * Called when a sign changes
+	 * 
+	 * @param event event
+	 * @param sagaPlayer saga player
+	 */
+	public void onSignChange(SignChangeEvent event, SagaPlayer sagaPlayer) {
+
+		
+    	// Forward to building:
+    	Building building = getBuilding();
+    	if(building != null){
+    		
+    		building.onSignChange(event, sagaPlayer);
+
+			// Sign place:
+			if((event.getBlock().getState() instanceof Sign)){
+				
+				Sign sign = (Sign) event.getBlock().getState();
+				bld.handleSignPlace(sagaPlayer, sign, event);
+				
+			}
+    		
+    	}
+    	
+		
+	}
+	
+
+	
+	// Interact events::
+    /**
+     * Called when a player interacts with something on the chunk.
+     * 
+     * @param event event
+     * @param sagaPlayer saga player
+     */
+    public void onPlayerInteract(PlayerInteractEvent event, SagaPlayer sagaPlayer) {
+    	
+
+		// Forward to chunk group:
+		getChunkBundle().onPlayerInteract(event, sagaPlayer, this);
+		
+		if(bld != null){
+			
+			// Forward to building:
+			bld.onPlayerInteract(event, sagaPlayer);
+			
+			// Storage area:
+			Block block = event.getClickedBlock();
+			if(event.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.CHEST && bld.checkStorageArea(block)){
+				
+				bld.handleItemStorageOpen(event, sagaPlayer);
+				
+			}
+			
+		}
+    	
+
+    	
+    }
+
+    
+    
+    // Mob events:
+    /**
+	 * Called when a creature spawns on the saga chunk.
+	 * 
+	 * @param event event
+	 */
+	public void onCreatureSpawn(CreatureSpawnEvent event) {
+
+
+		// Canceled:
+		if(event.isCancelled()){
+			return;
+		}
+		
+		// Forward to chunk group:
+		ChunkBundle chunkBundle = getChunkBundle();
+		if(chunkBundle == null){
+			return;
+		}
+		chunkBundle.onCreatureSpawn(event, this);
+		
+		
+	}
+
+	
+	
+	// World change events:
+	/**
+	 * Called when an entity explodes on the chunk
+	 * 
+	 * @param event event
+	 */
+	public void onEntityExplode(EntityExplodeEvent event) {
+
+		
+		// Forward to chunk group:
+		ChunkBundle chunkBundle = getChunkBundle();
+		if(chunkBundle == null){
+			return;
+		}
+		chunkBundle.onEntityExplode(event, this);
+		
+		
+	}
+
+	/**
+	 * Called when an entity forms blocks.
+	 * 
+	 * @param event event
+	 */
+	public void onEntityBlockForm(EntityBlockFormEvent event) {
+		
+		// Forward to chunk group:
+		getChunkBundle().onEntityBlockForm(event, this);
+		
+	}
+	
+	
 	
 	// Interact events:
 	/**
@@ -780,6 +802,7 @@ public class SagaChunk {
     }
 	
 
+    
 	// Move events:
 	/**
 	 * Called when a player enters the chunk.
@@ -790,17 +813,17 @@ public class SagaChunk {
 	public void onPlayerEnter(SagaPlayer sagaPlayer, SagaChunk last) {
 
 		
-		ChunkGroup lastChunkGroup = null;
-		ChunkGroup thisChunkGroup = getChunkGroup();
+		ChunkBundle lastChunkBundle = null;
+		ChunkBundle thisChunkBundle = getChunkBundle();
 		Building lastBuilding = null;
 		Building thisBuilding = bld;
 		if(last != null){
-			lastChunkGroup = last.getChunkGroup();
+			lastChunkBundle = last.getChunkBundle();
 			lastBuilding = last.bld;
 		}
 		
 		// Forward to chunk group:
-		if(lastChunkGroup != thisChunkGroup) getChunkGroup().onPlayerEnter(sagaPlayer, lastChunkGroup);
+		if(lastChunkBundle != thisChunkBundle) getChunkBundle().onPlayerEnter(sagaPlayer, lastChunkBundle);
 		
 		// Forward to building:
 		if(bld != null && lastBuilding != thisBuilding){
@@ -825,17 +848,17 @@ public class SagaChunk {
 	public void onPlayerLeave(SagaPlayer sagaPlayer, SagaChunk next) {
 
 		
-		ChunkGroup nextChunkGroup = null;
-		ChunkGroup thisChunkGroup = getChunkGroup();
+		ChunkBundle nextChunkBundle = null;
+		ChunkBundle thisChunkBundle = getChunkBundle();
 		Building nextBuilding = null;
 		Building thisBuilding = bld;
 		if(next != null){
-			nextChunkGroup = next.getChunkGroup();
+			nextChunkBundle = next.getChunkBundle();
 			nextBuilding = next.bld;
 		}
 		
 		// Forward to chunk group:
-		if(nextChunkGroup != thisChunkGroup) getChunkGroup().onPlayerLeave(sagaPlayer, nextChunkGroup);
+		if(nextChunkBundle != thisChunkBundle) getChunkBundle().onPlayerLeave(sagaPlayer, nextChunkBundle);
 		
 		// Forward to building:
 		if(bld != null && nextBuilding != thisBuilding){
@@ -851,6 +874,7 @@ public class SagaChunk {
 		
 	}
 
+	
 	
 	// World events:
 	/**
@@ -871,7 +895,7 @@ public class SagaChunk {
 
 
 	
-    // Commands:
+    // Command events:
     /**
      * Called when a player performs a command.
      * 
@@ -887,7 +911,7 @@ public class SagaChunk {
 		}
 
 		// Forward to chunk group:
-		getChunkGroup().onPlayerCommandPreprocess(sagaPlayer, event, this);
+		getChunkBundle().onPlayerCommandPreprocess(sagaPlayer, event, this);
 
 
     }
@@ -934,9 +958,9 @@ public class SagaChunk {
 		
 		
 		if(getBuilding() != null){
-			return "(" + world + ", " + x + ", " + z + ")" + "_{" + getBuilding().getName() + ", " + getChunkGroup().getName() + "}";
+			return "(" + world + ", " + x + ", " + z + ")" + "_{" + getBuilding().getName() + ", " + getChunkBundle().getName() + "}";
 		}else{
-			return  "(" + world + ", " + x + ", " + z + ")" + "_{" + getChunkGroup().getName() + "}";
+			return  "(" + world + ", " + x + ", " + z + ")" + "_{" + getChunkBundle().getName() + "}";
 		}
 		
 		
@@ -953,13 +977,13 @@ public class SagaChunk {
 		
 		switch (chunkSide) {
 		case FRONT: 
-			return ChunkGroupManager.manager().getSagaChunk(world, x - 1, z);
+			return ChunkBundleManager.manager().getSagaChunk(world, x - 1, z);
 		case LEFT:
-			return ChunkGroupManager.manager().getSagaChunk(world, x, z + 1);
+			return ChunkBundleManager.manager().getSagaChunk(world, x, z + 1);
 		case BACK:
-			return ChunkGroupManager.manager().getSagaChunk(world, x +1 , z);
+			return ChunkBundleManager.manager().getSagaChunk(world, x +1 , z);
 		case RIGHT:
-			return ChunkGroupManager.manager().getSagaChunk(world, x, z - 1);	
+			return ChunkBundleManager.manager().getSagaChunk(world, x, z - 1);	
 		default:
 			return null;
 		}
@@ -984,33 +1008,33 @@ public class SagaChunk {
 		String world = bukkitChunk.getWorld().getName();
 		
 		// x + 1:
-		sagaChunk = ChunkGroupManager.manager().getSagaChunk(world, x+1, z-1);
+		sagaChunk = ChunkBundleManager.manager().getSagaChunk(world, x+1, z-1);
 		if(sagaChunk != null) sagaChunks.add(sagaChunk);
 		
-		sagaChunk = ChunkGroupManager.manager().getSagaChunk(world, x+1, z);
+		sagaChunk = ChunkBundleManager.manager().getSagaChunk(world, x+1, z);
 		if(sagaChunk != null) sagaChunks.add(sagaChunk);
 		
-		sagaChunk = ChunkGroupManager.manager().getSagaChunk(world, x+1, z+1);
+		sagaChunk = ChunkBundleManager.manager().getSagaChunk(world, x+1, z+1);
 		if(sagaChunk != null) sagaChunks.add(sagaChunk);
 
 		// x:
-		sagaChunk = ChunkGroupManager.manager().getSagaChunk(world, x, z-1);
+		sagaChunk = ChunkBundleManager.manager().getSagaChunk(world, x, z-1);
 		if(sagaChunk != null) sagaChunks.add(sagaChunk);
 		
-		sagaChunk = ChunkGroupManager.manager().getSagaChunk(world, x, z);
+		sagaChunk = ChunkBundleManager.manager().getSagaChunk(world, x, z);
 		if(sagaChunk != null) sagaChunks.add(sagaChunk);
 		
-		sagaChunk = ChunkGroupManager.manager().getSagaChunk(world, x, z+1);
+		sagaChunk = ChunkBundleManager.manager().getSagaChunk(world, x, z+1);
 		if(sagaChunk != null) sagaChunks.add(sagaChunk);
 		
 		// x - 1:
-		sagaChunk = ChunkGroupManager.manager().getSagaChunk(world, x-1, z-1);
+		sagaChunk = ChunkBundleManager.manager().getSagaChunk(world, x-1, z-1);
 		if(sagaChunk != null) sagaChunks.add(sagaChunk);
 		
-		sagaChunk = ChunkGroupManager.manager().getSagaChunk(world, x-1, z);
+		sagaChunk = ChunkBundleManager.manager().getSagaChunk(world, x-1, z);
 		if(sagaChunk != null) sagaChunks.add(sagaChunk);
 		
-		sagaChunk = ChunkGroupManager.manager().getSagaChunk(world, x-1, z+1);
+		sagaChunk = ChunkBundleManager.manager().getSagaChunk(world, x-1, z+1);
 		if(sagaChunk != null) sagaChunks.add(sagaChunk);
 		
 		return sagaChunks;
@@ -1031,16 +1055,16 @@ public class SagaChunk {
 		SagaChunk adjacent = null;
 		
 		adjacent = getAdjacent(ChunkSide.BACK);
-		if( adjacent == null || !adjacent.getChunkGroup().getId().equals(getChunkGroup().getId()) ) return true;
+		if( adjacent == null || !adjacent.getChunkBundle().getId().equals(getChunkBundle().getId()) ) return true;
 		
 		adjacent = getAdjacent(ChunkSide.FRONT);
-		if( adjacent == null || !adjacent.getChunkGroup().getId().equals(getChunkGroup().getId()) ) return true;
+		if( adjacent == null || !adjacent.getChunkBundle().getId().equals(getChunkBundle().getId()) ) return true;
 		
 		adjacent = getAdjacent(ChunkSide.LEFT);
-		if( adjacent == null || !adjacent.getChunkGroup().getId().equals(getChunkGroup().getId()) ) return true;
+		if( adjacent == null || !adjacent.getChunkBundle().getId().equals(getChunkBundle().getId()) ) return true;
 		
 		adjacent = getAdjacent(ChunkSide.RIGHT);
-		if( adjacent == null || !adjacent.getChunkGroup().getId().equals(getChunkGroup().getId()) ) return true;
+		if( adjacent == null || !adjacent.getChunkBundle().getId().equals(getChunkBundle().getId()) ) return true;
 		
 		return false;
 		

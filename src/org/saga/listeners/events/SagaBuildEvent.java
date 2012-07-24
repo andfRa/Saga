@@ -8,7 +8,7 @@ import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.BlockEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.saga.chunkGroups.SagaChunk;
+import org.saga.chunks.SagaChunk;
 import org.saga.player.SagaPlayer;
 
 public class SagaBuildEvent {

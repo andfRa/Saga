@@ -1,11 +1,11 @@
 package org.saga.listeners.events;
 
-import org.saga.chunkGroups.SagaChunk;
+import org.saga.chunks.SagaChunk;
 import org.saga.config.FactionConfiguration;
 import org.saga.dependencies.PermissionsManager;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
-import org.saga.messages.ChunkGroupMessages;
+import org.saga.messages.SettlementMessages;
 import org.saga.messages.PlayerMessages;
 import org.saga.player.SagaPlayer;
 
@@ -35,7 +35,7 @@ public class SagaEventHandler {
 		if(!event.getbuildOverride().isAllow()){
 			
 			event.cancel();
-			sagaPlayer.message(ChunkGroupMessages.buildOverride(event.getbuildOverride()));
+			sagaPlayer.message(SettlementMessages.buildOverride(event.getbuildOverride()));
 			return;
 			
 		}

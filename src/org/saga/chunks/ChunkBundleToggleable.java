@@ -1,6 +1,6 @@
-package org.saga.chunkGroups;
+package org.saga.chunks;
 
-public enum ChunkGroupToggleable {
+public enum ChunkBundleToggleable {
 
 	
 	OPEN_STORAGE_AREAS,
@@ -15,7 +15,7 @@ public enum ChunkGroupToggleable {
 	 * @param name option name
 	 * @return option corresponding to name, null if none
 	 */
-	public static ChunkGroupToggleable fullMatch(String name) {
+	public static ChunkBundleToggleable fullMatch(String name) {
 
 		
 		try {
@@ -34,15 +34,15 @@ public enum ChunkGroupToggleable {
 	 * @param name option name
 	 * @return option corresponding to name, null if none
 	 */
-	public static ChunkGroupToggleable match(String name) {
+	public static ChunkBundleToggleable match(String name) {
 
 		
 		// Try full match:
-		ChunkGroupToggleable option = fullMatch(name);
+		ChunkBundleToggleable option = fullMatch(name);
 		if(option != null) return option;
 		
 		// Try limited match:
-		ChunkGroupToggleable[] values = values(); 
+		ChunkBundleToggleable[] values = values(); 
 		
 		name = name.toUpperCase().replace(" ", "_");
 		

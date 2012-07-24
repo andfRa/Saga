@@ -6,7 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.util.Vector;
 import org.saga.SagaLogger;
-import org.saga.chunkGroups.SagaChunk;
+import org.saga.chunks.SagaChunk;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;

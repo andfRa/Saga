@@ -21,8 +21,8 @@ import org.saga.SagaLogger;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.BuySign;
 import org.saga.buildings.signs.SellSign;
-import org.saga.chunkGroups.ChunkGroup;
-import org.saga.chunkGroups.SagaChunk;
+import org.saga.chunks.ChunkBundle;
+import org.saga.chunks.SagaChunk;
 import org.saga.config.SettlementConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.economy.EconomyManager;
@@ -569,7 +569,7 @@ public class TradingPost extends Building implements Trader, DaytimeTicker{
 		if(imported != 0 || exported != 0) notifyTransaction();
 		
 		// Inform:
-		if(getChunkGroup() != null) getChunkGroup().broadcast(BuildingMessages.dealsBalance(this));
+		if(getChunkBundle() != null) getChunkBundle().broadcast(BuildingMessages.dealsBalance(this));
 		
 		
 	}
@@ -871,7 +871,7 @@ public class TradingPost extends Building implements Trader, DaytimeTicker{
 					this.newDeals.add(newDeal);
 					
 					// Inform:
-					if(getChunkGroup() != null) getChunkGroup().broadcast(BuildingMessages.formedDeal(this, newDeal));
+					if(getChunkBundle() != null) getChunkBundle().broadcast(BuildingMessages.formedDeal(this, newDeal));
 					
 				}
 				catch (TradeDealNotFoundException e) {
@@ -1004,12 +1004,12 @@ public class TradingPost extends Building implements Trader, DaytimeTicker{
 		String rString = getDisplayName();
 		
 		SagaChunk sagaChunk = getSagaChunk();
-		ChunkGroup chunkGroup = null;
+		ChunkBundle chunkBundle = null;
 		if(sagaChunk != null){
-			chunkGroup = sagaChunk.getChunkGroup();
+			chunkBundle = sagaChunk.getChunkBundle();
 		}
-		if(chunkGroup != null){
-			rString = chunkGroup.getName() + " " + rString;
+		if(chunkBundle != null){
+			rString = chunkBundle.getName() + " " + rString;
 		}
 		return rString;
 		

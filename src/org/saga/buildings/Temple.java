@@ -6,7 +6,7 @@ import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.RespecSign;
-import org.saga.chunkGroups.SagaChunk;
+import org.saga.chunks.SagaChunk;
 import org.saga.player.SagaPlayer;
 
 public class Temple extends Building implements SecondTicker{

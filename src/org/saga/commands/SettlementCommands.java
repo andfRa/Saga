@@ -7,9 +7,9 @@ import org.bukkit.Location;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.Building;
-import org.saga.chunkGroups.ChunkGroup;
-import org.saga.chunkGroups.ChunkGroupManager;
-import org.saga.chunkGroups.SagaChunk;
+import org.saga.chunks.ChunkBundle;
+import org.saga.chunks.ChunkBundleManager;
+import org.saga.chunks.SagaChunk;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
@@ -17,7 +17,7 @@ import org.saga.config.SettlementConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.messages.BuildingMessages;
-import org.saga.messages.ChunkGroupMessages;
+import org.saga.messages.SettlementMessages;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.FactionMessages;
 import org.saga.messages.InfoMessages;
@@ -33,7 +33,7 @@ import org.sk89q.CommandContext;
 import org.sk89q.CommandPermissions;
 
 
-public class ChunkGroupCommands {
+public class SettlementCommands {
 
 	
 	public static Integer maximumNameLength = 15;
@@ -59,17 +59,17 @@ public class ChunkGroupCommands {
 		String settlementName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
 
 		// Location chunk:
-		SagaChunk selectedChunk = sagaPlayer.getSagaChunk();
+		SagaChunk selChunk = sagaPlayer.getSagaChunk();
 		Location location = sagaPlayer.getLocation();
 		if(location == null){
-			SagaLogger.severe(ChunkGroupCommands.class, "saga player location is null for " + sagaPlayer.getName());
+			SagaLogger.severe(SettlementCommands.class, "saga player location is null for " + sagaPlayer.getName());
 			sagaPlayer.error("failed to retrieve "+ sagaPlayer +" player location");
 			return;
 		}
 		
 		// Already claimed:
-		if(selectedChunk != null){
-			sagaPlayer.message(ChunkGroupMessages.chunkClaimed());
+		if(selChunk != null){
+			sagaPlayer.message(SettlementMessages.chunkClaimed());
 			return;
 		}
 
@@ -77,16 +77,16 @@ public class ChunkGroupCommands {
 		ArrayList<SagaChunk> adjacent = SagaChunk.getAllAdjacent(location.getChunk());
 		for (SagaChunk sagaChunk : adjacent) {
 			
-			if(sagaChunk.getChunkGroup() != null){
-				sagaPlayer.message(ChunkGroupMessages.claimAdjacentDeny());
+			if(sagaChunk.getChunkBundle() != null){
+				sagaPlayer.message(SettlementMessages.claimAdjacentDeny());
 				return;
 			}
 			
 		}
 		
 		// Settles:
-		if(sagaPlayer.hasChunkGroup()){
-			sagaPlayer.message(ChunkGroupMessages.oneChunkGroupAllowed());
+		if(sagaPlayer.hasChunkBundle()){
+			sagaPlayer.message(SettlementMessages.oneChunkGroupAllowed());
 			return;
 		}
 		
@@ -97,12 +97,12 @@ public class ChunkGroupCommands {
 		
 		// Validate name:
 		if(!validateName(settlementName)){
-			sagaPlayer.message(ChunkGroupMessages.invalidName());
+			sagaPlayer.message(SettlementMessages.invalidName());
 			return;
 		}
 		
 		// Check name:
-		if( ChunkGroupManager.manager().getChunkGroupWithName(settlementName) != null ){
+		if(ChunkBundleManager.manager().getChunkBundleWithName(settlementName) != null){
 			sagaPlayer.message(FactionMessages.inUse(settlementName));
 			return;
 		}
@@ -110,15 +110,15 @@ public class ChunkGroupCommands {
 		// Settle:
 		Settlement settlement = new Settlement(settlementName);
 		settlement.complete();
-		selectedChunk = new SagaChunk(location);
-		settlement.addChunk(selectedChunk);
+		selChunk = new SagaChunk(location);
+		settlement.addChunk(selChunk);
 		Settlement.create(settlement, sagaPlayer);
 		
 		// Inform:
-		Saga.broadcast(ChunkGroupMessages.settled(sagaPlayer, settlement));
+		Saga.broadcast(SettlementMessages.settled(sagaPlayer, settlement));
 
 		// Play effect:
-		SettlementEffects.playClaim(sagaPlayer, selectedChunk);
+		SettlementEffects.playClaim(sagaPlayer, selChunk);
 		
 		
 	}
@@ -135,25 +135,25 @@ public class ChunkGroupCommands {
 	public static void claim(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
-		ChunkGroup selectedChunkGroup = null;
+		ChunkBundle selChunkBundle = null;
 
 		// Arguments:
 		if(args.argsLength() == 1){
 			
-			// Chunk group:
+			// Chunk bundle:
 			String groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
-			selectedChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(groupName);
-			if(selectedChunkGroup == null){
-				sagaPlayer.message(ChunkGroupMessages.noChunkGroup(groupName));
+			selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+			if(selChunkBundle == null){
+				sagaPlayer.message(SettlementMessages.noChunkGroup(groupName));
 				return;
 			}
 			
 		}else{
 			
-			// Chunk group:
-			selectedChunkGroup = sagaPlayer.getChunkGroup();
-			if(selectedChunkGroup == null){
-				sagaPlayer.message( ChunkGroupMessages.noChunkGroup() );
+			// Chunk bundle:
+			selChunkBundle = sagaPlayer.getChunkBundle();
+			if(selChunkBundle == null){
+				sagaPlayer.message( SettlementMessages.noChunkGroup() );
 				return;
 			}
 			
@@ -163,7 +163,7 @@ public class ChunkGroupCommands {
 		SagaChunk locationChunk = sagaPlayer.getSagaChunk();
 	   	Location location = sagaPlayer.getLocation();
 	   	if(location == null){
-	   		SagaLogger.severe(ChunkGroupCommands.class, "saga player location is null for " + sagaPlayer.getName());
+	   		SagaLogger.severe(SettlementCommands.class, "saga player location is null for " + sagaPlayer.getName());
 	   		sagaPlayer.error("failed to retrieve "+ sagaPlayer +" player location");
 	   		return;
 	   	}
@@ -171,7 +171,7 @@ public class ChunkGroupCommands {
 	  
 	   	// Already claimed:
 	   	if(locationChunk != null){
-			sagaPlayer.message(ChunkGroupMessages.chunkClaimed());
+			sagaPlayer.message(SettlementMessages.chunkClaimed());
 			return;
 		}
 	   	
@@ -179,44 +179,44 @@ public class ChunkGroupCommands {
 		ArrayList<SagaChunk> adjacent = SagaChunk.getAllAdjacent(location.getChunk());
 		for (SagaChunk sagaChunk : adjacent) {
 			
-			if(sagaChunk.getChunkGroup() != selectedChunkGroup){
-				sagaPlayer.message(ChunkGroupMessages.claimAdjacentDeny());
+			if(sagaChunk.getChunkBundle() != selChunkBundle){
+				sagaPlayer.message(SettlementMessages.claimAdjacentDeny());
 				return;
 			}
 			
 		}
 	   	
 		// Not adjacent:
-	   	if(!selectedChunkGroup.isAdjacent(bukkitChunk)){
-			sagaPlayer.message(ChunkGroupMessages.chunkMustBeAdjacent());
+	   	if(!selChunkBundle.isAdjacent(bukkitChunk)){
+			sagaPlayer.message(SettlementMessages.chunkMustBeAdjacent());
 			return;
 		}
 	   	
 	   	// Permissions:
-	   	if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.CLAIM)){
+	   	if(!selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.CLAIM)){
 	   		sagaPlayer.message(SagaMessages.noPermission());
 	   		return;
 	   	}
 	   	
 	   	// Claim points:
-	   	Settlement selectedSettlement = null;
-	   	if(selectedChunkGroup instanceof Settlement){
-	   		selectedSettlement = (Settlement) selectedChunkGroup;
+	   	Settlement selSettlement = null;
+	   	if(selChunkBundle instanceof Settlement){
+	   		selSettlement = (Settlement) selChunkBundle;
 	   	}
-	   	if(selectedSettlement == null || !selectedSettlement.isClaimsAvailable()){
-	   		sagaPlayer.message(ChunkGroupMessages.notEnoughClaims());
+	   	if(selSettlement == null || !selSettlement.isClaimsAvailable()){
+	   		sagaPlayer.message(SettlementMessages.notEnoughClaims());
 	   		return;
 	   	}
 	   	
-		// Add a new chunk to adjacent chunk group:
+		// Add a new chunk to adjacent chunk bundle:
 		SagaChunk sagaChunk = new SagaChunk(bukkitChunk);
-		selectedChunkGroup.addChunk(sagaChunk);
+		selChunkBundle.addChunk(sagaChunk);
 		
 		// Inform:
-		if(sagaPlayer.getChunkGroup() == selectedChunkGroup){
-			sagaPlayer.message(ChunkGroupMessages.claimed(sagaChunk));
+		if(sagaPlayer.getChunkBundle() == selChunkBundle){
+			sagaPlayer.message(SettlementMessages.claimed(sagaChunk));
 		}else{
-			sagaPlayer.message(ChunkGroupMessages.claimed(sagaChunk, selectedChunkGroup));
+			sagaPlayer.message(SettlementMessages.claimed(sagaChunk, selChunkBundle));
 		}
 		
 		// Refresh:
@@ -241,49 +241,49 @@ public class ChunkGroupCommands {
 
 			
 		// Location chunk:
-	   	SagaChunk selectedChunk = sagaPlayer.getSagaChunk();
+	   	SagaChunk selChunk = sagaPlayer.getSagaChunk();
 	   	Location location = sagaPlayer.getLocation();
 	   	if(location == null){
-	   		SagaLogger.severe(ChunkGroupCommands.class, "saga player location is null for " + sagaPlayer.getName());
+	   		SagaLogger.severe(SettlementCommands.class, "saga player location is null for " + sagaPlayer.getName());
 	   		sagaPlayer.error("failed to retrieve "+ sagaPlayer +" player location");
 	   		return;
 	   	}
 	   	
 	   	// Unclaimed:
-	   	if(selectedChunk == null){
-			sagaPlayer.message(ChunkGroupMessages.chunkNotClaimed());
+	   	if(selChunk == null){
+			sagaPlayer.message(SettlementMessages.chunkNotClaimed());
 			return;
 		}
 	   	
-	   	// Chunk group:
-	   	ChunkGroup selectedGroup = selectedChunk.getChunkGroup();
+	   	// Chunk bundle:
+	   	ChunkBundle selGroup = selChunk.getChunkBundle();
 	   	
 	   	// Permissions:
-	   	if(!selectedGroup.hasPermission(sagaPlayer, SettlementPermission.ABANDON)){
+	   	if(!selGroup.hasPermission(sagaPlayer, SettlementPermission.ABANDON)){
 	   		sagaPlayer.message(SagaMessages.noPermission());
 	   		return;
 	   	}
 	   	
-		// Remove chunk from the chunk group:
-		selectedGroup.removeChunk(selectedChunk);
+		// Remove chunk from the chunk bundle:
+		selGroup.removeChunk(selChunk);
 		
 		// Inform:
-		if(sagaPlayer.getChunkGroup() == selectedGroup){
-			sagaPlayer.message(ChunkGroupMessages.abandoned(selectedChunk));
+		if(sagaPlayer.getChunkBundle() == selGroup){
+			sagaPlayer.message(SettlementMessages.abandoned(selChunk));
 		}else{
-			sagaPlayer.message(ChunkGroupMessages.abandoned(selectedChunk, selectedGroup));
+			sagaPlayer.message(SettlementMessages.abandoned(selChunk, selGroup));
 		}
 		
 		// Refresh:
-		selectedChunk.refresh();
+		selChunk.refresh();
 		
 		// Play effect:
-		SettlementEffects.playAbandon(sagaPlayer, selectedChunk);
+		SettlementEffects.playAbandon(sagaPlayer, selChunk);
 		
 		// Delete if none left:
-		if( selectedGroup.getSize() == 0 ){
-			selectedGroup.delete();
-			Saga.broadcast(ChunkGroupMessages.dissolved(sagaPlayer, selectedGroup));
+		if( selGroup.getSize() == 0 ){
+			selGroup.delete();
+			Saga.broadcast(SettlementMessages.dissolved(sagaPlayer, selGroup));
 		}
 		
 		
@@ -301,73 +301,73 @@ public class ChunkGroupCommands {
 	public static void claimChunkGroup(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-		ChunkGroup selectedChunkGroup = null;
+		ChunkBundle selChunkBundle = null;
 		
-		// Selected chunk group:
+		// Selected chunk bundle:
 		if(args.argsLength() == 1){
 			
-			// Chunk group:
+			// Chunk bundle:
 			String groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
-			selectedChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(groupName);
-			if(selectedChunkGroup == null){
-				sagaPlayer.message(ChunkGroupMessages.noChunkGroup(groupName));
+			selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+			if(selChunkBundle == null){
+				sagaPlayer.message(SettlementMessages.noChunkGroup(groupName));
 				return;
 			}
 			
 		}else{
 			
 			SagaChunk sagaChunk = sagaPlayer.getSagaChunk();
-			if(sagaChunk != null) selectedChunkGroup = sagaChunk.getChunkGroup();
-			if(selectedChunkGroup == null){
-				sagaPlayer.message( ChunkGroupMessages.noChunkGroup() );
+			if(sagaChunk != null) selChunkBundle = sagaChunk.getChunkBundle();
+			if(selChunkBundle == null){
+				sagaPlayer.message( SettlementMessages.noChunkGroup() );
 				return;
 			}
 			
 		}
 
 		// Permission:
-		if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.CLAIM_SETTLEMENT)){
+		if(!selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.CLAIM_SETTLEMENT)){
 			sagaPlayer.message(SagaMessages.noPermission());
 			return;
 		}
 
-    	// Already has chunk group:
-    	if(sagaPlayer.getChunkGroup() != null){
-    		sagaPlayer.message(ChunkGroupMessages.haveCunkGroup());
+    	// Already has chunk bundle:
+    	if(sagaPlayer.getChunkBundle() != null){
+    		sagaPlayer.message(SettlementMessages.haveCunkGroup());
     		return;
     	}
 		
-		// Already in chunk group:
-		if(selectedChunkGroup.hasMember(sagaPlayer.getName())){
-			sagaPlayer.message(ChunkGroupMessages.alreadyInTheChunkGroup(selectedChunkGroup));
+		// Already in chunk bundle:
+		if(selChunkBundle.hasMember(sagaPlayer.getName())){
+			sagaPlayer.message(SettlementMessages.alreadyInTheChunkBundle(selChunkBundle));
 			return;
 		}
 		
-		// Add to chunk group:
-		selectedChunkGroup.addMember(sagaPlayer);
+		// Add to chunk bundle:
+		selChunkBundle.addMember(sagaPlayer);
 		
 		// Set owner role:
-		if(selectedChunkGroup instanceof Settlement){
+		if(selChunkBundle instanceof Settlement){
 
-			Settlement selectedSettlement = (Settlement) selectedChunkGroup;
-			String roleName = selectedSettlement.getDefinition().ownerRole;
+			Settlement selSettlement = (Settlement) selChunkBundle;
+			String roleName = selSettlement.getDefinition().ownerRole;
 			
 			// Get role:
 			Proficiency role;
 			try {
 				role = ProficiencyConfiguration.config().createProficiency(roleName);
 			} catch (InvalidProficiencyException e) {
-				sagaPlayer.message(ChunkGroupMessages.invalidRole(roleName));
+				sagaPlayer.message(SettlementMessages.invalidRole(roleName));
 				return;
 			}
 			
 			// Set role:
-			selectedSettlement.setRole(sagaPlayer, role);
+			selSettlement.setRole(sagaPlayer, role);
 			
 		}
 
 		// Inform:
-		sagaPlayer.message(ChunkGroupMessages.claimedChunkGroupBroadcast(sagaPlayer, selectedChunkGroup));
+		sagaPlayer.message(SettlementMessages.claimedChunkBundleBroadcast(sagaPlayer, selChunkBundle));
 		
 		 
 	}
@@ -388,20 +388,20 @@ public class ChunkGroupCommands {
 		
 
 		String buildingName = null;
-		ChunkGroup selectedChunkGroup = null;
+		ChunkBundle selChunkBundle = null;
 
 		// Arguments:
 		buildingName = args.getString(0).replace(SagaMessages.spaceSymbol, " ").toLowerCase();
 		
 		// Selected chunk:
-		SagaChunk selectedChunk = sagaPlayer.getSagaChunk();
-	   	if(selectedChunk == null){
-			sagaPlayer.message(BuildingMessages.notOnClaimedLand(selectedChunkGroup));
+		SagaChunk selChunk = sagaPlayer.getSagaChunk();
+	   	if(selChunk == null){
+			sagaPlayer.message(BuildingMessages.notOnClaimedLand(selChunkBundle));
 			return;
 		}
 		
-	   	// Selected chunk group:
-	   	selectedChunkGroup = selectedChunk.getChunkGroup();
+	   	// Selected chunk bundle:
+	   	selChunkBundle = selChunk.getChunkBundle();
 
 	   	// Valid building:
 	   	if(SettlementConfiguration.config().getBuildingDefinition(buildingName) == null){
@@ -410,55 +410,55 @@ public class ChunkGroupCommands {
 	   	}
 	   	
 		// Building:
-		Building selectedBuilding;
+		Building selBuilding;
 		try {
-			selectedBuilding = SettlementConfiguration.config().createBuilding(buildingName);
+			selBuilding = SettlementConfiguration.config().createBuilding(buildingName);
 		} catch (InvalidBuildingException e) {
-			SagaLogger.severe(ChunkGroupCommands.class, sagaPlayer + " tried to set a building with missing definition");
+			SagaLogger.severe(SettlementCommands.class, sagaPlayer + " tried to set a building with missing definition");
 			sagaPlayer.error("definition missing for " + buildingName + " building");
 			return;
 		}
-		if(selectedBuilding == null){
+		if(selBuilding == null){
 			sagaPlayer.message(BuildingMessages.invalidBuilding(buildingName));
 			return;
 		}
 		
 		// Permission:
-		if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.SET_BUILDING)){
-			sagaPlayer.message(SagaMessages.noPermission(selectedChunkGroup));
+		if(!selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.SET_BUILDING)){
+			sagaPlayer.message(SagaMessages.noPermission(selChunkBundle));
 			return;
 		}
 		
 		// Building points:
-		if(selectedChunkGroup.getRemainingBuildPoints() < selectedBuilding.getDefinition().getBuildPoints()){
-			sagaPlayer.message(ChunkGroupMessages.notEnoughBuildingPoints(selectedBuilding));
+		if(selChunkBundle.getRemainingBuildPoints() < selBuilding.getDefinition().getBuildPoints()){
+			sagaPlayer.message(SettlementMessages.notEnoughBuildingPoints(selBuilding));
 			return;
 		}
 
 		// Existing building:
-		if(selectedChunk.getBuilding() != null){
-			sagaPlayer.message(BuildingMessages.oneBuildingAllowed(selectedChunkGroup));
+		if(selChunk.getBuilding() != null){
+			sagaPlayer.message(BuildingMessages.oneBuildingAllowed(selChunkBundle));
 			return;
 		}
 
 		// Building available:
-		if(!selectedChunkGroup.isBuildingAvailable(buildingName)){
-			sagaPlayer.message(BuildingMessages.unavailable(selectedBuilding));
+		if(!selChunkBundle.isBuildingAvailable(buildingName)){
+			sagaPlayer.message(BuildingMessages.unavailable(selBuilding));
 			return;
 		}
 		
 		// Set building:
-		selectedChunk.setBuilding(selectedBuilding);
+		selChunk.setBuilding(selBuilding);
 
 		// Inform:
-		if(sagaPlayer.getChunkGroup() == selectedChunkGroup){
-			sagaPlayer.message(ChunkGroupMessages.setBuilding(selectedBuilding));
+		if(sagaPlayer.getChunkBundle() == selChunkBundle){
+			sagaPlayer.message(SettlementMessages.setBuilding(selBuilding));
 		}else{
-			sagaPlayer.message(ChunkGroupMessages.setBuilding(selectedBuilding, selectedChunkGroup));
+			sagaPlayer.message(SettlementMessages.setBuilding(selBuilding, selChunkBundle));
 		}
 		
 		// Play effect:
-		SettlementEffects.playBuildingSet(sagaPlayer, selectedBuilding);
+		SettlementEffects.playBuildingSet(sagaPlayer, selBuilding);
 		
 
 	}
@@ -475,47 +475,47 @@ public class ChunkGroupCommands {
 	public static void removeBuilding(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
-		ChunkGroup selectedChunkGroup = null;
+		ChunkBundle selChunkBundle = null;
 		
 		// Arguments:
-		selectedChunkGroup = getLocationChunkGroup(sagaPlayer);
-		if(selectedChunkGroup == null){
-			sagaPlayer.message(ChunkGroupMessages.noChunkGroup());
+		selChunkBundle = getLocationChunkBundle(sagaPlayer);
+		if(selChunkBundle == null){
+			sagaPlayer.message(SettlementMessages.noChunkGroup());
 			return;
 		}
 		
 		// Selected chunk:
-		SagaChunk selectedChunk = sagaPlayer.getSagaChunk();
-	   	if(selectedChunk == null){
-			sagaPlayer.message(BuildingMessages.notOnClaimedLand(selectedChunkGroup));
+		SagaChunk selChunk = sagaPlayer.getSagaChunk();
+	   	if(selChunk == null){
+			sagaPlayer.message(BuildingMessages.notOnClaimedLand(selChunkBundle));
 			return;
 		}
 		
 		// Existing building:
-		Building selectedBuilding = selectedChunk.getBuilding();
-		if(selectedBuilding == null){
-			sagaPlayer.message(ChunkGroupMessages.noBuilding());
+		Building selBuilding = selChunk.getBuilding();
+		if(selBuilding == null){
+			sagaPlayer.message(SettlementMessages.noBuilding());
 			return;
 		}
 		
 		// Permission:
-		if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.REMOVE_BUILDING)){
-			sagaPlayer.message(SagaMessages.noPermission(selectedChunkGroup));
+		if(!selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.REMOVE_BUILDING)){
+			sagaPlayer.message(SagaMessages.noPermission(selChunkBundle));
 			return;
 		}
 
 		// Inform:
-		if(sagaPlayer.getChunkGroup() == selectedChunkGroup){
-			sagaPlayer.message(ChunkGroupMessages.removedBuilding(selectedBuilding));
+		if(sagaPlayer.getChunkBundle() == selChunkBundle){
+			sagaPlayer.message(SettlementMessages.removedBuilding(selBuilding));
 		}else{
-			sagaPlayer.message(ChunkGroupMessages.removedBuilding(selectedBuilding, selectedChunkGroup));
+			sagaPlayer.message(SettlementMessages.removedBuilding(selBuilding, selChunkBundle));
 		}
 
 		// Play effect:
-		SettlementEffects.playBuildingRemove(sagaPlayer, selectedBuilding);
+		SettlementEffects.playBuildingRemove(sagaPlayer, selBuilding);
 		
 		// Remove building:
-		selectedChunk.removeBuilding();
+		selChunk.removeBuilding();
 
 		
 	}
@@ -535,42 +535,42 @@ public class ChunkGroupCommands {
 	public static void invite(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-		ChunkGroup selectedChunkGroup = null;
-		SagaPlayer selectedPlayer = null;
+		ChunkBundle selChunkBundle = null;
+		SagaPlayer selPlayer = null;
 		
 		// Arguments:
 		if(args.argsLength() == 2){
 			
-			// Chunk group:
+			// Chunk bundle:
 			String groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
-			selectedChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(groupName);
-			if(selectedChunkGroup == null){
-				sagaPlayer.message(ChunkGroupMessages.noChunkGroup(groupName));
+			selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+			if(selChunkBundle == null){
+				sagaPlayer.message(SettlementMessages.noChunkGroup(groupName));
 				return;
 			}
 			
 			try {
 				// Force:
-				selectedPlayer = Saga.plugin().forceSagaPlayer(args.getString(1));
+				selPlayer = Saga.plugin().forceSagaPlayer(args.getString(1));
 			} catch (NonExistantSagaPlayerException e) {
-				sagaPlayer.message(ChunkGroupMessages.nonExistantPlayer(args.getString(1)));
+				sagaPlayer.message(SettlementMessages.nonExistantPlayer(args.getString(1)));
 				return;
 			}
 			
 		}else{
 			
-			// Chunk group:
-			selectedChunkGroup = sagaPlayer.getChunkGroup();
-			if(selectedChunkGroup == null){
-				sagaPlayer.message( ChunkGroupMessages.noChunkGroup() );
+			// Chunk bundle:
+			selChunkBundle = sagaPlayer.getChunkBundle();
+			if(selChunkBundle == null){
+				sagaPlayer.message( SettlementMessages.noChunkGroup() );
 				return;
 			}
 			
 			try {
 				// Force:
-				selectedPlayer = Saga.plugin().forceSagaPlayer(args.getString(0));
+				selPlayer = Saga.plugin().forceSagaPlayer(args.getString(0));
 			} catch (NonExistantSagaPlayerException e) {
-				sagaPlayer.message(ChunkGroupMessages.nonExistantPlayer(args.getString(0)));
+				sagaPlayer.message(SettlementMessages.nonExistantPlayer(args.getString(0)));
 				return;
 			}
 			
@@ -578,41 +578,41 @@ public class ChunkGroupCommands {
 		
 		
 		// Permission:
-		if( !selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.INVITE) ){
+		if( !selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.INVITE) ){
 			sagaPlayer.message(SagaMessages.noPermission());
 			return;
 		}
 		
 		// Already a member:
-		if(selectedChunkGroup.hasMember( selectedPlayer.getName()) ){
+		if(selChunkBundle.hasMember( selPlayer.getName()) ){
 		
-			sagaPlayer.message( ChunkGroupMessages.alreadyInTheChunkGroup(selectedPlayer, selectedChunkGroup) );
+			sagaPlayer.message( SettlementMessages.alreadyInTheChunkBundle(selPlayer, selChunkBundle) );
 			// Unforce:
-			Saga.plugin().unforceSagaPlayer(selectedPlayer.getName());
+			Saga.plugin().unforceSagaPlayer(selPlayer.getName());
 			return;
 			
 		}
 		
 		// Already invited:
-		if(selectedPlayer.hasChunkGroupInvite(selectedChunkGroup.getId())){
+		if(selPlayer.hasChunkGroupInvite(selChunkBundle.getId())){
 			
-			sagaPlayer.message( ChunkGroupMessages.alreadyInvited(selectedPlayer, selectedChunkGroup) );
+			sagaPlayer.message( SettlementMessages.alreadyInvited(selPlayer, selChunkBundle) );
 			// Unforce:
-			Saga.plugin().unforceSagaPlayer(selectedPlayer.getName());
+			Saga.plugin().unforceSagaPlayer(selPlayer.getName());
 			return;
 			
 		}
 		
 		// Add invite:
-		selectedPlayer.addChunkGroupInvite(selectedChunkGroup.getId());
+		selPlayer.addChunkGroupInvite(selChunkBundle.getId());
 		
 		// Inform:
-		selectedPlayer.message(ChunkGroupMessages.beenInvited(selectedPlayer, selectedChunkGroup));
-		selectedChunkGroup.broadcast(ChunkGroupMessages.invited(selectedPlayer, selectedChunkGroup));
-		selectedPlayer.message(ChunkGroupMessages.informAccept());
+		selPlayer.message(SettlementMessages.beenInvited(selPlayer, selChunkBundle));
+		selChunkBundle.broadcast(SettlementMessages.invited(selPlayer, selChunkBundle));
+		selPlayer.message(SettlementMessages.informAccept());
 		
 		// Unforce:
-		Saga.plugin().unforceSagaPlayer(selectedPlayer.getName());
+		Saga.plugin().unforceSagaPlayer(selPlayer.getName());
 		return;
 		
 		
@@ -632,49 +632,49 @@ public class ChunkGroupCommands {
 
     	// No invites:
     	if(sagaPlayer.getChunkGroupInvites().size() == 0){
-    		sagaPlayer.message(ChunkGroupMessages.playerNoInvites(sagaPlayer));
+    		sagaPlayer.message(SettlementMessages.playerNoInvites(sagaPlayer));
     		return;
     	}
     	
-    	// Find chunk group:
-    	ChunkGroup selectedChunkGroup = null;
+    	// Find chunk bundle:
+    	ChunkBundle selChunkBundle = null;
     	ArrayList<Integer> invitationIds = sagaPlayer.getChunkGroupInvites();
     	// No parameters:
     	if(args.argsLength() == 0 && invitationIds.size() > 0){
-    		selectedChunkGroup = ChunkGroupManager.manager().getChunkGroup(invitationIds.get(invitationIds.size() -1 ));
+    		selChunkBundle = ChunkBundleManager.manager().getChunkBundle(invitationIds.get(invitationIds.size() -1 ));
     	}
-    	// Chunk group name parameter:
+    	// Chunk bundle name parameter:
     	else if(args.argsLength() == 1){
     		for (int i = 0; i < invitationIds.size(); i++) {
-    			ChunkGroup group = ChunkGroupManager.manager().getChunkGroup(invitationIds.get(i));
+    			ChunkBundle group = ChunkBundleManager.manager().getChunkBundle(invitationIds.get(i));
 				if( group != null && group.getName().equals(args.getString(0)) ){
-					selectedChunkGroup = group;
+					selChunkBundle = group;
 					break;
 				}
 			}
     	}
     	
-    	// Chunk group doesn't exist:
-    	if(selectedChunkGroup == null && args.argsLength() == 1){
-    		sagaPlayer.message(ChunkGroupMessages.nonExistantChunkGroup(args.getString(0)));
+    	// Chunk bundle doesn't exist:
+    	if(selChunkBundle == null && args.argsLength() == 1){
+    		sagaPlayer.message(SettlementMessages.nonExistantChunkGroup(args.getString(0)));
     		return;
-    	}else if(selectedChunkGroup == null){
-    		sagaPlayer.message( ChunkGroupMessages.nonExistantChunkGroup() );
+    	}else if(selChunkBundle == null){
+    		sagaPlayer.message( SettlementMessages.nonExistantChunkGroup() );
     		return;
     	}
     	
-    	// Already in a chunk group:
-    	if(sagaPlayer.getChunkGroup() != null){
-    		sagaPlayer.message(ChunkGroupMessages.haveCunkGroup());
+    	// Already in a chunk bundle:
+    	if(sagaPlayer.getChunkBundle() != null){
+    		sagaPlayer.message(SettlementMessages.haveCunkGroup());
     		return;
     	}
     	
     	// Inform:
-    	selectedChunkGroup.broadcast(ChunkGroupMessages.joined(sagaPlayer, selectedChunkGroup));
-		sagaPlayer.message(ChunkGroupMessages.haveJoined(sagaPlayer, selectedChunkGroup));
+    	selChunkBundle.broadcast(SettlementMessages.joined(sagaPlayer, selChunkBundle));
+		sagaPlayer.message(SettlementMessages.haveJoined(sagaPlayer, selChunkBundle));
 
-    	// Add to chunk group:
-		selectedChunkGroup.addMember(sagaPlayer);
+    	// Add to chunk bundle:
+		selChunkBundle.addMember(sagaPlayer);
     	
     	// Decline every invitation:
     	ArrayList<Integer> chunkGroupIds = sagaPlayer.getChunkGroupInvites();
@@ -704,7 +704,7 @@ public class ChunkGroupCommands {
 		}
     	
     	// Inform:
-    	sagaPlayer.message(ChunkGroupMessages.declinedInvites());
+    	sagaPlayer.message(SettlementMessages.declinedInvites());
 		
 		
 	}
@@ -721,58 +721,58 @@ public class ChunkGroupCommands {
 	public static void quit(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
-		ChunkGroup selectedChunkGroup = null;
+		ChunkBundle selChunkBundle = null;
 
 		// Arguments:
-		selectedChunkGroup = sagaPlayer.getChunkGroup();
-		if(selectedChunkGroup == null){
+		selChunkBundle = sagaPlayer.getChunkBundle();
+		if(selChunkBundle == null){
 			
-			if(sagaPlayer.hasChunkGroup()){
+			if(sagaPlayer.hasChunkBundle()){
 				sagaPlayer.removeChunkGroupId(sagaPlayer.getChunkGroupId());
 			}
 			
-			sagaPlayer.message( ChunkGroupMessages.noChunkGroup() );
+			sagaPlayer.message( SettlementMessages.noChunkGroup() );
 			return;
 			
 		}
 		
 //		// Permission:
-//		if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.QUIT)){
+//		if(!selChunkGroup.hasPermission(sagaPlayer, SettlementPermission.QUIT)){
 //			sagaPlayer.message(SagaMessages.noPermission());
 //			return;
 //		}
 
 		// Not a member:
-		if( !selectedChunkGroup.hasMember(sagaPlayer.getName()) ){
-			sagaPlayer.message(ChunkGroupMessages.notChunkGroupMember(selectedChunkGroup));
+		if( !selChunkBundle.hasMember(sagaPlayer.getName()) ){
+			sagaPlayer.message(SettlementMessages.notChunkBundleMember(selChunkBundle));
 			return;
 		}
 		
 		// Remove:
-		selectedChunkGroup.removeMember(sagaPlayer);
+		selChunkBundle.removeMember(sagaPlayer);
 
 		// Inform:
-		selectedChunkGroup.broadcast(ChunkGroupMessages.quit(sagaPlayer, selectedChunkGroup));
-		sagaPlayer.message(ChunkGroupMessages.haveQuit(sagaPlayer, selectedChunkGroup));
+		selChunkBundle.broadcast(SettlementMessages.quit(sagaPlayer, selChunkBundle));
+		sagaPlayer.message(SettlementMessages.haveQuit(sagaPlayer, selChunkBundle));
 		
 		// Delete:
-		if(selectedChunkGroup instanceof Settlement){
+		if(selChunkBundle instanceof Settlement){
 			
-			Settlement selectedsettlement = (Settlement) selectedChunkGroup;
+			Settlement selsettlement = (Settlement) selChunkBundle;
 			
-			if(selectedChunkGroup.getMemberCount() == 0){
+			if(selChunkBundle.getMemberCount() == 0){
 
-				if(selectedsettlement.getLevel() < SettlementConfiguration.config().noDeleteLevel){
+				if(selsettlement.getLevel() < SettlementConfiguration.config().noDeleteLevel){
 
 					// Delete:
-					selectedsettlement.delete();
+					selsettlement.delete();
 						
 					// Inform:
-					Saga.broadcast(ChunkGroupMessages.dissolved(sagaPlayer, selectedsettlement));
+					Saga.broadcast(SettlementMessages.dissolved(sagaPlayer, selsettlement));
 					
 				}else{
 					
-					sagaPlayer.message(ChunkGroupMessages.informSettlementAboveLevelDelete());
+					sagaPlayer.message(SettlementMessages.informSettlementAboveLevelDelete());
 					
 				}
 				
@@ -795,39 +795,39 @@ public class ChunkGroupCommands {
 	public static void kick(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
-		ChunkGroup selectedChunkGroup = null;
+		ChunkBundle selChunkBundle = null;
 		String tragetName = null;
 
 		// Arguments:
 		if(args.argsLength() == 2){
 			
-			// Chunk group:
+			// Chunk bundle:
 			String groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
-			selectedChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(groupName);
-			if(selectedChunkGroup == null){
-				sagaPlayer.message(ChunkGroupMessages.noChunkGroup(groupName));
+			selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+			if(selChunkBundle == null){
+				sagaPlayer.message(SettlementMessages.noChunkGroup(groupName));
 				return;
 			}
 
 			// Target name:
-			tragetName = selectedChunkGroup.matchName(args.getString(1));
+			tragetName = selChunkBundle.matchName(args.getString(1));
 			
 		}else{
 			
-			// Chunk group:
-			selectedChunkGroup = sagaPlayer.getChunkGroup();
-			if(selectedChunkGroup == null){
-				sagaPlayer.message( ChunkGroupMessages.noChunkGroup() );
+			// Chunk bundle:
+			selChunkBundle = sagaPlayer.getChunkBundle();
+			if(selChunkBundle == null){
+				sagaPlayer.message( SettlementMessages.noChunkGroup() );
 				return;
 			}
 
 			// Target name:
-			tragetName = selectedChunkGroup.matchName(args.getString(0));
+			tragetName = selChunkBundle.matchName(args.getString(0));
 			
 		}
 		
 		// Permission:
-		if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.KICK)){
+		if(!selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.KICK)){
 			sagaPlayer.message(SagaMessages.noPermission());
 			return;
 		}
@@ -842,8 +842,8 @@ public class ChunkGroupCommands {
 		}
 		
 		// Target in the faction:
-		if(!selectedChunkGroup.hasMember(kickedPlayer.getName())){
-			sagaPlayer.message(ChunkGroupMessages.playerNotChunkGroupMember(kickedPlayer, selectedChunkGroup));
+		if(!selChunkBundle.hasMember(kickedPlayer.getName())){
+			sagaPlayer.message(SettlementMessages.playerNotChunkBundleMember(kickedPlayer, selChunkBundle));
 			// Unforce:
 			Saga.plugin().unforceSagaPlayer(tragetName);
 			return;
@@ -851,40 +851,40 @@ public class ChunkGroupCommands {
 		
 		// Kicked yourself:
 		if(kickedPlayer.equals(sagaPlayer)){
-			sagaPlayer.message(ChunkGroupMessages.cantKickYourself(sagaPlayer, selectedChunkGroup));
+			sagaPlayer.message(SettlementMessages.cantKickYourself(sagaPlayer, selChunkBundle));
 			// Unforce:
 			Saga.plugin().unforceSagaPlayer(tragetName);
 			return;
 		}
 		
 		// Remove player:
-		selectedChunkGroup.removeMember(kickedPlayer);
+		selChunkBundle.removeMember(kickedPlayer);
 		
 		// Unforce:
 		Saga.plugin().unforceSagaPlayer(tragetName);
 
 		// Inform:
-		selectedChunkGroup.broadcast(ChunkGroupMessages.kicked(kickedPlayer, selectedChunkGroup));
-		kickedPlayer.message(ChunkGroupMessages.beenKicked(kickedPlayer, selectedChunkGroup));
+		selChunkBundle.broadcast(SettlementMessages.kicked(kickedPlayer, selChunkBundle));
+		kickedPlayer.message(SettlementMessages.beenKicked(kickedPlayer, selChunkBundle));
 		
 		// Delete:
-		if(selectedChunkGroup instanceof Settlement){
+		if(selChunkBundle instanceof Settlement){
 			
-			Settlement selectedsettlement = (Settlement) selectedChunkGroup;
+			Settlement selsettlement = (Settlement) selChunkBundle;
 			
-			if(selectedChunkGroup.getMemberCount() == 0){
+			if(selChunkBundle.getMemberCount() == 0){
 
-				if(selectedsettlement.getLevel() < SettlementConfiguration.config().noDeleteLevel){
+				if(selsettlement.getLevel() < SettlementConfiguration.config().noDeleteLevel){
 
 					// Delete:
-					selectedsettlement.delete();
+					selsettlement.delete();
 						
 					// Inform:
-					Saga.broadcast(ChunkGroupMessages.dissolved(sagaPlayer, selectedsettlement));
+					Saga.broadcast(SettlementMessages.dissolved(sagaPlayer, selsettlement));
 					
 				}else{
 					
-					sagaPlayer.message(ChunkGroupMessages.informSettlementAboveLevelDelete());
+					sagaPlayer.message(SettlementMessages.informSettlementAboveLevelDelete());
 					
 				}
 				
@@ -907,18 +907,18 @@ public class ChunkGroupCommands {
 	public static void declareOwner(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
-		ChunkGroup selectedChunkGroup = null;
+		ChunkBundle selChunkBundle = null;
 		String targetName = null;
 		
 
 		// Arguments:
 		if(args.argsLength() == 2){
 			
-			// Chunk group:
+			// Chunk bundle:
 			String groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
-			selectedChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(groupName);
-			if(selectedChunkGroup == null){
-				sagaPlayer.message(ChunkGroupMessages.noChunkGroup(groupName));
+			selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+			if(selChunkBundle == null){
+				sagaPlayer.message(SettlementMessages.noChunkGroup(groupName));
 				return;
 			}
 
@@ -927,10 +927,10 @@ public class ChunkGroupCommands {
 			
 		}else{
 			
-			// Chunk group:
-			selectedChunkGroup = sagaPlayer.getChunkGroup();
-			if(selectedChunkGroup == null){
-				sagaPlayer.message( ChunkGroupMessages.noChunkGroup() );
+			// Chunk bundle:
+			selChunkBundle = sagaPlayer.getChunkBundle();
+			if(selChunkBundle == null){
+				sagaPlayer.message( SettlementMessages.noChunkGroup() );
 				return;
 			}
 
@@ -940,7 +940,7 @@ public class ChunkGroupCommands {
 		}
 		
 		// Permission:
-		if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.DECLARE_OWNER)){
+		if(!selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.DECLARE_OWNER)){
 			sagaPlayer.message(SagaMessages.noPermission());
 			return;
 		}
@@ -955,13 +955,13 @@ public class ChunkGroupCommands {
 		}
 		
 		// Remove old owner:
-		selectedChunkGroup.removeOwner();
+		selChunkBundle.removeOwner();
 		
 		// Set new owner:
-		selectedChunkGroup.setOwner(targetPlayer.getName());
+		selChunkBundle.setOwner(targetPlayer.getName());
 		
 		// Inform:
-		selectedChunkGroup.broadcast(ChunkGroupMessages.newOwner(targetName));
+		selChunkBundle.broadcast(SettlementMessages.newOwner(targetName));
 		
    		// Unforce:
    		Saga.plugin().unforceSagaPlayer(targetName);
@@ -981,50 +981,50 @@ public class ChunkGroupCommands {
 	public static void setRole(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-		ChunkGroup selectedChunkGroup = null;
+		ChunkBundle selChunkBundle = null;
 		String targetName = null;
 		String roleName = null;
 		
 		// Arguments:
 		if(args.argsLength() == 3){
 			
-			// Chunk group:
+			// Chunk bundle:
 			String groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
-			selectedChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(groupName);
-			if(selectedChunkGroup == null){
-				sagaPlayer.message(ChunkGroupMessages.noChunkGroup(groupName));
+			selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+			if(selChunkBundle == null){
+				sagaPlayer.message(SettlementMessages.noChunkGroup(groupName));
 				return;
 			}
 			
-			targetName = selectedChunkGroup.matchName(args.getString(1));
+			targetName = selChunkBundle.matchName(args.getString(1));
 
 			roleName = args.getString(2).replace(SagaMessages.spaceSymbol, " ").toLowerCase();;
 			
 		}else{
 			
-			// Chunk group:
-			selectedChunkGroup = sagaPlayer.getChunkGroup();
-			if(selectedChunkGroup == null){
-				sagaPlayer.message( ChunkGroupMessages.noChunkGroup() );
+			// Chunk bundle:
+			selChunkBundle = sagaPlayer.getChunkBundle();
+			if(selChunkBundle == null){
+				sagaPlayer.message( SettlementMessages.noChunkGroup() );
 				return;
 			}
 
-			targetName = selectedChunkGroup.matchName(args.getString(0));
+			targetName = selChunkBundle.matchName(args.getString(0));
 
 			roleName = args.getString(1).replace(SagaMessages.spaceSymbol, " ").toLowerCase();
 			
 		}
 		
 		// Is a settlement:
-		if(!(selectedChunkGroup instanceof Settlement)){
-			sagaPlayer.message(ChunkGroupMessages.notSettlement(selectedChunkGroup));
+		if(!(selChunkBundle instanceof Settlement)){
+			sagaPlayer.message(SettlementMessages.notSettlement(selChunkBundle));
 			return;
 		}
-		Settlement selectedSettlement = (Settlement) selectedChunkGroup;
+		Settlement selSettlement = (Settlement) selChunkBundle;
 
 		// Permission:
-		if(!selectedSettlement.hasPermission(sagaPlayer, SettlementPermission.SET_ROLE)){
-			sagaPlayer.message(SagaMessages.noPermission(selectedChunkGroup));
+		if(!selSettlement.hasPermission(sagaPlayer, SettlementPermission.SET_ROLE)){
+			sagaPlayer.message(SagaMessages.noPermission(selChunkBundle));
 			return;
 		}
 
@@ -1037,9 +1037,9 @@ public class ChunkGroupCommands {
 			return;
 		}
 
-		// Not chunk group member:
-		if( !selectedChunkGroup.equals(targetPlayer.getChunkGroup()) ){
-			sagaPlayer.message(ChunkGroupMessages.notChunkGroupMember(selectedChunkGroup, targetPlayer.getName()));
+		// Not chunk bundle member:
+		if( !selChunkBundle.equals(targetPlayer.getChunkBundle()) ){
+			sagaPlayer.message(SettlementMessages.notChunkBundleMember(selChunkBundle, targetPlayer.getName()));
 			// Unforce:
 			Saga.plugin().unforceSagaPlayer(targetName);
 			return;
@@ -1050,7 +1050,7 @@ public class ChunkGroupCommands {
 		try {
 			role = ProficiencyConfiguration.config().createProficiency(roleName);
 		} catch (InvalidProficiencyException e) {
-			sagaPlayer.message(ChunkGroupMessages.invalidRole(roleName));
+			sagaPlayer.message(SettlementMessages.invalidRole(roleName));
 			// Unforce:
 			Saga.plugin().unforceSagaPlayer(targetName);
 			return;
@@ -1058,25 +1058,25 @@ public class ChunkGroupCommands {
 		
 		// Not a role:
 		if(role.getDefinition().getType() != ProficiencyType.ROLE){
-			sagaPlayer.message(ChunkGroupMessages.invalidRole(roleName));
+			sagaPlayer.message(SettlementMessages.invalidRole(roleName));
 			// Unforce:
 			Saga.plugin().unforceSagaPlayer(targetName);
 			return;
 		}
 		
 		// Role available:
-		if(!selectedSettlement.isRoleAvailable(role.getHierarchy())){
-			sagaPlayer.message(ChunkGroupMessages.roleNotAvailable(roleName));
+		if(!selSettlement.isRoleAvailable(role.getHierarchy())){
+			sagaPlayer.message(SettlementMessages.roleNotAvailable(roleName));
 			// Unforce:
 			Saga.plugin().unforceSagaPlayer(targetName);
 			return;
 		}
 		
 		// Set role:
-		selectedSettlement.setRole(targetPlayer, role);
+		selSettlement.setRole(targetPlayer, role);
 		
 		// Inform:
-		selectedChunkGroup.broadcast(ChunkGroupMessages.newRole(targetPlayer, selectedSettlement, roleName));
+		selChunkBundle.broadcast(SettlementMessages.newRole(targetPlayer, selSettlement, roleName));
 
 		// Unforce:
 		Saga.plugin().unforceSagaPlayer(targetName);
@@ -1100,9 +1100,9 @@ public class ChunkGroupCommands {
 		
 		
 		Integer page = null;
-		Settlement selectedSettlement = null;
+		Settlement selSettlement = null;
 		
-		ChunkGroup selectedChunkGroup = null;
+		ChunkBundle selChunkBundle = null;
 		String sPage = null;
 		String groupName = null;
 		
@@ -1111,11 +1111,11 @@ public class ChunkGroupCommands {
 			
 			case 2:
 				
-				// Chunk group:
+				// Chunk bundle:
 				groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
-				selectedChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(groupName);
-				if(selectedChunkGroup == null){
-					sagaPlayer.message(ChunkGroupMessages.noChunkGroup(groupName));
+				selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+				if(selChunkBundle == null){
+					sagaPlayer.message(SettlementMessages.noChunkGroup(groupName));
 					return;
 				}
 				
@@ -1125,17 +1125,17 @@ public class ChunkGroupCommands {
 					page = Integer.parseInt(sPage);
 				}
 				catch (NumberFormatException e) {
-					sagaPlayer.message(ChunkGroupMessages.invalidInteger(sPage));
+					sagaPlayer.message(SettlementMessages.invalidInteger(sPage));
 					return;
 				}
 				break;
 
 			case 1:
 
-				// Chunk group:
-				selectedChunkGroup = sagaPlayer.getChunkGroup();
-				if(selectedChunkGroup == null){
-					sagaPlayer.message( ChunkGroupMessages.noChunkGroup() );
+				// Chunk bundle:
+				selChunkBundle = sagaPlayer.getChunkBundle();
+				if(selChunkBundle == null){
+					sagaPlayer.message( SettlementMessages.noChunkGroup() );
 					return;
 				}
 
@@ -1145,7 +1145,7 @@ public class ChunkGroupCommands {
 					page = Integer.parseInt(sPage);
 				}
 				catch (NumberFormatException e) {
-					sagaPlayer.message(ChunkGroupMessages.invalidInteger(sPage));
+					sagaPlayer.message(SettlementMessages.invalidInteger(sPage));
 					return;
 				}
 				
@@ -1153,10 +1153,10 @@ public class ChunkGroupCommands {
 
 			default:
 
-				// Chunk group:
-				selectedChunkGroup = sagaPlayer.getChunkGroup();
-				if(selectedChunkGroup == null){
-					sagaPlayer.message(ChunkGroupMessages.noChunkGroup());
+				// Chunk bundle:
+				selChunkBundle = sagaPlayer.getChunkBundle();
+				if(selChunkBundle == null){
+					sagaPlayer.message(SettlementMessages.noChunkGroup());
 					return;
 				}
 				
@@ -1168,14 +1168,14 @@ public class ChunkGroupCommands {
 		}
 		
 		// Is a settlement:
-		if(! (selectedChunkGroup instanceof Settlement) ){
-			sagaPlayer.message(ChunkGroupMessages.notSettlement(selectedChunkGroup));
+		if(! (selChunkBundle instanceof Settlement) ){
+			sagaPlayer.message(SettlementMessages.notSettlement(selChunkBundle));
 			return;
 		}
-		selectedSettlement = (Settlement) selectedChunkGroup;
+		selSettlement = (Settlement) selChunkBundle;
 		
 		// Inform:
-		sagaPlayer.message(ChunkGroupMessages.stats(sagaPlayer, selectedSettlement, page -1));
+		sagaPlayer.message(SettlementMessages.stats(sagaPlayer, selSettlement, page -1));
 		
 		
 	}
@@ -1192,39 +1192,39 @@ public class ChunkGroupCommands {
 	public static void list(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
-		ChunkGroup selectedChunkGroup = null;
+		ChunkBundle selChunkBundle = null;
 
 		// Arguments:
 		if(args.argsLength() == 1){
 			
-			// Chunk group:
+			// Chunk bundle:
 			String groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
-			selectedChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(groupName);
-			if(selectedChunkGroup == null){
-				sagaPlayer.message(ChunkGroupMessages.noChunkGroup(groupName));
+			selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+			if(selChunkBundle == null){
+				sagaPlayer.message(SettlementMessages.noChunkGroup(groupName));
 				return;
 			}
 			
 		}else{
 			
-			// Chunk group:
-			selectedChunkGroup = sagaPlayer.getChunkGroup();
-			if(selectedChunkGroup == null){
-				sagaPlayer.message( ChunkGroupMessages.noChunkGroup() );
+			// Chunk bundle:
+			selChunkBundle = sagaPlayer.getChunkBundle();
+			if(selChunkBundle == null){
+				sagaPlayer.message( SettlementMessages.noChunkGroup() );
 				return;
 			}
 			
 		}
 		
 		// Is a settlement:
-		if(! (selectedChunkGroup instanceof Settlement) ){
-			sagaPlayer.message(ChunkGroupMessages.notSettlement(selectedChunkGroup));
+		if(! (selChunkBundle instanceof Settlement) ){
+			sagaPlayer.message(SettlementMessages.notSettlement(selChunkBundle));
 			return;
 		}
-		Settlement selectedSettlement = (Settlement) selectedChunkGroup;
+		Settlement selSettlement = (Settlement) selChunkBundle;
 		
 		// Inform:
-		sagaPlayer.message(ChunkGroupMessages.list(sagaPlayer, selectedSettlement));
+		sagaPlayer.message(SettlementMessages.list(sagaPlayer, selSettlement));
 		
 		
 	}
@@ -1245,7 +1245,7 @@ public class ChunkGroupCommands {
 		
 		
 		// Inform:
-		sagaPlayer.message(ChunkGroupMessages.wrongQuit());
+		sagaPlayer.message(SettlementMessages.wrongQuit());
 		
 		
 	}
@@ -1269,7 +1269,7 @@ public class ChunkGroupCommands {
 			try {
 				page = Integer.parseInt(args.getString(0));
 			} catch (NumberFormatException e) {
-				sagaPlayer.message(ChunkGroupMessages.invalidPage(args.getString(0)));
+				sagaPlayer.message(SettlementMessages.invalidPage(args.getString(0)));
 				return;
 			}
 		}else{
@@ -1297,17 +1297,17 @@ public class ChunkGroupCommands {
 	public static void rename(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 	    	
 		
-		ChunkGroup selectedChunkGroup = null;
+		ChunkBundle selChunkBundle = null;
 		String name = null;
 
 		// Arguments:
 		if(args.argsLength() == 2){
 			
-			// Chunk group:
+			// Chunk bundle:
 			String groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
-			selectedChunkGroup = ChunkGroupManager.manager().getChunkGroupWithName(groupName);
-			if(selectedChunkGroup == null){
-				sagaPlayer.message(ChunkGroupMessages.noChunkGroup(groupName));
+			selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+			if(selChunkBundle == null){
+				sagaPlayer.message(SettlementMessages.noChunkGroup(groupName));
 				return;
 			}
 			
@@ -1315,10 +1315,10 @@ public class ChunkGroupCommands {
 			
 		}else{
 			
-			// Chunk group:
-			selectedChunkGroup = sagaPlayer.getChunkGroup();
-			if(selectedChunkGroup == null){
-				sagaPlayer.message(ChunkGroupMessages.noChunkGroup());
+			// Chunk bundle:
+			selChunkBundle = sagaPlayer.getChunkBundle();
+			if(selChunkBundle == null){
+				sagaPlayer.message(SettlementMessages.noChunkGroup());
 				return;
 			}
 			
@@ -1327,8 +1327,8 @@ public class ChunkGroupCommands {
 		}
 
 		// Permission:
-		if(!selectedChunkGroup.hasPermission(sagaPlayer, SettlementPermission.RENAME)){
-			sagaPlayer.message(SagaMessages.noPermission(selectedChunkGroup));
+		if(!selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.RENAME)){
+			sagaPlayer.message(SagaMessages.noPermission(selChunkBundle));
 			return;
 		}
 
@@ -1339,12 +1339,12 @@ public class ChunkGroupCommands {
 	    	
 	    // Validate name:
 	    if(!validateName(name)){
-	    	sagaPlayer.message(ChunkGroupMessages.invalidName());
+	    	sagaPlayer.message(SettlementMessages.invalidName());
 	    	return;
 	    }
 	    	
 	    // Check name:
-	    if(ChunkGroupManager.manager().getChunkGroupWithName(name) != null){
+	    if(ChunkBundleManager.manager().getChunkBundleWithName(name) != null){
 	    	sagaPlayer.message(FactionMessages.inUse(name));
 	    	return;
 	    }
@@ -1367,10 +1367,10 @@ public class ChunkGroupCommands {
 	    }
 	    
 	    // Rename:
-	    selectedChunkGroup.setName(name);
+	    selChunkBundle.setName(name);
 	    
 	    // Inform:
-	    selectedChunkGroup.broadcast(ChunkGroupMessages.renamed(selectedChunkGroup));
+	    selChunkBundle.broadcast(SettlementMessages.renamed(selChunkBundle));
 	    	
 	    	
 	}
@@ -1424,20 +1424,20 @@ public class ChunkGroupCommands {
 	}
 	
 	/**
-	 * Gets the chunk group the player is standing on.
+	 * Gets the chunk bundle the player is standing on.
 	 * 
 	 * @param sagaPlayer saga player
-	 * @return chunk group, null if none
+	 * @return chunk bundle, null if none
 	 */
-	private static ChunkGroup getLocationChunkGroup(SagaPlayer sagaPlayer) {
+	private static ChunkBundle getLocationChunkBundle(SagaPlayer sagaPlayer) {
 
 		Location location = sagaPlayer.getLocation();
 		if(location == null) return null;
 		
-		SagaChunk sagaChunk = ChunkGroupManager.manager().getSagaChunk(location);
+		SagaChunk sagaChunk = ChunkBundleManager.manager().getSagaChunk(location);
 		if(sagaChunk == null) return null;
 		
-		return sagaChunk.getChunkGroup();
+		return sagaChunk.getChunkBundle();
 		
 	}
 	

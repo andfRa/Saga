@@ -26,9 +26,9 @@ import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
 import org.saga.abilities.AbilityManager;
 import org.saga.attributes.AttributeManager;
-import org.saga.chunkGroups.ChunkGroup;
-import org.saga.chunkGroups.ChunkGroupManager;
-import org.saga.chunkGroups.SagaChunk;
+import org.saga.chunks.ChunkBundle;
+import org.saga.chunks.ChunkBundleManager;
+import org.saga.chunks.SagaChunk;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.EconomyConfiguration;
@@ -129,7 +129,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	/**
 	 * All registered chunk groups.
 	 */
-	transient private ChunkGroup chunkGroup = null;
+	transient private ChunkBundle chunkBundle = null;
 	
 	
 	// Location:
@@ -974,19 +974,19 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * Registers a chunk group.
 	 * Will not add faction permanently to the player.
 	 * 
-	 * @param chunkGroup saga chunk group
+	 * @param chunkBundle saga chunk group
 	 */
-	public void registerChunkGroup(ChunkGroup chunkGroup) {
+	public void registerChunkBundle(ChunkBundle chunkBundle) {
 		
 		
 		// Check if already on the list:
-		if(this.chunkGroup != null){
+		if(this.chunkBundle != null){
 			SagaLogger.severe(this, "tried to register a second chunk group");
 			return;
 		}
 		
 		// Add:
-		this.chunkGroup = chunkGroup;
+		this.chunkBundle = chunkBundle;
 		
 		
 	}
@@ -995,19 +995,19 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * Unregisters a chunk group.
 	 * Will not remove faction permanently to the player.
 	 * 
-	 * @param chunkGroup saga chunk group
+	 * @param chunkBundle saga chunk group
 	 */
-	public void unregisterChunkGroup(ChunkGroup chunkGroup) {
+	public void unregisterChunkBundle(ChunkBundle chunkBundle) {
 		
 		
 		// Check if not on the list:
-		if(this.chunkGroup == null){
+		if(this.chunkBundle == null){
 			SagaLogger.severe(this, "tried to unregister a non-registered chunk group");
 			return;
 		}
 		
 		// Remove:
-		this.chunkGroup = null;
+		this.chunkBundle = null;
 		
 		
 	}
@@ -1017,19 +1017,19 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * 
 	 * @return the registered chunk group, null if none
 	 */
-	public ChunkGroup getChunkGroup() {
-		return chunkGroup;
+	public ChunkBundle getChunkBundle() {
+		return chunkBundle;
 	}
 
 	/**
 	 * Checks if the player is part of the chunk group.
 	 * 
-	 * @param chunkGroup chunk group
+	 * @param chunkBundle chunk group
 	 * @return true if part of the chunk group
 	 */
-	public boolean hasChunkGroup(ChunkGroup chunkGroup) {
+	public boolean hasChunkBundle(ChunkBundle chunkBundle) {
 		
-		return chunkGroup.equals(chunkGroup.getId());
+		return chunkBundle.equals(chunkBundle.getId());
 		
 	}
 
@@ -1038,7 +1038,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * 
 	 * @return true if the player has chunk groups
 	 */
-	public boolean hasChunkGroup() {
+	public boolean hasChunkBundle() {
 		return !chunkGroupId.equals(-1);
 	}
 
@@ -1176,7 +1176,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 			return;
 		}
 		
-		lastSagaChunk = ChunkGroupManager.manager().getSagaChunk(player.getLocation());
+		lastSagaChunk = ChunkBundleManager.manager().getSagaChunk(player.getLocation());
 		
 		
 	}
@@ -1202,10 +1202,10 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 */
 	public Proficiency getRole() {
 
-		if(chunkGroup == null) return null;
+		if(chunkBundle == null) return null;
 		
-		if(chunkGroup instanceof Settlement){
-			return ((Settlement) chunkGroup).getRole(getName());
+		if(chunkBundle instanceof Settlement){
+			return ((Settlement) chunkBundle).getRole(getName());
 		}else{
 			return null;
 		}
@@ -1553,7 +1553,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 			return lastSagaChunk;
 		}
 		
-		return ChunkGroupManager.manager().getSagaChunk(location);
+		return ChunkBundleManager.manager().getSagaChunk(location);
 		
 				
 	}
