@@ -106,17 +106,17 @@ public class FactionConfiguration {
 			
 		} catch (FileNotFoundException e) {
 			
-			SagaLogger.severe(BalanceConfiguration.class, "configuration not found");
+			SagaLogger.severe(FactionConfiguration.class, "configuration not found");
 			config = new FactionConfiguration();
 			
 		} catch (IOException e) {
 			
-			SagaLogger.severe(SettlementConfiguration.class, "failed to read configuration: " + e.getClass().getSimpleName());
+			SagaLogger.severe(FactionConfiguration.class, "failed to read configuration: " + e.getClass().getSimpleName());
 			config = new FactionConfiguration();
 			
 		} catch (JsonParseException e) {
 
-			SagaLogger.severe(SettlementConfiguration.class, "failed to parse configuration: " + e.getClass().getSimpleName());
+			SagaLogger.severe(FactionConfiguration.class, "failed to parse configuration: " + e.getClass().getSimpleName());
 			SagaLogger.info("message: " + e.getMessage());
 			config = new FactionConfiguration();
 			

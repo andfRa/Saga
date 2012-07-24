@@ -1,15 +1,13 @@
 package org.saga.messages;
 
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
 import org.saga.commands.FactionCommands;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.ProficiencyConfiguration;
-import org.saga.factions.FactionManager;
 import org.saga.factions.Faction;
+import org.saga.factions.FactionManager;
 import org.saga.messages.PlayerMessages.ColorCircle;
 import org.saga.player.Proficiency;
 import org.saga.player.Proficiency.ProficiencyType;
@@ -668,168 +666,18 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	
 	// List:
 	public static String list(Faction faction) {
-		
-		
-		StringBuffer rString = new StringBuffer();
-		
-		// Online total inactive:
-		if(faction.getMemberCount() > 0){
-			
-			if(rString.length() > 0) rString.append("\n");
-			
-			rString.append(faction.getColour2() + "Online: " + faction.getRegisteredMemberCount() + "/" + faction.getMemberCount());
 
-			int inactiveCount = faction.getInactiveMemberCount();
-			if(inactiveCount != 0){
-				rString.append(" Inactive: " + inactiveCount);
-			}
-			
-		}
 		
-		// Players:
-		if(faction.getMemberCount() > 0){
-			
-			if(rString.length() > 0) rString.append("\n");
-			
-			rString.append( listPlayersElement(faction, faction.getColour2()) );
-
-		}
+		StringBuffer result = new StringBuffer();
+		ColorCircle colours = new ColorCircle().addColor(normal1).addColor(normal2);
 		
-		return TextUtil.frame(faction(faction, faction.getColour2()) + " members", rString.toString(), faction.getColour2());
+		result.append(listMembers(faction));
+		
+		return TextUtil.frame(faction.getName() + " members", result.toString(), colours.nextColor());
 		
 		
 	}
 	
-	private static String listPlayersElement(Faction faction, ChatColor messageColor){
-		
-
-		// Fill roles table:
-		Integer maxHierarchyLevel = 0;
-		Hashtable<Integer, Hashtable<String, ArrayList<String>>> roleTable = new Hashtable<Integer, Hashtable<String,ArrayList<String>>>();
-		ArrayList<String> zeroHighlMembers = new ArrayList<String>(faction.getMembers());
-		for (int i = 0; i < zeroHighlMembers.size(); i++) {
-			String name = zeroHighlMembers.get(i);
-			Proficiency role = faction.getRank(name);
-			if(role == null) continue;
-			zeroHighlMembers.remove(i);
-			i--;
-			String roleName = role.getName();
-			Integer hierarchyLevel = role.getHierarchy();
-			
-			// Hierarchy:
-			if(hierarchyLevel > maxHierarchyLevel){
-				maxHierarchyLevel = hierarchyLevel;
-			}
-			
-			// Hierarchy level:
-			Hashtable<String, ArrayList<String>> hierLevelRoles = roleTable.get(hierarchyLevel);
-			if(hierLevelRoles == null){
-				hierLevelRoles = new Hashtable<String, ArrayList<String>>();
-				roleTable.put(hierarchyLevel, hierLevelRoles);
-			}
-
-			// Player names:
-			ArrayList<String> playerNames = hierLevelRoles.get(roleName);
-			if(playerNames == null){
-				playerNames = new ArrayList<String>();
-				hierLevelRoles.put(roleName, playerNames);
-			}
-			
-			// Add:
-			playerNames.add(name);
-			
-		}
-		
-		StringBuffer rString = new StringBuffer();
-		
-		// Add above zero highlight players:
-		for (Integer i = maxHierarchyLevel ; i >= 0 ; i--) {
-			
-			// All roles for hierarchy level:
-			Hashtable<String, ArrayList<String>> highlRoles = roleTable.get(i);
-			if(highlRoles == null) continue;
-			
-			if(rString.length() != 0){
-				rString.append("\n");
-			}
-			
-			// All roles:
-			Enumeration<String> roleNames = highlRoles.keys();
-			StringBuffer eString = new StringBuffer();
-			while(roleNames.hasMoreElements()){
-				
-				String roleName = roleNames.nextElement();
-				ArrayList<String> playerNames = highlRoles.get(roleName);
-				
-				// Title:
-				if(eString.length() != 0){
-					eString.append(" ");
-				}
-				if(playerNames.size() == 1){
-					eString.append(TextUtil.capitalize(roleName) + ": ");
-				}else{
-					eString.append(TextUtil.capitalize(roleName + "s") + ": ");
-				}
-				
-				// Names:
-				for (int j = 0; j < playerNames.size(); j++) {
-					if( j != 0 ) eString.append(", ");
-					eString.append( playerNameElement(playerNames.get(j), faction, messageColor, faction.isMemberActive(playerNames.get(j))) );
-				}
-				
-			}
-			rString.append(eString);
-			
-		}
-		
-		// Add zero highlight players:
-		if(zeroHighlMembers.size() > 0){
-			
-			if(rString.length() > 0){
-				rString.append("\n");
-			}
-			
-			for (int i = 0; i < zeroHighlMembers.size(); i++) {
-				if(i != 0) rString.append(", ");
-				rString.append(playerNameElement(zeroHighlMembers.get(i), faction, messageColor, faction.isMemberActive(zeroHighlMembers.get(i))) );
-			}
-			
-		}
-		
-		return messageColor + rString.toString();
-		
-		
-	}
-
-	private static String playerNameElement(String playerName, Faction faction, ChatColor messageColor, boolean isActive){
-		
-		
-		StringBuffer rString = new StringBuffer();
-		ChatColor offlineColor = ChatColor.GRAY;
-		ChatColor inactiveColor = ChatColor.DARK_GRAY;
-		
-		// Name:
-		if(!isActive){
-			
-			rString.append(inactiveColor + playerName + messageColor);
-			
-		}
-		else if(!faction.isRegisteredMember(playerName)){
-			
-			rString.append(offlineColor + playerName + messageColor);
-			
-		}
-		else{
-		
-			rString.append(faction.getColour1() + playerName + messageColor);
-			
-		}
-		
-		return rString.toString();
-		
-		
-	}
-
 	
 	
 	// Info:

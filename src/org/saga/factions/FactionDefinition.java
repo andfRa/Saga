@@ -69,12 +69,12 @@ public class FactionDefinition {
 		}
 		
 		if(ownerRank == null){
-			SagaLogger.severe(getClass(), "ownerRank field not initialized");
-			defaultRank = "novice";
+			SagaLogger.nullField(getClass(), "ownerRank");
+			ownerRank = "novice";
 		}
 		
 		if(defaultRank == null){
-			SagaLogger.severe(getClass(), "defaultRank field not initialized");
+			SagaLogger.nullField(getClass(), "defaultRank");
 			defaultRank = "warmaster";
 		}
 		

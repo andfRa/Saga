@@ -8,7 +8,7 @@
   {"name":"lord",
     "type":"ROLE",
     "hierarchyLevel":"3",
-    "attributeBonuses":{},
+    "attributeBonuses":{"luck":10},
     "settlementPermissions":["BUILD","BUILD_BUILDING","CLAIM","INVITE","ABANDON","KICK","SET_BUILDING","REMOVE_BUILDING","RENAME","SPAWN","MEMBER_COMMAND","ADD_RESIDENT","REMOVE_RESIDENT","MANAGE_PRICES","MANAGE_DEALS","ACCESS_WAREHOUSE","ACCESS_STORAGE"],
     "factionPermissions":[]
   },
@@ -58,7 +58,7 @@
   {"name":"warmaster",
     "type":"RANK",
     "hierarchyLevel":"3",
-    "attributeBonuses":{},
+    "attributeBonuses":{"toughness":10},
     "settlementPermissions":[],
     "factionPermissions":["INVITE","KICK","SET_COLOR","RENAME","SET_RANK"]
   },
@@ -66,7 +66,7 @@
  {"name":"warrior",
     "type":"RANK",
     "hierarchyLevel":"2",
-    "attributeBonuses":{},
+    "attributeBonuses":{"strength":8,"toughness":2},
     "settlementPermissions":[],
     "factionPermissions":[]
   },
@@ -74,7 +74,7 @@
   {"name":"archer",
     "type":"RANK",
     "hierarchyLevel":"2",
-    "attributeBonuses":{},
+    "attributeBonuses":{"precision":8,"toughness":2},
     "settlementPermissions":[],
     "factionPermissions":[]
   },
@@ -82,7 +82,7 @@
   {"name":"mage",
     "type":"RANK",
     "hierarchyLevel":"2",
-    "attributeBonuses":{},
+    "attributeBonuses":{"willpower":8,"toughness":2},
     "settlementPermissions":[],
     "factionPermissions":[]
   },
