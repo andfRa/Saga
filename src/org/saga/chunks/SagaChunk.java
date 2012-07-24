@@ -398,6 +398,8 @@ public class SagaChunk {
 		
 		this.bld.setSagaChunk(this);
 		
+		getChunkBundle().setBuildingScore(building.getName(), 1);
+		
 		this.bld.enable();
 		
 	}
@@ -413,6 +415,8 @@ public class SagaChunk {
 			bld.disable();
 			bld.removeSigns();
 		}
+		
+		getChunkBundle().removeBuildingScore(bld.getName());
 		
 		this.bld = null;
 		

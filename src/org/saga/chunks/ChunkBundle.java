@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Hashtable;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -46,8 +47,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 
 	
 	/**
-	 * Group name ID.
-	 * -1 if none.
+	 * Group name ID. -1 if none.
 	 */
 	private Integer id;
 	
@@ -70,6 +70,11 @@ public class ChunkBundle extends SagaCustomSerialization{
 	 * Group chunks.
 	 */
 	private ArrayList<SagaChunk> groupChunks;
+
+	/**
+	 * Building scores.
+	 */
+	private Hashtable<String, Integer> buildingScores;
 	
 	/**
 	 * Registered players.
@@ -141,6 +146,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 		this.players = new ArrayList<String>();
 		this.factions = new ArrayList<Integer>();
 		this.groupChunks = new ArrayList<SagaChunk>();
+		this.buildingScores = new Hashtable<String, Integer>();
 		this.isSavingEnabled = true;
 		this.owner = "";
 		this.pvpProtectionBonus = false;
@@ -153,56 +159,56 @@ public class ChunkBundle extends SagaCustomSerialization{
 	}
 	
 	/**
-	 * Completes the initialisation.
+	 * Fixes problematic fields.
 	 * 
-	 * @return integrity
 	 */
-	public boolean complete() {
+	public void complete() {
 
-		
-		boolean integrity=true;
 		
 		if(name == null){
 			SagaLogger.nullField(this, "name");
 			name = "unnamed";
-			integrity = false;
 		}
 		if(id == null){
 			SagaLogger.nullField(this, "id");
 			id = -1;
-			integrity = false;
 		}
 		if(players == null){
 			SagaLogger.nullField(this, "players");
 			players = new ArrayList<String>();
-			integrity = false;
 		}
 		for (int i = 0; i < players.size(); i++) {
 			if(players.get(i) == null){
 				SagaLogger.nullField(this, "players element");
 				players.remove(i);
 				i--;
-				integrity = false;
 			}
 		}
 		if(factions == null){
 			SagaLogger.nullField(this, "factions");
 			factions = new ArrayList<Integer>();
-			integrity = false;
 		}
 		for (int i = 0; i < factions.size(); i++) {
 			if(factions.get(i) == null){
 				SagaLogger.nullField(this, "factions element");
 				factions.remove(i);
 				i--;
-				integrity = false;
 			}
+		}
+
+		if(buildingScores == null){
+			SagaLogger.nullField(this, "buildingScores");
+			buildingScores = new Hashtable<String, Integer>();
+		}
+		ArrayList<Building> builings = getBuildings();
+		for (Building building : builings) {
+			if(buildingScores.containsValue(building.getName())) continue;
+			buildingScores.put(building.getName(), 1);
 		}
 		
 		if(owner == null){
 			SagaLogger.nullField(this, "owners");
 			owner = "";
-			integrity = false;
 		}
 		
 		// Transient:
@@ -213,7 +219,6 @@ public class ChunkBundle extends SagaCustomSerialization{
 		if(groupChunks == null){
 			SagaLogger.nullField(this, "groupChunks");
 			groupChunks = new ArrayList<SagaChunk>();
-			integrity = false;
 		}
 		for (int i = 0; i < groupChunks.size(); i++) {
 			SagaChunk coords= groupChunks.get(i);
@@ -230,7 +235,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 			if(coords.getBuilding() != null){
 				
 				try {
-					integrity = coords.getBuilding().complete() && integrity;
+					coords.getBuilding().complete();
 				} catch (InvalidBuildingException e) {
 					SagaLogger.severe(this,"failed to complete " + coords.getBuilding().getName() + " building: "+ e.getClass().getSimpleName() + ":" + e.getMessage());
 					disableSaving();
@@ -244,12 +249,10 @@ public class ChunkBundle extends SagaCustomSerialization{
 		if(fireSpread == null){
 			SagaLogger.nullField(this, "fireSpread");
 			fireSpread = false;
-			integrity = false;
 		}
 		if(lavaSpread == null){
 			SagaLogger.nullField(this, "lavaSpread");
 			lavaSpread = false;
-			integrity = false;
 		}
 		
 		if(toggleOptions == null){
@@ -264,14 +267,10 @@ public class ChunkBundle extends SagaCustomSerialization{
 				toggleOptions.add(ChunkBundleToggleable.UNLIMITED_CLAIMS);
 			}
 			
-//			integrity = false;
 		}
 		if(toggleOptions.remove(null)){
 			SagaLogger.nullField(this, "toggleOptions element");
-			integrity = false;
 		}
-		
-		return integrity;
 		
 		
 	}
@@ -520,7 +519,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 	
 	
 	
-	// Interaction:
+	// Naming:
 	/**
 	 * Sets the name
 	 * 
@@ -530,6 +529,9 @@ public class ChunkBundle extends SagaCustomSerialization{
 		this.name = name;
 	}
 	
+	
+	
+	// Territory:
 	/**
 	 * Gets all chunks from the group.
 	 * 
@@ -729,13 +731,55 @@ public class ChunkBundle extends SagaCustomSerialization{
 			Building building = sagaChunk.getBuilding();
 			if(building == null) continue;
 			
-			if(building.getName().equals(buildingName)) return building.getLevel();
+			if(building.getName().equals(buildingName)) return building.getScore();
 			
 		}
 		
 		return 0;
 		
 	}
+	
+	
+	
+	// Building scores:
+	/**
+	 * Gets the building score.
+	 * 
+	 * @param bldgName building name
+	 * @return building score
+	 */
+	public Integer getBuildingScore(String bldgName) {
+		
+		Integer score = buildingScores.get(bldgName);
+		if(score == null) return 0;
+		
+		return score;
+		
+	}
+	
+	/**
+	 * Sets building score.
+	 * 
+	 * @param bldgName building name
+	 * @param score building score
+	 */
+	public void setBuildingScore(String bldgName, Integer score) {
+		
+		buildingScores.put(bldgName, score);
+		
+	}
+	
+	/**
+	 * Removes building score.
+	 * 
+	 * @param bldgName building name
+	 */
+	public void removeBuildingScore(String bldgName) {
+		
+		buildingScores.remove(bldgName);
+		
+	}
+	
 	
 	
 

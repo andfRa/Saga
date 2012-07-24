@@ -50,11 +50,6 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	private String name;
 	
 	/**
-	 * Building level.
-	 */
-	private Short level;
-	
-	/**
 	 * Building signs.
 	 */
 	private ArrayList<BuildingSign> signs;
@@ -67,9 +62,9 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	
 	
 	/**
-	 * Origin chunk.
+	 * Saga chunk.
 	 */
-	transient SagaChunk originChunk;
+	transient SagaChunk sagaChunk;
 	
 	/**
 	 * Building definition.
@@ -88,7 +83,6 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		
 		this.name = definition.getName();
 		this.definition = definition;
-		this.level = 0;
 		this.signs = new ArrayList<BuildingSign>();
 		this.storage = new ArrayList<StorageArea>();
 		
@@ -109,12 +103,6 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		if(name == null){
 			name = TextUtil.className(getClass());
 			SagaLogger.nullField(this, "name");
-			integrity = false;
-		}
-		
-		if(level == null){
-			level = 0;
-			SagaLogger.nullField(this, "level");
 			integrity = false;
 		}
 		
@@ -187,14 +175,14 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 * @param originChunk origin chunk
 	 */
 	public void setSagaChunk(SagaChunk originChunk) {
-		this.originChunk = originChunk;
+		this.sagaChunk = originChunk;
 	}
 	
 	/**
 	 * Removes saga chunk.
 	 */
 	public void removeSagaChunk() {
-		this.originChunk = null;
+		this.sagaChunk = null;
 	}
 	
 	/**
@@ -203,7 +191,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 * @return origin chunk, null if none
 	 */
 	public SagaChunk getSagaChunk() {
-		return originChunk;
+		return sagaChunk;
 	}
 	
 	/**
@@ -213,10 +201,10 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 */
 	public ChunkBundle getChunkBundle() {
 		
-		if(originChunk == null){
+		if(sagaChunk == null){
 			return null;
 		}
-		return originChunk.getChunkBundle();
+		return sagaChunk.getChunkBundle();
 		
 	}
 	
@@ -242,13 +230,12 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	}
 	
 	/**
-	 * Gets the level.
+	 * Gets the building score.
 	 * 
-	 * @return the level
+	 * @return building score
 	 */
-	public Integer getLevel() {
-		return 1;
-//		return level.intValue();
+	public Integer getScore() {
+		return getChunkBundle().getBuildingScore(name);
 	}
 	
 	/**
@@ -617,7 +604,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 * @return amount of storage areas available
 	 */
 	public Integer getAvailableStorageAreas() {
-		return getDefinition().getAvailableStorages(getLevel());
+		return getDefinition().getAvailableStorages(getScore());
 	}
 	
 	/**
@@ -997,7 +984,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		RandomRecipe recipes = new RandomRecipe(getDefinition().getRecipes());
 		
 		// Craft:
-		Integer toCraft = getDefinition().getCraftAmount(getLevel());
+		Integer toCraft = getDefinition().getCraftAmount(getScore());
 		
 		while(recipes.size() > 0 && toCraft > 0){
 			

@@ -16,6 +16,7 @@
       "strength":{"x1":1,"y1":5.0,"x2":3,"y2":45.0},
       "precision":{"x1":1,"y1":3.0,"x2":3,"y2":25.0}
     },
+    "buildingRequirements":{},
     "functions":{"tree size":{"x1":1,"y1":10.0,"x2":3,"y2":50.0}},
     "description":"Chops down a tree.",
     "usage":"rclick tree w/ axe"
@@ -33,6 +34,7 @@
       "precision":{"x1":1,"y1":5.0,"x2":3,"y2":45.0},
       "willpower":{"x1":1,"y1":3.0,"x2":3,"y2":25.0}
     },
+    "buildingRequirements":{},
     "functions":{"range":{"x1":1,"y1":20.0,"x2":3,"y2":60.0}},
     "description":"Cuts wheat and reeds.",
     "usage":"rclick w/ hoe"
@@ -50,6 +52,7 @@
       "toughness":{"x1":1,"y1":5.0,"x2":3,"y2":45.0},
       "strength":{"x1":1,"y1":3.0,"x2":3,"y2":25.0}
     },
+    "buildingRequirements":{},
     "functions":{
       "size":{"x1":0,"y1":1.0,"x2":3,"y2":60.0},
       "crumble":{"x1":0,"y1":5.0,"x2":50,"y2":10.0}
@@ -78,6 +81,7 @@
       "willpower":{"x1":1,"y1":5.0,"x2":3,"y2":45.0},
       "toughness":{"x1":1,"y1":3.0,"x2":3,"y2":25.0}
     },
+    "buildingRequirements":{},
     "functions":{
       "consume chance":{"x1":1,"y1":1.0,"x2":3,"y2":0.35},
       "ench level cost":{"x1":1,"y1":0.5,"x2":15,"y2":2.0},
@@ -100,6 +104,7 @@
     "attributeRequirements":{
       "strength":{"x1":1,"y1":8.0,"x2":3,"y2":45.0}
     },
+    "buildingRequirements":{},
     "functions":{"disarm chance":{"x1":1,"y1":0.8,"x2":3,"y2":0.8}},
     "description":"Shifts targets sword.",
     "usage":"random chance"
@@ -116,6 +121,7 @@
     "attributeRequirements":{
       "precision":{"x1":1,"y1":8.0,"x2":3,"y2":45.0}
     },
+    "buildingRequirements":{},
     "functions":{"speed":{"x1":1,"y1":1.0,"x2":3,"y2":3.0}},
     "description":"Shoots an arrow.",
     "usage":"rclick w/ arrow"
@@ -132,6 +138,7 @@
     "attributeRequirements":{
       "willpower":{"x1":1,"y1":8.0,"x2":3,"y2":45.0}
     },
+    "buildingRequirements":{},
     "functions":{"speed":{"x1":1,"y1":0.70,"x2":3,"y2":2.0}},
     "description":"Shoots a fireball.",
     "usage":"rclick w/ coal"
@@ -148,6 +155,7 @@
     "attributeRequirements":{
       "willpower":{"x1":1,"y1":8.0,"x2":3,"y2":45.0}
     },
+    "buildingRequirements":{"academy":{"x1":1,"y1":1.0,"x2":3,"y2":3.0}},
     "functions":{"fireticks":{"x1":1,"y1":60.0,"x2":3,"y2":140.0}},
     "description":"Fireball ignites.",
     "usage":"automatic"
@@ -164,6 +172,7 @@
     "attributeRequirements":{
       "warding":{"x1":1,"y1":8.0,"x2":3,"y2":45.0}
     },
+    "buildingRequirements":{},
     "functions":{
       "radius":{"x1":0,"y1":4.5,"x2":50,"y2":9.0},
       "power":{"x1":0,"y1":1.2,"x2":50,"y2":2.0}

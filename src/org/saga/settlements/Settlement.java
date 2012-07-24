@@ -87,33 +87,29 @@ public class Settlement extends ChunkBundle implements MinuteTicker{
 	 * @see org.saga.chunkGroups.ChunkBundle#completeExtended()
 	 */
 	@Override
-	public boolean complete() {
+	public void complete() {
 		
 		
-		boolean integrity = super.complete();
+		super.complete();
 		
 		if(level == null){
 			SagaLogger.nullField(this, "level");
 			level = 0;
-			integrity = false;
 		}
 		
 		if(exp == null){
 			SagaLogger.nullField(this, "exp "+ this +" levelProgress");
 			exp = 0.0;
-			integrity = false;
 		}
 		
 		if(lastSeen == null){
 			SagaLogger.nullField(this, "lastSeen");
 			lastSeen = new Hashtable<String, Date>();
-			integrity = false;
 		}
 		
 		if(playerRoles == null){
 			SagaLogger.nullField(this, "playerRoles");
 			playerRoles = new Hashtable<String, Proficiency>();
-			integrity = false;
 		}
 		
 		Enumeration<String> playerNames = playerRoles.keys();
@@ -154,8 +150,6 @@ public class Settlement extends ChunkBundle implements MinuteTicker{
 		} catch (InvalidProficiencyException e) {
 			SagaLogger.severe(this, "failed to set " + getDefinition().defaultRole + " role, because the role name is invalid");
 		}
-		
-		return integrity;
 		
 		
 	}

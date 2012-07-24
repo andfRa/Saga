@@ -90,7 +90,7 @@ public class Watchtower extends Building implements DaytimeTicker{
 		if(getSagaChunk() == null){
 			return;
 		}
-		ArrayList<SagaChunk> protectedChunks = originChunk.getAdjacent(getRadius());
+		ArrayList<SagaChunk> protectedChunks = sagaChunk.getAdjacent(getRadius());
 		this.protectedChunks = protectedChunks;
 		
 		
