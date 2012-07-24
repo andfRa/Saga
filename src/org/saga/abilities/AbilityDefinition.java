@@ -143,16 +143,20 @@ public class AbilityDefinition{
 			usedAmount = new TwoPointFunction(0.0);
 			SagaLogger.nullField(this, "usedAmount");
 		}
+		usedAmount.complete();
 		
 		if(cooldown == null){
 			cooldown = new TwoPointFunction(0.0);
 			SagaLogger.nullField(this, "cooldown");
 		}
+		cooldown.complete();
 		
 		if(active == null){
 			active = new TwoPointFunction(0.0);
 			SagaLogger.nullField(this, "active");
 		}
+		active.complete();
+		
 
 		if(usage == null){
 			usage = "";
