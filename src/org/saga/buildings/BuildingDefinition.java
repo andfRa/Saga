@@ -23,6 +23,7 @@ public class BuildingDefinition {
 	public final static String CRAFT_DAYTIME_REPLACE = "#craft_daytime";
 	
 	
+	
 	/**
 	 * Building name.
 	 */
@@ -34,27 +35,11 @@ public class BuildingDefinition {
 	private String buildingClass;
 
 
-	
 	// Proficiencies:
-	/**
-	 * Available roles hierarchy for the building.
-	 */
-	private ArrayList<String> roles;
-
-	/**
-	 * Available ranks for the building.
-	 */
-	private ArrayList<String> ranks;
-
 	/**
 	 * Attributes.
 	 */
 	private HashSet<String> attributes;
-	
-	/**
-	 * Abilities.
-	 */
-	private HashSet<String> abilities;
 	
 	
 	// Availability:
@@ -155,32 +140,6 @@ public class BuildingDefinition {
 			buildingClass = "invalid";
 		}
 		
-		if(roles == null){
-			roles = new ArrayList<String>();
-			SagaLogger.nullField(BuildingDefinition.class, "roles");
-		}
-		for (int i = 0; i < roles.size(); i++) {
-			if(roles.get(i) == null){
-				roles.remove(i);
-				i--;
-				SagaLogger.nullField(BuildingDefinition.class, "roles element");
-				continue;
-			}
-		}
-		
-		if(ranks == null){
-			ranks = new ArrayList<String>();
-			SagaLogger.nullField(BuildingDefinition.class, "ranks");
-		}
-		for (int i = 0; i < ranks.size(); i++) {
-			if(ranks.get(i) == null){
-				ranks.remove(i);
-				i--;
-				SagaLogger.nullField(BuildingDefinition.class, "ranks element");
-				continue;
-			}
-		}
-		
 		if(attributes == null){
 			attributes = new HashSet<String>();
 			SagaLogger.nullField(BuildingDefinition.class, "attributes");
@@ -188,15 +147,6 @@ public class BuildingDefinition {
 		
 		if(attributes.remove(null)){
 			SagaLogger.nullField(BuildingDefinition.class, "attributes element");
-		}
-		
-		if(abilities == null){
-			abilities = new HashSet<String>();
-			SagaLogger.nullField(BuildingDefinition.class, "abilities");
-		}
-		
-		if(abilities.remove(null)){
-			SagaLogger.nullField(BuildingDefinition.class, "abilities element");
 		}
 		
 		if(buildPoints == null){
@@ -294,40 +244,6 @@ public class BuildingDefinition {
 
 	
 	
-	// Roles:
-	/**
-	 * Gets the building role hierarchy.
-	 * 
-	 * @return promotion hierarchy
-	 */
-	public ArrayList<String> getRoles() {
-		return new ArrayList<String>(roles);
-	}
-
-	
-	// Proficiencies:
-	/**
-	 * Check if the building has a promotion rank.
-	 * 
-	 * @param rankName rank name
-	 * @return true if has a rank to promote to
-	 */
-	public boolean hasRank(String rankName) {
-		return ranks.contains(rankName);
-	}
-	
-	/**
-	 * Check if the building has a promotion role.
-	 * 
-	 * @param roleName role name
-	 * @return true if has a role to promote to
-	 */
-	public boolean hasRole(String roleName) {
-		return roles.contains(roleName);
-	}
-
-	
-	
 	// Attributes:
 	/**
 	 * Check if the building allows the attribute.
@@ -346,19 +262,6 @@ public class BuildingDefinition {
 	 */
 	public HashSet<String> getAttributes() {
 		return new HashSet<String>(attributes);
-	}
-	
-	
-	
-	// Abilities:
-	/**
-	 * Check if the building allows the ability.
-	 * 
-	 * @param name ability name
-	 * @return true if has the ability
-	 */
-	public boolean hasAbility(String name) {
-		return abilities.contains(name);
 	}
 	
 	

@@ -69,11 +69,11 @@ public class AbilitySign extends BuildingSign{
 	public SignStatus getStatus() {
 	
 		
-		String ability = getFirstParameter();
-		
-		if(!getBuilding().getDefinition().hasAbility(ability)) return SignStatus.INVALIDATED;
+//		String ability = getFirstParameter();
+//		
+//		if(!getBuilding().getDefinition().hasAbility(ability)) return SignStatus.INVALIDATED;
 
-		return SignStatus.ENABLED;
+		return SignStatus.INVALIDATED;
 		
 		
 	}
