@@ -949,6 +949,7 @@ public class StatisticsManager implements HourTicker{
 		} catch (FileNotFoundException e) {
 			
 			manager = new StatisticsManager("");
+			manager.reset();
 			
 		} catch (IOException e) {
 			
