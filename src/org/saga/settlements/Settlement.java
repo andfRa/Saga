@@ -807,6 +807,7 @@ public class Settlement extends ChunkBundle implements MinuteTicker{
 		SET_BUILDING,
 		REMOVE_BUILDING,
 		RENAME,
+		RESIGN,
 		MEMBER_COMMAND,
 		SPAWN,
 		

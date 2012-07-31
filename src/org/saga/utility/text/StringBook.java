@@ -4,10 +4,18 @@ import java.util.ArrayList;
 
 import org.saga.messages.GeneralMessages.CustomColour;
 import org.saga.messages.PlayerMessages;
-import org.saga.messages.PlayerMessages.ColorCircle;
+import org.saga.messages.PlayerMessages.ColourLoop;
 
 public class StringBook {
 
+	
+	/**
+	 * Page break.
+	 */
+	public final static String PAGE_BREAK = "\\p";
+	
+	
+	
 	/**
 	 * Book title.
 	 */
@@ -19,27 +27,21 @@ public class StringBook {
 	private ArrayList<String> lines = new ArrayList<String>();
 	
 	/**
-	 * Message colors.
+	 * Message colours.
 	 */
-	private ColorCircle messageColor;
+	private ColourLoop colours;
 
-	/**
-	 * Page size.
-	 */
-	private int pageSize;
 	
 	
+	// Initialisation:
 	/**
-	 * Sets message color and lines.
+	 * Sets message colour and lines.
 	 * 
 	 */
-	public StringBook(String title, ColorCircle messageColor, int pageSize) {
+	public StringBook(String title, ColourLoop colours) {
 		
 		this.title = title;
-		this.messageColor = messageColor;
-		this.pageSize = pageSize;
-		
-		if(pageSize <= 0) pageSize = 1;
+		this.colours = colours;
 		
 	}
 	
@@ -59,9 +61,7 @@ public class StringBook {
 	 */
 	public void nextPage() {
 
-		while((lines.size() - 1) % pageSize != 0){
-			addLine("");
-		}
+		addLine(PAGE_BREAK);
 		
 	}
 	
@@ -80,44 +80,43 @@ public class StringBook {
 	}
 	
 	
+	
+	// Creation:
 	/**
 	 * Creates a page.
 	 * 
 	 * @param page page number
 	 * @return page
 	 */
-	public String createPage(Integer page) {
+	public String page(Integer page) {
 
 		
-		// Normalize:
+		// Normalise:
 		if(page < 0 ) page = 0;
 		if(page  > getLastPage()) page = getLastPage();
 		
 		// Create page:
-		StringBuffer rString = new StringBuffer();
+		StringBuffer result = new StringBuffer();
 		
-		int linesLeft = pageSize;
-		int currentLine = page * pageSize;
-		boolean firstLine = true;
-		while (linesLeft > 0 && currentLine < lines.size()) {
+		int currPage = 0;
+		
+		for (String line : lines) {
 			
-			if(firstLine){
-				firstLine = false;
-			}else{
-				rString.append("\n");
+			if(line.equals(PAGE_BREAK)){
+				currPage++;
+				continue;
 			}
 			
-			rString.append(CustomColour.processMessage(
-				messageColor.nextColor()
-				+ lines.get(currentLine)
-			));
+			if(currPage != page) continue;
+			if(currPage > page) break;
 			
-			linesLeft--;
-			currentLine ++;
+			if(result.length() > 0) result.append("\n");
+			
+			result.append(CustomColour.processMessage(colours.nextColour() + line));
 			
 		}
 		
-		return rString.toString();
+		return result.toString();
 		
 		
 	}
@@ -129,40 +128,38 @@ public class StringBook {
 	 * @param width width
 	 * @return framed page
 	 */
-	public String framed(Integer page, Double width) {
+	public String framedPage(Integer page) {
 
 
-		// Normalize:
+		// Normalise:
 		if(page < 0 ) page = 0;
 		if(page  > getLastPage()) page = getLastPage();
 		
 		// Create page:
-		String content = createPage(page);
+		String content = page(page);
 		
-		return TextUtil.frame(title + " " + (page+1) + "/" + (getLastPage()+1), PlayerMessages.normal1, content, width);
+		return TextUtil.frame(title + " " + (page+1) + "/" + (getLastPage()+1), content, PlayerMessages.normal1);
 		
 		
 	}
 
-	/**
-	 * Creates a framed page.
-	 * 
-	 * @param page page number
-	 * @return framed page
-	 */
-	public String framed(Integer page) {
-
-		return framed(page, 70.0);
-		
-	}
-	
 	/**
 	 * Gets the last page.
 	 * 
 	 * @return last page
 	 */
 	private Integer getLastPage() {
-		return new Double(Math.ceil( (lines.size() -1) / pageSize)).intValue();
+		
+		
+		Integer last = 0;
+		
+		for (String line : lines) {
+			if(line.equals(PAGE_BREAK)) last++;
+		}
+		
+		return last;
+		
+		
 	}
 	
 	/**
@@ -175,6 +172,8 @@ public class StringBook {
 	}
 	
 	
+	
+	// Other:
 	public static void main(String[] args) {
 		
 		

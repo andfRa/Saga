@@ -13,9 +13,9 @@ import org.saga.chunks.ChunkBundleManager;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.SettlementConfiguration;
-import org.saga.factions.FactionManager;
 import org.saga.factions.Faction;
-import org.saga.messages.PlayerMessages.ColorCircle;
+import org.saga.factions.FactionManager;
+import org.saga.messages.PlayerMessages.ColourLoop;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.text.RomanNumeral;
@@ -87,8 +87,7 @@ public class StatsMessages {
 				
 		}
 		
-		
-		return TextUtil.frame("player stats " + (page+1) + "/" + 3, normal1, result.toString(), 57.0);
+		return TextUtil.smallFrame("player stats " + (page+1) + "/" + 3, result.toString(), normal1);
 		
 		
 	}
@@ -97,7 +96,7 @@ public class StatsMessages {
 	private static StringTable attributesLevels(SagaPlayer sagaPlayer) {
 
 		
-		StringTable table = new StringTable(new ColorCircle().addColor(normal1).addColor(normal2));
+		StringTable table = new StringTable(new ColourLoop().addColor(normal1).addColor(normal2));
 		DecimalFormat format = new DecimalFormat("00");
 		
 		// Attributes:
@@ -148,7 +147,7 @@ public class StatsMessages {
 	private static StringTable factionSettlement(SagaPlayer sagaPlayer) {
 
 		
-		StringTable table = new StringTable(new ColorCircle().addColor(normal1).addColor(normal2));
+		StringTable table = new StringTable(new ColourLoop().addColor(normal1).addColor(normal2));
 
 		
 		// Faction and settlement:
@@ -181,7 +180,7 @@ public class StatsMessages {
 	
 	private static StringTable general(SagaPlayer sagaPlayer) {
 
-		StringTable table = new StringTable(new ColorCircle().addColor(normal1).addColor(normal2));
+		StringTable table = new StringTable(new ColourLoop().addColor(normal1).addColor(normal2));
 
 		// Wallet:
 		table.addLine("Wallet", EconomyMessages.coins(sagaPlayer.getCoins()), 0);
@@ -213,7 +212,7 @@ public class StatsMessages {
 	private static StringTable abilities(SagaPlayer sagaPlayer) {
 
 		
-		StringTable table = new StringTable(new ColorCircle().addColor(normal1).addColor(normal2));
+		StringTable table = new StringTable(new ColourLoop().addColor(normal1).addColor(normal2));
 		HashSet<Ability> allAbilities = sagaPlayer.getAbilities();
 		
     	// Add abilities:
@@ -299,7 +298,7 @@ public class StatsMessages {
 	public static StringTable invites(SagaPlayer sagaPlayer) {
 
 		
-		StringTable table = new StringTable(new ColorCircle().addColor(normal1).addColor(normal2));
+		StringTable table = new StringTable(new ColourLoop().addColor(normal1).addColor(normal2));
 		
 		// Table size:
     	ArrayList<Double> widths = new ArrayList<Double>();

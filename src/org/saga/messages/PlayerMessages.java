@@ -322,30 +322,75 @@ public class PlayerMessages {
 	 * @author andf
 	 *
 	 */
-	public static class ColorCircle{
+	public static class ColourLoop{
 		
 		
+		/**
+		 * All colours.
+		 */
 		ArrayList<ChatColor> colours = new ArrayList<ChatColor>();
 		
+		/**
+		 * Current index.
+		 */
 		private int index = 0;
 		
 		
-		public ColorCircle() {
+		
+		/**
+		 * Initialises the colour loop.
+		 * 
+		 */
+		public ColourLoop() {
 		}
 		
 		
-		public ColorCircle addColor(ChatColor colour){
+		
+		/**
+		 * Adds a colour to the circle.
+		 * 
+		 * @param colour colour
+		 * @return instance
+		 */
+		public ColourLoop addColor(ChatColor colour){
 			colours.add(colour);
 			return this;
 		}
 		
-		public ChatColor nextColor() {
+		/**
+		 * Gets the next colour in the loop.
+		 * 
+		 * @return next colour, {@link PlayerMessages#normal1} if none
+		 */
+		public ChatColor nextColour() {
+			
+			
 			if(colours.size() == 0) return normal1;
+			
 			index++;
+			
 			if(index >= colours.size()){
 				index = 0;
 			}
+			
 			return colours.get(index);
+			
+			
+		}
+		
+		/**
+		 * Gets the first colour in the loop.
+		 * 
+		 * @return first colour, {@link PlayerMessages#normal1} if none
+		 */
+		public ChatColor firstColour() {
+			
+			
+			if(colours.size() == 0) return normal1;
+			
+			return colours.get(0);
+			
+			
 		}
 		
 		/**
@@ -357,6 +402,7 @@ public class PlayerMessages {
 			index = 0;
 
 		}
+		
 		
 	}
 	

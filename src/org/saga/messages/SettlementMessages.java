@@ -15,7 +15,7 @@ import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.factions.Faction;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
-import org.saga.messages.PlayerMessages.ColorCircle;
+import org.saga.messages.PlayerMessages.ColourLoop;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.ProficiencyDefinition;
 import org.saga.player.SagaPlayer;
@@ -58,14 +58,6 @@ public class SettlementMessages {
 		return veryNegative + "Saving is disabled for " + chunkBundle.getName() + " settlement.";
 	}
 	
-	public static String proficiencyNotAvailable2(String proficiencyName){
-		return negative + "No " + proficiencyName + " roles are available.";
-	}
-
-	public static String noChunkGroup(){
-		return negative + "You aren't a part of settlement.";
-	}
-	
 	public static String noChunkGroup(String name){
 		return negative + name + " settlement doesen't exist.";
 	}
@@ -74,64 +66,53 @@ public class SettlementMessages {
 		return negative + group.getName() + " isn't a settlement.";
 	}
 	
-	public static String notChunkBundleMember(ChunkBundle chunkBundle){
-		return negative + "You aren't a part of " + chunkBundle.getName() + " settlement.";
+
+	
+	// Membership:
+	public static String notMember(){
+		return negative + "You aren't a settlement member.";
 	}
 	
-	public static String isChunkGroupMember(ArrayList<String> names){
-		
-		
-		String rString = "";
-		
-		for (int i = 0; i < names.size(); i++) {
-			
-			if(i != 0) rString += ", ";
-			
-			rString += names.get(i);
-			
-		}
-		
-		if(names.size() == 0){
-			return negative + "Player is part of the settlement.";
-		}else if(names.size() == 1){
-			return negative + rString + " is part of the settlement.";
-		}else{
-			return negative + rString + " are part of the settlement.";
-		}
-		
-		
+	public static String notMember(ChunkBundle chunkBundle){
+		return negative + "You aren't a member of " + chunkBundle.getName() + " settlement.";
 	}
 	
-	public static String notChunkBundleMember(ChunkBundle chunkBundle, String playerName){
-		return negative + playerName + " isn't part of the settlement.";
+	public static String notMember(ChunkBundle chunkBundle, String name){
+		return negative + "Player " + name + " isn't a member of the settlement.";
 	}
 
-	public static String oneOwner() {
-		return negative + "There can only be one owner.";
-	}
 	
-	public static String alreadyOwner() {
-		return negative + "You already own the settlement.";
-	}
 	
-	public static String alreadyOwner(SagaPlayer sagaPlayer) {
-		return negative + sagaPlayer.getName() + " already owns the settlement.";
-	}
-	
-	public static String newOwner(String name) {
-		return anouncment + name + " is the new owner of the settlement.";
-	}
-	
-	public static String claimedChunkBundleBroadcast(SagaPlayer sagaPlayer, ChunkBundle chunkBundle){
-		return anouncment + sagaPlayer.getName() + " has claimed " + chunkBundle.getName() + " settlement.";
-	}
-
+	// Arguments:
 	public static String invalidInteger(String amount) {
 		return negative + amount + " isn't a valid integer.";
 	}
 	
 	public static String invalidPage(String amount) {
 		return negative + amount + " isn't a valid page number.";
+	}
+	
+	
+	
+	// Owner:
+	public static String newOwnerBcast(String name) {
+		return anouncment + "Player " + name + " is the new owner of the settlement.";
+	}
+	
+	public static String alreadyOwner() {
+		return negative + "You are already the settlement owner.";
+	}
+	
+	public static String alreadyOwner(String name) {
+		return negative + "Player " + name + " is already the settlement owner.";
+	}
+	
+	public static String ownerCantQuit() {
+		return negative + "Settlement owner can't quit the settlement.";
+	}
+	
+	public static String ownerCantQuitInfo() {
+		return normal1 + "Use /sresign to declare someone else as the owner.";
 	}
 	
 	
@@ -284,7 +265,7 @@ public class SettlementMessages {
 	
 	// Invite join leave messages:
 	public static String beenInvited(SagaPlayer sagaPlayer, ChunkBundle settlement) {
-		return anouncment + "You have been invited to " + settlement.getName() + " settlement.";
+		return normal1 + "You have been invited to " + settlement.getName() + " settlement.";
 	}
 	
 	public static String invited(SagaPlayer sagaPlayer, ChunkBundle settlement) {
@@ -293,7 +274,7 @@ public class SettlementMessages {
 	
 	
 	public static String haveJoined(SagaPlayer sagaPlayer, ChunkBundle settlement) {
-		return anouncment + "You joined " +settlement.getName() + " settlement.";
+		return normal1 + "You joined " +settlement.getName() + " settlement.";
 	}
 	
 	public static String joined(SagaPlayer sagaPlayer, ChunkBundle settlement) {
@@ -302,7 +283,7 @@ public class SettlementMessages {
 	
 	
 	public static String haveQuit(SagaPlayer sagaPlayer, ChunkBundle settlement) {
-		return anouncment + "You left from " + settlement.getName() + " settlement.";
+		return normal1 + "You left from " + settlement.getName() + " settlement.";
 	}
 	
 	public static String quit(SagaPlayer sagaPlayer, ChunkBundle settlement) {
@@ -311,7 +292,7 @@ public class SettlementMessages {
 
 	
 	public static String beenKicked(SagaPlayer sagaPlayer, ChunkBundle settlement) {
-		return anouncment + "You have been kicked out of " + settlement.getName() + " settlement.";
+		return normal1 + "You have been kicked out of " + settlement.getName() + " settlement.";
 	}
 	
 	public static String kicked(SagaPlayer sagaPlayer, ChunkBundle settlement) {
@@ -416,8 +397,12 @@ public class SettlementMessages {
 		return negative + sagaPlayer.getName() + " is already a invited to the settlement.";
 	}
 	
-	public static String playerNotChunkBundleMember(SagaPlayer sagaPlayer, ChunkBundle chunkBundle) {
-		return negative + sagaPlayer.getName() + " isn't part of the settlement.";
+	public static String notMember(SagaPlayer sagaPlayer, ChunkBundle chunkBundle) {
+		return negative + "Player " + sagaPlayer.getName() + " isn't a member of the settlement.";
+	}
+	
+	public static String notMember(SagaPlayer sagaPlayer) {
+		return negative + "Player " + sagaPlayer.getName() + " isn't a member of the settlement.";
 	}
 	
 	public static String haveCunkGroup() {
@@ -476,7 +461,7 @@ public class SettlementMessages {
 	private static StringTable main(Settlement settlement){
 		
 		
-		ColorCircle colours = new ColorCircle().addColor(normal1).addColor(normal2);
+		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
 		StringTable table = new StringTable(colours);
 		
 		// Claims:
@@ -511,7 +496,7 @@ public class SettlementMessages {
 	private static StringTable requirements (Settlement settlement){
 		
 		
-		ColorCircle colours = new ColorCircle().addColor(normal1).addColor(normal2);
+		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
 		StringTable table = new StringTable(colours);
 		
 		SettlementDefinition definition = settlement.getDefinition();
@@ -534,7 +519,7 @@ public class SettlementMessages {
 	private static StringTable buildings(Settlement settlement){
 		
 		
-		ColorCircle colours = new ColorCircle().addColor(normal1).addColor(normal2);
+		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
 		StringTable table = new StringTable(colours);
 		
 		// Retrieve buildings:
@@ -634,11 +619,11 @@ public class SettlementMessages {
 		
 		
 		StringBuffer result = new StringBuffer();
-		ColorCircle colours = new ColorCircle().addColor(normal1).addColor(normal2);
+		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
 		
 		result.append(listMembers(settlement));
 		
-		return TextUtil.frame(settlement.getName() + " members", result.toString(), colours.nextColor());
+		return TextUtil.frame(settlement.getName() + " members", result.toString(), colours.nextColour());
 		
 		
 	}

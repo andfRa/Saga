@@ -8,7 +8,7 @@ import org.saga.config.FactionConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.factions.Faction;
 import org.saga.factions.FactionManager;
-import org.saga.messages.PlayerMessages.ColorCircle;
+import org.saga.messages.PlayerMessages.ColourLoop;
 import org.saga.player.Proficiency;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.ProficiencyDefinition;
@@ -391,7 +391,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	private static StringTable main(Faction faction){
 		
 		
-		ColorCircle colours = new ColorCircle().addColor(faction.getColour2());
+		ColourLoop colours = new ColourLoop().addColor(faction.getColour2());
 		StringTable table = new StringTable(colours);
 		
 		// Colours:
@@ -669,11 +669,11 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 
 		
 		StringBuffer result = new StringBuffer();
-		ColorCircle colours = new ColorCircle().addColor(normal1).addColor(normal2);
+		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
 		
 		result.append(listMembers(faction));
 		
-		return TextUtil.frame(faction.getName() + " members", result.toString(), colours.nextColor());
+		return TextUtil.frame(faction.getName() + " members", result.toString(), colours.nextColour());
 		
 		
 	}

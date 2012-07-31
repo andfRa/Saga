@@ -196,7 +196,7 @@ public class EconomyManager implements DaytimeTicker{
 			// Enough money:
 			if(targeted.getCoins() < totalValue){
 				if(targeter instanceof SagaPlayer){
-					((SagaPlayer) targeter).message(EconomyMessages.notEnoughStoredMoney());
+					((SagaPlayer) targeter).message(EconomyMessages.notEnoughStoredCoins());
 				}
 				return;
 			}
@@ -209,15 +209,6 @@ public class EconomyManager implements DaytimeTicker{
 				return;
 			}
 
-//			// Fix amount:
-//			if(amount > interacted.getItemCount(material)){
-//				amount = interacted.getItemCount(material);
-//				value = transaction.getValue(amount);
-//			}
-			
-			// Don't trade damaged items:
-			
-			
 			// Do transaction:
 			ItemStack itemStack = new ItemStack(material, amount);
 			targeted.addItem(itemStack);

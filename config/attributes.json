@@ -55,7 +55,7 @@
       "BURN_IGNORE_CHANCE":{"x1":0,"y1":0,"x2":70,"y2":0.9}
     },
     "blockBreak":{},
-    "description":"Magic damage and burning protection."
+    "description":"Magic damage and burn protection."
   },
   
   {"name":"luck",

@@ -1,20 +1,13 @@
 package org.saga.commands;
 
-import java.util.ArrayList;
-
 import org.bukkit.Location;
 import org.saga.Saga;
-import org.saga.SagaLogger;
 import org.saga.config.EconomyConfiguration;
-import org.saga.economy.EconomyManager;
-import org.saga.economy.EconomyManager.InvalidWorldException;
-import org.saga.economy.TradeDeal;
-import org.saga.economy.TradeDeal.TradeDealType;
 import org.saga.exceptions.NonExistantSagaPlayerException;
-import org.saga.messages.SettlementMessages;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.InfoMessages;
 import org.saga.messages.SagaMessages;
+import org.saga.messages.SettlementMessages;
 import org.saga.player.SagaPlayer;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
@@ -23,114 +16,8 @@ import org.sk89q.CommandPermissions;
 
 public class EconomyCommands {
 
-	
-	// Trade deals:
-	@Command(
-			aliases = {"eimports", "imports"},
-			usage = "[page]",
-			flags = "",
-			desc = "List all available import deals.",
-			min = 0,
-			max = 1
-	)
-	@CommandPermissions({"saga.user.building.tradingpost.economy.tradedeals"})
-	public static void importDeals(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-		
-		Integer page;
-		
-		// Retrieve location:
-		Location location = sagaPlayer.getLocation();
-		if(location == null){
-			sagaPlayer.error("failed to retrieve location");
-			SagaLogger.severe(EconomyCommands.class, "failed to retrieve location for " + sagaPlayer + " saga player");
-			return;
-		}
-		
-		// Retrieve trade deals:
-		ArrayList<TradeDeal> tradeDeals;
-		try {
-			tradeDeals = EconomyManager.manager(location.getWorld().getName()).getTradingDeals();
-		} catch (InvalidWorldException e) {
-			sagaPlayer.error("failed to retrieve " + EconomyManager.class.getSimpleName() + " for " + location.getWorld().getName() + " world.");
-			SagaLogger.severe(EconomyCommands.class, "failed to retrieve " + EconomyManager.class.getSimpleName() + " for " + location.getWorld().getName() + " world");
-			return;
-		}
-		
-		// Arguments:
-		if(args.argsLength() == 1){
-			
-			try {
-				page = Integer.parseInt(args.getString(0));
-			} catch (NumberFormatException e) {
-				sagaPlayer.message(EconomyMessages.invalidAmount(args.getString(1)));
-				return;
-			}
-			
-		}else{
-			page = 0;
-		}
-		
-		// Inform:
-		sagaPlayer.message(EconomyMessages.deals(tradeDeals,TradeDealType.IMPORT, page - 1));
-		
-		
-	}
-	
-	@Command(
-			aliases = {"eexports", "exports"},
-			usage = "[page]",
-			flags = "",
-			desc = "List all available export deals.",
-			min = 0,
-			max = 1
-	)
-	@CommandPermissions({"saga.user.building.tradingpost.economy.tradedeals"})
-	public static void exportDeals(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-		
-		Integer page;
-		
-		// Retrieve location:
-		Location location = sagaPlayer.getLocation();
-		if(location == null){
-			sagaPlayer.error("failed to retrieve location");
-			SagaLogger.severe(EconomyCommands.class, "failed to retrieve location for " + sagaPlayer + " saga player");
-			return;
-		}
-		
-		// Retrieve trade deals:
-		ArrayList<TradeDeal> tradeDeals;
-		try {
-			tradeDeals = EconomyManager.manager(location.getWorld().getName()).getTradingDeals();
-		} catch (InvalidWorldException e) {
-			sagaPlayer.error("failed to retrieve " + EconomyManager.class.getSimpleName() + " for " + location.getWorld().getName() + " world.");
-			SagaLogger.severe(EconomyCommands.class, "failed to retrieve " + EconomyManager.class.getSimpleName() + " for " + location.getWorld().getName() + " world");
-			return;
-		}
-		
-		// Arguments:
-		if(args.argsLength() == 1){
-			
-			try {
-				page = Integer.parseInt(args.getString(0));
-			} catch (NumberFormatException e) {
-				sagaPlayer.message(EconomyMessages.invalidAmount(args.getString(1)));
-				return;
-			}
-			
-		}else{
-			page = 0;
-		}
-		
-		// Inform:
-		sagaPlayer.message(EconomyMessages.deals(tradeDeals,TradeDealType.EXPORT, page - 1));
-		
-		
-	}
 
-	
-	// Exchange:
+	// Coins:
 	@Command(
 			aliases = {"spay", "pay"},
 			usage = "<name> <amount>",
@@ -255,7 +142,9 @@ public class EconomyCommands {
 		sagaPlayer.message(EconomyMessages.wallet(sagaPlayer));
 		
 	}
-		
+	
+	
+	// Other:
 	@Command(
 			aliases = {"ehelp"},
 			usage = "[page number]",

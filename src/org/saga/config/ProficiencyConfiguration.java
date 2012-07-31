@@ -125,7 +125,7 @@ public class ProficiencyConfiguration {
 		return null;
 		
 	}
-	
+
 	/**
 	 * Gets proficiency definitions.
 	 * 
@@ -141,6 +141,27 @@ public class ProficiencyConfiguration {
 		for (ProficiencyDefinition definition : definitions) {
 			
 			if(definition.getType() == type && definition.getHierarchyLevel() == hierarchy) filteredDefs.add(definition);
+			
+		}
+		
+		return filteredDefs;
+		
+	}
+
+	/**
+	 * Gets proficiency definitions.
+	 * 
+	 * @param type proficiency type
+	 * @return proficiencies with given type
+	 */
+	public ArrayList<ProficiencyDefinition> getDefinitions(ProficiencyType type){
+		
+		ArrayList<ProficiencyDefinition> definitions = new ArrayList<ProficiencyDefinition>(this.definitions);
+		ArrayList<ProficiencyDefinition> filteredDefs = new ArrayList<ProficiencyDefinition>();
+		
+		for (ProficiencyDefinition definition : definitions) {
+			
+			if(definition.getType() == type) filteredDefs.add(definition);
 			
 		}
 		

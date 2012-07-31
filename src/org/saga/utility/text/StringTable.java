@@ -3,7 +3,7 @@ package org.saga.utility.text;
 import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
-import org.saga.messages.PlayerMessages.ColorCircle;
+import org.saga.messages.PlayerMessages.ColourLoop;
 
 
 
@@ -25,9 +25,9 @@ public class StringTable {
 	private int columnIndex;
 	
 	/**
-	 * Message colors.
+	 * Message colours.
 	 */
-	private ColorCircle colours;
+	private ColourLoop colours;
 
 	/**
 	 * Custom column widths.
@@ -35,12 +35,13 @@ public class StringTable {
 	private ArrayList<Double> customWidths = null;
 
 	
-	// Initialization:
+	
+	// Initialisation:
 	/**
-	 * Sets message color and lines.
+	 * Sets message colour and lines.
 	 * 
 	 */
-	public StringTable(ColorCircle colours) {
+	public StringTable(ColourLoop colours) {
 
 		this.colours = colours;
 		
@@ -48,6 +49,7 @@ public class StringTable {
 		table.add(new ArrayList<String>());
 		
 	}
+	
 	
 	
 	// Size:
@@ -151,6 +153,7 @@ public class StringTable {
 		
 		
 	}
+	
 	
 	
 	// Data:
@@ -257,6 +260,15 @@ public class StringTable {
 	}
 	
 	/**
+	 * Adds a page break.
+	 */
+	public void nextPage() {
+
+		addLine(StringBook.PAGE_BREAK);
+		
+	}
+	
+	/**
 	 * Gets the table size.
 	 * 
 	 * @return table size
@@ -298,7 +310,7 @@ public class StringTable {
 			if(row != 0) result.append("\n");
 			
 			// All columns:
-			ChatColor elementColor = colours.nextColor();
+			ChatColor elementColor = colours.nextColour();
 			for (int colInd = 0; colInd < table.size(); colInd++) {
 				
 				ArrayList<String> column = table.get(colInd);

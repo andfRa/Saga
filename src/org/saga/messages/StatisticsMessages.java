@@ -9,7 +9,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
-import org.saga.messages.PlayerMessages.ColorCircle;
+import org.saga.messages.PlayerMessages.ColourLoop;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
 import org.saga.utility.Histogram;
@@ -48,7 +48,7 @@ public class StatisticsMessages {
 	public static String general() {
 	
 		
-		ColorCircle color = new ColorCircle().addColor(normal1).addColor(normal2);
+		ColourLoop color = new ColourLoop().addColor(normal1).addColor(normal2);
 		StringTable table = new StringTable(color);
 
 		// Add headings:
@@ -63,11 +63,11 @@ public class StatisticsMessages {
 		
 		table.collapse();
 		
-		StringBook book = new StringBook("general statistics", color, 10);
+		StringBook book = new StringBook("general statistics", color);
 		
 		book.addTable(table);
 		
-		return book.framed(0, table.calcTotalWidth());
+		return book.framedPage(0);
 		
 		
 	}
@@ -75,7 +75,7 @@ public class StatisticsMessages {
 	public static String abilities() {
 	
 		
-		ColorCircle color = new ColorCircle().addColor(normal1).addColor(normal2);
+		ColourLoop color = new ColourLoop().addColor(normal1).addColor(normal2);
 		ArrayList<String> abilities = AbilityConfiguration.config().getAbilityNames();
 		StringTable table = new StringTable(color);
 
@@ -96,11 +96,11 @@ public class StatisticsMessages {
 		
 		table.collapse();
 		
-		StringBook book = new StringBook("abilities", color, 18);
+		StringBook book = new StringBook("abilities", color);
 		
 		book.addTable(table);
 		
-		return book.framed(0, table.calcTotalWidth());
+		return book.framedPage(0);
 		
 		
 	}
@@ -121,16 +121,16 @@ public class StatisticsMessages {
 	public static String xrayIndication(Integer totalPlayers, ArrayList<String> indications) {
 
 		
-		ColorCircle color = new ColorCircle().addColor(normal1).addColor(normal2);
+		ColourLoop color = new ColourLoop().addColor(normal1).addColor(normal2);
 		StringBuffer result = new StringBuffer();
 		
 		// Totals:
-		result.append(color.nextColor() + "Indications: " + indications.size() + "/" + totalPlayers);
+		result.append(color.nextColour() + "Indications: " + indications.size() + "/" + totalPlayers);
 		
 		result.append("\n");
 		
 		// Players:
-		result.append(color.nextColor() + "Indications: ");
+		result.append(color.nextColour() + "Indications: ");
 		if(indications.size() > 0){
 			
 			result.append(TextUtil.flatten(indications));
@@ -141,7 +141,7 @@ public class StatisticsMessages {
 			
 		}
 		
-		return TextUtil.frame("x-ray mod indications", color.nextColor(), result.toString(), 60);
+		return TextUtil.frame("x-ray mod indications", result.toString(), color.nextColour());
 		
 		
 	}
@@ -190,7 +190,7 @@ public class StatisticsMessages {
 //		table.collapse();
 //		book.addTable(table);
 //		
-//		return book.framed(page);
+//		return book.framedPage(page);
 //	
 		return "";
 		
@@ -199,7 +199,7 @@ public class StatisticsMessages {
 	public static String attributes() {
 		
 		
-		ColorCircle color = new ColorCircle().addColor(normal1).addColor(normal2);
+		ColourLoop color = new ColourLoop().addColor(normal1).addColor(normal2);
 		StringTable table = new StringTable(color);
 
 		// Add headings:
@@ -214,11 +214,11 @@ public class StatisticsMessages {
 		
 		table.collapse();
 		
-		StringBook book = new StringBook("attribute statistics", color, 10);
+		StringBook book = new StringBook("attribute statistics", color);
 		
 		book.addTable(table);
 		
-		return book.framed(0, table.calcTotalWidth());
+		return book.framedPage(0);
 		
 		
 	}
@@ -226,7 +226,10 @@ public class StatisticsMessages {
 	public static String exp(int page) {
 	
 		
-		ColorCircle color = new ColorCircle().addColor(normal1).addColor(normal2);
+		int maxLines = 20;
+		int lines = 0;
+		
+		ColourLoop color = new ColourLoop().addColor(normal1).addColor(normal2);
 		StringTable table = new StringTable(color);
 
 		// Add headings:
@@ -249,6 +252,13 @@ public class StatisticsMessages {
 					
 					table.addLine(TextUtil.TAB + subcateg, exp.intValue() + "", 0);
 					
+					lines++;
+					
+					if(lines > maxLines){
+						lines = 0;
+						table.nextPage();
+					}
+					
 				}
 				
 			}
@@ -259,11 +269,11 @@ public class StatisticsMessages {
 		
 		table.collapse();
 		
-		StringBook book = new StringBook("experience statistics", color, 10);
+		StringBook book = new StringBook("experience statistics", color);
 		
 		book.addTable(table);
 		
-		return book.framed(page, table.calcTotalWidth());
+		return book.framedPage(page);
 		
 		
 	}
@@ -271,8 +281,8 @@ public class StatisticsMessages {
 	public static String balance(int page) {
 
 		
-		StringBook book = new StringBook("economy statistics", new ColorCircle().addColor(normal1).addColor(normal2), 10);
-		StringTable table = new StringTable(new ColorCircle().addColor(normal1).addColor(normal2));
+		StringBook book = new StringBook("economy statistics", new ColourLoop().addColor(normal1).addColor(normal2));
+		StringTable table = new StringTable(new ColourLoop().addColor(normal1).addColor(normal2));
 		final StatisticsManager manager = StatisticsManager.manager();
 		
 		ArrayList<Material> materials = StatisticsManager.manager().getAllEcoMaterials();
@@ -319,7 +329,7 @@ public class StatisticsMessages {
 		table.collapse();
 		book.addTable(table);
 		
-		return book.framed(page);
+		return book.framedPage(page);
 		
 		
 	}
@@ -330,9 +340,9 @@ public class StatisticsMessages {
 	public static String histogram(String title, Double[] data, Integer width, Integer decimals) {
 
 		
-		ColorCircle colours = new ColorCircle() .addColor(normal2).addColor(normal1);
+		ColourLoop colours = new ColourLoop().addColor(normal2).addColor(normal1);
 		
-		ColorCircle hcolours = new ColorCircle()
+		ColourLoop hcolours = new ColourLoop()
 			.addColor(ChatColor.LIGHT_PURPLE)
 			.addColor(ChatColor.DARK_AQUA).addColor(ChatColor.DARK_AQUA).addColor(ChatColor.DARK_AQUA)
 			.addColor(ChatColor.DARK_AQUA).addColor(ChatColor.DARK_AQUA)
@@ -357,18 +367,18 @@ public class StatisticsMessages {
 			
 			table.addLine(new String[]{
 				valsColour + values[i],
-				axisColour + "_/ " + hcolours.nextColor() +
+				axisColour + "_/ " + hcolours.nextColour() +
 				TextUtil.repeat("|", bars[i] + 1),
 				axisColour + "- " + valsColour + ocurrances[i].toString()
 			});
 			
 		}
 		
-		table.addLine(new String[]{valsColour + values[ocurrances.length], axisColour + "_/ " + hcolours.nextColor() + TextUtil.repeat(" ", 50), ""});
+		table.addLine(new String[]{valsColour + values[ocurrances.length], axisColour + "_/ " + hcolours.nextColour() + TextUtil.repeat(" ", 50), ""});
 		
 		table.collapse();
 		
-		return TextUtil.frame(title,colours.nextColor(), table.createTable(), table.calcTotalWidth());
+		return TextUtil.frame(title, table.createTable(), colours.nextColour());
 		
 		
 	}

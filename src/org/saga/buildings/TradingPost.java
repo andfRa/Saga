@@ -6,12 +6,8 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
-import org.bukkit.event.Event.Result;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
@@ -23,17 +19,14 @@ import org.saga.buildings.signs.BuySign;
 import org.saga.buildings.signs.SellSign;
 import org.saga.chunks.ChunkBundle;
 import org.saga.chunks.SagaChunk;
-import org.saga.config.SettlementConfiguration;
 import org.saga.config.EconomyConfiguration;
-import org.saga.economy.EconomyManager;
-import org.saga.economy.EconomyManager.InvalidWorldException;
+import org.saga.config.SettlementConfiguration;
 import org.saga.economy.EconomyManager.TradeDealNotFoundException;
 import org.saga.economy.EconomyManager.TransactionType;
 import org.saga.economy.TradeDeal;
 import org.saga.economy.TradeDeal.TradeDealType;
 import org.saga.economy.Trader;
 import org.saga.exceptions.InvalidBuildingException;
-import org.saga.messages.BuildingMessages;
 import org.saga.player.SagaPlayer;
 
 
@@ -512,65 +505,65 @@ public class TradingPost extends Building implements Trader, DaytimeTicker{
 	private void doDeals() {
 
 		
-		
-		ArrayList<TradeDeal> tradeDeals = getDeals();
-		
-		// Trade deal transactions:
-		for (int i = 0; i < tradeDeals.size(); i++) {
-			
-			TradeDeal tradeDeal = tradeDeals.get(i);
-			
-			// Next day:
-			tradeDeal.nextDay();
-			
-			// Export:
-			if(tradeDeal.getType().equals(TradeDealType.EXPORT)){
-				
-				// Do deal:
-				exported += tradeDeal.doDeal(this);
-				
-			}
-			
-			// Import:
-			else if(tradeDeal.getType().equals(TradeDealType.IMPORT)){
-				
-				// Do deal:
-				imported += tradeDeal.doDeal(this);
-				
-			}else{
-				SagaLogger.severe(this, "found invalid trade deal type for " + tradeDeal + " trade deal for doTradeDeal()");
-			}
-			
-			// Check for completion:
-			if(tradeDeal.isCompleted()){
-				
-				try {
-					completedDeals.add(removeDeal(tradeDeal.getId()));
-				} catch (TradeDealNotFoundException e) {
-					SagaLogger.severe(this, "failed to remove a non-existing trading deal with " + tradeDeal.getId());
-				}
-				
-			}else 
-
-			// Check for expiration:
-			if(tradeDeal.isExpired()){
-				
-				try {
-					expiredDeals.add(removeDeal(tradeDeal.getId()));
-				} catch (TradeDealNotFoundException e) {
-					SagaLogger.severe(this, "failed to remove a non-existing trading deal with " + tradeDeal.getId());
-				}
-
-			}
-			
-		}
-		
-		// Notify transaction:
-		if(imported != 0 || exported != 0) notifyTransaction();
-		
-		// Inform:
-		if(getChunkBundle() != null) getChunkBundle().broadcast(BuildingMessages.dealsBalance(this));
-		
+//		
+//		ArrayList<TradeDeal> tradeDeals = getDeals();
+//		
+//		// Trade deal transactions:
+//		for (int i = 0; i < tradeDeals.size(); i++) {
+//			
+//			TradeDeal tradeDeal = tradeDeals.get(i);
+//			
+//			// Next day:
+//			tradeDeal.nextDay();
+//			
+//			// Export:
+//			if(tradeDeal.getType().equals(TradeDealType.EXPORT)){
+//				
+//				// Do deal:
+//				exported += tradeDeal.doDeal(this);
+//				
+//			}
+//			
+//			// Import:
+//			else if(tradeDeal.getType().equals(TradeDealType.IMPORT)){
+//				
+//				// Do deal:
+//				imported += tradeDeal.doDeal(this);
+//				
+//			}else{
+//				SagaLogger.severe(this, "found invalid trade deal type for " + tradeDeal + " trade deal for doTradeDeal()");
+//			}
+//			
+//			// Check for completion:
+//			if(tradeDeal.isCompleted()){
+//				
+//				try {
+//					completedDeals.add(removeDeal(tradeDeal.getId()));
+//				} catch (TradeDealNotFoundException e) {
+//					SagaLogger.severe(this, "failed to remove a non-existing trading deal with " + tradeDeal.getId());
+//				}
+//				
+//			}else 
+//
+//			// Check for expiration:
+//			if(tradeDeal.isExpired()){
+//				
+//				try {
+//					expiredDeals.add(removeDeal(tradeDeal.getId()));
+//				} catch (TradeDealNotFoundException e) {
+//					SagaLogger.severe(this, "failed to remove a non-existing trading deal with " + tradeDeal.getId());
+//				}
+//
+//			}
+//			
+//		}
+//		
+//		// Notify transaction:
+//		if(imported != 0 || exported != 0) notifyTransaction();
+//		
+//		// Inform:
+//		if(getChunkBundle() != null) getChunkBundle().broadcast(BuildingMessages.dealsBalance(this));
+//		
 		
 	}
 
@@ -795,94 +788,94 @@ public class TradingPost extends Building implements Trader, DaytimeTicker{
 	private void selectDeals() {
 
 		
-		// Manager:
-		SagaChunk sagaChunk = getSagaChunk();
-		if(sagaChunk == null){
-			return;
-		}
-		String worldName = sagaChunk.getWorldName();
-		
-		EconomyManager manager = null;
-		try {
-			manager = EconomyManager.manager(worldName);
-		}
-		catch (InvalidWorldException e) {
-			SagaLogger.severe(this,worldName + " is not a valid world name");
-			return;
-		}
-		
-		
-		// Deals:
-		int newDeals = getDealsMaxCount() - getDealCount();
-		TradeDeal newDeal = null;
-		
-		for (int i = 0; i < newDeals; i++) {
-			
-			newDeal = null;
-			
-			Double available = calcDealsProfit() + getCoins() - getMinimumCoins();
-			
-			// Import:
-			if(available > 0){
-				
-				ArrayList<Material> materials = getSortedImports();
-				
-				ArrayList<TradeDeal> deals = manager.findGoodTradeDeal(TradeDealType.IMPORT, materials, this);
-				
-				for (TradeDeal tradeDeal : deals) {
-					
-					if(tradeDeal.getTotalCost() <= available){
-						newDeal = tradeDeal;
-						break;
-					}
-					
-				}
-				
-			}
-			
-			// Export:
-			if (newDeal == null) {
-
-				ArrayList<Material> materials = getSortedExports();
-				
-				ArrayList<TradeDeal> deals = manager.findGoodTradeDeal(TradeDealType.EXPORT, materials, this);
-
-				for (TradeDeal tradeDeal : deals) {
-					
-					if(tradeDeal.getAmount() <= getAmount(tradeDeal.getMaterial())){
-						newDeal = tradeDeal;
-						break;
-					}
-					
-				}
-				
-				
-			}
-			
-			// No deal found:
-			if(newDeal == null) continue;
-			else{
-				
-				try {
-					
-					manager.takeTradeDeal(newDeal.getId());
-					addDeal(newDeal);
-					
-					this.newDeals.add(newDeal);
-					
-					// Inform:
-					if(getChunkBundle() != null) getChunkBundle().broadcast(BuildingMessages.formedDeal(this, newDeal));
-					
-				}
-				catch (TradeDealNotFoundException e) {
-					SagaLogger.severe(this, "deal selection failed to retrieve a deal with id " + newDeal.getId());
-					return;
-				}
-				
-			}
-			
-			
-		}
+//		// Manager:
+//		SagaChunk sagaChunk = getSagaChunk();
+//		if(sagaChunk == null){
+//			return;
+//		}
+//		String worldName = sagaChunk.getWorldName();
+//		
+//		EconomyManager manager = null;
+//		try {
+//			manager = EconomyManager.manager(worldName);
+//		}
+//		catch (InvalidWorldException e) {
+//			SagaLogger.severe(this,worldName + " is not a valid world name");
+//			return;
+//		}
+//		
+//		
+//		// Deals:
+//		int newDeals = getDealsMaxCount() - getDealCount();
+//		TradeDeal newDeal = null;
+//		
+//		for (int i = 0; i < newDeals; i++) {
+//			
+//			newDeal = null;
+//			
+//			Double available = calcDealsProfit() + getCoins() - getMinimumCoins();
+//			
+//			// Import:
+//			if(available > 0){
+//				
+//				ArrayList<Material> materials = getSortedImports();
+//				
+//				ArrayList<TradeDeal> deals = manager.findGoodTradeDeal(TradeDealType.IMPORT, materials, this);
+//				
+//				for (TradeDeal tradeDeal : deals) {
+//					
+//					if(tradeDeal.getTotalCost() <= available){
+//						newDeal = tradeDeal;
+//						break;
+//					}
+//					
+//				}
+//				
+//			}
+//			
+//			// Export:
+//			if (newDeal == null) {
+//
+//				ArrayList<Material> materials = getSortedExports();
+//				
+//				ArrayList<TradeDeal> deals = manager.findGoodTradeDeal(TradeDealType.EXPORT, materials, this);
+//
+//				for (TradeDeal tradeDeal : deals) {
+//					
+//					if(tradeDeal.getAmount() <= getAmount(tradeDeal.getMaterial())){
+//						newDeal = tradeDeal;
+//						break;
+//					}
+//					
+//				}
+//				
+//				
+//			}
+//			
+//			// No deal found:
+//			if(newDeal == null) continue;
+//			else{
+//				
+//				try {
+//					
+//					manager.takeTradeDeal(newDeal.getId());
+//					addDeal(newDeal);
+//					
+//					this.newDeals.add(newDeal);
+//					
+//					// Inform:
+//					if(getChunkBundle() != null) getChunkBundle().broadcast(BuildingMessages.formedDeal(this, newDeal));
+//					
+//				}
+//				catch (TradeDealNotFoundException e) {
+//					SagaLogger.severe(this, "deal selection failed to retrieve a deal with id " + newDeal.getId());
+//					return;
+//				}
+//				
+//			}
+//			
+//			
+//		}
 
 
 	}
@@ -1205,87 +1198,87 @@ public class TradingPost extends Building implements Trader, DaytimeTicker{
 	public void onPlayerInteract(PlayerInteractEvent event, SagaPlayer sagaPlayer) {
 
 		
-		super.onPlayerInteract(event, sagaPlayer);
-
-		// Canceled:
-		if(event.isCancelled()){
-			return;
-		}
-		
-		Block targetBlock = event.getClickedBlock();
-    	
-		// Right click:
-		if(!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
-			return;
-		}
-		
-		// Invalid:
-		if(targetBlock == null){
-    		return;
-    	}
-    	
-		// Sign:
-		if(!(targetBlock.getState() instanceof Sign)){
-			return;
-		}
-		Sign sign = (Sign) targetBlock.getState();
-
-		// Top sign:
-		if(ChatColor.stripColor(sign.getLine(0)).equals(GOODS_SIGN)){
-			
-			Integer page = 1;
-			if(sign.getLine(1).length() > 0){
-				try {
-					page = Integer.parseInt(sign.getLine(1));
-				}
-				catch (NumberFormatException e) { }
-			}
-			
-			sagaPlayer.message(BuildingMessages.goods(this, page - 1));
-			
-			// Take control:
-			event.setUseInteractedBlock(Result.DENY);
-			event.setUseItemInHand(Result.DENY);
-			
-		}
-		
-		// Deals sign:
-		else if(ChatColor.stripColor(sign.getLine(0)).equals(DEALS_SIGN)){
-			
-			Integer page = 1;
-			if(sign.getLine(1).length() > 0){
-				try {
-					page = Integer.parseInt(sign.getLine(1));
-				}
-				catch (NumberFormatException e) { }
-			}
-			
-			sagaPlayer.message(BuildingMessages.deals(this, page - 1));
-			
-			// Take control:
-			event.setUseInteractedBlock(Result.DENY);
-			event.setUseItemInHand(Result.DENY);
-			
-		}
-
-		// Report sign:
-		else if(ChatColor.stripColor(sign.getLine(0)).equals(REPORT_SIGN)){
-			
-			Integer page = 1;
-			if(sign.getLine(1).length() > 0){
-				try {
-					page = Integer.parseInt(sign.getLine(1));
-				}
-				catch (NumberFormatException e) { }
-			}
-			
-			sagaPlayer.message(BuildingMessages.report(this, page - 1));
-			
-			// Take control:
-			event.setUseInteractedBlock(Result.DENY);
-			event.setUseItemInHand(Result.DENY);
-			
-		}
+//		super.onPlayerInteract(event, sagaPlayer);
+//
+//		// Canceled:
+//		if(event.isCancelled()){
+//			return;
+//		}
+//		
+//		Block targetBlock = event.getClickedBlock();
+//    	
+//		// Right click:
+//		if(!event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+//			return;
+//		}
+//		
+//		// Invalid:
+//		if(targetBlock == null){
+//    		return;
+//    	}
+//    	
+//		// Sign:
+//		if(!(targetBlock.getState() instanceof Sign)){
+//			return;
+//		}
+//		Sign sign = (Sign) targetBlock.getState();
+//
+//		// Top sign:
+//		if(ChatColor.stripColor(sign.getLine(0)).equals(GOODS_SIGN)){
+//			
+//			Integer page = 1;
+//			if(sign.getLine(1).length() > 0){
+//				try {
+//					page = Integer.parseInt(sign.getLine(1));
+//				}
+//				catch (NumberFormatException e) { }
+//			}
+//			
+//			sagaPlayer.message(BuildingMessages.goods(this, page - 1));
+//			
+//			// Take control:
+//			event.setUseInteractedBlock(Result.DENY);
+//			event.setUseItemInHand(Result.DENY);
+//			
+//		}
+//		
+//		// Deals sign:
+//		else if(ChatColor.stripColor(sign.getLine(0)).equals(DEALS_SIGN)){
+//			
+//			Integer page = 1;
+//			if(sign.getLine(1).length() > 0){
+//				try {
+//					page = Integer.parseInt(sign.getLine(1));
+//				}
+//				catch (NumberFormatException e) { }
+//			}
+//			
+//			sagaPlayer.message(BuildingMessages.deals(this, page - 1));
+//			
+//			// Take control:
+//			event.setUseInteractedBlock(Result.DENY);
+//			event.setUseItemInHand(Result.DENY);
+//			
+//		}
+//
+//		// Report sign:
+//		else if(ChatColor.stripColor(sign.getLine(0)).equals(REPORT_SIGN)){
+//			
+//			Integer page = 1;
+//			if(sign.getLine(1).length() > 0){
+//				try {
+//					page = Integer.parseInt(sign.getLine(1));
+//				}
+//				catch (NumberFormatException e) { }
+//			}
+//			
+//			sagaPlayer.message(BuildingMessages.report(this, page - 1));
+//			
+//			// Take control:
+//			event.setUseInteractedBlock(Result.DENY);
+//			event.setUseItemInHand(Result.DENY);
+//			
+//		}
 		
 		
 	}

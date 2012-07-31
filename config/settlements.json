@@ -55,7 +55,7 @@
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"MIDDAY",
-    "description":"",
+    "description":"Chops logs.",
     "effect":"#craft_daytime: #caft_amount x logs"
   },
 
@@ -80,7 +80,7 @@
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"MIDDAY",
-    "description":"",
+    "description":"Produces crops and meat.",
     "effect":"#craft_daytime: #caft_amount x crops/raw meat"
   },
   
@@ -104,7 +104,7 @@
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"MIDDAY",
-    "description":"",
+    "description":"Mines ores.",
     "effect":"#craft_daytime: #caft_amount x ore"
   },
   
@@ -127,7 +127,7 @@
     "relatedBuildings":["lumber camp"],
     "performTime":"NONE",
     "resourceTime":"SUNSET",
-    "description":"",
+    "description":"Creates wood from logs.",
     "effect":"#craft_daytime: #caft_amount x logs to wood"
   },
 
@@ -151,7 +151,7 @@
     "relatedBuildings":["farm"],
     "performTime":"NONE",
     "resourceTime":"SUNSET",
-    "description":"",
+    "description":"Cooks food from farm products.",
     "effect":"#craft_daytime: #caft_amount x wheat/meat to food"
   },
   
@@ -175,7 +175,7 @@
     "relatedBuildings":["mine"],
     "performTime":"NONE",
     "resourceTime":"SUNSET",
-    "description":"",
+    "description":"Refines ores.",
     "effect":"#craft_daytime: #caft_amount x ore refined"
   },
 
@@ -196,7 +196,7 @@
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"SUNSET",
-    "description":"",
+    "description":"Creates bricks.",
     "effect":"#craft_daytime: #caft_amount x bricks"
   },
   
@@ -252,7 +252,7 @@
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"NONE",
-    "description":"",
+    "description":"Enables ignite for fireball.",
     "effect":"fireball ignites targets"
   },
 
@@ -272,7 +272,7 @@
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"NONE",
-    "description":"Enables settlement spawn command: /sspawn.",
+    "description":"Enables spawn command.",
     "effect":"command: /sspawn"
   },
 
@@ -290,7 +290,7 @@
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"NONE",
-    "description":"",
+    "description":"Prevents hostile mobs spawning.",
     "effect":""
   },
   
@@ -308,7 +308,7 @@
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"NONE",
-    "description":"",
+    "description":"A place to fight.",
     "effect":""
   },
 
@@ -328,7 +328,7 @@
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"NONE",
-    "description":"",
+    "description":"Only residents and owner can build.",
     "effect":""
   }
 

@@ -10,7 +10,7 @@ import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.saga.messages.PlayerMessages.ColorCircle;
+import org.saga.messages.PlayerMessages.ColourLoop;
 import org.saga.utility.ArrayUtil;
 
 public class TextUtil {
@@ -233,61 +233,6 @@ public class TextUtil {
 		
 	}
 
-	public static String frame(String title, ChatColor color, String message, double width) {
-
-		
-		StringBuffer result = new StringBuffer();
-		
-		if(message.length() == 0){
-			result.append(color);
-			result.append(".-------.");
-			result.append("| empty |");
-			result.append("'-------'");
-			return result.toString();
-		}
-		
-		// Upper bound:
-		String upperBound = "=[ " + title.toUpperCase() + " ]=";
-		boolean left = true;
-		while(chatLength(upperBound + "_") <= width){
-			
-			if(left){
-				upperBound = "_" + upperBound;
-			}else{
-				upperBound = upperBound + "_";
-			}
-			left = !left;
-			
-		}
-		
-		// Lower bound:
-		String lowerBound = "";
-		while(chatLength(lowerBound + "_") <= width){
-			
-			lowerBound += "-";
-			
-		}
-		
-		// Put together:
-		result.append(color);
-		result.append(upperBound);
-		result.append("\n");
-		result.append(message);
-		result.append("\n");
-		result.append(color);
-		result.append(lowerBound);
-		
-		return result.toString();
-		
-		
-	}
-
-	public static String frame(String title, String message, ChatColor color) {
-
-		return frame(title, color, message, 70);
-		
-	}
-	
 	public static Double chatLength(String str) {
 
 		
@@ -381,7 +326,7 @@ public class TextUtil {
 		
 	}
 
-	public static String histogram(Double[] data, ColorCircle colours) {
+	public static String histogram(Double[] data, ColourLoop colours) {
 
 		
 		StringBuffer result = new StringBuffer();
@@ -394,7 +339,7 @@ public class TextUtil {
 			
 			for (int i = 0; i < data.length; i++) {
 				
-				if(i % 10 == 0) result.append(colours.nextColor());
+				if(i % 10 == 0) result.append(colours.nextColour());
 				
 				if(data[i] >= row){
 					result.append("||");
@@ -432,6 +377,66 @@ public class TextUtil {
 		
 		return df.format(doub);
 		
+		
+	}
+	
+	
+	
+	// Frame:
+	public static String frame(String title, String message, ChatColor colour, double width) {
+
+		
+		StringBuffer result = new StringBuffer();
+		
+		// Upper bound:
+		String upperBound = "=[ " + title.toUpperCase() + " ]=";
+		boolean left = true;
+		while(chatLength(upperBound + "-") <= width){
+			
+			if(left){
+				upperBound = "-" + upperBound;
+			}else{
+				upperBound = upperBound + "-";
+			}
+			left = !left;
+			
+		}
+		
+		// Lower bound:
+		String lowerBound = "";
+		while(chatLength(lowerBound + "_") <= width){
+			
+			lowerBound += "-";
+			
+		}
+		
+		// Combine:
+		result.append(" \n");
+		result.append(colour);
+		result.append(upperBound);
+		
+		result.append("\n");
+		result.append(message);
+		result.append("\n");
+		
+		result.append(colour);
+		result.append(lowerBound);
+		result.append("\n ");
+		
+		return result.toString();
+		
+		
+	}
+
+	public static String frame(String title, String message, ChatColor color) {
+
+		return frame(title, message, color, 80.0);
+		
+	}
+	
+	public static String smallFrame(String title, String message, ChatColor colour) {
+
+		return frame(title, message, colour, 0.75*80);
 		
 	}
 	

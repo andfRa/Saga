@@ -19,21 +19,21 @@ import org.saga.chunks.ChunkBundle;
 import org.saga.chunks.ChunkBundleManager;
 import org.saga.chunks.ChunkBundleToggleable;
 import org.saga.config.AttributeConfiguration;
-import org.saga.config.SettlementConfiguration;
 import org.saga.config.ExperienceConfiguration;
+import org.saga.config.SettlementConfiguration;
 import org.saga.dependencies.PermissionsManager;
-import org.saga.dependencies.spout.ClientManager;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;
 import org.saga.messages.AdminMessages;
-import org.saga.messages.SettlementMessages;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.SagaMessages;
+import org.saga.messages.SettlementMessages;
 import org.saga.messages.StatsMessages;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;
 import org.saga.settlements.Settlement.SettlementPermission;
+import org.saga.utility.text.TextUtil;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
 import org.sk89q.CommandPermissions;
@@ -373,7 +373,7 @@ public class AdminCommands {
 			// Chunk group:
 			selectedChunkBundle = sagaPlayer.getChunkBundle();
 			if(selectedChunkBundle == null){
-				sagaPlayer.message( SettlementMessages.noChunkGroup() );
+				sagaPlayer.message( SettlementMessages.notMember() );
 				return;
 			}
 			
@@ -446,7 +446,7 @@ public class AdminCommands {
 			// Chunk group:
 			selectedChunkBundle = sagaPlayer.getChunkBundle();
 			if(selectedChunkBundle == null){
-				sagaPlayer.message( SettlementMessages.noChunkGroup() );
+				sagaPlayer.message( SettlementMessages.notMember() );
 				return;
 			}
 
@@ -521,7 +521,7 @@ public class AdminCommands {
 				// Chunk group:
 				selChunkBundle = sagaPlayer.getChunkBundle();
 				if(selChunkBundle == null){
-					sagaPlayer.message(SettlementMessages.noChunkGroup());
+					sagaPlayer.message(SettlementMessages.notMember());
 					return;
 				}
 				
@@ -597,7 +597,7 @@ public class AdminCommands {
 				// Chunk group:
 				selChunkBundle = sagaPlayer.getChunkBundle();
 				if(selChunkBundle == null){
-					sagaPlayer.message(SettlementMessages.noChunkGroup());
+					sagaPlayer.message(SettlementMessages.notMember());
 					return;
 				}
 				
@@ -790,13 +790,12 @@ public class AdminCommands {
 		usage = "",
 		flags = "",
 		desc = "Debug assist command.",
-		min = 1,
-		max = 1000
+		min = 0
 	)
 	@CommandPermissions({"saga.admin.dcommand"})
 	public static void debugCommand(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
-		ClientManager.showStats(sagaPlayer);
+		sagaPlayer.message(TextUtil.repeat(" ", args.getInteger(0))+"|");
 		
 	}
 	
