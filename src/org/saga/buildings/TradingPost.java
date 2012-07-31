@@ -2,7 +2,6 @@ package org.saga.buildings;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
 
@@ -24,7 +23,6 @@ import org.saga.config.SettlementConfiguration;
 import org.saga.economy.EconomyManager.TradeDealNotFoundException;
 import org.saga.economy.EconomyManager.TransactionType;
 import org.saga.economy.TradeDeal;
-import org.saga.economy.TradeDeal.TradeDealType;
 import org.saga.economy.Trader;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.player.SagaPlayer;
@@ -641,145 +639,6 @@ public class TradingPost extends Building implements Trader, DaytimeTicker{
 		
 	}
 	
-	/**
-	 * Calculates the profit for all deals.
-	 * 
-	 * @return profit
-	 */
-	private Double calcDealsProfit() {
-
-		
-		Double profit = 0.0;
-		
-		ArrayList<TradeDeal> deals = getDeals();
-		for (TradeDeal tradeDeal : deals) {
-			
-			// Import:
-			if(tradeDeal.getType() == TradeDealType.IMPORT){
-				
-				Integer amount = getAmount(tradeDeal.getMaterial());
-				profit -= tradeDeal.getTotalCost(amount);
-				
-			}
-			
-			// Export:
-			else if(tradeDeal.getType() == TradeDealType.EXPORT){
-				
-				Integer amount = getAmount(tradeDeal.getMaterial());
-				profit += tradeDeal.getTotalCost(amount);
-				
-			}
-			
-		}
-		
-		return profit;
-		
-		
-	}
-	
-	/**
-	 * Gets sorted import materials. First elements have a higher priority.
-	 * 
-	 * @return sorted imports
-	 */
-	private ArrayList<Material> getSortedImports() {
-
-		
-		ArrayList<Material> materials = new ArrayList<Material>();
-		ArrayList<BuySign> bSigns = getBuildingSigns(BuySign.class);
-		
-		for (BuySign bSign : bSigns) {
-			
-			if(bSign.getMaterial() == null) continue;
-			
-			materials.add(bSign.getMaterial());
-			
-		}
-		
-		Comparator<Material> comparator = new Comparator<Material>() {
-			@Override
-			public int compare(Material o1, Material o2) {
-
-				Double price1 = getBuyPrice(o1);
-				if(price1 == null) price1 = 0.0;
-
-				Integer amount1 = getAmount(o1);
-				if(amount1 == null) amount1 = 0;
-
-				Double price2 = getBuyPrice(o2);
-				if(price2 == null) price2 = 0.0;
-
-				Integer amount2 = getAmount(o2);
-				if(amount2 == null) amount1 = 2;
-
-				return (int) (price1 * amount1 - price2 * amount2);
-				
-			}
-		};
-		
-		Collections.sort(materials, comparator);
-
-		// Limit to top deals:
-		while(materials.size() > DEAL_AUTO_MATERIALS){
-			materials.remove(materials.size() -1);
-		}
-		
-		return materials;
-		
-
-	}
-	
-	/**
-	 * Gets sorted export materials. First elements have a higher priority.
-	 * 
-	 * @return sorted exports
-	 */
-	private ArrayList<Material> getSortedExports() {
-
-		
-		ArrayList<Material> materials = new ArrayList<Material>();
-		ArrayList<SellSign> bSigns = getBuildingSigns(SellSign.class);
-		
-		for (SellSign bSign : bSigns) {
-			
-			if(bSign.getMaterial() == null) continue;
-			
-			materials.add(bSign.getMaterial());
-			
-		}
-		
-		Comparator<Material> comparator = new Comparator<Material>() {
-			@Override
-			public int compare(Material o1, Material o2) {
-
-				Double price1 = getBuyPrice(o1);
-				if(price1 == null) price1 = 0.0;
-
-				Integer amount1 = getAmount(o1);
-				if(amount1 == null) amount1 = 0;
-
-				Double price2 = getBuyPrice(o2);
-				if(price2 == null) price2 = 0.0;
-
-				Integer amount2 = getAmount(o2);
-				if(amount2 == null) amount1 = 2;
-
-				return (int) (price2 * amount2 - price1 * amount1);
-				
-			}
-		};
-		
-		Collections.sort(materials, comparator);
-
-		// Limit to top deals:
-		while(materials.size() > DEAL_AUTO_MATERIALS){
-			materials.remove(materials.size() -1);
-		}
-		
-		return materials;
-		
-
-	}
 	
 	/**
 	 * Selects deals.
