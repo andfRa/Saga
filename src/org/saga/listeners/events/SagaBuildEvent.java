@@ -142,9 +142,18 @@ public class SagaBuildEvent {
 		return event.isCancelled();
 	}
 
+	/**
+	 * Gets the wrapped event.
+	 * 
+	 * @return wrapped event
+	 */
+	public Cancellable getWrappedEvent() {
+		return event;
+	}
 	
 	
 
+	// Types:
 	/**
 	 * Build overrides.
 	 * 

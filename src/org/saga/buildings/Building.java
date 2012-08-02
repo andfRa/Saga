@@ -1188,7 +1188,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 			}
 			
 			// Free storage area:
-			if(getChunkBundle().isOptionEnabled(ChunkBundleToggleable.OPEN_STORAGE_AREAS)) event.addBuildOverride(BuildOverride.OPEN_STORAGE_AREA_ALLOW);				
+			if(getChunkBundle().isOptionEnabled(ChunkBundleToggleable.OPEN_STORAGE_AREAS) && event.getWrappedEvent() instanceof BlockBreakEvent) event.addBuildOverride(BuildOverride.OPEN_STORAGE_AREA_ALLOW);				
 			
 			
 		}
