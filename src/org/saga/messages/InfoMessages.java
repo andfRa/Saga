@@ -332,13 +332,22 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		book.addTable(bldgsTable);
 		
 		book.nextPage();
+
+		// Storage:
+		book.addLine("Some buildings can spawn or craft resources. " +
+			"Resources are taken from and stored in storage areas which can be added and removed with " + GeneralMessages.command("/baddstorage") + " and " + GeneralMessages.command("/bremovestorage") + ". " +
+			"Blocks are placed directly to storage areas. " +
+			"Add chests to storage areas to store items."
+		);
 		
+		book.nextPage();
+
+		// Other:
 		book.addLine("To prevent griefing from settlement members, restrict building by setting homes with " + GeneralMessages.command("/bset home") + ". " +
 			"Only the owner and residents can build in homes. " +
 			"Residents can be added and removed with " + GeneralMessages.command("/baddresident") + " and " + GeneralMessages.command("/bremoveresident") + ". "
 		);
 		
-		// Other:
 		book.addLine("Use " + GeneralMessages.command("/srename") + " to rename the settlement.");
 		book.addLine("Use " + GeneralMessages.command("/sresign") + " to declare someone else as the settlement owner.");
 		
