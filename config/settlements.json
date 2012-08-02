@@ -55,7 +55,7 @@
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"MIDDAY",
-    "description":"Chops logs.",
+    "description":"spawns logs",
     "effect":"#craft_daytime: #caft_amount x logs"
   },
 
@@ -80,7 +80,7 @@
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"MIDDAY",
-    "description":"Produces crops and meat.",
+    "description":"spawns crops and meat",
     "effect":"#craft_daytime: #caft_amount x crops/raw meat"
   },
   
@@ -104,7 +104,7 @@
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"MIDDAY",
-    "description":"Mines ores.",
+    "description":"spawns ores",
     "effect":"#craft_daytime: #caft_amount x ore"
   },
   
@@ -127,7 +127,7 @@
     "relatedBuildings":["lumber camp"],
     "performTime":"NONE",
     "resourceTime":"SUNSET",
-    "description":"Creates wood from logs.",
+    "description":"creates wood from logs",
     "effect":"#craft_daytime: #caft_amount x logs to wood"
   },
 
@@ -151,7 +151,7 @@
     "relatedBuildings":["farm"],
     "performTime":"NONE",
     "resourceTime":"SUNSET",
-    "description":"Cooks food from farm products.",
+    "description":"cooks food from farm products",
     "effect":"#craft_daytime: #caft_amount x wheat/meat to food"
   },
   
@@ -175,7 +175,7 @@
     "relatedBuildings":["mine"],
     "performTime":"NONE",
     "resourceTime":"SUNSET",
-    "description":"Refines ores.",
+    "description":"refines ores",
     "effect":"#craft_daytime: #caft_amount x ore refined"
   },
 
@@ -196,14 +196,14 @@
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"SUNSET",
-    "description":"Creates bricks.",
+    "description":"creates bricks",
     "effect":"#craft_daytime: #caft_amount x bricks"
   },
   
 
 
   {
-    "name":"barracks",
+    "name":"armoury",
     "buildingClass":"org.saga.buildings.SimpleBuilding",
     "attributes":["strength","toughness"],
     "buildPoints":3,
@@ -216,8 +216,8 @@
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"NONE",
-    "description":"",
-    "effect":""
+    "description":"gives firm armour ability",
+    "effect":"armour damages weapons"
   },
 
   {
@@ -252,7 +252,7 @@
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"NONE",
-    "description":"Enables ignite for fireball.",
+    "description":"gives ignite ability",
     "effect":"fireball ignites targets"
   },
 
@@ -272,7 +272,7 @@
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"NONE",
-    "description":"Enables spawn command.",
+    "description":"enables spawn command",
     "effect":"command: /sspawn"
   },
 
@@ -290,7 +290,7 @@
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"NONE",
-    "description":"Prevents hostile mobs spawning.",
+    "description":"prevents hostile mob spawning",
     "effect":""
   },
   
@@ -308,7 +308,7 @@
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"NONE",
-    "description":"A place to fight.",
+    "description":"a place to fight",
     "effect":""
   },
 
@@ -328,7 +328,7 @@
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"NONE",
-    "description":"Only residents and owner can build.",
+    "description":"only residents and owner can build",
     "effect":""
   }
 

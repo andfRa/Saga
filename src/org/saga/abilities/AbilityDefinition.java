@@ -34,9 +34,9 @@ public class AbilityDefinition{
 	private String name;
 
 	/**
-	 * Activation item.
+	 * Trigger item restrictions.
 	 */
-	private HashSet<Material> activationItem;
+	private HashSet<Material> itemRestrictions;
 	
 	/**
 	 * Activation action.
@@ -130,9 +130,9 @@ public class AbilityDefinition{
 			SagaLogger.nullField(this, "name");
 		}
 		
-		if(activationItem == null){
-			activationItem = new HashSet<Material>();
-			SagaLogger.nullField(this, "activationItem");
+		if(itemRestrictions == null){
+			itemRestrictions = new HashSet<Material>();
+			SagaLogger.nullField(this, "itemRestrictions");
 		}
 		
 		if(activationAction == null){
@@ -228,12 +228,12 @@ public class AbilityDefinition{
 	
 	
 	/**
-	 * Gets the activation items.
+	 * Gets the trigger item restriction.
 	 * 
-	 * @return activation item
+	 * @return trigger item restrictions
 	 */
-	public HashSet<Material> getActivationItems() {
-		return activationItem;
+	public HashSet<Material> getItemRestrictions() {
+		return itemRestrictions;
 	}
 	
 	/**

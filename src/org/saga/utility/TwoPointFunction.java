@@ -181,6 +181,17 @@ public class TwoPointFunction {
 		return randomRound(value(x.intValue()));
 		
 	}
+	
+	/**
+	 * Calculates the random short value for the given x value.
+	 * 
+	 * @param x x value
+	 */
+	public Short randomShortValue(Integer x) {
+		
+		return randomIntValue(x).shortValue();
+		
+	}
 
 	/**
 	 * Calculates the random boolean value for the given x value.
@@ -232,7 +243,7 @@ public class TwoPointFunction {
 	 * @param value value
 	 * @return integer with random additional damage
 	 */
-	public static int randomRound(Double value) {
+	public static Integer randomRound(Double value) {
 
 		
 		

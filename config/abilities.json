@@ -6,7 +6,7 @@
 
   {"className":"org.saga.abilities.ChopDown",
     "name":"chop down",
-    "activationItem":["DIAMOND_AXE","GOLD_AXE","IRON_AXE","STONE_AXE"],
+    "itemRestrictions":["DIAMOND_AXE","GOLD_AXE","IRON_AXE","STONE_AXE"],
     "activationAction":"RIGHT_CLICK",
     "usedItem":"AIR",
     "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
@@ -18,13 +18,13 @@
     },
     "buildingRequirements":{},
     "functions":{"tree size":{"x1":1,"y1":10.0,"x2":3,"y2":50.0}},
-    "description":"Chops down a tree.",
+    "description":"chops down a tree",
     "usage":"rclick tree w/ axe"
   },
 
   {"className":"org.saga.abilities.Harvest",
     "name":"harvest",
-    "activationItem":["DIAMOND_HOE","GOLD_HOE","IRON_HOE","STONE_HOE"],
+    "itemRestrictions":["DIAMOND_HOE","GOLD_HOE","IRON_HOE","STONE_HOE"],
     "activationAction":"RIGHT_CLICK",
     "usedItem":"AIR",
     "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
@@ -36,13 +36,13 @@
     },
     "buildingRequirements":{},
     "functions":{"range":{"x1":1,"y1":20.0,"x2":3,"y2":60.0}},
-    "description":"Cuts wheat and reeds.",
+    "description":"cuts wheat and reeds",
     "usage":"rclick w/ hoe"
   },
 
   {"className":"org.saga.abilities.HeavySwing",
     "name":"heavy swing",
-    "activationItem":["DIAMOND_PICKAXE","GOLD_PICKAXE","IRON_PICKAXE"],
+    "itemRestrictions":["DIAMOND_PICKAXE","GOLD_PICKAXE","IRON_PICKAXE"],
     "activationAction":"RIGHT_CLICK",
     "usedItem":"AIR",
     "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
@@ -57,13 +57,13 @@
       "size":{"x1":0,"y1":1.0,"x2":3,"y2":60.0},
       "crumble":{"x1":0,"y1":5.0,"x2":50,"y2":10.0}
     },
-    "description":"Breaks stone.",
+    "description":"breaks stone",
     "usage":"rclick stone w/ pickaxe"
   },
   
   {"className":"org.saga.abilities.Repair",
     "name":"repair",
-    "activationItem":["DIAMOND_HELMET","DIAMOND_CHESTPLATE","DIAMOND_LEGGINGS","DIAMOND_BOOTS",
+    "itemRestrictions":["DIAMOND_HELMET","DIAMOND_CHESTPLATE","DIAMOND_LEGGINGS","DIAMOND_BOOTS",
       "GOLD_HELMET","GOLD_CHESTPLATE","GOLD_LEGGINGS","GOLD_BOOTS",
       "IRON_HELMET","IRON_CHESTPLATE","IRON_LEGGINGS","IRON_BOOTS",
       "LEATHER_HELMET","LEATHER_CHESTPLATE","LEATHER_LEGGINGS","LEATHER_BOOTS",
@@ -87,7 +87,7 @@
       "ench level cost":{"x1":1,"y1":0.5,"x2":15,"y2":2.0},
       "ench multiplier":{"x1":1,"y1":0.85,"x2":15,"y2":0.05}
     },
-    "description":"Repairs items.",
+    "description":"repairs items",
     "usage":"rclick iron block"
   },  
 
@@ -95,7 +95,7 @@
   
   {"className":"org.saga.abilities.Bash",
     "name":"bash",
-    "activationItem":["DIAMOND_SWORD","GOLD_SWORD","IRON_SWORD","STONE_SWORD"],
+    "itemRestrictions":["DIAMOND_SWORD","GOLD_SWORD","IRON_SWORD","STONE_SWORD"],
     "activationAction":"NONE",
     "usedItem":"AIR",
     "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
@@ -106,13 +106,13 @@
     },
     "buildingRequirements":{},
     "functions":{"disarm chance":{"x1":1,"y1":0.8,"x2":3,"y2":0.8}},
-    "description":"Shifts targets sword.",
+    "description":"shifts targets sword",
     "usage":"random chance"
   },
   
   {"className":"org.saga.abilities.Dart",
     "name":"dart",
-    "activationItem":["ARROW"],
+    "itemRestrictions":["ARROW"],
     "activationAction":"RIGHT_CLICK",
     "usedItem":"ARROW",
     "usedAmount":{"x1":1,"y1":1.0,"x2":3,"y2":1.0},
@@ -123,13 +123,13 @@
     },
     "buildingRequirements":{},
     "functions":{"speed":{"x1":1,"y1":1.0,"x2":3,"y2":3.0}},
-    "description":"Shoots an arrow.",
+    "description":"shoots an arrow",
     "usage":"rclick w/ arrow"
   },
 
   {"className":"org.saga.abilities.Fireball",
     "name":"fireball",
-    "activationItem":["COAL"],
+    "itemRestrictions":["COAL"],
     "activationAction":"RIGHT_CLICK",
     "usedItem":"COAL",
     "usedAmount":{"x1":1,"y1":1.0,"x2":3,"y2":1.0},
@@ -140,13 +140,13 @@
     },
     "buildingRequirements":{},
     "functions":{"speed":{"x1":1,"y1":0.70,"x2":3,"y2":2.0}},
-    "description":"Shoots a fireball.",
+    "description":"shoots a fireball",
     "usage":"rclick w/ coal"
   },
 
   {"className":"org.saga.abilities.Ignite",
     "name":"ignite",
-    "activationItem":["COAL","AIR"],
+    "itemRestrictions":[],
     "activationAction":"NONE",
     "usedItem":"AIR",
     "usedAmount":{"x1":1,"y1":0.0},
@@ -155,13 +155,13 @@
     "attributeRequirements":{},
     "buildingRequirements":{"academy":{"x1":1,"y1":1.0,"x2":3,"y2":3.0}},
     "functions":{"fireticks":{"x1":1,"y1":80.0,"x2":3,"y2":160.0}},
-    "description":"Fireball ignites.",
+    "description":"fireball ignites",
     "usage":"automatic"
   },
 
   {"className":"org.saga.abilities.Force",
     "name":"force",
-    "activationItem":["BOOK"],
+    "itemRestrictions":["BOOK"],
     "activationAction":"RIGHT_CLICK",
     "usedItem":"AIR",
     "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
@@ -172,12 +172,29 @@
     },
     "buildingRequirements":{},
     "functions":{
-      "radius":{"x1":0,"y1":4.5,"x2":50,"y2":9.0},
-      "power":{"x1":0,"y1":1.2,"x2":50,"y2":2.0}
+      "radius":{"x1":1,"y1":4.5,"x2":3,"y2":9.0},
+      "power":{"x1":1,"y1":1.2,"x2":3,"y2":2.0}
     },
-    "description":"Pushes back.",
+    "description":"pushes back",
     "usage":"rclick w/ book"
-  } 
+  },
+
+  {"className":"org.saga.abilities.DamageWeapon",
+    "name":"firm armour",
+    "itemRestrictions":[],
+    "activationAction":"NONE",
+    "usedItem":"AIR",
+    "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "cooldown":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
+    "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
+    "attributeRequirements":{},
+    "buildingRequirements":{"armoury":{"x1":1,"y1":1.0,"x2":3,"y2":3.0}},
+    "functions":{
+      "weapon damage":{"x1":1,"y1":2.0,"x2":3,"y2":5.0}
+    },
+    "description":"damages weapon",
+    "usage":"on hit"
+  }
   
 ]
 

@@ -321,7 +321,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		ItemStack itemHand = inventory.getItemInHand();
 		if(itemHand == null) itemHand = new ItemStack(Material.AIR);
 		
-		return getDefinition().getActivationItems().contains(itemHand.getType());
+		return getDefinition().getItemRestrictions().contains(itemHand.getType()) || getDefinition().getItemRestrictions().size() == 0;
 		
 
 	}
