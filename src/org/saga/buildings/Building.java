@@ -928,7 +928,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 */
 	public String getMapChar() {
 		
-		String letter = getClass().getSimpleName().substring(0, 1).toUpperCase();
+		String letter = getName().substring(0, 1).toUpperCase();
 		
 		// Fix letter:
 		if(letter.equals("I")){
