@@ -25,6 +25,7 @@ import org.saga.dependencies.PermissionsManager;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;
 import org.saga.messages.AdminMessages;
+import org.saga.messages.GeneralMessages;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.SagaMessages;
 import org.saga.messages.SettlementMessages;
@@ -478,7 +479,7 @@ public class AdminCommands {
 	}
 	
 	@Command(
-		aliases = {"asenableoption", "aenableopt"},
+		aliases = {"asenableoption", "asenableopt", "aenableopt"},
 		usage = "[settlement name] <option>",
 		flags = "",
 		desc = "Enable settlement option.",
@@ -498,10 +499,11 @@ public class AdminCommands {
 		switch (args.argsLength()) {
 			case 2:
 				
-				// Chunk group:
-				selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(args.getString(0));
+				// Chunk bundle:
+				String bundleName = args.getString(0).replace(SagaMessages.spaceSymbol, " ");
+				selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(bundleName);
 				if(selChunkBundle == null){
-					sagaPlayer.message( SettlementMessages.noChunkGroup(args.getString(0)) );
+					sagaPlayer.message( SettlementMessages.noChunkGroup(bundleName));
 					return;
 				}
 				
@@ -554,7 +556,7 @@ public class AdminCommands {
 	}
 	
 	@Command(
-		aliases = {"asdisableoption", "adisableopt"},
+		aliases = {"asdisableoption", "asdisableopt", "adisableopt"},
 		usage = "[settlement name] <option>",
 		flags = "",
 		desc = "Disable settlement option.",
@@ -574,10 +576,11 @@ public class AdminCommands {
 		switch (args.argsLength()) {
 			case 2:
 				
-				// Chunk group:
-				selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(args.getString(0));
+				// Chunk bundle:
+				String bundleName = args.getString(0).replace(SagaMessages.spaceSymbol, " ");
+				selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(bundleName);
 				if(selChunkBundle == null){
-					sagaPlayer.message( SettlementMessages.noChunkGroup(args.getString(0)) );
+					sagaPlayer.message( SettlementMessages.noChunkGroup(bundleName));
 					return;
 				}
 				
