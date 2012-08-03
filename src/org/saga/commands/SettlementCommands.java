@@ -297,7 +297,7 @@ public class SettlementCommands {
 		min = 1,
 		max = 2
 	)
-	@CommandPermissions({"saga.admin.settlement.resign"})
+	@CommandPermissions({"saga.user.settlement.resign"})
 	public static void resign(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
