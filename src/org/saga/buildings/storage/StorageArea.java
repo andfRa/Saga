@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 
 import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
@@ -68,7 +69,9 @@ public class StorageArea {
 	public StorageArea(SagaPlayer sagaPlayer) {
 
 		
-		anchor = new SagaLocation(sagaPlayer.getLocation());
+		Location location = sagaPlayer.getLocation().getBlock().getLocation();
+		
+		anchor = new SagaLocation(location);
 		orientation = sagaPlayer.getOrientation();
 		size = 1;
 		
