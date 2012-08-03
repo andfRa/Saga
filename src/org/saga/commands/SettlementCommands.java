@@ -608,13 +608,16 @@ public class SettlementCommands {
 		// Permission:
 		if( !selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.INVITE) ){
 			sagaPlayer.message(SagaMessages.noPermission());
+			// Unforce:
+			Saga.plugin().unforceSagaPlayer(selPlayer.getName());
 			return;
+			
 		}
 		
 		// Already a member:
 		if(selChunkBundle.hasMember( selPlayer.getName()) ){
 		
-			sagaPlayer.message( SettlementMessages.alreadyInTheChunkBundle(selPlayer, selChunkBundle) );
+			sagaPlayer.message( SettlementMessages.alreadyInTheChunkBundle(selPlayer, selChunkBundle));
 			// Unforce:
 			Saga.plugin().unforceSagaPlayer(selPlayer.getName());
 			return;
@@ -704,6 +707,11 @@ public class SettlementCommands {
     	// Add to chunk bundle:
 		selChunkBundle.addMember(sagaPlayer);
     	
+		// Set owner:
+		if(!selChunkBundle.hasOwner()){
+			selChunkBundle.setOwner(sagaPlayer.getName());
+		}
+		
     	// Decline every invitation:
     	ArrayList<Integer> chunkGroupIds = sagaPlayer.getChunkGroupInvites();
     	for (int i = 0; i < chunkGroupIds.size(); i++) {
@@ -756,7 +764,7 @@ public class SettlementCommands {
 		if(selChunkBundle == null){
 			
 			if(sagaPlayer.hasChunkBundle()){
-				sagaPlayer.removeChunkGroupId(sagaPlayer.getChunkGroupId());
+				sagaPlayer.removeChunkBundleId(sagaPlayer.getChunkBundleId());
 			}
 			
 			sagaPlayer.message( SettlementMessages.notMember() );
@@ -886,13 +894,14 @@ public class SettlementCommands {
 			return;
 		}
 		
-		
 		// Permission:
-		if(!selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.KICK) || selChunkBundle.isOwner(targetName)){
+		if(!selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.KICK)){
 			sagaPlayer.message(SagaMessages.noPermission());
+			// Unforce:
+			Saga.plugin().unforceSagaPlayer(targetName);
 			return;
 		}
-
+		
 		// Not a member:
 		if(!selChunkBundle.hasMember(targetPlayer.getName())){
 			
@@ -906,15 +915,23 @@ public class SettlementCommands {
 			Saga.plugin().unforceSagaPlayer(targetName);
 			return;
 		}
-		
+
 		// Kicked yourself:
-		if(targetPlayer.equals(sagaPlayer)){
+		if(targetPlayer == sagaPlayer && sagaPlayer.getChunkBundleId().equals(selChunkBundle.getId())){
 			sagaPlayer.message(SettlementMessages.cantKickYourself(sagaPlayer, selChunkBundle));
 			// Unforce:
 			Saga.plugin().unforceSagaPlayer(targetName);
 			return;
 		}
-		
+
+		// Kick owner:
+		if(selChunkBundle.isOwner(targetName) && selChunkBundle.getMemberCount() > 1){
+			sagaPlayer.message(SettlementMessages.cantKickOwner());
+			// Unforce:
+			Saga.plugin().unforceSagaPlayer(targetName);
+			return;
+		}
+
 		// Remove player:
 		selChunkBundle.removeMember(targetPlayer);
 		

@@ -125,7 +125,7 @@ public class ChunkBundleManager {
 
 
 		// Get all chunk group IDs:
-		Integer groupId = sagaPlayer.getChunkGroupId();
+		Integer groupId = sagaPlayer.getChunkBundleId();
 		
 		// Stop if invalid chunk group:
 		if(groupId <= 0){
@@ -144,7 +144,7 @@ public class ChunkBundleManager {
 		// Not on the list:
 		if(!chunkBundle.hasMember(sagaPlayer.getName())){
 			SagaLogger.severe(getClass(), "chunkGroupManager could not register " + groupId + " chunk group for " + sagaPlayer + " player, because the chunk group doesn't have the player on its list");
-			sagaPlayer.removeChunkGroupId(sagaPlayer.getChunkGroupId());
+			sagaPlayer.removeChunkBundleId(sagaPlayer.getChunkBundleId());
 			return;
 		}
 		
@@ -163,7 +163,7 @@ public class ChunkBundleManager {
 
 
 		// Get all chunk group IDs:
-		Integer groupId = sagaPlayer.getChunkGroupId();
+		Integer groupId = sagaPlayer.getChunkBundleId();
 
 		// Stop if invalid chunk group:
 		if(groupId <= 0){
@@ -460,7 +460,7 @@ public class ChunkBundleManager {
 	 * 
 	 * @return unused chunk group ID. from 0(exclusive)
 	 */
-	int getUnusedChunkGroupId() {
+	int getUnusedId() {
 
 		
         Random random = new Random();

@@ -114,6 +114,10 @@ public class SettlementMessages {
 	public static String ownerCantQuitInfo() {
 		return normal1 + "Use /sresign to declare someone else as the owner.";
 	}
+
+	public static String cantKickOwner() {
+		return negative + "Can't kick settlement owner.";
+	}
 	
 	
 	

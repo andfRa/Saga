@@ -88,7 +88,7 @@ public class PlayerListener implements Listener {
     	sagaPlayer.setPlayer(player);
     	
     	// Forward to chunk group:
-    	if(sagaPlayer.hasChunkBundle()) sagaPlayer.getChunkBundle().onMemberJoin(event, sagaPlayer);
+    	if(sagaPlayer.getChunkBundle() != null) sagaPlayer.getChunkBundle().onMemberJoin(event, sagaPlayer);
     	
         
     }

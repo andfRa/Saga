@@ -944,29 +944,29 @@ public class SagaPlayer implements SecondTicker, Trader{
 	
 	// Chunk group:
 	/**
-	 * Sets a chunk group ID to the player.
+	 * Sets a chunk bundle ID to the player.
 	 * 
-	 * @param chunkGroupId chunk group ID
+	 * @param chunkBundleId chunk group ID
 	 */
-	public void setChunkGroupId(Integer chunkGroupId) {
-		this.chunkGroupId = chunkGroupId;
+	public void setChunkBundleId(Integer chunkBundleId) {
+		this.chunkGroupId = chunkBundleId;
 	}
 
 	/**
-	 * Removes a chunk group ID from the player.
+	 * Removes a chunk bundle ID from the player.
 	 * 
-	 * @param chunkGroupId chunk group ID
+	 * @param chunkBundleId chunk group ID
 	 */
-	public void removeChunkGroupId(Integer chunkGroupId) {
+	public void removeChunkBundleId(Integer chunkBundleId) {
 		this.chunkGroupId = -1;
 	}
 	
 	/**
-	 * Gets the chunk group ID.
+	 * Gets the chunk bundle ID.
 	 * 
-	 * @return the chunk group ID
+	 * @return the chunk bundle ID
 	 */
-	public Integer getChunkGroupId() {
+	public Integer getChunkBundleId() {
 		return chunkGroupId;
 	}
 	
@@ -1022,18 +1022,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 	}
 
 	/**
-	 * Checks if the player is part of the chunk group.
-	 * 
-	 * @param chunkBundle chunk group
-	 * @return true if part of the chunk group
-	 */
-	public boolean hasChunkBundle(ChunkBundle chunkBundle) {
-		
-		return chunkBundle.equals(chunkBundle.getId());
-		
-	}
-
-	/**
 	 * Checks if the player has a chunk groups.
 	 * 
 	 * @return true if the player has chunk groups
@@ -1042,7 +1030,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 		return !chunkGroupId.equals(-1);
 	}
 
-	
 	
 	
 	// Faction invitations:

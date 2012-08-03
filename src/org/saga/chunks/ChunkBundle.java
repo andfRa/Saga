@@ -142,7 +142,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 		
 		
 		this.name = name;
-		this.id = ChunkBundleManager.manager().getUnusedChunkGroupId();
+		this.id = ChunkBundleManager.manager().getUnusedId();
 		this.players = new ArrayList<String>();
 		this.factions = new ArrayList<Integer>();
 		this.groupChunks = new ArrayList<SagaChunk>();
@@ -946,7 +946,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 		addPlayer(sagaPlayer.getName());
 		
 		// Set chunk group ID:
-		sagaPlayer.setChunkGroupId(getId());
+		sagaPlayer.setChunkBundleId(getId());
 		
 		// Register:
 		registerPlayer(sagaPlayer);
@@ -966,7 +966,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 		removePlayer(sagaPlayer.getName());
 
 		// Remove chunk group ID:
-		sagaPlayer.removeChunkGroupId(getId());
+		sagaPlayer.removeChunkBundleId(getId());
 		
 		// Unregister:
 		unregisterPlayer(sagaPlayer);
