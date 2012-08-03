@@ -3,6 +3,7 @@ package org.saga.buildings;
 import java.util.ArrayList;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.event.Event.Result;
@@ -894,12 +895,14 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		
 		
 		// Permission:
-		if(!getChunkBundle().hasPermission(sagaPlayer, SettlementPermission.ACCESS_STORAGE)){
+		if(!getChunkBundle().hasPermission(sagaPlayer, SettlementPermission.ACCESS_STORAGE) && !getChunkBundle().isOptionEnabled(ChunkBundleToggleable.OPEN_STORAGE_AREAS)){
+			
 			sagaPlayer.message(SagaMessages.noPermission(this));
 			event.setCancelled(true);
 			event.setUseInteractedBlock(Result.DENY);
 			event.setUseItemInHand(Result.DENY);
 			return;
+			
 		}		
 		
 		// Inform:
@@ -1188,7 +1191,13 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 			}
 			
 			// Free storage area:
-			if(getChunkBundle().isOptionEnabled(ChunkBundleToggleable.OPEN_STORAGE_AREAS) && event.getWrappedEvent() instanceof BlockBreakEvent) event.addBuildOverride(BuildOverride.OPEN_STORAGE_AREA_ALLOW);				
+			if(event.getWrappedEvent() instanceof BlockBreakEvent){
+			
+				BlockBreakEvent wrappedEvent = (BlockBreakEvent) event.getWrappedEvent();
+				if(getChunkBundle().isOptionEnabled(ChunkBundleToggleable.OPEN_STORAGE_AREAS) && wrappedEvent.getBlock().getType() != Material.CHEST) event.addBuildOverride(BuildOverride.OPEN_STORAGE_AREA_ALLOW);				
+			
+			}
+			
 			
 			
 		}
