@@ -234,8 +234,8 @@
     "relatedBuildings":[],
     "performTime":"NONE",
     "resourceTime":"NONE",
-    "description":"",
-    "effect":""
+    "description":"gives force bow ability",
+    "effect":"bow causes knockback"
   },
 
   {

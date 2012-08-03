@@ -1408,7 +1408,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * @param entity entity
 	 * @param speed speed
 	 */
-	public void pushAwayEntity2(Entity entity, double speed) {
+	public void pushAwayEntity(Entity entity, double speed) {
 
 		
 		// Ignore if the player isn't online:
