@@ -150,7 +150,7 @@ public class SagaLogger{
      * @param message message
      */
 	public static void info(Object instance, String message) {
-		info(instance.getClass().getSimpleName() + ":{" + instance + "} " + message + ".");
+		info(instance.getClass().getSimpleName() + "{" + instance + "} " + message + ".");
     }
     
     /**
@@ -171,7 +171,7 @@ public class SagaLogger{
      * @param message message
      */
 	public static void severe(Object instance, String message) {
-        severe(instance.getClass().getSimpleName() + ":{" + instance + "} " + message + ".");
+        severe(instance.getClass().getSimpleName() + "{" + instance + "} " + message + ".");
     }
     
     /**
@@ -192,7 +192,7 @@ public class SagaLogger{
      * @param message message
      */
     public static void warning(Object instance, String message) {
-    	warning(instance.getClass().getSimpleName() + ":{" + instance + "} " + message + ".");
+    	warning(instance.getClass().getSimpleName() + "{" + instance + "} " + message + ".");
     }
     
     /**
@@ -213,7 +213,7 @@ public class SagaLogger{
      * @param field field
      */
 	public static void nullField(Object instance, String field) {
-        severe(instance.getClass().getSimpleName() + ":{" + instance + "} " + field + " field failed to initialise.");
+        severe(instance.getClass().getSimpleName() + "{" + instance + "} " + field + " field failed to initialise.");
     }
 	
 	/**

@@ -9,7 +9,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.inventory.ItemStack;
-import org.saga.Clock;
 import org.saga.Clock.DaytimeTicker;
 import org.saga.Saga;
 import org.saga.SagaLogger;
@@ -461,10 +460,10 @@ public class EconomyManager implements DaytimeTicker{
 			instance.tradeDeals.add(tradingDeal);
 			
 		}
-		
-		// Enable clock:
-		Clock.clock().registerDaytimeTick(instance);
-		
+//		
+//		// Enable clock:
+//		Clock.clock().registerDaytimeTick(instance);
+//		
 		instances.add(instance);
 		
 		
@@ -542,26 +541,40 @@ public class EconomyManager implements DaytimeTicker{
 	 */
 	public static void unload(String worldName) {
 		
-		
-		// Get the correct manager:
-		EconomyManager instance;
-		try {
-			instance = manager(worldName);
-		} catch (InvalidWorldException e1) {
-			SagaLogger.severe(EconomyManager.class, "failed to unload a economy manager for " + worldName + " world isn't loaded");
-			return;
-		}
-		
+//		
+//		// Get the correct manager:
+//		EconomyManager instance;
+//		try {
+//			instance = manager(worldName);
+//		} catch (InvalidWorldException e1) {
+//			SagaLogger.severe(EconomyManager.class, "failed to unload a economy manager for " + worldName + " world isn't loaded");
+//			return;
+//		}
+//		
 		// Save:
 		save(worldName);
-		
-		// Disable clock:
-		Clock.clock().unregisterDaytimeTick(instance);
-		
+//		
+//		// Disable clock:
+//		Clock.clock().unregisterDaytimeTick(instance);
+//		
 		
 	}
 	
+	
+	
+	// Other:
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return worldName;
+	}
+	
 
+	
 	// Types:
 	/**
 	 * Transaction type.
