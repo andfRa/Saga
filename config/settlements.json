@@ -262,7 +262,7 @@
     "name":"town square",
     "buildingClass":"org.saga.buildings.TownSquare",
     "attributes":[],
-    "buildPoints":5,
+    "buildPoints":3,
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
     "available":{"x1":2,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
