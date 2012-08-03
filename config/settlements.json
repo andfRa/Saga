@@ -94,11 +94,11 @@
     "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
     "storageSize":18,
     "recipes":[
-      {"to":[{"mat":"COAL_ORE","amount":1,"data":0}], "weight":0.35},
-      {"to":[{"mat":"IRON_ORE","amount":1,"data":0}], "weight":0.25},
-      {"to":[{"mat":"GOLD_ORE","amount":1,"data":0}], "weight":0.20},
-      {"to":[{"mat":"LAPIS_ORE","amount":1,"data":0}], "weight":0.12},
-      {"to":[{"mat":"DIAMOND_ORE","amount":1,"data":0}], "weight":0.08}
+      {"to":[{"mat":"COAL_ORE","amount":1,"data":0}], "weight":0.50},
+      {"to":[{"mat":"IRON_ORE","amount":1,"data":0}], "weight":0.30},
+      {"to":[{"mat":"GOLD_ORE","amount":1,"data":0}], "weight":0.10},
+      {"to":[{"mat":"LAPIS_ORE","amount":1,"data":0}], "weight":0.06},
+      {"to":[{"mat":"DIAMOND_ORE","amount":1,"data":0}], "weight":0.04}
     ],
     "craftAmount":{"x1":1,"y1":3,"x2":3,"y2":6},
     "relatedBuildings":[],
