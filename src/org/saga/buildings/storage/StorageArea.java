@@ -423,8 +423,8 @@ public class StorageArea {
 		// First layer:
 		shape.addOffset(-2, 0, 0, 3);
 		shape.addOffset(-1, 0, -1, 13);
-		shape.addOffset(-1, 0, 1, 2);
 		shape.addOffset(-1, 0, 0, 1);
+		shape.addOffset(-1, 0, 1, 2);
 		shape.addOffset(-3, 0, 0, 5);
 		shape.addOffset(-2, 0, -1, 14);
 		shape.addOffset(-3, 0, -1, 15);
@@ -435,6 +435,7 @@ public class StorageArea {
 		shape.addOffset(-4, 0, 1, 18);
 		
 		// Second layer:
+		shape.addOffset(-2, 1, 0, 9);
 		shape.addOffset(-1, 1, -1, 19);
 		shape.addOffset(-4, 1, -1, 22);
 		shape.addOffset(-1, 1, 0, 7);
@@ -442,7 +443,6 @@ public class StorageArea {
 		shape.addOffset(-2, 1, 1, 10);
 		shape.addOffset(-3, 1, 0, 11);
 		shape.addOffset(-2, 1, -1, 20);
-		shape.addOffset(-2, 1, 0, 9);
 		shape.addOffset(-3, 1, 1, 12);
 		shape.addOffset(-4, 1, 0, 23);
 		shape.addOffset(-1, 1, 1, 8);
@@ -450,10 +450,10 @@ public class StorageArea {
 		
 		// Third layer:
 		shape.addOffset(-1, 2, -1, 31);
+		shape.addOffset(-1, 2, 0, 25);
 		shape.addOffset(-1, 2, 1, 26);
 		shape.addOffset(-2, 2, 1, 28);
 		shape.addOffset(-3, 2, 1, 30);
-		shape.addOffset(-1, 2, 0, 25);
 		shape.addOffset(-3, 2, -1, 33);
 		shape.addOffset(-2, 2, -1, 32);
 		shape.addOffset(-4, 2, -1, 34);
