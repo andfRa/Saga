@@ -1,8 +1,11 @@
 package org.saga.messages;
 
 import org.bukkit.ChatColor;
-import org.saga.abilities.Ability;
-import org.saga.utility.text.RomanNumeral;
+import org.bukkit.Material;
+import org.saga.buildings.Building;
+import org.saga.chunks.ChunkBundle;
+import org.saga.factions.Faction;
+import org.saga.settlements.Settlement;
 import org.saga.utility.text.TextUtil;
 
 public class GeneralMessages {
@@ -18,15 +21,18 @@ public class GeneralMessages {
 	
 	public static ChatColor unavailable = ChatColor.DARK_GRAY;
 	
-	public static ChatColor anouncment = ChatColor.AQUA;
+	public static ChatColor announce = ChatColor.AQUA;
 	
 	public static ChatColor normal1 = ChatColor.GOLD;
 	
 	public static ChatColor normal2 = ChatColor.YELLOW;
 	
 	
+	public final static String SPACE_SYMBOL = "_";
 	
 	
+	
+	// Text elements:
 	public static String highlight(String command){
 		
 		return ChatColor.UNDERLINE + command + CustomColour.RESET_FORMAT;
@@ -45,22 +51,6 @@ public class GeneralMessages {
 
 	}
 	
-	public static String scoreAbility(Ability ability) {
-
-		if(ability.getScore() <= 0) return ability.getName();
-		
-		return scoreAbility(ability.getName(), ability.getScore());
-
-	}
-	
-	public static String scoreAbility(String ability, Integer score) {
-
-		if(score <= 0) return ability;
-		
-		return ability + " " + RomanNumeral.binaryToRoman(score);
-
-	}
-
 	public static String columnTitle(String title) {
 		return title.toUpperCase();
 	}
@@ -69,10 +59,61 @@ public class GeneralMessages {
 		return title.toUpperCase();
 	}
 
-	public static String coinsSpent(Double amount) {
-		return normal2 + "Spent " + EconomyMessages.coins(amount) + ".";
+	
+	
+	// Permissions:
+	public static String noPermission(){
+		return negative + "You don't have permission to do that.";
 	}
 	
+	public static String noPermission(ChunkBundle chunkBundle){
+		return negative + "You don't have permission to do that (" + chunkBundle.getName() + " settlement).";
+	}
+	
+	public static String noPermission(Building building){
+		return negative + "You don't have permission to do that (" + building.getName() + " building).";
+	}
+	
+	public static String noPermission(Settlement settlement){
+		return negative + "You don't have permission to do that (" + settlement.getName() + " settlement).";
+	}
+	
+	public static String noCommandPermission(ChunkBundle chunkBundle, String command){
+		return negative + "You don't have permission use " + command + " command (" + chunkBundle.getName() + " settlement).";
+	}
+	
+	public static String noPermission(Faction faction){
+		return negative + "You don't have permission to do that (" + faction.getColour1() + faction.getName() + negative + " faction).";
+	}
+	
+	
+	
+	// Command arguments:
+	public static String nameFromArg(String name) {
+		return name.replaceAll(SPACE_SYMBOL, " ");
+	}
+	
+	public static String mustBeNumber(String number) {
+		return negative + "Argument " + number + " must be a number.";
+	}
+	
+	
+	
+	// Material:
+	/**
+	 * Gets material name.
+	 * 
+	 * @param material material
+	 * @return material name
+	 */
+	public static String material(Material material){
+		
+		String result = material.toString().toLowerCase().replace("_", " ");
+		
+		return result;
+		
+	}
+
 	
 	
 	// Other:
@@ -127,15 +168,6 @@ public class GeneralMessages {
 		
 		
 	}
-	
-	public static void main(String[] args) {
 
-		System.out.println(CustomColour.processMessage("dfd<" + ChatColor.ITALIC + ChatColor.RED + ">dfds<" + ChatColor.GRAY + ">dfddd<" + CustomColour.RESET_FORMAT + ">fdsfd"));;
-		
-		System.out.println(CustomColour.RESET_FORMAT);
-		
-	}
-	
-	
 	
 }

@@ -33,8 +33,8 @@ import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
+import org.saga.messages.GeneralMessages;
 import org.saga.messages.SettlementMessages;
-import org.saga.messages.SagaMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.SagaCustomSerialization;
@@ -1517,7 +1517,7 @@ public class ChunkBundle extends SagaCustomSerialization{
     	if(SettlementConfiguration.config().checkMemberOnlyCommand(command) && 
     			!hasPermission(sagaPlayer, SettlementPermission.MEMBER_COMMAND)
     	){
-    		sagaPlayer.message(SagaMessages.noCommandPermission(this, command));
+    		sagaPlayer.message(GeneralMessages.noCommandPermission(this, command));
     		event.setCancelled(true);
     		return;
     	}
@@ -1547,7 +1547,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 			
 			if(BalanceConfiguration.config().getHarmfulSplashPotions().contains(durability)){
 				event.setUseItemInHand(Result.DENY);
-				sagaPlayer.message(SagaMessages.noPermission(this));
+				sagaPlayer.message(GeneralMessages.noPermission(this));
 				event.getPlayer().updateInventory();
 				return;
 			}

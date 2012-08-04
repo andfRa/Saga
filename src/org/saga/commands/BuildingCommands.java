@@ -18,12 +18,11 @@ import org.saga.chunks.ChunkBundleManager;
 import org.saga.chunks.SagaChunk;
 import org.saga.messages.BuildingMessages;
 import org.saga.messages.EconomyMessages;
-import org.saga.messages.SagaMessages;
+import org.saga.messages.GeneralMessages;
 import org.saga.messages.SettlementEffects;
 import org.saga.messages.SettlementMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement.SettlementPermission;
-import org.saga.utility.text.TextUtil;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
 import org.sk89q.CommandPermissions;
@@ -172,7 +171,7 @@ public class BuildingCommands {
 			try {
 				count = Integer.parseInt(args.getString(0));
 			} catch (NumberFormatException e) {
-				sagaPlayer.message(SettlementMessages.invalidInteger(args.getString(0)));
+				sagaPlayer.message(GeneralMessages.mustBeNumber(args.getString(0)));
 				return;
 			}
 			
@@ -220,7 +219,7 @@ public class BuildingCommands {
 		// Permission:
 		ChunkBundle chunkBundle = selectedBuilding.getChunkBundle();
 		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.ADD_RESIDENT)){
-			sagaPlayer.message(SagaMessages.noPermission(chunkBundle));
+			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
 			return;
 		}
 		
@@ -275,7 +274,7 @@ public class BuildingCommands {
 		// Permission:
 		ChunkBundle chunkBundle = selectedBuilding.getChunkBundle();
 		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.REMOVE_RESIDENT)){
-			sagaPlayer.message(SagaMessages.noPermission(chunkBundle));
+			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
 			return;
 		}
 		
@@ -324,7 +323,7 @@ public class BuildingCommands {
 		// Permission:
 		ChunkBundle chunkBundle = selectedBuilding.getChunkBundle();
 		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
-			sagaPlayer.message(SagaMessages.noPermission(chunkBundle));
+			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
 			return;
 		}
 		
@@ -411,7 +410,7 @@ public class BuildingCommands {
 		// Permission:
 		ChunkBundle chunkBundle = selectedBuilding.getChunkBundle();
 		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
-			sagaPlayer.message(SagaMessages.noPermission(chunkBundle));
+			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
 			return;
 		}
 		
@@ -481,7 +480,7 @@ public class BuildingCommands {
 		// Permission:
 		ChunkBundle chunkBundle = selectedBuilding.getChunkBundle();
 		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
-			sagaPlayer.message(SagaMessages.noPermission(chunkBundle));
+			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
 			return;
 		}
 		
@@ -568,7 +567,7 @@ public class BuildingCommands {
 		// Permission:
 		ChunkBundle chunkBundle = selectedBuilding.getChunkBundle();
 		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
-			sagaPlayer.message(SagaMessages.noPermission(chunkBundle));
+			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
 			return;
 		}
 		
@@ -631,10 +630,10 @@ public class BuildingCommands {
 		if(args.argsLength() == 1){
 			
 			// Chunk group:
-			String groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
+			String groupName = GeneralMessages.nameFromArg(args.getString(0));
 			selectedChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
 			if(selectedChunkBundle == null){
-				sagaPlayer.message(SettlementMessages.noChunkGroup(groupName));
+				sagaPlayer.message(SettlementMessages.noChunkBundle(groupName));
 				return;
 			}
 			
@@ -651,7 +650,7 @@ public class BuildingCommands {
 		
 		// Permission:
 		if( !selectedChunkBundle.hasPermission(sagaPlayer, SettlementPermission.SPAWN) ){
-			sagaPlayer.message(SagaMessages.noPermission());
+			sagaPlayer.message(GeneralMessages.noPermission());
 			return;
 		}
 		
@@ -662,29 +661,22 @@ public class BuildingCommands {
 			return;
 		}
 		
-		Integer smallestCooldown = Integer.MAX_VALUE;
-		TownSquare selectedBuilding = null;
+		TownSquare selBuilding = null;
 		
 		for (TownSquare townSquare : selectedBuildings) {
 			
-			selectedBuilding = townSquare;
+			selBuilding = townSquare;
 			break;
 			
 		}
 		
-		// Everything on cool down:
-		if(selectedBuilding == null){
-			sagaPlayer.message(BuildingMessages.cooldown(TextUtil.className(TownSquare.class), smallestCooldown));
-			return;
-		}
-		
 		// Prepare chunk:
-		selectedBuilding.getSagaChunk().loadChunk();
+		selBuilding.getSagaChunk().loadChunk();
 		
 		// Location:
-		Location spawnLocation = selectedBuilding.getSpawnLocation();
+		Location spawnLocation = selBuilding.getSpawnLocation();
 		if(spawnLocation == null){
-			SagaLogger.severe(selectedBuilding, sagaPlayer + " player failed to respawn at " + selectedBuilding.getDisplayName());
+			SagaLogger.severe(selBuilding, sagaPlayer + " player failed to respawn at " + selBuilding.getDisplayName());
 			sagaPlayer.error("failed to respawn");
 			return;
 		}

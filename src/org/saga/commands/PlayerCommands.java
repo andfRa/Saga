@@ -5,6 +5,7 @@ import java.util.Enumeration;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.dependencies.PermissionsManager;
+import org.saga.messages.GeneralMessages;
 import org.saga.messages.SettlementMessages;
 import org.saga.messages.InfoMessages;
 import org.saga.messages.PlayerMessages;
@@ -36,13 +37,13 @@ public class PlayerCommands {
 		// Arguments:
 		if(args.argsLength() == 1){
 			
-			String sPage = args.getString(0);
+			String argsPage = args.getString(0);
 			
 			try {
-				page = Integer.parseInt(sPage);
+				page = Integer.parseInt(argsPage);
 			}
 			catch (NumberFormatException e) {
-				sagaPlayer.message(SettlementMessages.invalidInteger(sPage));
+				sagaPlayer.message(GeneralMessages.mustBeNumber(argsPage));
 				return;
 			}
 			

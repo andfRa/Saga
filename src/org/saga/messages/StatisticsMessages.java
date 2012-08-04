@@ -34,7 +34,7 @@ public class StatisticsMessages {
 	
 	public static ChatColor unavailable = ChatColor.DARK_GRAY;
 	
-	public static ChatColor anouncment = ChatColor.AQUA;
+	public static ChatColor announce = ChatColor.AQUA;
 	
 	public static ChatColor normal1 = ChatColor.GOLD;
 	

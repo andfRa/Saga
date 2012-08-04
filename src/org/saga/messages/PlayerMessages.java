@@ -8,7 +8,6 @@ import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.player.GuardianRune;
 import org.saga.player.Proficiency.ProficiencyType;
-import org.saga.player.SagaPlayer;
 import org.saga.utility.text.TextUtil;
 
 
@@ -26,7 +25,7 @@ public class PlayerMessages {
 	
 	public static ChatColor unavailable = ChatColor.DARK_GRAY;
 	
-	public static ChatColor anouncment = ChatColor.AQUA;
+	public static ChatColor announce = ChatColor.AQUA;
 	
 	public static ChatColor normal1 = ChatColor.GOLD;
 	
@@ -38,11 +37,13 @@ public class PlayerMessages {
 	
 	
 	
-	// General:
-	public static String coinsNeeded(Double required) {
-		
-		return negative + EconomyMessages.coins(required) + " coins required.";
-		
+	// Availability:
+	public static String invalidPlayer(String playerName){
+		return negative + "Player " + playerName +" doesn't exist.";
+	}
+
+	public static String notOnline(String name) {
+		return negative + "Player " + name + " isn't online.";
 	}
 	
 	
@@ -55,32 +56,6 @@ public class PlayerMessages {
 	}
 	
 
-	
-	// Skills:
-	public static String limitReached(String skillName) {
-		
-		return negative + "Can't train " + skillName + " skill any farther.";
-		
-	}
-	
-	public static String trained(String skillName, Integer multiplier, Double coins) {
-		
-		if(coins > 0){
-			return positive + "Trained " + skillName + " skill to " + multiplier + " for " + EconomyMessages.coins(coins);
-		}else{
-			return positive + "Trained " + skillName + " skill to " + multiplier + ".";
-		}
-		
-		
-	}
-	
-	public static String skillPointsNeeded() {
-		
-		return negative + "Not enough skill points.";
-		
-	}
-	
-	
 	
 	// Respec:
 	public static String respec(Boolean proffRespec, Boolean classRespec, Boolean skillRespec, Double coinCost) {
@@ -156,15 +131,6 @@ public class PlayerMessages {
 		
 		return negative + "Can't attack player.";
 		
-		
-	}
-	
-	
-	
-	// Experience:
-	public static String deathExpInfo(){
-		
-		return normal1 + "Visit a temple to regain some of your lost experience.";
 		
 	}
 	
@@ -257,65 +223,7 @@ public class PlayerMessages {
 	
 	
 	
-	// Stats info:
-//	public static String trainInfo(String skillName, SagaPlayer sagaPlayer) {
-//		
-//		
-//		ColorCircle color = new ColorCircle().addColor(normal1).addColor(normal2);
-//		StringBook book = new StringBook(skillName + " skill info", color, 10);
-//		
-//		Double maxCoinCost = EconomyConfiguration.config().getSkillCoinCost(BalanceConfiguration.config().maximumSkillLevel);
-//		Integer skillLevel = sagaPlayer.getSkillMultiplier(skillName);
-//		Double coinCost = EconomyConfiguration.config().getSkillCoinCost(skillLevel);
-//		
-//		StringTable table = new StringTable(color);
-//		DecimalFormat format = new DecimalFormat("00");
-//		
-//		// Skill level:
-//		String sSkillLevel = format.format(sagaPlayer.getLevelManager().getSkillMultiplier(skillName));
-//		String sSkillLevelMax = format.format(sagaPlayer.getLevelManager().getMaxSkillMultiplier(skillName));
-//		table.addLine(new String[]{skillName + " skill", sSkillLevel + "/" + sSkillLevelMax});
-//		
-//		// Available points:
-//		table.addLine(new String[]{"remaining points", sagaPlayer.getRemainingSkillPoints().toString()});
-//		
-//		if(maxCoinCost > 0.0){
-//			
-//			table.addLine(new String[]{"cost at lvl " + sagaPlayer.getLevel(), EconomyMessages.coins(coinCost)});
-//			
-//		}
-//		
-//		table.collapse();
-//		book.addTable(table);
-//		
-//		return book.framed(0);
-//		
-//		
-//	}
-	
-	public static String respecInfo(SagaPlayer sagaPlayer) {
-
-		
-//		ColorCircle color = new ColorCircle().addColor(normal1).addColor(normal2);
-//		StringBook book = new StringBook("reset info", color, 10);
-//		
-//		book.addLine(negative + "Resets profession, class and skills. Level remains unchanged.");
-//		
-//		Double maxCoinCost = EconomyConfiguration.config().getRespecCost(BalanceConfiguration.config().maximumSkillLevel);
-//		Double coinCost = EconomyConfiguration.config().getRespecCost(sagaPlayer.getLevel());
-//		if(maxCoinCost > 0){
-//			
-//			book.addLine("A reset costs " + EconomyMessages.coins(coinCost) + " at level " + + sagaPlayer.getLevel() + ".");
-//			
-//		}
-//		
-//		return book.framed(0);
-//		
-		
-		return "";
-	}
-	
-	
+	// Types:
 	/**
 	 * Contains different colours.
 	 * 

@@ -7,7 +7,6 @@ import org.saga.config.EconomyConfiguration;
 import org.saga.messages.AbilityEffects;
 import org.saga.messages.BuildingMessages;
 import org.saga.messages.EconomyMessages;
-import org.saga.messages.GeneralMessages;
 import org.saga.player.SagaPlayer;
 
 
@@ -143,7 +142,7 @@ public class RespecSign extends BuildingSign{
 
 		// Take coins:
 		sagaPlayer.removeCoins(cost);
-		sagaPlayer.message(GeneralMessages.coinsSpent(cost));
+		sagaPlayer.message(EconomyMessages.coinsSpent(cost));
 		
 		// Reset:
 		sagaPlayer.setAttributeScore(attribute, 0);

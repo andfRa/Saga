@@ -6,7 +6,7 @@ import org.saga.config.EconomyConfiguration;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.InfoMessages;
-import org.saga.messages.SagaMessages;
+import org.saga.messages.PlayerMessages;
 import org.saga.messages.SettlementMessages;
 import org.saga.player.SagaPlayer;
 import org.sk89q.Command;
@@ -109,7 +109,7 @@ public class EconomyCommands {
 		try {
 			targetPlayer = Saga.plugin().forceSagaPlayer(targetName);
 		} catch (NonExistantSagaPlayerException e) {
-			sagaPlayer.message(SagaMessages.invalidPlayer(targetName));
+			sagaPlayer.message(PlayerMessages.invalidPlayer(targetName));
 			return;
 		}
 

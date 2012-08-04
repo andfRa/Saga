@@ -17,7 +17,7 @@ import org.saga.utility.text.TextUtil;
 public class EconomyMessages {
 
 
-	// Colors:
+	// Colours:
 	public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 	
 	public static ChatColor positive = ChatColor.GREEN;
@@ -28,7 +28,7 @@ public class EconomyMessages {
 	
 	public static ChatColor unavailable = ChatColor.DARK_GRAY;
 	
-	public static ChatColor anouncment = ChatColor.AQUA;
+	public static ChatColor announce = ChatColor.AQUA;
 	
 	public static ChatColor normal1 = ChatColor.GOLD;
 	
@@ -38,16 +38,23 @@ public class EconomyMessages {
 
 	
 	
+	// Economy general:
+	public static String coinsSpent(Double amount) {
+		return normal2 + "Spent " + EconomyMessages.coins(amount) + ".";
+	}
+	
+	
+	
 	// Buy/sell signs:
 	public static String notEnoughMaterial(Material material) {
 
-		return negative + "You don't have enough " + EconomyMessages.material(material) + ".";
+		return negative + "You don't have enough " + GeneralMessages.material(material) + ".";
 		
 	}
 
 	public static String notEnoughStoredMaterial(Material material) {
 
-		return negative + "Not enough " + EconomyMessages.material(material) + " stored.";
+		return negative + "Not enough " + GeneralMessages.material(material) + " stored.";
 		
 	}
 	
@@ -91,25 +98,25 @@ public class EconomyMessages {
 	
 	public static String setSell(Material material, Double price) {
 
-		return positive + TextUtil.capitalize(material(material)) + " sell price set to " +  coins(price) + ".";
+		return positive + TextUtil.capitalize(GeneralMessages.material(material)) + " sell price set to " +  coins(price) + ".";
 		
 	}
 
 	public static String removeSell(Material material) {
 
-		return positive + TextUtil.capitalize(material(material)) + " sell removed.";
+		return positive + TextUtil.capitalize(GeneralMessages.material(material)) + " sell removed.";
 		
 	}
 	
 	public static String setBuy(Material material, Double price) {
 
-		return positive + TextUtil.capitalize(material(material)) + " buy price set to " +  coins(price) + ".";
+		return positive + TextUtil.capitalize(GeneralMessages.material(material)) + " buy price set to " +  coins(price) + ".";
 		
 	}
 
 	public static String removeBuy(Material material) {
 
-		return positive + TextUtil.capitalize(material(material)) + " buy removed.";
+		return positive + TextUtil.capitalize(GeneralMessages.material(material)) + " buy removed.";
 		
 	}
 	
@@ -137,13 +144,13 @@ public class EconomyMessages {
 	// Transactions:
 	public static String addedTransactionBroadcast(Transaction transaction, ChunkBundle chunkBundle, SagaPlayer sagaPlayer) {
 		
-		return anouncment + sagaPlayer.getName() + " set up a new transaction: " + transaction.getType().name() + " " + transaction.getAmount() + " " + EconomyMessages.material(transaction.getMaterial()) + " for " + EconomyMessages.coins(transaction.getValue()) + " each.";
+		return announce + sagaPlayer.getName() + " set up a new transaction: " + transaction.getType().name() + " " + transaction.getAmount() + " " + GeneralMessages.material(transaction.getMaterial()) + " for " + EconomyMessages.coins(transaction.getValue()) + " each.";
 		
 	}
 	
 	public static String removedTransactionBroadcast(TransactionType type, Material material, ChunkBundle chunkBundle, SagaPlayer sagaPlayer) {
 		
-		return anouncment + sagaPlayer.getName() + " removed a transaction: " + type.name() + " " + EconomyMessages.material(material) + ".";
+		return announce + sagaPlayer.getName() + " removed a transaction: " + type.name() + " " + GeneralMessages.material(material) + ".";
 		
 	}
 	
@@ -151,15 +158,15 @@ public class EconomyMessages {
 		
 		if(transaction.getType().equals(TransactionType.SELL)){
 			
-			return positive + "Sold " + transaction.getAmount() + " " + material(transaction.getMaterial()) + " for " + coins(transaction.getTotalValue()) + ".";
+			return positive + "Sold " + transaction.getAmount() + " " + GeneralMessages.material(transaction.getMaterial()) + " for " + coins(transaction.getTotalValue()) + ".";
 			
 		}else if(transaction.getType().equals(TransactionType.BUY)){
 			
-			return positive + "Bought " + transaction.getAmount() + " " + material(transaction.getMaterial()) + " for " + coins(transaction.getTotalValue()) + ".";
+			return positive + "Bought " + transaction.getAmount() + " " + GeneralMessages.material(transaction.getMaterial()) + " for " + coins(transaction.getTotalValue()) + ".";
 			
 		}else{
 			
-			return veryNegative + " Invalid transaction type: " +transaction.getType() + ", " + transaction.getAmount() + ", " + material(transaction.getMaterial()) + ", " + coins(transaction.getTotalValue());
+			return veryNegative + " Invalid transaction type: " +transaction.getType() + ", " + transaction.getAmount() + ", " + GeneralMessages.material(transaction.getMaterial()) + ", " + coins(transaction.getTotalValue());
 			
 		}
 		
@@ -227,13 +234,13 @@ public class EconomyMessages {
 	// Sell/buy signs:
 	public static String insufItems(Material items) {
 		
-		return negative + "You don't have enough " + material(items) + ".";
+		return negative + "You don't have enough " + GeneralMessages.material(items) + ".";
 		
 	}
 	
 	public static String insufItems(Trader trader, Material items) {
 		
-		return negative + TextUtil.capitalize(trader.getTradingName()) + " doesn't have enough " + material(items) + ".";
+		return negative + TextUtil.capitalize(trader.getTradingName()) + " doesn't have enough " + GeneralMessages.material(items) + ".";
 		
 	}
 	
@@ -251,13 +258,13 @@ public class EconomyMessages {
 	
 	public static String sold(Material item, Integer amount, Double price) {
 		
-		return positive + "Sold " + amount + " " + material(item) + " for " + coins(price * amount) + ".";
+		return positive + "Sold " + amount + " " + GeneralMessages.material(item) + " for " + coins(price * amount) + ".";
 		
 	}
 	
 	public static String bought(Material item, Integer amount, Double price) {
 	
-	return positive + "Bought " + amount + " " + material(item) + " for " + coins(price * amount) + ".";
+	return positive + "Bought " + amount + " " + GeneralMessages.material(item) + " for " + coins(price * amount) + ".";
 	
 }
 	
@@ -321,20 +328,6 @@ public class EconomyMessages {
 	
 
 	/**
-	 * Gets material name.
-	 * 
-	 * @param material material
-	 * @return material name
-	 */
-	public static String material(Material material){
-		
-		String result = material.toString().toLowerCase().replace("_", " ");
-		
-		return result;
-		
-	}
-
-	/**
 	 * Gets material names.
 	 * 
 	 * @param materials materials
@@ -346,7 +339,7 @@ public class EconomyMessages {
 		ArrayList<String> names = new ArrayList<String>();
 		
 		for (Material material : materials) {
-			names.add(material(material));
+			names.add(GeneralMessages.material(material));
 		}
 		
 		return TextUtil.flatten(names);

@@ -522,6 +522,9 @@ public class SagaEntityDamageEvent {
 		
 		ADMIN_ALLOW(true),
 		ADMIN_DENY(false),
+		
+		SELF_ALLOW(true),
+		
 		ARENA_ALLOW(true),
 		
 		SAFE_AREA_DENY(false),

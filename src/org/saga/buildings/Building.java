@@ -33,7 +33,7 @@ import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.messages.BuildingMessages;
-import org.saga.messages.SagaMessages;
+import org.saga.messages.GeneralMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.SagaCustomSerialization;
 import org.saga.settlements.Settlement.SettlementPermission;
@@ -268,7 +268,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 
 		// Permission
 		if(!getChunkBundle().hasPermission(sagaPlayer, SettlementPermission.BUILD_BUILDING)){
-			sagaPlayer.message(SagaMessages.noPermission(this));
+			sagaPlayer.message(GeneralMessages.noPermission(this));
 			return;
 		}
 		
@@ -312,7 +312,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 
 		// Permission
 		if(!getChunkBundle().hasPermission(sagaPlayer, SettlementPermission.BUILD_BUILDING)){
-			sagaPlayer.message(SagaMessages.noPermission(this));
+			sagaPlayer.message(GeneralMessages.noPermission(this));
 			return;
 		}
 		
@@ -897,7 +897,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		// Permission:
 		if(!getChunkBundle().hasPermission(sagaPlayer, SettlementPermission.ACCESS_STORAGE) && !getChunkBundle().isOptionEnabled(ChunkBundleToggleable.OPEN_STORAGE_AREAS)){
 			
-			sagaPlayer.message(SagaMessages.noPermission(this));
+			sagaPlayer.message(GeneralMessages.noPermission(this));
 			event.setCancelled(true);
 			event.setUseInteractedBlock(Result.DENY);
 			event.setUseItemInHand(Result.DENY);
@@ -1242,7 +1242,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 			building = sagaChunk.getBuilding();
 		}
 		if(building == null){
-			throw new Throwable(BuildingMessages.invalidBuilding(TextUtil.className(buildingClass), args.getCommand()));
+			throw new Throwable(BuildingMessages.buildingCommandRestrict(TextUtil.className(buildingClass), args.getCommand()));
 		}
 		
 		// Correct building:
@@ -1250,7 +1250,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		try {
 			selectedBuilding = buildingClass.cast(building);
 		} catch (ClassCastException e) {
-			throw new Throwable(BuildingMessages.invalidBuilding(TextUtil.className(buildingClass), args.getCommand()));
+			throw new Throwable(BuildingMessages.buildingCommandRestrict(TextUtil.className(buildingClass), args.getCommand()));
 		} 
 		
 		return selectedBuilding;

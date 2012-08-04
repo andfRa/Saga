@@ -20,19 +20,17 @@ import org.saga.chunks.ChunkBundleManager;
 import org.saga.chunks.ChunkBundleToggleable;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
-import org.saga.config.SettlementConfiguration;
 import org.saga.dependencies.PermissionsManager;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;
 import org.saga.messages.AdminMessages;
+import org.saga.messages.GeneralMessages;
 import org.saga.messages.PlayerMessages;
-import org.saga.messages.SagaMessages;
 import org.saga.messages.SettlementMessages;
 import org.saga.messages.StatsMessages;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;
-import org.saga.settlements.Settlement.SettlementPermission;
 import org.saga.utility.text.TextUtil;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
@@ -63,13 +61,13 @@ public class AdminCommands {
 			
 			name = args.getString(0);
 			
-			String sPage = args.getString(1);
+			String argsPage = args.getString(1);
 			
 			try {
-				page = Integer.parseInt(sPage);
+				page = Integer.parseInt(argsPage);
 			}
 			catch (NumberFormatException e) {
-				sagaPlayer.message(SettlementMessages.invalidInteger(sPage));
+				sagaPlayer.message(GeneralMessages.mustBeNumber(argsPage));
 				return;
 			}
 			
@@ -86,7 +84,7 @@ public class AdminCommands {
 		try {
 			targetPlayer = Saga.plugin().matchPlayer(name);
 		} catch (SagaPlayerNotLoadedException e) {
-			sagaPlayer.message(SagaMessages.notOnline(name));
+			sagaPlayer.message(PlayerMessages.notOnline(name));
 			return;
 		}
 		
@@ -117,13 +115,13 @@ public class AdminCommands {
 			
 			name = args.getString(0);
 			
-			String sPage = args.getString(1);
+			String argsPage = args.getString(1);
 			
 			try {
-				page = Integer.parseInt(sPage);
+				page = Integer.parseInt(argsPage);
 			}
 			catch (NumberFormatException e) {
-				sagaPlayer.message(SettlementMessages.invalidInteger(sPage));
+				sagaPlayer.message(GeneralMessages.mustBeNumber(argsPage));
 				return;
 			}
 			
@@ -144,7 +142,7 @@ public class AdminCommands {
 		
 		} catch (NonExistantSagaPlayerException e) {
 
-			sagaPlayer.message(SagaMessages.invalidPlayer(name));
+			sagaPlayer.message(PlayerMessages.invalidPlayer(name));
 			return;
 		
 		}
@@ -176,7 +174,7 @@ public class AdminCommands {
 		Integer level = null;
 		
 		String playerName = null;
-		
+		String argsLevel = null;
 
 		// Arguments:
 		switch (args.argsLength()) {
@@ -185,10 +183,11 @@ public class AdminCommands {
 				
 				playerName = sagaPlayer.getName();
 				
+				argsLevel = args.getString(0);
 				try {
-					level = Integer.parseInt(args.getString(0));
+					level = Integer.parseInt(argsLevel);
 				} catch (NumberFormatException e) {
-					sagaPlayer.message(SettlementMessages.invalidInteger(args.getString(1)));
+					sagaPlayer.message(GeneralMessages.mustBeNumber(argsLevel));
 				}
 				
 				break;
@@ -197,10 +196,11 @@ public class AdminCommands {
 
 				playerName = args.getString(0);
 				
+				argsLevel = args.getString(1);
 				try {
-					level = Integer.parseInt(args.getString(1));
+					level = Integer.parseInt(argsLevel);
 				} catch (NumberFormatException e) {
-					sagaPlayer.message(SettlementMessages.invalidInteger(args.getString(1)));
+					sagaPlayer.message(GeneralMessages.mustBeNumber(argsLevel));
 				}
 				
 				break;
@@ -257,10 +257,10 @@ public class AdminCommands {
 
 		
 		SagaPlayer selectedPlayer = null;
+		String attrName = null;
+		Integer score = null;
 		
 		String playerName = null;
-		String attribute = null;
-		Integer score = null;
 		
 		// Arguments:
 		switch (args.argsLength()) {
@@ -268,12 +268,12 @@ public class AdminCommands {
 				
 				playerName = sagaPlayer.getName();
 				
-				attribute = args.getString(0).toLowerCase().replace(SagaMessages.spaceSymbol, " ");
+				attrName = GeneralMessages.nameFromArg(args.getString(0));
 				
 				try {
 					score = Integer.parseInt(args.getString(1));
 				} catch (NumberFormatException e) {
-					sagaPlayer.message(SettlementMessages.invalidInteger(args.getString(1)));
+					sagaPlayer.message(GeneralMessages.mustBeNumber(args.getString(1)));
 				}
 				
 				break;
@@ -282,19 +282,18 @@ public class AdminCommands {
 
 				playerName = args.getString(0);
 				
-				attribute = args.getString(1).toLowerCase().replace(SagaMessages.spaceSymbol, " ");
+				attrName = GeneralMessages.nameFromArg(args.getString(1));
 				
 				try {
 					score = Integer.parseInt(args.getString(2));
 				} catch (NumberFormatException e) {
-					sagaPlayer.message(SettlementMessages.invalidInteger(args.getString(1)));
+					sagaPlayer.message(GeneralMessages.mustBeNumber(args.getString(1)));
 				}
 				
 				break;
 				
 		}
 		
-		// Derived arguments:
 		try {
 			
 			// Force:
@@ -308,8 +307,8 @@ public class AdminCommands {
 		}
 
 		// Invalid attribute:
-		if(!AttributeConfiguration.config().getAttributeNames().contains(attribute)){
-			sagaPlayer.message(AdminMessages.attributeInvalid(attribute, sagaPlayer));
+		if(!AttributeConfiguration.config().getAttributeNames().contains(attrName)){
+			sagaPlayer.message(AdminMessages.attributeInvalid(attrName, sagaPlayer));
 			// Unforce:
 			Saga.plugin().unforceSagaPlayer(playerName);
 			return;
@@ -326,12 +325,12 @@ public class AdminCommands {
 		}
 		
 		// Set attribute:
-		selectedPlayer.setAttributeScore(attribute, score);
+		selectedPlayer.setAttributeScore(attrName, score);
 		
 		// Inform:
-		selectedPlayer.message(AdminMessages.attributeSet(attribute, score));
+		selectedPlayer.message(AdminMessages.attributeSet(attrName, score));
 		if(selectedPlayer != sagaPlayer){
-			sagaPlayer.message(AdminMessages.attributeSet(attribute, score, selectedPlayer));
+			sagaPlayer.message(AdminMessages.attributeSet(attrName, score, selectedPlayer));
 		}
 		
 		// Unforce:
@@ -343,71 +342,6 @@ public class AdminCommands {
 	
 
 	// Buildings general:
-	@Command(
-		aliases = {"sdissolve"},
-		usage = "[settlement name]",
-		flags = "",
-		desc = "Dissolve the settlement.",
-		min = 0,
-		max = 1
-	)
-	@CommandPermissions({"saga.user.settlement.delete"})
-	public static void disolve(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-		
-		ChunkBundle selectedChunkBundle = null;
-
-		// Arguments:
-		if(args.argsLength() == 1){
-			
-			// Chunk group:
-			String groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
-			selectedChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
-			if(selectedChunkBundle == null){
-				sagaPlayer.message(SettlementMessages.noChunkGroup(groupName));
-				return;
-			}
-			
-		}else{
-			
-			// Chunk group:
-			selectedChunkBundle = sagaPlayer.getChunkBundle();
-			if(selectedChunkBundle == null){
-				sagaPlayer.message( SettlementMessages.notMember() );
-				return;
-			}
-			
-		}
-	   	
-	   	// Permissions:
-	   	if(!selectedChunkBundle.hasPermission(sagaPlayer, SettlementPermission.DISSOLVE)){
-	   		sagaPlayer.message(SagaMessages.noPermission(selectedChunkBundle));
-	   		return;
-	   	}
-
-	   	// Level too high:
-	   	if(selectedChunkBundle instanceof Settlement){
-	   		
-	   		Settlement selectedSettlement = (Settlement) selectedChunkBundle;
-	   		
-	   		if(selectedSettlement.getLevel() >= SettlementConfiguration.config().noDeleteLevel){
-
-	   			sagaPlayer.message(SettlementMessages.informSettlementAboveLevelDelete());
-				return;
-				
-			}
-	   		
-	   	}
-	   	
-		// Delete:
-	   	selectedChunkBundle.delete();
-			
-		// Inform:
-		Saga.broadcast(SettlementMessages.dissolved(sagaPlayer, selectedChunkBundle));
-		
-	
-	}
-	
 	@Command(
 		aliases = {"assetlevel"},
 		usage = "[settlement name] <level>",
@@ -427,17 +361,17 @@ public class AdminCommands {
 		if(args.argsLength() == 2){
 			
 			// Chunk group:
-			String groupName = args.getString(0).replaceAll(SagaMessages.spaceSymbol, " ");
-			selectedChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+			String bundleName = GeneralMessages.nameFromArg(args.getString(0));
+			selectedChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(bundleName);
 			if(selectedChunkBundle == null){
-				sagaPlayer.message(SettlementMessages.noChunkGroup(groupName));
+				sagaPlayer.message(SettlementMessages.noChunkBundle(bundleName));
 				return;
 			}
 
 			try {
 				level = Integer.parseInt(args.getString(1));
 			} catch (NumberFormatException e) {
-				sagaPlayer.message(SettlementMessages.invalidInteger(args.getString(1)));
+				sagaPlayer.message(GeneralMessages.mustBeNumber(args.getString(1)));
 				return;
 			}
 			
@@ -453,7 +387,7 @@ public class AdminCommands {
 			try {
 				level = Integer.parseInt(args.getString(0));
 			} catch (NumberFormatException e) {
-				sagaPlayer.message(SettlementMessages.invalidInteger(args.getString(0)));
+				sagaPlayer.message(GeneralMessages.mustBeNumber(args.getString(0)));
 				return;
 			}
 			
@@ -499,10 +433,10 @@ public class AdminCommands {
 			case 2:
 				
 				// Chunk bundle:
-				String bundleName = args.getString(0).replace(SagaMessages.spaceSymbol, " ");
+				String bundleName = GeneralMessages.nameFromArg(args.getString(0));
 				selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(bundleName);
 				if(selChunkBundle == null){
-					sagaPlayer.message( SettlementMessages.noChunkGroup(bundleName));
+					sagaPlayer.message( SettlementMessages.noChunkBundle(bundleName));
 					return;
 				}
 				
@@ -576,10 +510,10 @@ public class AdminCommands {
 			case 2:
 				
 				// Chunk bundle:
-				String bundleName = args.getString(0).replace(SagaMessages.spaceSymbol, " ");
+				String bundleName = GeneralMessages.nameFromArg(args.getString(0));
 				selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(bundleName);
 				if(selChunkBundle == null){
-					sagaPlayer.message( SettlementMessages.noChunkGroup(bundleName));
+					sagaPlayer.message( SettlementMessages.noChunkBundle(bundleName));
 					return;
 				}
 				

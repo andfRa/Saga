@@ -7,6 +7,7 @@ package org.saga.commands;
 
 import org.bukkit.Material;
 import org.saga.Saga;
+import org.saga.messages.GeneralMessages;
 import org.saga.messages.SettlementMessages;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.StatisticsMessages;
@@ -100,7 +101,7 @@ public class StatisticsCommands {
     	Double[] data = StatisticsManager.manager().getVeinRatios(material);
     	
 	    // Inform:
-    	sagaPlayer.message(StatisticsMessages.histogram("x-ray histogram: " + EconomyMessages.material(material), data, 10, 3));
+    	sagaPlayer.message(StatisticsMessages.histogram("x-ray histogram: " + GeneralMessages.material(material), data, 10, 3));
 	    
     	sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
     	

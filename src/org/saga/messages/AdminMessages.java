@@ -24,7 +24,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 	
 	public static ChatColor unavailable = ChatColor.DARK_GRAY;
 	
-	public static ChatColor anouncment = ChatColor.AQUA;
+	public static ChatColor announce = ChatColor.AQUA;
 	
 	public static ChatColor normal1 = ChatColor.GOLD;
 	
@@ -53,7 +53,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 	}
 	
 	public static String attributeSet(String attribute, Integer score, SagaPlayer sagaPlayer){
-		return positive + "Player " + sagaPlayer.getName() + " " + attribute + " was set to " + score + ".";
+		return positive + "Players " + sagaPlayer.getName() + " " + attribute + " was set to " + score + ".";
 	}
 	
 	public static String attributeInvalid(String attribute, SagaPlayer sagaPlayer){
@@ -61,7 +61,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 	}
 	
 	public static String attributeOutOfRange(String score){
-		return negative + score + " is out of range. Allowed range: 0 - " + AttributeConfiguration.config().maxAttributeScore + ".";
+		return negative + "Ability score " + score + " is out of range. Allowed range: 0 - " + AttributeConfiguration.config().maxAttributeScore + ".";
 	}
 	
 	
@@ -109,7 +109,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 	
 	public static String recharged(GuardianRune rune) {
 		
-		return positive + "Guardian rune recharged.";
+		return positive + "Recharged guardian rune.";
 		
 	}
 	
@@ -117,7 +117,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 
 	// Saving loading:
 	public static String saving() {
-		return veryPositive + "Saving Saga information.";
+		return positive + "Saving Saga information.";
 	}
 	
 	public static String saved() {
@@ -151,7 +151,6 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 		return positive + "Daytime set to " + daytime + " for world " + world.getName() + ".";
 		
 	}
-
 
 	
 }

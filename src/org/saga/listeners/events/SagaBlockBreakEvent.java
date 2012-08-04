@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 import org.saga.chunks.SagaChunk;
 import org.saga.config.BalanceConfiguration;
 import org.saga.config.ExperienceConfiguration;
-import org.saga.messages.EconomyMessages;
+import org.saga.messages.GeneralMessages;
 import org.saga.metadata.UnnaturalTag;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
@@ -132,7 +132,7 @@ public class SagaBlockBreakEvent {
 				sagaPlayer.awardExp(exp);
 				
 				// Statistics:
-				StatisticsManager.manager().addExp("block", EconomyMessages.material(block.getType()), exp);
+				StatisticsManager.manager().addExp("block", GeneralMessages.material(block.getType()), exp);
 				
 			}
 			

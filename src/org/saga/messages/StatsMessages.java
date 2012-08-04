@@ -35,7 +35,7 @@ public class StatsMessages {
 	
 	public static ChatColor unavailable = ChatColor.DARK_GRAY;
 	
-	public static ChatColor anouncment = ChatColor.AQUA;
+	public static ChatColor announce = ChatColor.AQUA;
 	
 	public static ChatColor normal1 = ChatColor.GOLD;
 	
@@ -220,7 +220,7 @@ public class StatsMessages {
     		
     		for (Ability ability : allAbilities) {
     			
-    			String name = GeneralMessages.scoreAbility(ability);
+    			String name = ability.getName() + " " + RomanNumeral.binaryToRoman(ability.getScore());
     			String status = "";
     			
     			if(ability.getScore() <= 0){
@@ -276,16 +276,16 @@ public class StatsMessages {
 		}
 		
 		// Buildings:
-		Collection<String> buildingNames = SettlementConfiguration.config().getBuildingNames();
+		Collection<String> bldgNames = SettlementConfiguration.config().getBuildingNames();
 		
-		for (String building : buildingNames) {
+		for (String bldgName : bldgNames) {
 
-			Integer reqScore = ability.getBldgReq(building, abilityScore);
+			Integer reqScore = ability.getBldgReq(bldgName, abilityScore);
 			if(reqScore <= 0) continue;
 			
 			if(result.length() > 0) result.append(", ");
 			
-			result.append(building + " " + RomanNumeral.binaryToRoman(reqScore));
+			result.append(bldgName + " " + RomanNumeral.binaryToRoman(reqScore));
 			
 		}
 		

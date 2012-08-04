@@ -5,11 +5,14 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Chunk;
+import org.bukkit.Location;
 import org.saga.buildings.Building;
 import org.saga.buildings.BuildingDefinition;
 import org.saga.chunks.ChunkBundle;
 import org.saga.chunks.ChunkBundleToggleable;
 import org.saga.chunks.SagaChunk;
+import org.saga.chunks.SagaMap;
 import org.saga.commands.SettlementCommands;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
@@ -39,7 +42,7 @@ public class SettlementMessages {
 	
 	public static ChatColor unavailable = ChatColor.DARK_GRAY;
 	
-	public static ChatColor anouncment = ChatColor.AQUA;
+	public static ChatColor announce = ChatColor.AQUA;
 	
 	public static ChatColor normal1 = ChatColor.GOLD;
 	
@@ -54,16 +57,12 @@ public class SettlementMessages {
 		return veryNegative + "" + buildingName + " building isn't fully defined.";
 	}
 	
-	public static String savingDisabledError(ChunkBundle chunkBundle){
-		return veryNegative + "Saving is disabled for " + chunkBundle.getName() + " settlement.";
+	public static String noChunkBundle(String name){
+		return negative + "Settlement " + name + " doesn't exist.";
 	}
 	
-	public static String noChunkGroup(String name){
-		return negative + name + " settlement doesen't exist.";
-	}
-	
-	public static String notSettlement(ChunkBundle group){
-		return negative + group.getName() + " isn't a settlement.";
+	public static String notSettlement(ChunkBundle bundle){
+		return negative + "Chunk bundle " + bundle.getName() + " isn't a settlement.";
 	}
 	
 
@@ -84,10 +83,6 @@ public class SettlementMessages {
 	
 	
 	// Arguments:
-	public static String invalidInteger(String amount) {
-		return negative + amount + " isn't a valid integer.";
-	}
-	
 	public static String invalidPage(String amount) {
 		return negative + amount + " isn't a valid page number.";
 	}
@@ -96,7 +91,7 @@ public class SettlementMessages {
 	
 	// Owner:
 	public static String newOwnerBcast(String name) {
-		return anouncment + "Player " + name + " is the new owner of the settlement.";
+		return announce + "Player " + name + " is the new owner of the settlement.";
 	}
 	
 	public static String alreadyOwner() {
@@ -156,40 +151,17 @@ public class SettlementMessages {
 	
 	
 	
-	// Settle and claim messages:
-	public static String settlesRemaining(Short settles) {
-		
-
-		ChatColor settlesColor = positive;
-		if(settles == 0){
-			settlesColor = negative;
-		}
-		return normal1 + "You have " + settlesColor + settles + normal1 + " settlement points remaining.";
-		
-		
-	}
-	
-	public static String claimsRemaining(Short claims) {
-		
-		
-		ChatColor claimsColor = positive;
-		if(claims == 0){
-			claimsColor = negative;
-		}
-		return normal1 + "You have " + claimsColor + claims + normal1 + " claim points remaining.";
-		
-		
-	}
-	
-	
-	
 	// Settling and dissolving:
-	public static String settled(SagaPlayer sagaPlayer, ChunkBundle settlement) {
-		return anouncment + settlement.getName() + " settlement was founded  by " + sagaPlayer.getName() + ".";
+	public static String settledBcast(SagaPlayer sagaPlayer, ChunkBundle settlement) {
+		return announce + settlement.getName() + " settlement was founded  by " + sagaPlayer.getName() + ".";
 	}
 
 	public static String dissolved(SagaPlayer sagaPlayer, ChunkBundle settlement) {
-		return anouncment + settlement.getName() + " settlement was dissolved by " + sagaPlayer.getName() + ".";
+		return announce + settlement.getName() + " settlement was dissolved by " + sagaPlayer.getName() + ".";
+	}
+
+	public static String informDissolveLevel() {
+		return normal1 + "Settlement with level " + SettlementConfiguration.config().noDeleteLevel + " and above can only be dissolved by unclaiming everything.";
 	}
 
 	
@@ -273,7 +245,12 @@ public class SettlementMessages {
 	}
 	
 	public static String invited(SagaPlayer sagaPlayer, ChunkBundle settlement) {
-		return anouncment + sagaPlayer.getName() + " was invited to the settlement.";
+		return announce + sagaPlayer.getName() + " was invited to the settlement.";
+	}
+	
+
+	public static String informAccept() {
+		return normal1 + "Use /saccept to accept a settlement invitation.";
 	}
 	
 	
@@ -282,7 +259,7 @@ public class SettlementMessages {
 	}
 	
 	public static String joined(SagaPlayer sagaPlayer, ChunkBundle settlement) {
-		return anouncment + sagaPlayer.getName() + " has joined the settlement.";
+		return announce + sagaPlayer.getName() + " has joined the settlement.";
 	}
 	
 	
@@ -291,7 +268,7 @@ public class SettlementMessages {
 	}
 	
 	public static String quit(SagaPlayer sagaPlayer, ChunkBundle settlement) {
-		return anouncment + sagaPlayer.getName() + " has left the settlement.";
+		return announce + sagaPlayer.getName() + " has left the settlement.";
 	}
 
 	
@@ -300,7 +277,7 @@ public class SettlementMessages {
 	}
 	
 	public static String kicked(SagaPlayer sagaPlayer, ChunkBundle settlement) {
-		return anouncment + sagaPlayer.getName() + " has been kicked from the settlement.";
+		return announce + sagaPlayer.getName() + " has been kicked from the settlement.";
 	}
 
 	
@@ -312,7 +289,7 @@ public class SettlementMessages {
 		
 		
 		StringBuffer rString = new StringBuffer();
-		ChatColor messageColor = anouncment;
+		ChatColor messageColor = announce;
 		
 		if(groups.size() == 0){
 			return messageColor + "You don't have a pending settlement invitation.";
@@ -377,11 +354,11 @@ public class SettlementMessages {
 		return negative + "You can't kick yourself from the settlement.";
 	}
 
-	public static String nonExistantChunkGroup(String groupName) {
-		return negative + groupName + " settlement doesn't exist.";
+	public static String nonExistantChunkBundle(String bundleName) {
+		return negative + bundleName + " settlement doesn't exist.";
 	}
 	
-	public static String nonExistantChunkGroup() {
+	public static String nonExistantChunkBundle() {
 		return negative + "Settlement doesn't exist.";
 	}
 	
@@ -755,7 +732,7 @@ public class SettlementMessages {
 	
 	public static String newRole(SagaPlayer sagaPlayer, ChunkBundle settlement, String roleName) {
 		
-		return anouncment + sagaPlayer.getName() + " is now a " + roleName + ".";
+		return announce + sagaPlayer.getName() + " is now a " + roleName + ".";
 		
 	}
 
@@ -769,7 +746,7 @@ public class SettlementMessages {
 	
 	// Levels and building points:
 	public static String settleLevelBcast(Settlement settlement) {
-		return anouncment + "Settlement " + settlement.getName() + " is now level " + settlement.getLevel() + ".";
+		return announce + "Settlement " + settlement.getName() + " is now level " + settlement.getLevel() + ".";
 	}
 	
 	public static String notEnoughBuildingPoints(Building building) {
@@ -782,21 +759,10 @@ public class SettlementMessages {
 
 	
 	
-	// Inform:
-	public static String informSettlementAboveLevelDelete() {
-		return normal1 + "Settlement with level " + SettlementConfiguration.config().noDeleteLevel + " and above can only be deleted by unclaiming everything.";
-	}
-	
-	public static String informAccept() {
-		return normal1 + "Use /saccept to accept a settlement invitation.";
-	}
-	
-	
-	
 	// Rename:
 	public static String renamed(ChunkBundle chunkBundle) {
 
-		return anouncment + "Settlement was renamed to " + chunkBundle.getName() + ".";
+		return announce + "Settlement was renamed to " + chunkBundle.getName() + ".";
 		
 	}
 	
@@ -838,7 +804,7 @@ public class SettlementMessages {
 		ArrayList<String> validOptions = new ArrayList<String>();
 		for (int i = 0; i < options.length; i++) {
 			
-			validOptions.add(options[i].toString().replace(" ", SagaMessages.spaceSymbol));
+			validOptions.add(options[i].toString().replace(" ", GeneralMessages.SPACE_SYMBOL));
 			
 		}
 		
@@ -871,6 +837,35 @@ public class SettlementMessages {
 		
 	}
 
+
+	
+	// Map:
+	public static String map(SagaPlayer sagaPlayer, Location location){
+		
+		
+		ArrayList<String> map = SagaMap.getMap(sagaPlayer, sagaPlayer.getLocation());
+		StringBuffer result = new StringBuffer();
+		
+		// Add borders:
+		result.append(" ");
+		map.add(0, " ");
+		for (int i = 0; i < map.size(); i++) {
+			
+			if(i != 0) result.append("\n");
+			
+			result.append("  " + map.get(i) + "  ");
+			
+		}
+		result.append(" ");
+		
+		Chunk locationChunk = location.getWorld().getChunkAt(location);
+		String title = locationChunk.getWorld().getName() + " map " + "(" + locationChunk.getX() + ", " + locationChunk.getZ() + ")";
+		
+		return TextUtil.frame(title, result.toString(), ChatColor.GOLD);
+		
+		
+	}
+	
 	
 	
 	// Admin:

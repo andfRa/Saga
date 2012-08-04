@@ -6,7 +6,7 @@ import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.chunks.ChunkBundle;
-import org.saga.messages.SagaMessages;
+import org.saga.messages.GeneralMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement.SettlementPermission;
 
@@ -42,7 +42,7 @@ public class Warehouse extends Building{
 		ChunkBundle chunkBundle = getChunkBundle();
 		if(chunkBundle == null){
 			
-			sagaPlayer.message(SagaMessages.noPermission(this));
+			sagaPlayer.message(GeneralMessages.noPermission(this));
 			return;
 			
 		}
@@ -60,7 +60,7 @@ public class Warehouse extends Building{
 				event.setUseItemInHand(Result.DENY);
 				event.setUseInteractedBlock(Result.DENY);
 				
-				sagaPlayer.message(SagaMessages.noPermission(this));
+				sagaPlayer.message(GeneralMessages.noPermission(this));
 				
 			}
 			
@@ -70,7 +70,7 @@ public class Warehouse extends Building{
 				event.setUseItemInHand(Result.DENY);
 				event.setUseInteractedBlock(Result.DENY);
 				
-				sagaPlayer.message(SagaMessages.noPermission(this));
+				sagaPlayer.message(GeneralMessages.noPermission(this));
 				
 			}
 
@@ -80,7 +80,7 @@ public class Warehouse extends Building{
 				event.setUseItemInHand(Result.DENY);
 				event.setUseInteractedBlock(Result.DENY);
 				
-				sagaPlayer.message(SagaMessages.noPermission(this));
+				sagaPlayer.message(GeneralMessages.noPermission(this));
 				
 			}
 
@@ -90,7 +90,7 @@ public class Warehouse extends Building{
 				event.setUseItemInHand(Result.DENY);
 				event.setUseInteractedBlock(Result.DENY);
 				
-				sagaPlayer.message(SagaMessages.noPermission(this));
+				sagaPlayer.message(GeneralMessages.noPermission(this));
 				
 			}
 			
@@ -100,7 +100,7 @@ public class Warehouse extends Building{
 				event.setUseItemInHand(Result.DENY);
 				event.setUseInteractedBlock(Result.DENY);
 				
-				sagaPlayer.message(SagaMessages.noPermission(this));
+				sagaPlayer.message(GeneralMessages.noPermission(this));
 				
 			}
 			
@@ -110,7 +110,7 @@ public class Warehouse extends Building{
 				event.setUseItemInHand(Result.DENY);
 				event.setUseInteractedBlock(Result.DENY);
 				
-				sagaPlayer.message(SagaMessages.noPermission(this));
+				sagaPlayer.message(GeneralMessages.noPermission(this));
 				
 			}
 			
@@ -120,7 +120,7 @@ public class Warehouse extends Building{
 				event.setUseItemInHand(Result.DENY);
 				event.setUseInteractedBlock(Result.DENY);
 				
-				sagaPlayer.message(SagaMessages.noPermission(this));
+				sagaPlayer.message(GeneralMessages.noPermission(this));
 				
 			}
 			
@@ -130,7 +130,7 @@ public class Warehouse extends Building{
 				event.setUseItemInHand(Result.DENY);
 				event.setUseInteractedBlock(Result.DENY);
 				
-				sagaPlayer.message(SagaMessages.noPermission(this));
+				sagaPlayer.message(GeneralMessages.noPermission(this));
 				
 			}
 
@@ -140,7 +140,7 @@ public class Warehouse extends Building{
 				event.setUseItemInHand(Result.DENY);
 				event.setUseInteractedBlock(Result.DENY);
 				
-				sagaPlayer.message(SagaMessages.noPermission(this));
+				sagaPlayer.message(GeneralMessages.noPermission(this));
 				
 			}
 
@@ -150,7 +150,7 @@ public class Warehouse extends Building{
 				event.setUseItemInHand(Result.DENY);
 				event.setUseInteractedBlock(Result.DENY);
 				
-				sagaPlayer.message(SagaMessages.noPermission(this));
+				sagaPlayer.message(GeneralMessages.noPermission(this));
 				
 			}
 			

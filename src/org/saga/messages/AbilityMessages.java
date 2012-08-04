@@ -18,7 +18,7 @@ public class AbilityMessages {
 	
 	public static ChatColor unavailable = ChatColor.DARK_GRAY;
 	
-	public static ChatColor anouncment = ChatColor.AQUA;
+	public static ChatColor announce = ChatColor.AQUA;
 	
 	public static ChatColor normal1 = ChatColor.GOLD;
 	
@@ -28,13 +28,13 @@ public class AbilityMessages {
 	
 	
 	public static String insufficientItems(Ability ability, Material material, Integer amount) {
-		return negative + "" + amount + " " + EconomyMessages.material(material) + " required to use " + ability.getName() + " ability.";
+		return negative + TextUtil.capitalize(ability.getName()) + " requires " + amount + " " + GeneralMessages.material(material) + ".";
 	}
 	
 	
 	public static String onCooldown(Ability ability) {
 		
-		return normal1 + TextUtil.capitalize(ability.getName()) + " is on cooldown for " + ability.getCooldown() + "s.";
+		return negative + TextUtil.capitalize(ability.getName()) + " is on cooldown for " + ability.getCooldown() + "s.";
 		
 	}
 	
@@ -46,23 +46,22 @@ public class AbilityMessages {
 	
 	
 	
-	
 	// Repair:
 	public static String alreadyRepaired(Material material) {
 		
-		return negative + TextUtil.capitalize(EconomyMessages.material(material)) + " is already repaired.";
+		return negative + TextUtil.capitalize(GeneralMessages.material(material)) + " is already repaired.";
 		
 	}
 	
 	public static String cantRepair(Material material) {
 		
-		return negative + TextUtil.capitalize(EconomyMessages.material(material)) + " can't be repaired.";
+		return negative + TextUtil.capitalize(GeneralMessages.material(material)) + " can't be repaired.";
 		
 	}
 	
 	public static String repairLevelsRequired(Integer levels) {
 		
-		if(levels == 0){
+		if(levels == 1){
 			return negative + levels.toString() + " enchant level required.";
 		}
 		return negative + levels.toString() + " enchant levels required.";
@@ -71,14 +70,12 @@ public class AbilityMessages {
 
 	
 	
-	// Heavy swings:
+	// Heavy swing:
 	public static String targetStone(Ability ability) {
 	
 		return negative + TextUtil.capitalize(ability.getName()) + " can only be used on stone.";
 	
 	}
 
-
-	
 	
 }

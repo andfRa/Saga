@@ -2,9 +2,6 @@ package org.saga.buildings.signs;
 
 import org.bukkit.block.Sign;
 import org.saga.buildings.Building;
-import org.saga.config.AbilityConfiguration;
-import org.saga.config.EconomyConfiguration;
-import org.saga.messages.BuildingMessages;
 import org.saga.player.SagaPlayer;
 
 
@@ -180,20 +177,20 @@ public class AbilitySign extends BuildingSign{
 	protected void onLeftClick(SagaPlayer sagaPlayer) {
 	
 		
-		String abilityName = getFirstParameter();
-		Integer abilityScore = sagaPlayer.getAbilityScore(abilityName) + 1;
-		
-		// Already maximum:
-		if(abilityScore > AbilityConfiguration.config().maxAbilityScore){
-			sagaPlayer.message(BuildingMessages.abilityMaxReached(abilityName));
-			return;
-		}
-		
-		// Cost:
-		Double cost = EconomyConfiguration.config().getAbilityUpgradeCost(abilityName, abilityScore);
-		
-		// Inform:
-		sagaPlayer.message(BuildingMessages.abilityCost(abilityName, abilityScore, cost));
+//		String abilityName = getFirstParameter();
+//		Integer abilityScore = sagaPlayer.getAbilityScore(abilityName) + 1;
+//		
+//		// Already maximum:
+//		if(abilityScore > AbilityConfiguration.config().maxAbilityScore){
+//			sagaPlayer.message(BuildingMessages.abilityMaxReached(abilityName));
+//			return;
+//		}
+//		
+//		// Cost:
+//		Double cost = EconomyConfiguration.config().getAbilityUpgradeCost(abilityName, abilityScore);
+//		
+//		// Inform:
+//		sagaPlayer.message(BuildingMessages.abilityCost(abilityName, abilityScore, cost));
 		
 		
 	}

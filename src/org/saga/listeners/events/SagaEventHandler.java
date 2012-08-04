@@ -49,6 +49,9 @@ public class SagaEventHandler {
 		// PvP event:
 		if(event.isPlayerAttackPlayer()){
 			
+			// Damaged self:
+			if(event.getDefenderPlayer() == event.getAttackerPlayer()) event.addPvpOverride(PvPOverride.SELF_ALLOW);
+			
 			// Forward to Saga chunks:
 			SagaChunk attackerChunk = event.getAttackerChunk();
 			SagaChunk defenderChunk = event.getDefenderChunk();

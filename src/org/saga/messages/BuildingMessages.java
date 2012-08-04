@@ -4,13 +4,11 @@ import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.saga.abilities.Ability;
 import org.saga.buildings.Arena;
 import org.saga.buildings.Arena.ArenaPlayer;
 import org.saga.buildings.Building;
 import org.saga.buildings.TownSquare;
 import org.saga.chunks.ChunkBundle;
-import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
 import org.saga.messages.PlayerMessages.ColourLoop;
 import org.saga.utility.text.StringTable;
@@ -30,7 +28,7 @@ public class BuildingMessages {
 	
 	public static ChatColor unavailable = ChatColor.DARK_GRAY;
 	
-	public static ChatColor anouncment = ChatColor.AQUA;
+	public static ChatColor announce = ChatColor.AQUA;
 	
 	public static ChatColor normal1 = ChatColor.GOLD;
 	
@@ -40,30 +38,14 @@ public class BuildingMessages {
 	
 	
 	
-
-	// Adding buildings:
-	public static String notOnClaimedLand(ChunkBundle chunkBundle) {
-		return negative + "Buildings can only be on located on claimed land.";
-	}
-	
-	public static String oneBuildingAllowed(ChunkBundle chunkBundle) {
-		return negative + "A chunk of land can only have one building.";
-	}
-	
-	public static String invalidBuilding(String buildingName) {
-		return negative + buildingName + " isn't a valid building.";
-	}
-	
-	public static String unavailable(Building building){
-		
-		return negative + TextUtil.capitalize(building.getDisplayName()) + " isn't available.";
-		
-	}
-
-	
-	
 	// General buildings:
-	public static String invalidBuilding(String correctBuildingName, String command){
+	public static String invalidBuilding(String buildingName) {
+		
+		return negative + buildingName + " isn't a valid building.";
+		
+	}
+	
+	public static String buildingCommandRestrict(String correctBuildingName, String command){
 		
 		return negative + command + " can only be used from a " + correctBuildingName + ".";
 		
@@ -71,7 +53,39 @@ public class BuildingMessages {
 	
 	public static String noBuilding(){
 		
-		return negative + "No building on this chunk of land.";
+		return negative + "Building not set on this chunk of land.";
+		
+	}
+	
+	
+	
+	// Adding buildings:
+	public static String buildingsOnClaimed(ChunkBundle chunkBundle) {
+		return negative + "Buildings can only be on set on claimed land.";
+	}
+	
+	public static String oneBuilding(ChunkBundle chunkBundle) {
+		return negative + "A chunk of land can only have one building.";
+	}
+
+	public static String unavailable(Building building){
+		
+		return negative + TextUtil.capitalize(building.getDisplayName()) + " isn't available.";
+		
+	}
+
+	
+
+	// Movement:
+	public static String entered(Building building) {
+		
+		return normal1 + "" + ChatColor.ITALIC + "Entered " + building.getDisplayName() + ".";
+		
+	}
+	
+	public static String left(Building building) {
+		
+		return normal1 + "" + ChatColor.ITALIC + "Left " + building.getDisplayName() + ".";
 		
 	}
 	
@@ -116,7 +130,7 @@ public class BuildingMessages {
 		
 		if(material == Material.CHEST) return positive + "Added item storage.";
 		
-		return positive + "Stored " + EconomyMessages.material(material) + ".";
+		return positive + "Stored " + GeneralMessages.material(material) + ".";
 
 	}
 	
@@ -124,7 +138,7 @@ public class BuildingMessages {
 
 		if(material == Material.CHEST) return positive + "Removed item storage.";
 		
-		return positive + "Withdrew " + EconomyMessages.material(material) + ".";
+		return positive + "Withdrew " + GeneralMessages.material(material) + ".";
 
 	}
 	
@@ -157,30 +171,6 @@ public class BuildingMessages {
 		return BuildingMessages.negative + "" + chunkBundle.getName() + " deosen't have a " + TextUtil.className(TownSquare.class) + ".";
 		
 	}
-	
-	
-	
-	// Movement:
-	public static String entered(Building building) {
-		
-		return normal1 + "" + ChatColor.ITALIC + "Entered " + building.getDisplayName() + ".";
-		
-	}
-	
-	public static String left(Building building) {
-		
-		return normal1 + "" + ChatColor.ITALIC + "Left " + building.getDisplayName() + ".";
-		
-	}
-	
-	
-	
-	
-	// General:
-	public static String cooldown(String buildingName, Integer secondsLeft) {
-		return negative + TextUtil.capitalize(buildingName) + " is on cooldown for " + TextUtil.fromSeconds(secondsLeft) + ".";
-	}
-	
 	
 	
 	
@@ -269,8 +259,6 @@ public class BuildingMessages {
 
 	
 	
-	
-	
 	// Attribute sign:
 	public static String attributeMaxReached(String attribute) {
 		return negative + "Can't increase " + attribute + " above " + AttributeConfiguration.config().maxAttributeScore + ".";
@@ -283,44 +271,6 @@ public class BuildingMessages {
 	public static String attributePointsRequired(String attribute) {
 		return negative + "Not enough attribute points to increase " + attribute + ".";
 	}
-	
-	
-	
-	
-	// Ability sign:
-	public static String abilityMaxReached(String ability) {
-		return negative + "Can't upgrade " + ability + " above " + AbilityConfiguration.config().maxAbilityScore + ".";
-	}
-
-	public static String abilityUpgraded(String ability, Integer score) {
-		
-		if(score == 1){
-			return positive + TextUtil.capitalize(ability) + " learned.";
-		}
-		return positive + "Upgraded to " + GeneralMessages.scoreAbility(ability, score) + ".";
-		
-	}
-	
-	public static String abilityReqNotMet(Ability ability, Integer score) {
-		
-		if(score == 1){
-			return negative + StatsMessages.requirements(ability.getDefinition(), score) + " is required to learn " + ability.getName() + ".";
-		}
-		
-		return negative + TextUtil.capitalize(GeneralMessages.scoreAbility(ability.getName(), score)) + " upgrade requires " + StatsMessages.requirements(ability.getDefinition(), score) + ".";
-		
-	}
-
-	public static String abilityCost(String ability, Integer score, Double cost) {
-		
-		if(score == 1){
-			return normal1 + "It costs " + EconomyMessages.coins(cost) + " to learn " + ability + ".";
-		}
-		
-		return normal1 + TextUtil.capitalize(GeneralMessages.scoreAbility(ability, score)) + " upgrade costs " + EconomyMessages.coins(cost) + ".";
-		
-	}
-		
 	
 	
 	
@@ -346,8 +296,6 @@ public class BuildingMessages {
 		return negative + TextUtil.capitalize(attribute) + " is already 0.";
 		
 	}
-		
-	
 	
 	
 }
