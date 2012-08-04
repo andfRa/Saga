@@ -247,7 +247,7 @@ public class AdminCommands {
 	
 	@Command(
 		aliases = {"asetattribute","asetattr"},
-		usage = "<player name> <attribute> <score>",
+		usage = "[player name] <attribute> <score>",
 		flags = "",
 		desc = "Set players attribute score.",
 		min = 2,
