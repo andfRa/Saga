@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.bukkit.Material;
 import org.saga.Clock;
@@ -20,6 +22,7 @@ import org.saga.config.SettlementConfiguration;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
+import org.saga.utility.text.TextUtil;
 
 import com.google.gson.JsonParseException;
 
@@ -40,7 +43,6 @@ public class StatisticsManager implements HourTicker{
 		return instance;
 	}
 
-	
 	
 
 	/**
@@ -118,13 +120,18 @@ public class StatisticsManager implements HourTicker{
 	/**
 	 * Player attributes.
 	 */
-	private Hashtable<String, Hashtable<String, Integer>> playerAttributes;
+	private Hashtable<String, Hashtable<String, Integer>> playerAttributes2;
 	
 	/**
 	 * Experience gained.
 	 */
 	private Hashtable<String, Hashtable<String, Double>> expGained;
 	
+	
+	/**
+	 * Double values.
+	 */
+	private Hashtable<String, Double> doubleValues;
 	
 
 	
@@ -205,9 +212,9 @@ public class StatisticsManager implements HourTicker{
 			integrity=false;
 		}
 
-		if(playerAttributes == null){
+		if(playerAttributes2 == null){
 			SagaLogger.severe(getClass(), "playerAttributes");
-			playerAttributes = new Hashtable<String, Hashtable<String,Integer>>();
+			playerAttributes2 = new Hashtable<String, Hashtable<String,Integer>>();
 			integrity=false;
 		}
 
@@ -246,6 +253,30 @@ public class StatisticsManager implements HourTicker{
 			expGained = new Hashtable<String, Hashtable<String,Double>>();
 		}
 		
+		if(doubleValues == null){
+			SagaLogger.nullField(getClass(), "doubleValues");
+			doubleValues = new Hashtable<String, Double>();
+		}
+		
+		
+		Set<String> attributes = playerAttributes2.keySet();
+		for (String attribute : attributes) {
+			
+			Hashtable<String, Integer> players = playerAttributes2.get(attribute);
+			
+			Set<String> playerNames = players.keySet();
+			
+			for (String playerName : playerNames) {
+				
+				Double score = players.get(playerName).doubleValue();
+				
+				doubleValues.put("attributes" + "." + attribute + "." + playerName, score);
+				
+			}
+			
+			
+		}
+		
 		return integrity;
 		
 		
@@ -270,7 +301,7 @@ public class StatisticsManager implements HourTicker{
 		blockDataChanges = 0;
 		
 		playerLevels = new Hashtable<String, Integer>();
-		playerAttributes = new Hashtable<String, Hashtable<String,Integer>>();
+		playerAttributes2 = new Hashtable<String, Hashtable<String,Integer>>();
 		
 		playerBuyCoins = new Hashtable<String, Hashtable<Material,Double>>();
 		playerSellCoins = new Hashtable<String, Hashtable<Material,Double>>();
@@ -280,6 +311,10 @@ public class StatisticsManager implements HourTicker{
 		foundVeins = new Hashtable<String, Hashtable<Material,Integer>>();
 		
 		expGained = new Hashtable<String, Hashtable<String,Double>>();
+		
+		
+		doubleValues = new Hashtable<String, Double>();
+		
 		
 	}
 
@@ -796,10 +831,10 @@ public class StatisticsManager implements HourTicker{
 	public void setAttribute2(SagaPlayer sagaPlayer, String attribute, Integer score) {
 
 		
-		Hashtable<String, Integer> players = playerAttributes.get(attribute);
+		Hashtable<String, Integer> players = playerAttributes2.get(attribute);
 		if(players == null){
 			players = new Hashtable<String, Integer>();
-			playerAttributes.put(attribute, players);
+			playerAttributes2.put(attribute, players);
 		}
 		
 		players.put(sagaPlayer.getName(), score);
@@ -807,25 +842,10 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 	
-	public void setAttributes(SagaPlayer sagaPlayer) {
+	public Integer getAttributeScoreTotal2(String attribute) {
 
 		
-		ArrayList<String> attributes = AttributeConfiguration.config().getAttributeNames();
-		for (String attribute : attributes) {
-			
-			Integer score = sagaPlayer.getRawAttributeScore(attribute);
-			if(score <= 0) continue;
-			setAttribute2(sagaPlayer, attribute, score);
-			
-		}
-		
-		
-	}
-	
-	public Integer getAttributeScoreTotal(String attribute) {
-
-		
-		Hashtable<String, Integer> players = playerAttributes.get(attribute);
+		Hashtable<String, Integer> players = playerAttributes2.get(attribute);
 		if(players == null) players = new Hashtable<String, Integer>();
 		
 		Integer totalScore = 0;
@@ -924,6 +944,136 @@ public class StatisticsManager implements HourTicker{
 	}
 
 	
+	
+	// Values:
+	public void modifyValue(String key, Double mod) {
+
+		doubleValues.put(key, getValue(key) + mod);
+		
+	}
+	
+	public void setValue(String key, Double value) {
+
+		doubleValues.put(key, value);
+		
+	}
+
+	public void setValue(String key, Integer value) {
+
+		setValue(key, value.doubleValue());
+		
+	}
+	
+	public double getValue(String key) {
+
+		Double value = doubleValues.get(key);
+		if(value == null) return 0.0;
+		
+		return value;
+	
+	}
+	
+	public double getSumValue(String category, boolean ignoreBottom) {
+
+		
+		Double sum = getValue(category);
+		
+		Collection<String> subCategs = getSubCategs(category, ignoreBottom);
+		
+		for (String subCateg : subCategs) {
+			sum += getSumValue(category + "." + subCateg, ignoreBottom);
+		}
+		
+		return sum;
+		
+		
+	}
+	
+	private static int calcCategDepth(String category) {
+
+		int depth = 0;
+		while(category.contains(".")){
+			
+			category.replaceFirst(".", "");
+			depth++;
+			
+		}
+		
+		return depth;
+		
+	}
+	
+	public static String formatCategName(String category) {
+
+		
+		String[] subCategs = category.split("\\.");
+		
+		return TextUtil.repeat("  ", calcCategDepth(category)) + subCategs[subCategs.length - 1];
+		
+		
+	}
+
+	public TreeSet<String> getSubCategs(String category, boolean ignoreBottom) {
+
+		
+		Set<String> allCategs = doubleValues.keySet();
+		TreeSet<String> subCategs = new TreeSet<String>();
+		
+		for (String fullCateg : allCategs) {
+			
+			if(fullCateg.length() == 0) continue;
+			
+			if(!fullCateg.startsWith(category + ".")) continue;
+			
+			String subCateg = fullCateg.replaceFirst(category + ".", "");
+			
+			if(ignoreBottom){
+				int lastIndex = subCateg.lastIndexOf(".");
+				if(lastIndex != -1) subCateg = subCateg.substring(0, lastIndex);
+			}
+			
+			String[] subSuperCategs = subCateg.split("\\.");
+			
+			if(subSuperCategs.length > 1){
+				
+				String subSuperCateg = subSuperCategs[0];
+					
+				for (int i = 1; i < subSuperCategs.length; i++) {
+					
+					if(!subCategs.contains(subSuperCateg)) subCategs.add(subSuperCateg);
+					
+					subSuperCateg += "." + subSuperCategs[i];
+					
+				}
+				
+			}
+			
+			subCategs.add(subCateg);
+			
+		}
+		
+		return subCategs;
+		
+		
+	}
+	
+	
+	// Updating:
+	public void setAttributes(SagaPlayer sagaPlayer) {
+
+		
+		ArrayList<String> attributes = AttributeConfiguration.config().getAttributeNames();
+		for (String attribute : attributes) {
+			
+			Integer score = sagaPlayer.getRawAttributeScore(attribute);
+			if(score < 1) continue;
+			
+			setValue("attributes" + "." + attribute + "." + sagaPlayer.getName(), score);
+			
+		}
+		
+		
+	}
 	
 	
 	// Load unload:
@@ -1052,5 +1202,16 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 	
+	
+	public static void main(String[] args) {
+		
+		
+		String subCateg = "aaadsfsdf";
+		int lastIndex = subCateg.lastIndexOf(".");
+		if(lastIndex != -1) subCateg = subCateg.substring(0, lastIndex);
+		
+		System.out.println(subCateg);
+		
+	}
 	
 }

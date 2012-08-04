@@ -8,7 +8,6 @@ import java.util.Comparator;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.saga.config.AbilityConfiguration;
-import org.saga.config.AttributeConfiguration;
 import org.saga.messages.PlayerMessages.ColourLoop;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
@@ -48,8 +47,8 @@ public class StatisticsMessages {
 	public static String general() {
 	
 		
-		ColourLoop color = new ColourLoop().addColor(normal1).addColor(normal2);
-		StringTable table = new StringTable(color);
+		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
+		StringTable table = new StringTable(colours);
 
 		// Add headings:
 		table.addLine(new String[]{"STATISTIC","VALUE"});
@@ -63,7 +62,7 @@ public class StatisticsMessages {
 		
 		table.collapse();
 		
-		StringBook book = new StringBook("general statistics", color);
+		StringBook book = new StringBook("general statistics", colours);
 		
 		book.addTable(table);
 		
@@ -75,9 +74,9 @@ public class StatisticsMessages {
 	public static String abilities() {
 	
 		
-		ColourLoop color = new ColourLoop().addColor(normal1).addColor(normal2);
+		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
 		ArrayList<String> abilities = AbilityConfiguration.config().getAbilityNames();
-		StringTable table = new StringTable(color);
+		StringTable table = new StringTable(colours);
 
 		// Add headings:
 		table.addLine(new String[]{"ABILITY","USES", "EXP AWARDED"});
@@ -96,7 +95,7 @@ public class StatisticsMessages {
 		
 		table.collapse();
 		
-		StringBook book = new StringBook("abilities", color);
+		StringBook book = new StringBook("abilities", colours);
 		
 		book.addTable(table);
 		
@@ -121,16 +120,16 @@ public class StatisticsMessages {
 	public static String xrayIndication(Integer totalPlayers, ArrayList<String> indications) {
 
 		
-		ColourLoop color = new ColourLoop().addColor(normal1).addColor(normal2);
+		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
 		StringBuffer result = new StringBuffer();
 		
 		// Totals:
-		result.append(color.nextColour() + "Indications: " + indications.size() + "/" + totalPlayers);
+		result.append(colours.nextColour() + "Indications: " + indications.size() + "/" + totalPlayers);
 		
 		result.append("\n");
 		
 		// Players:
-		result.append(color.nextColour() + "Indications: ");
+		result.append(colours.nextColour() + "Indications: ");
 		if(indications.size() > 0){
 			
 			result.append(TextUtil.flatten(indications));
@@ -141,7 +140,7 @@ public class StatisticsMessages {
 			
 		}
 		
-		return TextUtil.frame("x-ray mod indications", result.toString(), color.nextColour());
+		return TextUtil.frame("x-ray mod indications", result.toString(), colours.nextColour());
 		
 		
 	}
@@ -151,11 +150,11 @@ public class StatisticsMessages {
 //		
 //		String name = sagaPlayer.getName();
 //		
-//		ColorCircle color = new ColorCircle().addColor(normal1).addColor(normal2);
-//		StringBook book = new StringBook(name + " x-ray statistics", color, 10);
+//		ColorCircle colour = new ColorCircle().addColor(normal1).addColor(normal2);
+//		StringBook book = new StringBook(name + " x-ray statistics", colour, 10);
 //
 //		// Blocks:
-//		StringTable table = new StringTable(color);
+//		StringTable table = new StringTable(colour);
 //		String[] line = new String[2];
 //		HashSet<Material> xrayMaterials = XrayIndicator.getXrayBlocks();
 //		
@@ -196,41 +195,14 @@ public class StatisticsMessages {
 		
 	}
 
-	public static String attributes() {
-		
-		
-		ColourLoop color = new ColourLoop().addColor(normal1).addColor(normal2);
-		StringTable table = new StringTable(color);
-
-		// Add headings:
-		table.addLine(new String[]{GeneralMessages.columnTitle("attribute"), GeneralMessages.columnTitle("total score")});
-		
-		ArrayList<String> attributes = AttributeConfiguration.config().getAttributeNames();
-		for (String attribute : attributes) {
-			
-			table.addLine(attribute, StatisticsManager.manager().getAttributeScoreTotal(attribute).toString(), 0);
-			
-		}
-		
-		table.collapse();
-		
-		StringBook book = new StringBook("attribute statistics", color);
-		
-		book.addTable(table);
-		
-		return book.framedPage(0);
-		
-		
-	}
-	
 	public static String exp(int page) {
 	
 		
 		int maxLines = 20;
 		int lines = 0;
 		
-		ColourLoop color = new ColourLoop().addColor(normal1).addColor(normal2);
-		StringTable table = new StringTable(color);
+		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
+		StringTable table = new StringTable(colours);
 
 		// Add headings:
 		table.addLine(new String[]{GeneralMessages.columnTitle("category"), GeneralMessages.columnTitle("exp")});
@@ -269,7 +241,7 @@ public class StatisticsMessages {
 		
 		table.collapse();
 		
-		StringBook book = new StringBook("experience statistics", color);
+		StringBook book = new StringBook("experience statistics", colours);
 		
 		book.addTable(table);
 		
@@ -326,6 +298,44 @@ public class StatisticsMessages {
 			table.addLine(new String[]{"-","-","-","-","-"});
 		}
 			
+		table.collapse();
+		book.addTable(table);
+		
+		return book.framedPage(page);
+		
+		
+	}
+	
+	
+	
+	public static String values(String title, String category, String column1, String column2, boolean ignoreBottom, int decimals, int page) {
+
+		
+		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
+		StringBook book = new StringBook(title, colours);
+		StringTable table = new StringTable(colours);
+		
+		Collection<String> subCategs = StatisticsManager.manager().getSubCategs(category, ignoreBottom);
+		
+		// Column names:
+		table.addLine(GeneralMessages.columnTitle(column1), GeneralMessages.columnTitle(column2), 0);
+		
+		if(subCategs.size() != 0){
+			
+			for (String subCateg : subCategs) {
+				
+				String name = StatisticsManager.formatCategName(subCateg);
+				String value = TextUtil.round(StatisticsManager.manager().getSumValue(category + "." + subCateg, ignoreBottom), decimals);
+				table.addLine(name, value, 0);
+				
+			}
+			
+		}else{
+			
+			table.addLine("-", "-", 0);
+			
+		}
+		
 		table.collapse();
 		book.addTable(table);
 		

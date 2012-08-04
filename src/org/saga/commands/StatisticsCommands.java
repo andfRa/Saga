@@ -178,14 +178,14 @@ public class StatisticsCommands {
 		max = 0
 	)
 	@CommandPermissions({"saga.admin.statistics.attributes"})
-	public static void skills(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	public static void attributes(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
-	    	// Inform:
-	    	sagaPlayer.message(StatisticsMessages.attributes());
-	        	
-	    	sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
-	        	
-		}
+		// Inform:
+		sagaPlayer.message(StatisticsMessages.values("attributes trained", "attributes", "attribute", "score sum", true, 0, 0));
+		
+		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+		
+	}
 
 	@Command(
 			aliases = {"stbalance","stbal"},

@@ -374,6 +374,7 @@ public class TextUtil {
 		DecimalFormat df = new DecimalFormat();
 		df.setMaximumFractionDigits(decimals);
 		df.setMinimumFractionDigits(decimals);
+		df.setGroupingUsed(false);
 		
 		return df.format(doub);
 		
