@@ -227,8 +227,8 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 	public static String shelp(int page) {
 		
 		
-		ColourLoop messageColor = new ColourLoop().addColor(normal1).addColor(normal2);
-		StringBook book = new StringBook("settlement help", messageColor);
+		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
+		StringBook book = new StringBook("settlement help", colours);
 
 		// Land:
 		book.addLine("A settlement will protect your land. " +
@@ -248,7 +248,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		
 		// Invite:
 		book.addLine("Use " + GeneralMessages.command("/sinvite") + " to invite another player to the settlement. " +
-			"Settlement invitations can be accepted with " + GeneralMessages.command("/saccept") + " and declined with " + GeneralMessages.command("/sdecline") + ". " +
+			"Settlement invitations can be accepted with " + GeneralMessages.command("/saccept") + " and declined with " + GeneralMessages.command("/sdeclineall") + ". " +
 			"A player can only be in a single settlement. " +
 			"Use " + GeneralMessages.command("/settlementquit") + " to leave a settlement. " +
 			"Troublemakers can be kicked by using " + GeneralMessages.command("/skick") + ". "
@@ -259,13 +259,14 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		// Roles:
 		book.addLine("Use " + GeneralMessages.command("/ssetrole") + " to assign a role to a member. " +
 			"Each role gives certain attribute bonuses. " +
-			"The amount of available roles increases when the settlement gains levels."
+			"The amount of available roles increases when the settlement gains levels. " +
+			"Roles also determine which actions and commands are permitted."
 		);
 		
 		book.addLine("");
 
 		// Role table:
-		StringTable rolesTable = new StringTable(messageColor);
+		StringTable rolesTable = new StringTable(colours);
 		ArrayList<ProficiencyDefinition> roles = ProficiencyConfiguration.config().getDefinitions(ProficiencyType.ROLE);
 			
 		// Titles:
@@ -304,7 +305,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		book.addLine("");
 
 		// Buildings table:
-		StringTable bldgsTable = new StringTable(messageColor);
+		StringTable bldgsTable = new StringTable(colours);
 		ArrayList<BuildingDefinition> bldgsDefinitions = SettlementConfiguration.config().getBuildingDefinitions();
 			
 		// Titles:
@@ -357,71 +358,104 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 	}
 	
 	public static String fhelp(int page) {
+
 		
-		
-		ColourLoop messageColor = new ColourLoop().addColor(normal1).addColor(normal2);
-		StringBook book = new StringBook("Faction help", messageColor);
+		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
+		StringBook book = new StringBook("settlement help", colours);
+
+		// Levels:
+		book.addLine("A faction gains levels by killing members from other factions. " +
+			"The amount of exp gained depends on killed players level. " +
+			"Use " + GeneralMessages.command("/fstats") + " to see faction level and other stats."
+		);
 		
 		// Pvp:
+		String pvp = "";
 		if(FactionConfiguration.config().factionOnlyPvp){
-			book.addLine(veryNegative + "Only factions can take part in pvp.");
+			pvp = "Only factions can take part in pvp. ";
 		}
-		
-		// Create:
-		book.addLine("/fcreate <name> creates a new faction.");
 		
 		// Formation:
-		if(FactionConfiguration.config().formationAmount > 1){
-			book.addLine("A faction will not be formed until it has " + FactionConfiguration.config().formationAmount + " members.");
+		String formation = "";
+			if(FactionConfiguration.config().formationAmount > 1){
+			formation = " A faction requires " + FactionConfiguration.config().formationAmount + " members to be formed.";
 		}
 		
-		// Invite:
-		book.addLine("/finvite <name> to invite someone to the faction.");
+		// Creation:
+		book.addLine(pvp +
+			"To create a faction use " + GeneralMessages.command("/fcreate") + ". " +
+			"New members can be invited with " + GeneralMessages.command("/finvite") + ". " +
+			"Use " + GeneralMessages.command("/faccept") + " and " + GeneralMessages.command("/fdeclineall") + " to accept or decline faction invitations. " +
+			"To leave the faction use " + GeneralMessages.command("/factionquit") + ". " +
+			"Troublemakers can be kicked by using " + GeneralMessages.command("/fkick") + ". " +
+			formation
+		);
+
+		book.nextPage();
 		
-		// Accept:
-		book.addLine("/faccept to accept a faction invitation.");
+		// Ranks:
+		book.addLine("Use " + GeneralMessages.command("/fsetrank") + " to assign a rank to a member. " +
+			"Each rank gives certain attribute bonuses. " +
+			"The amount of available ranks increases when the faction gains levels. " +
+			"Ranks also determine which commands are permitted."
+		);
 		
-		// Decline
-		book.addLine("/fdeclineall to decline all faction invitations.");
+		book.addLine("");
 
-		// Kick:
-		book.addLine("/fkick <name> to kick someone out from the faction.");
+		// Rank table:
+		StringTable rolesTable = new StringTable(colours);
+		ArrayList<ProficiencyDefinition> roles = ProficiencyConfiguration.config().getDefinitions(ProficiencyType.RANK);
+			
+		// Titles:
+		rolesTable.addLine(new String[]{GeneralMessages.columnTitle("rank"), GeneralMessages.columnTitle("bonus")});
+
+		// Values:
+		if(roles.size() != 0){
+			
+			for (ProficiencyDefinition definition : roles) {
+				
+				String roleName = definition.getName();
+				String bonuses = bonuses(definition);
+				if(bonuses.length() == 0) bonuses = "none";
+				
+				rolesTable.addLine(new String[]{roleName, bonuses});
+				
+			}
+
+		}else{
+			
+			rolesTable.addLine(new String[]{"-", "-"});
+
+		}
 		
-		// Quit:
-		book.addLine("/factionquit to quit a faction.");
-
-		// List:
-		book.addLine("/flist to list all faction members.");
-
-		// Primary color:
-		book.addLine("/fsetprimarycolor <color> to set the factions primary color.");
-
-		// Secondary color:
-		book.addLine("/fsetsecondarycolor <color> to set the factions secondary color.");
+		rolesTable.collapse();
+		book.addTable(rolesTable);
+		
+		book.nextPage();
 
 		// Chat:
-		book.addLine("/f <message> to send a message in the faction chat.");
+		book.addLine("Once the faction is formed, members gain access to faction chat " + GeneralMessages.command("/f") + ". ");
 
-		// Stats:
-		book.addLine("/fstats to see available ranks and other stats.");
-
-		// Set rank:
-		book.addLine("/fsetrank <name> <rank> to assign a rank to somebody.");
+		// Colours:
+		book.addLine("Faction colours can be customised with " + GeneralMessages.command("/fsetcolor1") + " and " + GeneralMessages.command("/fsetcolor2") + ".");
 
 		// Rename:
-		book.addLine("/frename <name> to rename the faction. Costs " + EconomyMessages.coins(EconomyConfiguration.config().factionRenameCost) + ".");
-		
-		// Request alliance:
-		book.addLine("/frequestally <faction_name> to request an alliance.");
+		book.addLine("To rename the faction use " + GeneralMessages.command("/frename") + ".");
 
-		// Accept alliance:
-		book.addLine("/facceptally <faction_name> to accept an alliance.");
-
-		// Decline alliance:
-		book.addLine("/fdeclinetally <faction_name> to deline an alliance.");
+		// Spawn:
+		book.addLine("Faction spawn can be set with " + GeneralMessages.command("/fsetspawn") + ". " +
+			" Use " + GeneralMessages.command("/fspawn") + " to teleport to the faction spawn point."
+		);
 		
-		// Decline alliance:
-		book.addLine("/fremoveally <faction_name> to break an alliance.");
+		book.nextPage();
+
+		// Alliances:
+		book.addLine("Factions can form alliances. " +
+			"Allied factions share faction chat and can't attack each other. " +
+			"An alliance request can be sent with " + GeneralMessages.command("/frequestally") + ". " +
+			"Alliance requests can be accepted and declined with " + GeneralMessages.command("/facceptally") + " and " + GeneralMessages.command("/fdeclineally") + ". " +
+			"An alliance can be broken with " + GeneralMessages.command("/fremoveally") + "."
+		);
 		
 		return book.framedPage(page);
 		

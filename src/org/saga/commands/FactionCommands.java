@@ -1631,7 +1631,7 @@ public class FactionCommands {
 		}
 		
 		// Inform:
-		sagaPlayer.message(InfoMessages.fhelp(page));
+		sagaPlayer.message(InfoMessages.fhelp(page - 1));
 	
 
 	}
