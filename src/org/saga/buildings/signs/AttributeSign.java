@@ -12,9 +12,9 @@ public class AttributeSign extends BuildingSign{
 
 	
 	/**
-	 * Name for the 
+	 * Name for the sign.
 	 */
-	public static String SIGN_NAME = "=[INCREASE]=";
+	public static String SIGN_NAME = "=[TRAIN]=";
 	
 	
 	// Initialisation:

@@ -37,6 +37,24 @@
 "buildingDefinitions":[
 
   {
+    "name":"training camp",
+    "buildingClass":"org.saga.buildings.SimpleBuilding",
+    "attributes":["strength","precision","willpower","toughness","warding","luck"],
+    "buildPoints":1,
+    "coinCost":{"x1":0,"y1":0},
+    "available":{"x1":0,"y1":1.0},
+    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "storageSize":0,
+    "recipes":[],
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "relatedBuildings":[],
+    "performTime":"NONE",
+    "resourceTime":"NONE",
+    "description":"place to train",
+    "effect":"ability training"
+  },
+
+  {
     "name":"lumber camp",
     "buildingClass":"org.saga.buildings.SimpleBuilding",
     "attributes":[],

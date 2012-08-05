@@ -153,7 +153,7 @@ public class SettlementMessages {
 	
 	// Settling and dissolving:
 	public static String settledBcast(SagaPlayer sagaPlayer, ChunkBundle settlement) {
-		return announce + settlement.getName() + " settlement was founded  by " + sagaPlayer.getName() + ".";
+		return announce + settlement.getName() + " settlement was founded by " + sagaPlayer.getName() + ".";
 	}
 
 	public static String dissolved(SagaPlayer sagaPlayer, ChunkBundle settlement) {
@@ -516,7 +516,7 @@ public class SettlementMessages {
 		Arrays.sort(definitions, comparator);
 		
 		// Column names:
-		table.addLine(new String[]{GeneralMessages.columnTitle("building"), GeneralMessages.columnTitle("status")});
+		table.addLine(new String[]{GeneralMessages.columnTitle("building"), GeneralMessages.columnTitle("effect")});
 		
 		// Column values:
 		if(definitions.length != 0){
