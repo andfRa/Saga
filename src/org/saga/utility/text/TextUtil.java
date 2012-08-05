@@ -17,11 +17,6 @@ public class TextUtil {
 	
 	
 	/**
-	 * Represents tab in chat.
-	 */
-	public static String TAB = "   ";
-	
-	/**
 	 * Non-special character length.
 	 */
 	private static Double defaultCharLength = 3.0 / 2.0;

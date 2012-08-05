@@ -29,6 +29,7 @@ import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;
 import org.saga.settlements.Settlement.SettlementPermission;
+import org.saga.statistics.StatisticsManager;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
 import org.sk89q.CommandPermissions;
@@ -257,22 +258,22 @@ public class SettlementCommands {
 		}
 	   	
 	   	// Chunk bundle:
-	   	ChunkBundle selGroup = selChunk.getChunkBundle();
+	   	ChunkBundle selBundle = selChunk.getChunkBundle();
 	   	
 	   	// Permissions:
-	   	if(!selGroup.hasPermission(sagaPlayer, SettlementPermission.ABANDON)){
+	   	if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.ABANDON)){
 	   		sagaPlayer.message(GeneralMessages.noPermission());
 	   		return;
 	   	}
 	   	
 		// Remove chunk from the chunk bundle:
-		selGroup.removeChunk(selChunk);
+		selBundle.removeChunk(selChunk);
 		
 		// Inform:
-		if(sagaPlayer.getChunkBundle() == selGroup){
+		if(sagaPlayer.getChunkBundle() == selBundle){
 			sagaPlayer.message(SettlementMessages.abandoned(selChunk));
 		}else{
-			sagaPlayer.message(SettlementMessages.abandoned(selChunk, selGroup));
+			sagaPlayer.message(SettlementMessages.abandoned(selChunk, selBundle));
 		}
 		
 		// Refresh:
@@ -282,11 +283,13 @@ public class SettlementCommands {
 		SettlementEffects.playAbandon(sagaPlayer, selChunk);
 		
 		// Delete if none left:
-		if( selGroup.getSize() == 0 ){
-			selGroup.delete();
-			Saga.broadcast(SettlementMessages.dissolved(sagaPlayer, selGroup));
+		if( selBundle.getSize() == 0 ){
+			selBundle.delete();
+			Saga.broadcast(SettlementMessages.dissolved(sagaPlayer, selBundle));
 		}
 		
+		// Statistics:
+		StatisticsManager.manager().setBuildings(selBundle);
 		
 	}
 	
@@ -413,15 +416,15 @@ public class SettlementCommands {
 	public static void disolve(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 			
-		ChunkBundle selectedChunkBundle = null;
+		ChunkBundle selBundle = null;
 
 		// Arguments:
 		if(args.argsLength() == 1){
 				
 			// Chunk group:
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
-			selectedChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
-			if(selectedChunkBundle == null){
+			selBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+			if(selBundle == null){
 				sagaPlayer.message(SettlementMessages.noChunkBundle(groupName));
 				return;
 			}
@@ -429,8 +432,8 @@ public class SettlementCommands {
 		}else{
 			
 			// Chunk group:
-			selectedChunkBundle = sagaPlayer.getChunkBundle();
-			if(selectedChunkBundle == null){
+			selBundle = sagaPlayer.getChunkBundle();
+			if(selBundle == null){
 				sagaPlayer.message(SettlementMessages.notMember());
 				return;
 			}
@@ -438,15 +441,15 @@ public class SettlementCommands {
 		}
 	   	
 	   	// Permissions:
-	   	if(!selectedChunkBundle.hasPermission(sagaPlayer, SettlementPermission.DISSOLVE)){
-	   		sagaPlayer.message(GeneralMessages.noPermission(selectedChunkBundle));
+	   	if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.DISSOLVE)){
+	   		sagaPlayer.message(GeneralMessages.noPermission(selBundle));
 	   		return;
 	   	}
 
 	   	// Level too high:
-	   	if(selectedChunkBundle instanceof Settlement){
+	   	if(selBundle instanceof Settlement){
 		   		
-	   		Settlement selectedSettlement = (Settlement) selectedChunkBundle;
+	   		Settlement selectedSettlement = (Settlement) selBundle;
 		   		
 	   		if(selectedSettlement.getLevel() >= SettlementConfiguration.config().noDeleteLevel){
 
@@ -458,11 +461,14 @@ public class SettlementCommands {
 	   	}
 	   	
 	   	// Delete:
-	   	selectedChunkBundle.delete();
+	   	selBundle.delete();
 				
 		// Inform:
-		Saga.broadcast(SettlementMessages.dissolved(sagaPlayer, selectedChunkBundle));
-			
+		Saga.broadcast(SettlementMessages.dissolved(sagaPlayer, selBundle));
+
+		// Statistics:
+		StatisticsManager.manager().setBuildings(selBundle);
+		
 		
 	}
 	
@@ -481,7 +487,7 @@ public class SettlementCommands {
 		
 
 		String buildingName = null;
-		ChunkBundle selChunkBundle = null;
+		ChunkBundle selBundle = null;
 
 		// Arguments:
 		buildingName = GeneralMessages.nameFromArg(args.getString(0));
@@ -489,12 +495,12 @@ public class SettlementCommands {
 		// Selected chunk:
 		SagaChunk selChunk = sagaPlayer.getSagaChunk();
 	   	if(selChunk == null){
-			sagaPlayer.message(BuildingMessages.buildingsOnClaimed(selChunkBundle));
+			sagaPlayer.message(BuildingMessages.buildingsOnClaimed(selBundle));
 			return;
 		}
 		
 	   	// Selected chunk bundle:
-	   	selChunkBundle = selChunk.getChunkBundle();
+	   	selBundle = selChunk.getChunkBundle();
 
 	   	// Valid building:
 	   	if(SettlementConfiguration.config().getBuildingDefinition(buildingName) == null){
@@ -517,25 +523,25 @@ public class SettlementCommands {
 		}
 		
 		// Permission:
-		if(!selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.SET_BUILDING)){
-			sagaPlayer.message(GeneralMessages.noPermission(selChunkBundle));
+		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.SET_BUILDING)){
+			sagaPlayer.message(GeneralMessages.noPermission(selBundle));
 			return;
 		}
 		
 		// Building points:
-		if(selChunkBundle.getRemainingBuildPoints() < selBuilding.getDefinition().getBuildPoints()){
+		if(selBundle.getRemainingBuildPoints() < selBuilding.getDefinition().getBuildPoints()){
 			sagaPlayer.message(SettlementMessages.notEnoughBuildingPoints(selBuilding));
 			return;
 		}
 
 		// Existing building:
 		if(selChunk.getBuilding() != null){
-			sagaPlayer.message(BuildingMessages.oneBuilding(selChunkBundle));
+			sagaPlayer.message(BuildingMessages.oneBuilding(selBundle));
 			return;
 		}
 
 		// Building available:
-		if(!selChunkBundle.isBuildingAvailable(buildingName)){
+		if(!selBundle.isBuildingAvailable(buildingName)){
 			sagaPlayer.message(BuildingMessages.unavailable(selBuilding));
 			return;
 		}
@@ -544,14 +550,17 @@ public class SettlementCommands {
 		selChunk.setBuilding(selBuilding);
 
 		// Inform:
-		if(sagaPlayer.getChunkBundle() == selChunkBundle){
+		if(sagaPlayer.getChunkBundle() == selBundle){
 			sagaPlayer.message(SettlementMessages.setBuilding(selBuilding));
 		}else{
-			sagaPlayer.message(SettlementMessages.setBuilding(selBuilding, selChunkBundle));
+			sagaPlayer.message(SettlementMessages.setBuilding(selBuilding, selBundle));
 		}
 		
 		// Play effect:
 		SettlementEffects.playBuildingSet(sagaPlayer, selBuilding);
+
+		// Statistics:
+		StatisticsManager.manager().setBuildings(selBundle);
 		
 
 	}
@@ -568,11 +577,11 @@ public class SettlementCommands {
 	public static void removeBuilding(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
-		ChunkBundle selChunkBundle = null;
+		ChunkBundle selBundle = null;
 		
 		// Arguments:
-		selChunkBundle = getLocationChunkBundle(sagaPlayer);
-		if(selChunkBundle == null){
+		selBundle = getLocationChunkBundle(sagaPlayer);
+		if(selBundle == null){
 			sagaPlayer.message(SettlementMessages.notMember());
 			return;
 		}
@@ -580,7 +589,7 @@ public class SettlementCommands {
 		// Selected chunk:
 		SagaChunk selChunk = sagaPlayer.getSagaChunk();
 	   	if(selChunk == null){
-			sagaPlayer.message(BuildingMessages.buildingsOnClaimed(selChunkBundle));
+			sagaPlayer.message(BuildingMessages.buildingsOnClaimed(selBundle));
 			return;
 		}
 		
@@ -592,16 +601,16 @@ public class SettlementCommands {
 		}
 		
 		// Permission:
-		if(!selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.REMOVE_BUILDING)){
-			sagaPlayer.message(GeneralMessages.noPermission(selChunkBundle));
+		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.REMOVE_BUILDING)){
+			sagaPlayer.message(GeneralMessages.noPermission(selBundle));
 			return;
 		}
 
 		// Inform:
-		if(sagaPlayer.getChunkBundle() == selChunkBundle){
+		if(sagaPlayer.getChunkBundle() == selBundle){
 			sagaPlayer.message(SettlementMessages.removedBuilding(selBuilding));
 		}else{
-			sagaPlayer.message(SettlementMessages.removedBuilding(selBuilding, selChunkBundle));
+			sagaPlayer.message(SettlementMessages.removedBuilding(selBuilding, selBundle));
 		}
 
 		// Play effect:
@@ -610,6 +619,9 @@ public class SettlementCommands {
 		// Remove building:
 		selChunk.removeBuilding();
 
+		// Statistics:
+		StatisticsManager.manager().setBuildings(selBundle);
+		
 		
 	}
 
@@ -822,11 +834,11 @@ public class SettlementCommands {
 	public static void quit(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
-		ChunkBundle selChunkBundle = null;
+		ChunkBundle selBundle = null;
 
 		// Arguments:
-		selChunkBundle = sagaPlayer.getChunkBundle();
-		if(selChunkBundle == null){
+		selBundle = sagaPlayer.getChunkBundle();
+		if(selBundle == null){
 			
 			if(sagaPlayer.hasChunkBundle()){
 				sagaPlayer.removeChunkBundleId(sagaPlayer.getChunkBundleId());
@@ -844,31 +856,31 @@ public class SettlementCommands {
 //		}
 
 		// Owner:
-		if(selChunkBundle.isOwner(sagaPlayer.getName()) && selChunkBundle.getMemberCount() > 1){
+		if(selBundle.isOwner(sagaPlayer.getName()) && selBundle.getMemberCount() > 1){
 			sagaPlayer.message(SettlementMessages.ownerCantQuit());
 			sagaPlayer.message(SettlementMessages.ownerCantQuitInfo());
 			return;
 		}
 		
 		// Not a member:
-		if(!selChunkBundle.hasMember(sagaPlayer.getName()) ){
-			sagaPlayer.message(SettlementMessages.notMember(selChunkBundle));
+		if(!selBundle.hasMember(sagaPlayer.getName()) ){
+			sagaPlayer.message(SettlementMessages.notMember(selBundle));
 			return;
 		}
 		
 		// Remove:
-		selChunkBundle.removeMember(sagaPlayer);
+		selBundle.removeMember(sagaPlayer);
 
 		// Inform:
-		selChunkBundle.broadcast(SettlementMessages.quit(sagaPlayer, selChunkBundle));
-		sagaPlayer.message(SettlementMessages.haveQuit(sagaPlayer, selChunkBundle));
+		selBundle.broadcast(SettlementMessages.quit(sagaPlayer, selBundle));
+		sagaPlayer.message(SettlementMessages.haveQuit(sagaPlayer, selBundle));
 		
 		// Delete:
-		if(selChunkBundle instanceof Settlement){
+		if(selBundle instanceof Settlement){
 			
-			Settlement selsettlement = (Settlement) selChunkBundle;
+			Settlement selsettlement = (Settlement) selBundle;
 			
-			if(selChunkBundle.getMemberCount() == 0){
+			if(selBundle.getMemberCount() == 0){
 
 				if(selsettlement.getLevel() < SettlementConfiguration.config().noDeleteLevel){
 
@@ -885,6 +897,9 @@ public class SettlementCommands {
 				}
 				
 			}
+
+			// Statistics:
+			StatisticsManager.manager().setBuildings(selBundle);
 			
 		}
 		
@@ -903,7 +918,7 @@ public class SettlementCommands {
 	public static void kick(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
-		ChunkBundle selChunkBundle = null;
+		ChunkBundle selBundle = null;
 		SagaPlayer targetPlayer = null;
 		
 		String targetName = null;
@@ -914,17 +929,17 @@ public class SettlementCommands {
 
 				// Chunk bundle:
 				String groupName = GeneralMessages.nameFromArg(args.getString(0));
-				selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
-				if(selChunkBundle == null){
+				selBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+				if(selBundle == null){
 					sagaPlayer.message(SettlementMessages.noChunkBundle(groupName));
 					return;
 				}
 
 				// Target name:
-				targetName = selChunkBundle.matchName(args.getString(1));
+				targetName = selBundle.matchName(args.getString(1));
 				
-				if(!selChunkBundle.hasMember(targetName)){
-					sagaPlayer.message(SettlementMessages.notMember(selChunkBundle, targetName));
+				if(!selBundle.hasMember(targetName)){
+					sagaPlayer.message(SettlementMessages.notMember(selBundle, targetName));
 					return;
 				}
 				
@@ -933,18 +948,18 @@ public class SettlementCommands {
 			default:
 
 				// Chunk bundle:
-				selChunkBundle = sagaPlayer.getChunkBundle();
+				selBundle = sagaPlayer.getChunkBundle();
 				
-				if(selChunkBundle == null){
+				if(selBundle == null){
 					sagaPlayer.message(SettlementMessages.notMember());
 					return;
 				}
 
 				// Target name:
-				targetName = selChunkBundle.matchName(args.getString(0));
+				targetName = selBundle.matchName(args.getString(0));
 
-				if(!selChunkBundle.hasMember(targetName)){
-					sagaPlayer.message(SettlementMessages.notMember(selChunkBundle, targetName));
+				if(!selBundle.hasMember(targetName)){
+					sagaPlayer.message(SettlementMessages.notMember(selBundle, targetName));
 					return;
 				}
 				
@@ -960,7 +975,7 @@ public class SettlementCommands {
 		}
 		
 		// Permission:
-		if(!selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.KICK)){
+		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.KICK)){
 			sagaPlayer.message(GeneralMessages.noPermission());
 			// Unforce:
 			Saga.plugin().unforceSagaPlayer(targetName);
@@ -968,12 +983,12 @@ public class SettlementCommands {
 		}
 		
 		// Not a member:
-		if(!selChunkBundle.hasMember(targetPlayer.getName())){
+		if(!selBundle.hasMember(targetPlayer.getName())){
 			
-			if(sagaPlayer.getChunkBundle() == selChunkBundle){
+			if(sagaPlayer.getChunkBundle() == selBundle){
 				sagaPlayer.message(SettlementMessages.notMember(targetPlayer));
 			}else{
-				sagaPlayer.message(SettlementMessages.notMember(targetPlayer, selChunkBundle));
+				sagaPlayer.message(SettlementMessages.notMember(targetPlayer, selBundle));
 			}
 			
 			// Unforce:
@@ -982,15 +997,15 @@ public class SettlementCommands {
 		}
 
 		// Kicked yourself:
-		if(targetPlayer == sagaPlayer && sagaPlayer.getChunkBundleId().equals(selChunkBundle.getId())){
-			sagaPlayer.message(SettlementMessages.cantKickYourself(sagaPlayer, selChunkBundle));
+		if(targetPlayer == sagaPlayer && sagaPlayer.getChunkBundleId().equals(selBundle.getId())){
+			sagaPlayer.message(SettlementMessages.cantKickYourself(sagaPlayer, selBundle));
 			// Unforce:
 			Saga.plugin().unforceSagaPlayer(targetName);
 			return;
 		}
 
 		// Kick owner:
-		if(selChunkBundle.isOwner(targetName) && selChunkBundle.getMemberCount() > 1){
+		if(selBundle.isOwner(targetName) && selBundle.getMemberCount() > 1){
 			sagaPlayer.message(SettlementMessages.cantKickOwner());
 			// Unforce:
 			Saga.plugin().unforceSagaPlayer(targetName);
@@ -998,21 +1013,21 @@ public class SettlementCommands {
 		}
 
 		// Remove player:
-		selChunkBundle.removeMember(targetPlayer);
+		selBundle.removeMember(targetPlayer);
 		
 		// Unforce:
 		Saga.plugin().unforceSagaPlayer(targetName);
 
 		// Inform:
-		selChunkBundle.broadcast(SettlementMessages.kicked(targetPlayer, selChunkBundle));
-		targetPlayer.message(SettlementMessages.beenKicked(targetPlayer, selChunkBundle));
+		selBundle.broadcast(SettlementMessages.kicked(targetPlayer, selBundle));
+		targetPlayer.message(SettlementMessages.beenKicked(targetPlayer, selBundle));
 		
 		// Delete:
-		if(selChunkBundle instanceof Settlement){
+		if(selBundle instanceof Settlement){
 			
-			Settlement selsettlement = (Settlement) selChunkBundle;
+			Settlement selsettlement = (Settlement) selBundle;
 			
-			if(selChunkBundle.getMemberCount() == 0){
+			if(selBundle.getMemberCount() == 0){
 
 				if(selsettlement.getLevel() < SettlementConfiguration.config().noDeleteLevel){
 
@@ -1029,6 +1044,9 @@ public class SettlementCommands {
 				}
 				
 			}
+
+			// Statistics:
+			StatisticsManager.manager().setBuildings(selBundle);
 			
 		}
 		

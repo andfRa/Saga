@@ -50,7 +50,7 @@ public class StatisticsCommands {
 	public static void abilities(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		// Inform:
-		sagaPlayer.message(StatisticsMessages.abilities());
+		sagaPlayer.message(StatisticsMessages.values("abilities used", "abilities.used", "ability", "uses sum", true, 0, 0));
             	
 		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
             	
@@ -245,6 +245,24 @@ public class StatisticsCommands {
 		// Inform:
 	    sagaPlayer.message(StatisticsMessages.reset());
 	        	
+	}
+	
+	@Command(
+		aliases = {"stbuildings"},
+		usage = "",
+		flags = "",
+		desc = "Show building statistics.",
+		min = 0,
+		max = 0
+	)
+	@CommandPermissions({"saga.admin.statistics.buildings"})
+	public static void buildings(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		// Inform:
+		sagaPlayer.message(StatisticsMessages.values("buildings set", "buildings.set", "building", "set sum", true, 0, 0));
+            	
+		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+            	
 	}
 	
 	

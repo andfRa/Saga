@@ -172,7 +172,7 @@ public class GuardianRuneSign extends BuildingSign{
 		sagaPlayer.message(PlayerMessages.recharged(rune, price));
 
 		// Statistics:
-		StatisticsManager.manager().onGuardanRuneRecharge();
+		StatisticsManager.manager().addGuardRuneRecharge(sagaPlayer);
 		
 		// Play effect:
 		AbilityEffects.playRecharge(sagaPlayer);

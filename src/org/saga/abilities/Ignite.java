@@ -52,19 +52,21 @@ public class Ignite extends Ability{
 			
 			player.setFireTicks(player.getFireTicks() + duration);
 			
-			return true;
-			
 		}
 		
-		if(defenderCreature != null){
+		else if(defenderCreature != null){
 			
 			defenderCreature.setFireTicks(defenderCreature.getFireTicks() + duration);
 			
-			return true;
+		}
+		
+		else{
+			
+			return false;
 			
 		}
 		
-		return false;
+		return true;
 		
 		
 	}

@@ -14,7 +14,6 @@ import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.messages.AbilityEffects;
 import org.saga.player.SagaPlayer;
-import org.saga.statistics.StatisticsManager;
 
 public class Force extends Ability{
 
@@ -115,9 +114,6 @@ public class Force extends Ability{
 			entity.setVelocity(velocity);
 			
 		}
-		
-		// Statistics:
-		StatisticsManager.manager().onAbilityUse(getName(), 0.0);
 		
 		// Effect:
 		AbilityEffects.playSpellCast(sagaPlayer);

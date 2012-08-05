@@ -11,7 +11,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.messages.AbilityMessages;
 import org.saga.player.SagaPlayer;
-import org.saga.statistics.StatisticsManager;
 
 public class Repair extends Ability{
 
@@ -143,9 +142,6 @@ public class Repair extends Ability{
 		
 		// Award experience:
 		awardExp(new Integer(repair));
-		
-		// Statistics:
-		StatisticsManager.manager().onAbilityUse(getName(), 0.0);
 		
 		return true;
 		

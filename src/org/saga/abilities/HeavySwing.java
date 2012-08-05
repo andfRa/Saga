@@ -16,7 +16,6 @@ import org.saga.Saga;
 import org.saga.messages.AbilityMessages;
 import org.saga.shape.BlockFilter;
 import org.saga.shape.RelativeShape;
-import org.saga.statistics.StatisticsManager;
 
 
 public class HeavySwing extends Ability{
@@ -136,9 +135,6 @@ public class HeavySwing extends Ability{
 		// Effect:
 		getSagaPlayer().playGlobalEffect(Effect.STEP_SOUND, Material.STONE.getId());
 
-		// Statistics:
-		StatisticsManager.manager().onAbilityUse(getName(), 0.0);
-		
 		return true;
 		
 		

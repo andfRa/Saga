@@ -40,6 +40,7 @@ import org.saga.saveload.Directory;
 import org.saga.saveload.SagaCustomSerialization;
 import org.saga.saveload.WriterReader;
 import org.saga.settlements.Settlement.SettlementPermission;
+import org.saga.statistics.StatisticsManager;
 
 import com.google.gson.JsonParseException;
 
@@ -256,27 +257,21 @@ public class ChunkBundle extends SagaCustomSerialization{
 		}
 		
 		if(toggleOptions == null){
-//			SagaLogger.nullField(this, "toggleOptions");
+			SagaLogger.nullField(this, "toggleOptions");
 			toggleOptions = new HashSet<ChunkBundleToggleable>();
-			
-			// TODO: Remove options migration
-			if(pvpProtectionBonus != null && pvpProtectionBonus){
-				toggleOptions.add(ChunkBundleToggleable.PVP_PROTECTION);
-			}
-			if(unlimitedClaimBonus != null && unlimitedClaimBonus){
-				toggleOptions.add(ChunkBundleToggleable.UNLIMITED_CLAIMS);
-			}
-			
 		}
 		if(toggleOptions.remove(null)){
 			SagaLogger.nullField(this, "toggleOptions element");
 		}
 		
+		// Statistics:
+		StatisticsManager.manager().setBuildings(this);
+		
 		
 	}
 
 	/**
-	 * Enables the building
+	 * Enables the building.
 	 * 
 	 */
 	public void enable() {
@@ -289,6 +284,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 			building.enable();
 			
 		}
+		
 		
 	}
 	

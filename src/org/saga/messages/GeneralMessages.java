@@ -28,8 +28,16 @@ public class GeneralMessages {
 	public static ChatColor normal2 = ChatColor.YELLOW;
 	
 	
+	/**
+	 * Represents space.
+	 */
 	public final static String SPACE_SYMBOL = "_";
-	
+
+	/**
+	 * Represents tab in chat.
+	 */
+	public static String TAB = "   ";
+
 	
 	
 	// Text elements:

@@ -7,7 +7,6 @@ import java.util.Comparator;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.saga.config.AbilityConfiguration;
 import org.saga.messages.PlayerMessages.ColourLoop;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
@@ -52,11 +51,7 @@ public class StatisticsMessages {
 
 		// Add headings:
 		table.addLine(new String[]{"STATISTIC","VALUE"});
-		
-		// Guardian stone:
-		table.addLine(new String[]{"guardian stone restores", StatisticsManager.manager().getGuardStoneBreaks().toString()});
-		table.addLine(new String[]{"guardian stone recharges", StatisticsManager.manager().getGuardStoneFixes().toString()});
-		
+
 		// Blocks:
 		table.addLine(new String[]{"block data change", StatisticsManager.manager().getBlockDataChanges().toString()});
 		
@@ -71,39 +66,6 @@ public class StatisticsMessages {
 		
 	}
 
-	public static String abilities() {
-	
-		
-		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
-		ArrayList<String> abilities = AbilityConfiguration.config().getAbilityNames();
-		StringTable table = new StringTable(colours);
-
-		// Add headings:
-		table.addLine(new String[]{"ABILITY","USES", "EXP AWARDED"});
-		
-		// Add data:
-		StatisticsManager manager = StatisticsManager.manager();
-		for (int i = 0; i < abilities.size(); i++) {
-			
-			String name = abilities.get(i);
-			
-			String[] row = new String[]{name, manager.getAbilityUses(name).toString(), manager.getAbilityExp(name).toString()};
-			
-			table.addLine(row);
-			
-		}
-		
-		table.collapse();
-		
-		StringBook book = new StringBook("abilities", colours);
-		
-		book.addTable(table);
-		
-		return book.framedPage(0);
-		
-		
-	}
-	
 	public static String statisticsAge(long milliseconds) {
 
 		
@@ -222,7 +184,7 @@ public class StatisticsMessages {
 					exp = StatisticsManager.manager().getExpGained(categ, subcateg);
 					if(exp <= 0) continue;
 					
-					table.addLine(TextUtil.TAB + subcateg, exp.intValue() + "", 0);
+					table.addLine(GeneralMessages.TAB + subcateg, exp.intValue() + "", 0);
 					
 					lines++;
 					
@@ -326,6 +288,10 @@ public class StatisticsMessages {
 				
 				String name = StatisticsManager.formatCategName(subCateg);
 				String value = TextUtil.round(StatisticsManager.manager().getSumValue(category + "." + subCateg, ignoreBottom), decimals);
+				
+				int depth = StatisticsManager.calcCategDepth(subCateg);
+				value = TextUtil.repeat(GeneralMessages.TAB, depth) + value; 
+				
 				table.addLine(name, value, 0);
 				
 			}

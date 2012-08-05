@@ -3,15 +3,14 @@ package org.saga.abilities;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.Saga;
 import org.saga.commands.SettlementCommands;
-import org.saga.statistics.StatisticsManager;
 import org.sk89q.CommandContext;
 
 public class Claim extends Ability{
 
 	
-	// Initialization:
+	// Initialisation:
 	/**
-	 * Initializes using definition.
+	 * Initialises using definition.
 	 * 
 	 * @param definition ability definition
 	 */
@@ -36,9 +35,6 @@ public class Claim extends Ability{
 		CommandContext args = new CommandContext("sclaim");
 		SettlementCommands.claim(args, Saga.plugin(), getSagaPlayer());
 
-		// Statistics:
-		StatisticsManager.manager().onAbilityUse(getName(), 0.0);
-		
 		return true;
 		
 		

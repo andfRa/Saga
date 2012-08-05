@@ -13,7 +13,6 @@ import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
 import org.saga.shape.BlockFilter;
 import org.saga.shape.RelativeShape;
-import org.saga.statistics.StatisticsManager;
 
 
 public class Harvest extends Ability{
@@ -106,9 +105,6 @@ public class Harvest extends Ability{
 		if(wheatTrigger){
 			getSagaPlayer().playGlobalEffect(Effect.STEP_SOUND, Material.CROPS.getId());
 		}
-		
-		// Statistics:
-		StatisticsManager.manager().onAbilityUse(getName(), 0.0);
 		
 		return true;
 		

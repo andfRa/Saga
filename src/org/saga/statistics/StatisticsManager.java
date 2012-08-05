@@ -16,12 +16,16 @@ import org.bukkit.Material;
 import org.saga.Clock;
 import org.saga.Clock.HourTicker;
 import org.saga.SagaLogger;
+import org.saga.abilities.Ability;
+import org.saga.chunks.ChunkBundle;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.BalanceConfiguration;
 import org.saga.config.SettlementConfiguration;
+import org.saga.messages.GeneralMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
+import org.saga.utility.text.RomanNumeral;
 import org.saga.utility.text.TextUtil;
 
 import com.google.gson.JsonParseException;
@@ -43,34 +47,6 @@ public class StatisticsManager implements HourTicker{
 		return instance;
 	}
 
-	
-
-	/**
-	 * Guardian rune res.
-	 */
-	private Integer guardRuneRestores;
-
-	/**
-	 * Guardian stone fixes.
-	 */
-	private Integer guardRuneRecharges;
-
-	
-	
-	
-	
-	/**
-	 * Ability usage.
-	 */
-	private Hashtable<String, Integer> abilityUsage;
-
-	/**
-	 * Ability awarded experience.
-	 */
-	private Hashtable<String, Double> abilityExp;
-
-	
-	
 	
 	
 	/**
@@ -120,7 +96,7 @@ public class StatisticsManager implements HourTicker{
 	/**
 	 * Player attributes.
 	 */
-	private Hashtable<String, Hashtable<String, Integer>> playerAttributes2;
+	private Hashtable<String, Hashtable<String, Integer>> playerAttributes;
 	
 	/**
 	 * Experience gained.
@@ -170,30 +146,6 @@ public class StatisticsManager implements HourTicker{
 			integrity=false;
 		}
 		
-		if(guardRuneRestores == null){
-			SagaLogger.nullField(getClass(), "guardRuneRestores");
-			guardRuneRestores = 0;
-			integrity=false;
-		}
-		
-		if(guardRuneRecharges == null){
-			SagaLogger.nullField(getClass(), "guardRuneRecharges");
-			guardRuneRecharges = 0;
-			integrity=false;
-		}
-		
-		if(abilityUsage == null){
-			SagaLogger.nullField(getClass(), "abilityUsage");
-			abilityUsage = new Hashtable<String, Integer>();
-			integrity=false;
-		}
-		
-		if(abilityExp == null){
-			SagaLogger.nullField(getClass(), "abilityExp");
-			abilityExp = new Hashtable<String, Double>();
-			integrity=false;
-		}
-		
 		if(xrayStatistics == null){
 			SagaLogger.nullField(getClass(), "xrayStatistics");
 			xrayStatistics = new Hashtable<String, Hashtable<Material,Integer>>();
@@ -209,12 +161,6 @@ public class StatisticsManager implements HourTicker{
 		if(playerLevels == null){
 			SagaLogger.severe(getClass(), "playerLevels");
 			playerLevels = new Hashtable<String, Integer>();
-			integrity=false;
-		}
-
-		if(playerAttributes2 == null){
-			SagaLogger.severe(getClass(), "playerAttributes");
-			playerAttributes2 = new Hashtable<String, Hashtable<String,Integer>>();
 			integrity=false;
 		}
 
@@ -258,22 +204,30 @@ public class StatisticsManager implements HourTicker{
 			doubleValues = new Hashtable<String, Double>();
 		}
 		
+		// Import attributes:
+		if(playerAttributes != null){
 		
-		Set<String> attributes = playerAttributes2.keySet();
-		for (String attribute : attributes) {
+			SagaLogger.info(getClass(), "importing attributes");
 			
-			Hashtable<String, Integer> players = playerAttributes2.get(attribute);
-			
-			Set<String> playerNames = players.keySet();
-			
-			for (String playerName : playerNames) {
+			Set<String> attributes = playerAttributes.keySet();
+			for (String attribute : attributes) {
 				
-				Double score = players.get(playerName).doubleValue();
+				Hashtable<String, Integer> players = playerAttributes.get(attribute);
 				
-				doubleValues.put("attributes" + "." + attribute + "." + playerName, score);
+				Set<String> playerNames = players.keySet();
+				
+				for (String playerName : playerNames) {
+					
+					Double score = players.get(playerName).doubleValue();
+					
+					doubleValues.put("attributes" + "." + attribute + "." + playerName, score);
+					
+				}
+				
 				
 			}
 			
+			playerAttributes = null;
 			
 		}
 		
@@ -289,19 +243,12 @@ public class StatisticsManager implements HourTicker{
 	public void reset() {
 
 		
-		guardRuneRestores = 0;
-		guardRuneRecharges = 0;
-		
 		startDate = System.currentTimeMillis();
-		
-		abilityExp = new Hashtable<String, Double>();
-		abilityUsage = new Hashtable<String, Integer>();
 		
 		xrayStatistics = new Hashtable<String, Hashtable<Material,Integer>>();
 		blockDataChanges = 0;
 		
 		playerLevels = new Hashtable<String, Integer>();
-		playerAttributes2 = new Hashtable<String, Hashtable<String,Integer>>();
 		
 		playerBuyCoins = new Hashtable<String, Hashtable<Material,Double>>();
 		playerSellCoins = new Hashtable<String, Hashtable<Material,Double>>();
@@ -342,62 +289,7 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 
-	
 
-	
-	// Abilities:
-	/**
-	 * Gets ability uses.
-	 * 
-	 * @param abilityName ability name
-	 * @return uses
-	 */
-	public Integer getAbilityUses(String abilityName) {
-
-		Integer value = abilityUsage.get(abilityName);
-		if(value == null) value = 0;
-		
-		return value;
-		
-	}
-
-	/**
-	 * Gets ability rewarded experience.
-	 * 
-	 * @param abilityName ability name
-	 * @return experience
-	 */
-	public Double getAbilityExp(String abilityName) {
-
-		Double value = abilityExp.get(abilityName);
-		if(value == null) value = 0.0;
-		
-		return value;
-		
-	}
-	
-	
-	// Guardian stones:
-	/**
-	 * Gets the guardStoneBreaks.
-	 * 
-	 * @return the guardStoneBreaks
-	 */
-	public Integer getGuardStoneBreaks() {
-		return guardRuneRestores;
-	}
-	
-	/**
-	 * Gets the guardStoneFixes.
-	 * 
-	 * @return the guardStoneFixes
-	 */
-	public Integer getGuardStoneFixes() {
-		return guardRuneRecharges;
-	}
-	
-	
-	
 	
 	// X-ray:
 	/**
@@ -456,48 +348,6 @@ public class StatisticsManager implements HourTicker{
 	
 
 	// Events:
-	/**
-	 * Called when a guardian stone restored items.
-	 * 
-	 */
-	public void onGuardanRuneRestore() {
-
-		guardRuneRestores++;
-		
-	}
-	
-	/**
-	 * Called when a guardian stone is recharged.
-	 * 
-	 */
-	public void onGuardanRuneRecharge() {
-
-		guardRuneRecharges++;
-		
-	}
-
-	/**
-	 * Called when a player uses his ability.
-	 * 
-	 * @param abilityName ability name
-	 * @param rewardedExp exp rewarded
-	 */
-	public void onAbilityUse(String abilityName, Double rewardedExp) {
-
-		
-		// Upgrades:
-		Integer uses = abilityUsage.get(abilityName);
-		if(uses == null) uses = 0;
-		abilityUsage.put(abilityName, uses + 1);
-		
-		// Upgrade level costs:
-		Double expReward = abilityExp.get(abilityName);
-		if(expReward == null) expReward = 0.0;
-		abilityExp.put(abilityName, expReward + rewardedExp);
-
-		
-	}
-	
 	/**
 	 * Called when xray statistics are updated.
 	 * 
@@ -828,36 +678,6 @@ public class StatisticsManager implements HourTicker{
 
 	}
 	
-	public void setAttribute2(SagaPlayer sagaPlayer, String attribute, Integer score) {
-
-		
-		Hashtable<String, Integer> players = playerAttributes2.get(attribute);
-		if(players == null){
-			players = new Hashtable<String, Integer>();
-			playerAttributes2.put(attribute, players);
-		}
-		
-		players.put(sagaPlayer.getName(), score);
-		
-		
-	}
-	
-	public Integer getAttributeScoreTotal2(String attribute) {
-
-		
-		Hashtable<String, Integer> players = playerAttributes2.get(attribute);
-		if(players == null) players = new Hashtable<String, Integer>();
-		
-		Integer totalScore = 0;
-		Collection<Integer> scores = players.values();
-		for (Integer score : scores) {
-			totalScore += score;
-		}
-		
-		return totalScore;
-		
-		
-	}
 	
 	
 	// Experience:
@@ -952,6 +772,12 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 	
+	public void modifyValue(String key, Integer mod) {
+
+		modifyValue(key, mod.doubleValue());
+		
+	}
+	
 	public void setValue(String key, Double value) {
 
 		doubleValues.put(key, value);
@@ -973,6 +799,28 @@ public class StatisticsManager implements HourTicker{
 	
 	}
 	
+	public void clearCateg(String category) {
+
+		
+		Set<String> allCategs = doubleValues.keySet();
+		
+		for (String fullCateg : allCategs) {
+			
+			if(!fullCateg.startsWith(category + ".")) continue;
+		
+			doubleValues.remove(fullCateg);
+			
+		}
+		
+		
+	}
+	
+	public void clearValue(String key) {
+
+		doubleValues.remove(key);
+		
+	}
+	
 	public double getSumValue(String category, boolean ignoreBottom) {
 
 		
@@ -989,12 +837,12 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 	
-	private static int calcCategDepth(String category) {
+	public static int calcCategDepth(String category) {
 
 		int depth = 0;
 		while(category.contains(".")){
 			
-			category.replaceFirst(".", "");
+			category = category.replaceFirst("\\.", "");
 			depth++;
 			
 		}
@@ -1008,7 +856,7 @@ public class StatisticsManager implements HourTicker{
 		
 		String[] subCategs = category.split("\\.");
 		
-		return TextUtil.repeat("  ", calcCategDepth(category)) + subCategs[subCategs.length - 1];
+		return TextUtil.repeat(GeneralMessages.TAB, calcCategDepth(category)) + subCategs[subCategs.length - 1];
 		
 		
 	}
@@ -1025,7 +873,7 @@ public class StatisticsManager implements HourTicker{
 			
 			if(!fullCateg.startsWith(category + ".")) continue;
 			
-			String subCateg = fullCateg.replaceFirst(category + ".", "");
+			String subCateg = fullCateg.replaceFirst(category + "\\.", "");
 			
 			if(ignoreBottom){
 				int lastIndex = subCateg.lastIndexOf(".");
@@ -1069,6 +917,54 @@ public class StatisticsManager implements HourTicker{
 			if(score < 1) continue;
 			
 			setValue("attributes" + "." + attribute + "." + sagaPlayer.getName(), score);
+			
+		}
+		
+		
+	}
+	
+	public void addGuardRuneRestore(SagaPlayer sagaPlayer) {
+
+		modifyValue("guardrune" + "." + "restore" + "." + sagaPlayer.getName(), 1);
+		
+	}
+	
+	public void addGuardRuneRestoreException(SagaPlayer sagaPlayer) {
+
+		modifyValue("guardrune" + "." + "restore_exception" + "." + sagaPlayer.getName(), 1);
+		
+	}
+	
+	public void addGuardRuneRecharge(SagaPlayer sagaPlayer) {
+		
+		modifyValue("guardrune" + "." + "recharge" + "." + sagaPlayer.getName(), 1);
+		
+	}
+
+	public void addAbilityUse(Ability ability) {
+
+		String abilityName = ability.getName() + "." + ability.getName() + " " + RomanNumeral.binaryToRoman(ability.getScore());
+		SagaPlayer sagaPlayer = ability.getSagaPlayer();
+		
+		modifyValue("abilities" + "." + "used" + "." + abilityName  + "." + sagaPlayer.getName(), 1);
+		
+	}
+	
+	public void setBuildings(ChunkBundle chunkBundle) {
+
+		
+		Collection<String> bldgNames = SettlementConfiguration.config().getBuildingNames();
+		
+		
+		for (String bldgName : bldgNames) {
+		
+			String key = "buildings" + "." + "set" + "." + bldgName + "." + chunkBundle.getId();
+			clearValue(key);
+			
+			int count = chunkBundle.getBuildings(bldgName).size();
+			if(count == 0) continue;
+
+			setValue(key, count);
 			
 		}
 		
@@ -1204,13 +1100,6 @@ public class StatisticsManager implements HourTicker{
 	
 	
 	public static void main(String[] args) {
-		
-		
-		String subCateg = "aaadsfsdf";
-		int lastIndex = subCateg.lastIndexOf(".");
-		if(lastIndex != -1) subCateg = subCateg.substring(0, lastIndex);
-		
-		System.out.println(subCateg);
 		
 	}
 	

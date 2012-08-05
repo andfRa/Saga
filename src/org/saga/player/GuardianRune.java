@@ -323,27 +323,33 @@ public class GuardianRune {
 	public static void handleRestore(SagaPlayer sagaPlayer){
 		
 		
-		
-		Player player = sagaPlayer.getPlayer();
-		GuardianRune rune = sagaPlayer.getGuardRune();
-		
-		// Rune disabled in the world:
-		if(!BalanceConfiguration.config().isRuneEnabled(rune, sagaPlayer.getLocation().getWorld())) return;
-		
-		if(rune.isEmpty()) return;
+		try {
+			
+			Player player = sagaPlayer.getPlayer();
+			GuardianRune rune = sagaPlayer.getGuardRune();
+			
+			// Rune disabled in the world:
+			if(!BalanceConfiguration.config().isRuneEnabled(rune, sagaPlayer.getLocation().getWorld())) return;
+			
+			if(rune.isEmpty()) return;
 
-		// Restore:
-		rune.restore(player);
-		
-		// Inform:
-		sagaPlayer.message(PlayerMessages.restored(rune));
-		
-		// Clear:
-		rune.clear();
-		
-		// Statistics:
-		StatisticsManager.manager().onGuardanRuneRestore();
+			// Restore:
+			rune.restore(player);
+			
+			// Inform:
+			sagaPlayer.message(PlayerMessages.restored(rune));
+			
+			// Clear:
+			rune.clear();
+			
+			// Statistics:
+			StatisticsManager.manager().addGuardRuneRestore(sagaPlayer);
 
+		}
+		catch (Throwable e) {
+			StatisticsManager.manager().addGuardRuneRestoreException(sagaPlayer);
+		}
+		
 		
 	}
 	

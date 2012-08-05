@@ -2,7 +2,6 @@ package org.saga.abilities;
 
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.player.SagaPlayer;
-import org.saga.statistics.StatisticsManager;
 
 public class Dart extends Ability{
 
@@ -38,9 +37,6 @@ public class Dart extends Ability{
 		SagaPlayer sagaPlayer = getSagaPlayer();
 		sagaPlayer.shootArrow(getDefinition().getFunction(SPEED_KEY).value(getScore()));
 
-		// Statistics:
-		StatisticsManager.manager().onAbilityUse(getName(), 0.0);
-		
 		return true;
 		
 		

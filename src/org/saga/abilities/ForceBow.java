@@ -50,19 +50,21 @@ public class ForceBow extends Ability{
 			
 			attackerPlayer.pushAwayEntity(defenderPlayer.getPlayer(), speed);
 			
-			return true;
-			
 		}
 		
-		if(defenderCreature != null){
+		else if(defenderCreature != null){
 			
 			attackerPlayer.pushAwayEntity(defenderCreature, speed);
 			
-			return true;
-			
 		}
 		
-		return false;
+		else{
+			
+			return false;
+			
+		}
+
+		return true;
 		
 		
 	}

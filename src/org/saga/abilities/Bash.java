@@ -7,7 +7,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.messages.AbilityEffects;
-import org.saga.statistics.StatisticsManager;
 
 public class Bash extends Ability{
 
@@ -88,10 +87,7 @@ public class Bash extends Ability{
 		
 		// Effect:
 		AbilityEffects.playMinorAbility(getSagaPlayer(), getScore());
-		
-		// Statistics:
-		StatisticsManager.manager().onAbilityUse(getName(), 0.0);
-		
+
 		return true;
 		
 		

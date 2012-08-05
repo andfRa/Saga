@@ -431,6 +431,9 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		
 		useItems();
 		startCooldown();
+
+		// Statistics:
+		StatisticsManager.manager().addAbilityUse(this);
 		
 	}
 	

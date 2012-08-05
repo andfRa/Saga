@@ -105,10 +105,10 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     	loadedPlayers = null;
     	
         // Managers:
-        StatisticsManager.unload(); // Needs access to clock.
         ChunkBundleManager.unload(); // Needs building manager.
         FactionManager.unload(); // Needs access to chunk group manager.
         EconomyManager.unload();
+        StatisticsManager.unload(); // Needs access to clock.
         
         // Configuration:
         ExperienceConfiguration.unload();
@@ -179,11 +179,11 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         FactionConfiguration.load();
         
         // Managers:
+        StatisticsManager.load(); // Needs access to clock.
         ChunkBundleManager.load();
         FactionManager.load(); // Needs access to chunk group manager.
         EconomyManager.load(); // Needs access to clock.
-        StatisticsManager.load(); // Needs access to clock.
-        
+         
         // Register events:
       	pluginManager.registerEvents(new PlayerListener(), this);
       	pluginManager.registerEvents(new EntityListener(), this);
