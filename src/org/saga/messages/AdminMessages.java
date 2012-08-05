@@ -117,7 +117,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 
 	// Saving loading:
 	public static String saving() {
-		return positive + "Saving Saga information.";
+		return veryPositive + "Saving Saga information.";
 	}
 	
 	public static String saved() {
