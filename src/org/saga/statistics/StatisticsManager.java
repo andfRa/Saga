@@ -34,14 +34,14 @@ public class StatisticsManager implements HourTicker{
 
 
 	/**
-	 * Instance of the configuration.
+	 * Instance of the manager.
 	 */
 	transient private static StatisticsManager instance;
 	
 	/**
-	 * Gets the instance.
+	 * Gets the manager.
 	 * 
-	 * @return instance
+	 * @return manager
 	 */
 	public static StatisticsManager manager() {
 		return instance;
@@ -1052,6 +1052,7 @@ public class StatisticsManager implements HourTicker{
 			
 		}
 		
+		
 	}
 	
 	/**
@@ -1060,6 +1061,7 @@ public class StatisticsManager implements HourTicker{
 	 */
 	public void archive(){
 
+		
 		// Inform:
 		SagaLogger.info("Archiving statistics.");
 		
@@ -1081,6 +1083,7 @@ public class StatisticsManager implements HourTicker{
 			
 		}
 		
+		
 	}
 	
 	/**
@@ -1089,11 +1092,12 @@ public class StatisticsManager implements HourTicker{
 	 */
 	public static void unload(){
 
+		
 		// Inform:
 		SagaLogger.info("Unloading statistics.");
 		
 		// Clock:
-		Clock.clock().registerHourTick(instance);
+		Clock.clock().unregisterHourTick(instance);
 		
 		save();
 		
@@ -1102,9 +1106,5 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 	
-	
-	public static void main(String[] args) {
-		
-	}
 	
 }
