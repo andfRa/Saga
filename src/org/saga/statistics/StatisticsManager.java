@@ -984,45 +984,49 @@ public class StatisticsManager implements HourTicker{
 		// Inform:
 		SagaLogger.info("Loading statistics.");
 		
-		boolean integrity = true;
+		// New:
+		if(!WriterReader.checkExists(Directory.STATISTICS, "last")){
+			
+			instance = new StatisticsManager("");
+			instance.reset();
+			save();
+        	
+        }
 		
 		// Load:
-		StatisticsManager manager;
-		try {
+		else{
 			
-			manager = WriterReader.read(Directory.STATISTICS, "last" , StatisticsManager.class);
+			try {
+				
+				instance = WriterReader.read(Directory.STATISTICS, "last" , StatisticsManager.class);
+				
+			} catch (FileNotFoundException e) {
+				
+				instance = new StatisticsManager("");
+				instance.reset();
+				
+			} catch (IOException e) {
+				
+				SagaLogger.severe(StatisticsManager.class, "failed to load");
+				instance = new StatisticsManager("");
+				
+			} catch (JsonParseException e) {
+				
+				SagaLogger.severe(StatisticsManager.class, "failed to parse");
+				SagaLogger.info("Parse message :" + e.getMessage());
+				instance = new StatisticsManager("");
+				
+			}
 			
-		} catch (FileNotFoundException e) {
-			
-			manager = new StatisticsManager("");
-			manager.reset();
-			
-		} catch (IOException e) {
-			
-			SagaLogger.severe(StatisticsManager.class, "failed to load");
-			manager = new StatisticsManager("");
-			integrity = false;
-			
-		} catch (JsonParseException e) {
-			
-			SagaLogger.severe(StatisticsManager.class, "failed to parse");
-			SagaLogger.info("Parse message :" + e.getMessage());
-			manager = new StatisticsManager("");
-			integrity = false;
-			
-		}
+        }
 		
 		// Integrity check and complete:
-		integrity = manager.complete() && integrity;
-		
-		
-		// Set instance:
-		instance = manager;
+		instance.complete();
 		
 		// Clock:
 		Clock.clock().registerHourTick(instance);
 		
-		return manager;
+		return instance;
 		
 		
 	}
