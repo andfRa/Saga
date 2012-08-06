@@ -20,7 +20,7 @@ import org.saga.commands.PlayerCommands;
 import org.saga.commands.StatisticsCommands;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
-import org.saga.config.BalanceConfiguration;
+import org.saga.config.GeneralConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
@@ -115,7 +115,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         ProficiencyConfiguration.unload();
         AttributeConfiguration.load();
         AbilityConfiguration.unload();
-        BalanceConfiguration.unload();
+        GeneralConfiguration.unload();
         SettlementConfiguration.unload();
         EconomyConfiguration.unload();
         FactionConfiguration.unload();
@@ -169,7 +169,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         
         // Configuration:
         Clock.load(); // Needs access to Saga.pluging().
-        BalanceConfiguration.load();
+        GeneralConfiguration.load();
         ExperienceConfiguration.load();
         AbilityConfiguration.load();
         AttributeConfiguration.load();
@@ -210,7 +210,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         SagaLogger.info("Saga enabled.");
 
         // Enable automatic saving:
-    	saveMinutes = BalanceConfiguration.config().saveInterval;
+    	saveMinutes = GeneralConfiguration.config().saveInterval;
     	Clock.clock().registerMinuteTick(this);
         
     	
@@ -590,7 +590,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     	
     	if(saveMinutes <= 0){
     		
-    		saveMinutes = BalanceConfiguration.config().saveInterval;
+    		saveMinutes = GeneralConfiguration.config().saveInterval;
     		
     		save();
     		

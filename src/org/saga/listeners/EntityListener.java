@@ -21,7 +21,7 @@ import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.chunks.ChunkBundleManager;
 import org.saga.chunks.SagaChunk;
-import org.saga.config.BalanceConfiguration;
+import org.saga.config.GeneralConfiguration;
 import org.saga.factions.Faction;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDeathEvent;
@@ -99,7 +99,7 @@ public class EntityListener implements Listener{
 		
 		
 		// Stop creeper terrain damage.
-		if(BalanceConfiguration.config().stopCreeperExplosions && event.getEntity() instanceof Creeper){
+		if(GeneralConfiguration.config().stopCreeperExplosions && event.getEntity() instanceof Creeper){
 			event.blockList().clear();
 		}
 		

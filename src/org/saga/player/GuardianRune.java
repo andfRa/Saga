@@ -7,7 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.SagaLogger;
-import org.saga.config.BalanceConfiguration;
+import org.saga.config.GeneralConfiguration;
 import org.saga.messages.PlayerMessages;
 import org.saga.statistics.StatisticsManager;
 
@@ -329,7 +329,7 @@ public class GuardianRune {
 			GuardianRune rune = sagaPlayer.getGuardRune();
 			
 			// Rune disabled in the world:
-			if(!BalanceConfiguration.config().isRuneEnabled(rune, sagaPlayer.getLocation().getWorld())) return;
+			if(!GeneralConfiguration.config().isRuneEnabled(rune, sagaPlayer.getLocation().getWorld())) return;
 			
 			if(rune.isEmpty()) return;
 
@@ -367,7 +367,7 @@ public class GuardianRune {
 		Player player = sagaDead.getPlayer();
 		
 		// Rune disabled in the world:
-		if(!BalanceConfiguration.config().isRuneEnabled(rune, player.getLocation().getWorld())) return false;
+		if(!GeneralConfiguration.config().isRuneEnabled(rune, player.getLocation().getWorld())) return false;
 		
 		// Nothing to absorb:
 		if(countItems(player.getInventory().getContents()) <= 0 && countItems(player.getInventory().getArmorContents()) <= 0 && player.getLevel() <= 0 && player.getExp() <= 0){

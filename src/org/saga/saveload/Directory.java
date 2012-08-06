@@ -7,7 +7,7 @@ public enum Directory {
 	
 	ABILITY_CONFIG("plugins/Saga/config/", "abilities.json"),
 	ATTRIBUTE_CONFIG("plugins/Saga/config/", "attributes.json"),
-	BALANCE_CONFIG("plugins/Saga/config/", "balance.json"),
+	GENERAL_CONFIG("plugins/Saga/config/", "general.json"),
 	CHUNKGROUP_CONFIG("plugins/Saga/config/", "settlements.json"),
 	ECONOMY_CONFIG("plugins/Saga/config/", "economy.json"),
 	EXPERIENCE_CONFIG("plugins/Saga/config/", "experience.json"),

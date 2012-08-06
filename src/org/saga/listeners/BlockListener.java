@@ -15,7 +15,7 @@ import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.chunks.ChunkBundleManager;
 import org.saga.chunks.SagaChunk;
-import org.saga.config.BalanceConfiguration;
+import org.saga.config.GeneralConfiguration;
 import org.saga.listeners.events.SagaBlockBreakEvent;
 import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaEventHandler;
@@ -105,7 +105,7 @@ public class BlockListener implements Listener{
     	}
     	
     	// Handle data change:
-    	BalanceConfiguration.config().modifyBlockData(block);
+    	GeneralConfiguration.config().modifyBlockData(block);
     	
 	
 	}

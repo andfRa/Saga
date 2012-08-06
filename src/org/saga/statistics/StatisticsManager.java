@@ -19,7 +19,7 @@ import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
 import org.saga.chunks.ChunkBundle;
 import org.saga.config.AttributeConfiguration;
-import org.saga.config.BalanceConfiguration;
+import org.saga.config.GeneralConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.messages.GeneralMessages;
 import org.saga.player.SagaPlayer;
@@ -278,7 +278,7 @@ public class StatisticsManager implements HourTicker{
 		
 		// Check if a day has passed:
 		Integer ageDays = new Double(calcStatisticsAge() / (60.0 * 60.0 * 1000.0)).intValue();
-		if(ageDays < BalanceConfiguration.config().statisticsUpdateAge) return;
+		if(ageDays < GeneralConfiguration.config().statisticsUpdateAge) return;
 		
 		SagaLogger.info("Resetting statistics.");
 		

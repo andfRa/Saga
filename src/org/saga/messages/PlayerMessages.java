@@ -3,7 +3,7 @@ package org.saga.messages;
 import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
-import org.saga.config.BalanceConfiguration;
+import org.saga.config.GeneralConfiguration;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.player.GuardianRune;
@@ -213,8 +213,8 @@ public class PlayerMessages {
 	// Special:
 	public static String specialChatMessage(String name, String message) {
 
-		ChatColor nameColor = BalanceConfiguration.config().specialChatNameColor;
-		ChatColor messageColor = BalanceConfiguration.config().specialChatMessageColor;
+		ChatColor nameColor = GeneralConfiguration.config().specialChatNameColor;
+		ChatColor messageColor = GeneralConfiguration.config().specialChatMessageColor;
 		String namedMessage = messageColor + ">" + nameColor + name + messageColor + "< " + message;
 		
 		return namedMessage;

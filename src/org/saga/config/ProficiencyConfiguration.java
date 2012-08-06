@@ -234,7 +234,7 @@ public class ProficiencyConfiguration {
 			
 		} catch (FileNotFoundException e) {
 			
-			SagaLogger.severe(BalanceConfiguration.class, "configuration not found");
+			SagaLogger.severe(GeneralConfiguration.class, "configuration not found");
 			config = new ProficiencyConfiguration();
 			
 		} catch (IOException e) {

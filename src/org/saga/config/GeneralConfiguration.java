@@ -17,20 +17,20 @@ import org.saga.statistics.StatisticsManager;
 
 import com.google.gson.JsonParseException;
 
-public class BalanceConfiguration {
+public class GeneralConfiguration {
 
 
 	/**
 	 * Instance of the configuration.
 	 */
-	transient private static BalanceConfiguration instance;
+	transient private static GeneralConfiguration instance;
 	
 	/**
 	 * Gets the instance.
 	 * 
 	 * @return instance
 	 */
-	public static BalanceConfiguration config() {
+	public static GeneralConfiguration config() {
 		return instance;
 	}
 	
@@ -106,7 +106,7 @@ public class BalanceConfiguration {
 	/**
 	 * Used by gson.
 	 */
-	public BalanceConfiguration() {
+	public GeneralConfiguration() {
 		
 	}
 	
@@ -249,29 +249,29 @@ public class BalanceConfiguration {
 	 * 
 	 * @return configuration
 	 */
-	public static BalanceConfiguration load(){
+	public static GeneralConfiguration load(){
 
 		
-		BalanceConfiguration config;
+		GeneralConfiguration config;
 		try {
 			
-			config = WriterReader.read(Directory.BALANCE_CONFIG, BalanceConfiguration.class);
+			config = WriterReader.read(Directory.GENERAL_CONFIG, GeneralConfiguration.class);
 			
 		} catch (FileNotFoundException e) {
 			
-			SagaLogger.severe(BalanceConfiguration.class, "configuration not found");
-			config = new BalanceConfiguration();
+			SagaLogger.severe(GeneralConfiguration.class, "configuration not found");
+			config = new GeneralConfiguration();
 			
 		} catch (IOException e) {
 			
-			SagaLogger.severe(BalanceConfiguration.class, "failed to read configuration: " + e.getClass().getSimpleName());
-			config = new BalanceConfiguration();
+			SagaLogger.severe(GeneralConfiguration.class, "failed to read configuration: " + e.getClass().getSimpleName());
+			config = new GeneralConfiguration();
 			
 		} catch (JsonParseException e) {
 
 			SagaLogger.severe(AttributeConfiguration.class, "failed to parse configuration: " + e.getClass().getSimpleName());
 			SagaLogger.info("message: " + e.getMessage());
-			config = new BalanceConfiguration();
+			config = new GeneralConfiguration();
 			
 		}
 		

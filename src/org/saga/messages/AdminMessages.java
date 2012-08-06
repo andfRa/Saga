@@ -4,7 +4,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.config.AttributeConfiguration;
-import org.saga.config.BalanceConfiguration;
+import org.saga.config.GeneralConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
@@ -129,8 +129,8 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 	// Messages:
 	public static String chatMessage(String name, String message) {
 
-		ChatColor nameColor = BalanceConfiguration.config().adminChatNameColor;
-		ChatColor messageColor = BalanceConfiguration.config().adminChatMessageColor;
+		ChatColor nameColor = GeneralConfiguration.config().adminChatNameColor;
+		ChatColor messageColor = GeneralConfiguration.config().adminChatMessageColor;
 		String namedMessage = messageColor + "{" + nameColor + name + messageColor + "} " + message;
 		
 		return namedMessage;

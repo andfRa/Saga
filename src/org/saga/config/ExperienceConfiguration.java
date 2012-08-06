@@ -284,7 +284,7 @@ public class ExperienceConfiguration {
 			
 		} catch (FileNotFoundException e) {
 			
-			SagaLogger.severe(BalanceConfiguration.class, "configuration not found");
+			SagaLogger.severe(GeneralConfiguration.class, "configuration not found");
 			config = new ExperienceConfiguration();
 			
 		} catch (IOException e) {

@@ -287,7 +287,7 @@ public class EconomyConfiguration {
 			
 		} catch (FileNotFoundException e) {
 			
-			SagaLogger.severe(BalanceConfiguration.class, "configuration not found");
+			SagaLogger.severe(GeneralConfiguration.class, "configuration not found");
 			config = new EconomyConfiguration();
 			
 		} catch (IOException e) {

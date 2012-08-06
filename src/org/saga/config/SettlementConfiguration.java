@@ -288,7 +288,7 @@ public class SettlementConfiguration {
 			
 		} catch (FileNotFoundException e) {
 			
-			SagaLogger.severe(BalanceConfiguration.class, "configuration not found");
+			SagaLogger.severe(GeneralConfiguration.class, "configuration not found");
 			config = new SettlementConfiguration();
 			
 		} catch (IOException e) {

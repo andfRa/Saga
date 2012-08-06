@@ -24,7 +24,7 @@ import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.Building;
-import org.saga.config.BalanceConfiguration;
+import org.saga.config.GeneralConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
@@ -1541,7 +1541,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 
 			Short durability = item.getDurability();
 			
-			if(BalanceConfiguration.config().getHarmfulSplashPotions().contains(durability)){
+			if(GeneralConfiguration.config().getHarmfulSplashPotions().contains(durability)){
 				event.setUseItemInHand(Result.DENY);
 				sagaPlayer.message(GeneralMessages.noPermission(this));
 				event.getPlayer().updateInventory();

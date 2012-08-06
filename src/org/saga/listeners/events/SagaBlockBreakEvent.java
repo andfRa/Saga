@@ -8,7 +8,7 @@ import org.bukkit.block.Block;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.chunks.SagaChunk;
-import org.saga.config.BalanceConfiguration;
+import org.saga.config.GeneralConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.messages.GeneralMessages;
 import org.saga.metadata.UnnaturalTag;
@@ -79,7 +79,7 @@ public class SagaBlockBreakEvent {
     		isNatural = false;
     		
 	    	// Compensate for growth:
-	    	Byte newData = BalanceConfiguration.config().getNewBlockData(block);
+	    	Byte newData = GeneralConfiguration.config().getNewBlockData(block);
 	    	
 	    	if(!newData.equals((byte)-1) && !newData.equals(block.getData())){
 	    		isNatural = true;
