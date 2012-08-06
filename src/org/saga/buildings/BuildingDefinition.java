@@ -1,7 +1,9 @@
 package org.saga.buildings;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Hashtable;
 
 import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.SagaLogger;
@@ -21,6 +23,11 @@ public class BuildingDefinition {
 	 * Replace string for craft daytime.
 	 */
 	public final static String CRAFT_DAYTIME_REPLACE = "#craft_daytime";
+	
+	/**
+	 * Replace string for perform daytime.
+	 */
+	public final static String PERFORM_DAYTIME_REPLACE = "#perform_daytime";
 	
 	
 	
@@ -95,7 +102,16 @@ public class BuildingDefinition {
 	/**
 	 * Resources craft time.
 	 */
-	private Daytime resourceTime;
+	private Daytime craftTime;
+	
+	
+	
+	// Functions:
+	/**
+	 * Building functions.
+	 */
+	private Hashtable<String, TwoPointFunction> functions;
+	
 	
 	
 	// Info:
@@ -202,11 +218,19 @@ public class BuildingDefinition {
 			SagaLogger.nullField(BuildingDefinition.class, "performTime");
 		}
 		
-		if(resourceTime == null){
-			resourceTime = Daytime.NONE;
+		if(craftTime == null){
+			craftTime = Daytime.NONE;
 			SagaLogger.nullField(BuildingDefinition.class, "resources");
 		}
 		
+		if(functions == null){
+			functions = new Hashtable<String, TwoPointFunction>();
+			SagaLogger.nullField(this, "functions");
+		}
+		Collection<TwoPointFunction> functionsElements = functions.values();
+		for (TwoPointFunction function : functionsElements) {
+			function.complete();
+		}
 		
 		if(description == null){
 			description = "<no description>";
@@ -384,7 +408,29 @@ public class BuildingDefinition {
 	 * @return craft time
 	 */
 	public Daytime getCraftTime() {
-		return resourceTime;
+		return craftTime;
+	}
+	
+	
+	
+	// Functions:
+	/**
+	 * Gets a function for the given key.
+	 * 
+	 * @param key key
+	 * @return function for the given key, 0 if none
+	 */
+	public TwoPointFunction getFunction(String key) {
+
+		TwoPointFunction function = functions.get(key);
+		
+		if(function == null){
+			SagaLogger.severe(this, "failed to retrive function for " + key + " key");
+			return new TwoPointFunction(0.0);
+		}
+		
+		return function;
+
 	}
 	
 	
@@ -409,6 +455,7 @@ public class BuildingDefinition {
 		return effect
 			.replaceAll(CRAFT_AMOUNT_REPLACE, getCraftAmount(bldgScore).toString())
 			.replaceAll(CRAFT_DAYTIME_REPLACE, getCraftTime().toString())
+			.replaceAll(PERFORM_DAYTIME_REPLACE, getPerformTime().toString())
 		;
 		
 	}

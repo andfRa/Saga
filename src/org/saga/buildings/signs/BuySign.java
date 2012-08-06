@@ -3,10 +3,9 @@ package org.saga.buildings.signs;
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
 import org.bukkit.inventory.ItemStack;
-import org.saga.SagaLogger;
 import org.saga.buildings.Building;
 import org.saga.buildings.TradingPost;
-import org.saga.economy.Trader;
+import org.saga.config.EconomyConfiguration;
 import org.saga.messages.EconomyMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
@@ -16,12 +15,12 @@ public class BuySign extends BuildingSign {
 
 
 	/**
-	 * Name for the 
+	 * Name for the sign.
 	 */
 	public static String SIGN_NAME = "=[BUY]=";
 	
 	/**
-	 * Name for the 
+	 * Material and amount division.
 	 */
 	public static String MATERIAL_VALUE_DIV = "x";
 	
@@ -36,10 +35,6 @@ public class BuySign extends BuildingSign {
 	 */
 	transient private Integer amount = null;
 
-	/**
-	 * Trader.
-	 */
-	transient private Trader trader = null;
 
 	
 	// Initialisation:
@@ -95,6 +90,7 @@ public class BuySign extends BuildingSign {
 	 */
 	private void initialiseFields() {
 
+		
 		// First parameter:
 		String[] firstParameter = getFirstParameter().split(MATERIAL_VALUE_DIV);
 
@@ -135,13 +131,6 @@ public class BuySign extends BuildingSign {
 			
 		}
 		
-		// Trader:
-		if(!(getBuilding() instanceof Trader)){
-			SagaLogger.severe(this, TradingPost.class.getSimpleName() + " building required");
-		}else{
-			trader = (Trader) getBuilding();
-		}
-		
 		// Fix amount:
 		if(amount != null && amount < 0) amount = 0;
 		
@@ -166,9 +155,16 @@ public class BuySign extends BuildingSign {
 	public SignStatus getStatus() {
 		
 
-		if(material == null || amount == null || trader == null) return SignStatus.INVALIDATED;
+		if(material == null || amount == null) return SignStatus.INVALIDATED;
 		
-		if(trader.getBuyPrice(material) == null) return SignStatus.DISABLED;
+		if(EconomyConfiguration.config().getPrice(material) == null) return SignStatus.INVALIDATED;
+		
+		// Buy limit:
+		if(getBuilding() instanceof TradingPost){
+			
+			if(((TradingPost) getBuilding()).checkOverBuyLimit()) return SignStatus.DISABLED;
+
+		}
 		
 		return SignStatus.ENABLED;
 	
@@ -179,23 +175,35 @@ public class BuySign extends BuildingSign {
 	public String getLine(int index, SignStatus status) {
 	
 		
+		Double price = EconomyConfiguration.config().getPrice(material);
+		if(price != null) price*= EconomyConfiguration.config().getBuyMult();
+		
 		switch (status) {
 			
 				
 			case ENABLED:
 				
-				Double price = trader.getBuyPrice(material);
 				
 				if(index == 1) return amount + MATERIAL_VALUE_DIV + EconomyMessages.materialShort(material);
 				if(index == 2) return "price: " + EconomyMessages.coins(price);
-				if(index == 3) return "stored: " + trader.getAmount(material);
+				
+				Double perc = 1.0;
+				if(getBuilding() instanceof TradingPost){
+					
+					TradingPost tpost = (TradingPost) getBuilding();
+					
+					perc = (1 - tpost.getBuyCoins() / tpost.getBuyLimit()) * 100;
+					
+				}
+				if(index == 3) return "goods: " + perc.intValue() + "%";
+				
 				break;
 				
 			case DISABLED:
 				
 				if(index == 1) return amount + MATERIAL_VALUE_DIV + EconomyMessages.materialShort(material);
-				if(index == 2) return "price: -";
-				if(index == 3) return "stored: " + trader.getAmount(material);
+				if(index == 2) return "price: " + EconomyMessages.coins(price);
+				if(index == 3) return "come back later";
 				break;
 				
 			default:
@@ -233,22 +241,12 @@ public class BuySign extends BuildingSign {
 
 		
 		// Used amount:
-		Integer usedAmount = null;
-		if(trader.getAmount(material) < amount){
-			usedAmount = trader.getAmount(material);
-		}else{
-			usedAmount = amount;
-		}
-		if(usedAmount < 1){
-			sagaPlayer.message(EconomyMessages.insufItems(trader, material));
-			return;
-		}
+		Integer usedAmount = amount;
 		
 		// Used coins:
-		Double price = trader.getBuyPrice(material);
-		if(price == null){
-			return;
-		}
+		Double price = EconomyConfiguration.config().getPrice(material);
+		if(price == null) return;
+		price*= EconomyConfiguration.config().getBuyMult();
 		
 		while(sagaPlayer.getCoins() < price * usedAmount && usedAmount > 0){
 			usedAmount--; 
@@ -264,14 +262,14 @@ public class BuySign extends BuildingSign {
 		// Transaction:
 		sagaPlayer.removeCoins(price * usedAmount);
 		sagaPlayer.addItem(item);
-		trader.removeItem(item);
-		trader.addCoins(price * usedAmount);
 		
 		// Inform:
 		sagaPlayer.message(EconomyMessages.bought(material, usedAmount, price));
 		
 		// Notify transaction:
-		trader.notifyTransaction();
+		if(getBuilding() instanceof TradingPost){
+			((TradingPost) getBuilding()).notifyBuy(price * usedAmount);
+		}
 		
 		// Statistics:
 		StatisticsManager.manager().onPlayerBuy(sagaPlayer, material, usedAmount, price * usedAmount);

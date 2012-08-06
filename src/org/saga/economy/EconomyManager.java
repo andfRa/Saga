@@ -12,9 +12,6 @@ import org.bukkit.inventory.ItemStack;
 import org.saga.Clock.DaytimeTicker;
 import org.saga.Saga;
 import org.saga.SagaLogger;
-import org.saga.buildings.TradingPost;
-import org.saga.config.EconomyConfiguration;
-import org.saga.economy.TradeDeal.TradeDealType;
 import org.saga.messages.EconomyMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
@@ -83,9 +80,10 @@ public class EconomyManager implements DaytimeTicker{
 	private ArrayList<TradeDeal> tradeDeals = new ArrayList<TradeDeal>();
 
 	
-	// Initialization:
+	
+	// InitialiSation:
 	/**
-	 * Initializes.
+	 * Initialises.
 	 * 
 	 * @param worldName world name
 	 */
@@ -94,7 +92,8 @@ public class EconomyManager implements DaytimeTicker{
 	}
 	
 	
-	// Clock tick:
+	
+	// Timed:
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -103,54 +102,6 @@ public class EconomyManager implements DaytimeTicker{
 	@Override
 	public void daytimeTick(Daytime timeOfDay) {
 		
-		
-//		if(!timeOfDay.equals(TimeOfDay.SUNRISE)){
-//			return;
-//		}
-		
-		// Update and remove expired deals:
-		for (int i = 0; i < tradeDeals.size(); i++) {
-			tradeDeals.get(i).nextDay();
-			if(tradeDeals.get(i).getDaysLeft() <= 0){
-				tradeDeals.remove(i);
-				i--;
-				continue;
-			}
-		}
-		
-		// Player count:
-		World world = Saga.plugin().getServer().getWorld(worldName);
-		if(world == null){
-			SagaLogger.severe(EconomyManager.class, "failed to get a world with " + worldName + " name");
-			return;
-		}
-		int playerCount = world.getPlayers().size();
-		
-		// Deal amount:
-		Integer dealsAmount = EconomyConfiguration.config().dealsPerPlayer.intValue(playerCount);
-		
-		
-		// Check if new deals are needed:
-		if(tradeDeals.size() >= dealsAmount){
-			return;
-		}
-		
-		// Calculate how much to add:
-		int newDeals = EconomyConfiguration.config().dealsCreatePerPlayer.intValue(playerCount);
-		
-		if(tradeDeals.size() + newDeals > dealsAmount){
-			newDeals = dealsAmount - tradeDeals.size();
-		}
-		
-		// Add deals:
-		for (int i = 1; i <= newDeals; i++) {
-			
-			TradeDeal newDeal = EconomyConfiguration.config().createTradeDeal();
-			
-			if(newDeal != null) addTradeDeal(newDeal);
-			
-		}
-
 		
 	}
 
@@ -166,6 +117,8 @@ public class EconomyManager implements DaytimeTicker{
 
 	}
 	
+	
+	
 	// Interaction:
 	/**
 	 * Makes a transaction
@@ -174,7 +127,7 @@ public class EconomyManager implements DaytimeTicker{
 	 * @param targeted the trader that got interacted with
 	 * @param transaction transaction
 	 */
-	public static void transaction(Trader targeter, Trader targeted, Transaction transaction) {
+	public static void transaction2(Trader targeter, Trader targeted, Transaction transaction) {
 
 		
 		if(transaction == null){
@@ -266,143 +219,10 @@ public class EconomyManager implements DaytimeTicker{
 		
 		
 	}
-
-	/**
-	 * Adds a trade deal.
-	 * 
-	 * @param deal trade deal
-	 */
-	private void addTradeDeal(TradeDeal deal) {
-
-
-		// Find the smallest available id:
-		Integer availableID = -1;
-		boolean idFound = false;
-		if(tradeDeals.size() == 0){
-			idFound = true;
-			availableID = 0;
-		}
-		while(!idFound){
-			
-			availableID++;
-			for (int i = 0; i < tradeDeals.size(); i++) {
-				if(tradeDeals.get(i).getId().equals(availableID)) break;
-				if(i == tradeDeals.size() -1) idFound = true;
-			}
-			
-		}
-		
-		// Add:
-		deal.setId(availableID);
-		tradeDeals.add(deal);
-		
-		
-	}
-	
-	/**
-	 * Takes a trade deal from the list.
-	 * 
-	 * @param id trade deal id
-	 * @return trade deal
-	 * @throws TradeDealNotFoundException if the deal with the given ID doesn't exist
-	 */
-	public TradeDeal takeTradeDeal(Integer id) throws TradeDealNotFoundException {
-
-		for (int i = 0; i < tradeDeals.size(); i++) {
-			
-			if(tradeDeals.get(i).getId().equals(id)){
-				TradeDeal tradeDeal = tradeDeals.get(i);
-				tradeDeals.remove(i);
-				return tradeDeal;
-			}
-			
-		}
-		throw new TradeDealNotFoundException(id);
-		
-	}
 	
 	
 	
-	/**
-	 * Gets all trade deals.
-	 * 
-	 * @return all trade deals
-	 */
-	public ArrayList<TradeDeal> getTradingDeals() {
-		return new ArrayList<TradeDeal>(tradeDeals);
-	}
-	
-	/**
-	 * Finds a trade deal.
-	 * 
-	 * @param type type
-	 * @param material material
-	 * @return trade deal, null if not found
-	 */
-	public TradeDeal findTradeDeal(TradeDealType type, Material material) {
-
-		
-		ArrayList<TradeDeal> tDeals = getTradingDeals();
-		for (TradeDeal tradeDeal : tDeals) {
-			
-			if(!tradeDeal.getType().equals(type)) continue;
-			
-			if(!tradeDeal.getMaterial().equals(material)) continue;
-			
-			return tradeDeal;
-			
-		}
-		
-		return null;
-		
-		
-	}
-	
-	/**
-	 * Finds all good deals for the given materials.
-	 * 
-	 * @param type deal type
-	 * @param materials materials
-	 * @param tpost trading post
-	 * @return all good deals
-	 */
-	public ArrayList<TradeDeal> findGoodTradeDeal(TradeDealType type, ArrayList<Material> materials, TradingPost tpost) {
-
-		
-		ArrayList<TradeDeal> goodDeals = new ArrayList<TradeDeal>();
-		
-		ArrayList<TradeDeal> tDeals = getTradingDeals();
-		for (Material material : materials) {
-			
-			for (TradeDeal tradeDeal : tDeals) {
-				
-				if(!tradeDeal.getType().equals(type)) continue;
-				
-				if(!tradeDeal.getMaterial().equals(material)) continue;
-				
-				// Good deal:
-				if(type == TradeDealType.IMPORT && tpost.getBuyPrice(material) < tradeDeal.getPrice()){
-					continue;
-				}
-				
-				else if(type == TradeDealType.EXPORT && tpost.getSellPrice(material) > tradeDeal.getPrice()){
-					continue;
-				}
-				
-				goodDeals.add(tradeDeal);
-				
-			}
-			
-		}
-		
-		return goodDeals;
-		
-		
-	}
-	
-	
-	
-	// Load unload:
+	// Loading unloading:
 	/**
 	 * Loads economy managers for all worlds.
 	 * 

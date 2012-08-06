@@ -16,12 +16,12 @@ public class SellSign extends BuildingSign {
 
 
 	/**
-	 * Name for the 
+	 * Name for the sign.
 	 */
-	public static String SIGN_NAME = "=[SELL]=";
+	public static String SIGN_NAME = "=[DISABLED]=";
 	
 	/**
-	 * Name for the 
+	 * Material and amount division.
 	 */
 	public static String MATERIAL_VALUE_DIV = "x";
 	
@@ -168,12 +168,15 @@ public class SellSign extends BuildingSign {
 	public SignStatus getStatus() {
 		
 
-		if(material == null || amount == null || trader == null) return SignStatus.INVALIDATED;
-		
-		if(trader.getSellPrice(material) == null) return SignStatus.DISABLED;
-		
-		return SignStatus.ENABLED;
+//		if(material == null || amount == null || trader == null) return SignStatus.INVALIDATED;
+//		
+//		if(trader.getSellPrice(material) == null) return SignStatus.DISABLED;
+//		
+//		return SignStatus.ENABLED;
 	
+	
+		return SignStatus.INVALIDATED;
+		
 		
 	}
 	

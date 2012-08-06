@@ -37,24 +37,6 @@
 "buildingDefinitions":[
 
   {
-    "name":"training camp",
-    "buildingClass":"org.saga.buildings.SimpleBuilding",
-    "attributes":["strength","precision","willpower","toughness","warding","luck"],
-    "buildPoints":1,
-    "coinCost":{"x1":0,"y1":0},
-    "available":{"x1":0,"y1":1.0},
-    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "storageSize":0,
-    "recipes":[],
-    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
-    "relatedBuildings":[],
-    "performTime":"NONE",
-    "resourceTime":"NONE",
-    "description":"place to train",
-    "effect":"ability training"
-  },
-
-  {
     "name":"lumber camp",
     "buildingClass":"org.saga.buildings.SimpleBuilding",
     "attributes":[],
@@ -72,7 +54,8 @@
     "craftAmount":{"x1":1,"y1":6,"x2":3,"y2":12},
     "relatedBuildings":[],
     "performTime":"NONE",
-    "resourceTime":"MIDDAY",
+    "craftTime":"MIDDAY",
+    "functions":{},
     "description":"spawns logs",
     "effect":"#craft_daytime: #caft_amount x logs"
   },
@@ -97,7 +80,8 @@
     "craftAmount":{"x1":1,"y1":4,"x2":3,"y2":8},
     "relatedBuildings":[],
     "performTime":"NONE",
-    "resourceTime":"MIDDAY",
+    "craftTime":"MIDDAY",
+    "functions":{},
     "description":"spawns crops and meat",
     "effect":"#craft_daytime: #caft_amount x crops/raw meat"
   },
@@ -121,7 +105,8 @@
     "craftAmount":{"x1":1,"y1":3,"x2":3,"y2":6},
     "relatedBuildings":[],
     "performTime":"NONE",
-    "resourceTime":"MIDDAY",
+    "craftTime":"MIDDAY",
+    "functions":{},
     "description":"spawns ores",
     "effect":"#craft_daytime: #caft_amount x ore"
   },
@@ -144,7 +129,8 @@
     "craftAmount":{"x1":1,"y1":6,"x2":3,"y2":12},
     "relatedBuildings":["lumber camp"],
     "performTime":"NONE",
-    "resourceTime":"SUNSET",
+    "craftTime":"SUNSET",
+    "functions":{},
     "description":"creates wood from logs",
     "effect":"#craft_daytime: #caft_amount x logs to wood"
   },
@@ -168,7 +154,8 @@
     "craftAmount":{"x1":1,"y1":6,"x2":3,"y2":12},
     "relatedBuildings":["farm"],
     "performTime":"NONE",
-    "resourceTime":"SUNSET",
+    "craftTime":"SUNSET",
+    "functions":{},
     "description":"cooks food from farm products",
     "effect":"#craft_daytime: #caft_amount x wheat/meat to food"
   },
@@ -192,7 +179,8 @@
     "craftAmount":{"x1":1,"y1":3,"x2":3,"y2":6},
     "relatedBuildings":["mine"],
     "performTime":"NONE",
-    "resourceTime":"SUNSET",
+    "craftTime":"SUNSET",
+    "functions":{},
     "description":"refines ores",
     "effect":"#craft_daytime: #caft_amount x ore refined"
   },
@@ -203,7 +191,7 @@
     "attributes":[],
     "buildPoints":4,
     "coinCost":{"x1":0,"y1":0},
-    "available":{"x1":30,"y1":1.0},
+    "available":{"x1":32,"y1":1.0},
     "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
     "storageSize":36,
     "recipes":[
@@ -213,7 +201,8 @@
     "craftAmount":{"x1":1,"y1":4,"x2":3,"y2":8},
     "relatedBuildings":[],
     "performTime":"NONE",
-    "resourceTime":"SUNSET",
+    "craftTime":"SUNSET",
+    "functions":{},
     "description":"creates bricks",
     "effect":"#craft_daytime: #caft_amount x bricks"
   },
@@ -226,14 +215,15 @@
     "attributes":["strength","toughness"],
     "buildPoints":3,
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":10,"y1":1.0},
+    "available":{"x1":20,"y1":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "storageSize":0,
     "recipes":[],
     "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
     "relatedBuildings":[],
     "performTime":"NONE",
-    "resourceTime":"NONE",
+    "craftTime":"NONE",
+    "functions":{},
     "description":"gives firm armour ability",
     "effect":"armour damages weapons"
   },
@@ -244,14 +234,15 @@
     "attributes":["precision","luck"],
     "buildPoints":3,
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":20,"y1":1.0},
+    "available":{"x1":25,"y1":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "storageSize":0,
     "recipes":[],
     "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
     "relatedBuildings":[],
     "performTime":"NONE",
-    "resourceTime":"NONE",
+    "craftTime":"NONE",
+    "functions":{},
     "description":"gives force bow ability",
     "effect":"bow causes knockback"
   },
@@ -262,14 +253,15 @@
     "attributes":["willpower","warding"],
     "buildPoints":3,
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":25,"y1":1.0},
+    "available":{"x1":30,"y1":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "storageSize":0,
     "recipes":[],
     "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
     "relatedBuildings":[],
     "performTime":"NONE",
-    "resourceTime":"NONE",
+    "craftTime":"NONE",
+    "functions":{},
     "description":"gives ignite ability",
     "effect":"fireball ignites targets"
   },
@@ -289,7 +281,8 @@
     "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
     "relatedBuildings":[],
     "performTime":"NONE",
-    "resourceTime":"NONE",
+    "craftTime":"NONE",
+    "functions":{},
     "description":"enables spawn command",
     "effect":"command: /sspawn"
   },
@@ -307,7 +300,8 @@
     "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
     "relatedBuildings":[],
     "performTime":"NONE",
-    "resourceTime":"NONE",
+    "craftTime":"NONE",
+    "functions":{},
     "description":"prevents hostile mob spawning",
     "effect":""
   },
@@ -325,12 +319,30 @@
     "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
     "relatedBuildings":[],
     "performTime":"NONE",
-    "resourceTime":"NONE",
+    "craftTime":"NONE",
+    "functions":{},
     "description":"a place to fight",
     "effect":""
   },
-
-
+  
+  {
+    "name":"trading post",
+    "buildingClass":"org.saga.buildings.TradingPost",
+    "attributes":[],
+    "buildPoints":0,
+    "coinCost":{"x1":0,"y1":0},
+    "available":{"x1":15,"y1":1.0},
+    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "storageSize":0,
+    "recipes":[],
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "relatedBuildings":[],
+    "performTime":"MIDDAY",
+    "craftTime":"NONE",
+    "functions":{"buy limit":{"x1":1,"y1":15000,"x2":3,"y2":40000}},
+    "description":"place to buy",
+    "effect":"#perform_daytime: new goods"
+  },
 
   {
     "name":"home",
@@ -345,9 +357,29 @@
     "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
     "relatedBuildings":[],
     "performTime":"NONE",
-    "resourceTime":"NONE",
+    "craftTime":"NONE",
+    "functions":{},
     "description":"only residents and owner can build",
     "effect":""
+  },
+  
+  {
+    "name":"training camp",
+    "buildingClass":"org.saga.buildings.SimpleBuilding",
+    "attributes":["strength","precision","willpower","toughness","warding","luck"],
+    "buildPoints":0,
+    "coinCost":{"x1":0,"y1":0},
+    "available":{"x1":55,"y1":1.0},
+    "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "storageSize":0,
+    "recipes":[],
+    "craftAmount":{"x1":1,"y1":0,"x2":3,"y2":0},
+    "relatedBuildings":[],
+    "performTime":"NONE",
+    "craftTime":"NONE",
+    "functions":{},
+    "description":"place to train",
+    "effect":"ability training"
   }
 
 ],

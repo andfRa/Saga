@@ -3,21 +3,17 @@ package org.saga.commands;
 import java.util.ArrayList;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.Arena;
 import org.saga.buildings.Building;
 import org.saga.buildings.Home;
 import org.saga.buildings.TownSquare;
-import org.saga.buildings.TradingPost;
 import org.saga.buildings.storage.StorageArea;
 import org.saga.chunks.ChunkBundle;
 import org.saga.chunks.ChunkBundleManager;
 import org.saga.chunks.SagaChunk;
 import org.saga.messages.BuildingMessages;
-import org.saga.messages.EconomyMessages;
 import org.saga.messages.GeneralMessages;
 import org.saga.messages.SettlementEffects;
 import org.saga.messages.SettlementMessages;
@@ -308,78 +304,78 @@ public class BuildingCommands {
 	public static void setSell(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
-		// Retrieve building:
-		TradingPost selectedBuilding = null;
-		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-		} catch (Throwable e) {
-			sagaPlayer.message(e.getMessage());
-			return;
-		}
-		
-		Material material = null;
-		Double price = null;
-
-		// Permission:
-		ChunkBundle chunkBundle = selectedBuilding.getChunkBundle();
-		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
-			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
-			return;
-		}
-		
-		// Arguments:
-		if(args.argsLength() == 2){
-			
-			String sMaterial = args.getString(0);
-			material = Material.matchMaterial(sMaterial);
-			if(material == null){
-				try {
-					material = Material.getMaterial(Integer.parseInt(sMaterial));
-				} catch (NumberFormatException e) { }
-			}
-			if(material == null){
-				sagaPlayer.message(EconomyMessages.invalidMaterial(sMaterial));
-				return;
-			}
-			
-			// Price:
-			String sValue = args.getString(1);
-			try {
-				price = Double.parseDouble(sValue);
-			} catch (NumberFormatException e) {
-				sagaPlayer.message(EconomyMessages.invalidPrice(sValue));
-				return;
-			}
-			
-		}else{
-			
-			// Material:
-			ItemStack item = sagaPlayer.getItemInHand();
-			if(item != null && item.getType() != Material.AIR) material = item.getType();
-			if(material == null){
-				sagaPlayer.message(EconomyMessages.invalidItemHand());
-				return;
-			}
-			
-			// Price:
-			String sValue = args.getString(0);
-			try {
-				price = Double.parseDouble(sValue);
-			} catch (NumberFormatException e) {
-				sagaPlayer.message(EconomyMessages.invalidPrice(sValue));
-				return;
-			}
-			
-		}
-		
-		// Add price:
-		selectedBuilding.setSellPrice(material, price);
-		
-		// Inform:
-		sagaPlayer.message(EconomyMessages.setSell(material, price));
-		
-		// Notify transaction:
-		selectedBuilding.notifyTransaction();
+//		// Retrieve building:
+//		TradingPost selectedBuilding = null;
+//		try {
+//			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
+//		} catch (Throwable e) {
+//			sagaPlayer.message(e.getMessage());
+//			return;
+//		}
+//		
+//		Material material = null;
+//		Double price = null;
+//
+//		// Permission:
+//		ChunkBundle chunkBundle = selectedBuilding.getChunkBundle();
+//		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
+//			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
+//			return;
+//		}
+//		
+//		// Arguments:
+//		if(args.argsLength() == 2){
+//			
+//			String sMaterial = args.getString(0);
+//			material = Material.matchMaterial(sMaterial);
+//			if(material == null){
+//				try {
+//					material = Material.getMaterial(Integer.parseInt(sMaterial));
+//				} catch (NumberFormatException e) { }
+//			}
+//			if(material == null){
+//				sagaPlayer.message(EconomyMessages.invalidMaterial(sMaterial));
+//				return;
+//			}
+//			
+//			// Price:
+//			String sValue = args.getString(1);
+//			try {
+//				price = Double.parseDouble(sValue);
+//			} catch (NumberFormatException e) {
+//				sagaPlayer.message(EconomyMessages.invalidPrice(sValue));
+//				return;
+//			}
+//			
+//		}else{
+//			
+//			// Material:
+//			ItemStack item = sagaPlayer.getItemInHand();
+//			if(item != null && item.getType() != Material.AIR) material = item.getType();
+//			if(material == null){
+//				sagaPlayer.message(EconomyMessages.invalidItemHand());
+//				return;
+//			}
+//			
+//			// Price:
+//			String sValue = args.getString(0);
+//			try {
+//				price = Double.parseDouble(sValue);
+//			} catch (NumberFormatException e) {
+//				sagaPlayer.message(EconomyMessages.invalidPrice(sValue));
+//				return;
+//			}
+//			
+//		}
+//		
+//		// Add price:
+//		selectedBuilding.setSellPrice(material, price);
+//		
+//		// Inform:
+//		sagaPlayer.message(EconomyMessages.setSell(material, price));
+//		
+//		// Notify transaction:
+//		selectedBuilding.notifyTransaction();
 		
 		
 	}
@@ -396,59 +392,59 @@ public class BuildingCommands {
 	public static void removeSell(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-		// Retrieve building:
-		TradingPost selectedBuilding = null;
-		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-		} catch (Throwable e) {
-			sagaPlayer.message(e.getMessage());
-			return;
-		}
-		
-		Material material = null;
-
-		// Permission:
-		ChunkBundle chunkBundle = selectedBuilding.getChunkBundle();
-		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
-			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
-			return;
-		}
-		
-		// Arguments:
-		if(args.argsLength() == 1){
-			
-			String sMaterial = args.getString(0);
-			material = Material.matchMaterial(sMaterial);
-			if(material == null){
-				try {
-					material = Material.getMaterial(Integer.parseInt(sMaterial));
-				} catch (NumberFormatException e) { }
-			}
-			if(material == null){
-				sagaPlayer.message(EconomyMessages.invalidMaterial(sMaterial));
-				return;
-			}
-			
-		}else{
-			
-			// Material:
-			ItemStack item = sagaPlayer.getItemInHand();
-			if(item != null && item.getType() != Material.AIR) material = item.getType();
-			if(material == null){
-				sagaPlayer.message(EconomyMessages.invalidItemHand());
-				return;
-			}
-			
-		}
-		
-		// Remove price:
-		selectedBuilding.removeSellPrice(material);
-		
-		// Inform:
-		sagaPlayer.message(EconomyMessages.removeSell(material));
-		
-		// Notify transaction:
-		selectedBuilding.notifyTransaction();
+//		// Retrieve building:
+//		TradingPost selectedBuilding = null;
+//		try {
+//			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
+//		} catch (Throwable e) {
+//			sagaPlayer.message(e.getMessage());
+//			return;
+//		}
+//		
+//		Material material = null;
+//
+//		// Permission:
+//		ChunkBundle chunkBundle = selectedBuilding.getChunkBundle();
+//		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
+//			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
+//			return;
+//		}
+//		
+//		// Arguments:
+//		if(args.argsLength() == 1){
+//			
+//			String sMaterial = args.getString(0);
+//			material = Material.matchMaterial(sMaterial);
+//			if(material == null){
+//				try {
+//					material = Material.getMaterial(Integer.parseInt(sMaterial));
+//				} catch (NumberFormatException e) { }
+//			}
+//			if(material == null){
+//				sagaPlayer.message(EconomyMessages.invalidMaterial(sMaterial));
+//				return;
+//			}
+//			
+//		}else{
+//			
+//			// Material:
+//			ItemStack item = sagaPlayer.getItemInHand();
+//			if(item != null && item.getType() != Material.AIR) material = item.getType();
+//			if(material == null){
+//				sagaPlayer.message(EconomyMessages.invalidItemHand());
+//				return;
+//			}
+//			
+//		}
+//		
+//		// Remove price:
+//		selectedBuilding.removeSellPrice(material);
+//		
+//		// Inform:
+//		sagaPlayer.message(EconomyMessages.removeSell(material));
+//		
+//		// Notify transaction:
+//		selectedBuilding.notifyTransaction();
 		
 		
 	}
@@ -465,78 +461,78 @@ public class BuildingCommands {
 	public static void setBuy(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
-		// Retrieve building:
-		TradingPost selectedBuilding = null;
-		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-		} catch (Throwable e) {
-			sagaPlayer.message(e.getMessage());
-			return;
-		}
-		
-		Material material = null;
-		Double price = null;
-
-		// Permission:
-		ChunkBundle chunkBundle = selectedBuilding.getChunkBundle();
-		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
-			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
-			return;
-		}
-		
-		// Arguments:
-		if(args.argsLength() == 2){
-			
-			String sMaterial = args.getString(0);
-			material = Material.matchMaterial(sMaterial);
-			if(material == null){
-				try {
-					material = Material.getMaterial(Integer.parseInt(sMaterial));
-				} catch (NumberFormatException e) { }
-			}
-			if(material == null){
-				sagaPlayer.message(EconomyMessages.invalidMaterial(sMaterial));
-				return;
-			}
-			
-			// Price:
-			String sValue = args.getString(1);
-			try {
-				price = Double.parseDouble(sValue);
-			} catch (NumberFormatException e) {
-				sagaPlayer.message(EconomyMessages.invalidPrice(sValue));
-				return;
-			}
-			
-		}else{
-			
-			// Material:
-			ItemStack item = sagaPlayer.getItemInHand();
-			if(item != null && item.getType() != Material.AIR) material = item.getType();
-			if(material == null){
-				sagaPlayer.message(EconomyMessages.invalidItemHand());
-				return;
-			}
-			
-			// Price:
-			String sValue = args.getString(0);
-			try {
-				price = Double.parseDouble(sValue);
-			} catch (NumberFormatException e) {
-				sagaPlayer.message(EconomyMessages.invalidPrice(sValue));
-				return;
-			}
-			
-		}
-		
-		// Add price:
-		selectedBuilding.setBuyPrice(material, price);
-		
-		// Inform:
-		sagaPlayer.message(EconomyMessages.setBuy(material, price));
-		
-		// Notify transaction:
-		selectedBuilding.notifyTransaction();
+//		// Retrieve building:
+//		TradingPost selectedBuilding = null;
+//		try {
+//			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
+//		} catch (Throwable e) {
+//			sagaPlayer.message(e.getMessage());
+//			return;
+//		}
+//		
+//		Material material = null;
+//		Double price = null;
+//
+//		// Permission:
+//		ChunkBundle chunkBundle = selectedBuilding.getChunkBundle();
+//		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
+//			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
+//			return;
+//		}
+//		
+//		// Arguments:
+//		if(args.argsLength() == 2){
+//			
+//			String sMaterial = args.getString(0);
+//			material = Material.matchMaterial(sMaterial);
+//			if(material == null){
+//				try {
+//					material = Material.getMaterial(Integer.parseInt(sMaterial));
+//				} catch (NumberFormatException e) { }
+//			}
+//			if(material == null){
+//				sagaPlayer.message(EconomyMessages.invalidMaterial(sMaterial));
+//				return;
+//			}
+//			
+//			// Price:
+//			String sValue = args.getString(1);
+//			try {
+//				price = Double.parseDouble(sValue);
+//			} catch (NumberFormatException e) {
+//				sagaPlayer.message(EconomyMessages.invalidPrice(sValue));
+//				return;
+//			}
+//			
+//		}else{
+//			
+//			// Material:
+//			ItemStack item = sagaPlayer.getItemInHand();
+//			if(item != null && item.getType() != Material.AIR) material = item.getType();
+//			if(material == null){
+//				sagaPlayer.message(EconomyMessages.invalidItemHand());
+//				return;
+//			}
+//			
+//			// Price:
+//			String sValue = args.getString(0);
+//			try {
+//				price = Double.parseDouble(sValue);
+//			} catch (NumberFormatException e) {
+//				sagaPlayer.message(EconomyMessages.invalidPrice(sValue));
+//				return;
+//			}
+//			
+//		}
+//		
+//		// Add price:
+//		selectedBuilding.setBuyPrice(material, price);
+//		
+//		// Inform:
+//		sagaPlayer.message(EconomyMessages.setBuy(material, price));
+//		
+//		// Notify transaction:
+//		selectedBuilding.notifyTransaction();
 		
 		
 	}
@@ -553,59 +549,59 @@ public class BuildingCommands {
 	public static void removeBuy(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-		// Retrieve building:
-		TradingPost selectedBuilding = null;
-		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-		} catch (Throwable e) {
-			sagaPlayer.message(e.getMessage());
-			return;
-		}
-		
-		Material material = null;
-
-		// Permission:
-		ChunkBundle chunkBundle = selectedBuilding.getChunkBundle();
-		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
-			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
-			return;
-		}
-		
-		// Arguments:
-		if(args.argsLength() == 1){
-			
-			String sMaterial = args.getString(0);
-			material = Material.matchMaterial(sMaterial);
-			if(material == null){
-				try {
-					material = Material.getMaterial(Integer.parseInt(sMaterial));
-				} catch (NumberFormatException e) { }
-			}
-			if(material == null){
-				sagaPlayer.message(EconomyMessages.invalidMaterial(sMaterial));
-				return;
-			}
-			
-		}else{
-			
-			// Material:
-			ItemStack item = sagaPlayer.getItemInHand();
-			if(item != null && item.getType() != Material.AIR) material = item.getType();
-			if(material == null){
-				sagaPlayer.message(EconomyMessages.invalidItemHand());
-				return;
-			}
-			
-		}
-		
-		// Remove price:
-		selectedBuilding.removeBuyPrice(material);
-		
-		// Inform:
-		sagaPlayer.message(EconomyMessages.removeSell(material));
-		
-		// Notify transaction:
-		selectedBuilding.notifyTransaction();
+//		// Retrieve building:
+//		TradingPost selectedBuilding = null;
+//		try {
+//			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
+//		} catch (Throwable e) {
+//			sagaPlayer.message(e.getMessage());
+//			return;
+//		}
+//		
+//		Material material = null;
+//
+//		// Permission:
+//		ChunkBundle chunkBundle = selectedBuilding.getChunkBundle();
+//		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
+//			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
+//			return;
+//		}
+//		
+//		// Arguments:
+//		if(args.argsLength() == 1){
+//			
+//			String sMaterial = args.getString(0);
+//			material = Material.matchMaterial(sMaterial);
+//			if(material == null){
+//				try {
+//					material = Material.getMaterial(Integer.parseInt(sMaterial));
+//				} catch (NumberFormatException e) { }
+//			}
+//			if(material == null){
+//				sagaPlayer.message(EconomyMessages.invalidMaterial(sMaterial));
+//				return;
+//			}
+//			
+//		}else{
+//			
+//			// Material:
+//			ItemStack item = sagaPlayer.getItemInHand();
+//			if(item != null && item.getType() != Material.AIR) material = item.getType();
+//			if(material == null){
+//				sagaPlayer.message(EconomyMessages.invalidItemHand());
+//				return;
+//			}
+//			
+//		}
+//		
+//		// Remove price:
+//		selectedBuilding.removeBuyPrice(material);
+//		
+//		// Inform:
+//		sagaPlayer.message(EconomyMessages.removeSell(material));
+//		
+//		// Notify transaction:
+//		selectedBuilding.notifyTransaction();
 		
 		
 	}
