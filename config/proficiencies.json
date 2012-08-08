@@ -87,6 +87,14 @@
     "factionPermissions":[]
   },
 
+  {"name":"recruiter",
+    "type":"RANK",
+    "hierarchyLevel":"1",
+    "attributeBonuses":{},
+    "settlementPermissions":[],
+    "factionPermissions":["INVITE"]
+  },
+
   {"name":"novice",
     "type":"RANK",
     "hierarchyLevel":"1",

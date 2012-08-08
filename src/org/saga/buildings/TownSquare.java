@@ -137,12 +137,12 @@ public class TownSquare extends Building implements SecondTicker{
 				
 				if(attackerFaction != null && defenderFaction != null){
 					
-					attackerFaction.broadcast(ClaimMessages.claiming(bundle, attackerFaction, defenderFaction, progress));
-					defenderFaction.broadcast(ClaimMessages.loosing(bundle, defenderFaction, attackerFaction, progress));
+					attackerFaction.information(ClaimMessages.claiming(bundle, attackerFaction, defenderFaction, progress));
+					defenderFaction.information(ClaimMessages.loosing(bundle, defenderFaction, attackerFaction, progress));
 				
 				}else if(attackerFaction != null){
 					
-					attackerFaction.broadcast(ClaimMessages.claiming(bundle, attackerFaction, progress));
+					attackerFaction.information(ClaimMessages.claiming(bundle, attackerFaction, progress));
 					
 				}
 				

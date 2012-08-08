@@ -1658,7 +1658,7 @@ public class Faction implements SecondTicker, DaytimeTicker{
 			
 			sagaPlayer.addCoins(wage);
 			
-			sagaPlayer.message(EconomyMessages.gotPaid(this, wage));
+			information(EconomyMessages.gotPaid(this, wage), sagaPlayer);
 			
 		}
 		
@@ -1687,11 +1687,25 @@ public class Faction implements SecondTicker, DaytimeTicker{
 	 * 
 	 * @param message message
 	 */
-	public void message(String message) {
+	public void information(String message) {
 		
 		for (int i = 0; i < registeredMembers.size(); i++) {
-			registeredMembers.get(i).message(message);
+			information(message, registeredMembers.get(i));
 		}
+		
+	}
+	
+	/**
+	 * Sends a faction message to a member.
+	 * 
+	 * @param message message
+	 * @param member faction member
+	 */
+	public void information(String message, SagaPlayer member) {
+		
+		message = getColour2() + "[" + getColour1() + "info" + getColour2() + "] " + message;
+
+		member.message(message);
 		
 	}
 	
