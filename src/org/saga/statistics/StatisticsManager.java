@@ -22,6 +22,7 @@ import org.saga.config.AttributeConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.factions.Faction;
+import org.saga.factions.FactionClaimManager;
 import org.saga.messages.GeneralMessages;
 import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
@@ -925,6 +926,7 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 	
+	
 	public void addGuardRuneRestore(SagaPlayer sagaPlayer) {
 
 		modifyValue("guardrune" + "." + "restore" + "." + sagaPlayer.getName(), 1);
@@ -943,6 +945,7 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 
+	
 	public void addAbilityUse(Ability ability) {
 
 		String abilityName = ability.getName() + "." + ability.getName() + " " + RomanNumeral.binaryToRoman(ability.getScore());
@@ -951,6 +954,7 @@ public class StatisticsManager implements HourTicker{
 		modifyValue("abilities" + "." + "used" + "." + abilityName  + "." + sagaPlayer.getName(), 1);
 		
 	}
+	
 	
 	public void setBuildings(ChunkBundle chunkBundle) {
 
@@ -973,9 +977,35 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 	
+	
 	public void addWages(Faction faction, Proficiency rank, Double wage) {
 
 		modifyValue("wages.factions." + rank.getName() + "." + faction.getName(), wage);
+		
+	}
+	
+	
+	public void addBundleClaimed(Faction faction, ChunkBundle bundle) {
+
+		modifyValue("faction_claiming" + "." + "claimed" + "." + faction.getName(), 1);
+		
+	}
+
+	public void addBundleSeized(Faction faction, ChunkBundle bundle) {
+
+		modifyValue("faction_claiming" + "." + "seized" + "." + faction.getName(), 1);
+		
+	}
+	
+	public void addBundleLost(Faction faction, ChunkBundle bundle) {
+
+		modifyValue("faction_claiming" + "." + "lost" + "." + faction.getName(), 1);
+		
+	}
+
+	public void setBundlesOwned(Faction faction) {
+
+		setValue("faction_claiming" + "." + "owned" + "." + faction.getName(), FactionClaimManager.manager().findSettlements(faction.getId()).length);
 		
 	}
 	

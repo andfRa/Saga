@@ -20,6 +20,7 @@ import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.settlements.Settlement;
+import org.saga.statistics.StatisticsManager;
 
 import com.google.gson.JsonParseException;
 
@@ -269,10 +270,22 @@ public class FactionClaimManager implements MinuteTicker{
 				return;
 			}
 			
-			setOwningId(bundleId, faction.getId());
+			Integer oldId = setOwningId(bundleId, faction.getId());
 			
 			// Inform:
 			Saga.broadcast(ClaimMessages.claimedBcast(bundle, faction));
+			
+			// Statistics:
+			Faction oldOwner = null;
+			if(oldId != null) oldOwner = FactionManager.manager().getFaction(oldId);
+			if(oldOwner != null){
+				StatisticsManager.manager().addBundleSeized(faction, bundle);
+				StatisticsManager.manager().addBundleLost(oldOwner, bundle);
+				StatisticsManager.manager().setBundlesOwned(oldOwner);
+			}else{
+				StatisticsManager.manager().addBundleClaimed(faction, bundle);
+			}
+			StatisticsManager.manager().setBundlesOwned(faction);
 			
 		}
 		
@@ -325,11 +338,11 @@ public class FactionClaimManager implements MinuteTicker{
 	 * Get owning faction ID.
 	 * 
 	 * @param bundleId chunk bundle ID
-	 * @return owning faction ID, null if none
 	 * @param factionId faction ID
+	 * @return old owning faction ID, null if none
 	 */
-	public void setOwningId(Integer bundleId, Integer factionId) {
-		claims.put(bundleId, factionId);
+	public Integer setOwningId(Integer bundleId, Integer factionId) {
+		return claims.put(bundleId, factionId);
 	}
 	
 	/**
@@ -487,10 +500,11 @@ public class FactionClaimManager implements MinuteTicker{
 	 */
 	public void removeFaction(Integer factionId) {
 
+		
 		Set<Integer> bundleIds;
 
 		// Claimed:
-		bundleIds = claims.keySet();
+		bundleIds = new HashSet<Integer>(claims.keySet());
 		for (Integer bundleId : bundleIds) {
 			if(claims.get(bundleId) == factionId) claims.remove(bundleId);
 		}

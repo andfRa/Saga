@@ -282,6 +282,26 @@ public class StatisticsCommands {
 		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
 	            	
 	}
+
+	
+	@Command(
+		aliases = {"stclaimed"},
+		usage = "",
+		flags = "a",
+		desc = "Show faction claim statistics. Add 'a' tag to show all factions.",
+		min = 0,
+		max = 0
+		)
+	@CommandPermissions({"saga.admin.statistics.claimed"})
+	public static void claimed(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	
+		// Inform:
+		sagaPlayer.message(StatisticsMessages.values("faction claiming", "faction_claiming", "action", "sum", !args.hasFlag('a'), 0, 0));
 		
+		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+	            	
+	}
+
+	
 	
 }
