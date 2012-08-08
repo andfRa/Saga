@@ -21,7 +21,9 @@ import org.saga.chunks.ChunkBundle;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.SettlementConfiguration;
+import org.saga.factions.Faction;
 import org.saga.messages.GeneralMessages;
+import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
@@ -970,6 +972,13 @@ public class StatisticsManager implements HourTicker{
 		
 		
 	}
+	
+	public void addWages(Faction faction, Proficiency rank, Double wage) {
+
+		modifyValue("wages.factions." + rank.getName() + "." + faction.getName(), wage);
+		
+	}
+	
 	
 	
 	// Load unload:

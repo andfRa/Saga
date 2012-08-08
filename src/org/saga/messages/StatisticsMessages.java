@@ -289,9 +289,6 @@ public class StatisticsMessages {
 				String name = StatisticsManager.formatCategName(subCateg);
 				String value = TextUtil.round(StatisticsManager.manager().getSumValue(category + "." + subCateg, ignoreBottom), decimals);
 				
-				int depth = StatisticsManager.calcCategDepth(subCateg);
-				value = TextUtil.repeat(GeneralMessages.TAB, depth) + value; 
-				
 				table.addLine(name, value, 0);
 				
 			}

@@ -41,7 +41,7 @@ public class ClaimMessages {
 
 	public static String claiming(ChunkBundle bundle, Faction attackerFaction, Faction defenderFaction, Double progress){
 		
-		return attackerFaction.getColour2() + "Siezing " + bundle.getName() + " from " + FactionMessages.faction(defenderFaction, attackerFaction.getColour2())+ "." + " " + TextUtil.round(progress * 100, 1) + "% claimed.";
+		return attackerFaction.getColour2() + "Seizing " + bundle.getName() + " from " + FactionMessages.faction(defenderFaction, attackerFaction.getColour2())+ "." + " " + TextUtil.round(progress * 100, 1) + "% claimed.";
 	
 	}
 	
@@ -63,6 +63,13 @@ public class ClaimMessages {
 		return normal1 + "[" + FactionMessages.faction(defenderFaction, normal1) + "->" + FactionMessages.faction(attackerFaction, normal1) + "]" + " " + TextUtil.round(progress * 100, 1) + "% claimed.";
 
 	}
+	
+	public static String contestingTownSquare(ChunkBundle bundle, Faction attackerFaction, Faction defenderFaction, Double progress){
+	
+		return normal1 + "[" + FactionMessages.faction(defenderFaction, normal1) + "->" + FactionMessages.faction(attackerFaction, normal1) + "]" + " Claiming contested." + " " + TextUtil.round(progress * 100, 1) + "% claimed.";
+	
+	}
+
 
 	
 	// Spawning:

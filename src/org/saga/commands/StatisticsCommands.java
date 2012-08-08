@@ -7,9 +7,9 @@ package org.saga.commands;
 
 import org.bukkit.Material;
 import org.saga.Saga;
+import org.saga.messages.EconomyMessages;
 import org.saga.messages.GeneralMessages;
 import org.saga.messages.SettlementMessages;
-import org.saga.messages.EconomyMessages;
 import org.saga.messages.StatisticsMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
@@ -260,10 +260,28 @@ public class StatisticsCommands {
 
 		// Inform:
 		sagaPlayer.message(StatisticsMessages.values("buildings set", "buildings.set", "building", "set sum", true, 0, 0));
-            	
+	           	
 		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
-            	
+		
 	}
-	
+		
+	@Command(
+		aliases = {"stwages"},
+		usage = "",
+		flags = "a",
+		desc = "Show wages statistics. Add 'a' tag to show all factions.",
+		min = 0,
+		max = 0
+		)
+	@CommandPermissions({"saga.admin.statistics.wages"})
+	public static void wages(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		// Inform:
+		sagaPlayer.message(StatisticsMessages.values("wages", "wages.factions", "rank", "wages sum", !args.hasFlag('a'), 0, 0));
+		
+		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+	            	
+	}
+		
 	
 }

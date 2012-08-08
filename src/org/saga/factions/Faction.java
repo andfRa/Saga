@@ -32,6 +32,7 @@ import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.settlements.Settlement;
+import org.saga.statistics.StatisticsManager;
 import org.saga.utility.SagaLocation;
 
 import com.google.gson.JsonParseException;
@@ -1659,6 +1660,9 @@ public class Faction implements SecondTicker, DaytimeTicker{
 			sagaPlayer.addCoins(wage);
 			
 			information(EconomyMessages.gotPaid(this, wage), sagaPlayer);
+			
+			//Statistics:
+			StatisticsManager.manager().addWages(this, rank, wage);
 			
 		}
 		

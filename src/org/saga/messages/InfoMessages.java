@@ -471,7 +471,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		String townSquare = townSquare();
 		book.addLine("Every settlement that has a " + townSquare + " can be claimed by a faction. " +
 			"To claim a settlement, faction members must hold the " + townSquare + " for a certain amount of time. " +
-			"If other factions are present, then the claim timer will be frozen. " +
+			"If the owner faction is present, then the claim timer will be frozen. " +
 			"Claiming can not be initiated by settlement members." + 
 			" " + toClaim
 		);

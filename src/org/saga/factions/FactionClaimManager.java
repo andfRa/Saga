@@ -120,40 +120,27 @@ public class FactionClaimManager implements MinuteTicker{
 	 */
 	public boolean checkInitiation(ChunkBundle bundle, ArrayList<SagaPlayer> sagaPlayers) {
 
-		System.out.println("check init");
-		
+
 		Faction initFaction = getInitFacton(bundle, sagaPlayers);
 		Faction owningFaction = getOwningFaction(bundle.getId());
 		
 		// Initiating faction:
 		if(initFaction == null) return false;
 		
-		System.out.println("init fac ok");
-		
 		// Already claimed:
 		if(initFaction == owningFaction) return false;
-		
-		System.out.println("not claimed yet");
 		
 		// Already contested:
 		if(isContested(bundle.getId())) return false;
 		
-		System.out.println("not contested");
-		
-		// Check members for sizing:
+		// Check members for seizing:
 		if(owningFaction != null){
 
 			if(initFaction.getRegisteredMemberCount() < FactionConfiguration.config().getToClaimMembers()) return false;
 		
-			System.out.println("init members");
-		
 			if(owningFaction.getRegisteredMemberCount() < FactionConfiguration.config().getToClaimMembers()) return false;
 			
-			System.out.println("owning members");
-			
 		}
-		
-		System.out.println("init OK");
 		
 		return true;
 	
@@ -182,7 +169,7 @@ public class FactionClaimManager implements MinuteTicker{
 	public static Faction getInitFacton(ChunkBundle bundle, ArrayList<SagaPlayer> sagaPlayers) {
 
 		
-		Faction initFaction = null;
+		Faction owningFaction = FactionClaimManager.manager().getOwningFaction(bundle.getId());
 		
 		// Get faction:
 		for (SagaPlayer sagaPlayer : sagaPlayers) {
@@ -190,18 +177,17 @@ public class FactionClaimManager implements MinuteTicker{
 			// Ignore members:
 			if(bundle.isMember(sagaPlayer.getName())) continue;
 			
+			Faction playerFaction = sagaPlayer.getFaction();
+			
 			// Ignore not factions:
-			if(sagaPlayer.getFaction() == null) continue;
+			if(playerFaction == null) continue;
 			
 			// Other factions:
-			if(initFaction != null && sagaPlayer.getFaction() != initFaction) return null;
-			
-			// Initiating faction:
-			initFaction = sagaPlayer.getFaction();
+			if(playerFaction != owningFaction) return playerFaction;
 			
 		}
 		
-		return initFaction;
+		return null;
 		
 		
 	}
@@ -210,38 +196,54 @@ public class FactionClaimManager implements MinuteTicker{
 	
 	// Claiming:
 	/**
-	 * Checks if the bundle can be claimed.
+	 * Checks if the bundle can is being claimed.
 	 * 
 	 * @param bundle bundle
 	 * @param sagaPlayers players on the bundle
-	 * @return true if can be claimed
+	 * @return true if being claimed
 	 */
-	public boolean checkProgressClaim(ChunkBundle bundle, ArrayList<SagaPlayer> sagaPlayers) {
+	public boolean checkClaiming(ChunkBundle bundle, ArrayList<SagaPlayer> sagaPlayers) {
 
 
 		Faction contFaction = getContesterFaction(bundle.getId());
+
+		// Multiple factions:
+		HashSet<Faction> allContesters = getAllContesters(sagaPlayers);
 		
 		// Contested:
 		if(!isContested(bundle.getId())) return false;
 		
-		// Multiple factions:
-		boolean contest = false;
-		for (SagaPlayer sagaPlayer : sagaPlayers) {
-			
-			Faction playerFaction = sagaPlayer.getFaction();
-			
-			if(playerFaction == contFaction) contest = true;
-			if(playerFaction != null && playerFaction != contFaction) return false;
-			
-		}
-		
-		if(!contest) return false;
+		// Contesting faction not present:
+		if(!allContesters.contains(contFaction)) return false;
 		
 		return true;
 		
 		
 	}
 
+	/**
+	 * Checks if the bundle is being contested.
+	 * 
+	 * @param bundle chunk bundle
+	 * @param sagaPlayers saga players
+	 * @return true if contested
+	 */
+	public boolean checkContesting(ChunkBundle bundle, ArrayList<SagaPlayer> sagaPlayers) {
+
+		
+		Faction owningFaction = getOwningFaction(bundle.getId());
+
+		// Multiple factions:
+		HashSet<Faction> allContesters = getAllContesters(sagaPlayers);
+		
+		// Owning faction present:
+		if(allContesters.contains(owningFaction)) return true;
+		
+		return false;
+		
+		
+	}
+	
 	/**
 	 * Progresses the chunk bundle claim.
 	 * 
@@ -283,6 +285,26 @@ public class FactionClaimManager implements MinuteTicker{
 		}
 		
 		
+		
+	}
+	
+	/**
+	 * Gets all contesting factions.
+	 * 
+	 * @param sagaPlayers all players
+	 * @return all contesting factions
+	 */
+	public static HashSet<Faction> getAllContesters(ArrayList<SagaPlayer> sagaPlayers) {
+
+		
+		HashSet<Faction> allContesters = new HashSet<Faction>();
+		
+		for (SagaPlayer sagaPlayer : sagaPlayers) {
+			if(sagaPlayer.getFaction() != null) allContesters.add(sagaPlayer.getFaction());
+		}
+		
+		return allContesters; 
+			
 		
 	}
 	

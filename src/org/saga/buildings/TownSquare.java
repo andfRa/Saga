@@ -105,25 +105,41 @@ public class TownSquare extends Building implements SecondTicker{
 		// Progress:
 		Double progress = FactionClaimManager.manager().getProgress(bundle.getId());
 		if(progress > 0){
+
+			if(count > 10) count = 0;
+			
+			// Contesting:
+			if(FactionClaimManager.manager().checkContesting(bundle, sagaPlayers)){
+				
+				// Inform:
+				if(count == 0) getSagaChunk().broadcast(ClaimMessages.contestingTownSquare(bundle, attackerFaction, defenderFaction, progress));
+				count++;
+				
+				return true;
+				
+			}
 			
 			// Inform:
 			if(count == 0){
 
 				if(attackerFaction != null && defenderFaction != null){
+					
 					getSagaChunk().broadcast(ClaimMessages.claimingTownSquare(bundle, attackerFaction, defenderFaction, progress));
+					
 				}else if(attackerFaction != null){
+					
 					getSagaChunk().broadcast(ClaimMessages.claimingTownSquare(bundle, attackerFaction, progress));
+					
 				}
 				
 			}
 			
 			count++;
-			if(count > 10) count = 0;
 			
 		}
 		
 		// Progress claim:
-		if(FactionClaimManager.manager().checkProgressClaim(bundle, sagaPlayers)){
+		if(FactionClaimManager.manager().checkClaiming(bundle, sagaPlayers)){
 			
 			Integer level = 0;
 			if(bundle instanceof Settlement) level = ((Settlement) bundle).getLevel();
