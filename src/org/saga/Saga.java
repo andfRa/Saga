@@ -564,7 +564,9 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         ChunkBundleManager.save();
         FactionManager.save();
         EconomyManager.save();
+        FactionClaimManager.save();
     	StatisticsManager.save();
+    	
     	
 	}
     
