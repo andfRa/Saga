@@ -415,6 +415,7 @@ public class FactionClaimManager implements MinuteTicker{
 		
 		if(bundleProgess <= 0){
 			progress.remove(bundleId);
+			contesters.remove(bundleId);
 		}else{
 			progress.put(bundleId, bundleProgess);
 		}
