@@ -17,6 +17,7 @@ import org.saga.commands.SettlementCommands;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.factions.Faction;
+import org.saga.factions.FactionClaimManager;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.messages.PlayerMessages.ColourLoop;
 import org.saga.player.Proficiency.ProficiencyType;
@@ -818,11 +819,23 @@ public class SettlementMessages {
 	// Move:
 	public static String entered(ChunkBundle chunkBundle) {
 		
+		// Claimed:
+		if(FactionClaimManager.manager().hasOwner(chunkBundle)){
+			Faction faction = FactionClaimManager.manager().getOwningFaction(chunkBundle.getId());
+			return normal1 + "[" + FactionMessages.faction(faction, normal1) + "]" + ChatColor.ITALIC + " Entered " + chunkBundle.getName() + " settlement.";
+		}
+		
 		return normal1 + "" + ChatColor.ITALIC + "Entered " + chunkBundle.getName() + " settlement.";
 		
 	}
 	
 	public static String left(ChunkBundle chunkBundle) {
+
+		// Claimed:
+		if(FactionClaimManager.manager().hasOwner(chunkBundle)){
+			Faction faction = FactionClaimManager.manager().getOwningFaction(chunkBundle.getId());
+			return normal1 + "[" + FactionMessages.faction(faction, normal1) + "]" + ChatColor.ITALIC + " Left " + chunkBundle.getName() + " settlement.";
+		}
 		
 		return normal1 + "" + ChatColor.ITALIC + "Left " + chunkBundle.getName() + " settlement.";
 		

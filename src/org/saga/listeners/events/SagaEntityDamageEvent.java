@@ -492,7 +492,7 @@ public class SagaEntityDamageEvent {
 	 * 
 	 * @return true if faction versus faction.
 	 */
-	public boolean isFactionAttacksFaction() {
+	public boolean isFactionAttackFaction() {
 
 		if(attackerPlayer == null || defenderPlayer == null) return false;
 		return attackerPlayer.getFaction() != null && defenderPlayer.getFaction() != null;
@@ -524,6 +524,8 @@ public class SagaEntityDamageEvent {
 		ADMIN_DENY(false),
 		
 		SELF_ALLOW(true),
+		
+		FACTION_CLAIMING_ALLOW(true),
 		
 		ARENA_ALLOW(true),
 		

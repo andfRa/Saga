@@ -10,6 +10,7 @@ import org.saga.config.EconomyConfiguration;
 import org.saga.economy.EconomyManager.TransactionType;
 import org.saga.economy.Trader;
 import org.saga.economy.Transaction;
+import org.saga.factions.Faction;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.text.TextUtil;
 
@@ -193,6 +194,7 @@ public class EconomyMessages {
 	}
 	
 	
+	
 	// Exchange:
 	public static String paid(SagaPlayer paidPlayer, Double amount) {
 		return positive + "Gave " + coins(amount) + "s to " + paidPlayer.getName() + ".";
@@ -267,6 +269,16 @@ public class EconomyMessages {
 	return positive + "Bought " + amount + " " + GeneralMessages.material(item) + " for " + coins(price * amount) + ".";
 	
 }
+	
+	
+	
+	// Wages:
+	public static String gotPaid(Faction faction, Double amount) {
+		
+		return faction.getColour2() + "Received " + coins(amount) + " in wages.";
+		
+	}
+	
 	
 	
 	// Naming:

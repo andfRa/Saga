@@ -1,11 +1,13 @@
 package org.saga.messages;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
 import org.saga.abilities.AbilityDefinition;
 import org.saga.attributes.Attribute;
 import org.saga.buildings.BuildingDefinition;
+import org.saga.buildings.TownSquare;
 import org.saga.buildings.signs.AttributeSign;
 import org.saga.buildings.signs.GuardianRuneSign;
 import org.saga.config.AbilityConfiguration;
@@ -14,6 +16,7 @@ import org.saga.config.EconomyConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
+import org.saga.factions.FactionDefinition;
 import org.saga.messages.PlayerMessages.ColourLoop;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.ProficiencyDefinition;
@@ -456,6 +459,75 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 			"Alliance requests can be accepted and declined with " + GeneralMessages.command("/facceptally") + " and " + GeneralMessages.command("/fdeclineally") + ". " +
 			"An alliance can be broken with " + GeneralMessages.command("/fremoveally") + "."
 		);
+
+		book.nextPage();
+
+		// Claiming:
+		String townSquare = townSquare();
+		book.addLine("Every settlement that has a " + townSquare + " can be claimed by a faction. " +
+			"To claim a settlement, faction members must hold the " + townSquare + " for a certain amount of time. " +
+			"If other factions are present, then the claim timer will be frozen. " +
+			"Claiming can not be initiated by settlement members."
+		);
+
+		// Spawning:
+		book.addLine("All faction members can use " + GeneralMessages.command("/sspawn settle_name") + " command for claimed settlements. " +
+			"The command is not available when the settlement is being claimed by a rival faction."
+		);
+		
+		// Bonuses:
+		book.addLine("Members get paid daily wages, based on the amount of settlements the faction is holding. " +
+			"High level settlements generate more income. " +
+			"Higher ranks get paid more."
+		);
+		
+		book.addLine("");
+
+		// Wages table:
+		StringTable wagesTable = new StringTable(colours);
+		
+		Integer maxLevel = SettlementConfiguration.config().getSettlementDefinition().getMaxLevel();
+		Integer halfLevel = maxLevel / 2;
+		FactionDefinition definition = FactionConfiguration.config().getDefinition();
+		
+		// Titles:
+		wagesTable.addLine(new String[]{GeneralMessages.columnTitle("rank"), GeneralMessages.columnTitle("lvl 0"), GeneralMessages.columnTitle("lvl " + halfLevel), GeneralMessages.columnTitle("lvl " + maxLevel)});
+
+		Hashtable<Integer, Double> lvl0Wages = EconomyConfiguration.config().calcHierarchyWages(EconomyConfiguration.config().calcWage(0));
+		Hashtable<Integer, Double> lvlHalfWages = EconomyConfiguration.config().calcHierarchyWages(EconomyConfiguration.config().calcWage(halfLevel));
+		Hashtable<Integer, Double> lvlMaxWages = EconomyConfiguration.config().calcHierarchyWages(EconomyConfiguration.config().calcWage(maxLevel));
+		
+		int min = FactionConfiguration.config().getDefinition().getHierarchyMin();
+		int max = FactionConfiguration.config().getDefinition().getHierarchyMax();
+		
+		if(min != max){
+		
+			for (int hiera = max; hiera >= min; hiera--) {
+				
+				String name = definition.getHierarchyName(hiera);
+
+				Double wage0 = lvl0Wages.get(hiera);
+				if(wage0 == null) wage0 = 0.0;
+
+				Double wageHalf = lvlHalfWages.get(hiera);
+				if(wageHalf == null) wageHalf = 0.0;
+				
+				Double wageMax = lvlMaxWages.get(hiera);
+				if(wageMax == null) wageMax = 0.0;
+				
+				wagesTable.addLine(new String[]{name, EconomyMessages.coins(wage0), EconomyMessages.coins(wageHalf), EconomyMessages.coins(wageMax)});
+				
+			}
+			
+		}else{
+			
+			wagesTable.addLine(new String[]{"-", "-", "-", "-"});
+			
+		}
+		
+		wagesTable.collapse();
+		book.addTable(wagesTable);
+		
 		
 		return book.framedPage(page);
 		
@@ -464,6 +536,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 
 
 	
+	// Utility:
 	public static String bonuses(ProficiencyDefinition definition) {
 
 		
@@ -486,6 +559,20 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		return result.toString();
 		
 	
+	}
+	
+	public static String townSquare(){
+		
+		
+		ArrayList<BuildingDefinition> buildings = SettlementConfiguration.config().getBuildingDefinitions();
+		
+		for (BuildingDefinition building : buildings) {
+			if(building.getBuildingClass().equals(TownSquare.class.getName())) return building.getName();
+		}
+		
+		return "main building";
+		
+		
 	}
 
 	

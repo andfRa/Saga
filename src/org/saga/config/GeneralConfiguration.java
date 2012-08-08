@@ -93,12 +93,16 @@ public class GeneralConfiguration {
 	public Integer statisticsUpdateAge;
 	
 	
-	// Guard rune:
+	// Worlds:
 	/**
 	 * Worlds where the guardian rune is disabled.
 	 */
 	private HashSet<String> guardRuneDisableWorlds;
 	
+	/**
+	 * Default world name.
+	 */
+	private String defaultWorld;
 	
 	
 	
@@ -176,6 +180,11 @@ public class GeneralConfiguration {
 			SagaLogger.nullField(getClass(), "guardRuneDisableWorlds element");
 		}
 		
+		if(defaultWorld == null){
+			SagaLogger.nullField(getClass(), "defaultWorld");
+			defaultWorld = "world";
+		}
+		
 		
 	}
 	
@@ -227,7 +236,7 @@ public class GeneralConfiguration {
 	}
 	
 	
-	// Guard rune:
+	// Worlds:
 	/**
 	 * Checks if the rune is enabled in the given world
 	 * 
@@ -239,6 +248,15 @@ public class GeneralConfiguration {
 
 		return !guardRuneDisableWorlds.contains(world.getName());
 
+	}
+	
+	/**
+	 * Gets the default world.
+	 * 
+	 * @return default world
+	 */
+	public String getDefaultWorld() {
+		return defaultWorld;
 	}
 	
 	

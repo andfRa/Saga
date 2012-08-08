@@ -1060,26 +1060,31 @@ public class ChunkBundle extends SagaCustomSerialization{
 		return registeredPlayers.size();
 	}
 	
+	
 	/**
-	 * Checks if the member is on the chunk groups list.
+	 * Checks if the player is a member.
 	 * 
 	 * @param playerName player name
-	 * @return true if member is on the list
+	 * @return true if member
 	 */
-	public boolean hasMember(String playerName) {
-		
+	public boolean isMember(String playerName) {
 
-		boolean registered = players.contains(playerName);
-		if(registered){
-			return true;
-		}
-		for (int i = 0; i < registeredFactions.size(); i++) {
-			if(registeredFactions.get(i).isMember(playerName)) return true;
-		}
-		return false;
-		
+		return players.contains(playerName);
 
 	}
+	
+	/**
+	 * Check if the saga player is a member.
+	 * 
+	 * @param sagaPlayer saga player
+	 * @return true if member
+	 */
+	public boolean isMember(SagaPlayer sagaPlayer) {
+
+		return isMember(sagaPlayer.getName());
+		
+	}
+	
 	
 	/**
 	 * Checks if the member is registered.
@@ -1107,27 +1112,6 @@ public class ChunkBundle extends SagaCustomSerialization{
 		
 		return false;
 
-	}
-	
-	/**
-	 * Check if the saga player is a member.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if member
-	 */
-	public boolean isMember(SagaPlayer sagaPlayer) {
-
-		
-		boolean iMember = hasMember(sagaPlayer.getName());
-		if(iMember) return true;
-		
-		ArrayList<Faction> factions = getRegisteredFactions();
-		for (Faction faction : factions) {
-			if(faction.isMember(sagaPlayer.getName())) return true;
-		}
-		return false;
-		
-		
 	}
 	
 	/**

@@ -1,18 +1,21 @@
 package org.saga.messages;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
 import org.saga.commands.FactionCommands;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.factions.Faction;
+import org.saga.factions.FactionClaimManager;
 import org.saga.factions.FactionManager;
 import org.saga.messages.PlayerMessages.ColourLoop;
 import org.saga.player.Proficiency;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.ProficiencyDefinition;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.Settlement;
 import org.saga.utility.text.StringTable;
 import org.saga.utility.text.TextUtil;
 
@@ -304,6 +307,12 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 				result.append("\n");
 				result.append("\n");
 				
+				// Claims:
+				result.append(claims(faction).createTable());
+				
+				result.append("\n");
+				result.append("\n");
+				
 				// Allies:
 				result.append(allies(faction));
 				
@@ -347,6 +356,51 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		
 		
 	}
+	
+	private static StringTable claims(Faction faction){
+		
+		
+		ColourLoop colours = new ColourLoop().addColor(faction.getColour2());
+		StringTable table = new StringTable(colours);
+
+		// Wages:
+		table.addLine(GeneralMessages.tableTitle("wages"), "", 0);
+		
+		Hashtable<Integer, Double> wages = faction.calcWages();
+		int min = FactionConfiguration.config().getDefinition().getHierarchyMin();
+		int max = FactionConfiguration.config().getDefinition().getHierarchyMax();
+		
+		if(min != max){
+		
+			for (int hiera = max; hiera >= min; hiera--) {
+				
+				String name = faction.getDefinition().getHierarchyName(hiera);
+				Double wage = wages.get(hiera);
+				if(wage == null) wage = 0.0;
+				
+				table.addLine(name, EconomyMessages.coins(wage), 0);
+				
+			}
+			
+		}else{
+			
+			table.addLine("-", "-", 0);
+			
+		}
+		
+		// Claims:
+		table.addLine(GeneralMessages.tableTitle("settlements"), "", 2);
+		
+		Settlement[] settlemenents = FactionClaimManager.manager().findSettlements(faction.getId());
+		String claimed = settlemenents.length + "/" + FactionConfiguration.config().getClaimLimit(faction.getLevel());
+		table.addLine("claimed", claimed, 2);
+		
+		table.collapse();
+		
+		return table;
+		
+		
+	}		
 	
 	private static String allies(Faction faction){
 		
@@ -633,12 +687,18 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	
 	
 	// Utility:
-	public static String faction(Faction faction, ChatColor messageColor) {
+	public static String faction(Faction faction, ChatColor colour) {
 		
-		return faction.getColour1() + faction.getName() + messageColor;
+		return faction.getColour1() + faction.getName() + colour;
 		
 	}
 	
+	public static String faction(ChatColor style, Faction faction, ChatColor colour) {
+		
+		return faction.getColour1().toString() + style + faction.getName() + colour + style;
+		
+	}
+
 	public static String rankedPlayer(Faction faction, SagaPlayer sagaPlayer) {
 
 		Proficiency rank = faction.getRank(sagaPlayer.getName());

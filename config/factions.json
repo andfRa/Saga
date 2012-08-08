@@ -23,6 +23,12 @@
 
 "factionOnlyPvp":true,
 "prefixNameSeparator":"-",
-"formationAmount":1
+"formationAmount":1,
+
+"claimSpeed":{"x1":0,"y1":0.2,"x2":50,"y2":0.0166},
+"unclaimSpeed":{"x1":0,"y1":0.4,"x2":50,"y2":0.0332},
+"memberSpeedMult":{"x1":1,"y1":1.0,"x2":5,"y2":3.0},
+"toClaimMembers":1,
+"claimLimit":{"x1":0,"y1":5.0,"x2":50,"y2":25.0}
 
 }

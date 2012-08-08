@@ -100,24 +100,26 @@ public class Clock implements Runnable{
 //		String time = Saga.plugin().getServer().getWorld("world").getTime() +"";
 //		System.out.println("time=" + time);
 		
-		// Seconds:
-		HashSet<SecondTicker> removeTickers = new HashSet<Clock.SecondTicker>();
+		HashSet<SecondTicker> removeSecond = new HashSet<Clock.SecondTicker>();
+		HashSet<MinuteTicker> removeMinute = new HashSet<Clock.MinuteTicker>();
 		
+		// Seconds:
 		synchronized (seconds) {
 			
 			secondsCycle ++;
+			
 			ArrayList<SecondTicker> second = new ArrayList<Clock.SecondTicker>(this.seconds);
 			for (int i = 0; i < second.size(); i++) {
 				
 				 if(!second.get(i).clockSecondTick()){
-					 removeTickers.add(second.get(i));
+					 removeSecond.add(second.get(i));
 				 }
 				 
 			}
 			
 		}
 		
-		for (SecondTicker ticker : removeTickers) {
+		for (SecondTicker ticker : removeSecond) {
 			seconds.remove(ticker);
 		}
 		
@@ -125,16 +127,25 @@ public class Clock implements Runnable{
 		synchronized (minutes) {
 			
 			if(secondsCycle > 59){
+				
 				secondsCycle = 0;
 				minutesCycle++;
-				// Minutes:
-//				Saga.info("Minute tick for " + minute.size() + " registered instances.");
+				
 				ArrayList<MinuteTicker> minute = new ArrayList<Clock.MinuteTicker>(this.minutes);
 				for (int i = 0; i < minute.size(); i++) {
-					minute.get(i).clockMinuteTick();
+					
+					if(!minute.get(i).clockMinuteTick()){
+						removeMinute.add(minute.get(i));
+					}
+					
 				}
+				
 			}
 			
+		}
+		
+		for (MinuteTicker ticker : removeMinute) {
+			minutes.remove(ticker);
 		}
 		
 		// Hours:
@@ -143,13 +154,16 @@ public class Clock implements Runnable{
 			if(minutesCycle > 59){
 				minutesCycle = 0;
 				hoursCycle ++;
-				// Hours:
+
 				ArrayList<HourTicker> hour = new ArrayList<HourTicker>(this.hours);
 				SagaLogger.info("Hour tick for " + hour.size() + " registered instances.");
 				for (int i = 0; i < hour.size(); i++) {
+					
 					hour.get(i).clockHourTick();
+					
 				}
 			}
+			
 			if(hoursCycle > 23){
 				hoursCycle = 0;
 			}
@@ -267,6 +281,16 @@ public class Clock implements Runnable{
 		
 	}
 	
+	/**
+	 * Checks if the second clock is ticking.
+	 * 
+	 * @param ticker ticker
+	 * @return true if ticking
+	 */
+	public boolean isSecondTicking(SecondTicker ticker) {
+		return seconds.contains(ticker);
+	}
+	
 	
 	/**
 	 * Registers ticking.
@@ -310,6 +334,16 @@ public class Clock implements Runnable{
 		
 	}
 
+	/**
+	 * Checks if the minute clock is ticking.
+	 * 
+	 * @param ticker ticker
+	 * @return true if ticking
+	 */
+	public boolean isMinuteTicking(MinuteTicker ticker) {
+		return minutes.contains(ticker);
+	}
+	
 	
 	/**
 	 * Registers ticking.
@@ -459,8 +493,9 @@ public class Clock implements Runnable{
 		/**
 		 * A clock tick.
 		 * 
+		 * @return true if continue
 		 */
-		public void clockMinuteTick();
+		public boolean clockMinuteTick();
 		
 		
 	}

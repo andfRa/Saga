@@ -13,7 +13,10 @@ import org.saga.buildings.storage.StorageArea;
 import org.saga.chunks.ChunkBundle;
 import org.saga.chunks.ChunkBundleManager;
 import org.saga.chunks.SagaChunk;
+import org.saga.factions.Faction;
+import org.saga.factions.FactionClaimManager;
 import org.saga.messages.BuildingMessages;
+import org.saga.messages.ClaimMessages;
 import org.saga.messages.GeneralMessages;
 import org.saga.messages.SettlementEffects;
 import org.saga.messages.SettlementMessages;
@@ -644,8 +647,20 @@ public class BuildingCommands {
 			
 		}
 		
+		// Claimed by a faction:
+		Faction ownerFaction = FactionClaimManager.manager().getOwningFaction(selectedChunkBundle.getId());
+		if(ownerFaction != null && ownerFaction == sagaPlayer.getFaction()){
+			
+			// Contested:
+			if(FactionClaimManager.manager().isContested(selectedChunkBundle.getId())){
+				sagaPlayer.message(ClaimMessages.spawnDeny(ownerFaction));
+				return;
+			}
+			
+		}
+
 		// Permission:
-		if( !selectedChunkBundle.hasPermission(sagaPlayer, SettlementPermission.SPAWN) ){
+		else if(!selectedChunkBundle.hasPermission(sagaPlayer, SettlementPermission.SPAWN)){
 			sagaPlayer.message(GeneralMessages.noPermission());
 			return;
 		}

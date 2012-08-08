@@ -212,8 +212,10 @@ public class FactionManager {
 		// Unregister faction:
 		ChunkBundleManager.manager().factionUnloaded(faction);
 		
-		
+		// Remove from claim manager:
+		FactionClaimManager.manager().removeFaction(faction.getId());
 
+		
 	}
 
 	/**

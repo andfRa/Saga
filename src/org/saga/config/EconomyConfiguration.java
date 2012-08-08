@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import java.util.Random;
 
 import org.bukkit.Material;
+import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.SagaLogger;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
@@ -97,6 +98,23 @@ public class EconomyConfiguration {
 	public Double buyMult;
 	
 	
+	// Wages:
+	/**
+	 * Wage multiplier for settlement levels.
+	 */
+	private TwoPointFunction factionWageLevelMultiplier;
+
+	/**
+	 * Wage multiplier for hierarchy levels.
+	 */
+	private TwoPointFunction factionWageHierarchyMultiplier;
+
+	/**
+	 * Time when wages are payed.
+	 */
+	private Daytime factionWagesTime;
+	
+	
 	
 	// Initialisation:
 	/**
@@ -107,78 +125,79 @@ public class EconomyConfiguration {
 	}
 	
 	/**
-	 * Goes trough all the fields and makes sure everything has been set after gson load.
-	 * If not, it fills the field with defaults.
+	 * Fixes all problematic fields.
 	 * 
-	 * @return true if everything was correct.
 	 */
-	public boolean complete() {
-		
-		
-		boolean integrity = true;
+	public void complete() {
 		
 		
 		if(playerCoins == null){
-			SagaLogger.severe(getClass(), "playerCoins field not initialized");
+			SagaLogger.nullField(getClass(), "playerCoins");
 			playerCoins = 0.0;
-			integrity = false;
 		}
 		
 		if(coinName == null){
-			SagaLogger.severe(getClass(), "coinName field not initialized");
+			SagaLogger.nullField(getClass(), "coinName");
 			coinName = "coins";
-			integrity = false;
 		}
 
 		if(exchangeDistance == null){
-			SagaLogger.severe(getClass(), "exchangeDistance field not initialized");
+			SagaLogger.nullField(getClass(), "exchangeDistance");
 			exchangeDistance = 10.0;
-			integrity=false;
 		}
 		
 		if(guardianRuneRechargeCost == null){
-			SagaLogger.severe(getClass(), "guardianRuneRechargeCost field not initialized");
+			SagaLogger.nullField(getClass(), "guardianRuneRechargeCost");
 			guardianRuneRechargeCost = 1000.0;
-			integrity=false;
 		}
 		
 		if(respecCost == null){
-			SagaLogger.severe(getClass(), "respecCost field failed to initialize");
+			SagaLogger.nullField(getClass(), "respecCost");
 			respecCost= new TwoPointFunction(10000.0);
-			integrity=false;
 		}
+		respecCost.complete();
 		
 		if(chunkGroupRenameCost == null){
-			SagaLogger.severe(getClass(), "chunkGroupRenameCost field failed to initialize");
+			SagaLogger.nullField(getClass(), "chunkGroupRenameCost");
 			chunkGroupRenameCost= 1000.0;
-			integrity=false;
 		}
 		
 		if(factionRenameCost == null){
-			SagaLogger.severe(getClass(), "factionRenameCost field failed to initialize");
+			SagaLogger.nullField(getClass(), "factionRenameCost");
 			factionRenameCost= 1000.0;
-			integrity=false;
 		}
 		
 		if(prices == null){
-			SagaLogger.severe(getClass(), "prices field not initialized");
+			SagaLogger.nullField(getClass(), "prices");
 			prices = new Hashtable<Material, Double>();
-			integrity=false;
 		}
 		
 		if(buyMult == null){
 			SagaLogger.nullField(getClass(), "buyMult");
 			buyMult = 1.0;
-			integrity=false;
 		}
 
 		if(sellMult == null){
 			SagaLogger.nullField(getClass(), "sellMult");
 			sellMult = 1.0;
-			integrity=false;
 		}
+
+		if(factionWageLevelMultiplier == null){
+			SagaLogger.nullField(getClass(), "factionWageLevelMultiplier");
+			factionWageLevelMultiplier= new TwoPointFunction(0.0);
+		}
+		factionWageLevelMultiplier.complete();
+
+		if(factionWageHierarchyMultiplier == null){
+			SagaLogger.nullField(getClass(), "factionWageLevelMultiplier");
+			factionWageLevelMultiplier= new TwoPointFunction(0.0);
+		}
+		factionWageLevelMultiplier.complete();
 		
-		return integrity;
+		if(factionWagesTime == null){
+			SagaLogger.nullField(getClass(), "factionWagesTime");
+			factionWagesTime= Daytime.NONE;
+		}
 		
 		
 	}
@@ -268,6 +287,54 @@ public class EconomyConfiguration {
 		
 	}
 	
+	
+	
+	// Wages:
+	/**
+	 * Calculates wage for settlement.
+	 * 
+	 * @param settleLevel settlement level
+	 * @return wage for a single settlement
+	 */
+	public double calcWage(Integer settleLevel) {
+
+		return factionWageLevelMultiplier.value(settleLevel);
+		
+	}
+	
+	/**
+	 * Calculates the wages different hierarchy levels get.
+	 * 
+	 * @param rawWage raw wage
+	 * @return wages for hierarchy levels
+	 */
+	public Hashtable<Integer, Double> calcHierarchyWages(Double rawWage) {
+
+		
+		Hashtable<Integer, Double> wages = new Hashtable<Integer, Double>();
+		
+		int min = FactionConfiguration.config().getDefinition().getHierarchyMin();
+		int max = FactionConfiguration.config().getDefinition().getHierarchyMax();
+		
+		for (int hiera = min; hiera <= max; hiera++) {
+			
+			wages.put(hiera, rawWage * factionWageHierarchyMultiplier.value(hiera));
+			
+		}
+		
+		return wages;
+		
+		
+	}
+	
+	/**
+	 * Gets the faction wages time.
+	 * 
+	 * @return faction wages time
+	 */
+	public Daytime getFactionWagesTime() {
+		return factionWagesTime;
+	}
 	
 	
 	

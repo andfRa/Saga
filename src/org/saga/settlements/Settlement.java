@@ -748,7 +748,7 @@ public class Settlement extends ChunkBundle implements MinuteTicker{
 	 * @see org.saga.Clock.MinuteTicker#clockMinuteTick()
 	 */
 	@Override
-	public void clockMinuteTick() {
+	public boolean clockMinuteTick() {
 
 		
 		// Level progress:
@@ -756,7 +756,7 @@ public class Settlement extends ChunkBundle implements MinuteTicker{
 			
 			exp += getExpSpeed();
 			
-			if(getRemainingExp() > 0) return;
+			if(getRemainingExp() > 0) return true;
 			
 			levelUp();
 
@@ -764,6 +764,8 @@ public class Settlement extends ChunkBundle implements MinuteTicker{
 			Saga.broadcast(SettlementMessages.settleLevelBcast(this));
 			
 		}
+		
+		return true;
 		
 		
 	}

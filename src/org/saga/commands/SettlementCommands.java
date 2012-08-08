@@ -325,7 +325,7 @@ public class SettlementCommands {
 				
 				// New owner:
 				targetName = selChunkBundle.matchName(args.getString(1));
-				if(!selChunkBundle.hasMember(targetName)){
+				if(!selChunkBundle.isMember(targetName)){
 					sagaPlayer.message(SettlementMessages.notMember(selChunkBundle, targetName));
 					return;
 				}
@@ -341,7 +341,7 @@ public class SettlementCommands {
 				}
 
 				targetName = selChunkBundle.matchName(args.getString(0));
-				if(!selChunkBundle.hasMember(targetName)){
+				if(!selChunkBundle.isMember(targetName)){
 					sagaPlayer.message(SettlementMessages.notMember(selChunkBundle, targetName));
 					return;
 				}
@@ -692,7 +692,7 @@ public class SettlementCommands {
 		}
 		
 		// Already a member:
-		if(selChunkBundle.hasMember( selPlayer.getName()) ){
+		if(selChunkBundle.isMember( selPlayer.getName()) ){
 		
 			sagaPlayer.message( SettlementMessages.alreadyInTheChunkBundle(selPlayer, selChunkBundle));
 			// Unforce:
@@ -863,7 +863,7 @@ public class SettlementCommands {
 		}
 		
 		// Not a member:
-		if(!selBundle.hasMember(sagaPlayer.getName()) ){
+		if(!selBundle.isMember(sagaPlayer.getName()) ){
 			sagaPlayer.message(SettlementMessages.notMember(selBundle));
 			return;
 		}
@@ -938,7 +938,7 @@ public class SettlementCommands {
 				// Target name:
 				targetName = selBundle.matchName(args.getString(1));
 				
-				if(!selBundle.hasMember(targetName)){
+				if(!selBundle.isMember(targetName)){
 					sagaPlayer.message(SettlementMessages.notMember(selBundle, targetName));
 					return;
 				}
@@ -958,7 +958,7 @@ public class SettlementCommands {
 				// Target name:
 				targetName = selBundle.matchName(args.getString(0));
 
-				if(!selBundle.hasMember(targetName)){
+				if(!selBundle.isMember(targetName)){
 					sagaPlayer.message(SettlementMessages.notMember(selBundle, targetName));
 					return;
 				}
@@ -983,7 +983,7 @@ public class SettlementCommands {
 		}
 		
 		// Not a member:
-		if(!selBundle.hasMember(targetPlayer.getName())){
+		if(!selBundle.isMember(targetPlayer.getName())){
 			
 			if(sagaPlayer.getChunkBundle() == selBundle){
 				sagaPlayer.message(SettlementMessages.notMember(targetPlayer));

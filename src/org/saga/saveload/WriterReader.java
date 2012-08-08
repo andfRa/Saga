@@ -168,6 +168,18 @@ public class WriterReader {
 		return new File(dir.getDirectory() + dir.getFilename().replace(NAME_SUBS, name)).exists();
 		
 	}
+	
+	/**
+	 * Checks if the file exists.
+	 * 
+	 * @param name file name
+	 * @return true if exists
+	 */
+	public static boolean checkExists(Directory dir){
+		
+		return new File(dir.getDirectory() + dir.getFilename()).exists();
+		
+	}
 
 	/**
 	 * Gets all IDs.

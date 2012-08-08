@@ -10,6 +10,7 @@ import org.bukkit.Location;
 import org.saga.SagaLogger;
 import org.saga.chunks.SagaChunk.ChunkSide;
 import org.saga.factions.Faction;
+import org.saga.factions.FactionClaimManager;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
@@ -142,7 +143,7 @@ public class ChunkBundleManager {
 		}
 		
 		// Not on the list:
-		if(!chunkBundle.hasMember(sagaPlayer.getName())){
+		if(!chunkBundle.isMember(sagaPlayer.getName())){
 			SagaLogger.severe(getClass(), "chunkGroupManager could not register " + groupId + " chunk group for " + sagaPlayer + " player, because the chunk group doesn't have the player on its list");
 			sagaPlayer.removeChunkBundleId(sagaPlayer.getChunkBundleId());
 			return;
@@ -179,7 +180,7 @@ public class ChunkBundleManager {
 			return;
 		}
 		
-		if(!chunkBundle.hasMember(sagaPlayer.getName())){
+		if(!chunkBundle.isMember(sagaPlayer.getName())){
 			SagaLogger.severe(this, "could not unregister " + groupId + " chunk group for " + sagaPlayer + " player, because the chunk group doesn't have the player on its list");
 			return;
 		}
@@ -418,15 +419,10 @@ public class ChunkBundleManager {
 		}
 		
 		registeredGroups.remove(chunkBundle.getId());
-		// Unregister chunk group manager:
-//		chunkGroup.unregisterChunkGroupManager();
-//
-//		// Remove chunk shortcuts:
-//		ArrayList<SagaChunk> groupChunks = chunkGroup.getGroupChunks();
-//		for (int i = 0; i < groupChunks.size(); i++) {
-//			removeChunk(groupChunks.get(i));
-//		}
-//		
+		
+		// Remove from claim manager:
+		FactionClaimManager.manager().removeBundle(chunkBundle.getId());
+		
 		
 	}
 	

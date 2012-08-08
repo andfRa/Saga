@@ -22,6 +22,7 @@
   "LAPIS_ORE":9
 },
 
-"guardRuneDisableWorlds":["Creative"]
+"guardRuneDisableWorlds":["Creative"],
+"defaultWorld":"world"
 
 }

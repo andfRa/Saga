@@ -11,22 +11,27 @@ import java.util.Hashtable;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.saga.Clock;
+import org.saga.Clock.DaytimeTicker;
 import org.saga.Clock.SecondTicker;
 import org.saga.Saga;
 import org.saga.SagaLogger;
+import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.FactionConfiguration;
+import org.saga.config.GeneralConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
 import org.saga.exceptions.InvalidLocationException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
+import org.saga.messages.EconomyMessages;
 import org.saga.messages.FactionMessages;
 import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
+import org.saga.settlements.Settlement;
 import org.saga.utility.SagaLocation;
 
 import com.google.gson.JsonParseException;
@@ -35,7 +40,7 @@ import com.google.gson.JsonParseException;
  * @author andf
  *
  */
-public class Faction implements SecondTicker{
+public class Faction implements SecondTicker, DaytimeTicker{
 
 	
 	/**
@@ -284,7 +289,7 @@ public class Faction implements SecondTicker{
 		}
 		
 		// Transient:
-		definition = FactionConfiguration.config().definition;
+		definition = FactionConfiguration.config().getDefinition();
 		clockEnabled = false;
 		
 		if(spawn != null){
@@ -331,6 +336,9 @@ public class Faction implements SecondTicker{
 		
 		// Log:
 		SagaLogger.info("Deleting " + getId() + "(" + getName() + ") faction.");
+
+		// Disable:
+		disable();
 		
 		// Remove all members:
 		ArrayList<String> playerNames = getMembers();
@@ -388,7 +396,37 @@ public class Faction implements SecondTicker{
 			SagaLogger.severe(faction, "failed to set " + faction.getDefinition().getOwnerRank() + " rank, because the rank name is invalid");
 		}
 		
+		// Enable:
+		faction.enable();
+		
 		return faction;
+		
+		
+	}
+	
+
+	/**
+	 * Enables the faction.
+	 * 
+	 */
+	public void enable() {
+
+		
+		// Clock:
+		Clock.clock().registerDaytimeTick(this);
+		
+		
+	}
+
+	/**
+	 * Disables the faction.
+	 * 
+	 */
+	public void disable() {
+
+		
+		// Clock:
+		Clock.clock().unregisterDaytimeTick(this);
 		
 		
 	}
@@ -1516,7 +1554,32 @@ public class Faction implements SecondTicker{
 		return true;
 		
 	}
+
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.Clock.DaytimeTicker#checkWorld(java.lang.String)
+	 */
+	@Override
+	public boolean checkWorld(String worldName) {
+		return worldName.equals(GeneralConfiguration.config().getDefaultWorld());
+	}
 	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.Clock.DaytimeTicker#daytimeTick(org.saga.Clock.DaytimeTicker.Daytime)
+	 */
+	@Override
+	public void daytimeTick(Daytime daytime) {
+		
+		
+		// Wages:
+		if(daytime == EconomyConfiguration.config().getFactionWagesTime()) handleWages();
+		
+		
+	}
+
 	
 	
 	// Spawn point:
@@ -1549,6 +1612,60 @@ public class Faction implements SecondTicker{
 	}
 	
 	
+	
+	// Wages:
+	/**
+	 * Gets the wages for hierarchy levels.
+	 * 
+	 * @return wages hierarchy levels
+	 */
+	public Hashtable<Integer, Double> calcWages() {
+
+		
+		Settlement[] claimedSettles = FactionClaimManager.manager().findSettlements(getId());
+		Integer[] claimedLevels = FactionClaimManager.getLevels(claimedSettles);
+		
+		Double rawWage = 0.0;
+		for (int i = 0; i < claimedLevels.length; i++) {
+			
+			rawWage+= EconomyConfiguration.config().calcWage(claimedLevels[i]); 
+			
+		}
+		
+		return EconomyConfiguration.config().calcHierarchyWages(rawWage);
+		
+		
+	}
+	
+	/**
+	 * Pays all wages.
+	 * 
+	 */
+	private void handleWages() {
+
+		
+		Hashtable<Integer, Double> wages = calcWages();
+		ArrayList<SagaPlayer> members = getRegisteredMembers();
+		
+		// Play wages:
+		for (SagaPlayer sagaPlayer : members) {
+			
+			Proficiency rank = getRank(sagaPlayer.getName());
+			if(rank == null) continue;
+			
+			Double wage = wages.get(rank.getHierarchy());
+			if(wage == null || wage == 0) continue;
+			
+			sagaPlayer.addCoins(wage);
+			
+			sagaPlayer.message(EconomyMessages.gotPaid(this, wage));
+			
+		}
+		
+		
+	}
+	
+
 	
 	// Messages:
 	/**
@@ -1599,35 +1716,38 @@ public class Faction implements SecondTicker{
 
 		
 		// Load:
-		Faction config;
+		Faction faction;
 		try {
 			
-			config = WriterReader.read(Directory.FACTION_DATA, id, Faction.class);
+			faction = WriterReader.read(Directory.FACTION_DATA, id, Faction.class);
 			
 		} catch (FileNotFoundException e) {
 			
 			SagaLogger.info(Faction.class, "missing data for " + id + " ID");
-			config = new Faction();
+			faction = new Faction();
 			
 		} catch (IOException e) {
 			
 			SagaLogger.severe(Faction.class, "failed to read data");
-			config = new Faction();
-			config.disableSaving();
+			faction = new Faction();
+			faction.disableSaving();
 			
 		} catch (JsonParseException e) {
 			
 			SagaLogger.severe(Faction.class, "failed to parse data");
 			SagaLogger.info("Parse message: " + e.getMessage());
-			config = new Faction();
-			config.disableSaving();
+			faction = new Faction();
+			faction.disableSaving();
 			
 		}
 		
 		// Complete:
-		config.complete();
+		faction.complete();
+
+		// Enable:
+		faction.enable();
 		
-		return config;
+		return faction;
 		
 		
 	}

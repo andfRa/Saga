@@ -138,6 +138,13 @@
   "DIAMOND_BOOTS":7040
 },
 
+
 "buyMult":1.25,
-"sellMult":0.75
+"sellMult":0.75,
+
+
+"factionWageLevelMultiplier":{"x1":0,"y1":50,"x2":50,"y2":500},
+"factionWageHierarchyMultiplier":{"x1":1,"y1":0.20,"x2":3,"y2":1.0},
+"factionWagesTime":"SUNRISE"
+
 }

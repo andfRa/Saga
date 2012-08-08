@@ -31,6 +31,7 @@ import org.saga.dependencies.spout.ClientManager;
 import org.saga.economy.EconomyManager;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;
+import org.saga.factions.FactionClaimManager;
 import org.saga.factions.FactionManager;
 import org.saga.listeners.BlockListener;
 import org.saga.listeners.EntityListener;
@@ -105,6 +106,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     	loadedPlayers = null;
     	
         // Managers:
+        FactionClaimManager.unload(); // Needs access to factions and bundles.
         ChunkBundleManager.unload(); // Needs building manager.
         FactionManager.unload(); // Needs access to chunk group manager.
         EconomyManager.unload();
@@ -119,7 +121,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         SettlementConfiguration.unload();
         EconomyConfiguration.unload();
         FactionConfiguration.unload();
-        Clock.unload(); // Needs access to Saga.pluging()
+        Clock.unload(); // Needs access to Saga.pluging().
 
         // Disable permissions:
         PermissionsManager.disable();
@@ -183,6 +185,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         ChunkBundleManager.load();
         FactionManager.load(); // Needs access to chunk group manager.
         EconomyManager.load(); // Needs access to clock.
+        FactionClaimManager.load(); // Needs access to factions and bundles.
          
         // Register events:
       	pluginManager.registerEvents(new PlayerListener(), this);
@@ -584,8 +587,9 @@ public class Saga extends JavaPlugin implements MinuteTicker{
      * @see org.saga.Clock.MinuteTicker#clockMinuteTick()
      */
     @Override
-    public void clockMinuteTick() {
+    public boolean clockMinuteTick() {
 
+    	
     	saveMinutes --;
     	
     	if(saveMinutes <= 0){
@@ -595,6 +599,9 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     		save();
     		
     	}
+    	
+    	return true;
+    	
     	
     }
     
