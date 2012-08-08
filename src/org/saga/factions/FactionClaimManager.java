@@ -120,6 +120,7 @@ public class FactionClaimManager implements MinuteTicker{
 	 */
 	public boolean checkInitiation(ChunkBundle bundle, ArrayList<SagaPlayer> sagaPlayers) {
 
+		System.out.println("check init");
 		
 		Faction initFaction = getInitFacton(bundle, sagaPlayers);
 		Faction owningFaction = getOwningFaction(bundle.getId());
@@ -127,15 +128,32 @@ public class FactionClaimManager implements MinuteTicker{
 		// Initiating faction:
 		if(initFaction == null) return false;
 		
+		System.out.println("init fac ok");
+		
 		// Already claimed:
 		if(initFaction == owningFaction) return false;
+		
+		System.out.println("not claimed yet");
 		
 		// Already contested:
 		if(isContested(bundle.getId())) return false;
 		
-		// Check members:
-		if(initFaction.getRegisteredMemberCount() < FactionConfiguration.config().getToClaimMembers()) return false;
-		if(owningFaction != null && owningFaction.getRegisteredMemberCount() < FactionConfiguration.config().getToClaimMembers()) return false;
+		System.out.println("not contested");
+		
+		// Check members for sizing:
+		if(owningFaction != null){
+
+			if(initFaction.getRegisteredMemberCount() < FactionConfiguration.config().getToClaimMembers()) return false;
+		
+			System.out.println("init members");
+		
+			if(owningFaction.getRegisteredMemberCount() < FactionConfiguration.config().getToClaimMembers()) return false;
+			
+			System.out.println("owning members");
+			
+		}
+		
+		System.out.println("init OK");
 		
 		return true;
 	
@@ -213,7 +231,7 @@ public class FactionClaimManager implements MinuteTicker{
 			Faction playerFaction = sagaPlayer.getFaction();
 			
 			if(playerFaction == contFaction) contest = true;
-			if(contFaction != null && playerFaction != contFaction) return false;
+			if(playerFaction != null && playerFaction != contFaction) return false;
 			
 		}
 		

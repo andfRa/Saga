@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.saga.buildings.TownSquare;
 import org.saga.commands.FactionCommands;
 import org.saga.config.FactionConfiguration;
+import org.saga.config.GeneralConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.factions.Faction;
 import org.saga.factions.FactionClaimManager;
@@ -295,7 +298,14 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 				result.append(listMembers(faction));
 				
 				break;
+
+				// Ranks:	
+			case 2:
 				
+				result.append(claimed(faction).createTable());
+					
+				break;
+					
 			// Main stats:
 			default:
 				
@@ -320,7 +330,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 				
 		}
 		
-		return TextUtil.frame(faction.getName() + " stats " + (page + 1) + "/" + 2, result.toString(), faction.getColour2());
+		return TextUtil.frame(faction.getName() + " stats " + (page + 1) + "/" + 3, result.toString(), faction.getColour2());
 
 		
 	}
@@ -544,7 +554,119 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		
 		
 	}
+	
+	private static StringTable claimed(Faction faction){
+		
+		
+		Settlement[] settlements = FactionClaimManager.manager().findSettlements(faction.getId());
+		
+		ColourLoop colours = new ColourLoop().addColor(faction.getColour2());
+		StringTable table = new StringTable(colours);
 
+		
+		// Titles:
+		table.addLine(new String[]{GeneralMessages.columnTitle("settlement"), GeneralMessages.columnTitle("location"), GeneralMessages.columnTitle("closest"), GeneralMessages.columnTitle("distance")});
+		
+		if(settlements.length > 0){
+			
+			for (int i = 0; i < settlements.length; i++) {
+				
+				String name = settlements[i].getName();
+				Location location = retTownSquareLoc(settlements[i]);
+				
+				String locationStr = "none";
+				if(location != null) locationStr = location(location);
+				
+				String closestName = "none";
+				Location closestLocation = null;
+
+				Settlement closestSettle = closest(settlements[i], settlements);
+				if(closestSettle != null){
+					closestLocation = retTownSquareLoc(closestSettle);
+					closestName = closestSettle.getName();
+				}
+				
+				String distance = "-";
+				if(location != null && closestLocation != null) distance = (int)location.distance(closestLocation) + "";
+				
+				table.addLine(new String[]{name, locationStr, closestName, distance});
+			
+			}
+			
+		}else{
+			
+			table.addLine(new String[]{"-", "-", "-", "-"});
+			
+		}
+		
+		table.collapse();
+		
+		return table;
+		
+		
+	}
+	
+	private static Settlement closest(Settlement settlement, Settlement[] otherSettles){
+		
+		
+		Double minDistSuared = Double.MAX_VALUE;
+		Settlement closestSettlement = null;
+				
+		// Location:
+		Location location = retTownSquareLoc(settlement);
+		if(location == null) return null;
+				
+		for (int i = 0; i < otherSettles.length; i++) {
+			
+			// Same settlement:
+			if(settlement == otherSettles[i]) continue;
+			
+			// Town square:
+			Location otherLocation = retTownSquareLoc(otherSettles[i]);
+			if(otherLocation == null) continue;
+			
+			// Other world:
+			if(!otherLocation.getWorld().getName().equalsIgnoreCase(location.getWorld().getName())) continue;
+			
+			Double distSqared = otherLocation.distanceSquared(location);
+			if(distSqared < minDistSuared){
+				minDistSuared = distSqared;
+				closestSettlement = otherSettles[i];
+			}
+			
+		}
+		
+		return closestSettlement;
+		
+		
+	}
+
+
+	private static String location(Location location){
+		
+		
+		StringBuffer result = new StringBuffer();
+		
+		if(location != null){
+			result.append(location.getBlockX() + ", " + location.getBlockY() + ", " + location.getBlockZ()); 
+
+			if(!location.getWorld().getName().equals(GeneralConfiguration.config().getDefaultWorld())) result.insert(0, location.getWorld().getName() + " ");
+			
+		}
+		
+		return result.toString();
+		
+		
+	}
+
+	
+	private static Location retTownSquareLoc(Settlement settlement) {
+
+		ArrayList<TownSquare> townSquares = settlement.getBuildings(TownSquare.class);
+		if(townSquares.size() == 0) return null;
+		return townSquares.get(0).getSagaChunk().getCenterLocation();
+		
+	}
 	
 	
 	// Rename:

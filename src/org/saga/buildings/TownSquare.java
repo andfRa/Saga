@@ -91,6 +91,8 @@ public class TownSquare extends Building implements SecondTicker{
 	public boolean clockSecondTick() {
 
 		
+		if(getSagaChunk() == null) return false;
+		
 		ArrayList<SagaPlayer> sagaPlayers = getSagaChunk().getSagaPlayers();
 		ChunkBundle bundle = getChunkBundle();
 		
