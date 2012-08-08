@@ -574,7 +574,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 				String name = settlements[i].getName();
 				Location location = retTownSquareLoc(settlements[i]);
 				
-				String locationStr = "none";
+				String locationStr = "no " + InfoMessages.townSquare();
 				if(location != null) locationStr = location(location);
 				
 				String closestName = "none";
