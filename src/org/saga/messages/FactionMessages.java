@@ -790,7 +790,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	// Rank:
 	public static String newRank(Faction faction, String rankName, SagaPlayer targetPlayer) {
 		
-		return faction.getColour2() + "Rank " + rankName + "was assigned to " + targetPlayer.getName() + ".";
+		return faction.getColour2() + "Rank " + rankName + " was assigned to " + targetPlayer.getName() + ".";
 		
 	}
 	
