@@ -529,7 +529,7 @@ public class SettlementCommands {
 		}
 		
 		// Building points:
-		if(selBundle.getRemainingBuildPoints() < selBuilding.getDefinition().getBuildPoints()){
+		if(!selBundle.hasBuildPointsAvailable(selBuilding)){
 			sagaPlayer.message(SettlementMessages.notEnoughBuildingPoints(selBuilding));
 			return;
 		}

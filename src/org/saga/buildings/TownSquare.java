@@ -10,6 +10,7 @@ import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.SagaLogger;
 import org.saga.chunks.ChunkBundle;
+import org.saga.chunks.ChunkBundleToggleable;
 import org.saga.chunks.SagaChunk;
 import org.saga.config.FactionConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
@@ -106,13 +107,16 @@ public class TownSquare extends Building implements SecondTicker{
 		ArrayList<SagaPlayer> sagaPlayers = getSagaChunk().getSagaPlayers();
 		if(sagaPlayers.size() == 0) return false;
 
-		// Bundles and progress:
+		// Bundles and factons:
 		if(getSagaChunk() == null) return false;
 		ChunkBundle bundle = getChunkBundle();
 		Integer bundleId = bundle.getId();
 		
 		Faction claimerFaction = FactionClaimManager.manager().getClaimerFaction(bundleId);
 		Faction owningFaction = FactionClaimManager.manager().getOwningFaction(bundleId);
+		
+		// Unclaimable:
+		if(bundle.isOptionEnabled(ChunkBundleToggleable.UNCLAIMABLE)) return true;
 		
 		// Progress:
 		Double progress = FactionClaimManager.manager().getProgress(bundleId);

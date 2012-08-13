@@ -107,16 +107,6 @@ public class ChunkBundle extends SagaCustomSerialization{
 	 */
 	private HashSet<ChunkBundleToggleable> toggleOptions;
 	
-	/**
-	 * Forced pvp protection.
-	 */
-	private Boolean pvpProtectionBonus;
-	
-	/**
-	 * Unlimited claims.
-	 */
-	private Boolean unlimitedClaimBonus;
-	
 	
 
 	// Properties:
@@ -150,8 +140,6 @@ public class ChunkBundle extends SagaCustomSerialization{
 		this.buildingScores = new Hashtable<String, Integer>();
 		this.isSavingEnabled = true;
 		this.owner = "";
-		this.pvpProtectionBonus = false;
-		this.unlimitedClaimBonus = false;
 		this.fireSpread = false;
 		this.lavaSpread = false;
 		this.toggleOptions = new HashSet<ChunkBundleToggleable>();
@@ -635,6 +623,8 @@ public class ChunkBundle extends SagaCustomSerialization{
 	 * @return true if available
 	 */
 	public boolean isBuildingAvailable(String buildingName) {
+
+		if(isOptionEnabled(ChunkBundleToggleable.UNLIMITED_BUILDINGS)) return true;
 		
 		return getRemainingBuildings(buildingName) > 0;
 		
@@ -836,7 +826,20 @@ public class ChunkBundle extends SagaCustomSerialization{
 		
 	}
 
+	/**
+	 * Checks if there are building points are available.
+	 * 
+	 * @param building building
+	 * @return true if building points available
+	 */
+	public boolean hasBuildPointsAvailable(Building building) {
 
+		if(isOptionEnabled(ChunkBundleToggleable.UNLIMITED_BUILDINGS)) return true;
+		
+		return getRemainingBuildPoints() >= building.getDefinition().getBuildPoints();
+		
+	}
+	
 	
 	// Todo methods:
 	/**
@@ -1273,39 +1276,6 @@ public class ChunkBundle extends SagaCustomSerialization{
 
 		toggleOptions.remove(option);
 
-	}
-	
-	
-	/**
-	 * Gets the forcedPvpProtection.
-	 * 
-	 * @return the forcedPvpProtection
-	 */
-	public Boolean hasPvpProtectionBonus2() {
-		return pvpProtectionBonus;
-	}
-
-	/**
-	 * Toggles the forcedPvpProtection.
-	 */
-	public void togglePvpProtectionBonus2() {
-		this.pvpProtectionBonus = !pvpProtectionBonus;
-	}
-
-	/**
-	 * Gets the enabledUnlimitedClaim.
-	 * 
-	 * @return the enabledUnlimitedClaim
-	 */
-	public Boolean hasUnlimitedClaimBonus2() {
-		return unlimitedClaimBonus;
-	}
-
-	/**
-	 * Toggles the enabledUnlimitedClaim.
-	 */
-	public void toggleUnlimitedClaim2() {
-		this.unlimitedClaimBonus = !unlimitedClaimBonus;
 	}
 	
 	
