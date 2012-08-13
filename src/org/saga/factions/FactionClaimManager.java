@@ -9,9 +9,10 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import org.saga.Clock;
-import org.saga.Clock.MinuteTicker;
+import org.saga.Clock.SecondTicker;
 import org.saga.Saga;
 import org.saga.SagaLogger;
+import org.saga.buildings.TownSquare;
 import org.saga.chunks.ChunkBundle;
 import org.saga.chunks.ChunkBundleManager;
 import org.saga.config.FactionConfiguration;
@@ -24,7 +25,7 @@ import org.saga.statistics.StatisticsManager;
 
 import com.google.gson.JsonParseException;
 
-public class FactionClaimManager implements MinuteTicker{
+public class FactionClaimManager implements SecondTicker{
 
 
 	/**
@@ -54,15 +55,16 @@ public class FactionClaimManager implements MinuteTicker{
 	private Hashtable<Integer, Double> progress;
 	
 	/**
-	 * Faction claim contesters.
+	 * Claiming factions.
 	 */
-	private Hashtable<Integer, Integer> contesters;
+	private Hashtable<Integer, Integer> claiming;
 	
 	/**
 	 * Bundle IDs that have claims active.
 	 */
 	transient private HashSet<Integer> claimActive;
 	
+
 	
 	// Initialisation:
 	/**
@@ -75,9 +77,9 @@ public class FactionClaimManager implements MinuteTicker{
 		
 		claims = new Hashtable<Integer, Integer>();
 		progress = new Hashtable<Integer, Double>();
-		contesters = new Hashtable<Integer, Integer>();
+		claiming = new Hashtable<Integer, Integer>();
 		claimActive = new HashSet<Integer>();
-		
+
 		
 	}
 
@@ -98,9 +100,9 @@ public class FactionClaimManager implements MinuteTicker{
 			progress = new Hashtable<Integer, Double>();
 		}
 		
-		if(contesters == null){
-			SagaLogger.nullField(getClass(), "contesters");
-			contesters = new Hashtable<Integer, Integer>();
+		if(claiming == null){
+			SagaLogger.nullField(getClass(), "claiming");
+			claiming = new Hashtable<Integer, Integer>();
 		}
 		
 		
@@ -112,42 +114,7 @@ public class FactionClaimManager implements MinuteTicker{
 	
 	
 	
-	// Initiation:
-	/**
-	 * Checks if claim initiation is possible.
-	 * 
-	 * @param faction faction
-	 * @return true if claim initiation is possible
-	 */
-	public boolean checkInitiation(ChunkBundle bundle, ArrayList<SagaPlayer> sagaPlayers) {
-
-
-		Faction initFaction = getInitFacton(bundle, sagaPlayers);
-		Faction owningFaction = getOwningFaction(bundle.getId());
-		
-		// Initiating faction:
-		if(initFaction == null) return false;
-		
-		// Already claimed:
-		if(initFaction == owningFaction) return false;
-		
-		// Already contested:
-		if(isContested(bundle.getId())) return false;
-		
-		// Check members for seizing:
-		if(owningFaction != null){
-
-			if(initFaction.getRegisteredMemberCount() < FactionConfiguration.config().getToClaimMembers()) return false;
-		
-			if(owningFaction.getRegisteredMemberCount() < FactionConfiguration.config().getToClaimMembers()) return false;
-			
-		}
-		
-		return true;
-	
-		
-	}
-	
+	// Claiming:
 	/**
 	 * Initiates claiming.
 	 * 
@@ -156,35 +123,40 @@ public class FactionClaimManager implements MinuteTicker{
 	 */
 	public void initiate(ChunkBundle bundle, Faction faction) {
 
-		setContester(bundle.getId(), faction.getId());
+		
+		// Claimer:
+		setClaimer(bundle.getId(), faction.getId());
+		
+		// Set as active:
+		claimActive.add(bundle.getId());
+		
 		
 	}
 	
 	/**
-	 * Gets the initiating faction.
+	 * Gets the initiating faction ID.
 	 * 
-	 * @param bundle chunk bundle
+	 * @param bundleId chunk bundle ID
 	 * @param sagaPlayers saga player
-	 * @return initiating faction, null if none
+	 * @return initiating faction ID, null if none
 	 */
-	public static Faction getInitFacton(ChunkBundle bundle, ArrayList<SagaPlayer> sagaPlayers) {
+	public static Integer getInitFactonId(Integer bundleId, ArrayList<SagaPlayer> sagaPlayers) {
 
 		
-		Faction owningFaction = FactionClaimManager.manager().getOwningFaction(bundle.getId());
+		Integer owningId = FactionClaimManager.manager().getOwningFactionId(bundleId);
 		
 		// Get faction:
 		for (SagaPlayer sagaPlayer : sagaPlayers) {
-			
-			// Ignore members:
-			if(bundle.isMember(sagaPlayer.getName())) continue;
 			
 			Faction playerFaction = sagaPlayer.getFaction();
 			
 			// Ignore not factions:
 			if(playerFaction == null) continue;
 			
+			if(owningId == null) return playerFaction.getId();
+			
 			// Other factions:
-			if(playerFaction != owningFaction) return playerFaction;
+			if(!playerFaction.getId().equals(owningId)) return playerFaction.getId();
 			
 		}
 		
@@ -192,59 +164,7 @@ public class FactionClaimManager implements MinuteTicker{
 		
 		
 	}
-	
-	
-	
-	// Claiming:
-	/**
-	 * Checks if the bundle can is being claimed.
-	 * 
-	 * @param bundle bundle
-	 * @param sagaPlayers players on the bundle
-	 * @return true if being claimed
-	 */
-	public boolean checkClaiming(ChunkBundle bundle, ArrayList<SagaPlayer> sagaPlayers) {
 
-
-		Faction contFaction = getContesterFaction(bundle.getId());
-
-		// Multiple factions:
-		HashSet<Faction> allContesters = getAllContesters(sagaPlayers);
-		
-		// Contested:
-		if(!isContested(bundle.getId())) return false;
-		
-		// Contesting faction not present:
-		if(!allContesters.contains(contFaction)) return false;
-		
-		return true;
-		
-		
-	}
-
-	/**
-	 * Checks if the bundle is being contested.
-	 * 
-	 * @param bundle chunk bundle
-	 * @param sagaPlayers saga players
-	 * @return true if contested
-	 */
-	public boolean checkContesting(ChunkBundle bundle, ArrayList<SagaPlayer> sagaPlayers) {
-
-		
-		Faction owningFaction = getOwningFaction(bundle.getId());
-
-		// Multiple factions:
-		HashSet<Faction> allContesters = getAllContesters(sagaPlayers);
-		
-		// Owning faction present:
-		if(allContesters.contains(owningFaction)) return true;
-		
-		return false;
-		
-		
-	}
-	
 	/**
 	 * Progresses the chunk bundle claim.
 	 * 
@@ -260,9 +180,9 @@ public class FactionClaimManager implements MinuteTicker{
 		if(progress >= 1.0){
 			
 			Integer bundleId = bundle.getId();
-			Faction faction = getContesterFaction(bundleId);
+			Faction faction = getClaimerFaction(bundleId);
 			
-			clearContester(bundleId);
+			clearClaimer(bundleId);
 			clearProgress(bundleId);
 			
 			if(faction == null){
@@ -270,7 +190,7 @@ public class FactionClaimManager implements MinuteTicker{
 				return;
 			}
 			
-			Integer oldId = setOwningId(bundleId, faction.getId());
+			Integer oldId = setOwningFactionId(bundleId, faction.getId());
 			
 			// Inform:
 			Saga.broadcast(ClaimMessages.claimedBcast(bundle, faction));
@@ -302,21 +222,21 @@ public class FactionClaimManager implements MinuteTicker{
 	}
 	
 	/**
-	 * Gets all contesting factions.
+	 * Gets all faction IDs.
 	 * 
 	 * @param sagaPlayers all players
-	 * @return all contesting factions
+	 * @return all faction IDs
 	 */
-	public static HashSet<Faction> getAllContesters(ArrayList<SagaPlayer> sagaPlayers) {
+	public static HashSet<Integer> getAllFactionIds(ArrayList<SagaPlayer> sagaPlayers) {
 
 		
-		HashSet<Faction> allContesters = new HashSet<Faction>();
+		HashSet<Integer> allClaimers = new HashSet<Integer>();
 		
 		for (SagaPlayer sagaPlayer : sagaPlayers) {
-			if(sagaPlayer.getFaction() != null) allContesters.add(sagaPlayer.getFaction());
+			if(sagaPlayer.getFaction() != null) allClaimers.add(sagaPlayer.getFaction().getId());
 		}
 		
-		return allContesters; 
+		return allClaimers; 
 			
 		
 	}
@@ -330,7 +250,7 @@ public class FactionClaimManager implements MinuteTicker{
 	 * @param bundleId chunk bundle ID
 	 * @return owning faction ID, null if none
 	 */
-	public Integer getOwningId(Integer bundleId) {
+	public Integer getOwningFactionId(Integer bundleId) {
 		return claims.get(bundleId);
 	}
 	
@@ -341,33 +261,18 @@ public class FactionClaimManager implements MinuteTicker{
 	 * @param factionId faction ID
 	 * @return old owning faction ID, null if none
 	 */
-	public Integer setOwningId(Integer bundleId, Integer factionId) {
+	public Integer setOwningFactionId(Integer bundleId, Integer factionId) {
 		return claims.put(bundleId, factionId);
 	}
-	
-	/**
-	 * Get owning faction.
-	 * 
-	 * @param bundleId chunk bundle ID
-	 * @return owning faction, null if none
-	 */
-	public Faction getOwningFaction(Integer bundleId) {
-		
-		Integer id = getOwningId(bundleId);
-		if(id == null) return null;
-		
-		return FactionManager.manager().getFaction(id);
 
-	}
-	
 	/**
 	 * Checks if the chunk bundle has an owner.
 	 * 
-	 * @param bundle chunk bundle
+	 * @param bundleId chunk bundle ID
 	 * @return true if has an owner
 	 */
-	public Boolean hasOwner(ChunkBundle bundle) {
-		return claims.get(bundle.getId()) != null;
+	public Boolean hasOwnerFaction(Integer bundleId) {
+		return claims.get(bundleId) != null;
 	}
 	
 	
@@ -375,11 +280,11 @@ public class FactionClaimManager implements MinuteTicker{
 	 * Checks if the bundle is claimed by a faction.
 	 * 
 	 * @param bundleId bundle ID
-	 * @return true if contested 
+	 * @return true if claiming 
 	 */
-	public boolean isContested(Integer bundleId) {
+	public boolean isFactionClaiming(Integer bundleId) {
 
-		return contesters.get(bundleId) != null;
+		return claiming.get(bundleId) != null;
 		
 	}
 	
@@ -389,9 +294,9 @@ public class FactionClaimManager implements MinuteTicker{
 	 * @param bundleId bundle ID
 	 * @return contester faction ID
 	 */
-	public Integer getContester(Integer bundleId) {
+	public Integer getClaimerFactionId(Integer bundleId) {
 
-		Integer contester = contesters.get(bundleId);
+		Integer contester = claiming.get(bundleId);
 		if(contester == null) contester = -1;
 		
 		return contester;
@@ -399,30 +304,15 @@ public class FactionClaimManager implements MinuteTicker{
 	}
 
 	/**
-	 * Get contester faction.
-	 * 
-	 * @param bundleId chunk bundle ID
-	 * @return contester faction, null if none
-	 */
-	public Faction getContesterFaction(Integer bundleId) {
-		
-		Integer id = getContester(bundleId);
-		if(id == null) return null;
-		
-		return FactionManager.manager().getFaction(id);
-
-	}
-	
-	/**
 	 * Gets the contester faction ID.
 	 * 
 	 * @param bundleId bundle ID
 	 * @param factionId faction ID
 	 * @return old contester faction ID
 	 */
-	public Integer setContester(Integer bundleId, Integer factionId) {
+	public Integer setClaimer(Integer bundleId, Integer factionId) {
 
-		return contesters.put(bundleId, factionId);
+		return claiming.put(bundleId, factionId);
 		
 	}
 	
@@ -432,9 +322,9 @@ public class FactionClaimManager implements MinuteTicker{
 	 * @param bundleId bundle ID
 	 * @return cleared contester, null if none
 	 */
-	public Integer clearContester(Integer bundleId) {
+	public Integer clearClaimer(Integer bundleId) {
 
-		return contesters.remove(bundleId);
+		return claiming.remove(bundleId);
 		
 	}
 	
@@ -468,7 +358,7 @@ public class FactionClaimManager implements MinuteTicker{
 		
 		if(bundleProgess <= 0){
 			progress.remove(bundleId);
-			contesters.remove(bundleId);
+			claiming.remove(bundleId);
 		}else{
 			progress.put(bundleId, bundleProgess);
 		}
@@ -509,12 +399,12 @@ public class FactionClaimManager implements MinuteTicker{
 			if(claims.get(bundleId) == factionId) claims.remove(bundleId);
 		}
 
-		// Contesters and progress:
-		bundleIds = contesters.keySet();
+		// Claimers and progress:
+		bundleIds = claiming.keySet();
 		for (Integer bundleId : bundleIds) {
-			if(contesters.get(bundleId) == factionId){
+			if(claiming.get(bundleId) == factionId){
 				progress.remove(bundleId);
-				contesters.remove(bundleId);
+				claiming.remove(bundleId);
 			}
 		}
 		
@@ -530,7 +420,7 @@ public class FactionClaimManager implements MinuteTicker{
 
 		claims.remove(bundleId);
 		progress.remove(bundleId);
-		contesters.remove(bundleId);
+		claiming.remove(bundleId);
 		
 	}
 	
@@ -585,6 +475,55 @@ public class FactionClaimManager implements MinuteTicker{
 		
 	}
 
+
+	/**
+	 * Get owning faction.
+	 * 
+	 * @param bundleId chunk bundle ID
+	 * @return owning faction, null if none
+	 */
+	public Faction getOwningFaction(Integer bundleId) {
+		
+		Integer id = getOwningFactionId(bundleId);
+		if(id == null) return null;
+		
+		return FactionManager.manager().getFaction(id);
+
+	}
+
+	/**
+	 * Get contester faction.
+	 * 
+	 * @param bundleId chunk bundle ID
+	 * @return contester faction, null if none
+	 */
+	public Faction getClaimerFaction(Integer bundleId) {
+		
+		Integer id = getClaimerFactionId(bundleId);
+		if(id == null) return null;
+		
+		return FactionManager.manager().getFaction(id);
+
+	}
+
+	/**
+	 * Gets the initiating faction ID.
+	 * 
+	 * @param bundleId chunk bundle ID
+	 * @param sagaPlayers saga player
+	 * @return initiating faction ID, null if none
+	 */
+	public static Faction getInitFacton(Integer bundleId, ArrayList<SagaPlayer> sagaPlayers) {
+
+		
+		Integer initId = getInitFactonId(bundleId, sagaPlayers);
+		if(initId == null) return null;
+		
+		return FactionManager.manager().getFaction(initId);
+		
+		
+	}
+
 	
 	
 	// Timing:
@@ -594,23 +533,25 @@ public class FactionClaimManager implements MinuteTicker{
 	 * @see org.saga.Clock.MinuteTicker#clockMinuteTick()
 	 */
 	@Override
-	public boolean clockMinuteTick() {
+	public boolean clockSecondTick() {
 		
-		
-		Set<Integer> bundleIds = contesters.keySet();
+
+		Set<Integer> bundleIds = claiming.keySet();
 		
 		for (Integer bundleId : bundleIds) {
 			
-			// Not count if active:
+			// Don't count if active:
 			if(claimActive.contains(bundleId)){
 				claimActive.remove(bundleId);
 				continue;
 			}
 			
-			// Contested:
+			// Claiming:
 			ChunkBundle bundle = ChunkBundleManager.manager().getChunkBundle(bundleId);
 			if(bundle == null){
 				SagaLogger.severe(getClass(), "failed to retrieve chunk bundle for " + bundleId);
+				progress.remove(bundleId);
+				claiming.remove(bundleId);
 				continue;
 			}
 			
@@ -618,9 +559,14 @@ public class FactionClaimManager implements MinuteTicker{
 			Integer level = 0;
 			if(bundle instanceof Settlement) level = ((Settlement) bundle).getLevel();
 			
-			Double decrease = FactionConfiguration.config().getUnclaimSpeed(level);
+			Double decrease = FactionConfiguration.config().getUnclaimSpeed(level) / 60;
 			modifyProgress(bundleId, -decrease);
 			
+			// Inform:
+			ArrayList<TownSquare> claimable = bundle.getBuildings(TownSquare.class);
+			for (TownSquare townSquare : claimable) {
+				townSquare.informUnclaim();
+			}
 			
 		}
 		
@@ -629,6 +575,57 @@ public class FactionClaimManager implements MinuteTicker{
 			
 	}
 	
+
+	
+	// Checks:
+	/**
+	 * Checks if the bundle is available for claiming.
+	 * 
+	 * @param bundleId bundle ID
+	 * @param sagaPlayers players on the bundle
+	 * @return true if available claiming
+	 */
+	public boolean checkAvailable(Integer bundleId, ArrayList<SagaPlayer> sagaPlayers) {
+
+
+		Integer initId = getInitFactonId(bundleId, sagaPlayers);
+		
+		Integer ownerId = getOwningFactionId(bundleId);
+		
+		// No initiator:
+		if(initId == null){
+			return false;
+		}
+		
+		// No owner:
+		if(ownerId == null) return true;
+		
+		// Already owner:
+		return !initId.equals(ownerId);
+		
+		
+	}
+	
+	/**
+	 * Checks if claiming faction is the one claiming.
+	 * 
+	 * @param bundleId bundle ID
+	 * @param sagaPlayers players on the bundle
+	 * @return true if is claiming
+	 */
+	public boolean checkClaimer(Integer bundleId, ArrayList<SagaPlayer> sagaPlayers) {
+
+
+		Integer claimFactionId = getClaimerFactionId(bundleId);
+		HashSet<Integer> allClaimerIds = getAllFactionIds(sagaPlayers);
+		
+		if(!allClaimerIds.contains(claimFactionId)) return false;
+		
+		return true;
+		
+		
+	}
+
 	
 	
 	// Load unload:
@@ -681,7 +678,7 @@ public class FactionClaimManager implements MinuteTicker{
 		instance.complete();
 		
 		// Clock:
-		Clock.clock().registerMinuteTick(instance);
+		Clock.clock().registerSecondTick(instance);
 		
 		return instance;
 		
@@ -699,7 +696,7 @@ public class FactionClaimManager implements MinuteTicker{
 		SagaLogger.info("Unloading faction claims.");
 		
 		// Clock:
-		Clock.clock().unregisterMinuteTick(instance);
+		Clock.clock().unregisterSecondTick(instance);
 		
 		save();
 		

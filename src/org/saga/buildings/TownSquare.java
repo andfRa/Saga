@@ -91,76 +91,74 @@ public class TownSquare extends Building implements SecondTicker{
 	public boolean clockSecondTick() {
 
 		
-		if(getSagaChunk() == null) return false;
+		// Counting:
+		count++;
+		if(count > 9){
+			count = 0;
+		}
 		
+		// Players:
 		ArrayList<SagaPlayer> sagaPlayers = getSagaChunk().getSagaPlayers();
-		ChunkBundle bundle = getChunkBundle();
-		
-		// No players:
 		if(sagaPlayers.size() == 0) return false;
+
+		// Bundles and progress:
+		if(getSagaChunk() == null) return false;
+		ChunkBundle bundle = getChunkBundle();
+		Integer bundleId = bundle.getId();
 		
-		Faction attackerFaction = FactionClaimManager.manager().getContesterFaction(bundle.getId());
-		Faction defenderFaction = FactionClaimManager.manager().getOwningFaction(bundle.getId());
+		Faction claimerFaction = FactionClaimManager.manager().getClaimerFaction(bundleId);
+		Faction owningFaction = FactionClaimManager.manager().getOwningFaction(bundleId);
 		
 		// Progress:
-		Double progress = FactionClaimManager.manager().getProgress(bundle.getId());
-		if(progress > 0){
+		Double progress = FactionClaimManager.manager().getProgress(bundleId);
+		
+		// Messaging:
+		boolean message = false;
+		if(count == 5) message = true;
+		
+		
+		// Claiming:
+		if(FactionClaimManager.manager().isFactionClaiming(bundleId)){
 
-			if(count > 10) count = 0;
-			
-			// Contesting:
-			if(FactionClaimManager.manager().checkContesting(bundle, sagaPlayers)){
-				
-				// Inform:
-				if(count == 0) getSagaChunk().broadcast(ClaimMessages.contestingTownSquare(bundle, attackerFaction, defenderFaction, progress));
-				count++;
-				
-				return true;
-				
-			}
-			
-			// Inform:
-			if(count == 0){
+			// Check claiming faction:
+			if(!FactionClaimManager.manager().checkClaimer(bundleId, sagaPlayers)) return true;
 
-				if(attackerFaction != null && defenderFaction != null){
+			// Claim speed:
+			Integer level = 0;
+			if(bundle instanceof Settlement) level = ((Settlement) bundle).getLevel();
+			Double claimed = FactionConfiguration.config().getClaimSpeed(level) / 60;
+
+			// Claim:
+			FactionClaimManager.manager().progressClaim(bundle, claimed);
+			
+			// Inform town square:
+			if(message && claimed > 0){
+				
+				if(claimerFaction != null && owningFaction != null){
 					
-					getSagaChunk().broadcast(ClaimMessages.claimingTownSquare(bundle, attackerFaction, defenderFaction, progress));
+					getSagaChunk().broadcast(ClaimMessages.claimingTownSquare(bundle, claimerFaction, owningFaction, progress));
 					
-				}else if(attackerFaction != null){
+				}else if(claimerFaction != null){
 					
-					getSagaChunk().broadcast(ClaimMessages.claimingTownSquare(bundle, attackerFaction, progress));
+					getSagaChunk().broadcast(ClaimMessages.claimingTownSquare(bundle, claimerFaction, progress));
 					
 				}
 				
 			}
 			
-			count++;
-			
-		}
-		
-		// Progress claim:
-		if(FactionClaimManager.manager().checkClaiming(bundle, sagaPlayers)){
-			
-			Integer level = 0;
-			if(bundle instanceof Settlement) level = ((Settlement) bundle).getLevel();
-			
-			Double claimed = FactionConfiguration.config().getClaimSpeed(level) / 60;
-
-			FactionClaimManager.manager().progressClaim(bundle, claimed);
-		
 			// Inform factions:
-			if(checkOverstep(progress, progress + claimed)){
+			if(checkOverstep(progress, progress + claimed) && claimed > 0){
 				
 				progress+= claimed;
 				
-				if(attackerFaction != null && defenderFaction != null){
+				if(claimerFaction != null && owningFaction != null){
 					
-					attackerFaction.information(ClaimMessages.claiming(bundle, attackerFaction, defenderFaction, progress));
-					defenderFaction.information(ClaimMessages.loosing(bundle, defenderFaction, attackerFaction, progress));
+					claimerFaction.information(ClaimMessages.claiming(bundle, claimerFaction, owningFaction, progress));
+					owningFaction.information(ClaimMessages.loosing(bundle, owningFaction, claimerFaction, progress));
 				
-				}else if(attackerFaction != null){
+				}else if(claimerFaction != null){
 					
-					attackerFaction.information(ClaimMessages.claiming(bundle, attackerFaction, progress));
+					claimerFaction.information(ClaimMessages.claiming(bundle, claimerFaction, progress));
 					
 				}
 				
@@ -168,10 +166,14 @@ public class TownSquare extends Building implements SecondTicker{
 			
 		}
 		
-		// Initiate claiming:
-		else if(FactionClaimManager.manager().checkInitiation(bundle, sagaPlayers)){
+		// Initiating:
+		else{
+			
+			// Available:
+			if(!FactionClaimManager.manager().checkAvailable(bundleId, sagaPlayers)) return true;
 
-			Faction initFaction = FactionClaimManager.getInitFacton(bundle, sagaPlayers);
+			// Initiate:
+			Faction initFaction = FactionClaimManager.getInitFacton(bundleId, sagaPlayers);
 			if(initFaction == null) return true;
 			
 			FactionClaimManager.manager().initiate(bundle, initFaction);
@@ -183,6 +185,38 @@ public class TownSquare extends Building implements SecondTicker{
 		
 	}
 	
+	/**
+	 * Informs that the chunk bundle is being unclaimed.
+	 * 
+	 */
+	public void informUnclaim() {
+		
+		
+		if(count != 5) return;
+		if(getSagaChunk() == null) return;
+		
+		ChunkBundle bundle = getChunkBundle();
+		Integer bundleId = bundle.getId();
+		
+		Faction claimerFaction = FactionClaimManager.manager().getClaimerFaction(bundleId);
+		Faction owningFaction = FactionClaimManager.manager().getOwningFaction(bundleId);
+		
+		Double progress = FactionClaimManager.manager().getProgress(bundleId);
+		
+		if(progress <= 0) return;
+		
+		if(claimerFaction != null && owningFaction != null){
+			
+			getSagaChunk().broadcast(ClaimMessages.unclaimingTownSquare(bundle, claimerFaction, owningFaction, progress));
+			
+		}else if(claimerFaction != null){
+			
+			getSagaChunk().broadcast(ClaimMessages.unclaimingTownSquare(bundle, claimerFaction, progress));
+			
+		}
+		
+		
+	}
 	
 	
 	// Utility:
@@ -305,7 +339,7 @@ public class TownSquare extends Building implements SecondTicker{
 		}
 		
 		// Allow PvP if being claimed:
-		if(event.isFactionAttackFaction() && FactionClaimManager.manager().isContested(getChunkBundle().getId())){
+		if(event.isFactionAttackFaction() && FactionClaimManager.manager().isFactionClaiming(getChunkBundle().getId())){
 			event.addPvpOverride(PvPOverride.FACTION_CLAIMING_ALLOW);
 		}
 		

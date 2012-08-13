@@ -820,7 +820,7 @@ public class SettlementMessages {
 	public static String entered(ChunkBundle chunkBundle) {
 		
 		// Claimed:
-		if(FactionClaimManager.manager().hasOwner(chunkBundle)){
+		if(FactionClaimManager.manager().hasOwnerFaction(chunkBundle.getId())){
 			Faction faction = FactionClaimManager.manager().getOwningFaction(chunkBundle.getId());
 			return normal1 + "[" + FactionMessages.faction(faction, normal1) + "]" + ChatColor.ITALIC + " Entered " + chunkBundle.getName() + " settlement.";
 		}
@@ -832,7 +832,7 @@ public class SettlementMessages {
 	public static String left(ChunkBundle chunkBundle) {
 
 		// Claimed:
-		if(FactionClaimManager.manager().hasOwner(chunkBundle)){
+		if(FactionClaimManager.manager().hasOwnerFaction(chunkBundle.getId())){
 			Faction faction = FactionClaimManager.manager().getOwningFaction(chunkBundle.getId());
 			return normal1 + "[" + FactionMessages.faction(faction, normal1) + "]" + ChatColor.ITALIC + " Left " + chunkBundle.getName() + " settlement.";
 		}
