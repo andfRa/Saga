@@ -130,6 +130,7 @@ public class TownSquare extends Building implements SecondTicker{
 			Integer level = 0;
 			if(bundle instanceof Settlement) level = ((Settlement) bundle).getLevel();
 			Double claimed = FactionConfiguration.config().getClaimSpeed(level) / 60;
+			claimed*= FactionConfiguration.config().getMemberMultiplier(countMembers(sagaPlayers, claimerFaction));
 
 			// Claim:
 			nextProgress = progress + claimed;
@@ -410,6 +411,27 @@ public class TownSquare extends Building implements SecondTicker{
 		}
 		
 		return filteredPlayers;
+		
+		
+	}
+	
+	/**
+	 * Counts the number of faction members.
+	 * 
+	 * @param sagaPlayers saga players
+	 * @param faction faction
+	 * @return number of members
+	 */
+	private static Integer countMembers(ArrayList<SagaPlayer> sagaPlayers, Faction faction) {
+
+		
+		Integer count = 0;
+		
+		for (SagaPlayer sagaPlayer : sagaPlayers) {
+			if(!faction.isMember(sagaPlayer.getName())) count++;
+		}
+		
+		return count;
 		
 		
 	}
