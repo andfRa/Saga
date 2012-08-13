@@ -175,7 +175,8 @@ public class BuySign extends BuildingSign {
 	public String getLine(int index, SignStatus status) {
 	
 		
-		Double price = EconomyConfiguration.config().getPrice(material);
+		Double price = null;
+		if(material != null) price = EconomyConfiguration.config().getPrice(material);
 		if(price != null) price*= EconomyConfiguration.config().getBuyMult();
 		
 		switch (status) {
