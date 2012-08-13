@@ -207,6 +207,28 @@
     "effect":"#craft_daytime: #caft_amount x bricks"
   },
   
+  {
+    "name":"gem mine",
+    "buildingClass":"org.saga.buildings.SimpleBuilding",
+    "attributes":[],
+    "buildPoints":6,
+    "coinCost":{"x1":0,"y1":0},
+    "available":{"x1":50,"y1":1.0},
+    "storageAreas":{"x1":1,"y1":1,"x2":3,"y2":2},
+    "storageSize":6,
+    "recipes":[
+      {"to":[{"mat":"DIAMOND_ORE","amount":1,"data":0}], "weight":0.5},
+      {"to":[{"mat":"EMERALD_ORE","amount":1,"data":0}], "weight":0.5}
+    ],
+    "craftAmount":{"x1":1,"y1":1,"x2":3,"y2":3},
+    "relatedBuildings":[],
+    "performTime":"NONE",
+    "craftTime":"MIDNIGHT",
+    "functions":{},
+    "description":"spawns gems",
+    "effect":"#craft_daytime: #caft_amount x gems"
+  },
+  
 
 
   {
