@@ -34,6 +34,7 @@ public class TownSquare extends Building implements SecondTicker{
 	 */
 	transient private Integer count;
 	
+	
 
 	// Initialisation:
 	/**
@@ -43,10 +44,12 @@ public class TownSquare extends Building implements SecondTicker{
 	 */
 	public TownSquare(BuildingDefinition definition) {
 		
+		
 		super(definition);
 		
 		random = new Random();
 		count = 0;
+		
 		
 	}
 
@@ -111,11 +114,11 @@ public class TownSquare extends Building implements SecondTicker{
 		
 		// Progress:
 		Double progress = FactionClaimManager.manager().getProgress(bundleId);
+		Double nextProgress = progress;
 		
 		// Messaging:
 		boolean message = false;
 		if(count == 5) message = true;
-		
 		
 		// Claiming:
 		if(FactionClaimManager.manager().isFactionClaiming(bundleId)){
@@ -129,10 +132,10 @@ public class TownSquare extends Building implements SecondTicker{
 			Double claimed = FactionConfiguration.config().getClaimSpeed(level) / 60;
 
 			// Claim:
-			FactionClaimManager.manager().progressClaim(bundle, claimed);
+			nextProgress = progress + claimed;
 			
 			// Inform town square:
-			if(message && claimed > 0){
+			if(message && nextProgress > 0){
 				
 				if(claimerFaction != null && owningFaction != null){
 					
@@ -147,27 +150,30 @@ public class TownSquare extends Building implements SecondTicker{
 			}
 			
 			// Inform factions:
-			if(checkOverstep(progress, progress + claimed) && claimed > 0){
-				
-				progress+= claimed;
+			if(checkOverstep(progress, nextProgress) && claimed > 0){
 				
 				if(claimerFaction != null && owningFaction != null){
 					
-					claimerFaction.information(ClaimMessages.claiming(bundle, claimerFaction, owningFaction, progress));
-					owningFaction.information(ClaimMessages.loosing(bundle, owningFaction, claimerFaction, progress));
+					claimerFaction.information(ClaimMessages.claiming(bundle, claimerFaction, owningFaction, nextProgress));
+					owningFaction.information(ClaimMessages.loosing(bundle, owningFaction, claimerFaction, nextProgress));
 				
 				}else if(claimerFaction != null){
 					
-					claimerFaction.information(ClaimMessages.claiming(bundle, claimerFaction, progress));
+					claimerFaction.information(ClaimMessages.claiming(bundle, claimerFaction, nextProgress));
 					
 				}
 				
 			}
 			
+			FactionClaimManager.manager().progressClaim(bundle, claimed);
+			
 		}
 		
 		// Initiating:
 		else{
+			
+			// Non members:
+			sagaPlayers = getNonMembers();
 			
 			// Available:
 			if(!FactionClaimManager.manager().checkAvailable(bundleId, sagaPlayers)) return true;
@@ -180,7 +186,7 @@ public class TownSquare extends Building implements SecondTicker{
 			
 		}
 		
-		return true;
+		return (nextProgress < 1.0) && (nextProgress >= 0.0);
 		
 		
 	}
@@ -385,6 +391,28 @@ public class TownSquare extends Building implements SecondTicker{
 		
 	}
 	
+	/**
+	 * Gets all saga players that are not members of the bundle.
+	 * 
+	 * @return all non bundle members
+	 */
+	public ArrayList<SagaPlayer> getNonMembers(){
+		
+		
+		ChunkBundle bundle = getChunkBundle();
+		if(bundle == null) return new ArrayList<SagaPlayer>();
+		
+		ArrayList<SagaPlayer> sagaPlayers = getSagaChunk().getSagaPlayers();
+		ArrayList<SagaPlayer> filteredPlayers = new ArrayList<SagaPlayer>();
+		
+		for (SagaPlayer sagaPlayer : sagaPlayers) {
+			if(!bundle.isMember(sagaPlayer)) filteredPlayers.add(sagaPlayer);
+		}
+		
+		return filteredPlayers;
+		
+		
+	}
 	
 	
 }

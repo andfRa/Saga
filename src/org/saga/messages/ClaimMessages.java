@@ -102,6 +102,7 @@ public class ClaimMessages {
 	}
 
 	
+	
 	// Spawning:
 	public static String spawnDeny(Faction faction){
 		

@@ -464,14 +464,13 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 
 		// Claiming:
 		String toClaim = "";
-		if(FactionConfiguration.config().getToClaimMembers() > 0){
-			toClaim = "Settlements can only be siezed if at least " + FactionConfiguration.config().getToClaimMembers() + " members are online from both factions.";
-		}
+//		if(FactionConfiguration.config().getToClaimMembers() > 0){
+//			toClaim = "Settlements can only be siezed if at least " + FactionConfiguration.config().getToClaimMembers() + " members are online from both factions.";
+//		}
 		
 		String townSquare = townSquare();
 		book.addLine("Every settlement that has a " + townSquare + " can be claimed by a faction. " +
 			"To claim a settlement, faction members must hold the " + townSquare + " for a certain amount of time. " +
-			"If the owner faction is present, then the claim timer will be frozen. " +
 			"Claiming can not be initiated by settlement members." + 
 			" " + toClaim
 		);

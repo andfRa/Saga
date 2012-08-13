@@ -170,8 +170,9 @@ public class FactionClaimManager implements SecondTicker{
 	 * 
 	 * @param bundle chunk bundle
 	 * @param amount amount claimed
+	 * @return progress
 	 */
-	public void progressClaim(ChunkBundle bundle, Double amount) {
+	public Double progressClaim(ChunkBundle bundle, Double amount) {
 
 		
 		Double progress = modifyProgress(bundle.getId(), amount);
@@ -187,7 +188,7 @@ public class FactionClaimManager implements SecondTicker{
 			
 			if(faction == null){
 				SagaLogger.severe(getClass(), "failed to retrieve faction");
-				return;
+				return progress;
 			}
 			
 			Integer oldId = setOwningFactionId(bundleId, faction.getId());
@@ -217,6 +218,7 @@ public class FactionClaimManager implements SecondTicker{
 			
 		}
 		
+		return progress;
 		
 		
 	}
@@ -626,7 +628,7 @@ public class FactionClaimManager implements SecondTicker{
 		
 	}
 
-	
+
 	
 	// Load unload:
 	/**
