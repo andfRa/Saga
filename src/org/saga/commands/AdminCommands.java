@@ -20,6 +20,7 @@ import org.saga.chunks.ChunkBundleManager;
 import org.saga.chunks.ChunkBundleToggleable;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
+import org.saga.config.SettlementConfiguration;
 import org.saga.dependencies.PermissionsManager;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;
@@ -210,7 +211,6 @@ public class AdminCommands {
 		// Derived arguments:
 		try {
 			
-			// Force:
 			selPlayer = Saga.plugin().forceSagaPlayer(playerName);
 			
 		} catch (NonExistantSagaPlayerException e) {
@@ -223,7 +223,7 @@ public class AdminCommands {
 		// Invalid level:
 		if(level < 0 || level > ExperienceConfiguration.config().maximumLevel){
 			
-			sagaPlayer.message(AdminMessages.levelOutOfRange(level + ""));
+			sagaPlayer.message(AdminMessages.playerLevelOutOfRange(level + ""));
 			return;
 			
 		}
@@ -232,9 +232,9 @@ public class AdminCommands {
 		selPlayer.setLevel(level);
 		
 		// Inform:
-		selPlayer.message(AdminMessages.levelSet(level));
+		selPlayer.message(AdminMessages.playerLevelSet(level));
 		if(selPlayer != sagaPlayer){
-			sagaPlayer.message(AdminMessages.levelSet(level, selPlayer));
+			sagaPlayer.message(AdminMessages.playerLevelSet(level, selPlayer));
 		}
 
 		// Release:
@@ -394,6 +394,14 @@ public class AdminCommands {
 		}
 		Settlement selectedSettlement = (Settlement) selectedChunkBundle;
 
+		// Invalid level:
+		if(level < 0 || level > SettlementConfiguration.config().getSettlementDefinition().getMaxLevel()){
+			
+			sagaPlayer.message(AdminMessages.settleLevelOutOfRange(level + ""));
+			return;
+			
+		}
+		
 		// Set level:
 		selectedSettlement.setLevel(level);
 		

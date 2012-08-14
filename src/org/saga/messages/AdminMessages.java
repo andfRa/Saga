@@ -6,6 +6,7 @@ import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.ExperienceConfiguration;
+import org.saga.config.SettlementConfiguration;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.text.TextUtil;
@@ -32,17 +33,22 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 
 	
 
-	// Levels:
-	public static String levelSet(Integer level, SagaPlayer sagaPlayer){
+	// Player levels:
+	public static String playerLevelSet(Integer level, SagaPlayer sagaPlayer){
 		return positive + "Player " + sagaPlayer.getName() + " level set to " + level + ".";
 	}
 	
-	public static String levelSet(Integer level){
+	public static String playerLevelSet(Integer level){
 		return positive + "Level was set to " + level + ".";
 	}
 
-	public static String levelOutOfRange(String level){
-		return negative + level + " is out of range. Allowed range: 0 - " + ExperienceConfiguration.config().maximumLevel + ".";
+	public static String playerLevelOutOfRange(String level){
+		return negative + "Level " + level + " is out of range. Allowed range: 0 - " + ExperienceConfiguration.config().maximumLevel + ".";
+	}
+	
+	// Settlement levels:
+	public static String settleLevelOutOfRange(String level){
+		return negative + "Level " + level + " is out of range. Allowed range: 0 - " + SettlementConfiguration.config().getSettlementDefinition().getMaxLevel() + ".";
 	}
 
 	
