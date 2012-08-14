@@ -136,33 +136,31 @@ public class FactionCommands {
 		}
 		
 		// Force player:
-		SagaPlayer invitedPlayer;
+		SagaPlayer selPlayer;
 		try {
-			invitedPlayer = Saga.plugin().forceSagaPlayer(playerName);
+			selPlayer = Saga.plugin().forceSagaPlayer(playerName);
 		} catch (NonExistantSagaPlayerException e) {
 			sagaPlayer.message(PlayerMessages.invalidPlayer(playerName));
 			return;
 		}
 		
 		// Already in a faction:
-		if(invitedPlayer.getFaction() != null){
-			sagaPlayer.message(FactionMessages.alreadyInFaction(invitedPlayer));
-			// Unforce:
-			Saga.plugin().unforceSagaPlayer(playerName);
+		if(selPlayer.getFaction() != null){
+			sagaPlayer.message(FactionMessages.alreadyInFaction(selPlayer));
 			return;
 		}
 		
 		// Invite:
-		invitedPlayer.addFactionInvite(selFaction.getId());
+		selPlayer.addFactionInvite(selFaction.getId());
 		
 		// Inform:
-		selFaction.broadcast(FactionMessages.invited(invitedPlayer, selFaction));
-		invitedPlayer.message(FactionMessages.beenInvited(invitedPlayer, selFaction));
-		invitedPlayer.message(FactionMessages.informAccept());
+		selFaction.broadcast(FactionMessages.invited(selPlayer, selFaction));
+		selPlayer.message(FactionMessages.beenInvited(selPlayer, selFaction));
+		selPlayer.message(FactionMessages.informAccept());
 		
-		// Unforce:
-		Saga.plugin().unforceSagaPlayer(playerName);
-		
+		// Release:
+		selPlayer.indicateRelease();
+
 		
 	}
 
@@ -336,16 +334,12 @@ public class FactionCommands {
 		// Not faction member:
 		if( !selFaction.equals(selPlayer.getFaction()) ){
 			sagaPlayer.message(FactionMessages.notFactionMember(selPlayer, selFaction));
-			// Unforce:
-			Saga.plugin().unforceSagaPlayer(selPlayer.getName());
 			return;
 		}
 		
 		// Kicked yourself:
 		if(selPlayer.equals(sagaPlayer)){
 			sagaPlayer.message(FactionMessages.cantKickYourself(sagaPlayer, selFaction));
-			// Unforce:
-			Saga.plugin().unforceSagaPlayer(selPlayer.getName());
 			return;
 		}
 		
@@ -363,8 +357,8 @@ public class FactionCommands {
 		selFaction.broadcast(FactionMessages.playerKicked(selPlayer, selFaction));
 		selPlayer.message(FactionMessages.beenKicked(selPlayer, selFaction));
 
-		// Unforce:
-		Saga.plugin().unforceSagaPlayer(selPlayer.getName());
+		// Release:
+		selPlayer.indicateRelease();
 		
 		// Disband if no players left:
 		if(selFaction.getMemberCount() <= 0){
@@ -372,9 +366,6 @@ public class FactionCommands {
 			// Delete faction:
 			selFaction.delete();
 			
-//			// Inform:
-//	    	Saga.broadcast(FactionMessages.deleted(sagaPlayer, selFaction));
-	    	
 		}
 
 		
@@ -494,19 +485,17 @@ public class FactionCommands {
 		}
 		
 		// Force player:
-		SagaPlayer targetPlayer;
+		SagaPlayer selPlayer;
 		try {
-			targetPlayer = Saga.plugin().forceSagaPlayer(targetName);
+			selPlayer = Saga.plugin().forceSagaPlayer(targetName);
 		} catch (NonExistantSagaPlayerException e) {
 			sagaPlayer.message(PlayerMessages.invalidPlayer(targetName));
 			return;
 		}
 
 		// Not faction member:
-		if( !selFaction.equals(targetPlayer.getFaction()) ){
-			sagaPlayer.message(FactionMessages.notFactionMember(targetPlayer, selFaction));
-			// Unforce:
-			Saga.plugin().unforceSagaPlayer(targetName);
+		if( !selFaction.equals(selPlayer.getFaction()) ){
+			sagaPlayer.message(FactionMessages.notFactionMember(selPlayer, selFaction));
 			return;
 		}
 
@@ -516,35 +505,29 @@ public class FactionCommands {
 			rank = ProficiencyConfiguration.config().createProficiency(rankName);
 		} catch (InvalidProficiencyException e) {
 			sagaPlayer.message(FactionMessages.invalidRank(rankName));
-			// Unforce:
-			Saga.plugin().unforceSagaPlayer(targetName);
 			return;
 		}
 
 		// Not a rank:
 		if(rank.getDefinition().getType() != ProficiencyType.RANK){
 			sagaPlayer.message(FactionMessages.invalidRank(rankName));
-			// Unforce:
-			Saga.plugin().unforceSagaPlayer(targetName);
 			return;
 		}
 		
 		// Rank available:
 		if(!selFaction.isRankAvailable(rank.getHierarchy())){
 			sagaPlayer.message(FactionMessages.rankUnavailable(selFaction, rankName));
-			// Unforce:
-			Saga.plugin().unforceSagaPlayer(targetName);
 			return;
 		}
 		
 		// Set rank:
-		selFaction.setRank(targetPlayer, rank);
+		selFaction.setRank(selPlayer, rank);
 		
 		// Inform:
-		selFaction.broadcast(FactionMessages.newRank(selFaction, rankName, targetPlayer));
+		selFaction.broadcast(FactionMessages.newRank(selFaction, rankName, selPlayer));
 
-		// Unforce:
-		Saga.plugin().unforceSagaPlayer(targetName);
+		// Release:
+		selPlayer.indicateRelease();
 		
 		
 	}
@@ -598,9 +581,9 @@ public class FactionCommands {
 		}
 
 		// Force player:
-		SagaPlayer targetPlayer;
+		SagaPlayer selPlayer;
 		try {
-			targetPlayer = Saga.plugin().forceSagaPlayer(targetName);
+			selPlayer = Saga.plugin().forceSagaPlayer(targetName);
 		} catch (NonExistantSagaPlayerException e) {
 			sagaPlayer.message(PlayerMessages.invalidPlayer(targetName));
 			return;
@@ -610,13 +593,13 @@ public class FactionCommands {
 		selFaction.removeOwner();
 		
 		// Set new owner:
-		selFaction.setOwner(targetPlayer.getName());
+		selFaction.setOwner(selPlayer.getName());
 		
 		// Inform:
 		selFaction.broadcast(FactionMessages.newOwner(selFaction, targetName));
-		
-   		// Unforce:
-   		Saga.plugin().unforceSagaPlayer(targetName);
+
+		// Release:
+		selPlayer.indicateRelease();
 		
    		
 	}

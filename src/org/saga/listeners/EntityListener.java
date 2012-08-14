@@ -85,7 +85,7 @@ public class EntityListener implements Listener{
 		Player player = (Player) projectile.getShooter();
 		
 		// Get player:
-    	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(player.getName());
+    	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(player.getName());
     	if(sagaPlayer == null){
     		SagaLogger.severe(BlockListener.class, "can't continue with onProjectileHit, because the saga player for "+ player.getName() + " isn't loaded.");
     		return;

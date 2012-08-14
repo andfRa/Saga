@@ -40,7 +40,7 @@ public class SagaInteractEntityEvent {
     	// Target player:
     	if(event.getRightClicked() instanceof Player){
     		
-    		SagaPlayer targetSagaPlayer = Saga.plugin().getSagaPlayer(((Player) event.getRightClicked()).getName());
+    		SagaPlayer targetSagaPlayer = Saga.plugin().getLoadedPlayer(((Player) event.getRightClicked()).getName());
         	if(targetSagaPlayer == null){
         		SagaLogger.warning(getClass(), "failed to retrieve saga player for " + ((Player) event.getRightClicked()).getName());
         		return;

@@ -267,7 +267,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     public void removePlayer(String name) {
 
     	
-    	SagaPlayer sagaPlayer = getSagaPlayer(name);
+    	SagaPlayer sagaPlayer = getLoadedPlayer(name);
     	// Check if loaded:
     	if( sagaPlayer == null ) {
             SagaLogger.severe(getClass(), "Cant remove player wrap form " + name + ", because the saga player isnt loaded");
@@ -287,6 +287,101 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         
     }
 
+
+    /**
+     * Puts a saga player from the loaded list.
+     * 
+     * @param name name
+     */
+    private void putSagaPlayer(String name, SagaPlayer sagaPlayer) {
+    	loadedPlayers.put(name.toLowerCase(), sagaPlayer);
+	}
+    
+    /**
+     * Removes a saga player from the loaded list.
+     * 
+     * @param name name
+     * @return saga player. null if failed
+     */
+    private SagaPlayer removeSagaPlayer(String name) {
+    	return loadedPlayers.remove(name.toLowerCase());
+	}
+    
+
+    /**
+     * Loads a saga player. The minecraft player needs to be set separately.
+     * If no player exists, then a new one is created.
+     * 
+     * @param name player name
+     * @return loaded player, null if not failed to load
+     */
+    public SagaPlayer loadSagaPlayer(String name) {
+    	
+    	
+    	SagaPlayer sagaPlayer = getLoadedPlayer(name);
+
+    	// Check if already loaded:
+    	if(sagaPlayer != null){
+    		SagaLogger.severe(getClass(), "tried to load already loadaded Saga player for " + name);
+            return sagaPlayer;
+    	}
+
+    	// Load:
+    	sagaPlayer = SagaPlayer.load(name);
+    	SagaLogger.info("Loading Saga player for " + name + ".");
+    	putSagaPlayer(name, sagaPlayer);
+    	
+    	// Register factions:
+    	FactionManager.manager().playerLoaded(sagaPlayer);
+    	
+    	// Register chunk groups:
+    	ChunkBundleManager.manager().playerLoaded(sagaPlayer);
+    	
+    	// Update:
+    	sagaPlayer.update();
+    	
+    	return sagaPlayer;
+    	
+    	
+    }
+
+    /**
+     * Unloads a saga player as offline.
+     * Wrapped player must be removed first or this method will ignore unloading.
+     * 
+     * @param name player name
+     * @return unloaded player, null if not loaded
+     */
+    public SagaPlayer unloadSagaPlayer(String name) {
+    	
+    	
+    	SagaPlayer sagaPlayer = getLoadedPlayer(name);
+    	
+    	// Ignore if already unloaded:
+    	if( sagaPlayer == null ) {
+    		SagaLogger.severe(getClass(), "tried unload a non-loaded player for " + name);
+            return sagaPlayer;
+    	}
+    	
+    	// Unload:
+    	SagaLogger.info("Unloading saga player for " + name + ".");
+    	removeSagaPlayer(name);
+    	
+    	// Unregister factions:
+    	FactionManager.manager().playerUnloaded(sagaPlayer);
+    	
+    	// Register chunk groups:
+    	ChunkBundleManager.manager().playerUnloaded(sagaPlayer);
+    	
+    	// Unload:
+        sagaPlayer.unload();
+        
+        return sagaPlayer;
+        
+    	
+    }
+
+    
     /**
      * Unloads all saga players.
      */
@@ -326,204 +421,18 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         
         
     }
-    
-    /**
-     * Loads a saga player. The minecraft player needs to be set separately.
-     * If no player exists, then a new one is created.
-     * 
-     * @param name player name
-     * @return loaded player, null if not failed to load
-     */
-    public SagaPlayer loadSagaPlayer(String name) {
-    	
-    	
-    	SagaPlayer sagaPlayer = getSagaPlayer(name);
 
-    	// Check if forced:
-    	if( sagaPlayer != null && sagaPlayer.isForced() ){
-    		SagaLogger.severe(getClass(), "tried to load already loadaded and forced saga player for " + name);
-            return sagaPlayer;
-    	}
-    	
-    	// Check if already loaded:
-    	if( sagaPlayer != null ){
-    		SagaLogger.severe(getClass(), "tried to load already loadaded saga player for " + name);
-            return sagaPlayer;
-    	}
 
-    	// Load:
-    	sagaPlayer = SagaPlayer.load(name);
-    	SagaLogger.info("Loading saga player for " + name + ".");
-    	putSagaPlayer(name, sagaPlayer);
-    	
-    	// Register factions:
-    	FactionManager.manager().playerLoaded(sagaPlayer);
-    	
-    	// Register chunk groups:
-    	ChunkBundleManager.manager().playerLoaded(sagaPlayer);
-    	
-    	// Update:
-    	sagaPlayer.update();
-    	
-    	return sagaPlayer;
-    	
-    	
-    }
-
-    /**
-     * Unloads a saga player as offline.
-     * Wrapped player must be removed first or this method will ignore unloading.
-     * 
-     * @param name player name
-     * @return unloaded player, null if not loaded
-     */
-    public SagaPlayer unloadSagaPlayer(String name) {
-    	
-    	
-    	SagaPlayer sagaPlayer = getSagaPlayer(name);
-    	
-    	// Ignore if already unloaded:
-    	if( sagaPlayer == null ) {
-    		SagaLogger.severe(getClass(), "tried unload a non-loaded player for " + name);
-            return sagaPlayer;
-    	}
-    	
-    	// Ignore if forced:
-    	if( sagaPlayer.isForced() ){
-    		SagaLogger.info("Denied unloading for a forced saga player " + sagaPlayer.getName() + ".");
-            return sagaPlayer;
-    	}
-    	
-    	// Unload:
-    	SagaLogger.info("Unloading saga player for " + name + ".");
-    	removeSagaPlayer(name);
-    	
-    	// Unregister factions:
-    	FactionManager.manager().playerUnloaded(sagaPlayer);
-    	
-    	// Register chunk groups:
-    	ChunkBundleManager.manager().playerUnloaded(sagaPlayer);
-    	
-    	// Unload:
-        sagaPlayer.unload();
-        
-        return sagaPlayer;
-        
-    	
-    }
-
-    /**
-     * Checks if the player is loaded.
-     * 
-     * @param name name
-     * @return true if loaded
-     */
-    public boolean isSagaPlayerLoaded(String name) {
-    	return getSagaPlayer(name)!=null;
-	}
-    
-    /**
-     * Checks if the player exists by checking player information file.
-     * 
-     * @param playerName player name
-     * @return true if the player exists
-     */
-    public boolean isSagaPlayerExistant(String playerName) {
-    	return SagaPlayer.checkExists(playerName);
-	}
-    
-    /**
-     * Forces the player to get loaded in the forced list.
-     * Loads if necessary.
-     * 
-     * @param name player name
-     * @throws NonExistantSagaPlayerException if the player doesn't exist.
-     */
-    public SagaPlayer forceSagaPlayer(String name) throws NonExistantSagaPlayerException {
-
-    	
-    	SagaPlayer sagaPlayer;
-    	
-    	// Check in loaded list:
-    	sagaPlayer = getSagaPlayer(name);
-    	if(sagaPlayer != null){
-    		SagaLogger.info("Forcing saga player for " + name + ".");
-    		sagaPlayer.increaseForceLevel();
-    		return sagaPlayer;
-    	}
-    	
-    	// Check if the player exists:
-    	if(!isSagaPlayerExistant(name)){
-    		throw new NonExistantSagaPlayerException(name);
-    	}
-    	
-    	// Load:
-    	sagaPlayer = loadSagaPlayer(name);
-    	SagaLogger.info("Forcing saga player for " + name + ".");
-    	sagaPlayer.increaseForceLevel();
-		return sagaPlayer;
-    	
-    	
-	}
-
-    /**
-     * Unforces the player to get loaded in the forced list.
-     * Saves if necessary.
-     * 
-     * @param name player name
-     * @throws NonExistantSagaPlayerException if the player doesn't exist.
-     */
-    public void unforceSagaPlayer(String name) {
-
-    	
-    	// Check in loaded list:
-    	SagaPlayer sagaPlayer = getSagaPlayer(name);
-    	if(sagaPlayer == null){
-    		SagaLogger.severe(getClass(), "tried to unforce a non-loaded player for " + name);
-    		return;
-    	}
-    	
-    	// Decrease force level:
-    	SagaLogger.info("Unforcing saga player for " + name + ".");
-    	sagaPlayer.decreaseForceLevel();
-    	
-    	// Unload if possible:
-		if(!sagaPlayer.isForced() && !sagaPlayer.isOnline()){
-			unloadSagaPlayer(name);
-		}
-    	
-    	
-	}
-    
     /**
      * Gets a saga player from the loaded list.
      * 
      * @param name name
      * @return saga player, null if not loaded
      */
-    public SagaPlayer getSagaPlayer(String name) {
+    public SagaPlayer getLoadedPlayer(String name) {
     	return loadedPlayers.get(name.toLowerCase());
 	}
 
-    /**
-     * Puts a saga player from the loaded list.
-     * 
-     * @param name name
-     */
-    public void putSagaPlayer(String name, SagaPlayer sagaPlayer) {
-    	loadedPlayers.put(name.toLowerCase(), sagaPlayer);
-	}
-    
-    /**
-     * Removes a saga player from the loaded list.
-     * 
-     * @param name name
-     * @return saga player. null if failed
-     */
-    public SagaPlayer removeSagaPlayer(String name) {
-    	return loadedPlayers.remove(name.toLowerCase());
-	}
-    
     /**
      * Gets all loaded saga players.
      * 
@@ -537,6 +446,52 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     	
 	}
     
+    
+    /**
+     * Checks if the player is loaded.
+     * 
+     * @param name name
+     * @return true if loaded
+     */
+    public boolean isSagaPlayerLoaded(String name) {
+    	return getLoadedPlayer(name)!=null;
+	}
+    
+    /**
+     * Checks if the player exists by checking player information file.
+     * 
+     * @param playerName player name
+     * @return true if the player exists
+     */
+    public boolean isSagaPlayerExistant(String playerName) {
+    	return SagaPlayer.checkExists(playerName);
+	}
+    
+    
+    /**
+     * Forces the player. Retrieves both online and offline players.
+     * 
+     * @param name player name
+     * @throws NonExistantSagaPlayerException if the player doesn't exist
+     */
+    public SagaPlayer forceSagaPlayer(String name) throws NonExistantSagaPlayerException {
+
+    	
+    	SagaPlayer sagaPlayer;
+    	
+    	// Check in loaded list:
+    	sagaPlayer = getLoadedPlayer(name);
+    	if(sagaPlayer != null) return sagaPlayer;
+    	
+    	// Check if the player exists:
+    	if(!isSagaPlayerExistant(name)) throw new NonExistantSagaPlayerException(name);
+    	
+    	// Load:
+    	return SagaPlayer.load(name);
+    	
+    	
+	}
+
     
     // Saving:
     /**
@@ -584,6 +539,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
 	}
     
     
+    
     // Clock:
     /* 
      * (non-Javadoc)
@@ -608,6 +564,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     	
     	
     }
+    
     
     
     // Commands:
@@ -656,7 +613,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
 
             try {
             	
-                commandMap.execute(split, player, this, getSagaPlayer(player.getName()));
+                commandMap.execute(split, player, this, getLoadedPlayer(player.getName()));
                 SagaLogger.info("[Saga Command] " + player.getName() + ": " + command);
                 
             } catch (CommandPermissionsException e) {
@@ -700,33 +657,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
         
     }
 
-    
-    // Permissions:
-    /**
-     * Check if the player has permission.
-     * 
-     * @param sagaPlayer saga player
-     * @param permission permission
-     * @return true if has permission
-     */
-    public boolean hasPermission2(SagaPlayer sagaPlayer, String permission) {
-    	
-//    	try {
-//    		
-//    		if(commandMap != null && sagaPlayer.isOnline() && commandMap.hasPermission(sagaPlayer.getPlayer(), permission)) return true;
-//    		
-//		} catch (Throwable e) {
-//			
-//			Saga.severe(getClass(), "failed to check GroupManager permission for " + sagaPlayer.getName() + ", " + e.getClass().getSimpleName() + ":" + e.getMessage(), "ignoring GroupManager permission");
-//		
-//		}
-//    	
-//    	return false;
 
-    	return false;
-    	
-	}
-    
     
     // Messages:
     /**
@@ -739,6 +670,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
     	Saga.plugin().getServer().broadcastMessage(message);
     	
     }
+    
     
     
     // Other:
@@ -761,7 +693,7 @@ public class Saga extends JavaPlugin implements MinuteTicker{
 			
 			if(playerName.toLowerCase().contains(lcaseName)){
 				
-				SagaPlayer sagaPlayer = getSagaPlayer(playerName);
+				SagaPlayer sagaPlayer = getLoadedPlayer(playerName);
 				
 				if(sagaPlayer == null) continue;
 				

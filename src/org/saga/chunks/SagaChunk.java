@@ -361,7 +361,7 @@ public class SagaChunk {
 
 			if(!(entities[i] instanceof Player)) continue;
 			
-			SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(((Player) entities[i]).getName());
+			SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(((Player) entities[i]).getName());
 			if(sagaPlayer != null) sagaPlayers.add(sagaPlayer);
 			
 		}
@@ -538,7 +538,7 @@ public class SagaChunk {
 		
 		for (Player player : players) {
 			
-			SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(player.getName());
+			SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(player.getName());
 			
 			if(sagaPlayer == null){
 				SagaLogger.severe(this, "failed to retrieve saga player for " + player.getName() + ", because the player isnt loaded");

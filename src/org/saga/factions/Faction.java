@@ -473,20 +473,20 @@ public class Faction implements SecondTicker, DaytimeTicker{
 		}
 		
 		// Force member:
-		SagaPlayer factionMember;
+		SagaPlayer selPlayer;
 		try {
-			factionMember = Saga.plugin().forceSagaPlayer(playerName);
+			selPlayer = Saga.plugin().forceSagaPlayer(playerName);
 		} catch (NonExistantSagaPlayerException e) {
 			SagaLogger.severe(this, "could not remove " + playerName + " player, because the player doesent exist");
 			return;
 		}
 		
 		// Remove:
-		removeMember(factionMember);
+		removeMember(selPlayer);
 		
-		// Unforce:
-		Saga.plugin().unforceSagaPlayer(playerName);
-		
+		// Release:
+		selPlayer.indicateRelease();
+
 		
 	}
 	

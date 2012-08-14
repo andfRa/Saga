@@ -45,7 +45,7 @@ public class PlayerListener implements Listener {
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
 
     	
-    	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
+    	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
     	
     	// Invalid player:
     	if(sagaPlayer == null){
@@ -99,7 +99,7 @@ public class PlayerListener implements Listener {
 
     	Player player = event.getPlayer();
 
-    	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(player.getName());
+    	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(player.getName());
     	if(sagaPlayer == null){
     		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerQuit, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
@@ -125,7 +125,7 @@ public class PlayerListener implements Listener {
     public void onPlayerRespawn(PlayerRespawnEvent event) {
     	
     	
-    	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
+    	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
     	
     	// Invalid player:
     	if(sagaPlayer == null){
@@ -153,7 +153,7 @@ public class PlayerListener implements Listener {
     public void onPlayerMove(PlayerMoveEvent event) {
 
     	
-    	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
+    	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
     	
     	// Invalid player:
     	if(sagaPlayer == null){
@@ -171,7 +171,7 @@ public class PlayerListener implements Listener {
     public void onPlayerTeleport(PlayerTeleportEvent event) {
     	
 
-    	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
+    	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
     	
     	// Invalid player:
     	if(sagaPlayer == null){
@@ -189,7 +189,7 @@ public class PlayerListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
 
     	
-    	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
+    	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
     	
     	// Bukkit bug workaround: 
     	if(event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
@@ -239,7 +239,7 @@ public class PlayerListener implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent event) {
 
     	
-    	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
+    	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
     	
     	// Invalid player:
     	if(sagaPlayer == null){
@@ -273,7 +273,7 @@ public class PlayerListener implements Listener {
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 
     	
-    	SagaPlayer sagaPlayer = Saga.plugin().getSagaPlayer(event.getPlayer().getName());
+    	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
     	
     	// Invalid player:
     	if(sagaPlayer == null){

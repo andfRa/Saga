@@ -142,7 +142,7 @@ public class SagaEntityDamageEvent {
 		// Get attacker saga player:
 		if(attacker instanceof Player){
 
-			attackerPlayer = Saga.plugin().getSagaPlayer( ((Player) attacker).getName() );
+			attackerPlayer = Saga.plugin().getLoadedPlayer( ((Player) attacker).getName() );
 
 	    	// No player:
 	    	if(attackerPlayer == null){
@@ -162,7 +162,7 @@ public class SagaEntityDamageEvent {
 		// Get defender saga player:
 		if(defender instanceof Player){
 
-			defenderPlayer = Saga.plugin().getSagaPlayer( ((Player) defender).getName() );
+			defenderPlayer = Saga.plugin().getLoadedPlayer( ((Player) defender).getName() );
 
 	    	// No player:
 	    	if(defenderPlayer == null){

@@ -31,8 +31,8 @@ public class EconomyCommands {
 		
 		
 		// Arguments:
-		SagaPlayer targetPlayer = Saga.plugin().getSagaPlayer(args.getString(0));
-		if(targetPlayer == null){
+		SagaPlayer selPlayer = Saga.plugin().getLoadedPlayer(args.getString(0));
+		if(selPlayer == null){
 			sagaPlayer.message(EconomyMessages.notOnline(args.getString(0)));
 			return;
 		}
@@ -57,7 +57,7 @@ public class EconomyCommands {
 		
 		// Not online:
 		Location playerLocation = sagaPlayer.getLocation();
-		Location targetLocation = targetPlayer.getLocation();
+		Location targetLocation = selPlayer.getLocation();
 		if(playerLocation == null || targetLocation == null){
 			sagaPlayer.message(EconomyMessages.tooFarPay());
 			return;
@@ -72,11 +72,11 @@ public class EconomyCommands {
 		
 		// Pay:
 		sagaPlayer.removeCoins(amount);
-		targetPlayer.addCoins(amount);
+		selPlayer.addCoins(amount);
 		
 		// Inform:
-		sagaPlayer.message(EconomyMessages.paid(targetPlayer, amount));
-		targetPlayer.message(EconomyMessages.gotPaid(sagaPlayer, amount));
+		sagaPlayer.message(EconomyMessages.paid(selPlayer, amount));
+		selPlayer.message(EconomyMessages.gotPaid(sagaPlayer, amount));
 		
 		
 	}
@@ -105,26 +105,26 @@ public class EconomyCommands {
 		}
 		
 		// Force player:
-		SagaPlayer targetPlayer;
+		SagaPlayer selPlayer;
 		try {
-			targetPlayer = Saga.plugin().forceSagaPlayer(targetName);
+			selPlayer = Saga.plugin().forceSagaPlayer(targetName);
 		} catch (NonExistantSagaPlayerException e) {
 			sagaPlayer.message(PlayerMessages.invalidPlayer(targetName));
 			return;
 		}
 
 		// Set wallet:
-		targetPlayer.setCoins(amount);
+		selPlayer.setCoins(amount);
 		
 		// Inform:
 		sagaPlayer.message(EconomyMessages.setWallet(sagaPlayer, amount));
-		if(targetPlayer != sagaPlayer){
-			targetPlayer.message(EconomyMessages.walletWasSet(amount));
+		if(selPlayer != sagaPlayer){
+			selPlayer.message(EconomyMessages.walletWasSet(amount));
 		}
-		
-		// Unforce:
-		Saga.plugin().unforceSagaPlayer(targetName);
-		return;
+
+		// Release:
+		selPlayer.indicateRelease();
+
 		
 	}
 	

@@ -73,7 +73,7 @@ public class Force extends Ability{
 			// Handle pvp:
 			if(entity instanceof Player){
 			
-				SagaPlayer targetPlayer = Saga.plugin().getSagaPlayer(((Player)entity).getName());
+				SagaPlayer targetPlayer = Saga.plugin().getLoadedPlayer(((Player)entity).getName());
 				if(targetPlayer == null){
 					SagaLogger.severe(this, "can't continue with trigger because the player "+ ((Player)entity).getName() + " isn't loaded");
 					return false;

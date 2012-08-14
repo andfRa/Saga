@@ -80,17 +80,17 @@ public class AdminCommands {
 		}
 		
 		// Match:
-		SagaPlayer targetPlayer = null;
+		SagaPlayer selPlayer = null;
 		try {
-			targetPlayer = Saga.plugin().matchPlayer(name);
+			selPlayer = Saga.plugin().matchPlayer(name);
 		} catch (SagaPlayerNotLoadedException e) {
 			sagaPlayer.message(PlayerMessages.notOnline(name));
 			return;
 		}
 		
 		// Inform:
-		sagaPlayer.message(AdminMessages.statsTargetName(targetPlayer));
-		sagaPlayer.message(StatsMessages.stats(targetPlayer, page-1));
+		sagaPlayer.message(AdminMessages.statsTargetName(selPlayer));
+		sagaPlayer.message(StatsMessages.stats(selPlayer, page-1));
 		
 		
 	}
@@ -134,11 +134,11 @@ public class AdminCommands {
 		}
 		
 		// Find player:
-		SagaPlayer targetPlayer = null;
+		SagaPlayer selPlayer = null;
 		try {
 		
 			// Force:
-			targetPlayer = Saga.plugin().forceSagaPlayer(name);
+			selPlayer = Saga.plugin().forceSagaPlayer(name);
 		
 		} catch (NonExistantSagaPlayerException e) {
 
@@ -148,11 +148,11 @@ public class AdminCommands {
 		}
 		
 		// Inform:
-		sagaPlayer.message(StatsMessages.stats(targetPlayer, page-1));
-		
-		// Unforce:
-		Saga.plugin().unforceSagaPlayer(name);
-		
+		sagaPlayer.message(StatsMessages.stats(selPlayer, page-1));
+
+		// Release:
+		selPlayer.indicateRelease();
+
 		
 	}
 
@@ -170,7 +170,7 @@ public class AdminCommands {
 	public static void setLevel(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-		SagaPlayer selectedPlayer = null;
+		SagaPlayer selPlayer = null;
 		Integer level = null;
 		
 		String playerName = null;
@@ -211,7 +211,7 @@ public class AdminCommands {
 		try {
 			
 			// Force:
-			selectedPlayer = Saga.plugin().forceSagaPlayer(playerName);
+			selPlayer = Saga.plugin().forceSagaPlayer(playerName);
 			
 		} catch (NonExistantSagaPlayerException e) {
 			
@@ -224,25 +224,23 @@ public class AdminCommands {
 		if(level < 0 || level > ExperienceConfiguration.config().maximumLevel){
 			
 			sagaPlayer.message(AdminMessages.levelOutOfRange(level + ""));
-			// Unforce:
-			Saga.plugin().unforceSagaPlayer(playerName);
 			return;
 			
 		}
 		
 		// Set level:
-		selectedPlayer.setLevel(level);
+		selPlayer.setLevel(level);
 		
 		// Inform:
-		selectedPlayer.message(AdminMessages.levelSet(level));
-		if(selectedPlayer != sagaPlayer){
-			sagaPlayer.message(AdminMessages.levelSet(level, selectedPlayer));
+		selPlayer.message(AdminMessages.levelSet(level));
+		if(selPlayer != sagaPlayer){
+			sagaPlayer.message(AdminMessages.levelSet(level, selPlayer));
 		}
+
+		// Release:
+		selPlayer.indicateRelease();
+
 		
-		// Unforce:
-		Saga.plugin().unforceSagaPlayer(playerName);
-		return;	
-			
 	}
 	
 	@Command(
@@ -256,7 +254,7 @@ public class AdminCommands {
 	public static void setAttribute(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-		SagaPlayer selectedPlayer = null;
+		SagaPlayer selPlayer = null;
 		String attrName = null;
 		Integer score = null;
 		
@@ -297,7 +295,7 @@ public class AdminCommands {
 		try {
 			
 			// Force:
-			selectedPlayer = Saga.plugin().forceSagaPlayer(playerName);
+			selPlayer = Saga.plugin().forceSagaPlayer(playerName);
 			
 		} catch (NonExistantSagaPlayerException e) {
 			
@@ -309,8 +307,6 @@ public class AdminCommands {
 		// Invalid attribute:
 		if(!AttributeConfiguration.config().getAttributeNames().contains(attrName)){
 			sagaPlayer.message(AdminMessages.attributeInvalid(attrName, sagaPlayer));
-			// Unforce:
-			Saga.plugin().unforceSagaPlayer(playerName);
 			return;
 		}
 		
@@ -318,25 +314,23 @@ public class AdminCommands {
 		if(score < 0 || score > AttributeConfiguration.config().maxAttributeScore){
 			
 			sagaPlayer.message(AdminMessages.attributeOutOfRange(score + ""));
-			// Unforce:
-			Saga.plugin().unforceSagaPlayer(playerName);
 			return;
 			
 		}
 		
 		// Set attribute:
-		selectedPlayer.setAttributeScore(attrName, score);
+		selPlayer.setAttributeScore(attrName, score);
 		
 		// Inform:
-		selectedPlayer.message(AdminMessages.attributeSet(attrName, score));
-		if(selectedPlayer != sagaPlayer){
-			sagaPlayer.message(AdminMessages.attributeSet(attrName, score, selectedPlayer));
+		selPlayer.message(AdminMessages.attributeSet(attrName, score));
+		if(selPlayer != sagaPlayer){
+			sagaPlayer.message(AdminMessages.attributeSet(attrName, score, selPlayer));
 		}
+
+		// Release:
+		selPlayer.indicateRelease();
+
 		
-		// Unforce:
-		Saga.plugin().unforceSagaPlayer(playerName);
-		return;	
-			
 	}
 
 	
@@ -579,7 +573,7 @@ public class AdminCommands {
 	public static void rechargeGuardDune(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 	
-		SagaPlayer selectedPlayer = null;
+		SagaPlayer selPlayer = null;
 		
 		String playerName = null;
 		
@@ -604,7 +598,7 @@ public class AdminCommands {
 		try {
 			
 			// Force:
-			selectedPlayer = Saga.plugin().forceSagaPlayer(playerName);
+			selPlayer = Saga.plugin().forceSagaPlayer(playerName);
 			
 		} catch (NonExistantSagaPlayerException e) {
 			
@@ -614,11 +608,9 @@ public class AdminCommands {
 		}
 		
 		// Already charged:
-		GuardianRune rune = selectedPlayer.getGuardRune();
+		GuardianRune rune = selPlayer.getGuardRune();
 		if(rune.isCharged()){
 			sagaPlayer.message(PlayerMessages.alreadyRecharged(rune));
-			// Unforce:
-			Saga.plugin().unforceSagaPlayer(playerName);
 			return;
 		}
 		
@@ -626,16 +618,16 @@ public class AdminCommands {
 		rune.recharge();
 		
 		// Inform:
-		if(selectedPlayer != sagaPlayer){
-			selectedPlayer.message(AdminMessages.recharged(rune,sagaPlayer));
+		if(selPlayer != sagaPlayer){
+			selPlayer.message(AdminMessages.recharged(rune,sagaPlayer));
 			sagaPlayer.message(AdminMessages.recharged(rune));
 		}else{
 			sagaPlayer.message(AdminMessages.recharged(rune));
 		}
-		
-		// Unforce:
-		Saga.plugin().unforceSagaPlayer(playerName);
-		return;	
+
+		// Release:
+		selPlayer.indicateRelease();
+
 		
 	}
 	

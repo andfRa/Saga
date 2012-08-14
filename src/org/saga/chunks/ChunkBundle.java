@@ -337,12 +337,16 @@ public class ChunkBundle extends SagaCustomSerialization{
 		for (String player : players) {
 			
 			try {
+				
 				SagaPlayer sagaPlayer = Saga.plugin().forceSagaPlayer(player);
 				removeMember(sagaPlayer);
-				Saga.plugin().unforceSagaPlayer(player);
+				sagaPlayer.indicateRelease();
+				
 			} catch (NonExistantSagaPlayerException e) {
+				
 				SagaLogger.severe(this, "failed to remove " + player + " player");
 				removePlayer(player);
+				
 			}
 			
 		}

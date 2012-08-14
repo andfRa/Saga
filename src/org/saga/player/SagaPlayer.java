@@ -20,6 +20,7 @@ import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
+import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
 import org.saga.abilities.AbilityManager;
@@ -160,11 +161,6 @@ public class SagaPlayer implements Trader{
 	 */
 	transient private boolean isSavingEnabled=true;
 	
-	/**
-	 * Forced level. If above zero, the player can't be unforced.
-	 */
-	transient private int forcedLevel = 0;
-	
 
 	
 	// Loading and initialisation:
@@ -245,7 +241,7 @@ public class SagaPlayer implements Trader{
 	
 		if(bundleInvites == null){
 			bundleInvites = new ArrayList<Integer>();
-			SagaLogger.nullField(this, "bundleInvites");
+			// TODO Restore bundle invites check: SagaLogger.nullField(this, "bundleInvites");
 		}
 		
 		if(guardRune == null){
@@ -1749,34 +1745,16 @@ public class SagaPlayer implements Trader{
 	public void setSavingEnabled(boolean enabled) {
             this.isSavingEnabled = enabled;
 	}
-
-	/**
-	 * Increases player force level.
-	 * 
-	 */
-	public void increaseForceLevel() {
-
-		forcedLevel++;
-		
-	}
 	
 	/**
-	 * Decreases player force level.
+	 * Called when the player instance was modified and can be released.
 	 * 
 	 */
-	public void decreaseForceLevel() {
+	public void indicateRelease() {
 
-		forcedLevel--;
+		// Save if not loaded:
+		if(!Saga.plugin().isSagaPlayerLoaded(name)) save();
 		
-	}
-	
-	/**
-	 * Check if the player can be unforced.
-	 * 
-	 * @return true if can be unforced.
-	 */
-	public boolean isForced() {
-		return forcedLevel > 0;
 	}
 	
 	
@@ -1818,15 +1796,12 @@ public class SagaPlayer implements Trader{
 	public String toString() {
 		
 		
-		StringBuffer rString = new StringBuffer();
+		StringBuffer result = new StringBuffer();
 		if(!isOnline()){
-			rString.append("(offline)");
-		}
-		if(isForced()){
-			rString.append("(forced)");
+			result.append("(offline)");
 		}
 		
-		return getName() + rString;
+		return getName() + result;
 		
 		
 	}
