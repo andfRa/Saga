@@ -28,6 +28,7 @@ import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
+import org.saga.settlements.Settlement;
 import org.saga.utility.text.RomanNumeral;
 import org.saga.utility.text.TextUtil;
 
@@ -422,14 +423,13 @@ public class StatisticsManager implements HourTicker{
 	}
 
 	
-	
-	
 	// Levels:
 	public Integer[] getLevels() {
 
 		return playerLevels.values().toArray(new Integer[0]);
 		
 	}
+	
 	
 	
 	// Economy:
@@ -909,6 +909,28 @@ public class StatisticsManager implements HourTicker{
 	}
 	
 	
+	
+	// Histogram:
+	public Double[] createHistogramData(String category) {
+
+
+		Collection<String> subCategs = StatisticsManager.manager().getSubCategs(category, false);
+	
+		ArrayList<Double> data = new ArrayList<Double>(); 
+		
+		for (String subCateg : subCategs) {
+			
+			data.add(StatisticsManager.manager().getValue(category + "." + subCateg));
+			
+		}
+		
+		return data.toArray(new Double[data.size()]);
+		
+		
+	}
+	
+	
+	
 	// Updating:
 	public void setAttributes(SagaPlayer sagaPlayer) {
 
@@ -1006,6 +1028,19 @@ public class StatisticsManager implements HourTicker{
 	public void setBundlesOwned(Faction faction) {
 
 		setValue("faction_claiming" + "." + "owned" + "." + faction.getName(), FactionClaimManager.manager().findSettlements(faction.getId()).length);
+		
+	}
+	
+	
+	public void setLevel(Faction faction) {
+
+		setValue("factions.levels" + "." + faction.getName(), faction.getLevel());
+		
+	}
+	
+	public void setLevel(Settlement settlement) {
+
+		setValue("settlements.levels" + "." + settlement.getName(), settlement.getLevel());
 		
 	}
 	

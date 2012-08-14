@@ -24,6 +24,7 @@ import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.messages.SettlementMessages;
 import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
+import org.saga.statistics.StatisticsManager;
 
 /**
  * @author andf
@@ -150,6 +151,9 @@ public class Settlement extends ChunkBundle implements MinuteTicker{
 		} catch (InvalidProficiencyException e) {
 			SagaLogger.severe(this, "failed to set " + getDefinition().defaultRole + " role, because the role name is invalid");
 		}
+		
+		//Statistics:
+		StatisticsManager.manager().setLevel(this);
 		
 		
 	}
@@ -284,6 +288,9 @@ public class Settlement extends ChunkBundle implements MinuteTicker{
 		
 		// Set related fields:
 		this.level = level;
+
+		//Statistics:
+		StatisticsManager.manager().setLevel(this);
 		
 	}
 	

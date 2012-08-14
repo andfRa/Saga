@@ -147,14 +147,14 @@ public class StatisticsCommands {
 	}
 	
 	@Command(
-			aliases = {"stlevelhistogram", "stlevels"},
+			aliases = {"stlevels"},
 			usage = "",
 			flags = "",
 			desc = "Show level distribution histogram.",
 			min = 0,
 			max = 0
 	)
-	@CommandPermissions({"saga.admin.statistics.level"})
+	@CommandPermissions({"saga.admin.statistics.levels"})
 	public static void levels(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
@@ -302,6 +302,51 @@ public class StatisticsCommands {
 	            	
 	}
 
+	@Command(
+			aliases = {"stslevels"},
+			usage = "",
+			flags = "",
+			desc = "Show settlement level distribution histogram.",
+			min = 0,
+			max = 0
+	)
+	@CommandPermissions({"saga.admin.statistics.settlementlevels"})
+	public static void slevels(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		
+    	// Data:
+    	Double[] data = StatisticsManager.manager().createHistogramData("settlements.levels");
+    	
+	    // Inform:
+    	sagaPlayer.message(StatisticsMessages.histogram("settlement level histogram", data, 10, 0));
+	    
+    	sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+	    
+	    
+	}
 	
+	@Command(
+			aliases = {"stflevels"},
+			usage = "",
+			flags = "",
+			desc = "Show settlement level distribution histogram.",
+			min = 0,
+			max = 0
+	)
+	@CommandPermissions({"saga.admin.statistics.factionlevels"})
+	public static void flevels(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		
+    	// Data:
+    	Double[] data = StatisticsManager.manager().createHistogramData("factions.levels");
+    	
+	    // Inform:
+    	sagaPlayer.message(StatisticsMessages.histogram("faction level histogram", data, 10, 0));
+	    
+    	sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+	    
+	    
+	}
+
 	
 }

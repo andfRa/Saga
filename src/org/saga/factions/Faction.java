@@ -289,6 +289,9 @@ public class Faction implements SecondTicker, DaytimeTicker{
 			allyRequests = new HashSet<Integer>();
 			integrity = false;
 		}
+
+		//Statistics:
+		StatisticsManager.manager().setLevel(this);
 		
 		return integrity;
 		
@@ -695,6 +698,9 @@ public class Faction implements SecondTicker, DaytimeTicker{
 		
 		// Set related fields:
 		this.level = level;
+		
+		//Statistics:
+		StatisticsManager.manager().setLevel(this);
 		
 	}
 	
