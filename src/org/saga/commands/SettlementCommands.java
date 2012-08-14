@@ -20,7 +20,7 @@ import org.saga.messages.BuildingMessages;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.FactionMessages;
 import org.saga.messages.GeneralMessages;
-import org.saga.messages.InfoMessages;
+import org.saga.messages.HelpMessages;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.SettlementEffects;
 import org.saga.messages.SettlementMessages;
@@ -1403,7 +1403,7 @@ public class SettlementCommands {
 		}
 		
 		// Inform:
-		sagaPlayer.message(InfoMessages.shelp(page - 1));
+		sagaPlayer.message(HelpMessages.shelp(page - 1));
 
 		
 	}

@@ -5,7 +5,7 @@ import org.saga.Saga;
 import org.saga.config.EconomyConfiguration;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.messages.EconomyMessages;
-import org.saga.messages.InfoMessages;
+import org.saga.messages.HelpMessages;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.SettlementMessages;
 import org.saga.player.SagaPlayer;
@@ -172,7 +172,7 @@ public class EconomyCommands {
 		}
 		
 		// Inform:
-		sagaPlayer.message(InfoMessages.ehelp(page - 1));
+		sagaPlayer.message(HelpMessages.ehelp(page - 1));
 
 		
 	}

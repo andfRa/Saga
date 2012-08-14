@@ -14,7 +14,7 @@ import org.saga.factions.FactionManager;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.FactionMessages;
 import org.saga.messages.GeneralMessages;
-import org.saga.messages.InfoMessages;
+import org.saga.messages.HelpMessages;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.SettlementMessages;
 import org.saga.player.Proficiency;
@@ -1613,7 +1613,7 @@ public class FactionCommands {
 		}
 		
 		// Inform:
-		sagaPlayer.message(InfoMessages.fhelp(page - 1));
+		sagaPlayer.message(HelpMessages.fhelp(page - 1));
 	
 
 	}

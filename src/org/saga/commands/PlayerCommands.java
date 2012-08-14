@@ -6,7 +6,7 @@ import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.dependencies.PermissionsManager;
 import org.saga.messages.GeneralMessages;
-import org.saga.messages.InfoMessages;
+import org.saga.messages.HelpMessages;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.SettlementMessages;
 import org.saga.messages.StatsMessages;
@@ -187,7 +187,7 @@ public class PlayerCommands {
 		}
 		
 		// Inform:
-		sagaPlayer.message(InfoMessages.phelp(page - 1));
+		sagaPlayer.message(HelpMessages.phelp(page - 1));
 
 		
 	}

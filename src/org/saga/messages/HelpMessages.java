@@ -8,7 +8,9 @@ import org.saga.abilities.AbilityDefinition;
 import org.saga.attributes.Attribute;
 import org.saga.buildings.BuildingDefinition;
 import org.saga.buildings.TownSquare;
+import org.saga.buildings.TradingPost;
 import org.saga.buildings.signs.AttributeSign;
+import org.saga.buildings.signs.BuySign;
 import org.saga.buildings.signs.GuardianRuneSign;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
@@ -24,7 +26,7 @@ import org.saga.utility.text.RomanNumeral;
 import org.saga.utility.text.StringBook;
 import org.saga.utility.text.StringTable;
 
-public class InfoMessages {
+public class HelpMessages {
 
 public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 	
@@ -51,59 +53,25 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 	// Help:
 	public static String ehelp(int page) {
 
-//		
-//		ColorCircle color = new ColorCircle().addColor(normal1).addColor(normal2);
-//		StringBook book = new StringBook("building help", color, 9);
-//		
-//		// General:
-//		book.addLine("Items can be bought and sold at a trading post building. See /bhelp for details.");
-//
-//		// Balance:
-//		book.addLine("/stats to see how much coins you have in your wallet.");
-//
-//		// Limited items:
-//		book.addLine("A trading post doesn't have unlimited coins/items. Everything is gained from players buying/selling and exporting/importing.");
-//		
-//		// Building info:
-//		book.addLine("/tpost to see all buyable items, sellable items, exports, imports, available coins and available items.");
-//		
-//		// Set sell:
-//		book.addLine("/bsetsell <item> <amount> <value> to set the minimum amount and value of a sold item");
-//
-//		// Set buy:
-//		book.addLine("/bsetbuy <item> <amount> <value> to set the minimum amount and value of a bought item");
-//		
-//		// Signs:
-//		book.addLine("Place \"=[sell]= | amount" + SellSign.MATERIAL_VALUE_DIV + "item\" and \"=[buy]= | amount" + SellSign.MATERIAL_VALUE_DIV + "item\" signs to sell and buy items.");
-//
-//		// Donate:
-//		book.addLine("To get the trading post running, you will need to donate items or coins.");
-//		
-//		// Donate:
-//		book.addLine("/donate, /donatec <amount> or /donateall <item> to donate item in hand, coins or all items of the given type.");
-//		
-//		// Export import:
-//		book.addLine("A deal needs to be formed to export or import items.");
-//
-//		// Imports:
-//		book.addLine("/eimports and /eexports to list all deals.");
-//
-//		// Expiration:
-//		book.addLine("/bnewdeal <ID> to form a deal. Deal will expire after certain amout of items or time.");
-//
-//		// Timing:
-//		book.addLine("After a deal is formed, the goods will get exported/imported each sunrise.");
-//
-//		// Goods sign:
-//		book.addLine("" + TradingPost.GOODS_SIGN + " sign displays goods list.");
-//
-//		// Deals sign:
-//		book.addLine("" + TradingPost.DEALS_SIGN + " sign displays deals list.");
-//
-//		return book.framed(page);
-//		
 		
-		return "";
+		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
+		StringBook book = new StringBook("building help", colours);
+		
+		// General:
+		book.addLine("Faction members receive wages each " + EconomyConfiguration.config().getFactionWagesTime() + ". " +
+			"Earned coins can be spent at a " + tradingPost() + ". " +
+			"The amount of goods available is limited and is restocked every day. " +
+			"Available coins can be seen under " + GeneralMessages.command("/stats") + "."
+		);
+
+		// Trading post:
+		book.addLine("Every settlement can set a " + tradingPost() + " by using " + GeneralMessages.command("/bset") + ". " +
+			"Buy signs can be created by writing " + GeneralMessages.command(BuySign.SIGN_NAME) + " on the first line and " + GeneralMessages.command("amount" + BuySign.MATERIAL_VALUE_DIV + "item_name") + " on the second line. " +
+			"Item ID can also be used instead of " + GeneralMessages.command("item_name") + "." 
+		);
+		
+		return book.framedPage(0);
+		
 		
 	}
 	
@@ -566,7 +534,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 	
 	}
 	
-	public static String townSquare(){
+public static String townSquare(){
 		
 		
 		ArrayList<BuildingDefinition> buildings = SettlementConfiguration.config().getBuildingDefinitions();
@@ -579,6 +547,20 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		
 		
 	}
+
+	public static String tradingPost(){
+	
+	
+		ArrayList<BuildingDefinition> buildings = SettlementConfiguration.config().getBuildingDefinitions();
+		
+		for (BuildingDefinition building : buildings) {
+			if(building.getBuildingClass().equals(TradingPost.class.getName())) return building.getName();
+		}
+	
+	return "main building";
+	
+	
+}
 
 	
 }
