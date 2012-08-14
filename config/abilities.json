@@ -10,7 +10,7 @@
     "activationAction":"RIGHT_CLICK",
     "usedItem":"AIR",
     "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "cooldown":{"x1":1,"y1":20.0,"x2":3,"y2":5.0},
+    "cooldown":{"x1":1,"y1":35.0,"x2":3,"y2":15.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
     "attributeRequirements":{
       "strength":{"x1":1,"y1":5.0,"x2":3,"y2":45.0},
@@ -46,7 +46,7 @@
     "activationAction":"RIGHT_CLICK",
     "usedItem":"AIR",
     "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "cooldown":{"x1":1,"y1":25.0,"x2":3,"y2":10.0},
+    "cooldown":{"x1":1,"y1":35.0,"x2":3,"y2":15.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
     "attributeRequirements":{
       "toughness":{"x1":1,"y1":5.0,"x2":3,"y2":45.0},
