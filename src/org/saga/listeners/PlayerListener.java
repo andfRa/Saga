@@ -88,7 +88,7 @@ public class PlayerListener implements Listener {
     	sagaPlayer.setPlayer(player);
     	
     	// Forward to chunk group:
-    	if(sagaPlayer.getChunkBundle() != null) sagaPlayer.getChunkBundle().onMemberJoin(event, sagaPlayer);
+    	if(sagaPlayer.getBundle() != null) sagaPlayer.getBundle().onMemberJoin(event, sagaPlayer);
     	
         
     }
@@ -106,7 +106,7 @@ public class PlayerListener implements Listener {
     	}
     	
     	// Forward to chunk group:
-    	if(sagaPlayer.getChunkBundle() != null) sagaPlayer.getChunkBundle().onMemberQuit(event, sagaPlayer);
+    	if(sagaPlayer.getBundle() != null) sagaPlayer.getBundle().onMemberQuit(event, sagaPlayer);
     	
     	// Unload player:
     	Saga.plugin().unloadSagaPlayer(player.getName());
@@ -134,7 +134,7 @@ public class PlayerListener implements Listener {
     	}
 
     	// Get chunk group:
-    	ChunkBundle chunkBundle = sagaPlayer.getChunkBundle();
+    	ChunkBundle chunkBundle = sagaPlayer.getBundle();
     	
     	// Forward to chunk group:
     	if(chunkBundle != null) chunkBundle.onMemberRespawn(sagaPlayer, event);

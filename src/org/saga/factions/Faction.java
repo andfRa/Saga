@@ -59,11 +59,6 @@ public class Faction implements SecondTicker, DaytimeTicker{
 	 * Faction members.
 	 */
 	private ArrayList<String> members;
-	
-	/**
-	 * Registered players.
-	 */
-	transient private ArrayList<SagaPlayer> registeredMembers = new ArrayList<SagaPlayer>();
 
 	
 	/**
@@ -86,36 +81,31 @@ public class Faction implements SecondTicker, DaytimeTicker{
 	 * Secondary colour.
 	 */
 	private ChatColor colour2;
-	
-	/**
-	 * Chunk group IDs.
-	 */
-	private ArrayList<Integer> chunkGroups;
-	
-	/**
-	 * Chunk group invites.
-	 */
-	private ArrayList<Integer> chunkGroupInvites;
+
 	
 	/**
 	 * Faction owner.
 	 */
 	private String owner;
 	
+	
 	/**
 	 * Faction definition.
 	 */
 	private FactionDefinition definition;
+	
 	
 	/**
 	 * Player roles.
 	 */
 	private Hashtable<String, Proficiency> playerRanks;
 
+	
 	/**
 	 * True if the clock is enabled.
 	 */
 	transient private boolean clockEnabled;
+	
 	
 	/**
 	 * Enemy factions.
@@ -168,13 +158,10 @@ public class Faction implements SecondTicker, DaytimeTicker{
 		this.id = factionId;
 		this.name = factionName;
 		members = new ArrayList<String>();
-		registeredMembers = new ArrayList<SagaPlayer>();
 		level = 0;
 		exp = 0.0;
 		colour1 = ChatColor.WHITE;
 		colour2 = ChatColor.WHITE;
-		chunkGroups = new ArrayList<Integer>();
-		chunkGroupInvites = new ArrayList<Integer>();
 		playerRanks = new Hashtable<String, Proficiency>();
 		enemies = new HashSet<Integer>();
 		allies = new HashSet<Integer>();
@@ -237,26 +224,6 @@ public class Faction implements SecondTicker, DaytimeTicker{
 			SagaLogger.nullField(this, "colour2");
 			colour2 = colour1;
 			integrity = false;
-		}
-		
-		if(chunkGroups == null){
-			SagaLogger.nullField(this, "chunkGroups");
-			chunkGroups = new ArrayList<Integer>();
-			integrity = false;
-		}
-		
-		if(chunkGroupInvites == null){
-			SagaLogger.nullField(this, "chunkGroupInvites");
-			chunkGroupInvites = new ArrayList<Integer>();
-			integrity = false;
-		}
-		
-		for (int i = 0; i < chunkGroupInvites.size(); i++) {
-			if(chunkGroupInvites.get(i) == null){
-				SagaLogger.nullField(this, "chunkGroupInvites element");
-				chunkGroupInvites.remove(i);
-				i--;
-			}
 		}
 		
 		if(owner == null){
@@ -452,12 +419,9 @@ public class Faction implements SecondTicker, DaytimeTicker{
 		// Add member:
 		members.add(sagaPlayer.getName());
 		
-		// Add faction:
-		sagaPlayer.setFactionId(this);
+		// Set Id:
+		sagaPlayer.setFactionId(getId());
 		
-		// Register player:
-		registerMember(sagaPlayer);
-
 		// Set default rank:
 		try {
 			Proficiency rank = ProficiencyConfiguration.config().createProficiency(getDefinition().getDefaultRank());
@@ -489,11 +453,8 @@ public class Faction implements SecondTicker, DaytimeTicker{
 		}
 		
 		// Remove faction:
-		sagaPlayer.removeFactionId(getId());
+		sagaPlayer.removeFactionId();
 		
-		// Unregister player:
-		unregisterMember(sagaPlayer);
-
 		
 	}
 	
@@ -529,107 +490,6 @@ public class Faction implements SecondTicker, DaytimeTicker{
 		
 	}
 	
-	
-	/**
-	 * Registers a member.
-	 * Will not add player permanently to the faction list.
-	 * Used by SagaPlayer to create a connection with the faction.
-	 * Should not be used.
-	 * 
-	 * @param sagaPlayer saga player
-	 */
-	public void registerMember(SagaPlayer sagaPlayer) {
-
-
-		// Register player:
-		if(registeredMembers.contains(sagaPlayer)){
-			SagaLogger.severe(this, "tried to register an already registered member " + sagaPlayer.getName());
-			return;
-		}
-		
-		// Register player:
-		registeredMembers.add(sagaPlayer);
-		
-		// Register faction:
-		sagaPlayer.registerFaction(this);
-
-		
-	}
-	
-	/**
-	 * Unregisters a member.
-	 * Will not add player permanently to the faction list.
-	 * Used by SagaPlayer to create a connection with the faction.
-	 * Should not be used.
-	 * 
-	 * @param sagaPlayer saga player
-	 */
-	public void unregisterMember(SagaPlayer sagaPlayer) {
-
-
-		// Unregister player:
-		boolean removed = registeredMembers.remove(sagaPlayer);
-		if(!removed){
-			SagaLogger.severe(this, "tried to unregister an non-registered member " + sagaPlayer.getName());
-		}
-
-		// Unregister player:
-		registeredMembers.remove(sagaPlayer);
-		
-		// Unregister faction:
-		sagaPlayer.unregisterFaction(this);
-		
-		
-		
-		// Unregister for all chunk groups:
-//		for (int i = 0; i < registeredChunkGroups.size(); i++) {
-//			ChunkGroupManager.manager().unregisterFactionPlayer(sagaPlayer, registeredChunkGroups.get(i), this);
-//		}
-		
-		
-	}
-	
-	/**
-	 * Checks if the payer is registered.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if registered
-	 */
-	public boolean isRegisteredMember(SagaPlayer sagaPlayer) {
-
-		return registeredMembers.contains(sagaPlayer);
-		
-	}
-	
-	/**
-	 * Checks if the payer is registered.
-	 * 
-	 * @param playerName player name
-	 * @return true if registered
-	 */
-	public boolean isRegisteredMember(String playerName) {
-
-		for (int i = 0; i < registeredMembers.size(); i++) {
-			if(registeredMembers.get(i).getName().equals(playerName)) return true;
-		}
-		
-		return false;
-		
-	}
-	
-	
-	/**
-	 * Checks if the player is on the member list.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if on the list
-	 */
-	public boolean hasMember(SagaPlayer sagaPlayer) {
-
-		return members.contains(sagaPlayer.getName());
-		
-	}
-
 	/**
 	 * Checks if the player is on the member list.
 	 * 
@@ -642,6 +502,15 @@ public class Faction implements SecondTicker, DaytimeTicker{
 		
 	}
 	
+
+	/**
+	 * Gets the members.
+	 * 
+	 * @return the members
+	 */
+	public ArrayList<String> getMembers() {
+		return new ArrayList<String>(members);
+	}
 	
 	/**
 	 * Gets the member count.
@@ -652,15 +521,15 @@ public class Faction implements SecondTicker, DaytimeTicker{
 		return members.size();
 	}
 
+
 	/**
-	 * Gets the registered member count.
+	 * Gets the active members.
 	 * 
-	 * @return amount of registered members
+	 * @return the active members
 	 */
-	public int getRegisteredMemberCount() {
-		return registeredMembers.size();
+	public ArrayList<String> getActiveMembers() {
+		return new ArrayList<String>(members);
 	}
-	
 
 	/**
 	 * Gets the active member count.
@@ -688,6 +557,51 @@ public class Faction implements SecondTicker, DaytimeTicker{
 	 */
 	public boolean isMemberActive(String name) {
 		return true;
+	}
+	
+	
+	/**
+	 * Gets the online members.
+	 * 
+	 * @return online members
+	 */
+	public Collection<SagaPlayer> getOnlineMembers() {
+		
+		
+		Collection<SagaPlayer> onlinePlayers = Saga.plugin().getLoadedPlayers();
+		Collection<SagaPlayer> onlineMembers = new HashSet<SagaPlayer>();
+		
+		for (SagaPlayer onlinePlayer : onlinePlayers) {
+			
+			if(isMember(onlinePlayer.getName())) onlineMembers.add(onlinePlayer);
+			
+		}
+		
+		return onlineMembers;
+		
+		
+	}
+	
+	/**
+	 * Checks if the member is registered.
+	 * 
+	 * @param playerName player name
+	 * @return true if member is registered
+	 */
+	public boolean isMemberOnline(String playerName) {
+		
+		return isMember(playerName) && Saga.plugin().isSagaPlayerLoaded(playerName);
+
+	}
+	
+	
+	/**
+	 * Checks if the faction is formed.
+	 * 
+	 * @return true if formed
+	 */
+	public boolean isFormed() {
+		return getMemberCount() >= FactionConfiguration.config().formationAmount;
 	}
 	
 	/**
@@ -897,46 +811,7 @@ public class Faction implements SecondTicker, DaytimeTicker{
 		this.colour2 = colour2;
 	}
 
-	
-	
-	// Members:
-	/**
-	 * Gets the members.
-	 * 
-	 * @return the members
-	 */
-	public ArrayList<String> getMembers() {
-		return new ArrayList<String>(members);
-	}
 
-	/**
-	 * Gets the active members.
-	 * 
-	 * @return the active members
-	 */
-	public ArrayList<String> getActiveMembers() {
-		return new ArrayList<String>(members);
-	}
-	
-	/**
-	 * Gets all registered members.
-	 * 
-	 * @return registered members
-	 */
-	public ArrayList<SagaPlayer> getRegisteredMembers() {
-		return registeredMembers;
-	}
-	
-	/**
-	 * Checks if the faction is formed.
-	 * 
-	 * @return true if formed
-	 */
-	public boolean isFormed() {
-		return getMemberCount() >= FactionConfiguration.config().formationAmount;
-	}
-	
-	
 	
 	// Allies enemies:
 	/**
@@ -1646,10 +1521,10 @@ public class Faction implements SecondTicker, DaytimeTicker{
 
 		
 		Hashtable<Integer, Double> wages = calcWages();
-		ArrayList<SagaPlayer> members = getRegisteredMembers();
+		Collection<SagaPlayer> onlineMembers = getOnlineMembers();
 		
 		// Play wages:
-		for (SagaPlayer sagaPlayer : members) {
+		for (SagaPlayer sagaPlayer : onlineMembers) {
 			
 			Proficiency rank = getRank(sagaPlayer.getName());
 			if(rank == null) continue;
@@ -1679,9 +1554,10 @@ public class Faction implements SecondTicker, DaytimeTicker{
 	 */
 	public void broadcast(String message) {
 
+		Collection<SagaPlayer> onlineMembers = getOnlineMembers();
 		
-		for (int i = 0; i < registeredMembers.size(); i++) {
-			registeredMembers.get(i).message(message);
+		for (SagaPlayer onelineMember : onlineMembers) {
+			onelineMember.message(message);
 		}
 		
 	}
@@ -1692,9 +1568,12 @@ public class Faction implements SecondTicker, DaytimeTicker{
 	 * @param message message
 	 */
 	public void information(String message) {
+
+		Collection<SagaPlayer> onlineMembers = getOnlineMembers();
 		
-		for (int i = 0; i < registeredMembers.size(); i++) {
-			information(message, registeredMembers.get(i));
+		for (SagaPlayer onelineMember : onlineMembers) {
+			onelineMember.message(message);
+			information(message, onelineMember);
 		}
 		
 	}

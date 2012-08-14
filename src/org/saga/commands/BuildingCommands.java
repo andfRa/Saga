@@ -639,7 +639,7 @@ public class BuildingCommands {
 		}else{
 			
 			// Chunk group:
-			selectedChunkBundle = sagaPlayer.getChunkBundle();
+			selectedChunkBundle = sagaPlayer.getBundle();
 			if(selectedChunkBundle == null){
 				sagaPlayer.message( SettlementMessages.notMember() );
 				return;

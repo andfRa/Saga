@@ -1,5 +1,7 @@
 package org.saga;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
@@ -13,19 +15,19 @@ import org.saga.Clock.MinuteTicker;
 import org.saga.chunks.ChunkBundleManager;
 import org.saga.commands.AdminCommands;
 import org.saga.commands.BuildingCommands;
-import org.saga.commands.SettlementCommands;
 import org.saga.commands.EconomyCommands;
 import org.saga.commands.FactionCommands;
 import org.saga.commands.PlayerCommands;
+import org.saga.commands.SettlementCommands;
 import org.saga.commands.StatisticsCommands;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
-import org.saga.config.GeneralConfiguration;
-import org.saga.config.SettlementConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.FactionConfiguration;
+import org.saga.config.GeneralConfiguration;
 import org.saga.config.ProficiencyConfiguration;
+import org.saga.config.SettlementConfiguration;
 import org.saga.dependencies.PermissionsManager;
 import org.saga.dependencies.spout.ClientManager;
 import org.saga.economy.EconomyManager;
@@ -527,9 +529,9 @@ public class Saga extends JavaPlugin implements MinuteTicker{
      * 
      * @return all loaded saga players
      */
-    public Enumeration<SagaPlayer> getLoadedPlayers() {
+    public Collection<SagaPlayer> getLoadedPlayers() {
 
-    	Enumeration<SagaPlayer> sagaPlayers = loadedPlayers.elements();
+    	Collection<SagaPlayer> sagaPlayers = new ArrayList<SagaPlayer>(loadedPlayers.values());
     	
     	return sagaPlayers;
     	

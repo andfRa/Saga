@@ -3,6 +3,7 @@ package org.saga.chunks;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
 
@@ -28,7 +29,6 @@ import org.saga.config.GeneralConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
-import org.saga.factions.Faction;
 import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.listeners.events.SagaEntityDamageEvent;
@@ -63,11 +63,6 @@ public class ChunkBundle extends SagaCustomSerialization{
 	private ArrayList<String> players;
 
 	/**
-	 * Factions associated with the group.
-	 */
-	private ArrayList<Integer> factions;
-	
-	/**
 	 * Group chunks.
 	 */
 	private ArrayList<SagaChunk> groupChunks;
@@ -76,16 +71,6 @@ public class ChunkBundle extends SagaCustomSerialization{
 	 * Building scores.
 	 */
 	private Hashtable<String, Integer> buildingScores;
-	
-	/**
-	 * Registered players.
-	 */
-	transient private ArrayList<SagaPlayer> registeredPlayers = new ArrayList<SagaPlayer>();
-	
-	/**
-	 * Registered factions.
-	 */
-	transient private ArrayList<Faction> registeredFactions = new ArrayList<Faction>();
 	
 	/**
 	 * Chunk group owners.
@@ -135,7 +120,6 @@ public class ChunkBundle extends SagaCustomSerialization{
 		this.name = name;
 		this.id = ChunkBundleManager.manager().getUnusedId();
 		this.players = new ArrayList<String>();
-		this.factions = new ArrayList<Integer>();
 		this.groupChunks = new ArrayList<SagaChunk>();
 		this.buildingScores = new Hashtable<String, Integer>();
 		this.isSavingEnabled = true;
@@ -173,17 +157,6 @@ public class ChunkBundle extends SagaCustomSerialization{
 				i--;
 			}
 		}
-		if(factions == null){
-			SagaLogger.nullField(this, "factions");
-			factions = new ArrayList<Integer>();
-		}
-		for (int i = 0; i < factions.size(); i++) {
-			if(factions.get(i) == null){
-				SagaLogger.nullField(this, "factions element");
-				factions.remove(i);
-				i--;
-			}
-		}
 
 		if(buildingScores == null){
 			SagaLogger.nullField(this, "buildingScores");
@@ -201,8 +174,6 @@ public class ChunkBundle extends SagaCustomSerialization{
 		}
 		
 		// Transient:
-		registeredPlayers = new ArrayList<SagaPlayer>();
-		registeredFactions = new ArrayList<Faction>();
 		isSavingEnabled = true;
 	
 		if(groupChunks == null){
@@ -449,16 +420,6 @@ public class ChunkBundle extends SagaCustomSerialization{
 		sagaChunk.refresh();
 		
 		
-	}
-
-	/**
-	 * Checks if the ID is on the list.
-	 * 
-	 * @param id ID
-	 * @return true if on the list
-	 */
-	public boolean hasFaction(Integer id){
-		return factions.contains(id);
 	}
 
 	/**
@@ -754,7 +715,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 		buildingScores.put(bldgName, score);
 		
 		// Update players:
-		ArrayList<SagaPlayer> members = getRegisteredMembers();
+		Collection<SagaPlayer> members = getOnlineMembers();
 		
 		for (SagaPlayer sagaPlayer : members) {
 			sagaPlayer.update();
@@ -772,7 +733,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 		buildingScores.remove(bldgName);
 
 		// Update players:
-		ArrayList<SagaPlayer> members = getRegisteredMembers();
+		Collection<SagaPlayer> members = getOnlineMembers();
 
 		for (SagaPlayer sagaPlayer : members) {
 			sagaPlayer.update();
@@ -841,51 +802,6 @@ public class ChunkBundle extends SagaCustomSerialization{
 	}
 	
 	
-	// Todo methods:
-	/**
-	 * Registers a faction.
-	 * 
-	 * @param faction saga faction
-	 */
-	void registerFaction(Faction faction) {
-
-		
-		// Check list:
-		if(registeredFactions.contains(faction)){
-			SagaLogger.severe(this, "tried to register an already registered faction");
-			return;
-		}
-		
-		// Register faction:
-		registeredFactions.add(faction);
-
-		
-	}
-	
-	/**
-	 * Unregisters a faction.
-	 * Will not add player permanently to the faction list.
-	 * Used by SagaPlayer to create a connection with the faction.
-	 * Should not be used.
-	 * 
-	 * @param faction saga faction
-	 */
-	void unregisterFaction(Faction faction) {
-
-		
-		// Check list:
-		if(!registeredFactions.contains(faction)){
-			SagaLogger.severe(this, "tried to unregister a non-registered faction");
-			return;
-		}
-
-		// Unregister faction:
-		registeredFactions.remove(faction);
-		
-		
-	}
-	
-
 	
 	// Player and faction management:
 	/**
@@ -945,11 +861,8 @@ public class ChunkBundle extends SagaCustomSerialization{
 		addPlayer(sagaPlayer.getName());
 		
 		// Set chunk group ID:
-		sagaPlayer.setChunkBundleId(getId());
+		sagaPlayer.setBundleId(getId());
 		
-		// Register:
-		registerPlayer(sagaPlayer);
-
 		
 	}
 
@@ -965,65 +878,11 @@ public class ChunkBundle extends SagaCustomSerialization{
 		removePlayer(sagaPlayer.getName());
 
 		// Remove chunk group ID:
-		sagaPlayer.removeChunkBundleId(getId());
-		
-		// Unregister:
-		unregisterPlayer(sagaPlayer);
-
-		
-	}
-	
-	/**
-	 * Registers a player.
-	 * 
-	 * @param sagaPlayer saga player
-	 */
-	public void registerPlayer(SagaPlayer sagaPlayer) {
-
-		
-		// Check list:
-		if(registeredPlayers.contains(sagaPlayer)){
-			SagaLogger.severe(this, "tried to register an already registered " + sagaPlayer + " player");
-			return;
-		}
-		
-		// Register player:
-		registeredPlayers.add(sagaPlayer);
-
-		// Register chunk group:
-		sagaPlayer.registerChunkBundle(this);
-		
-		// Saving disabled:
-		if(!isSavingEnabled){
-			sagaPlayer.error("saving disabled for " + getName() + " settlement");
-		}
+		sagaPlayer.removeBundleId();
 		
 		
 	}
 	
-	/**
-	 * Unregisters a player.
-	 * 
-	 * @param sagaPlayer saga player
-	 */
-	public void unregisterPlayer(SagaPlayer sagaPlayer) {
-
-		
-		// Check list:
-		if(!registeredPlayers.contains(sagaPlayer)){
-			SagaLogger.severe(this, "tried to unregister a non-registered " + sagaPlayer + " player");
-			return;
-		}
-
-		// Register player:
-		registeredPlayers.remove(sagaPlayer);
-		
-		// Unregister chunk group:
-		sagaPlayer.unregisterChunkBundle(this);
-		
-		
-	}
-
 	
 	
 	// Members:
@@ -1035,34 +894,6 @@ public class ChunkBundle extends SagaCustomSerialization{
 	public ArrayList<String> getMembers() {
 		return new ArrayList<String>(players);
 	}
-	
-	/**
-	 * Gets the member count
-	 * 
-	 * @return member count
-	 */
-	public int getMemberCount() {
-		return players.size();
-	}
-	
-	/**
-	 * Gets the registered members.
-	 * 
-	 * @return registered members
-	 */
-	public ArrayList<SagaPlayer> getRegisteredMembers() {
-		return new ArrayList<SagaPlayer>(registeredPlayers);
-	}
-	
-	/**
-	 * Gets the registered members count.
-	 * 
-	 * @return registered members count
-	 */
-	public int getRegisteredMemberCount() {
-		return registeredPlayers.size();
-	}
-	
 	
 	/**
 	 * Checks if the player is a member.
@@ -1077,28 +908,35 @@ public class ChunkBundle extends SagaCustomSerialization{
 	}
 	
 	/**
-	 * Check if the saga player is a member.
+	 * Gets the member count
 	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if member
+	 * @return member count
 	 */
-	public boolean isMember(SagaPlayer sagaPlayer) {
-
-		return isMember(sagaPlayer.getName());
-		
+	public int getMemberCount() {
+		return players.size();
 	}
 	
 	
 	/**
-	 * Checks if the member is registered.
+	 * Gets the online members.
 	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if member is registered
+	 * @return online members
 	 */
-	public boolean hasRegisteredMember(SagaPlayer sagaPlayer) {
+	public Collection<SagaPlayer> getOnlineMembers() {
 		
-		return registeredPlayers.contains(sagaPlayer);
-
+		
+		Collection<SagaPlayer> onlinePlayers = Saga.plugin().getLoadedPlayers();
+		Collection<SagaPlayer> onlineMembers = new HashSet<SagaPlayer>();
+		
+		for (SagaPlayer onlinePlayer : onlinePlayers) {
+			
+			if(isMember(onlinePlayer.getName())) onlineMembers.add(onlinePlayer);
+			
+		}
+		
+		return onlineMembers;
+		
+		
 	}
 	
 	/**
@@ -1107,15 +945,12 @@ public class ChunkBundle extends SagaCustomSerialization{
 	 * @param playerName player name
 	 * @return true if member is registered
 	 */
-	public boolean hasRegisteredMember(String playerName) {
+	public boolean isMemberOnline(String playerName) {
 		
-		for (int i = 0; i < registeredPlayers.size(); i++) {
-			if(registeredPlayers.get(i).getName().equals(playerName)) return true;
-		}
-		
-		return false;
+		return isMember(playerName) && Saga.plugin().isSagaPlayerLoaded(playerName);
 
 	}
+	
 	
 	/**
 	 * Matches a name to a members name.
@@ -1188,46 +1023,6 @@ public class ChunkBundle extends SagaCustomSerialization{
 	
 	
 	
-	// Factions:
-	/**
-	 * Gets factions associated.
-	 * 
-	 * @return faction IDs
-	 */
-	public ArrayList<Integer> getFactions() {
-		return factions;
-	}
-
-	/**
-	 * Gets the registered factions.
-	 * 
-	 * @return the registered factions
-	 */
-	public ArrayList<Faction> getRegisteredFactions() {
-		return new ArrayList<Faction>(registeredFactions);
-	}
-
-	/**
-	 * Checks if the faction is registered.
-	 * 
-	 * @param faction saga faction
-	 * @return true if registered
-	 */
-	public boolean isFactionRegistered(Faction faction) {
-		return registeredFactions.contains(faction);
-	}
-
-	/**
-	 * Gets the factions count.
-	 * 
-	 * @return factions count
-	 */
-	public int getFactionCount() {
-		return factions.size();
-	}
-
-	
-	
 	// Permissions:
 	/**
 	 * Checks if the player has permission.
@@ -1289,11 +1084,10 @@ public class ChunkBundle extends SagaCustomSerialization{
 	public void broadcast(String message){
 		
 		
-		for (int i = 0; i < registeredPlayers.size(); i++) {
-			registeredPlayers.get(i).message(message);
-		}
-		for (int i = 0; i < registeredFactions.size(); i++) {
-			registeredFactions.get(i).broadcast(message);
+		Collection<SagaPlayer> onlineMembers = getOnlineMembers();
+		
+		for (SagaPlayer onlineMember : onlineMembers) {
+			onlineMember.message(message);
 		}
 		
 		

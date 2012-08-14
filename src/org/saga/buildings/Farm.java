@@ -42,7 +42,7 @@ public class Farm extends Building{
 			if(chunkBundle == null) return;
 			
 			// Permissions:
-			if(!chunkBundle.isMember(damager)){
+			if(!chunkBundle.isMember(damager.getName())){
 				damager.message(BuildingMessages.farmAnimalsDamageDeny());
 				event.cancel();
 			}

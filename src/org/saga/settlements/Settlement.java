@@ -624,7 +624,7 @@ public class Settlement extends ChunkBundle implements MinuteTicker{
 		
 		
 		// Online:
-		if(hasRegisteredMember(name)) return Calendar.getInstance().getTime();
+		if(Saga.plugin().isSagaPlayerLoaded(name)) return Calendar.getInstance().getTime();
 		
 		// Offline:
 		Date lastDate = lastSeen.get(name);

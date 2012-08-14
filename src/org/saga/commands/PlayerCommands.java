@@ -1,14 +1,14 @@
 package org.saga.commands;
 
-import java.util.Enumeration;
+import java.util.Collection;
 
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.dependencies.PermissionsManager;
 import org.saga.messages.GeneralMessages;
-import org.saga.messages.SettlementMessages;
 import org.saga.messages.InfoMessages;
 import org.saga.messages.PlayerMessages;
+import org.saga.messages.SettlementMessages;
 import org.saga.messages.StatsMessages;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
@@ -141,11 +141,9 @@ public class PlayerCommands {
 
 
 		// Send the message to all players who have the correct permission:
-		Enumeration<SagaPlayer> allPlayers = Saga.plugin().getLoadedPlayers();
+		Collection<SagaPlayer> allPlayers = Saga.plugin().getLoadedPlayers();
 		
-		while (allPlayers.hasMoreElements()) {
-			
-			SagaPlayer loadedPlayer = allPlayers.nextElement();
+		for (SagaPlayer loadedPlayer : allPlayers) {
 			
 			if(PermissionsManager.hasPermission(loadedPlayer, PermissionsManager.SPECIAL_CHAT_PERMISSION)){
 				loadedPlayer.message(message);

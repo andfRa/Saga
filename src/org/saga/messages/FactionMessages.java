@@ -543,7 +543,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		}
 		
 		// Offline:
-		else if(!faction.isRegisteredMember(name)){
+		else if(!faction.isMemberOnline(name)){
 			return unavailable + name + normal1;
 		}
 		

@@ -76,12 +76,9 @@ public class FactionManager {
 		// Not on the list:
 		if(!faction.isMember(sagaPlayer.getName())){
 			SagaLogger.severe(getClass(), "failed to register faction for " + sagaPlayer + "player with " + factionId + " ID, because the player is not on its member list");
-			sagaPlayer.removeFactionId(sagaPlayer.getFactionId());
+			sagaPlayer.removeFactionId();
 			return;
 		}
-		
-		// Register player:
-		faction.registerMember(sagaPlayer);
 		
 		
 	}
@@ -102,9 +99,6 @@ public class FactionManager {
 			return;
 		}
 
-		// Unregister player:
-		faction.unregisterMember(sagaPlayer);
-		
 		
 	}
 

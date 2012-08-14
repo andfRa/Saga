@@ -409,7 +409,7 @@ public class AbilityDefinition{
 
 
 		Set<String> bldgNames = buildingRequirements.keySet();
-		ChunkBundle chunkBundle = sagaPlayer.getChunkBundle();
+		ChunkBundle chunkBundle = sagaPlayer.getBundle();
 		
 		if(bldgNames.size() == 0) return true;
 		

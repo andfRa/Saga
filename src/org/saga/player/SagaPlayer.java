@@ -20,8 +20,6 @@ import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
-import org.saga.Clock;
-import org.saga.Clock.SecondTicker;
 import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
 import org.saga.abilities.AbilityManager;
@@ -40,6 +38,7 @@ import org.saga.economy.TradeDeal;
 import org.saga.economy.Trader;
 import org.saga.exceptions.InvalidAbilityException;
 import org.saga.factions.Faction;
+import org.saga.factions.FactionManager;
 import org.saga.messages.GeneralMessages.CustomColour;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.StatsMessages;
@@ -50,7 +49,7 @@ import org.saga.shape.RelativeShape.Orientation;
 
 import com.google.gson.JsonParseException;
 
-public class SagaPlayer implements SecondTicker, Trader{
+public class SagaPlayer implements Trader{
 
 	
 	// Wrapped:
@@ -113,12 +112,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * Player factions ID.
 	 */
 	private Integer factionId;
-	
-	/**
-	 * Registered factions.
-	 */
-	transient private Faction faction;
-	
+
 	
 	// Chunk group:
 	/**
@@ -126,11 +120,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 */
 	private Integer chunkGroupId;
 
-	/**
-	 * All registered chunk groups.
-	 */
-	transient private ChunkBundle chunkBundle = null;
-	
 	
 	// Location:
 	/**
@@ -143,7 +132,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	/**
 	 * Invites to chunk groups.
 	 */
-	private ArrayList<Integer> chunkGroupInvites;
+	private ArrayList<Integer> bundleInvites;
 	
 	/**
 	 * Invites to factions.
@@ -175,14 +164,8 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * Forced level. If above zero, the player can't be unforced.
 	 */
 	transient private int forcedLevel = 0;
-
-	/**
-	 * Clock is enabled if true.
-	 */
-	transient private boolean clockEnabled;
 	
 
-	
 	
 	// Loading and initialisation:
 	/**
@@ -207,7 +190,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 		this.factionId = -1;
 		this.chunkGroupId = -1;
 		this.factionInvites = new ArrayList<Integer>();
-		this.chunkGroupInvites = new ArrayList<Integer>();
+		this.bundleInvites = new ArrayList<Integer>();
 		this.coins = EconomyConfiguration.config().playerCoins;
 		this.guardRune = new GuardianRune(this);
 		this.abilities = new ArrayList<Ability>();
@@ -260,9 +243,9 @@ public class SagaPlayer implements SecondTicker, Trader{
 			SagaLogger.nullField(this, "factionInvites");
 		}
 	
-		if(chunkGroupInvites == null){
-			chunkGroupInvites = new ArrayList<Integer>();
-			SagaLogger.nullField(this, "chunkGroupInvites");
+		if(bundleInvites == null){
+			bundleInvites = new ArrayList<Integer>();
+			SagaLogger.nullField(this, "bundleInvites");
 		}
 		
 		if(guardRune == null){
@@ -310,13 +293,13 @@ public class SagaPlayer implements SecondTicker, Trader{
 		}
 		
 		// Transient:
-		this.clockEnabled = false;
 		this.attributeManager = new AttributeManager(this);
 		this.abilityManager = new AbilityManager(this);
 		
 		
 	}
 
+	
 	
 	// Updating:
 	/**
@@ -463,7 +446,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 
 	
 	
-	
 	// Abilities:
 	/**
 	 * Gets an ability with the given name.
@@ -580,9 +562,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 			error("player information saving disabled");
 		}
 
-		// Start clock:
-		if(proceedClock() && !isClockEnabled()) enableClock();
-		
 		
 	}
 	
@@ -613,6 +592,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	public Player getPlayer() {
 		return player;
 	}
+	
 	
 	
 	// Level:
@@ -668,6 +648,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 	}
 	
+	
 
 	// Experience:
 	/**
@@ -711,10 +692,9 @@ public class SagaPlayer implements SecondTicker, Trader{
 	
 	
 	
-	
 	// Items:
 	/**
-	 * Gets player armor.
+	 * Gets player armour.
 	 * 
 	 * @return player armor, no idea if nulls
 	 */
@@ -832,54 +812,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	
 	
 	
-	
 	// Faction:
-	/**
-	 * Registers a faction.
-	 * 
-	 * @param saga saga faction
-	 */
-	public void registerFaction(Faction saga) {
-		
-		
-		// Check if already registered:
-		if(this.faction != null){
-			SagaLogger.severe(this, "tried to register a second " + saga + " faction");
-			return;
-		}
-		
-		// Register:
-		this.faction = saga;
-		
-		
-	}
-	
-	/**
-	 * Unregisters a faction.
-	 * 
-	 * @param faction saga faction
-	 */
-	public void unregisterFaction(Faction faction) {
-		
-		
-		// Check if not registered:
-		if(this.faction == null){
-			SagaLogger.severe(this, "tried to unregister a non-registered " + faction + " faction");
-			return;
-		}
-
-		// Check if not a correct faction:
-		if(this.faction != faction){
-			SagaLogger.severe(this, "tried to unregister an invalid " + faction + " faction");
-			return;
-		}
-		
-		// Remove:
-		this.faction = null;
-		
-		
-	}
-	
 	/**
 	 * Gets the faction id.
 	 * 
@@ -888,76 +821,52 @@ public class SagaPlayer implements SecondTicker, Trader{
 	public Integer getFactionId() {
 		return factionId;
 	}
-	
+
+	/**
+	 * Sets a faction ID for the player.
+	 * 
+	 * @param factionId faction Id
+	 */
+	public void setFactionId(Integer factionId) {
+		this.factionId = factionId;
+	}
+
+	/**
+	 * Removes a faction ID from the player.
+	 */
+	public void removeFactionId() {
+		factionId = -1;
+	}
+
 	/**
 	 * Gets the players faction.
 	 * 
 	 * @return players faction, null if none
 	 */
 	public Faction getFaction() {
-		return faction;
-	}
-
-	/**
-	 * Sets a faction ID for the player.
-	 * 
-	 * @param faction saga faction
-	 */
-	public void setFactionId(Faction faction) {
-		factionId = faction.getId();
-	}
-
-	/**
-	 * Removes a faction ID from the player.
-	 * 
-	 * @param id faction id
-	 */
-	public void removeFactionId(Integer id) {
-		factionId = -1;
-	}
-
-
-	/**
-	 * Checks if the player is part of the faction.
-	 * 
-	 * @param faction faction
-	 * @return true if part of the faction
-	 */
-	public boolean hasFaction(Faction faction) {
 		
-		return faction.equals(faction.getId());
+		if(factionId == -1) return null;
+		
+		return FactionManager.manager().getFaction(factionId);
 		
 	}
 
 	
-	/**
-	 * Checks if the player has a faction.
-	 * 
-	 * @return true if the player has a faction
-	 */
-	public boolean hasFaction() {
-		return !factionId.equals(-1);
-	}
 	
-	
-	
-	
-	// Chunk group:
+	// Bundle:
 	/**
 	 * Sets a chunk bundle ID to the player.
 	 * 
 	 * @param chunkBundleId chunk group ID
 	 */
-	public void setChunkBundleId(Integer chunkBundleId) {
+	public void setBundleId(Integer chunkBundleId) {
 		this.chunkGroupId = chunkBundleId;
 	}
 
 	/**
 	 * Removes a chunk bundle ID from the player.
-	 * 
-	 * @param chunkBundleId chunk group ID
 	 */
-	public void removeChunkBundleId(Integer chunkBundleId) {
+	public void removeBundleId() {
 		this.chunkGroupId = -1;
 	}
 	
@@ -966,50 +875,8 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * 
 	 * @return the chunk bundle ID
 	 */
-	public Integer getChunkBundleId() {
+	public Integer getBundleId() {
 		return chunkGroupId;
-	}
-	
-	/**
-	 * Registers a chunk group.
-	 * Will not add faction permanently to the player.
-	 * 
-	 * @param chunkBundle saga chunk group
-	 */
-	public void registerChunkBundle(ChunkBundle chunkBundle) {
-		
-		
-		// Check if already on the list:
-		if(this.chunkBundle != null){
-			SagaLogger.severe(this, "tried to register a second chunk group");
-			return;
-		}
-		
-		// Add:
-		this.chunkBundle = chunkBundle;
-		
-		
-	}
-	
-	/**
-	 * Unregisters a chunk group.
-	 * Will not remove faction permanently to the player.
-	 * 
-	 * @param chunkBundle saga chunk group
-	 */
-	public void unregisterChunkBundle(ChunkBundle chunkBundle) {
-		
-		
-		// Check if not on the list:
-		if(this.chunkBundle == null){
-			SagaLogger.severe(this, "tried to unregister a non-registered chunk group");
-			return;
-		}
-		
-		// Remove:
-		this.chunkBundle = null;
-		
-		
 	}
 
 	/**
@@ -1017,17 +884,12 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * 
 	 * @return the registered chunk group, null if none
 	 */
-	public ChunkBundle getChunkBundle() {
-		return chunkBundle;
-	}
-
-	/**
-	 * Checks if the player has a chunk groups.
-	 * 
-	 * @return true if the player has chunk groups
-	 */
-	public boolean hasChunkBundle() {
-		return !chunkGroupId.equals(-1);
+	public ChunkBundle getBundle() {
+		
+		if(chunkGroupId == -1) return null;
+		
+		return ChunkBundleManager.manager().getChunkBundle(chunkGroupId);
+		
 	}
 
 	
@@ -1093,22 +955,22 @@ public class SagaPlayer implements SecondTicker, Trader{
 	
 	
 	
-	// Chunk group invites:
+	// Bundle invites:
 	/**
 	 * Adds a chunk group invite.
 	 * 
 	 * @param groupId chunk group ID
 	 */
-	public void addChunkGroupInvite(Integer groupId) {
+	public void addBundleInvite(Integer groupId) {
 		
 		
 		// Ignore invite if already exists:
-		if(chunkGroupInvites.contains(groupId)){
+		if(bundleInvites.contains(groupId)){
 			return;
 		}
 		
 		// Add invite:
-		chunkGroupInvites.add(groupId);
+		bundleInvites.add(groupId);
 		
 		
 	}
@@ -1118,16 +980,16 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * 
 	 * @param chunkGroupId chunk group ID
 	 */
-	public void removeChunkGroupInvite(Integer chunkGroupId) {
+	public void removeBundleInvite(Integer chunkGroupId) {
 		
 		
 		// Ignore invite if doesn't exists:
-		if(!chunkGroupInvites.contains(chunkGroupId)){
+		if(!bundleInvites.contains(chunkGroupId)){
 			return;
 		}
 		
 		// Remove invite:
-		chunkGroupInvites.remove(chunkGroupId);
+		bundleInvites.remove(chunkGroupId);
 		
 		
 	}
@@ -1137,8 +999,8 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * 
 	 * @return chunk group invites
 	 */
-	public ArrayList<Integer> getChunkGroupInvites() {
-		return new ArrayList<Integer>(chunkGroupInvites);
+	public ArrayList<Integer> getBundleInvites() {
+		return new ArrayList<Integer>(bundleInvites);
 	}
 
 	/**
@@ -1147,8 +1009,8 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 * @param id ID
 	 * @return true if has an invite
 	 */
-	public boolean hasChunkGroupInvite(Integer id){
-		return chunkGroupInvites.contains(id);
+	public boolean hasBundleInvite(Integer id){
+		return bundleInvites.contains(id);
 	}
 
 	
@@ -1169,6 +1031,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	}
 	
 	
+	
 	// Rank and role:
 	/**
 	 * Gets player rank.
@@ -1177,7 +1040,9 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 */
 	public Proficiency getRank() {
 
+		Faction faction = getFaction();
 		if(faction == null) return null;
+		
 		return faction.getRank(getName());
 
 	}
@@ -1189,10 +1054,11 @@ public class SagaPlayer implements SecondTicker, Trader{
 	 */
 	public Proficiency getRole() {
 
-		if(chunkBundle == null) return null;
+		ChunkBundle bundle = getBundle();
+		if(bundle == null) return null;
 		
-		if(chunkBundle instanceof Settlement){
-			return ((Settlement) chunkBundle).getRole(getName());
+		if(bundle instanceof Settlement){
+			return ((Settlement) bundle).getRole(getName());
 		}else{
 			return null;
 		}
@@ -1260,7 +1126,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 
 	
 	
-	
 	// Shapes:
 	/**
 	 * Gets player orientation.
@@ -1302,7 +1167,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 	}
 
-	
 	
 	
 	// Ability usage:
@@ -1427,7 +1291,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 	
 	
 	
-	
 	// Effects:
 	/**
 	 * Plays an effect.
@@ -1478,7 +1341,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 	
 	
 	
-	
 	// Entities:
 	/**
 	 * Returns the player distance to a location
@@ -1521,6 +1383,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	}
 
 	
+	
 	// Saga chunk:
 	/**
 	 * Gets the Saga chunk the player is in.
@@ -1560,6 +1423,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	}
 
 	
+	
 	// Guard rune:
 	/**
 	 * Gets the guardRune.
@@ -1569,6 +1433,7 @@ public class SagaPlayer implements SecondTicker, Trader{
 	public GuardianRune getGuardRune() {
 		return guardRune;
 	}	
+	
 	
 	
 	// Trader:
@@ -1581,7 +1446,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 	public String getTradingName() {
 		return getName();
 	}
-
 
 	/* 
 	 * (non-Javadoc)
@@ -1755,59 +1619,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 	
 	
 	
-	
-	// Clock:
-	/**
-	 * Sends a clock tick.
-	 *
-	 * @param tick tick number
-	 */
-	@Override
-	public boolean clockSecondTick() {
-		
-		return proceedClock();
-		
-	}
-
-	/**
-	 * Enables the clock.
-	 * 
-	 */
-	private void enableClock() {
-
-		Clock.clock().registerSecondTick(this);
-		
-		clockEnabled = true;
-		
-	}
-	
-	/**
-	 * Checks if clock is enabled.
-	 * 
-	 * @return true if enabled.
-	 */
-	public boolean isClockEnabled() {
-		return clockEnabled;
-	}
-
-	/**
-	 * Checks if the clock should proceed.
-	 * 
-	 * @return true if should proceed
-	 */
-	private boolean proceedClock() {
-
-		
-//		if(!guardRune.isEmpty() && player != null) return true;
-		
-		return false;
-		
-		
-	}
-	
-
-	
-	
 	// Saving and loading:
 	/**
 	 * Loads a offline saga player.
@@ -1911,7 +1722,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 
 	
 	
-	
 	// Control:
 	/**
 	 * True if the player is online.
@@ -1971,7 +1781,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 	
 	
 	
-	
 	// Administration:
 	/**
 	 * Checks if the admin mode is active.
@@ -2004,7 +1813,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 	
 	
 	
-	
 	// Other:
 	@Override
 	public String toString() {
@@ -2022,7 +1830,6 @@ public class SagaPlayer implements SecondTicker, Trader{
 		
 		
 	}
-	
 	
 	
 	

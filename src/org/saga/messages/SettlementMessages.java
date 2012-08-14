@@ -712,7 +712,7 @@ public class SettlementMessages {
 		}
 		
 		// Offline:
-		else if(!settlement.hasRegisteredMember(name)){
+		else if(!settlement.isMemberOnline(name)){
 			return unavailable + name + normal1;
 		}
 		

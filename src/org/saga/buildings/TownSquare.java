@@ -413,7 +413,7 @@ public class TownSquare extends Building implements SecondTicker{
 		ArrayList<SagaPlayer> filteredPlayers = new ArrayList<SagaPlayer>();
 		
 		for (SagaPlayer sagaPlayer : sagaPlayers) {
-			if(!bundle.isMember(sagaPlayer)) filteredPlayers.add(sagaPlayer);
+			if(!bundle.isMember(sagaPlayer.getName())) filteredPlayers.add(sagaPlayer);
 		}
 		
 		return filteredPlayers;

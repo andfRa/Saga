@@ -155,7 +155,7 @@ public class StatsMessages {
 		if(sagaPlayer.getFaction() != null) faction = sagaPlayer.getFaction().getName();
 
 		String settlement = "none";
-		if(sagaPlayer.getChunkBundle() != null) settlement = sagaPlayer.getChunkBundle().getName();
+		if(sagaPlayer.getBundle() != null) settlement = sagaPlayer.getBundle().getName();
 		
 		table.addLine("faction", faction, 0);
 		table.addLine("settlement", settlement, 2);
@@ -324,7 +324,7 @@ public class StatsMessages {
     	// Chunk groups:
     	table.addLine(GeneralMessages.columnTitle("settlement invites"));
     	
-    	ArrayList<ChunkBundle> chunkBundles = getSettlements(sagaPlayer.getChunkGroupInvites());
+    	ArrayList<ChunkBundle> chunkBundles = getSettlements(sagaPlayer.getBundleInvites());
     	
     	for (ChunkBundle chunkBundle : chunkBundles) {
 			table.addLine(chunkBundle.getName());

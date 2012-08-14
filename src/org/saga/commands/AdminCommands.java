@@ -5,7 +5,7 @@
 
 package org.saga.commands;
 
-import java.util.Enumeration;
+import java.util.Collection;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -378,7 +378,7 @@ public class AdminCommands {
 		}else{
 			
 			// Chunk group:
-			selectedChunkBundle = sagaPlayer.getChunkBundle();
+			selectedChunkBundle = sagaPlayer.getBundle();
 			if(selectedChunkBundle == null){
 				sagaPlayer.message( SettlementMessages.notMember() );
 				return;
@@ -405,7 +405,7 @@ public class AdminCommands {
 		
 		// Inform:
 		selectedChunkBundle.broadcast(SettlementMessages.settleLevelBcast(selectedSettlement));
-		if(selectedChunkBundle != sagaPlayer.getChunkBundle()){
+		if(selectedChunkBundle != sagaPlayer.getBundle()){
 			sagaPlayer.message(SettlementMessages.setLevel(selectedSettlement));
 		}
 		
@@ -454,7 +454,7 @@ public class AdminCommands {
 			default:
 			
 				// Chunk group:
-				selChunkBundle = sagaPlayer.getChunkBundle();
+				selChunkBundle = sagaPlayer.getBundle();
 				if(selChunkBundle == null){
 					sagaPlayer.message(SettlementMessages.notMember());
 					return;
@@ -531,7 +531,7 @@ public class AdminCommands {
 			default:
 			
 				// Chunk group:
-				selChunkBundle = sagaPlayer.getChunkBundle();
+				selChunkBundle = sagaPlayer.getBundle();
 				if(selChunkBundle == null){
 					sagaPlayer.message(SettlementMessages.notMember());
 					return;
@@ -682,11 +682,9 @@ public class AdminCommands {
 
 
 		// Send the message to all players who have the correct permission:
-		Enumeration<SagaPlayer> allPlayers = Saga.plugin().getLoadedPlayers();
+		Collection<SagaPlayer> allPlayers = Saga.plugin().getLoadedPlayers();
 		
-		while (allPlayers.hasMoreElements()) {
-			
-			SagaPlayer loadedPlayer = allPlayers.nextElement();
+		for (SagaPlayer loadedPlayer : allPlayers) {
 			
 			if(PermissionsManager.hasPermission(loadedPlayer, PermissionsManager.ADMIN_CHAT_PERMISSION)){
 				loadedPlayer.message(message);

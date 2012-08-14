@@ -220,7 +220,7 @@ public class FactionCommands {
 		}
 
     	// Already in a faction:
-    	if(sagaPlayer.hasFaction()){
+    	if(sagaPlayer.getFaction() != null){
     		sagaPlayer.message(FactionMessages.alreadyInFaction());
     		return;
     	}
@@ -396,9 +396,7 @@ public class FactionCommands {
 		Faction selFaction = sagaPlayer.getFaction();
 		if(selFaction == null){
 			
-			if(sagaPlayer.hasFaction()){
-				sagaPlayer.removeFactionId(sagaPlayer.getFactionId());
-			}
+			sagaPlayer.removeFactionId();
 			
 			sagaPlayer.message(FactionMessages.notMember());
 			return;
