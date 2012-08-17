@@ -1,6 +1,5 @@
 package org.saga.config;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Hashtable;
@@ -276,16 +275,23 @@ public class ExperienceConfiguration {
 	 */
 	public static ExperienceConfiguration load(){
 
+
+		// Create config:
+		if(!WriterReader.checkExists(Directory.EXPERIENCE_CONFIG)){
+
+			try {
+				WriterReader.unpackConfig(Directory.EXPERIENCE_CONFIG);
+			}
+			catch (IOException e) {
+				SagaLogger.severe(ExperienceConfiguration.class, "failed to create default configuration: " + e.getClass().getSimpleName());
+			}
+			
+		}
 		
 		ExperienceConfiguration config;
 		try {
 			
 			config = WriterReader.read(Directory.EXPERIENCE_CONFIG, ExperienceConfiguration.class);
-			
-		} catch (FileNotFoundException e) {
-			
-			SagaLogger.severe(GeneralConfiguration.class, "configuration not found");
-			config = new ExperienceConfiguration();
 			
 		} catch (IOException e) {
 			

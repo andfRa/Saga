@@ -1,6 +1,5 @@
 package org.saga.config;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -168,16 +167,23 @@ public class AttributeConfiguration {
 	 */
 	public static AttributeConfiguration load(){
 
+
+		// Create config:
+		if(!WriterReader.checkExists(Directory.ATTRIBUTE_CONFIG)){
+
+			try {
+				WriterReader.unpackConfig(Directory.ATTRIBUTE_CONFIG);
+			}
+			catch (IOException e) {
+				SagaLogger.severe(AttributeConfiguration.class, "failed to create default configuration: " + e.getClass().getSimpleName());
+			}
+			
+		}
 		
 		AttributeConfiguration config;
 		try {
 			
 			config = WriterReader.read(Directory.ATTRIBUTE_CONFIG, AttributeConfiguration.class);
-			
-		} catch (FileNotFoundException e) {
-			
-			SagaLogger.severe(AttributeConfiguration.class, "configuration not found");
-			config = new AttributeConfiguration();
 			
 		} catch (IOException e) {
 			

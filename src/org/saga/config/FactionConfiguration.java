@@ -1,6 +1,5 @@
 package org.saga.config;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.saga.SagaLogger;
@@ -217,16 +216,23 @@ public class FactionConfiguration {
 	 */
 	public static FactionConfiguration load(){
 
+
+		// Create config:
+		if(!WriterReader.checkExists(Directory.FACTION_CONFIG)){
+
+			try {
+				WriterReader.unpackConfig(Directory.FACTION_CONFIG);
+			}
+			catch (IOException e) {
+				SagaLogger.severe(FactionConfiguration.class, "failed to create default configuration: " + e.getClass().getSimpleName());
+			}
+			
+		}
 		
 		FactionConfiguration config;
 		try {
 			
 			config = WriterReader.read(Directory.FACTION_CONFIG, FactionConfiguration.class);
-			
-		} catch (FileNotFoundException e) {
-			
-			SagaLogger.severe(FactionConfiguration.class, "configuration not found");
-			config = new FactionConfiguration();
 			
 		} catch (IOException e) {
 			

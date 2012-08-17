@@ -1,6 +1,5 @@
 package org.saga.config;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Random;
@@ -345,17 +344,24 @@ public class EconomyConfiguration {
 	 * @return configuration
 	 */
 	public static EconomyConfiguration load(){
+
 		
+		// Create config:
+		if(!WriterReader.checkExists(Directory.ECONOMY_CONFIG)){
+
+			try {
+				WriterReader.unpackConfig(Directory.ECONOMY_CONFIG);
+			}
+			catch (IOException e) {
+				SagaLogger.severe(EconomyConfiguration.class, "failed to create default configuration: " + e.getClass().getSimpleName());
+			}
+			
+		}
 		
 		EconomyConfiguration config;
 		try {
 			
 			config = WriterReader.read(Directory.ECONOMY_CONFIG, EconomyConfiguration.class);
-			
-		} catch (FileNotFoundException e) {
-			
-			SagaLogger.severe(GeneralConfiguration.class, "configuration not found");
-			config = new EconomyConfiguration();
 			
 		} catch (IOException e) {
 			

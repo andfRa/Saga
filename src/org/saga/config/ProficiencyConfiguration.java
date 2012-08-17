@@ -1,6 +1,5 @@
 package org.saga.config;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -226,16 +225,23 @@ public class ProficiencyConfiguration {
 	 */
 	public static ProficiencyConfiguration load(){
 
+
+		// Create config:
+		if(!WriterReader.checkExists(Directory.PROFICIENCY_CONFIG)){
+
+			try {
+				WriterReader.unpackConfig(Directory.PROFICIENCY_CONFIG);
+			}
+			catch (IOException e) {
+				SagaLogger.severe(ProficiencyConfiguration.class, "failed to create default configuration: " + e.getClass().getSimpleName());
+			}
+			
+		}
 		
 		ProficiencyConfiguration config;
 		try {
 			
 			config = WriterReader.read(Directory.PROFICIENCY_CONFIG, ProficiencyConfiguration.class);
-			
-		} catch (FileNotFoundException e) {
-			
-			SagaLogger.severe(GeneralConfiguration.class, "configuration not found");
-			config = new ProficiencyConfiguration();
 			
 		} catch (IOException e) {
 			

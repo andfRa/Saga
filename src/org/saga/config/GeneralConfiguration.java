@@ -1,6 +1,5 @@
 package org.saga.config;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -269,16 +268,23 @@ public class GeneralConfiguration {
 	 */
 	public static GeneralConfiguration load(){
 
+
+		// Create config:
+		if(!WriterReader.checkExists(Directory.GENERAL_CONFIG)){
+
+			try {
+				WriterReader.unpackConfig(Directory.GENERAL_CONFIG);
+			}
+			catch (IOException e) {
+				SagaLogger.severe(GeneralConfiguration.class, "failed to create default configuration: " + e.getClass().getSimpleName());
+			}
+			
+		}
 		
 		GeneralConfiguration config;
 		try {
 			
 			config = WriterReader.read(Directory.GENERAL_CONFIG, GeneralConfiguration.class);
-			
-		} catch (FileNotFoundException e) {
-			
-			SagaLogger.severe(GeneralConfiguration.class, "configuration not found");
-			config = new GeneralConfiguration();
 			
 		} catch (IOException e) {
 			

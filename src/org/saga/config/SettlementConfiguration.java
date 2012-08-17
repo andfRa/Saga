@@ -1,6 +1,5 @@
 package org.saga.config;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -280,16 +279,23 @@ public class SettlementConfiguration {
 	 */
 	public static SettlementConfiguration load(){
 
+
+		// Create config:
+		if(!WriterReader.checkExists(Directory.SETTLEMENT_CONFIG)){
+
+			try {
+				WriterReader.unpackConfig(Directory.SETTLEMENT_CONFIG);
+			}
+			catch (IOException e) {
+				SagaLogger.severe(SettlementConfiguration.class, "failed to create default configuration: " + e.getClass().getSimpleName());
+			}
+			
+		}
 		
 		SettlementConfiguration config;
 		try {
 			
-			config = WriterReader.read(Directory.CHUNKGROUP_CONFIG, SettlementConfiguration.class);
-			
-		} catch (FileNotFoundException e) {
-			
-			SagaLogger.severe(GeneralConfiguration.class, "configuration not found");
-			config = new SettlementConfiguration();
+			config = WriterReader.read(Directory.SETTLEMENT_CONFIG, SettlementConfiguration.class);
 			
 		} catch (IOException e) {
 			

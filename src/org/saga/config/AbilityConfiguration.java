@@ -1,6 +1,5 @@
 package org.saga.config;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
@@ -176,16 +175,24 @@ public class AbilityConfiguration {
 	 */
 	public static AbilityConfiguration load(){
 
+
+		// Create config:
+		if(!WriterReader.checkExists(Directory.ABILITY_CONFIG)){
+
+			try {
+				WriterReader.unpackConfig(Directory.ABILITY_CONFIG);
+			}
+			catch (IOException e) {
+				SagaLogger.severe(AbilityConfiguration.class, "failed to create default configuration: " + e.getClass().getSimpleName());
+			}
+			
+		}
 		
+		// Read config:
 		AbilityConfiguration config;
 		try {
 			
 			config = WriterReader.read(Directory.ABILITY_CONFIG, AbilityConfiguration.class);
-			
-		} catch (FileNotFoundException e) {
-			
-			SagaLogger.severe(AbilityConfiguration.class, "configuration not found");
-			config = new AbilityConfiguration();
 			
 		} catch (IOException e) {
 			

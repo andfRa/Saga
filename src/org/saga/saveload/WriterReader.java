@@ -1,12 +1,21 @@
 package org.saga.saveload;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URISyntaxException;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
+import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
 import org.saga.buildings.Building;
@@ -274,6 +283,69 @@ public class WriterReader {
 		}
 		
 
+	}
+	
+	/**
+	 * Unpacks default config from the jar.
+	 * 
+	 * @param configDir config directory
+	 * @throws IOException when unpacking fails
+	 */
+	public static void unpackConfig(Directory configDir) throws IOException {
+
+
+		// Saga.jar:
+		File home;
+		try {
+			home = new File(Saga.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+		}
+		catch (URISyntaxException e) {
+			throw new IOException("Invalid URI for Saga: " + Saga.class.getProtectionDomain().getCodeSource().getLocation());
+		}
+		JarFile jar = new JarFile(home);
+	
+		// Config file:
+		String entryPath = (Directory.CONFIG_DEFAULTS.getDirectory() + configDir.getFilename()).replace(File.separator, "/");
+		ZipEntry entry = jar.getEntry(entryPath);
+		
+		// Config not in Saga.jar:
+		if(entry == null){
+			jar.close();
+			throw new IOException(entryPath + " not found in Saga.jar");
+		}
+		
+		File efile = new File(configDir.getDirectory() + configDir.getFilename());
+		
+		// Create file:
+		if(!efile.getParentFile().exists()){
+			SagaLogger.info("Creating " + efile.getParentFile() + " directory.");
+			efile.getParentFile().mkdirs();
+		}
+		if(!efile.exists()){
+			SagaLogger.info("Creating " + efile + " file.");
+			efile.createNewFile();
+		}
+	
+		// Unpack and write:
+		InputStream in = new BufferedInputStream(jar.getInputStream(entry));
+		OutputStream out = new BufferedOutputStream(new FileOutputStream(efile));
+		
+		byte[] buffer = new byte[2048];
+		
+		while(true){
+			
+			int nBytes = in.read(buffer);
+			if (nBytes <= 0) break;
+			out.write(buffer, 0, nBytes);
+			
+		}
+		
+		out.flush();
+		out.close();
+		in.close();
+		jar.close();
+
+		
 	}
 	
 	
