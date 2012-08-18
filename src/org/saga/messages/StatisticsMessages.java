@@ -11,7 +11,9 @@ import org.saga.config.GeneralConfiguration;
 import org.saga.messages.PlayerMessages.ColourLoop;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
+import org.saga.utility.ArrayUtil;
 import org.saga.utility.Histogram;
+import org.saga.utility.MetricPrefix;
 import org.saga.utility.text.StringBook;
 import org.saga.utility.text.StringTable;
 import org.saga.utility.text.TextUtil;
@@ -231,7 +233,7 @@ public class StatisticsMessages {
 	
 	
 	// Histogram:
-	public static String histogram(String title, Double[] data, Integer width, Integer decimals) {
+	public static String histogram(String title, Double[] data, Integer width, Integer decimals, MetricPrefix metPref) {
 
 		
 		ColourLoop colours = new ColourLoop().addColor(normal2).addColor(normal1);
@@ -248,6 +250,10 @@ public class StatisticsMessages {
 		
 		StringTable table = new StringTable(colours);
 		
+		// Units:
+		ArrayUtil.multiply(data, (1/metPref.getValue()));
+		
+		// Histogram:
 		Histogram histogram = new Histogram(data);
 		
 		Integer[] ocurrances = histogram.createHistogram(width);
@@ -260,7 +266,7 @@ public class StatisticsMessages {
 		for (int i = 0; i < ocurrances.length; i++) {
 			
 			table.addLine(new String[]{
-				valsColour + values[i],
+				valsColour + values[i] + metPref.getName(),
 				axisColour + "_/ " + hcolours.nextColour() +
 				TextUtil.repeat("|", bars[i] + 1),
 				axisColour + "- " + valsColour + ocurrances[i].toString()
@@ -268,7 +274,7 @@ public class StatisticsMessages {
 			
 		}
 		
-		table.addLine(new String[]{valsColour + values[ocurrances.length], axisColour + "_/ " + hcolours.nextColour() + TextUtil.repeat(" ", 50), ""});
+		table.addLine(new String[]{valsColour + values[ocurrances.length] + metPref.getName(), axisColour + "_/ " + hcolours.nextColour() + TextUtil.repeat(" ", 50), ""});
 		
 		table.collapse();
 		
@@ -277,7 +283,12 @@ public class StatisticsMessages {
 		
 	}
 	
-	public static String histogram(String title, Integer[] data, Integer width, Integer decimals) {
+	public static String histogram(String title, Double[] data, Integer width, Integer decimals) {
+		return histogram(title, data, width, decimals, MetricPrefix.NONE);
+	}
+
+	
+	public static String histogram(String title, Integer[] data, Integer width, Integer decimals, MetricPrefix metPref) {
 		
 		
 		Double[] dblData = new Double[data.length];
@@ -286,10 +297,15 @@ public class StatisticsMessages {
 			dblData[i] = data[i].doubleValue();
 		}
 		
-		return histogram(title, dblData, width, decimals);
+		return histogram(title, dblData, width, decimals, metPref);
 		
 		
 	}
+	
+	public static String histogram(String title, Integer[] data, Integer width, Integer decimals) {
+		return histogram(title, data, width, decimals, MetricPrefix.NONE);
+	}
+		
 	
 	
 	// X-ray:
@@ -406,6 +422,20 @@ public class StatisticsMessages {
 		
 	}
 
+	
+	
+	// Updating:
+	public static String updating() {
+
+		return positive + "Updating statistics.";
+		
+	}
+	
+	public static String updated() {
+
+		return positive + "Statistics updated.";
+		
+	}
 	
 	
 	

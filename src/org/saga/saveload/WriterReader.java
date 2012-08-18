@@ -348,5 +348,24 @@ public class WriterReader {
 		
 	}
 	
+	/**
+	 * Gets all filenames in the given directory.
+	 * 
+	 * @param dir path
+	 * @return all filenames
+	 */
+	public static String[] getFileNames(Directory dir) {
+		
+		
+		// Create folders:
+		File directory = new File(dir.getDirectory());
+
+		String[] subDirs = directory.list();
+		if(subDirs == null) return new String[0];
+		
+		return subDirs;
+		
+
+	}
 	
 }

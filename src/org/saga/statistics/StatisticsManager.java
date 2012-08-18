@@ -970,6 +970,13 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 	
+
+	public void setWallet(SagaPlayer sagaPlayer) {
+
+		setValue("wallet" + "." + sagaPlayer.getName(), sagaPlayer.getCoins());
+		
+	}
+	
 	
 	
 	// Load unload:

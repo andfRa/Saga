@@ -47,6 +47,7 @@ import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.settlements.Settlement;
 import org.saga.shape.RelativeShape.Orientation;
+import org.saga.statistics.StatisticsManager;
 
 import com.google.gson.JsonParseException;
 
@@ -306,6 +307,17 @@ public class SagaPlayer implements Trader{
 		abilityManager.update();
 	}
 	
+	/**
+	 * Updates all player statistics.
+	 * 
+	 */
+	public void updateStatistics() {
+	
+		StatisticsManager.manager().setWallet(this);
+		StatisticsManager.manager().setLevel(this);
+    	StatisticsManager.manager().setAttributes(this);
+
+	}
 	
 	
 	// Attributes:
@@ -1460,7 +1472,7 @@ public class SagaPlayer implements Trader{
 	 */
 	@Override
 	public void addCoins(Double amount) {
-		coins += amount;
+		setCoins(coins + amount);
 	}
 	
 	/* 
@@ -1470,7 +1482,7 @@ public class SagaPlayer implements Trader{
 	 */
 	@Override
 	public void removeCoins(Double amount) {
-		coins -= amount;
+		setCoins(coins - amount);
 	}
 	
 	/* 

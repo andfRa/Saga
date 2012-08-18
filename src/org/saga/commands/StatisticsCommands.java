@@ -10,13 +10,17 @@ import java.util.ArrayList;
 import org.bukkit.Material;
 import org.saga.Saga;
 import org.saga.config.GeneralConfiguration;
+import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.GeneralMessages;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.SettlementMessages;
 import org.saga.messages.StatisticsMessages;
 import org.saga.player.SagaPlayer;
+import org.saga.saveload.Directory;
+import org.saga.saveload.WriterReader;
 import org.saga.statistics.StatisticsManager;
+import org.saga.utility.MetricPrefix;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
 import org.sk89q.CommandPermissions;
@@ -418,6 +422,65 @@ public class StatisticsCommands {
     	sagaPlayer.message(StatisticsMessages.histogram("faction level histogram", data, 10, 0));
 	    
     	sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+	    
+	    
+	}
+
+	@Command(
+			aliases = {"stwallet"},
+			usage = "",
+			flags = "",
+			desc = "Show wallet distribution histogram.",
+			min = 0,
+			max = 0
+	)
+	@CommandPermissions({"saga.admin.statistics.wallet"})
+	public static void wallet(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		
+    	// Data:
+    	Double[] data = StatisticsManager.manager().createHistogramData("wallet");
+    	
+	    // Inform:
+    	sagaPlayer.message(StatisticsMessages.histogram("wallet histogram", data, 10, 1, MetricPrefix.M));
+	    
+    	sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+	    
+	    
+	}
+
+	
+	@Command(
+			aliases = {"stupdateplayers"},
+			usage = "",
+			flags = "",
+			desc = "Update all player statistics.",
+			min = 0,
+			max = 0
+	)
+	@CommandPermissions({"saga.admin.statistics.playerall"})
+	public static void updatePlayers(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+
+	    // Inform:
+    	sagaPlayer.message(StatisticsMessages.updating());
+	    
+    	// Force and release:
+		String[] players = WriterReader.getFileNames(Directory.PLAYER_DATA);
+		
+		for (int i = 0; i < players.length; i++) {
+			
+			try {
+				SagaPlayer selPlayer = Saga.plugin().forceSagaPlayer(players[i].replace(Directory.FILE_EXTENTENSION, ""));
+				selPlayer.updateStatistics();
+				selPlayer.indicateRelease();
+			}
+			catch (NonExistantSagaPlayerException e) { }
+			
+		}
+		
+	    // Inform:
+    	sagaPlayer.message(StatisticsMessages.updated());
 	    
 	    
 	}

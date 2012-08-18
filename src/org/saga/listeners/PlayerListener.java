@@ -36,7 +36,6 @@ import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaEventHandler;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
-import org.saga.statistics.StatisticsManager;
 
 public class PlayerListener implements Listener {
 
@@ -112,8 +111,7 @@ public class PlayerListener implements Listener {
     	Saga.plugin().unloadSagaPlayer(player.getName());
 
 		// Statistics:
-    	StatisticsManager.manager().setLevel(sagaPlayer);
-    	StatisticsManager.manager().setAttributes(sagaPlayer);
+    	sagaPlayer.updateStatistics();
     	
     	// Remove player:
     	sagaPlayer.removePlayer();
