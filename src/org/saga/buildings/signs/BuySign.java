@@ -18,11 +18,16 @@ public class BuySign extends BuildingSign {
 	 * Name for the sign.
 	 */
 	public static String SIGN_NAME = "=[BUY]=";
+
+	/**
+	 * Amount division string.
+	 */
+	public static String AMOUNT_DIV = "\\*";
 	
 	/**
-	 * Material and amount division.
+	 * Displayed amount division string.
 	 */
-	public static String MATERIAL_VALUE_DIV = "x";
+	public static String AMOUNT_DIV_DISPLAY = "*";
 	
 	
 	/**
@@ -92,7 +97,7 @@ public class BuySign extends BuildingSign {
 
 		
 		// First parameter:
-		String[] firstParameter = getFirstParameter().split(MATERIAL_VALUE_DIV);
+		String[] firstParameter = getFirstParameter().split(AMOUNT_DIV);
 
 		String sAmount = null;
 		String sMaterial = null;
@@ -185,7 +190,7 @@ public class BuySign extends BuildingSign {
 			case ENABLED:
 				
 				
-				if(index == 1) return amount + MATERIAL_VALUE_DIV + EconomyMessages.materialShort(material);
+				if(index == 1) return amount + AMOUNT_DIV_DISPLAY + EconomyMessages.materialShort(material);
 				if(index == 2) return "price: " + EconomyMessages.coins(price);
 				
 				Double perc = 1.0;
@@ -202,7 +207,7 @@ public class BuySign extends BuildingSign {
 				
 			case DISABLED:
 				
-				if(index == 1) return amount + MATERIAL_VALUE_DIV + EconomyMessages.materialShort(material);
+				if(index == 1) return amount + AMOUNT_DIV_DISPLAY + EconomyMessages.materialShort(material);
 				if(index == 2) return "price: " + EconomyMessages.coins(price);
 				if(index == 3) return "come back later";
 				break;

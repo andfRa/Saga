@@ -66,7 +66,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 
 		// Trading post:
 		book.addLine("Every settlement can set a " + tradingPost() + " by using " + GeneralMessages.command("/bset") + ". " +
-			"Buy signs can be created by writing " + GeneralMessages.command(BuySign.SIGN_NAME) + " on the first line and " + GeneralMessages.command("amount" + BuySign.MATERIAL_VALUE_DIV + "item_name") + " on the second line. " +
+			"Buy signs can be created by writing " + GeneralMessages.command(BuySign.SIGN_NAME) + " on the first line and " + GeneralMessages.command("amount" + BuySign.AMOUNT_DIV_DISPLAY + "item_name") + " on the second line. " +
 			"Item ID can also be used instead of " + GeneralMessages.command("item_name") + "." 
 		);
 		
