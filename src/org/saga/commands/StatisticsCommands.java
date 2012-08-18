@@ -7,6 +7,7 @@ package org.saga.commands;
 
 import java.util.ArrayList;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.saga.Saga;
 import org.saga.config.GeneralConfiguration;
@@ -20,6 +21,7 @@ import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.statistics.StatisticsManager;
+import org.saga.utility.ArrayUtil;
 import org.saga.utility.MetricPrefix;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
@@ -442,7 +444,7 @@ public class StatisticsCommands {
     	Double[] data = StatisticsManager.manager().createHistogramData("wallet");
     	
 	    // Inform:
-    	sagaPlayer.message(StatisticsMessages.histogram("wallet histogram", data, 10, 1, MetricPrefix.M));
+    	sagaPlayer.message(StatisticsMessages.histogram("wallet histogram", data, 10, 1, MetricPrefix.k));
 	    
     	sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
 	    
