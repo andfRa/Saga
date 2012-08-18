@@ -7,6 +7,12 @@ import org.saga.buildings.signs.ResetSign;
 
 public class TrainingCamp extends Building{
 
+	/**
+	 * Train limit.
+	 */
+	private static String TRAIN_LIMIT = "train limit";
+	
+	
 	
 	// Initialisation:
 	/**
@@ -54,5 +60,15 @@ public class TrainingCamp extends Building{
 	
 	}
 	
+	/**
+	 * Gets the train limit.
+	 * 
+	 * @return train limit
+	 */
+	public Integer getTrainLimit() {
+
+		return getDefinition().getFunction(TRAIN_LIMIT).intValue(getScore());
+		
+	}
 	
 }

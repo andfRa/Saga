@@ -287,5 +287,11 @@ public class BuildingMessages {
 		
 	}
 	
+	public static String trainLimitReached(String attribute) {
+		
+		return negative + TextUtil.capitalize(attribute) + " can't be trained any further.";
+		
+	}
+	
 	
 }
