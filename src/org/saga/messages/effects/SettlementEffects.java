@@ -1,4 +1,4 @@
-package org.saga.messages;
+package org.saga.messages.effects;
 
 import java.util.ArrayList;
 

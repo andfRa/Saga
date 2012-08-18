@@ -1,4 +1,4 @@
-package org.saga.messages;
+package org.saga.messages.effects;
 
 import org.bukkit.Effect;
 import org.saga.player.SagaPlayer;

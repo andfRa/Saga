@@ -4,8 +4,8 @@ import org.bukkit.block.Sign;
 import org.saga.buildings.Building;
 import org.saga.buildings.TrainingCamp;
 import org.saga.config.AttributeConfiguration;
-import org.saga.messages.AbilityEffects;
 import org.saga.messages.BuildingMessages;
+import org.saga.messages.effects.AbilityEffects;
 import org.saga.player.SagaPlayer;
 
 

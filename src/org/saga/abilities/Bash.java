@@ -6,7 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.messages.AbilityEffects;
+import org.saga.messages.effects.AbilityEffects;
 
 public class Bash extends Ability{
 

@@ -4,9 +4,9 @@ import org.bukkit.block.Sign;
 import org.saga.buildings.Building;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.EconomyConfiguration;
-import org.saga.messages.AbilityEffects;
 import org.saga.messages.BuildingMessages;
 import org.saga.messages.EconomyMessages;
+import org.saga.messages.effects.AbilityEffects;
 import org.saga.player.SagaPlayer;
 
 

@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 import org.saga.Saga;
 import org.saga.SagaLogger;
-import org.saga.messages.AbilityEffects;
+import org.saga.messages.effects.AbilityEffects;
 import org.saga.player.SagaPlayer;
 
 public class Force extends Ability{
