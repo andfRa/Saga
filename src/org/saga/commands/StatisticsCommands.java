@@ -5,10 +5,14 @@
 
 package org.saga.commands;
 
+import java.util.ArrayList;
+
 import org.bukkit.Material;
 import org.saga.Saga;
+import org.saga.config.GeneralConfiguration;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.GeneralMessages;
+import org.saga.messages.PlayerMessages;
 import org.saga.messages.SettlementMessages;
 import org.saga.messages.StatisticsMessages;
 import org.saga.player.SagaPlayer;
@@ -106,6 +110,76 @@ public class StatisticsCommands {
     	sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
     	
     	
+	}
+	
+	@Command(
+			aliases = {"stxrayindication","stxrayind"},
+			usage = "",
+			flags = "",
+			desc = "Show x-ray suspects.",
+			min = 0,
+			max = 1
+	)
+	@CommandPermissions({"saga.admin.statistics.xrayindication"})
+	public static void xrayIndication(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+		
+		Material material = Material.DIAMOND_ORE;
+		ArrayList<String> suspects = new ArrayList<String>();
+		ArrayList<Double> ratios = new ArrayList<Double>();
+		ArrayList<Integer> veins = new ArrayList<Integer>();
+		
+		ArrayList<String> allNames = StatisticsManager.manager().getVeinFoundPlayers(material);
+		
+		for (String name : allNames) {
+			
+			// Ratio:
+			Double ratio = StatisticsManager.manager().getVeinRatio(name, material);
+			if(ratio < GeneralConfiguration.config().getXrayDiamondRatio()) continue;
+			
+			// Mined stone:
+			if(StatisticsManager.manager().getFoundVeins(name, Material.STONE) < GeneralConfiguration.config().getXrayMinStone()) continue;
+			
+			// Suspect:
+			suspects.add(name);
+			ratios.add(ratio);
+			veins.add(StatisticsManager.manager().getFoundVeins(name, material));
+			
+		}
+		
+		sagaPlayer.message(StatisticsMessages.xrayIndication(suspects.toArray(new String[suspects.size()]), ratios.toArray(new Double[ratios.size()]), veins.toArray(new Integer[veins.size()])));
+		
+		
+	}
+
+	@Command(
+			aliases = {"stxrayconfirm","stxrayconf"},
+			usage = "<player name>",
+			flags = "",
+			desc = "Confirms x-ray usage.",
+			min = 1,
+			max = 1
+	)
+	@CommandPermissions({"saga.admin.statistics.xrayconfirm"})
+	public static void xrayConfirm(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+		
+		String playerName = args.getString(0);
+		
+		// Invalid player:
+		if(!Saga.plugin().isSagaPlayerExistant(playerName)){
+			sagaPlayer.message(PlayerMessages.invalidPlayer(playerName));
+			return;
+		}
+		
+		// Confirm:
+		Double ratio = StatisticsManager.manager().getVeinRatio(playerName, Material.DIAMOND_ORE);
+		StatisticsManager.manager().confirmXray(playerName, Material.DIAMOND_ORE, ratio);
+		
+		// Inform:
+		sagaPlayer.message(StatisticsMessages.xrayConfirmed(playerName));
+		
+		
 	}
 	
 	

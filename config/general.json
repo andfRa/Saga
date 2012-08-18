@@ -23,6 +23,9 @@
 },
 
 "guardRuneDisableWorlds":["Creative"],
-"defaultWorld":"world"
+"defaultWorld":"world",
+
+"xrayMinStone":1500,
+"xrayDiamondRatio":0.010
 
 }

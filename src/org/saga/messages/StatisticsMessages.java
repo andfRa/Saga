@@ -7,6 +7,7 @@ import java.util.Comparator;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.saga.config.GeneralConfiguration;
 import org.saga.messages.PlayerMessages.ColourLoop;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
@@ -76,84 +77,6 @@ public class StatisticsMessages {
 		
 		return positive + "Statistics age " + days + "d " + hours + "h " + minutes + "m " + seconds + "s.";
 		
-		
-	}
-	
-	public static String xrayIndication(Integer totalPlayers, ArrayList<String> indications) {
-
-		
-		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
-		StringBuffer result = new StringBuffer();
-		
-		// Totals:
-		result.append(colours.nextColour() + "Indications: " + indications.size() + "/" + totalPlayers);
-		
-		result.append("\n");
-		
-		// Players:
-		result.append(colours.nextColour() + "Indications: ");
-		if(indications.size() > 0){
-			
-			result.append(TextUtil.flatten(indications));
-			
-		}else{
-			
-			result.append("none");
-			
-		}
-		
-		return TextUtil.frame("x-ray mod indications", result.toString(), colours.nextColour());
-		
-		
-	}
-
-	public static String xray(SagaPlayer sagaPlayer, Integer page) {
-
-//		
-//		String name = sagaPlayer.getName();
-//		
-//		ColorCircle colour = new ColorCircle().addColor(normal1).addColor(normal2);
-//		StringBook book = new StringBook(name + " x-ray statistics", colour, 10);
-//
-//		// Blocks:
-//		StringTable table = new StringTable(colour);
-//		String[] line = new String[2];
-//		HashSet<Material> xrayMaterials = XrayIndicator.getXrayBlocks();
-//		
-//		line = new String[]{"MATERIAL", "AMOUNT", "RATIO"};
-//		table.addLine(line);
-//		
-//		for (Material xrMaterial : xrayMaterials) {
-//			
-//			Integer amount = StatisticsManager.manager().getOreMined(name, xrMaterial);
-//			String amountValue = amount.toString();
-//			
-//			Double ratio = StatisticsManager.manager().getOreRatio(name, xrMaterial);
-//			boolean indication = BalanceConfiguration.config().checkXrayIndication(xrMaterial, ratio);
-//			
-//			String ratioValue = String.format("%.2g", ratio*100) + " %";
-//			if(indication) ratioValue = ChatColor.DARK_RED + ratioValue;
-//			
-//			if(xrMaterial == Material.STONE){
-//				
-//				line = new String[]{EconomyMessages.material(xrMaterial), amountValue, ""};
-//				
-//			}else{
-//				
-//				line = new String[]{EconomyMessages.material(xrMaterial), amountValue, ratioValue};
-//			
-//			}
-//			
-//			table.addLine(line);
-//			
-//		}
-//		
-//		table.collapse();
-//		book.addTable(table);
-//		
-//		return book.framedPage(page);
-//	
-		return "";
 		
 	}
 
@@ -268,8 +191,6 @@ public class StatisticsMessages {
 		
 	}
 	
-	
-	
 	public static String values(String title, String category, String column1, String column2, boolean ignoreBottom, int decimals, int page) {
 
 		
@@ -369,6 +290,122 @@ public class StatisticsMessages {
 		
 		
 	}
+	
+	
+	// X-ray:
+	public static String xrayIndication(String[] suspects, Double[] ratios, Integer[] veins) {
+
+		
+		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
+		StringTable table = new StringTable(colours);
+		StringBook book = new StringBook("x-ray indications", colours);
+		
+		// Notes:
+		book.addLine("NOTE: xray indication still needs calibrating. Don't ban without investigating!");
+		book.addLine("Use " + GeneralMessages.command("/xrayconfirm") + " when you confirmed x-ray usage.");
+		
+		book.addLine("");
+		
+		// Columns:
+		table.addLine(new String[]{GeneralMessages.columnTitle("name"), GeneralMessages.columnTitle("ratio/ind"), GeneralMessages.columnTitle("veins")});
+		
+		
+		StringBuffer result = new StringBuffer();
+		
+		result.append("\n");
+		
+		// Players:
+		result.append(colours.nextColour() + "Indications: ");
+		if(suspects.length > 0){
+			
+			for (int i = 0; i < suspects.length; i++) {
+				
+				String name = suspects[i];
+				String ratioComb = TextUtil.round((ratios[i] / GeneralConfiguration.config().getXrayDiamondRatio()), 4);
+				String vein = "" + veins[i];
+				
+				// Confirmed:
+				if(StatisticsManager.manager().isXrayConfirmed(name, Material.DIAMOND_ORE)){
+					name = unavailable.toString() + ChatColor.STRIKETHROUGH + name;
+					ratioComb = unavailable.toString() + ChatColor.STRIKETHROUGH + ratioComb;
+					vein = unavailable.toString() + ChatColor.STRIKETHROUGH + vein;
+				}
+				
+				table.addLine(new String[]{name, ratioComb, vein.toString()});
+				
+			}
+			
+		}else{
+			
+			table.addLine(new String[]{"-", "-", "-"});
+			
+		}
+		
+		table.collapse();
+		book.addTable(table);
+		
+		return book.framedPage(0);
+		
+		
+	}
+
+	public static String xray(SagaPlayer sagaPlayer, Integer page) {
+
+//		
+//		String name = sagaPlayer.getName();
+//		
+//		ColorCircle colour = new ColorCircle().addColor(normal1).addColor(normal2);
+//		StringBook book = new StringBook(name + " x-ray statistics", colour, 10);
+//
+//		// Blocks:
+//		StringTable table = new StringTable(colour);
+//		String[] line = new String[2];
+//		HashSet<Material> xrayMaterials = XrayIndicator.getXrayBlocks();
+//		
+//		line = new String[]{"MATERIAL", "AMOUNT", "RATIO"};
+//		table.addLine(line);
+//		
+//		for (Material xrMaterial : xrayMaterials) {
+//			
+//			Integer amount = StatisticsManager.manager().getOreMined(name, xrMaterial);
+//			String amountValue = amount.toString();
+//			
+//			Double ratio = StatisticsManager.manager().getOreRatio(name, xrMaterial);
+//			boolean indication = BalanceConfiguration.config().checkXrayIndication(xrMaterial, ratio);
+//			
+//			String ratioValue = String.format("%.2g", ratio*100) + " %";
+//			if(indication) ratioValue = ChatColor.DARK_RED + ratioValue;
+//			
+//			if(xrMaterial == Material.STONE){
+//				
+//				line = new String[]{EconomyMessages.material(xrMaterial), amountValue, ""};
+//				
+//			}else{
+//				
+//				line = new String[]{EconomyMessages.material(xrMaterial), amountValue, ratioValue};
+//			
+//			}
+//			
+//			table.addLine(line);
+//			
+//		}
+//		
+//		table.collapse();
+//		book.addTable(table);
+//		
+//		return book.framedPage(page);
+//	
+		return "";
+		
+	}
+
+
+	public static String xrayConfirmed(String name) {
+
+		return positive + "X-ray mod confirmed for " + name + ".";
+		
+	}
+
 	
 	
 	

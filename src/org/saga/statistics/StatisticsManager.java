@@ -586,6 +586,18 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 	
+	public void confirmXray(String name, Material material, Double ratio) {
+
+		setValue("xray_confirmed" + "." + material.toString() + "." + name, ratio);
+		
+	}
+	
+	public boolean isXrayConfirmed(String name, Material material) {
+
+		return getValue("xray_confirmed" + "." + material.toString() + "." + name) > 0.0;
+		
+	}
+	
 	
 	
 	// Level and attributes:

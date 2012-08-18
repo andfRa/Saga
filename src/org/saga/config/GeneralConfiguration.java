@@ -104,6 +104,18 @@ public class GeneralConfiguration {
 	private String defaultWorld;
 	
 	
+	// X-ray:
+	/**
+	 * Minimum amount of stone required for x-ray detection.
+	 */
+	private Integer xrayMinStone;
+	
+	/**
+	 * X-ray diamond ratio.
+	 */
+	private Double xrayDiamondRatio;
+	
+	
 	
 	// Initialisation:
 	/**
@@ -178,10 +190,20 @@ public class GeneralConfiguration {
 		if(guardRuneDisableWorlds.remove(null) == true){
 			SagaLogger.nullField(getClass(), "guardRuneDisableWorlds element");
 		}
-		
+
 		if(defaultWorld == null){
 			SagaLogger.nullField(getClass(), "defaultWorld");
 			defaultWorld = "world";
+		}
+
+		if(xrayMinStone == null){
+			SagaLogger.nullField(getClass(), "xrayMinStone");
+			xrayMinStone = 1000;
+		}
+
+		if(xrayDiamondRatio == null){
+			SagaLogger.nullField(getClass(), "xrayDiamondRatio");
+			xrayDiamondRatio = 1.0;
 		}
 		
 		
@@ -256,6 +278,27 @@ public class GeneralConfiguration {
 	 */
 	public String getDefaultWorld() {
 		return defaultWorld;
+	}
+	
+	
+	
+	// X-ray:
+	/**
+	 * Gets minimum stone amount for x-ray indication.
+	 * 
+	 * @return minimum amount of stone
+	 */
+	public Integer getXrayMinStone() {
+		return xrayMinStone;
+	}
+	
+	/**
+	 * Get x-ray trigger diamond ratio
+	 * 
+	 * @return x-ray diamond ratio
+	 */
+	public Double getXrayDiamondRatio() {
+		return xrayDiamondRatio;
 	}
 	
 	
