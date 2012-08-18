@@ -192,12 +192,6 @@ public class StatisticsManager implements HourTicker{
 			integrity=false;
 		}
 		
-		if(foundVeins == null){
-			SagaLogger.nullField(getClass(), "foundVeins");
-			foundVeins = new Hashtable<String, Hashtable<Material,Integer>>();
-			integrity=false;
-		}
-		
 		if(expGained == null){
 			SagaLogger.nullField(getClass(), "expGained");
 			expGained = new Hashtable<String, Hashtable<String,Double>>();
@@ -235,6 +229,30 @@ public class StatisticsManager implements HourTicker{
 			
 		}
 		
+		// Import found veins:
+		if(foundVeins != null){
+			
+			Set<String> players = foundVeins.keySet();
+			
+			for (String player : players) {
+				
+				Set<Material> materials = foundVeins.get(player).keySet();
+				
+				for (Material material : materials) {
+					
+					Integer veins = foundVeins.get(player).get(material);
+					if(veins == 0) continue;
+					
+					setValue("found_veins" + "." + material.toString() + "." + player, veins);
+					
+				}
+				
+			}
+			
+			foundVeins = null;
+			
+		}
+		
 		return integrity;
 		
 		
@@ -258,8 +276,6 @@ public class StatisticsManager implements HourTicker{
 		playerSellCoins = new Hashtable<String, Hashtable<Material,Double>>();
 		playerBuyAmount = new Hashtable<String, Hashtable<Material,Integer>>();
 		playerSellAmount = new Hashtable<String, Hashtable<Material,Integer>>();
-		
-		foundVeins = new Hashtable<String, Hashtable<Material,Integer>>();
 		
 		expGained = new Hashtable<String, Hashtable<String,Double>>();
 		
@@ -293,49 +309,6 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 
-
-	
-	// X-ray:
-	/**
-	 * Adds ore mined.
-	 * 
-	 * @param name player name
-	 * @param material material
-	 * @param amount amount
-	 */
-	public void addOreMined(String name, Material material, Integer amount) {
-
-		Hashtable<Material, Integer> blocks = xrayStatistics.get(name);
-		if(blocks == null) blocks = new Hashtable<Material, Integer>();
-	
-		Integer oldAmount = blocks.get(material);
-		if(oldAmount == null) oldAmount = 0;
-		
-		blocks.put(material, oldAmount + amount);
-		xrayStatistics.put(name, blocks);
-		
-	}
-	
-	/**
-	 * Gets ore mined.
-	 * 
-	 * @param name player name
-	 * @param material material
-	 * @return amount mined
-	 */
-	public Integer getOreMined(String name, Material material) {
-
-		Hashtable<Material, Integer> blocks = xrayStatistics.get(name);
-		if(blocks == null) return 0;
-	
-		Integer amount = blocks.get(material);
-		if(amount == null) return 0;
-		
-		return amount;
-		
-	}
-	
-	
 	
 	
 	// Age:
@@ -350,21 +323,9 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 	
+	
 
 	// Events:
-	/**
-	 * Called when xray statistics are updated.
-	 * 
-	 * @param name player name
-	 * @param material material
-	 * @param amount amount
-	 */
-	public void onXrayStatisticsUpdate(String name, Material material, Integer amount) {
-
-		addOreMined(name, material, amount);
-		
-	}
-
 	/**
 	 * Called when a block data is changed.
 	 * 
@@ -375,41 +336,6 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 
-	
-	
-	
-	// X-ray:
-	/**
-	 * Gets all players for who xray statistics exist.
-	 * 
-	 * @return players with xray statistics
-	 */
-	public ArrayList<String> getXrayPlayers() {
-		
-		return new ArrayList<String>(xrayStatistics.keySet());
-		
-	}
-	
-	/**
-	 * Gets a ratio for the given material.
-	 * 
-	 * @param name player name
-	 * @param material material
-	 * @return ratio
-	 */
-	public Double getOreRatio(String name, Material material) {
-
-		
-		Double materialAmount = getOreMined(name, material).doubleValue();
-		Double stoneAmount = getOreMined(name, Material.STONE).doubleValue();
-		
-		// Avoid infinity:
-		if(stoneAmount == 0.0) stoneAmount = 0.00000000001;
-		
-		return materialAmount / stoneAmount;
-		
-		
-	}
 	
 	
 	// Block:
@@ -612,34 +538,22 @@ public class StatisticsManager implements HourTicker{
 	// X-ray indicator:
 	public void addFoundVein(String name, Material material) {
 
-		
-		Hashtable<Material, Integer> blocks = foundVeins.get(name);
-		if(blocks == null) blocks = new Hashtable<Material, Integer>();
-	
-		Integer oldAmount = blocks.get(material);
-		if(oldAmount == null) oldAmount = 0;
-		
-		blocks.put(material, oldAmount + 1);
-		foundVeins.put(name, blocks);
-		
+		modifyValue("found_veins" + "." + material.toString() + "." + name, 1);
 		
 	}
 	
 	public Integer getFoundVeins(String name, Material material) {
 
-		Hashtable<Material, Integer> blocks = foundVeins.get(name);
-		if(blocks == null) return 0;
-	
-		Integer amount = blocks.get(material);
-		if(amount == null) return 0;
-		
-		return amount;
+		return (int)getValue("found_veins" + "." + material.toString() + "." + name);
 		
 	}
 	
-	public ArrayList<String> getVeinFoundPlayers() {
+	public ArrayList<String> getVeinFoundPlayers(Material material) {
 		
-		return new ArrayList<String>(foundVeins.keySet());
+		
+		TreeSet<String> names = getSubCategs("found_veins" + "." + material.toString(), false);
+		
+		return new ArrayList<String>(names);
 		
 	}
 	
@@ -661,7 +575,7 @@ public class StatisticsManager implements HourTicker{
 
 		
 		Collection<Double> ratios = new ArrayList<Double>();
-		ArrayList<String> names = getVeinFoundPlayers();
+		ArrayList<String> names = getVeinFoundPlayers(material);
 		
 		for (String name : names) {
 			ratios.add(getVeinRatio(name, material));
