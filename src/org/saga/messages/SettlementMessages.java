@@ -25,6 +25,7 @@ import org.saga.player.ProficiencyDefinition;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;
 import org.saga.settlements.SettlementDefinition;
+import org.saga.utility.text.RomanNumeral;
 import org.saga.utility.text.StringTable;
 import org.saga.utility.text.TextUtil;
 
@@ -536,6 +537,11 @@ public class SettlementMessages {
 					// Multiple buildings:
 					Integer totalBuildings = settlement.getAvailableBuildings(name);
 					Integer usedBuildings = settlement.getTotalBuildings(name);
+					
+					// Upgrades:
+					if(definitions[j].getMaxScore() > 1){
+						 name+= " " + RomanNumeral.binaryToRoman(score);
+					}
 					
 					// Set:
 					if(usedBuildings > 0){

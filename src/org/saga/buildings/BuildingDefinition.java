@@ -105,13 +105,24 @@ public class BuildingDefinition {
 	private Daytime craftTime;
 	
 	
-	
 	// Functions:
 	/**
 	 * Building functions.
 	 */
 	private Hashtable<String, TwoPointFunction> functions;
 	
+	
+	// Upgrading:
+	/**
+	 * Building max score.
+	 */
+	private Integer maxScore;
+	
+	/**
+	 * Upgrade cost.
+	 */
+	private TwoPointFunction upgradeCost;
+
 	
 	
 	// Info:
@@ -231,6 +242,17 @@ public class BuildingDefinition {
 		for (TwoPointFunction function : functionsElements) {
 			function.complete();
 		}
+		
+		if(maxScore == null){
+			maxScore = 0;
+			SagaLogger.nullField(BuildingDefinition.class, "maxScore");
+		}
+		
+		if(upgradeCost == null){
+			upgradeCost = new TwoPointFunction(Double.MAX_VALUE);
+			SagaLogger.nullField(BuildingDefinition.class, "upgradeCost");
+		}
+		upgradeCost.complete();
 		
 		if(description == null){
 			description = "<no description>";
@@ -431,6 +453,28 @@ public class BuildingDefinition {
 		
 		return function;
 
+	}
+	
+	
+	
+	// Upgrading:
+	/**
+	 * Get buildings max score.
+	 * 
+	 * @return max score
+	 */
+	public Integer getMaxScore() {
+		return maxScore;
+	}
+	
+	/**
+	 * Gets building upgrade cost.
+	 * 
+	 * @param score building score
+	 * @return upgrade cost
+	 */
+	public Double getUpgradeCost(Integer score) {
+		return upgradeCost.value(score);
 	}
 	
 	

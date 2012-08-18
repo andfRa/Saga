@@ -347,7 +347,7 @@ public class StatisticsCommands {
 		aliases = {"stwages"},
 		usage = "",
 		flags = "a",
-		desc = "Show wages statistics. Add 'a' tag to show all factions.",
+		desc = "Show wages statistics. Flag 'a' to show factions.",
 		min = 0,
 		max = 0
 		)
@@ -366,7 +366,7 @@ public class StatisticsCommands {
 		aliases = {"stclaimed"},
 		usage = "",
 		flags = "a",
-		desc = "Show faction claim statistics. Add 'a' tag to show all factions.",
+		desc = "Show faction claim statistics. Flag 'a' to show factions.",
 		min = 0,
 		max = 0
 		)

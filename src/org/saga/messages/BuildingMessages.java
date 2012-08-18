@@ -47,7 +47,7 @@ public class BuildingMessages {
 	
 	public static String buildingCommandRestrict(String correctBuildingName, String command){
 		
-		return negative + command + " can only be used from a " + correctBuildingName + ".";
+		return negative + "Command " + command + " can only be used from a " + correctBuildingName + ".";
 		
 	}
 	
@@ -292,6 +292,21 @@ public class BuildingMessages {
 		return negative + TextUtil.capitalize(attribute) + " can't be trained any further.";
 		
 	}
+	
+	
+	// Upgrading:
+	public static String upgraded(Building building) {
+		
+		return positive + TextUtil.capitalize(building.getName()) + " upgraded.";
+		
+	}
+	
+	public static String upgradeLimit(Building building) {
+		
+		return negative + "Upgrade limit reached for " + building.getName() + ".";
+		
+	}
+	
 	
 	
 }

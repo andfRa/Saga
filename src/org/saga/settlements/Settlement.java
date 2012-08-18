@@ -805,6 +805,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 		ACCESS_STORAGE,
 		BUILD,
 		BUILD_BUILDING,
+		BUILDING_UPGRADE,
 		CLAIM,
 		CLAIM_SETTLEMENT,
 		ABANDON,

@@ -17,6 +17,7 @@ import org.saga.factions.Faction;
 import org.saga.factions.FactionClaimManager;
 import org.saga.messages.BuildingMessages;
 import org.saga.messages.ClaimMessages;
+import org.saga.messages.EconomyMessages;
 import org.saga.messages.GeneralMessages;
 import org.saga.messages.SettlementEffects;
 import org.saga.messages.SettlementMessages;
@@ -156,9 +157,9 @@ public class BuildingCommands {
 		Integer count = null;
 		
 		// Retrieve building:
-		Arena selectedBuilding = null;
+		Arena selBuilding = null;
 		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, Arena.class);
+			selBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, Arena.class);
 		} catch (Throwable e) {
 			sagaPlayer.message(e.getMessage());
 			return;
@@ -181,7 +182,7 @@ public class BuildingCommands {
 		}
 		
 		// Inform:
-		sagaPlayer.message(BuildingMessages.arenaTop(selectedBuilding, count));
+		sagaPlayer.message(BuildingMessages.arenaTop(selBuilding, count));
 		
 	
 	}
@@ -204,9 +205,9 @@ public class BuildingCommands {
 		String targetName = null;
 		
 		// Retrieve building:
-		Home selectedBuilding = null;
+		Home selBuilding = null;
 		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, Home.class);
+			selBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, Home.class);
 		} catch (Throwable e) {
 			sagaPlayer.message(e.getMessage());
 			return;
@@ -216,7 +217,7 @@ public class BuildingCommands {
 		targetName = args.getString(0);
 
 		// Permission:
-		Bundle bundle = selectedBuilding.getChunkBundle();
+		Bundle bundle = selBuilding.getChunkBundle();
 		if(!bundle.hasPermission(sagaPlayer, SettlementPermission.ADD_RESIDENT)){
 			sagaPlayer.message(GeneralMessages.noPermission(bundle));
 			return;
@@ -230,13 +231,13 @@ public class BuildingCommands {
 		}
 		
 		// Already a resident:
-		if(selectedBuilding.isResident(targetName)){
+		if(selBuilding.isResident(targetName)){
 			sagaPlayer.message(BuildingMessages.alreadyResident(targetName));
 			return;
 		}
 		
 		// Add:
-		selectedBuilding.addResident(targetName);
+		selBuilding.addResident(targetName);
 		
 		// Inform:
 		sagaPlayer.message(BuildingMessages.addedResident(targetName));
@@ -259,9 +260,9 @@ public class BuildingCommands {
 		String targetName = null;
 		
 		// Retrieve building:
-		Home selectedBuilding = null;
+		Home selBuilding = null;
 		try {
-			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, Home.class);
+			selBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, Home.class);
 		} catch (Throwable e) {
 			sagaPlayer.message(e.getMessage());
 			return;
@@ -271,20 +272,20 @@ public class BuildingCommands {
 		targetName = args.getString(0);
 		
 		// Permission:
-		Bundle bundle = selectedBuilding.getChunkBundle();
+		Bundle bundle = selBuilding.getChunkBundle();
 		if(!bundle.hasPermission(sagaPlayer, SettlementPermission.REMOVE_RESIDENT)){
 			sagaPlayer.message(GeneralMessages.noPermission(bundle));
 			return;
 		}
 		
 		// Already a resident:
-		if(!selectedBuilding.isResident(targetName)){
+		if(!selBuilding.isResident(targetName)){
 			sagaPlayer.message(BuildingMessages.notResident(targetName));
 			return;
 		}
 		
 		// Remove:
-		selectedBuilding.removeResident(targetName);
+		selBuilding.removeResident(targetName);
 		
 		// Inform:
 		sagaPlayer.message(BuildingMessages.removedResident(targetName));
@@ -308,9 +309,9 @@ public class BuildingCommands {
 		
 		
 //		// Retrieve building:
-//		TradingPost selectedBuilding = null;
+//		TradingPost selBuilding = null;
 //		try {
-//			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
+//			selBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
 //		} catch (Throwable e) {
 //			sagaPlayer.message(e.getMessage());
 //			return;
@@ -320,7 +321,7 @@ public class BuildingCommands {
 //		Double price = null;
 //
 //		// Permission:
-//		ChunkBundle chunkBundle = selectedBuilding.getChunkBundle();
+//		ChunkBundle chunkBundle = selBuilding.getChunkBundle();
 //		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
 //			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
 //			return;
@@ -372,13 +373,13 @@ public class BuildingCommands {
 //		}
 //		
 //		// Add price:
-//		selectedBuilding.setSellPrice(material, price);
+//		selBuilding.setSellPrice(material, price);
 //		
 //		// Inform:
 //		sagaPlayer.message(EconomyMessages.setSell(material, price));
 //		
 //		// Notify transaction:
-//		selectedBuilding.notifyTransaction();
+//		selBuilding.notifyTransaction();
 		
 		
 	}
@@ -396,9 +397,9 @@ public class BuildingCommands {
 
 		
 //		// Retrieve building:
-//		TradingPost selectedBuilding = null;
+//		TradingPost selBuilding = null;
 //		try {
-//			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
+//			selBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
 //		} catch (Throwable e) {
 //			sagaPlayer.message(e.getMessage());
 //			return;
@@ -407,7 +408,7 @@ public class BuildingCommands {
 //		Material material = null;
 //
 //		// Permission:
-//		ChunkBundle chunkBundle = selectedBuilding.getChunkBundle();
+//		ChunkBundle chunkBundle = selBuilding.getChunkBundle();
 //		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
 //			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
 //			return;
@@ -441,13 +442,13 @@ public class BuildingCommands {
 //		}
 //		
 //		// Remove price:
-//		selectedBuilding.removeSellPrice(material);
+//		selBuilding.removeSellPrice(material);
 //		
 //		// Inform:
 //		sagaPlayer.message(EconomyMessages.removeSell(material));
 //		
 //		// Notify transaction:
-//		selectedBuilding.notifyTransaction();
+//		selBuilding.notifyTransaction();
 		
 		
 	}
@@ -465,9 +466,9 @@ public class BuildingCommands {
 		
 		
 //		// Retrieve building:
-//		TradingPost selectedBuilding = null;
+//		TradingPost selBuilding = null;
 //		try {
-//			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
+//			selBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
 //		} catch (Throwable e) {
 //			sagaPlayer.message(e.getMessage());
 //			return;
@@ -477,7 +478,7 @@ public class BuildingCommands {
 //		Double price = null;
 //
 //		// Permission:
-//		ChunkBundle chunkBundle = selectedBuilding.getChunkBundle();
+//		ChunkBundle chunkBundle = selBuilding.getChunkBundle();
 //		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
 //			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
 //			return;
@@ -529,13 +530,13 @@ public class BuildingCommands {
 //		}
 //		
 //		// Add price:
-//		selectedBuilding.setBuyPrice(material, price);
+//		selBuilding.setBuyPrice(material, price);
 //		
 //		// Inform:
 //		sagaPlayer.message(EconomyMessages.setBuy(material, price));
 //		
 //		// Notify transaction:
-//		selectedBuilding.notifyTransaction();
+//		selBuilding.notifyTransaction();
 		
 		
 	}
@@ -553,9 +554,9 @@ public class BuildingCommands {
 
 		
 //		// Retrieve building:
-//		TradingPost selectedBuilding = null;
+//		TradingPost selBuilding = null;
 //		try {
-//			selectedBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
+//			selBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
 //		} catch (Throwable e) {
 //			sagaPlayer.message(e.getMessage());
 //			return;
@@ -564,7 +565,7 @@ public class BuildingCommands {
 //		Material material = null;
 //
 //		// Permission:
-//		ChunkBundle chunkBundle = selectedBuilding.getChunkBundle();
+//		ChunkBundle chunkBundle = selBuilding.getChunkBundle();
 //		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
 //			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
 //			return;
@@ -598,13 +599,13 @@ public class BuildingCommands {
 //		}
 //		
 //		// Remove price:
-//		selectedBuilding.removeBuyPrice(material);
+//		selBuilding.removeBuyPrice(material);
 //		
 //		// Inform:
 //		sagaPlayer.message(EconomyMessages.removeSell(material));
 //		
 //		// Notify transaction:
-//		selectedBuilding.notifyTransaction();
+//		selBuilding.notifyTransaction();
 		
 		
 	}
@@ -623,15 +624,15 @@ public class BuildingCommands {
 	public static void spawn(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-		Bundle selectedChunkBundle = null;
+		Bundle selChunkBundle = null;
 		
 		// Arguments:
 		if(args.argsLength() == 1){
 			
 			// Chunk group:
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
-			selectedChunkBundle = BundleManager.manager().getChunkBundleWithName(groupName);
-			if(selectedChunkBundle == null){
+			selChunkBundle = BundleManager.manager().getChunkBundleWithName(groupName);
+			if(selChunkBundle == null){
 				sagaPlayer.message(SettlementMessages.noChunkBundle(groupName));
 				return;
 			}
@@ -639,8 +640,8 @@ public class BuildingCommands {
 		}else{
 			
 			// Chunk group:
-			selectedChunkBundle = sagaPlayer.getBundle();
-			if(selectedChunkBundle == null){
+			selChunkBundle = sagaPlayer.getBundle();
+			if(selChunkBundle == null){
 				sagaPlayer.message( SettlementMessages.notMember() );
 				return;
 			}
@@ -648,11 +649,11 @@ public class BuildingCommands {
 		}
 		
 		// Claimed by a faction:
-		Faction ownerFaction = FactionClaimManager.manager().getOwningFaction(selectedChunkBundle.getId());
+		Faction ownerFaction = FactionClaimManager.manager().getOwningFaction(selChunkBundle.getId());
 		if(ownerFaction != null && ownerFaction == sagaPlayer.getFaction()){
 			
 			// Being claimed:
-			if(FactionClaimManager.manager().isFactionClaiming(selectedChunkBundle.getId())){
+			if(FactionClaimManager.manager().isFactionClaiming(selChunkBundle.getId())){
 				sagaPlayer.message(ClaimMessages.spawnDeny(ownerFaction));
 				return;
 			}
@@ -660,21 +661,21 @@ public class BuildingCommands {
 		}
 
 		// Permission:
-		else if(!selectedChunkBundle.hasPermission(sagaPlayer, SettlementPermission.SPAWN)){
+		else if(!selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.SPAWN)){
 			sagaPlayer.message(GeneralMessages.noPermission());
 			return;
 		}
 		
-		ArrayList<TownSquare> selectedBuildings = selectedChunkBundle.getBuildings(TownSquare.class);
+		ArrayList<TownSquare> selBuildings = selChunkBundle.getBuildings(TownSquare.class);
 		
-		if(selectedBuildings.size() == 0){
-			sagaPlayer.message(BuildingMessages.noTownSquare(selectedChunkBundle));
+		if(selBuildings.size() == 0){
+			sagaPlayer.message(BuildingMessages.noTownSquare(selChunkBundle));
 			return;
 		}
 		
 		TownSquare selBuilding = null;
 		
-		for (TownSquare townSquare : selectedBuildings) {
+		for (TownSquare townSquare : selBuildings) {
 			
 			selBuilding = townSquare;
 			break;
@@ -696,6 +697,69 @@ public class BuildingCommands {
 		sagaPlayer.teleport(spawnLocation);
 		
 	
+	}
+	
+	@Command(
+            aliases = {"bupgrade"},
+            usage = "",
+            flags = "",
+            desc = "Upgrade the building.",
+            min = 0,
+            max = 0
+    )
+	@CommandPermissions({"saga.user.settlement.building.upgrade"})
+	public static void upgrade(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+
+		// Retrieve building:
+		SagaChunk selChunk = sagaPlayer.getSagaChunk();
+		if(selChunk == null){
+			sagaPlayer.message(BuildingMessages.noBuilding());
+			return;
+		}
+		
+		Building selBuilding = selChunk.getBuilding();
+		if(selBuilding == null){
+			sagaPlayer.message(BuildingMessages.noBuilding());
+			return;
+		}
+		Bundle selChunkBundle = selBuilding.getChunkBundle();
+
+		Integer bldgScore = selBuilding.getScore();
+		
+		// Permission:
+		if(!selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.BUILDING_UPGRADE)){
+			sagaPlayer.message(GeneralMessages.noPermission());
+			return;
+		}
+		
+		// Limit:
+		if(bldgScore >= selBuilding.getDefinition().getMaxScore()){
+			sagaPlayer.message(BuildingMessages.upgradeLimit(selBuilding));
+			return;
+		}
+
+		// Enough coins:
+		Double cost = selBuilding.getDefinition().getUpgradeCost(bldgScore);
+		if(sagaPlayer.getCoins() < cost){
+			sagaPlayer.message(EconomyMessages.notEnoughCoins());
+			return;
+		}
+
+		// Take coins:
+		sagaPlayer.removeCoins(cost);
+		sagaPlayer.message(EconomyMessages.coinsSpent(cost));
+		
+		// Upgrade:
+		selChunkBundle.setBuildingScore(selBuilding.getName(), bldgScore + 1);
+		
+		// Inform:
+		sagaPlayer.message(BuildingMessages.upgraded(selBuilding));
+	
+		// Play effect:
+		SettlementEffects.playBuildingUpgrade(sagaPlayer, selBuilding);
+		
+		
 	}
 	
 	

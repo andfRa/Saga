@@ -21,7 +21,7 @@ public class RomanNumeral {
      */
     public static String binaryToRoman(int binary) {
     	
-    	if(binary == 0) return "" + 0;
+    	if(binary == 0) return "";
     	
         if (binary <= 0 || binary >= 4000) {
             throw new NumberFormatException("Value outside roman numeral range.");

@@ -314,6 +314,57 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		
 		book.nextPage();
 
+		// Upgrading:
+		book.addLine("Most buildings can be upgraded. " +
+			"Upgrading increases the amount of spawned items, adds more storage areas, gives better abilities and/or improves specific building functions. " +
+			"Upgrading a building cost a certain amount of coins."
+		);
+		
+		book.addLine("");
+		
+		// Upgrading cost table:
+		StringTable upgrdTable = new StringTable(colours);
+		
+		int maxScore = SettlementConfiguration.config().getMaxBldgScore();
+		
+		// Columns:
+		upgrdTable.addLine(GeneralMessages.columnTitle("building"), 0);
+		for (int i = 1; i < maxScore; i++) {
+			upgrdTable.addLine(GeneralMessages.columnTitle("cost " + RomanNumeral.binaryToRoman(i+1)), i);
+		}
+		
+		// Values:
+		if(bldgsDefinitions.size() != 0){
+			
+			for (BuildingDefinition bldgDefinition : bldgsDefinitions) {
+				
+				upgrdTable.addLine(bldgDefinition.getName(), 0);
+				
+				for (int i = 1; i < maxScore; i++) {
+					
+					if(bldgDefinition.getMaxScore() > 1){
+						upgrdTable.addLine(EconomyMessages.coins(bldgDefinition.getUpgradeCost(i)), i);
+					}else{
+						upgrdTable.addLine("-", i);
+					}
+					
+				}
+				
+			}
+			
+		}else{
+			
+			for (int i = 0; i < maxScore; i++) {
+				upgrdTable.addLine("-", i);
+			}
+			
+		}
+		
+		upgrdTable.collapse();
+		book.addTable(upgrdTable);
+		
+		book.nextPage();
+
 		// Other:
 		book.addLine("To prevent griefing from settlement members, restrict building by setting homes with " + GeneralMessages.command("/bset home") + ". " +
 			"Only the owner and residents can build in homes. " +
