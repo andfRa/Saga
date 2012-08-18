@@ -362,7 +362,7 @@
     "performTime":"MIDDAY",
     "craftTime":"NONE",
     "functions":{"buy limit":{"x1":1,"y1":15000,"x2":3,"y2":40000}},
-    "description":"place to buy",
+    "description":"buy items",
     "effect":"#perform_daytime: new goods"
   },
 
@@ -387,11 +387,11 @@
   
   {
     "name":"training camp",
-    "buildingClass":"org.saga.buildings.SimpleBuilding",
+    "buildingClass":"org.saga.buildings.TrainingCamp",
     "attributes":["strength","precision","willpower","toughness","warding","luck"],
     "buildPoints":0,
     "coinCost":{"x1":0,"y1":0},
-    "available":{"x1":55,"y1":1.0},
+    "available":{"x1":0,"y1":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "storageSize":0,
     "recipes":[],
@@ -400,8 +400,8 @@
     "performTime":"NONE",
     "craftTime":"NONE",
     "functions":{},
-    "description":"place to train",
-    "effect":"ability training"
+    "description":"train and reset attributes",
+    "effect":"attribute training"
   }
 
 ],

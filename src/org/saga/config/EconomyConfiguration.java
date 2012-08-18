@@ -63,9 +63,9 @@ public class EconomyConfiguration {
 	
 	// Attributes:
 	/**
-	 * Respecification cost.
+	 * Reset cost.
 	 */
-	private TwoPointFunction respecCost;
+	private Double attributeResetCost;
 
 	
 	// Rename:
@@ -150,11 +150,10 @@ public class EconomyConfiguration {
 			guardianRuneRechargeCost = 1000.0;
 		}
 		
-		if(respecCost == null){
-			SagaLogger.nullField(getClass(), "respecCost");
-			respecCost= new TwoPointFunction(10000.0);
+		if(attributeResetCost == null){
+			SagaLogger.nullField(getClass(), "attributeResetCost");
+			attributeResetCost= Double.MAX_VALUE;
 		}
-		respecCost.complete();
 		
 		if(chunkGroupRenameCost == null){
 			SagaLogger.nullField(getClass(), "chunkGroupRenameCost");
@@ -240,13 +239,12 @@ public class EconomyConfiguration {
 	
 	// Attributes:
 	/**
-	 * Gets the respec cost.
+	 * Gets the attribute reset cost.
 	 * 
-	 * @param score attribute score
-	 * @return coin cost
+	 * @return single attribute reset coin cost
 	 */
-	public Double getRespecCost(Integer score) {
-		return respecCost.value(score);
+	public Double getResetCost() {
+		return attributeResetCost;
 	}
 	
 	

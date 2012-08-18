@@ -6,7 +6,7 @@
 
 "guardianRuneRechargeCost":1500,
 
-"respecCost":{"x1":5,"y1":0.0,"x2":50,"y2":15000},
+"attributeResetCost":250,
 
 "chunkGroupRenameCost":0,
 "factionRenameCost":0,

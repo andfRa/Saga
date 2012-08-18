@@ -274,26 +274,16 @@ public class BuildingMessages {
 	
 	
 	
-	// Respec sign:
-	public static String respecCost(String attribute, Integer score, Double cost) {
+	// Reset sign:
+	public static String resetAttr(String attribute, Integer score) {
 		
-		if(score == 0){
-			return normal1 + TextUtil.capitalize(attribute) + " is already 0.";
-		}
-		
-		return normal1 + TextUtil.capitalize(attribute) +  " " + score + " reset costs " + EconomyMessages.coins(cost) + ".";
+		return normal1 + TextUtil.capitalize(attribute) + " score reset to " + score + ".";
 		
 	}
 	
-	public static String respec(String attribute) {
+	public static String attrAlreadyReset(String attribute) {
 		
-		return normal1 + TextUtil.capitalize(attribute) + " reset.";
-		
-	}
-	
-	public static String alreadyRespec(String attribute) {
-		
-		return negative + TextUtil.capitalize(attribute) + " is already 0.";
+		return negative + TextUtil.capitalize(attribute) + " score is already 0.";
 		
 	}
 	
