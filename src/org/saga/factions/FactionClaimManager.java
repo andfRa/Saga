@@ -13,8 +13,8 @@ import org.saga.Clock.SecondTicker;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.TownSquare;
-import org.saga.chunks.ChunkBundle;
-import org.saga.chunks.ChunkBundleManager;
+import org.saga.chunks.Bundle;
+import org.saga.chunks.BundleManager;
 import org.saga.config.FactionConfiguration;
 import org.saga.messages.ClaimMessages;
 import org.saga.player.SagaPlayer;
@@ -121,7 +121,7 @@ public class FactionClaimManager implements SecondTicker{
 	 * @param bundle bundle
 	 * @param faction faction
 	 */
-	public void initiate(ChunkBundle bundle, Faction faction) {
+	public void initiate(Bundle bundle, Faction faction) {
 
 		
 		// Claimer:
@@ -172,7 +172,7 @@ public class FactionClaimManager implements SecondTicker{
 	 * @param amount amount claimed
 	 * @return progress
 	 */
-	public Double progressClaim(ChunkBundle bundle, Double amount) {
+	public Double progressClaim(Bundle bundle, Double amount) {
 
 		
 		Double progress = modifyProgress(bundle.getId(), amount);
@@ -444,7 +444,7 @@ public class FactionClaimManager implements SecondTicker{
 			
 			if(!entry.getValue().equals(factionId)) continue;
 			
-			ChunkBundle bundle = ChunkBundleManager.manager().getChunkBundle(entry.getKey());
+			Bundle bundle = BundleManager.manager().getChunkBundle(entry.getKey());
 			
 			if(bundle == null || !(bundle instanceof Settlement)) continue;
 			
@@ -549,7 +549,7 @@ public class FactionClaimManager implements SecondTicker{
 			}
 			
 			// Claiming:
-			ChunkBundle bundle = ChunkBundleManager.manager().getChunkBundle(bundleId);
+			Bundle bundle = BundleManager.manager().getChunkBundle(bundleId);
 			if(bundle == null){
 				SagaLogger.severe(getClass(), "failed to retrieve chunk bundle for " + bundleId);
 				progress.remove(bundleId);

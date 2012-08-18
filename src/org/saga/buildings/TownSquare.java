@@ -9,8 +9,8 @@ import org.bukkit.util.Vector;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.SagaLogger;
-import org.saga.chunks.ChunkBundle;
-import org.saga.chunks.ChunkBundleToggleable;
+import org.saga.chunks.Bundle;
+import org.saga.chunks.BundleToggleable;
 import org.saga.chunks.SagaChunk;
 import org.saga.config.FactionConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
@@ -109,14 +109,14 @@ public class TownSquare extends Building implements SecondTicker{
 
 		// Bundles and factons:
 		if(getSagaChunk() == null) return false;
-		ChunkBundle bundle = getChunkBundle();
+		Bundle bundle = getChunkBundle();
 		Integer bundleId = bundle.getId();
 		
 		Faction claimerFaction = FactionClaimManager.manager().getClaimerFaction(bundleId);
 		Faction owningFaction = FactionClaimManager.manager().getOwningFaction(bundleId);
 		
 		// Unclaimable:
-		if(bundle.isOptionEnabled(ChunkBundleToggleable.UNCLAIMABLE)) return true;
+		if(bundle.isOptionEnabled(BundleToggleable.UNCLAIMABLE)) return true;
 		
 		// Progress:
 		Double progress = FactionClaimManager.manager().getProgress(bundleId);
@@ -208,7 +208,7 @@ public class TownSquare extends Building implements SecondTicker{
 		if(count != 5) return;
 		if(getSagaChunk() == null) return;
 		
-		ChunkBundle bundle = getChunkBundle();
+		Bundle bundle = getChunkBundle();
 		Integer bundleId = bundle.getId();
 		
 		Faction claimerFaction = FactionClaimManager.manager().getClaimerFaction(bundleId);
@@ -406,7 +406,7 @@ public class TownSquare extends Building implements SecondTicker{
 	public ArrayList<SagaPlayer> getNonMembers(){
 		
 		
-		ChunkBundle bundle = getChunkBundle();
+		Bundle bundle = getChunkBundle();
 		if(bundle == null) return new ArrayList<SagaPlayer>();
 		
 		ArrayList<SagaPlayer> sagaPlayers = getSagaChunk().getSagaPlayers();

@@ -5,7 +5,7 @@ import org.bukkit.block.Block;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.saga.chunks.ChunkBundle;
+import org.saga.chunks.Bundle;
 import org.saga.messages.GeneralMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement.SettlementPermission;
@@ -39,8 +39,8 @@ public class Warehouse extends Building{
 
 	
 		// Chunk group:
-		ChunkBundle chunkBundle = getChunkBundle();
-		if(chunkBundle == null){
+		Bundle bundle = getChunkBundle();
+		if(bundle == null){
 			
 			sagaPlayer.message(GeneralMessages.noPermission(this));
 			return;
@@ -52,7 +52,7 @@ public class Warehouse extends Building{
 		Material targetMaterial = targetBlock.getType();
 		
 		// Permission:
-		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.ACCESS_WAREHOUSE)){
+		if(!bundle.hasPermission(sagaPlayer, SettlementPermission.ACCESS_WAREHOUSE)){
 			
 			// Chest:
 			if(targetMaterial.equals(Material.CHEST) && event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){

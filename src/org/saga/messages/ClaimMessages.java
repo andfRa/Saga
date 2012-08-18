@@ -1,7 +1,7 @@
 package org.saga.messages;
 
 import org.bukkit.ChatColor;
-import org.saga.chunks.ChunkBundle;
+import org.saga.chunks.Bundle;
 import org.saga.factions.Faction;
 import org.saga.utility.text.TextUtil;
 
@@ -27,7 +27,7 @@ public class ClaimMessages {
 	
 	
 	// All:
-	public static String claimedBcast(ChunkBundle bundle, Faction faction){
+	public static String claimedBcast(Bundle bundle, Faction faction){
 		
 		return announce + "" + ChatColor.UNDERLINE + "Settlement " + bundle.getName() + " was claimed by " + FactionMessages.faction(ChatColor.UNDERLINE, faction, announce)+".";
 	
@@ -36,19 +36,19 @@ public class ClaimMessages {
 	
 	
 	// Factions:
-	public static String loosing(ChunkBundle bundle, Faction defenderFaction, Faction attackerFaction, Double progress){
+	public static String loosing(Bundle bundle, Faction defenderFaction, Faction attackerFaction, Double progress){
 		
 		return defenderFaction.getColour2() + "Loosing " + bundle.getName() + " to " + FactionMessages.faction(attackerFaction, defenderFaction.getColour2())+ "." + " " + TextUtil.round(progress * 100, 1) + "% claimed.";
 	
 	}
 
-	public static String claiming(ChunkBundle bundle, Faction attackerFaction, Faction defenderFaction, Double progress){
+	public static String claiming(Bundle bundle, Faction attackerFaction, Faction defenderFaction, Double progress){
 		
 		return attackerFaction.getColour2() + "Seizing " + bundle.getName() + " from " + FactionMessages.faction(defenderFaction, attackerFaction.getColour2())+ "." + " " + TextUtil.round(progress * 100, 1) + "% claimed.";
 	
 	}
 	
-	public static String claiming(ChunkBundle bundle, Faction attackerFaction, Double progress){
+	public static String claiming(Bundle bundle, Faction attackerFaction, Double progress){
 		
 		return attackerFaction.getColour2() + "Claiming " + bundle.getName() + "." + " " + TextUtil.round(progress * 100, 1) + "% claimed.";
 	
@@ -57,7 +57,7 @@ public class ClaimMessages {
 	
 	
 	// Town square:
-	public static String claimingTownSquare(ChunkBundle bundle, Faction faction, Double progress){
+	public static String claimingTownSquare(Bundle bundle, Faction faction, Double progress){
 		
 		String claimed = "";
 		if(progress > 0){
@@ -68,7 +68,7 @@ public class ClaimMessages {
 	
 	}
 
-	public static String claimingTownSquare(ChunkBundle bundle, Faction attackerFaction, Faction defenderFaction, Double progress){
+	public static String claimingTownSquare(Bundle bundle, Faction attackerFaction, Faction defenderFaction, Double progress){
 
 		String claimed = "";
 		if(progress > 0){
@@ -79,7 +79,7 @@ public class ClaimMessages {
 
 	}
 	
-	public static String unclaimingTownSquare(ChunkBundle bundle, Faction faction, Double progress){
+	public static String unclaimingTownSquare(Bundle bundle, Faction faction, Double progress){
 		
 		String claimed = "";
 		if(progress > 0){
@@ -90,7 +90,7 @@ public class ClaimMessages {
 	
 	}
 
-	public static String unclaimingTownSquare(ChunkBundle bundle, Faction attackerFaction, Faction defenderFaction, Double progress){
+	public static String unclaimingTownSquare(Bundle bundle, Faction attackerFaction, Faction defenderFaction, Double progress){
 
 		String claimed = "";
 		if(progress > 0){

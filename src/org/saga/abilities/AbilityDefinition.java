@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.bukkit.Material;
 import org.saga.SagaLogger;
-import org.saga.chunks.ChunkBundle;
+import org.saga.chunks.Bundle;
 import org.saga.config.AbilityConfiguration;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.TwoPointFunction;
@@ -409,15 +409,15 @@ public class AbilityDefinition{
 
 
 		Set<String> bldgNames = buildingRequirements.keySet();
-		ChunkBundle chunkBundle = sagaPlayer.getBundle();
+		Bundle bundle = sagaPlayer.getBundle();
 		
 		if(bldgNames.size() == 0) return true;
 		
-		if(chunkBundle == null) return false;
+		if(bundle == null) return false;
 		
 		for (String bldgName : bldgNames) {
 			
-			if(chunkBundle.getBuildingScore(bldgName) < getBldgReq(bldgName, abilityScore)){
+			if(bundle.getBuildingScore(bldgName) < getBldgReq(bldgName, abilityScore)){
 				return false;
 			}
 			

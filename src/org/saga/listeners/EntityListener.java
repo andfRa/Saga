@@ -19,7 +19,7 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.saga.Saga;
 import org.saga.SagaLogger;
-import org.saga.chunks.ChunkBundleManager;
+import org.saga.chunks.BundleManager;
 import org.saga.chunks.SagaChunk;
 import org.saga.config.GeneralConfiguration;
 import org.saga.factions.Faction;
@@ -104,7 +104,7 @@ public class EntityListener implements Listener{
 		}
 		
 		// Get saga chunk:
-		SagaChunk sagaChunk = ChunkBundleManager.manager().getSagaChunk(event.getLocation());
+		SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(event.getLocation());
 		
 		// Forward to saga chunk:
 		if(sagaChunk != null) sagaChunk.onEntityExplode(event);
@@ -117,7 +117,7 @@ public class EntityListener implements Listener{
 		
 
 		// Get saga chunk:
-		SagaChunk sagaChunk = ChunkBundleManager.manager().getSagaChunk(event.getBlock().getLocation());
+		SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(event.getBlock().getLocation());
 		
 		// Forward to saga chunk:
 		if(sagaChunk != null) sagaChunk.onEntityBlockForm(event);
@@ -137,7 +137,7 @@ public class EntityListener implements Listener{
     	}
 		
 		// Get saga chunk:
-		SagaChunk sagaChunk = ChunkBundleManager.manager().getSagaChunk(event.getLocation());
+		SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(event.getLocation());
 		
 		// Forward to saga chunk:
 		if(sagaChunk != null) sagaChunk.onCreatureSpawn(event);
@@ -161,7 +161,7 @@ public class EntityListener implements Listener{
 			// Get saga chunk:
 			Location location = sagaAttacker.getLocation();
 			Chunk chunk = location.getWorld().getChunkAt(location);
-			SagaChunk sagaChunk = ChunkBundleManager.manager().getSagaChunk(chunk);
+			SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(chunk);
 			
 			// Forward to chunk:
 			if(sagaChunk != null) sagaChunk.onPvpKill(sagaAttacker, sagaDead);

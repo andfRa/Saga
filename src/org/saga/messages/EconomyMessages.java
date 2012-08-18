@@ -5,7 +5,7 @@ import java.util.HashSet;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.saga.chunks.ChunkBundle;
+import org.saga.chunks.Bundle;
 import org.saga.config.EconomyConfiguration;
 import org.saga.economy.EconomyManager.TransactionType;
 import org.saga.economy.Trader;
@@ -143,13 +143,13 @@ public class EconomyMessages {
 	}
 	
 	// Transactions:
-	public static String addedTransactionBroadcast(Transaction transaction, ChunkBundle chunkBundle, SagaPlayer sagaPlayer) {
+	public static String addedTransactionBroadcast(Transaction transaction, Bundle bundle, SagaPlayer sagaPlayer) {
 		
 		return announce + sagaPlayer.getName() + " set up a new transaction: " + transaction.getType().name() + " " + transaction.getAmount() + " " + GeneralMessages.material(transaction.getMaterial()) + " for " + EconomyMessages.coins(transaction.getValue()) + " each.";
 		
 	}
 	
-	public static String removedTransactionBroadcast(TransactionType type, Material material, ChunkBundle chunkBundle, SagaPlayer sagaPlayer) {
+	public static String removedTransactionBroadcast(TransactionType type, Material material, Bundle bundle, SagaPlayer sagaPlayer) {
 		
 		return announce + sagaPlayer.getName() + " removed a transaction: " + type.name() + " " + GeneralMessages.material(material) + ".";
 		

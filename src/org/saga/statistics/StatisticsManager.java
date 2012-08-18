@@ -17,7 +17,7 @@ import org.saga.Clock;
 import org.saga.Clock.HourTicker;
 import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
-import org.saga.chunks.ChunkBundle;
+import org.saga.chunks.Bundle;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.SettlementConfiguration;
@@ -978,7 +978,7 @@ public class StatisticsManager implements HourTicker{
 	}
 	
 	
-	public void setBuildings(ChunkBundle chunkBundle) {
+	public void setBuildings(Bundle bundle) {
 
 		
 		Collection<String> bldgNames = SettlementConfiguration.config().getBuildingNames();
@@ -986,10 +986,10 @@ public class StatisticsManager implements HourTicker{
 		
 		for (String bldgName : bldgNames) {
 		
-			String key = "buildings" + "." + "set" + "." + bldgName + "." + chunkBundle.getId();
+			String key = "buildings" + "." + "set" + "." + bldgName + "." + bundle.getId();
 			clearValue(key);
 			
-			int count = chunkBundle.getBuildings(bldgName).size();
+			int count = bundle.getBuildings(bldgName).size();
 			if(count == 0) continue;
 
 			setValue(key, count);
@@ -1007,19 +1007,19 @@ public class StatisticsManager implements HourTicker{
 	}
 	
 	
-	public void addBundleClaimed(Faction faction, ChunkBundle bundle) {
+	public void addBundleClaimed(Faction faction, Bundle bundle) {
 
 		modifyValue("faction_claiming" + "." + "claimed" + "." + faction.getName(), 1);
 		
 	}
 
-	public void addBundleSeized(Faction faction, ChunkBundle bundle) {
+	public void addBundleSeized(Faction faction, Bundle bundle) {
 
 		modifyValue("faction_claiming" + "." + "seized" + "." + faction.getName(), 1);
 		
 	}
 	
-	public void addBundleLost(Faction faction, ChunkBundle bundle) {
+	public void addBundleLost(Faction faction, Bundle bundle) {
 
 		modifyValue("faction_claiming" + "." + "lost" + "." + faction.getName(), 1);
 		

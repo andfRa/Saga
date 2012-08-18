@@ -15,9 +15,9 @@ import org.saga.Clock;
 import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.Saga;
 import org.saga.SagaLogger;
-import org.saga.chunks.ChunkBundle;
-import org.saga.chunks.ChunkBundleManager;
-import org.saga.chunks.ChunkBundleToggleable;
+import org.saga.chunks.Bundle;
+import org.saga.chunks.BundleManager;
+import org.saga.chunks.BundleToggleable;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.SettlementConfiguration;
@@ -349,14 +349,14 @@ public class AdminCommands {
 
 
 		Integer level = null;
-		ChunkBundle selectedChunkBundle = null;
+		Bundle selectedChunkBundle = null;
 
 		// Arguments:
 		if(args.argsLength() == 2){
 			
 			// Chunk group:
 			String bundleName = GeneralMessages.nameFromArg(args.getString(0));
-			selectedChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(bundleName);
+			selectedChunkBundle = BundleManager.manager().getChunkBundleWithName(bundleName);
 			if(selectedChunkBundle == null){
 				sagaPlayer.message(SettlementMessages.noChunkBundle(bundleName));
 				return;
@@ -425,8 +425,8 @@ public class AdminCommands {
 	public static void enableOption(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
-		ChunkBundle selChunkBundle = null;
-		ChunkBundleToggleable option = null;
+		Bundle selChunkBundle = null;
+		BundleToggleable option = null;
 
 		String aOption = null;
 		
@@ -436,7 +436,7 @@ public class AdminCommands {
 				
 				// Chunk bundle:
 				String bundleName = GeneralMessages.nameFromArg(args.getString(0));
-				selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(bundleName);
+				selChunkBundle = BundleManager.manager().getChunkBundleWithName(bundleName);
 				if(selChunkBundle == null){
 					sagaPlayer.message( SettlementMessages.noChunkBundle(bundleName));
 					return;
@@ -444,7 +444,7 @@ public class AdminCommands {
 				
 				// Option:
 				aOption = args.getString(1);
-				option = ChunkBundleToggleable.match(aOption);
+				option = BundleToggleable.match(aOption);
 				if(option == null){
 					sagaPlayer.message(SettlementMessages.optionInvalid(args.getString(1)));
 					sagaPlayer.message(SettlementMessages.optionInvalidInfo());
@@ -464,7 +464,7 @@ public class AdminCommands {
 				
 				// Option:
 				aOption = args.getString(0);
-				option = ChunkBundleToggleable.match(aOption);
+				option = BundleToggleable.match(aOption);
 				if(option == null){
 					sagaPlayer.message(SettlementMessages.optionInvalid(aOption));
 					sagaPlayer.message(SettlementMessages.optionInvalidInfo());
@@ -502,8 +502,8 @@ public class AdminCommands {
 	public static void disableOption(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
-		ChunkBundle selChunkBundle = null;
-		ChunkBundleToggleable option = null;
+		Bundle selChunkBundle = null;
+		BundleToggleable option = null;
 		
 		String aOption = null;
 		
@@ -513,7 +513,7 @@ public class AdminCommands {
 				
 				// Chunk bundle:
 				String bundleName = GeneralMessages.nameFromArg(args.getString(0));
-				selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(bundleName);
+				selChunkBundle = BundleManager.manager().getChunkBundleWithName(bundleName);
 				if(selChunkBundle == null){
 					sagaPlayer.message( SettlementMessages.noChunkBundle(bundleName));
 					return;
@@ -521,7 +521,7 @@ public class AdminCommands {
 				
 				// Option:
 				aOption = args.getString(1);
-				option = ChunkBundleToggleable.match(aOption);
+				option = BundleToggleable.match(aOption);
 				if(option == null){
 					sagaPlayer.message(SettlementMessages.optionInvalid(args.getString(1)));
 					sagaPlayer.message(SettlementMessages.optionInvalidInfo());
@@ -541,7 +541,7 @@ public class AdminCommands {
 				
 				// Option:
 				aOption = args.getString(0);
-				option = ChunkBundleToggleable.match(aOption);
+				option = BundleToggleable.match(aOption);
 				if(option == null){
 					sagaPlayer.message(SettlementMessages.optionInvalid(aOption));
 					sagaPlayer.message(SettlementMessages.optionInvalidInfo());

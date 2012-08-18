@@ -3,7 +3,7 @@ package org.saga.messages;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.saga.buildings.Building;
-import org.saga.chunks.ChunkBundle;
+import org.saga.chunks.Bundle;
 import org.saga.factions.Faction;
 import org.saga.settlements.Settlement;
 import org.saga.utility.text.TextUtil;
@@ -74,8 +74,8 @@ public class GeneralMessages {
 		return negative + "You don't have permission to do that.";
 	}
 	
-	public static String noPermission(ChunkBundle chunkBundle){
-		return negative + "You don't have permission to do that (" + chunkBundle.getName() + " settlement).";
+	public static String noPermission(Bundle bundle){
+		return negative + "You don't have permission to do that (" + bundle.getName() + " settlement).";
 	}
 	
 	public static String noPermission(Building building){
@@ -86,8 +86,8 @@ public class GeneralMessages {
 		return negative + "You don't have permission to do that (" + settlement.getName() + " settlement).";
 	}
 	
-	public static String noCommandPermission(ChunkBundle chunkBundle, String command){
-		return negative + "You don't have permission use " + command + " command (" + chunkBundle.getName() + " settlement).";
+	public static String noCommandPermission(Bundle bundle, String command){
+		return negative + "You don't have permission use " + command + " command (" + bundle.getName() + " settlement).";
 	}
 	
 	public static String noPermission(Faction faction){

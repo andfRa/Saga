@@ -14,8 +14,8 @@ import org.saga.Clock.MinuteTicker;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.BuildingDefinition;
-import org.saga.chunks.ChunkBundle;
-import org.saga.chunks.ChunkBundleToggleable;
+import org.saga.chunks.Bundle;
+import org.saga.chunks.BundleToggleable;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
 import org.saga.config.SettlementConfiguration;
@@ -30,7 +30,7 @@ import org.saga.statistics.StatisticsManager;
  * @author andf
  *
  */
-public class Settlement extends ChunkBundle implements MinuteTicker{
+public class Settlement extends Bundle implements MinuteTicker{
 
 	
 	/**
@@ -206,7 +206,7 @@ public class Settlement extends ChunkBundle implements MinuteTicker{
 
 		
 		// Forward:
-		ChunkBundle.create(settlement, owner);
+		Bundle.create(settlement, owner);
 
 		// Set owners role:
 		try {
@@ -556,7 +556,7 @@ public class Settlement extends ChunkBundle implements MinuteTicker{
 	 * @return true if available
 	 */
 	public boolean isClaimsAvailable() {
-		return getAvailableClaims() > 0 || isOptionEnabled(ChunkBundleToggleable.UNLIMITED_CLAIMS);
+		return getAvailableClaims() > 0 || isOptionEnabled(BundleToggleable.UNLIMITED_CLAIMS);
 	}
 	
 	

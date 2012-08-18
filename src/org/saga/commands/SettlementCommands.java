@@ -7,8 +7,8 @@ import org.bukkit.Location;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.Building;
-import org.saga.chunks.ChunkBundle;
-import org.saga.chunks.ChunkBundleManager;
+import org.saga.chunks.Bundle;
+import org.saga.chunks.BundleManager;
 import org.saga.chunks.SagaChunk;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ProficiencyConfiguration;
@@ -104,7 +104,7 @@ public class SettlementCommands {
 		}
 		
 		// Check name:
-		if(ChunkBundleManager.manager().getChunkBundleWithName(settlementName) != null){
+		if(BundleManager.manager().getChunkBundleWithName(settlementName) != null){
 			sagaPlayer.message(FactionMessages.inUse(settlementName));
 			return;
 		}
@@ -137,14 +137,14 @@ public class SettlementCommands {
 	public static void claim(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
-		ChunkBundle selChunkBundle = null;
+		Bundle selChunkBundle = null;
 
 		// Arguments:
 		if(args.argsLength() == 1){
 			
 			// Chunk bundle:
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
-			selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+			selChunkBundle = BundleManager.manager().getChunkBundleWithName(groupName);
 			if(selChunkBundle == null){
 				sagaPlayer.message(SettlementMessages.noChunkBundle(groupName));
 				return;
@@ -258,7 +258,7 @@ public class SettlementCommands {
 		}
 	   	
 	   	// Chunk bundle:
-	   	ChunkBundle selBundle = selChunk.getChunkBundle();
+	   	Bundle selBundle = selChunk.getChunkBundle();
 	   	
 	   	// Permissions:
 	   	if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.ABANDON)){
@@ -305,7 +305,7 @@ public class SettlementCommands {
 	public static void resign(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-		ChunkBundle selChunkBundle = null;
+		Bundle selChunkBundle = null;
 		SagaPlayer selPlayer = null;
 		
 		String targetName = null;
@@ -317,7 +317,7 @@ public class SettlementCommands {
 				
 				// Chunk bundle:
 				String groupName = GeneralMessages.nameFromArg(args.getString(0));
-				selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+				selChunkBundle = BundleManager.manager().getChunkBundleWithName(groupName);
 				if(selChunkBundle == null){
 					sagaPlayer.message(SettlementMessages.noChunkBundle(groupName));
 					return;
@@ -416,14 +416,14 @@ public class SettlementCommands {
 	public static void disolve(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 			
-		ChunkBundle selBundle = null;
+		Bundle selBundle = null;
 
 		// Arguments:
 		if(args.argsLength() == 1){
 				
 			// Chunk group:
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
-			selBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+			selBundle = BundleManager.manager().getChunkBundleWithName(groupName);
 			if(selBundle == null){
 				sagaPlayer.message(SettlementMessages.noChunkBundle(groupName));
 				return;
@@ -487,7 +487,7 @@ public class SettlementCommands {
 		
 
 		String buildingName = null;
-		ChunkBundle selBundle = null;
+		Bundle selBundle = null;
 
 		// Arguments:
 		buildingName = GeneralMessages.nameFromArg(args.getString(0));
@@ -577,7 +577,7 @@ public class SettlementCommands {
 	public static void removeBuilding(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
-		ChunkBundle selBundle = null;
+		Bundle selBundle = null;
 		
 		// Arguments:
 		selBundle = getLocationChunkBundle(sagaPlayer);
@@ -640,7 +640,7 @@ public class SettlementCommands {
 	public static void invite(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-		ChunkBundle selChunkBundle = null;
+		Bundle selChunkBundle = null;
 		SagaPlayer selPlayer = null;
 		
 		// Arguments:
@@ -648,7 +648,7 @@ public class SettlementCommands {
 			
 			// Chunk bundle:
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
-			selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+			selChunkBundle = BundleManager.manager().getChunkBundleWithName(groupName);
 			if(selChunkBundle == null){
 				sagaPlayer.message(SettlementMessages.noChunkBundle(groupName));
 				return;
@@ -738,16 +738,16 @@ public class SettlementCommands {
     	}
     	
     	// Find chunk bundle:
-    	ChunkBundle selChunkBundle = null;
+    	Bundle selChunkBundle = null;
     	ArrayList<Integer> invitationIds = sagaPlayer.getBundleInvites();
     	// No parameters:
     	if(args.argsLength() == 0 && invitationIds.size() > 0){
-    		selChunkBundle = ChunkBundleManager.manager().getChunkBundle(invitationIds.get(invitationIds.size() -1 ));
+    		selChunkBundle = BundleManager.manager().getChunkBundle(invitationIds.get(invitationIds.size() -1 ));
     	}
     	// Chunk bundle name parameter:
     	else if(args.argsLength() == 1){
     		for (int i = 0; i < invitationIds.size(); i++) {
-    			ChunkBundle group = ChunkBundleManager.manager().getChunkBundle(invitationIds.get(i));
+    			Bundle group = BundleManager.manager().getChunkBundle(invitationIds.get(i));
 				if( group != null && group.getName().equals(args.getString(0)) ){
 					selChunkBundle = group;
 					break;
@@ -827,7 +827,7 @@ public class SettlementCommands {
 	public static void quit(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
-		ChunkBundle selBundle = null;
+		Bundle selBundle = null;
 
 		// Arguments:
 		selBundle = sagaPlayer.getBundle();
@@ -903,7 +903,7 @@ public class SettlementCommands {
 	public static void kick(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
-		ChunkBundle selBundle = null;
+		Bundle selBundle = null;
 		SagaPlayer selPlayer = null;
 		
 		String targetName = null;
@@ -914,7 +914,7 @@ public class SettlementCommands {
 
 				// Chunk bundle:
 				String groupName = GeneralMessages.nameFromArg(args.getString(0));
-				selBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+				selBundle = BundleManager.manager().getChunkBundleWithName(groupName);
 				if(selBundle == null){
 					sagaPlayer.message(SettlementMessages.noChunkBundle(groupName));
 					return;
@@ -1041,7 +1041,7 @@ public class SettlementCommands {
 	public static void declareOwner(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
-		ChunkBundle selChunkBundle = null;
+		Bundle selChunkBundle = null;
 		String targetName = null;
 		
 
@@ -1050,7 +1050,7 @@ public class SettlementCommands {
 			
 			// Chunk bundle:
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
-			selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+			selChunkBundle = BundleManager.manager().getChunkBundleWithName(groupName);
 			if(selChunkBundle == null){
 				sagaPlayer.message(SettlementMessages.noChunkBundle(groupName));
 				return;
@@ -1115,7 +1115,7 @@ public class SettlementCommands {
 	public static void setRole(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-		ChunkBundle selChunkBundle = null;
+		Bundle selChunkBundle = null;
 		String targetName = null;
 		String roleName = null;
 		
@@ -1124,7 +1124,7 @@ public class SettlementCommands {
 			
 			// Chunk bundle:
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
-			selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+			selChunkBundle = BundleManager.manager().getChunkBundleWithName(groupName);
 			if(selChunkBundle == null){
 				sagaPlayer.message(SettlementMessages.noChunkBundle(groupName));
 				return;
@@ -1228,7 +1228,7 @@ public class SettlementCommands {
 		Integer page = null;
 		Settlement selSettlement = null;
 		
-		ChunkBundle selChunkBundle = null;
+		Bundle selChunkBundle = null;
 		String argsPage = null;
 		String groupName = null;
 		
@@ -1239,7 +1239,7 @@ public class SettlementCommands {
 				
 				// Chunk bundle:
 				groupName = GeneralMessages.nameFromArg(args.getString(0));
-				selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+				selChunkBundle = BundleManager.manager().getChunkBundleWithName(groupName);
 				if(selChunkBundle == null){
 					sagaPlayer.message(SettlementMessages.noChunkBundle(groupName));
 					return;
@@ -1318,14 +1318,14 @@ public class SettlementCommands {
 	public static void list(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
-		ChunkBundle selChunkBundle = null;
+		Bundle selChunkBundle = null;
 
 		// Arguments:
 		if(args.argsLength() == 1){
 			
 			// Chunk bundle:
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
-			selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+			selChunkBundle = BundleManager.manager().getChunkBundleWithName(groupName);
 			if(selChunkBundle == null){
 				sagaPlayer.message(SettlementMessages.noChunkBundle(groupName));
 				return;
@@ -1423,7 +1423,7 @@ public class SettlementCommands {
 	public static void rename(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 	    	
 		
-		ChunkBundle selChunkBundle = null;
+		Bundle selChunkBundle = null;
 		String name = null;
 
 		// Arguments:
@@ -1431,7 +1431,7 @@ public class SettlementCommands {
 			
 			// Chunk bundle:
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
-			selChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+			selChunkBundle = BundleManager.manager().getChunkBundleWithName(groupName);
 			if(selChunkBundle == null){
 				sagaPlayer.message(SettlementMessages.noChunkBundle(groupName));
 				return;
@@ -1470,7 +1470,7 @@ public class SettlementCommands {
 	    }
 	    	
 	    // Check name:
-	    if(ChunkBundleManager.manager().getChunkBundleWithName(name) != null){
+	    if(BundleManager.manager().getChunkBundleWithName(name) != null){
 	    	sagaPlayer.message(FactionMessages.inUse(name));
 	    	return;
 	    }
@@ -1555,12 +1555,12 @@ public class SettlementCommands {
 	 * @param sagaPlayer saga player
 	 * @return chunk bundle, null if none
 	 */
-	private static ChunkBundle getLocationChunkBundle(SagaPlayer sagaPlayer) {
+	private static Bundle getLocationChunkBundle(SagaPlayer sagaPlayer) {
 
 		Location location = sagaPlayer.getLocation();
 		if(location == null) return null;
 		
-		SagaChunk sagaChunk = ChunkBundleManager.manager().getSagaChunk(location);
+		SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(location);
 		if(sagaChunk == null) return null;
 		
 		return sagaChunk.getChunkBundle();

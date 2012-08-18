@@ -46,9 +46,9 @@ public class SagaMap {
 			StringBuffer row = new StringBuffer();
 			for (int dz = 0; dz > -width; dz--) {
 				
-				SagaChunk sagaChunk = ChunkBundleManager.manager().getSagaChunk(location.getWorld().getName(), topLeftX + dx, topLeftZ + dz);
+				SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(location.getWorld().getName(), topLeftX + dx, topLeftZ + dz);
 
-				ChunkBundle settlement = null;
+				Bundle settlement = null;
 				
 				if (sagaChunk != null) {
 					settlement = sagaChunk.getChunkBundle();

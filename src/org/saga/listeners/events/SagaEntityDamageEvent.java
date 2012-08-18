@@ -15,7 +15,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.saga.Saga;
 import org.saga.SagaLogger;
-import org.saga.chunks.ChunkBundleManager;
+import org.saga.chunks.BundleManager;
 import org.saga.chunks.SagaChunk;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.TwoPointFunction;
@@ -180,8 +180,8 @@ public class SagaEntityDamageEvent {
 		}
 		
 		// Get chunks:
-		if(attacker != null) attackerChunk = ChunkBundleManager.manager().getSagaChunk(attacker.getLocation());
-		if(defender != null) defenderChunk = ChunkBundleManager.manager().getSagaChunk(defender.getLocation());
+		if(attacker != null) attackerChunk = BundleManager.manager().getSagaChunk(attacker.getLocation());
+		if(defender != null) defenderChunk = BundleManager.manager().getSagaChunk(defender.getLocation());
 		
 
 	}

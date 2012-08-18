@@ -44,7 +44,7 @@ import org.saga.statistics.StatisticsManager;
 
 import com.google.gson.JsonParseException;
 
-public class ChunkBundle extends SagaCustomSerialization{
+public class Bundle extends SagaCustomSerialization{
 
 	
 	/**
@@ -90,7 +90,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 	/**
 	 * Toggle options.
 	 */
-	private HashSet<ChunkBundleToggleable> toggleOptions;
+	private HashSet<BundleToggleable> toggleOptions;
 	
 	
 
@@ -114,11 +114,11 @@ public class ChunkBundle extends SagaCustomSerialization{
 	 * @param id ID
 	 * @param name name
 	 */
-	public ChunkBundle(String name){
+	public Bundle(String name){
 		
 		
 		this.name = name;
-		this.id = ChunkBundleManager.manager().getUnusedId();
+		this.id = BundleManager.manager().getUnusedId();
 		this.players = new ArrayList<String>();
 		this.groupChunks = new ArrayList<SagaChunk>();
 		this.buildingScores = new Hashtable<String, Integer>();
@@ -126,7 +126,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 		this.owner = "";
 		this.fireSpread = false;
 		this.lavaSpread = false;
-		this.toggleOptions = new HashSet<ChunkBundleToggleable>();
+		this.toggleOptions = new HashSet<BundleToggleable>();
 		
 		
 	}
@@ -217,7 +217,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 		
 		if(toggleOptions == null){
 			SagaLogger.nullField(this, "toggleOptions");
-			toggleOptions = new HashSet<ChunkBundleToggleable>();
+			toggleOptions = new HashSet<BundleToggleable>();
 		}
 		if(toggleOptions.remove(null)){
 			SagaLogger.nullField(this, "toggleOptions element");
@@ -270,28 +270,28 @@ public class ChunkBundle extends SagaCustomSerialization{
 	/**
 	 * Adds a new chunk group.
 	 * 
-	 * @param chunkBundle chunk group.
+	 * @param bundle chunk group.
 	 */
-	public final static void create(ChunkBundle chunkBundle){
+	public final static void create(Bundle bundle){
 
 		
 		// Log:
-		SagaLogger.info("Creating " + chunkBundle + " chunk group.");
+		SagaLogger.info("Creating " + bundle + " chunk group.");
 
 		// Update chunk group manager:
-		ChunkBundleManager.manager().addChunkBundle(chunkBundle);
+		BundleManager.manager().addChunkBundle(bundle);
 		
 		// Do the first save:
-		chunkBundle.save();
+		bundle.save();
 		
 		// Refresh:
-		ArrayList<SagaChunk> sagaChunks = chunkBundle.getGroupChunks();
+		ArrayList<SagaChunk> sagaChunks = bundle.getGroupChunks();
 		for (SagaChunk sagaChunk : sagaChunks) {
 			sagaChunk.refresh();
 		}
 		
 		// Enable:
-		chunkBundle.enable();
+		bundle.enable();
 		
 		
 	}
@@ -299,20 +299,20 @@ public class ChunkBundle extends SagaCustomSerialization{
 	/**
 	 * Adds a new chunk group.
 	 * 
-	 * @param chunkBundle chunk group
+	 * @param bundle chunk group
 	 * @param owner owner
 	 */
-	public static void create(ChunkBundle chunkBundle, SagaPlayer owner){
+	public static void create(Bundle bundle, SagaPlayer owner){
 		
 
 		// Add player:
-		chunkBundle.addMember(owner);
+		bundle.addMember(owner);
 
 		// Set owner:
-		chunkBundle.setOwner(owner.getName());
+		bundle.setOwner(owner.getName());
 		
 		// Forward:
-		create(chunkBundle);
+		create(bundle);
 
 		
 	}
@@ -364,7 +364,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 		WriterReader.delete(Directory.SETTLEMENT_DATA, getId().toString());
 		
 		// Update chunk group manager:
-		ChunkBundleManager.manager().removeChunkBundle(this);
+		BundleManager.manager().removeChunkBundle(this);
 		
 		
 	}
@@ -391,7 +391,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 		groupChunks.add(sagaChunk);
 		
 		// Update chunk group manager:
-		ChunkBundleManager.manager().addChunk(sagaChunk);
+		BundleManager.manager().addChunk(sagaChunk);
 		
 		// Refresh:
 		sagaChunk.refresh();
@@ -418,7 +418,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 		groupChunks.remove(sagaChunk);
 
 		// Update chunk group manager:
-		ChunkBundleManager.manager().removeChunk(sagaChunk);
+		BundleManager.manager().removeChunk(sagaChunk);
 
 		// Refresh:
 		sagaChunk.refresh();
@@ -589,7 +589,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 	 */
 	public boolean isBuildingAvailable(String buildingName) {
 
-		if(isOptionEnabled(ChunkBundleToggleable.UNLIMITED_BUILDINGS)) return true;
+		if(isOptionEnabled(BundleToggleable.UNLIMITED_BUILDINGS)) return true;
 		
 		return getRemainingBuildings(buildingName) > 0;
 		
@@ -799,7 +799,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 	 */
 	public boolean hasBuildPointsAvailable(Building building) {
 
-		if(isOptionEnabled(ChunkBundleToggleable.UNLIMITED_BUILDINGS)) return true;
+		if(isOptionEnabled(BundleToggleable.UNLIMITED_BUILDINGS)) return true;
 		
 		return getRemainingBuildPoints() >= building.getDefinition().getBuildPoints();
 		
@@ -1049,7 +1049,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 	 * @param option toggle option
 	 * @return true if enabled
 	 */
-	public boolean isOptionEnabled(ChunkBundleToggleable option) {
+	public boolean isOptionEnabled(BundleToggleable option) {
 
 		return toggleOptions.contains(option);
 
@@ -1060,7 +1060,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 	 * 
 	 * @param option toggle option
 	 */
-	public void enableOption(ChunkBundleToggleable option) {
+	public void enableOption(BundleToggleable option) {
 
 		toggleOptions.add(option);
 
@@ -1071,7 +1071,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 	 * 
 	 * @param option toggle option
 	 */
-	public void disableOption(ChunkBundleToggleable option) {
+	public void disableOption(BundleToggleable option) {
 
 		toggleOptions.remove(option);
 
@@ -1316,7 +1316,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 	public void onEntityDamage(SagaEntityDamageEvent event, SagaChunk locationChunk){
 
 		// Deny pvp:
-		if(isOptionEnabled(ChunkBundleToggleable.PVP_PROTECTION)) event.addPvpOverride(PvPOverride.SAFE_AREA_DENY);
+		if(isOptionEnabled(BundleToggleable.PVP_PROTECTION)) event.addPvpOverride(PvPOverride.SAFE_AREA_DENY);
 		
 	}
 	
@@ -1341,7 +1341,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 	 * @param sagaPlayer saga player
 	 * @param last last chunk group, null if none
 	 */
-	public void onPlayerEnter(SagaPlayer sagaPlayer, ChunkBundle last) {
+	public void onPlayerEnter(SagaPlayer sagaPlayer, Bundle last) {
 
 		sagaPlayer.message(SettlementMessages.entered(this));
 
@@ -1353,7 +1353,7 @@ public class ChunkBundle extends SagaCustomSerialization{
 	 * @param sagaPlayer saga player
 	 * @param next next chunk group, null if none
 	 */
-	public void onPlayerLeave(SagaPlayer sagaPlayer, ChunkBundle next) {
+	public void onPlayerLeave(SagaPlayer sagaPlayer, Bundle next) {
 
 		if(next == null) sagaPlayer.message(SettlementMessages.left(this));
 
@@ -1449,31 +1449,31 @@ public class ChunkBundle extends SagaCustomSerialization{
 	 * @param chunkGroupId faction ID in String form
 	 * @return saga faction
 	 */
-	public static ChunkBundle load(String id) {
+	public static Bundle load(String id) {
 
 		
 		// Load:
-		ChunkBundle config;
+		Bundle config;
 		try {
 			
-			config = WriterReader.read(Directory.SETTLEMENT_DATA, id, ChunkBundle.class);
+			config = WriterReader.read(Directory.SETTLEMENT_DATA, id, Bundle.class);
 			
 		} catch (FileNotFoundException e) {
 			
-			SagaLogger.info(ChunkBundle.class, "missing data for " + id + " ID");
-			config = new ChunkBundle("invalid");
+			SagaLogger.info(Bundle.class, "missing data for " + id + " ID");
+			config = new Bundle("invalid");
 			
 		} catch (IOException e) {
 			
-			SagaLogger.severe(ChunkBundle.class, "failed to read data for " + id + " ID");
-			config = new ChunkBundle("invalid");
+			SagaLogger.severe(Bundle.class, "failed to read data for " + id + " ID");
+			config = new Bundle("invalid");
 			config.disableSaving();
 			
 		} catch (JsonParseException e) {
 			
-			SagaLogger.severe(ChunkBundle.class, "failed to parse data for " + id + " ID: " + e.getClass().getSimpleName() + "");
+			SagaLogger.severe(Bundle.class, "failed to parse data for " + id + " ID: " + e.getClass().getSimpleName() + "");
 			SagaLogger.info("Parse message: " + e.getMessage());
-			config = new ChunkBundle("invalid");
+			config = new Bundle("invalid");
 			config.disableSaving();
 			
 		}
@@ -1482,10 +1482,10 @@ public class ChunkBundle extends SagaCustomSerialization{
 		config.complete();
 		
 		// Add to manager:
-		ChunkBundleManager.manager().addChunkBundle(config);
+		BundleManager.manager().addChunkBundle(config);
 		ArrayList<SagaChunk> groupChunks = config.getGroupChunks();
 		for (SagaChunk sagaChunk : groupChunks) {
-			ChunkBundleManager.manager().addChunk(sagaChunk);
+			BundleManager.manager().addChunk(sagaChunk);
 		}
 		
 		// Enable:

@@ -13,7 +13,7 @@ import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.saga.Saga;
 import org.saga.SagaLogger;
-import org.saga.chunks.ChunkBundleManager;
+import org.saga.chunks.BundleManager;
 import org.saga.chunks.SagaChunk;
 import org.saga.config.GeneralConfiguration;
 import org.saga.listeners.events.SagaBlockBreakEvent;
@@ -31,7 +31,7 @@ public class BlockListener implements Listener{
 
 
 		// Get saga chunk:
-    	SagaChunk sagaChunk = ChunkBundleManager.manager().getSagaChunk(event.getBlock().getLocation());
+    	SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(event.getBlock().getLocation());
     	
 		// Get player:
     	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
@@ -76,7 +76,7 @@ public class BlockListener implements Listener{
 		Block block = event.getBlock();
 		
 		// Get saga chunk:
-    	SagaChunk sagaChunk = ChunkBundleManager.manager().getSagaChunk(event.getBlock().getLocation());
+    	SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(event.getBlock().getLocation());
     	
 		// Get player:
     	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
@@ -116,7 +116,7 @@ public class BlockListener implements Listener{
 		
     	// Get saga chunk:
     	Location location = event.getBlock().getLocation();
-    	SagaChunk sagaChunk = ChunkBundleManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
+    	SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
     	
 		// Get player:
     	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
@@ -149,7 +149,7 @@ public class BlockListener implements Listener{
 		
     	// Get saga chunk:
     	Location location = event.getBlock().getLocation();
-    	SagaChunk sagaChunk = ChunkBundleManager.manager().getSagaChunk(location);
+    	SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(location);
     	
     	// Forward to chunk:
     	if(sagaChunk != null) sagaChunk.getChunkBundle().onBlockSpread(event, sagaChunk);
@@ -163,7 +163,7 @@ public class BlockListener implements Listener{
 
 		// Get saga chunk:
     	Location location = event.getBlock().getLocation();
-    	SagaChunk sagaChunk = ChunkBundleManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
+    	SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
     	
     	// Forward to chunk:
     	if(sagaChunk != null) sagaChunk.getChunkBundle().onBlockFromTo(event, sagaChunk);

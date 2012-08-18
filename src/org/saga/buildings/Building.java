@@ -23,8 +23,8 @@ import org.saga.buildings.signs.AttributeSign;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.BuildingSign.SignException;
 import org.saga.buildings.storage.StorageArea;
-import org.saga.chunks.ChunkBundle;
-import org.saga.chunks.ChunkBundleToggleable;
+import org.saga.chunks.Bundle;
+import org.saga.chunks.BundleToggleable;
 import org.saga.chunks.SagaChunk;
 import org.saga.config.SettlementConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
@@ -200,7 +200,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 * 
 	 * @return origin chunk group, null if not found
 	 */
-	public ChunkBundle getChunkBundle() {
+	public Bundle getChunkBundle() {
 		
 		if(sagaChunk == null){
 			return null;
@@ -895,7 +895,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		
 		
 		// Permission:
-		if(!getChunkBundle().hasPermission(sagaPlayer, SettlementPermission.ACCESS_STORAGE) && !getChunkBundle().isOptionEnabled(ChunkBundleToggleable.OPEN_STORAGE_AREAS)){
+		if(!getChunkBundle().hasPermission(sagaPlayer, SettlementPermission.ACCESS_STORAGE) && !getChunkBundle().isOptionEnabled(BundleToggleable.OPEN_STORAGE_AREAS)){
 			
 			sagaPlayer.message(GeneralMessages.noPermission(this));
 			event.setCancelled(true);
@@ -1194,7 +1194,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 			if(event.getWrappedEvent() instanceof BlockBreakEvent){
 			
 				BlockBreakEvent wrappedEvent = (BlockBreakEvent) event.getWrappedEvent();
-				if(getChunkBundle().isOptionEnabled(ChunkBundleToggleable.OPEN_STORAGE_AREAS) && wrappedEvent.getBlock().getType() != Material.CHEST) event.addBuildOverride(BuildOverride.OPEN_STORAGE_AREA_ALLOW);				
+				if(getChunkBundle().isOptionEnabled(BundleToggleable.OPEN_STORAGE_AREAS) && wrappedEvent.getBlock().getType() != Material.CHEST) event.addBuildOverride(BuildOverride.OPEN_STORAGE_AREA_ALLOW);				
 			
 			}
 			

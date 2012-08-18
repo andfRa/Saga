@@ -8,7 +8,7 @@ import org.saga.buildings.Arena;
 import org.saga.buildings.Arena.ArenaPlayer;
 import org.saga.buildings.Building;
 import org.saga.buildings.TownSquare;
-import org.saga.chunks.ChunkBundle;
+import org.saga.chunks.Bundle;
 import org.saga.config.AttributeConfiguration;
 import org.saga.messages.PlayerMessages.ColourLoop;
 import org.saga.utility.text.StringTable;
@@ -60,11 +60,11 @@ public class BuildingMessages {
 	
 	
 	// Adding buildings:
-	public static String buildingsOnClaimed(ChunkBundle chunkBundle) {
+	public static String buildingsOnClaimed(Bundle bundle) {
 		return negative + "Buildings can only be on set on claimed land.";
 	}
 	
-	public static String oneBuilding(ChunkBundle chunkBundle) {
+	public static String oneBuilding(Bundle bundle) {
 		return negative + "A chunk of land can only have one building.";
 	}
 
@@ -166,9 +166,9 @@ public class BuildingMessages {
 	
 	
 	// Town square:
-	public static String noTownSquare(ChunkBundle chunkBundle){
+	public static String noTownSquare(Bundle bundle){
 		
-		return BuildingMessages.negative + "" + chunkBundle.getName() + " deosen't have a " + TextUtil.className(TownSquare.class) + ".";
+		return BuildingMessages.negative + "" + bundle.getName() + " deosen't have a " + TextUtil.className(TownSquare.class) + ".";
 		
 	}
 	

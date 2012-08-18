@@ -10,8 +10,8 @@ import org.saga.buildings.Building;
 import org.saga.buildings.Home;
 import org.saga.buildings.TownSquare;
 import org.saga.buildings.storage.StorageArea;
-import org.saga.chunks.ChunkBundle;
-import org.saga.chunks.ChunkBundleManager;
+import org.saga.chunks.Bundle;
+import org.saga.chunks.BundleManager;
 import org.saga.chunks.SagaChunk;
 import org.saga.factions.Faction;
 import org.saga.factions.FactionClaimManager;
@@ -216,9 +216,9 @@ public class BuildingCommands {
 		targetName = args.getString(0);
 
 		// Permission:
-		ChunkBundle chunkBundle = selectedBuilding.getChunkBundle();
-		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.ADD_RESIDENT)){
-			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
+		Bundle bundle = selectedBuilding.getChunkBundle();
+		if(!bundle.hasPermission(sagaPlayer, SettlementPermission.ADD_RESIDENT)){
+			sagaPlayer.message(GeneralMessages.noPermission(bundle));
 			return;
 		}
 		
@@ -271,9 +271,9 @@ public class BuildingCommands {
 		targetName = args.getString(0);
 		
 		// Permission:
-		ChunkBundle chunkBundle = selectedBuilding.getChunkBundle();
-		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.REMOVE_RESIDENT)){
-			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
+		Bundle bundle = selectedBuilding.getChunkBundle();
+		if(!bundle.hasPermission(sagaPlayer, SettlementPermission.REMOVE_RESIDENT)){
+			sagaPlayer.message(GeneralMessages.noPermission(bundle));
 			return;
 		}
 		
@@ -623,14 +623,14 @@ public class BuildingCommands {
 	public static void spawn(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-		ChunkBundle selectedChunkBundle = null;
+		Bundle selectedChunkBundle = null;
 		
 		// Arguments:
 		if(args.argsLength() == 1){
 			
 			// Chunk group:
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
-			selectedChunkBundle = ChunkBundleManager.manager().getChunkBundleWithName(groupName);
+			selectedChunkBundle = BundleManager.manager().getChunkBundleWithName(groupName);
 			if(selectedChunkBundle == null){
 				sagaPlayer.message(SettlementMessages.noChunkBundle(groupName));
 				return;

@@ -27,8 +27,8 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
 import org.saga.SagaLogger;
-import org.saga.chunks.ChunkBundle;
-import org.saga.chunks.ChunkBundleManager;
+import org.saga.chunks.Bundle;
+import org.saga.chunks.BundleManager;
 import org.saga.chunks.SagaChunk;
 import org.saga.config.FactionConfiguration;
 import org.saga.factions.Faction;
@@ -55,7 +55,7 @@ public class PlayerListener implements Listener {
 
     	// Get saga chunk:
     	Location location = event.getPlayer().getLocation();
-    	SagaChunk sagaChunk = ChunkBundleManager.manager().getSagaChunk(location);
+    	SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(location);
 
     	// Forward to chunk:
     	if(sagaChunk != null) sagaChunk.onPlayerCommandPreprocess(sagaPlayer, event);
@@ -134,10 +134,10 @@ public class PlayerListener implements Listener {
     	}
 
     	// Get chunk group:
-    	ChunkBundle chunkBundle = sagaPlayer.getBundle();
+    	Bundle bundle = sagaPlayer.getBundle();
     	
     	// Forward to chunk group:
-    	if(chunkBundle != null) chunkBundle.onMemberRespawn(sagaPlayer, event);
+    	if(bundle != null) bundle.onMemberRespawn(sagaPlayer, event);
 
     	// Restore rune:
 		if(!sagaPlayer.getGuardRune().isEmpty()){
@@ -203,7 +203,7 @@ public class PlayerListener implements Listener {
     	}else{
     		location = event.getPlayer().getLocation();
     	}
-    	SagaChunk sagaChunk = ChunkBundleManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
+    	SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
     	
     	// Invalid player:
     	if(sagaPlayer == null){
@@ -304,7 +304,7 @@ public class PlayerListener implements Listener {
     	if(x1 == x2 && y1 == y2 && z1 == z2) return;
     	
     	SagaChunk sagaChunk1 = sagaPlayer.lastSagaChunk;
-    	SagaChunk sagaChunk2 = ChunkBundleManager.manager().getSagaChunk(l2);
+    	SagaChunk sagaChunk2 = BundleManager.manager().getSagaChunk(l2);
     	
     	// No chunk change:
     	if(sagaChunk1 == sagaChunk2) return;

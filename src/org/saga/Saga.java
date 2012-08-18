@@ -12,7 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.saga.Clock.MinuteTicker;
-import org.saga.chunks.ChunkBundleManager;
+import org.saga.chunks.BundleManager;
 import org.saga.commands.AdminCommands;
 import org.saga.commands.BuildingCommands;
 import org.saga.commands.EconomyCommands;
@@ -107,7 +107,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 
 		// Managers:
 		FactionClaimManager.unload(); // Needs access to factions and bundles.
-		ChunkBundleManager.unload(); // Needs building manager.
+		BundleManager.unload(); // Needs building manager.
 		FactionManager.unload(); // Needs access to chunk group manager.
 		EconomyManager.unload();
 		StatisticsManager.unload(); // Needs access to clock.
@@ -182,7 +182,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 
 		// Managers:
 		StatisticsManager.load(); // Needs access to clock.
-		ChunkBundleManager.load();
+		BundleManager.load();
 		FactionManager.load(); // Needs access to chunk group manager.
 		EconomyManager.load(); // Needs access to clock.
 		FactionClaimManager.load(); // Needs access to factions and bundles.
@@ -267,7 +267,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		FactionManager.manager().playerLoaded(sagaPlayer);
 
 		// Register chunk groups:
-		ChunkBundleManager.manager().playerLoaded(sagaPlayer);
+		BundleManager.manager().playerLoaded(sagaPlayer);
 
 		// Update:
 		sagaPlayer.update();
@@ -302,7 +302,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		FactionManager.manager().playerUnloaded(sagaPlayer);
 
 		// Register chunk groups:
-		ChunkBundleManager.manager().playerUnloaded(sagaPlayer);
+		BundleManager.manager().playerUnloaded(sagaPlayer);
 
 		// Unload:
 		sagaPlayer.unload();
@@ -449,7 +449,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 	 */
 	private void saveManagers() {
 
-		ChunkBundleManager.save();
+		BundleManager.save();
 		FactionManager.save();
 		EconomyManager.save();
 		FactionClaimManager.save();

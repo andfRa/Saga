@@ -25,8 +25,8 @@ import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
 import org.saga.abilities.AbilityManager;
 import org.saga.attributes.AttributeManager;
-import org.saga.chunks.ChunkBundle;
-import org.saga.chunks.ChunkBundleManager;
+import org.saga.chunks.Bundle;
+import org.saga.chunks.BundleManager;
 import org.saga.chunks.SagaChunk;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
@@ -880,11 +880,11 @@ public class SagaPlayer implements Trader{
 	 * 
 	 * @return the registered chunk group, null if none
 	 */
-	public ChunkBundle getBundle() {
+	public Bundle getBundle() {
 		
 		if(chunkGroupId == -1) return null;
 		
-		return ChunkBundleManager.manager().getChunkBundle(chunkGroupId);
+		return BundleManager.manager().getChunkBundle(chunkGroupId);
 		
 	}
 
@@ -1021,7 +1021,7 @@ public class SagaPlayer implements Trader{
 			return;
 		}
 		
-		lastSagaChunk = ChunkBundleManager.manager().getSagaChunk(player.getLocation());
+		lastSagaChunk = BundleManager.manager().getSagaChunk(player.getLocation());
 		
 		
 	}
@@ -1050,7 +1050,7 @@ public class SagaPlayer implements Trader{
 	 */
 	public Proficiency getRole() {
 
-		ChunkBundle bundle = getBundle();
+		Bundle bundle = getBundle();
 		if(bundle == null) return null;
 		
 		if(bundle instanceof Settlement){
@@ -1399,7 +1399,7 @@ public class SagaPlayer implements Trader{
 			return lastSagaChunk;
 		}
 		
-		return ChunkBundleManager.manager().getSagaChunk(location);
+		return BundleManager.manager().getSagaChunk(location);
 		
 				
 	}

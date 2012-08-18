@@ -8,8 +8,8 @@ import java.util.HashSet;
 import org.bukkit.ChatColor;
 import org.saga.abilities.Ability;
 import org.saga.abilities.AbilityDefinition;
-import org.saga.chunks.ChunkBundle;
-import org.saga.chunks.ChunkBundleManager;
+import org.saga.chunks.Bundle;
+import org.saga.chunks.BundleManager;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.SettlementConfiguration;
@@ -324,13 +324,13 @@ public class StatsMessages {
     	// Chunk groups:
     	table.addLine(GeneralMessages.columnTitle("settlement invites"));
     	
-    	ArrayList<ChunkBundle> chunkBundles = getSettlements(sagaPlayer.getBundleInvites());
+    	ArrayList<Bundle> bundles = getSettlements(sagaPlayer.getBundleInvites());
     	
-    	for (ChunkBundle chunkBundle : chunkBundles) {
-			table.addLine(chunkBundle.getName());
+    	for (Bundle bundle : bundles) {
+			table.addLine(bundle.getName());
 		}
     	
-    	if(chunkBundles.size() == 0){
+    	if(bundles.size() == 0){
     		table.addLine("-");
     	}
     	
@@ -364,18 +364,18 @@ public class StatsMessages {
 		
 	}
 	
-	private static ArrayList<ChunkBundle> getSettlements(ArrayList<Integer> ids) {
+	private static ArrayList<Bundle> getSettlements(ArrayList<Integer> ids) {
 
 
 		// Faction invites:
-		ArrayList<ChunkBundle> chunkBundles = new ArrayList<ChunkBundle>();
+		ArrayList<Bundle> bundles = new ArrayList<Bundle>();
 		if(ids.size() > 0){
 			
 			for (int i = 0; i < ids.size(); i++) {
 			
-				ChunkBundle faction = ChunkBundleManager.manager().getChunkBundle(ids.get(i));
+				Bundle faction = BundleManager.manager().getChunkBundle(ids.get(i));
 				if( faction != null ){
-					chunkBundles.add(faction);
+					bundles.add(faction);
 				}else{
 					ids.remove(i);
 					i--;
@@ -384,7 +384,7 @@ public class StatsMessages {
 			}
 		}
 		
-		return chunkBundles;
+		return bundles;
 		
 		
 	}

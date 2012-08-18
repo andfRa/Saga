@@ -5,7 +5,7 @@ import org.bukkit.entity.Animals;
 import org.bukkit.entity.Creature;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.saga.chunks.ChunkBundle;
+import org.saga.chunks.Bundle;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.messages.BuildingMessages;
 import org.saga.player.SagaPlayer;
@@ -38,11 +38,11 @@ public class Farm extends Building{
 		// Stop animal abuse by non members:
 		if(damaged instanceof Animals && damager != null){
 			
-			ChunkBundle chunkBundle = getChunkBundle();
-			if(chunkBundle == null) return;
+			Bundle bundle = getChunkBundle();
+			if(bundle == null) return;
 			
 			// Permissions:
-			if(!chunkBundle.isMember(damager.getName())){
+			if(!bundle.isMember(damager.getName())){
 				damager.message(BuildingMessages.farmAnimalsDamageDeny());
 				event.cancel();
 			}

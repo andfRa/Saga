@@ -7,7 +7,7 @@ import java.util.Iterator;
 import java.util.Random;
 
 import org.saga.SagaLogger;
-import org.saga.chunks.ChunkBundleManager;
+import org.saga.chunks.BundleManager;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
@@ -184,7 +184,7 @@ public class FactionManager {
 		}
 		
 		// Register faction:
-		ChunkBundleManager.manager().factionLoaded(faction);
+		BundleManager.manager().factionLoaded(faction);
 		
 		
 	}
@@ -204,7 +204,7 @@ public class FactionManager {
 		}
 
 		// Unregister faction:
-		ChunkBundleManager.manager().factionUnloaded(faction);
+		BundleManager.manager().factionUnloaded(faction);
 		
 		// Remove from claim manager:
 		FactionClaimManager.manager().removeFaction(faction.getId());

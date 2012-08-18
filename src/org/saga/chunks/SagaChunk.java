@@ -62,7 +62,7 @@ public class SagaChunk {
     /**
      * Chunk group.
      */
-    transient private ChunkBundle chunkBundle = null;
+    transient private Bundle bundle = null;
     
     
     // Initialisation:
@@ -93,10 +93,10 @@ public class SagaChunk {
 	/**
 	 * Completes the initialisation.
 	 * 
-	 * @param chunkBundle origin chunk group
+	 * @param bundle origin chunk group
 	 * @return integrity
 	 */
-	public boolean complete(ChunkBundle chunkBundle) {
+	public boolean complete(Bundle bundle) {
 
 		
 		boolean integrity=true;
@@ -122,7 +122,7 @@ public class SagaChunk {
 		}
 		
 		// Check chunk group:
-		this.chunkBundle = chunkBundle;
+		this.bundle = bundle;
 		
 		// Properties:
 		
@@ -167,8 +167,8 @@ public class SagaChunk {
 	 * 
 	 * @return chunk group.
 	 */
-	public ChunkBundle getChunkBundle() {
-		return chunkBundle;
+	public Bundle getChunkBundle() {
+		return bundle;
 	}
 	
 	
@@ -455,7 +455,7 @@ public class SagaChunk {
 				
 				if((dx*dx + dz*dz) > radiusSquared) continue;
 				
-				SagaChunk adjChunk = ChunkBundleManager.manager().getSagaChunk(getWorldName(), x + dx, z + dz);
+				SagaChunk adjChunk = BundleManager.manager().getSagaChunk(getWorldName(), x + dx, z + dz);
 				
 				if(adjChunk!= null) adjacent.add(adjChunk);
 				
@@ -660,7 +660,7 @@ public class SagaChunk {
 		if(bld != null) bld.onBuild(event);
 		
 		// Forward to chunk group:
-		if(chunkBundle != null) chunkBundle.onBuild(event);
+		if(bundle != null) bundle.onBuild(event);
 		
 		
 	}
@@ -747,11 +747,11 @@ public class SagaChunk {
 		}
 		
 		// Forward to chunk group:
-		ChunkBundle chunkBundle = getChunkBundle();
-		if(chunkBundle == null){
+		Bundle bundle = getChunkBundle();
+		if(bundle == null){
 			return;
 		}
-		chunkBundle.onCreatureSpawn(event, this);
+		bundle.onCreatureSpawn(event, this);
 		
 		
 	}
@@ -768,11 +768,11 @@ public class SagaChunk {
 
 		
 		// Forward to chunk group:
-		ChunkBundle chunkBundle = getChunkBundle();
-		if(chunkBundle == null){
+		Bundle bundle = getChunkBundle();
+		if(bundle == null){
 			return;
 		}
-		chunkBundle.onEntityExplode(event, this);
+		bundle.onEntityExplode(event, this);
 		
 		
 	}
@@ -815,8 +815,8 @@ public class SagaChunk {
 	public void onPlayerEnter(SagaPlayer sagaPlayer, SagaChunk last) {
 
 		
-		ChunkBundle lastChunkBundle = null;
-		ChunkBundle thisChunkBundle = getChunkBundle();
+		Bundle lastChunkBundle = null;
+		Bundle thisChunkBundle = getChunkBundle();
 		Building lastBuilding = null;
 		Building thisBuilding = bld;
 		if(last != null){
@@ -850,8 +850,8 @@ public class SagaChunk {
 	public void onPlayerLeave(SagaPlayer sagaPlayer, SagaChunk next) {
 
 		
-		ChunkBundle nextChunkBundle = null;
-		ChunkBundle thisChunkBundle = getChunkBundle();
+		Bundle nextChunkBundle = null;
+		Bundle thisChunkBundle = getChunkBundle();
 		Building nextBuilding = null;
 		Building thisBuilding = bld;
 		if(next != null){
@@ -979,13 +979,13 @@ public class SagaChunk {
 		
 		switch (chunkSide) {
 		case FRONT: 
-			return ChunkBundleManager.manager().getSagaChunk(world, x - 1, z);
+			return BundleManager.manager().getSagaChunk(world, x - 1, z);
 		case LEFT:
-			return ChunkBundleManager.manager().getSagaChunk(world, x, z + 1);
+			return BundleManager.manager().getSagaChunk(world, x, z + 1);
 		case BACK:
-			return ChunkBundleManager.manager().getSagaChunk(world, x +1 , z);
+			return BundleManager.manager().getSagaChunk(world, x +1 , z);
 		case RIGHT:
-			return ChunkBundleManager.manager().getSagaChunk(world, x, z - 1);	
+			return BundleManager.manager().getSagaChunk(world, x, z - 1);	
 		default:
 			return null;
 		}
@@ -1010,33 +1010,33 @@ public class SagaChunk {
 		String world = bukkitChunk.getWorld().getName();
 		
 		// x + 1:
-		sagaChunk = ChunkBundleManager.manager().getSagaChunk(world, x+1, z-1);
+		sagaChunk = BundleManager.manager().getSagaChunk(world, x+1, z-1);
 		if(sagaChunk != null) sagaChunks.add(sagaChunk);
 		
-		sagaChunk = ChunkBundleManager.manager().getSagaChunk(world, x+1, z);
+		sagaChunk = BundleManager.manager().getSagaChunk(world, x+1, z);
 		if(sagaChunk != null) sagaChunks.add(sagaChunk);
 		
-		sagaChunk = ChunkBundleManager.manager().getSagaChunk(world, x+1, z+1);
+		sagaChunk = BundleManager.manager().getSagaChunk(world, x+1, z+1);
 		if(sagaChunk != null) sagaChunks.add(sagaChunk);
 
 		// x:
-		sagaChunk = ChunkBundleManager.manager().getSagaChunk(world, x, z-1);
+		sagaChunk = BundleManager.manager().getSagaChunk(world, x, z-1);
 		if(sagaChunk != null) sagaChunks.add(sagaChunk);
 		
-		sagaChunk = ChunkBundleManager.manager().getSagaChunk(world, x, z);
+		sagaChunk = BundleManager.manager().getSagaChunk(world, x, z);
 		if(sagaChunk != null) sagaChunks.add(sagaChunk);
 		
-		sagaChunk = ChunkBundleManager.manager().getSagaChunk(world, x, z+1);
+		sagaChunk = BundleManager.manager().getSagaChunk(world, x, z+1);
 		if(sagaChunk != null) sagaChunks.add(sagaChunk);
 		
 		// x - 1:
-		sagaChunk = ChunkBundleManager.manager().getSagaChunk(world, x-1, z-1);
+		sagaChunk = BundleManager.manager().getSagaChunk(world, x-1, z-1);
 		if(sagaChunk != null) sagaChunks.add(sagaChunk);
 		
-		sagaChunk = ChunkBundleManager.manager().getSagaChunk(world, x-1, z);
+		sagaChunk = BundleManager.manager().getSagaChunk(world, x-1, z);
 		if(sagaChunk != null) sagaChunks.add(sagaChunk);
 		
-		sagaChunk = ChunkBundleManager.manager().getSagaChunk(world, x-1, z+1);
+		sagaChunk = BundleManager.manager().getSagaChunk(world, x-1, z+1);
 		if(sagaChunk != null) sagaChunks.add(sagaChunk);
 		
 		return sagaChunks;
