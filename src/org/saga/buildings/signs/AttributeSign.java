@@ -97,19 +97,19 @@ public class AttributeSign extends BuildingSign{
 			case ENABLED:
 
 				if(index == 1) return getFirstParameter();
-				if(index == 3 && trainLimit > 0) return "limit: " + trainLimit;
+				if(index == 3 && trainLimit > 0 && trainLimit < AttributeConfiguration.config().maxAttributeScore) return "limit: " + trainLimit;
 				break;
 				
 			case DISABLED:
 
 				if(index == 1) return getFirstParameter();
-				if(index == 3 && trainLimit > 0) return "limit: " + trainLimit;
+				if(index == 3 && trainLimit > 0 && trainLimit < AttributeConfiguration.config().maxAttributeScore) return "limit: " + trainLimit;
 				break;
 				
 			default:
 				
 				if(index == 1) return "-";
-				if(index == 3 && trainLimit > 0) return "limit: " + "-";
+				if(index == 3 && trainLimit > 0 && trainLimit < AttributeConfiguration.config().maxAttributeScore) return "limit: " + "-";
 				break;
 
 		}
