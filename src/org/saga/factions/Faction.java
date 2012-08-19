@@ -1577,9 +1577,8 @@ public class Faction implements SecondTicker, DaytimeTicker{
 
 		Collection<SagaPlayer> onlineMembers = getOnlineMembers();
 		
-		for (SagaPlayer onelineMember : onlineMembers) {
-			onelineMember.message(message);
-			information(message, onelineMember);
+		for (SagaPlayer onlineMember : onlineMembers) {
+			information(message, onlineMember);
 		}
 		
 	}
