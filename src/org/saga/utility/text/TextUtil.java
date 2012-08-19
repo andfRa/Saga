@@ -4,9 +4,6 @@ import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -14,27 +11,6 @@ import org.saga.messages.PlayerMessages.ColourLoop;
 import org.saga.utility.ArrayUtil;
 
 public class TextUtil {
-	
-	
-	/**
-	 * Non-special character length.
-	 */
-	private static Double defaultCharLength = 3.0 / 2.0;
-
-	/**
-	 * Special characters.
-	 */
-	private static HashMap<Character, Double> specialChars = specialCharSizeMap();
-	
-	/**
-	 * Gap fill strings.
-	 */
-	private static Hashtable<String, Double> gapStringLengths = gapChars();
-	
-	/**
-	 * Gap fill string maximum size.
-	 */
-	private static Double maxGapString = 1.25;
 	
 	
 	public static String repeat(String s, int times) {
@@ -153,150 +129,7 @@ public class TextUtil {
 		return shortString;
 		
 	}
-	
-	public static String normalizeString(String str, Double requiredLength) {
 
-		char[] chars = str.toCharArray();
-		
-		StringBuffer result = new StringBuffer();
-		Double length = 0.0;
-		
-		// Cut size:
-		for (int i = 0; i < chars.length; i++) {
-			
-			Double charLength = specialChars.get(chars[i]);
-			if(charLength == null) charLength = defaultCharLength;
-			
-			if(length + charLength > requiredLength) break;
-			
-			result.append(chars[i]);
-			
-			if(!(chars[i] == ChatColor.COLOR_CHAR || (i > 0 && chars[i-1] == ChatColor.COLOR_CHAR)))
-			length += charLength;
-			
-			
-		}
-		
-		// Add spaces:
-		char fillerChar = ' ';
-		Double fillerLength = 1.0;
-		while(true){
-
-			Double gapLength = requiredLength - length;
-			
-			// Gap filled:
-			if(gapLength <= 0){
-				break;
-			}
-			
-			// Filler char too big: 
-			if(gapLength <= maxGapString){
-
-				// Find a best fit:
-				Enumeration<String> gapStrings = gapStringLengths.keys();
-				Double bestFitLength = -1.0;
-				String bestFitString = null;
-				
-				while (gapStrings.hasMoreElements()) {
-					
-					String gapString = (String) gapStrings.nextElement();
-					Double gapStringLength = gapStringLengths.get(gapString);
-					
-					if(gapLength - gapStringLength >= 0 && gapStringLength > bestFitLength){
-						bestFitLength = gapStringLength;
-						bestFitString = gapString;
-					}
-					
-				}
-				
-				if(bestFitString != null){
-					result.append(bestFitString);
-				}
-				
-				break;
-				
-			}
-			
-			result.append(fillerChar);
-			length += fillerLength;
-			
-			
-		}
-		
-		return result.toString();
-		
-		
-	}
-
-	public static Double chatLength(String str) {
-
-		
-		char[] chars = str.toCharArray();
-		
-		Double length = 0.0;
-		
-		for (int i = 0; i < chars.length; i++) {
-			
-			Double charLength = specialChars.get(chars[i]);
-			if(charLength == null) charLength = defaultCharLength;
-			
-			if(!(chars[i] == ChatColor.COLOR_CHAR || (i > 0 && chars[i-1] == ChatColor.COLOR_CHAR)))
-			length += charLength;
-			
-		}
-		
-		return length;
-		
-		
-	}
-	
-	private static HashMap<Character, Double> specialCharSizeMap() {
-
-		HashMap<Character, Double> sizeMap = new HashMap<Character, Double>();
-		
-		sizeMap.put('i', 0.5);
-		sizeMap.put('k', 5.0 / 4.0);
-		sizeMap.put('t', 1.0);
-		sizeMap.put('f', 5.0 / 4.0);
-		sizeMap.put('(', 5.0 / 4.0);
-		sizeMap.put(')', 5.0 / 4.0);
-		sizeMap.put('<', 5.0 / 4.0);
-		sizeMap.put('>', 5.0 / 4.0);
-		sizeMap.put('{', 5.0 / 4.0);
-		sizeMap.put('}', 5.0 / 4.0);
-		sizeMap.put(',', 1.0 / 2.0);
-		sizeMap.put('.', 1.0 / 2.0);
-		sizeMap.put('[', 1.0);
-		sizeMap.put(']', 1.0);
-		sizeMap.put('I', 1.0);
-		sizeMap.put('|', 1.0 / 2.0);
-		sizeMap.put('*', 5.0 / 4.0);
-		sizeMap.put('"', 5.0 / 4.0);
-		sizeMap.put('|', 0.5);
-		sizeMap.put('!', 0.5);
-		sizeMap.put(':', 0.5);
-		sizeMap.put('l', 3.0 / 4.0);
-		sizeMap.put(' ', 1.0);
-		
-		return sizeMap;
-		
-	}
-	
-	private static Hashtable<String, Double> gapChars() {
-
-		
-		Hashtable<String, Double> sizeTable = new Hashtable<String, Double>();
-		
-		sizeTable.put(".", 1.0 / 2.0);
-		sizeTable.put("\'", 3.0 / 4.0);
-		sizeTable.put(" ", 1.0 / 1.0);
-		sizeTable.put("\"", 5.0 / 4.0);
-		
-		return sizeTable;
-		
-		
-	}
-	
 	public static String flatten(Collection<String> array) {
 
 		
@@ -387,7 +220,7 @@ public class TextUtil {
 		// Upper bound:
 		String upperBound = "=[ " + title.toUpperCase() + " ]=";
 		boolean left = true;
-		while(chatLength(upperBound + "-") <= width){
+		while(StringFiller.calcLength(upperBound + "-") <= width){
 			
 			if(left){
 				upperBound = "-" + upperBound;
@@ -400,7 +233,7 @@ public class TextUtil {
 		
 		// Lower bound:
 		String lowerBound = "";
-		while(chatLength(lowerBound + "_") <= width){
+		while(StringFiller.calcLength(lowerBound + "_") <= width){
 			
 			lowerBound += "-";
 			

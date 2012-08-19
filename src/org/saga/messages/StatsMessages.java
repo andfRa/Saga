@@ -307,31 +307,29 @@ public class StatsMessages {
     	table.setCustomWidths(widths);
 		
     	// Factions:
-    	table.addLine(GeneralMessages.columnTitle("faction invites"));
+    	table.addLine(GeneralMessages.columnTitle("faction invites"), 0);
     	
     	ArrayList<Faction> factions = getFactions(sagaPlayer.getFactionInvites());
     	
     	for (Faction faction : factions) {
-			table.addLine(faction.getName());
+			table.addLine(faction.getName(), 0);
 		}
     	
     	if(factions.size() == 0){
-    		table.addLine("-");
+    		table.addLine("-", 0);
     	}
     	
-    	table.nextColumn();
-
     	// Chunk groups:
-    	table.addLine(GeneralMessages.columnTitle("settlement invites"));
+    	table.addLine(GeneralMessages.columnTitle("settlement invites"), 1);
     	
     	ArrayList<Bundle> bundles = getSettlements(sagaPlayer.getBundleInvites());
     	
     	for (Bundle bundle : bundles) {
-			table.addLine(bundle.getName());
+			table.addLine(bundle.getName(), 1);
 		}
     	
     	if(bundles.size() == 0){
-    		table.addLine("-");
+    		table.addLine("-", 1);
     	}
     	
 		return table;

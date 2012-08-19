@@ -141,7 +141,7 @@ public class StringTable {
 			
 			for (String cell : column) {
 				
-				Double width = TextUtil.chatLength(cell);
+				Double width = StringFiller.calcLength(cell);
 
 				if(width > maxWidth) maxWidth = width;
 				
@@ -157,37 +157,6 @@ public class StringTable {
 	
 	
 	// Data:
-	/**
-	 * Selects the next column.
-	 * 
-	 */
-	public void nextColumn() {
-
-		
-		columnIndex++;
-		
-		if(columnIndex >= table.size()){
-			table.add(new ArrayList<String>());
-			columnIndex = table.size() - 1;
-		}
-		
-		
-	}
-	
-	/**
-	 * Selects the previous column.
-	 * 
-	 */
-	public void prevoiusColumn() {
-
-		
-		columnIndex--;
-		
-		if(columnIndex < 0) columnIndex = 0;
-		
-		
-	}
-
 	/**
 	 * Adds a line to a column.
 	 * 
@@ -226,7 +195,7 @@ public class StringTable {
 	 * @param value2 second value
 	 * @param index column index
 	 */
-	public void addLine(String value1,String value2, Integer index) {
+	public void addLine(String value1, String value2, Integer index) {
 		
 		addLine(value1, index);
 		addLine(value2, index + 1);
@@ -241,21 +210,11 @@ public class StringTable {
 	public void addLine(String[] lines) {
 		
 		
-		int previusColumnIndex = columnIndex;
-		columnIndex = 0;
-		
 		for (int i = 0; i < lines.length; i++) {
 		
-			if( i!= 0) nextColumn();
-			
-			ArrayList<String> column = table.get(columnIndex);
-			
-			column.add(lines[i]);
+			addLine(lines[i], i);
 			
 		}
-		
-		columnIndex = previusColumnIndex;
-		
 		
 	}
 	
@@ -284,6 +243,56 @@ public class StringTable {
 		
 	}
 
+	/**
+	 * Gets table lines.
+	 * 
+	 * @return table lines
+	 */
+	public ArrayList<String> getLines() {
+		
+
+		Double[] widths = getColumnWidths();
+		
+		ArrayList<String> result = new ArrayList<String>();
+		
+		// Table size:
+		int rows = 0;
+		for (ArrayList<String> column : table) {
+			if(column.size() > rows) rows = column.size();
+		}
+		
+		// Create table:
+		for (int rowind = 0; rowind < rows; rowind++) {
+			
+			String row = "";
+			
+			// All columns:
+			for (int colind = 0; colind < table.size(); colind++) {
+				
+				ArrayList<String> column = table.get(colind);
+				
+				if(rowind < column.size()){
+					
+					row += StringFiller.fillString(column.get(rowind), widths[colind]);
+					
+				}else{
+					
+					row += StringFiller.fillString("", widths[colind]);
+					
+				}
+				
+			}
+			
+			result.add(row);
+			
+		}
+		
+		return result;
+		
+		
+	}
+	
+	
 	
 	// Message:
 	/**
@@ -318,11 +327,11 @@ public class StringTable {
 				if(row < column.size()){
 					
 					result.append(elementColor);
-					result.append(TextUtil.normalizeString(column.get(row), widths[colInd]));
+					result.append(StringFiller.fillString(column.get(row), widths[colInd]));
 					
 				}else{
 					
-					result.append(TextUtil.normalizeString("", widths[colInd]));
+					result.append(StringFiller.fillString("", widths[colInd]));
 					
 				}
 				
@@ -331,57 +340,6 @@ public class StringTable {
 		}
 		
 		return result.toString();
-		
-		
-	}
-	
-	
-	
-	/**
-	 * Gets table lines.
-	 * 
-	 * @return table lines
-	 */
-	public ArrayList<String> getLines() {
-		
-
-		Double[] widths = getColumnWidths();
-		
-		ArrayList<String> result = new ArrayList<String>();
-		
-		// Table size:
-		int rows = 0;
-		for (ArrayList<String> column : table) {
-			if(column.size() > rows) rows = column.size();
-		}
-		
-		// Create table:
-		for (int rowind = 0; rowind < rows; rowind++) {
-			
-			String row = "";
-			
-			// All columns:
-			for (int colind = 0; colind < table.size(); colind++) {
-				
-				ArrayList<String> column = table.get(colind);
-				
-				if(rowind < column.size()){
-					
-					row += TextUtil.normalizeString(column.get(rowind), widths[colind]);
-					
-				}else{
-					
-					row += TextUtil.normalizeString("", widths[colind]);
-					
-				}
-				
-			}
-			
-			result.add(row);
-			
-		}
-		
-		return result;
 		
 		
 	}
