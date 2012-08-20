@@ -50,7 +50,7 @@ public class AdminCommands {
 	@Command(
 		aliases = {"astatsother","astatso"},
 		usage = "<player_name> [page]",
-		flags = "f",
+		flags = "o",
 		desc = "Show other player stats. With -o flag offline players are also included.",
 		min = 1,
 		max = 2
