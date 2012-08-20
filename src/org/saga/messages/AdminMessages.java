@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -12,6 +13,7 @@ import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.SettlementConfiguration;
+import org.saga.dependencies.PermissionsManager;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
@@ -215,7 +217,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 			if(result.length() > 0) result.append("\n\n");
 			
 			// Begin:
-			result.append("==" + TextUtil.capitalize(getCategoryName(category) + " commands" + "==") + "\n");
+			result.append("==" + TextUtil.capitalize(getCategoryName(category)) + " commands" + "==" + "\n");
 			result.append("{| width=\"90%\" class=\"wikitable\"\n");
 			result.append("|-");
 			result.append("\n");
@@ -265,6 +267,135 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 			result.append("|}");
 			
 		}
+		
+		return result.toString();
+		
+		
+	}
+	
+	public static String wikiPermissions(ArrayList<Method> commandMethods) {
+		
+		
+		StringBuffer result = new StringBuffer();
+		ArrayList<String> categories = new ArrayList<String>(){
+			
+			private static final long serialVersionUID = 1L;
+
+			{
+				add("saga.user.help");
+				add("saga.user.player");
+				add("saga.user.settlement");
+				add("saga.user.building");
+				add("saga.user.faction");
+				add("saga.admin");
+				add("saga.special");
+				add("saga.statistics");
+			}
+			
+		};
+		
+		// Sort commands:
+		Comparator<Method> comparator = new Comparator<Method>() {
+			
+			@Override
+			public int compare(Method o1, Method o2) {
+
+				CommandPermissions perm1 = o1.getAnnotation(CommandPermissions.class);
+				CommandPermissions perm2 = o2.getAnnotation(CommandPermissions.class);
+				if(perm1 == null || perm2 == null || perm1.value().length == 0 || perm2.value().length == 0) return o1.getName().compareToIgnoreCase(o2.getName());
+				
+				return perm1.value()[0].compareToIgnoreCase(perm2.value()[0]);
+				
+			}
+			
+		};
+		
+		Collections.sort(commandMethods, comparator);
+		
+
+		// Begin:
+		result.append("==" + "Command permissions" + "==" + "\n");
+		result.append("{| width=\"70%\" class=\"wikitable\"\n");
+		result.append("|-");
+		result.append("\n");
+		result.append("!Permission");
+		result.append("\n");
+		result.append("!Command");		
+		
+		// Commands:
+		for (Method method : commandMethods) {
+			
+			Command command = method.getAnnotation(Command.class);
+			if(command == null) continue;
+			
+			CommandPermissions permissions = method.getAnnotation(CommandPermissions.class);
+			String permission = "";
+			if(permissions != null && permissions.value().length != 0) permission = permissions.value()[0];
+			
+			boolean stop = true;
+			for (String category : categories) {
+				
+				if(permission.startsWith(category)){
+					stop = false;
+					break;
+				}
+				
+			}
+			if(stop) continue;
+			
+			result.append("\n");
+			result.append("|-");
+			result.append("\n");
+			result.append("|" + permission);			
+			result.append("\n");
+			result.append("|" + command.aliases()[0]);
+			
+		}
+		result.append("\n");
+		
+		// End:
+		result.append("|}");
+		
+		result.append("\n");
+		
+		// Other permissions:
+		result.append("==" + "Other permissions" + "==" + "\n");
+		result.append("{| width=\"70%\" class=\"wikitable\"\n");
+		result.append("|-");
+		result.append("\n");
+		result.append("!Permission");
+		result.append("\n");
+		result.append("!Effect");		
+		
+		ArrayList<Entry<String, String>> descriptions = new ArrayList<Entry<String,String>>(PermissionsManager.PERMISSION_DESCRIPTIONS.entrySet());
+		
+		// Sort:
+		Comparator<Entry<String, String>> descComparator = new Comparator<Entry<String, String>>() {
+			
+			@Override
+			public int compare(Entry<String, String> o1, Entry<String, String> o2) {
+
+				return o1.getKey().compareToIgnoreCase(o2.getKey());
+				
+			}
+			
+		};
+		Collections.sort(descriptions, descComparator);
+		
+		for (Entry<String, String> entry : descriptions) {
+			
+			result.append("\n");
+			result.append("|-");
+			result.append("\n");
+			result.append("|" + entry.getKey());			
+			result.append("\n");
+			result.append("|" + entry.getValue());
+			
+		}
+		result.append("\n");
+		
+		// End:
+		result.append("|}");
 		
 		return result.toString();
 		

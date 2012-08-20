@@ -55,7 +55,7 @@ public class AdminCommands {
 		min = 1,
 		max = 2
 	)
-	@CommandPermissions({"saga.admin.statsother"})
+	@CommandPermissions({"saga.admin.player.statsother"})
 	public static void statsOther(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
@@ -129,7 +129,7 @@ public class AdminCommands {
 		desc = "Set players level.",
 		min = 1,
 		max = 2)
-	@CommandPermissions({"saga.admin.setlevel"})
+	@CommandPermissions({"saga.admin.player.setlevel"})
 	public static void setLevel(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
@@ -212,7 +212,7 @@ public class AdminCommands {
 		desc = "Set players attribute score.",
 		min = 2,
 		max = 3)
-	@CommandPermissions({"saga.admin.setattribute"})
+	@CommandPermissions({"saga.admin.player.setattribute"})
 	public static void setAttribute(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
@@ -306,7 +306,7 @@ public class AdminCommands {
 			min = 2,
 			max = 2
 	)
-	@CommandPermissions({"saga.admin.setwallet"})
+	@CommandPermissions({"saga.admin.player.setwallet"})
 	public static void setWallet(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
@@ -433,7 +433,7 @@ public class AdminCommands {
 		min = 1,
 		max = 2
 	)
-	@CommandPermissions({"saga.admin.settlement.options.set.all"})
+	@CommandPermissions({"saga.admin.settlement.options"})
 	public static void enableOption(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
@@ -510,7 +510,7 @@ public class AdminCommands {
 		min = 1,
 		max = 2
 	)
-	@CommandPermissions({"saga.admin.settlement.options.set.all"})
+	@CommandPermissions({"saga.admin.settlement.options"})
 	public static void disableOption(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
@@ -589,7 +589,7 @@ public class AdminCommands {
 		desc = "Recharge a guard rune.",
 		min = 0,
 		max = 1)
-	@CommandPermissions({"saga.admin.guardrune"})
+	@CommandPermissions({"saga.admin.player.guardrune"})
 	public static void rechargeGuardDune(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 	
@@ -721,7 +721,7 @@ public class AdminCommands {
 		min = 0,
 		max = 0
 	)
-	@CommandPermissions({"saga.admin.dinfo"})
+	@CommandPermissions({"saga.debug.admin.dinfo"})
 	public static void debugInfo(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		Player player = sagaPlayer.getPlayer();
@@ -738,7 +738,7 @@ public class AdminCommands {
 		desc = "Debug assist command.",
 		min = 0
 	)
-	@CommandPermissions({"saga.admin.dcommand"})
+	@CommandPermissions({"saga.debug.admin.dcommand"})
 	public static void debugCommand(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
@@ -752,7 +752,7 @@ public class AdminCommands {
 		min = 0,
 		max = 1000
 	)
-	@CommandPermissions({"saga.admin.dcommand"})
+	@CommandPermissions({"saga.debug.admin.dcommand"})
 	public static void damageTool(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		ItemStack item = sagaPlayer.getPlayer().getItemInHand();
@@ -774,7 +774,7 @@ public class AdminCommands {
 		min = 0,
 		max = 0
 	)
-	@CommandPermissions({"saga.admin.forcenexdaytime"})
+	@CommandPermissions({"saga.admin.world.forcenexdaytime"})
 	public static void forceNextDaytime(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
@@ -792,7 +792,7 @@ public class AdminCommands {
 	
 	// Administration mode:
 	@Command(
-		aliases = {"enableadmin","aenable"},
+		aliases = {"aenable"},
 		usage = "",
 		flags = "",
 		desc = "Enable Saga admin mode.",
@@ -818,7 +818,7 @@ public class AdminCommands {
 	}
 	
 	@Command(
-		aliases = {"disableadmin","adisable"},
+		aliases = {"adisable"},
 		usage = "",
 		flags = "",
 		desc = "Disable Saga admin mode.",
@@ -878,7 +878,7 @@ public class AdminCommands {
 		desc = "Write all commands in MediaWiki format.",
 		min = 0
 	)
-	@CommandPermissions({"saga.admin.writecommands"})
+	@CommandPermissions({"saga.admin.wiki.writecommands"})
 	public static void writeCommands(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
@@ -889,12 +889,13 @@ public class AdminCommands {
 		
 		Directory dir = Directory.WIKI;
 		String name = "commands";
+		
 		try {
 			WriterReader.writeString(dir, name, wikiCommands);
 		}
 		catch (IOException e) {
-			sagaPlayer.error("Failed to write wiki commands");
-			SagaLogger.severe(AdminCommands.class, "failed to write wiki commands: " + e.getClass().getSimpleName() + ":" + e.getMessage());
+			sagaPlayer.error("Failed to write wiki " + name);
+			SagaLogger.severe(AdminCommands.class, "failed to write wiki " + name + ": " + e.getClass().getSimpleName() + ":" + e.getMessage());
 			return;
 		}
 		
@@ -903,6 +904,41 @@ public class AdminCommands {
 		
 		
 	}
+	
+	@Command(
+			aliases = {"awritepermissions"},
+			usage = "",
+			flags = "",
+			desc = "Write all permissions in MediaWiki format.",
+			min = 0
+	)
+	@CommandPermissions({"saga.admin.wiki.writepermissions"})
+	public static void writePermissions(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		
+		ArrayList<Method> commandMethods = new ArrayList<Method>(PermissionsManager.getCommandMap().getCommandMethods());
+		
+			
+		String wikiCommands = AdminMessages.wikiPermissions(commandMethods);
+			
+		Directory dir = Directory.WIKI;
+		String name = "permissions";
+		
+		try {
+			WriterReader.writeString(dir, name, wikiCommands);
+		}
+		catch (IOException e) {
+			sagaPlayer.error("Failed to write wiki " + name);
+			SagaLogger.severe(AdminCommands.class, "failed to write wiki " + name + ": " + e.getClass().getSimpleName() + ":" + e.getMessage());
+			return;
+		}
+		
+		// Inform:
+		sagaPlayer.message(AdminMessages.writeDone(dir, name));
+		
+		
+	}
+			
 	
 	
 }

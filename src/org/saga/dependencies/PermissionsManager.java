@@ -1,5 +1,7 @@
 package org.saga.dependencies;
 
+import java.util.Hashtable;
+
 import org.anjocaido.groupmanager.GroupManager;
 import org.anjocaido.groupmanager.permissions.AnjoPermissionsHandler;
 import org.bukkit.entity.Player;
@@ -48,6 +50,19 @@ public class PermissionsManager {
 	 */
 	public static String WILDERNESS_BUILD_PERMISSION = "saga.user.wilderness.build";
 	
+	
+	/**
+	 * Permission descriptions.
+	 */
+	public final static Hashtable<String, String> PERMISSION_DESCRIPTIONS = new Hashtable<String, String>(){
+		
+		private static final long serialVersionUID = 1L;
+
+		{
+			put(WILDERNESS_BUILD_PERMISSION, "Build outside settlements.");
+		}
+		
+	};
 	
 	
 	/**

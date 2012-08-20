@@ -745,7 +745,7 @@ public class FactionCommands {
 			min = 1,
 			max = 2
 	)
-	@CommandPermissions({"saga.user.faction.alliancerequest"})
+	@CommandPermissions({"saga.user.faction.alliance.request"})
 	public static void allianceRequest(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 	    	
 		
@@ -833,7 +833,7 @@ public class FactionCommands {
 			min = 0,
 			max = 2
 	)
-	@CommandPermissions({"saga.user.faction.allianceaccept"})
+	@CommandPermissions({"saga.user.faction.alliance.accept"})
 	public static void allianceAccept(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 	    	
 		
@@ -953,7 +953,7 @@ public class FactionCommands {
 			min = 1,
 			max = 2
 	)
-	@CommandPermissions({"saga.user.faction.allianceaccept"})
+	@CommandPermissions({"saga.user.faction.alliance.decline"})
 	public static void allianceDecline(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 	    	
 		
@@ -1061,7 +1061,7 @@ public class FactionCommands {
 			min = 1,
 			max = 2
 	)
-	@CommandPermissions({"saga.user.faction.alliancebreak"})
+	@CommandPermissions({"saga.user.faction.alliance.remove"})
 	public static void breakAlliance(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 	    	
 		
@@ -1199,7 +1199,7 @@ public class FactionCommands {
             min = 0,
             max = 1
 		)
-	@CommandPermissions({"saga.user.faction.setspawn"})
+	@CommandPermissions({"saga.user.faction.spawn.set"})
 	public static void setspawn(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
@@ -1257,7 +1257,7 @@ public class FactionCommands {
             desc = "Send a faction chat message.",
             min = 1
 	)
-	@CommandPermissions({"saga.user.faction.list"})
+	@CommandPermissions({"saga.user.faction.chat"})
 	public static void chat(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 	
