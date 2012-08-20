@@ -1110,7 +1110,7 @@ public class SagaPlayer implements Trader{
 		if(message.length() == 0) return;
 		
 		if(player != null){
-        	player.sendMessage(CustomColour.processMessage(message));
+        	player.sendMessage(CustomColour.process(message));
         }
           
 	}

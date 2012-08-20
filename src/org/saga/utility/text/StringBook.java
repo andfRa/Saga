@@ -112,7 +112,7 @@ public class StringBook {
 			
 			if(result.length() > 0) result.append("\n");
 			
-			result.append(CustomColour.processMessage(colours.nextColour() + line));
+			result.append(CustomColour.process(colours.nextColour() + line));
 			
 		}
 		
@@ -136,7 +136,7 @@ public class StringBook {
 		if(page  > getLastPage()) page = getLastPage();
 		
 		// Create page:
-		String content = page(page);
+		String content = StringFiller.adjustFillers(page(page));
 		
 		return TextUtil.frame(title + " " + (page+1) + "/" + (getLastPage()+1), content, PlayerMessages.normal1);
 		

@@ -30,6 +30,7 @@ import org.saga.exceptions.SagaPlayerNotLoadedException;
 import org.saga.messages.AdminMessages;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.GeneralMessages;
+import org.saga.messages.GeneralMessages.CustomColour;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.SettlementMessages;
 import org.saga.messages.StatsMessages;
@@ -741,6 +742,13 @@ public class AdminCommands {
 	@CommandPermissions({"saga.debug.admin.dcommand"})
 	public static void debugCommand(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
+		
+		String str = ChatColor.GREEN + "sfds\"fdsf";
+		String str2 = str.replace("\"", ChatColor.BOLD + " " + CustomColour.RESET_FORMAT);
+		
+		sagaPlayer.message(str);
+		sagaPlayer.message(CustomColour.process(str2));
+		
 		
 	}
 	

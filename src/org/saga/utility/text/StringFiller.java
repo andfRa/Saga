@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
+import org.saga.messages.GeneralMessages.CustomColour;
 
 public class StringFiller {
 
@@ -58,6 +59,7 @@ public class StringFiller {
 			put('\'', 3.0 / 4.0);
 			put(' ', 1.0 / 1.0);
 			put('\"', 5.0 / 4.0);
+			put('`', 0.5);
 			
 			
 		}
@@ -74,7 +76,7 @@ public class StringFiller {
 		private static final long serialVersionUID = 1L;
 		
 		{
-			add('.');
+			add('`');
 			add('\'');
 			add(' ');
 			add('\"');
@@ -201,6 +203,23 @@ public class StringFiller {
 		}
 		
 		return length;
+		
+		
+	}
+	
+	/**
+	 * Adjusts filler characters.
+	 * 
+	 * @param str string
+	 * @return adjusted string
+	 */
+	public static String adjustFillers(String str) {
+
+		
+		str = str.replace("\"", ChatColor.BOLD + " " + CustomColour.RESET_FORMAT);
+		str = str.replace("\'", ChatColor.BOLD + "`" + CustomColour.RESET_FORMAT);
+		
+		return CustomColour.process(str);
 		
 		
 	}

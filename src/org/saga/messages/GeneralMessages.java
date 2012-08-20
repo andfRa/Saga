@@ -145,7 +145,7 @@ public class GeneralMessages {
 			
 		}
 		
-		public static String processMessage(String message){
+		public static String process(String message){
 			
 			ChatColor color = null;
 			

@@ -339,7 +339,7 @@ public class StringTable {
 			
 		}
 		
-		return result.toString();
+		return StringFiller.adjustFillers(result.toString());
 		
 		
 	}
