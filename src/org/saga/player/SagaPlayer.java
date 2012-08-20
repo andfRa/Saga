@@ -690,11 +690,36 @@ public class SagaPlayer implements Trader{
 		
 		if(level > ExperienceConfiguration.config().getMaxLevel()) return;
 		
+		amount*= getExpMult();
+		
 		this.exp += amount;
 		
 		if(this.exp >= ExperienceConfiguration.config().getLevelExp(getLevel())){
 			levelUp();
 		}
+		
+	}
+	
+	/**
+	 * Gets the experience multiplier.
+	 * 
+	 * @return experience multiplier
+	 */
+	public Double getExpMult() {
+
+
+		// Triple exp:
+		if(PermissionsManager.hasPermission(this, PermissionsManager.SPECIAL_TRIPLE_EXP_BONUS)){
+			return 3.0;
+		}
+
+		// Double exp:
+		if(PermissionsManager.hasPermission(this, PermissionsManager.SPECIAL_DOUBLE_EXP_BONUS)){
+			return 2.0;
+		}
+		
+		return 1.0;
+		
 		
 	}
 	

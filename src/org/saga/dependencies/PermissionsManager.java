@@ -46,6 +46,17 @@ public class PermissionsManager {
 	public static String SPECIAL_CHAT_PERMISSION = "saga.special.chat";
 	
 	/**
+	 * Permission for double exp bonus.
+	 */
+	public static String SPECIAL_DOUBLE_EXP_BONUS = "saga.special.bonus.exp.double";
+
+	/**
+	 * Permission for triple exp bonus.
+	 */
+	public static String SPECIAL_TRIPLE_EXP_BONUS = "saga.special.bonus.exp.triple";
+	
+	
+	/**
 	 * Permission for building in the wilderness.
 	 */
 	public static String WILDERNESS_BUILD_PERMISSION = "saga.user.wilderness.build";
@@ -60,6 +71,8 @@ public class PermissionsManager {
 
 		{
 			put(WILDERNESS_BUILD_PERMISSION, "Build outside settlements.");
+			put(SPECIAL_DOUBLE_EXP_BONUS, "Double player experience.");
+			put(SPECIAL_TRIPLE_EXP_BONUS, "Triple player experience.");
 		}
 		
 	};
