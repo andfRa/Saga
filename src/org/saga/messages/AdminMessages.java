@@ -1,15 +1,24 @@
 package org.saga.messages;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.config.AttributeConfiguration;
-import org.saga.config.GeneralConfiguration;
 import org.saga.config.ExperienceConfiguration;
+import org.saga.config.GeneralConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
+import org.saga.saveload.Directory;
+import org.saga.saveload.WriterReader;
 import org.saga.utility.text.TextUtil;
+import org.sk89q.Command;
+import org.sk89q.CommandPermissions;
 
 public class AdminMessages {
 
@@ -158,5 +167,122 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 		
 	}
 
+	
+	
+	// Wiki:
+	public static String wikiCommands(ArrayList<Method> commandMethods) {
+		
+		
+		StringBuffer result = new StringBuffer();
+		ArrayList<String> categories = new ArrayList<String>(){
+			
+			private static final long serialVersionUID = 1L;
+
+			{
+				add("saga.user.help");
+				add("saga.user.player");
+				add("saga.user.settlement");
+				add("saga.user.building");
+				add("saga.user.faction");
+				add("saga.admin");
+				add("saga.special");
+				add("saga.statistics");
+			}
+			
+		};
+		
+		// Sort commands:
+		Comparator<Method> comparator = new Comparator<Method>() {
+			
+			@Override
+			public int compare(Method o1, Method o2) {
+
+				CommandPermissions perm1 = o1.getAnnotation(CommandPermissions.class);
+				CommandPermissions perm2 = o2.getAnnotation(CommandPermissions.class);
+				if(perm1 == null || perm2 == null || perm1.value().length == 0 || perm2.value().length == 0) return o1.getName().compareToIgnoreCase(o2.getName());
+				
+				return perm1.value()[0].compareToIgnoreCase(perm2.value()[0]);
+				
+			}
+			
+		};
+		
+		Collections.sort(commandMethods, comparator);
+		
+		// Categories:
+		for (String category : categories) {
+			
+			if(result.length() > 0) result.append("\n\n");
+			
+			// Begin:
+			result.append("==" + TextUtil.capitalize(getCategoryName(category) + " commands" + "==") + "\n");
+			result.append("{| width=\"90%\" class=\"wikitable\"\n");
+			result.append("|-");
+			result.append("\n");
+			result.append("!Command");
+			result.append("\n");
+			result.append("!Parameters");
+			result.append("\n");
+			result.append("!Description");
+//			result.append("\n");
+//			result.append("!Permission");		
+			
+			// Commands:
+			for (Method method : commandMethods) {
+				
+				Command command = method.getAnnotation(Command.class);
+				if(command == null) continue;
+				
+				CommandPermissions permissions = method.getAnnotation(CommandPermissions.class);
+				String permission = "";
+				if(permissions != null && permissions.value().length != 0) permission = permissions.value()[0];
+				
+				if(!permission.startsWith(category)) continue;
+				
+				String flags = "";
+				if(command.flags().length() > 0) flags = " [-" + command.flags().replace(" ", "] [-") + "]";
+				
+				result.append("\n");
+				result.append("|-");
+				result.append("\n");
+				result.append("|" + command.aliases()[0]);
+				result.append("\n");
+				result.append("|" + "<nowiki>" + command.usage() + flags + "</nowiki>");
+				result.append("\n");
+				result.append("|" + command.desc());
+				
+//				if(permission.length() > 0){
+//					result.append("\n");
+//					result.append("|" + permission);
+//				}
+				
+				
+			}
+			
+			result.append("\n");
+			
+			// End:
+			result.append("|}");
+			
+		}
+		
+		return result.toString();
+		
+		
+	}
+	
+	private static String getCategoryName(String fullCateg) {
+
+		String[] nodes = fullCateg.split("\\.");
+		
+		return nodes[nodes.length-1];
+		
+	}
+	
+	
+	public static String writeDone(Directory dir, String name) {
+		return positive + "Write complete: " + dir.getDirectory() + dir.getFilename().replace(WriterReader.NAME_SUBS, name) + ".";
+	}
+	
 	
 }

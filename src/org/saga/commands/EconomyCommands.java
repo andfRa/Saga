@@ -3,10 +3,8 @@ package org.saga.commands;
 import org.bukkit.Location;
 import org.saga.Saga;
 import org.saga.config.EconomyConfiguration;
-import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.HelpMessages;
-import org.saga.messages.PlayerMessages;
 import org.saga.messages.SettlementMessages;
 import org.saga.player.SagaPlayer;
 import org.sk89q.Command;
@@ -26,7 +24,7 @@ public class EconomyCommands {
 			min = 2,
 			max = 2
 	)
-	@CommandPermissions({"saga.user.pay"})
+	@CommandPermissions({"saga.user.economy.pay"})
 	public static void pay(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
@@ -82,53 +80,6 @@ public class EconomyCommands {
 	}
 	
 	@Command(
-			aliases = {"asetwallet"},
-			usage = "<name> <amount>",
-			flags = "",
-			desc = "Gives money to someone.",
-			min = 2,
-			max = 2
-	)
-	@CommandPermissions({"saga.admin.setwallet"})
-	public static void setWallet(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-		
-		// Arguments:
-		String targetName = args.getString(0);
-		
-		Double amount = null;
-		try {
-			amount = Double.parseDouble(args.getString(1));
-		} catch (NumberFormatException e) {
-			sagaPlayer.message(EconomyMessages.notNumber(args.getString(1)));
-			return;
-		}
-		
-		// Force player:
-		SagaPlayer selPlayer;
-		try {
-			selPlayer = Saga.plugin().forceSagaPlayer(targetName);
-		} catch (NonExistantSagaPlayerException e) {
-			sagaPlayer.message(PlayerMessages.invalidPlayer(targetName));
-			return;
-		}
-
-		// Set wallet:
-		selPlayer.setCoins(amount);
-		
-		// Inform:
-		sagaPlayer.message(EconomyMessages.setWallet(sagaPlayer, amount));
-		if(selPlayer != sagaPlayer){
-			selPlayer.message(EconomyMessages.walletWasSet(amount));
-		}
-
-		// Release:
-		selPlayer.indicateRelease();
-
-		
-	}
-	
-	@Command(
 			aliases = {"balance","wallet","bal","emoney"},
 			usage = "",
 			flags = "",
@@ -136,7 +87,7 @@ public class EconomyCommands {
 			min = 0,
 			max = 0
 	)
-	@CommandPermissions({"saga.user.balance"})
+	@CommandPermissions({"saga.user.economy.balance"})
 	public static void balance(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		sagaPlayer.message(EconomyMessages.wallet(sagaPlayer));
@@ -147,13 +98,13 @@ public class EconomyCommands {
 	// Other:
 	@Command(
 			aliases = {"ehelp"},
-			usage = "[page number]",
+			usage = "[page]",
 			flags = "",
 			desc = "Display economy help.",
 			min = 0,
 			max = 1
 	)
-	@CommandPermissions({"saga.user.settlement.help"})
+	@CommandPermissions({"saga.user.help.economy"})
 	public static void help(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		

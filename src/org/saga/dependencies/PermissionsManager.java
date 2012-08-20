@@ -8,7 +8,7 @@ import org.bukkit.plugin.PluginManager;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.player.SagaPlayer;
-import org.sk89q.CommandsManager;
+import org.sk89q.SagaCommandsManager;
 
 import ru.tehkode.permissions.bukkit.PermissionsEx;
 
@@ -53,7 +53,7 @@ public class PermissionsManager {
 	/**
 	 * Commands map.
 	 */
-	private CommandsManager<Player> commandMap;
+	private SagaCommandsManager<Player> commandMap;
 	
 	
 	/**
@@ -81,7 +81,7 @@ public class PermissionsManager {
 		Plugin plugin = null;
 		 
 		// Commands map:
-		manager.commandMap = new CommandsManager<Player>() {
+		manager.commandMap = new SagaCommandsManager<Player>() {
 
 			@Override
 			public boolean hasPermission(Player player, String perm) {
@@ -198,7 +198,7 @@ public class PermissionsManager {
 	 * 
 	 * @return commands manager
 	 */
-	public static CommandsManager<Player> getCommandMap() {
+	public static SagaCommandsManager<Player> getCommandMap() {
 
 		return manager.commandMap;
 		

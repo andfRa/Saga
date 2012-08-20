@@ -13,6 +13,8 @@ import org.saga.buildings.storage.StorageArea;
 import org.saga.chunks.Bundle;
 import org.saga.chunks.BundleManager;
 import org.saga.chunks.SagaChunk;
+import org.saga.config.SettlementConfiguration;
+import org.saga.exceptions.InvalidBuildingException;
 import org.saga.factions.Faction;
 import org.saga.factions.FactionClaimManager;
 import org.saga.messages.BuildingMessages;
@@ -23,6 +25,7 @@ import org.saga.messages.SettlementMessages;
 import org.saga.messages.effects.SettlementEffects;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement.SettlementPermission;
+import org.saga.statistics.StatisticsManager;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
 import org.sk89q.CommandPermissions;
@@ -31,6 +34,223 @@ import org.sk89q.CommandPermissions;
 public class BuildingCommands {
 
 	
+	// Buildings general:
+	@Command(
+			aliases = {"bset"},
+			usage = "<building_name>",
+			flags = "",
+			desc = "Set a building on the chunk of land.",
+			min = 1,
+			max = 1
+			)
+		@CommandPermissions({"saga.user.building.set"})
+	public static void set(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		
+		String buildingName = null;
+		Bundle selBundle = null;
+
+		// Arguments:
+		buildingName = GeneralMessages.nameFromArg(args.getString(0));
+			
+		// Selected chunk:
+		SagaChunk selChunk = sagaPlayer.getSagaChunk();
+		if(selChunk == null){
+			sagaPlayer.message(BuildingMessages.buildingsOnClaimed(selBundle));
+			return;
+		}
+			
+		// Selected chunk bundle:
+		selBundle = selChunk.getChunkBundle();
+
+		// Valid building:
+		if(SettlementConfiguration.config().getBuildingDefinition(buildingName) == null){
+			sagaPlayer.message(BuildingMessages.invalidBuilding(buildingName));
+			return;
+		}
+		   	
+		// Building:
+		Building selBuilding;
+		try {
+			selBuilding = SettlementConfiguration.config().createBuilding(buildingName);
+		} catch (InvalidBuildingException e) {
+			SagaLogger.severe(SettlementCommands.class, sagaPlayer + " tried to set a building with missing definition");
+			sagaPlayer.error("definition missing for " + buildingName + " building");
+			return;
+		}
+		if(selBuilding == null){
+			sagaPlayer.message(BuildingMessages.invalidBuilding(buildingName));
+			return;
+		}
+		
+		// Permission:
+		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.SET_BUILDING)){
+			sagaPlayer.message(GeneralMessages.noPermission(selBundle));
+			return;
+		}
+		
+		// Building points:
+		if(!selBundle.hasBuildPointsAvailable(selBuilding)){
+			sagaPlayer.message(SettlementMessages.notEnoughBuildingPoints(selBuilding));
+			return;
+		}
+
+		// Existing building:
+		if(selChunk.getBuilding() != null){
+			sagaPlayer.message(BuildingMessages.oneBuilding(selBundle));
+			return;
+		}
+
+		// Building available:
+		if(!selBundle.isBuildingAvailable(buildingName)){
+			sagaPlayer.message(BuildingMessages.unavailable(selBuilding));
+			return;
+		}
+			
+		// Set building:
+		selChunk.setBuilding(selBuilding);
+
+		// Inform:
+		if(sagaPlayer.getBundle() == selBundle){
+			sagaPlayer.message(SettlementMessages.setBuilding(selBuilding));
+		}else{
+			sagaPlayer.message(SettlementMessages.setBuilding(selBuilding, selBundle));
+		}
+			
+		// Play effect:
+		SettlementEffects.playBuildingSet(sagaPlayer, selBuilding);
+
+		// Statistics:
+		StatisticsManager.manager().setBuildings(selBundle);
+			
+
+	}
+		
+	@Command(
+		aliases = {"bremove"},
+		usage = "",
+		flags = "",
+		desc = "Remove a building from the chunk of land.",
+		min = 0,
+		max = 0
+	)
+	@CommandPermissions({"saga.user.building.remove"})
+	public static void remove(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		
+		SagaChunk sagaChunk = sagaPlayer.getSagaChunk();
+		
+		// Bundle:
+		Bundle selBundle = null;
+		if(sagaChunk != null) selBundle = sagaChunk.getChunkBundle();
+		
+		if(selBundle == null){
+			sagaPlayer.message(SettlementMessages.notMember());
+			return;
+		}
+		
+		// Selected chunk:
+		SagaChunk selChunk = sagaPlayer.getSagaChunk();
+	   	if(selChunk == null){
+			sagaPlayer.message(BuildingMessages.buildingsOnClaimed(selBundle));
+			return;
+		}
+		
+		// Existing building:
+		Building selBuilding = selChunk.getBuilding();
+		if(selBuilding == null){
+			sagaPlayer.message(SettlementMessages.noBuilding());
+			return;
+		}
+		
+		// Permission:
+		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.REMOVE_BUILDING)){
+			sagaPlayer.message(GeneralMessages.noPermission(selBundle));
+			return;
+		}
+
+		// Inform:
+		if(sagaPlayer.getBundle() == selBundle){
+			sagaPlayer.message(SettlementMessages.removedBuilding(selBuilding));
+		}else{
+			sagaPlayer.message(SettlementMessages.removedBuilding(selBuilding, selBundle));
+		}
+
+		// Play effect:
+		SettlementEffects.playBuildingRemove(sagaPlayer, selBuilding);
+		
+		// Remove building:
+		selChunk.removeBuilding();
+
+		// Statistics:
+		StatisticsManager.manager().setBuildings(selBundle);
+			
+			
+	}
+	
+	@Command(
+			aliases = {"bupgrade"},
+			usage = "",
+			flags = "",
+			desc = "Upgrade the building.",
+			min = 0,
+			max = 0
+		)
+	@CommandPermissions({"saga.user.building.upgrade"})
+	public static void upgrade(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+	
+		// Retrieve building:
+		SagaChunk selChunk = sagaPlayer.getSagaChunk();
+		if(selChunk == null){
+			sagaPlayer.message(BuildingMessages.noBuilding());
+			return;
+		}
+		
+		Building selBuilding = selChunk.getBuilding();
+		if(selBuilding == null){
+			sagaPlayer.message(BuildingMessages.noBuilding());
+			return;
+		}
+		Bundle selChunkBundle = selBuilding.getChunkBundle();
+
+		Integer bldgScore = selBuilding.getScore();
+		
+		// Permission:
+		if(!selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.BUILDING_UPGRADE)){
+			sagaPlayer.message(GeneralMessages.noPermission());
+			return;
+		}
+		
+		// Limit:
+		if(bldgScore >= selBuilding.getDefinition().getMaxScore()){
+			sagaPlayer.message(BuildingMessages.upgradeLimit(selBuilding));
+			return;
+		}
+
+		// Enough coins:
+		Double cost = selBuilding.getDefinition().getUpgradeCost(bldgScore);
+		if(sagaPlayer.getCoins() < cost){
+			sagaPlayer.message(EconomyMessages.notEnoughCoins());
+			return;
+		}
+
+		// Take coins:
+		sagaPlayer.removeCoins(cost);
+		sagaPlayer.message(EconomyMessages.coinsSpent(cost));
+		
+		// Upgrade:
+		selChunkBundle.setBuildingScore(selBuilding.getName(), bldgScore + 1);
+		
+		// Inform:
+		sagaPlayer.message(BuildingMessages.upgraded(selBuilding));
+	
+		// Play effect:
+		SettlementEffects.playBuildingUpgrade(sagaPlayer, selBuilding);
+		
+		
+	}	
+		
 	// General building storage:
 	@Command(
 			aliases = {"baddstorage","baddstore"},
@@ -96,7 +316,7 @@ public class BuildingCommands {
 			aliases = {"bremovestorage","bremovestore"},
 			usage = "",
 			flags = "",
-			desc = "Remove a storage area to the building.",
+			desc = "Remove a storage area from the building.",
 			min = 0,
 			max = 0
 	)
@@ -143,14 +363,14 @@ public class BuildingCommands {
 	
 	// Arena:
 	@Command(
-			aliases = {"btop"},
-			usage = "<amount to displaye>",
+			aliases = {"barenatop","btop"},
+			usage = "<display_amount>",
 			flags = "",
-			desc = "Show top players for the arena.",
+			desc = "Show arena top fighters.",
 			min = 0,
 			max = 1
 	)
-	@CommandPermissions({"saga.user.building.tradingpost.economy.setsell"})
+	@CommandPermissions({"saga.user.building.arena.top"})
 	public static void top(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
@@ -295,332 +515,15 @@ public class BuildingCommands {
 	
 	
 	
-	// Trading post:
-	@Command(
-			aliases = {"bsetsell", "setsell"},
-			usage = "[item] <price>",
-			flags = "",
-			desc = "Sets item sell price. Item in hand if no item is given.",
-			min = 1,
-			max = 2
-	)
-	@CommandPermissions({"saga.user.building.tradingpost.economy.setsell"})
-	public static void setSell(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-		
-//		// Retrieve building:
-//		TradingPost selBuilding = null;
-//		try {
-//			selBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-//		} catch (Throwable e) {
-//			sagaPlayer.message(e.getMessage());
-//			return;
-//		}
-//		
-//		Material material = null;
-//		Double price = null;
-//
-//		// Permission:
-//		ChunkBundle chunkBundle = selBuilding.getChunkBundle();
-//		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
-//			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
-//			return;
-//		}
-//		
-//		// Arguments:
-//		if(args.argsLength() == 2){
-//			
-//			String sMaterial = args.getString(0);
-//			material = Material.matchMaterial(sMaterial);
-//			if(material == null){
-//				try {
-//					material = Material.getMaterial(Integer.parseInt(sMaterial));
-//				} catch (NumberFormatException e) { }
-//			}
-//			if(material == null){
-//				sagaPlayer.message(EconomyMessages.invalidMaterial(sMaterial));
-//				return;
-//			}
-//			
-//			// Price:
-//			String sValue = args.getString(1);
-//			try {
-//				price = Double.parseDouble(sValue);
-//			} catch (NumberFormatException e) {
-//				sagaPlayer.message(EconomyMessages.invalidPrice(sValue));
-//				return;
-//			}
-//			
-//		}else{
-//			
-//			// Material:
-//			ItemStack item = sagaPlayer.getItemInHand();
-//			if(item != null && item.getType() != Material.AIR) material = item.getType();
-//			if(material == null){
-//				sagaPlayer.message(EconomyMessages.invalidItemHand());
-//				return;
-//			}
-//			
-//			// Price:
-//			String sValue = args.getString(0);
-//			try {
-//				price = Double.parseDouble(sValue);
-//			} catch (NumberFormatException e) {
-//				sagaPlayer.message(EconomyMessages.invalidPrice(sValue));
-//				return;
-//			}
-//			
-//		}
-//		
-//		// Add price:
-//		selBuilding.setSellPrice(material, price);
-//		
-//		// Inform:
-//		sagaPlayer.message(EconomyMessages.setSell(material, price));
-//		
-//		// Notify transaction:
-//		selBuilding.notifyTransaction();
-		
-		
-	}
-
-	@Command(
-			aliases = {"bremovesell", "removesell"},
-			usage = "[item]",
-			flags = "",
-			desc = "Removes item sell price. Item in hand if no item is given.",
-			min = 1,
-			max = 0
-	)
-	@CommandPermissions({"saga.user.building.tradingpost.economy.removesell"})
-	public static void removeSell(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-		
-//		// Retrieve building:
-//		TradingPost selBuilding = null;
-//		try {
-//			selBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-//		} catch (Throwable e) {
-//			sagaPlayer.message(e.getMessage());
-//			return;
-//		}
-//		
-//		Material material = null;
-//
-//		// Permission:
-//		ChunkBundle chunkBundle = selBuilding.getChunkBundle();
-//		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
-//			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
-//			return;
-//		}
-//		
-//		// Arguments:
-//		if(args.argsLength() == 1){
-//			
-//			String sMaterial = args.getString(0);
-//			material = Material.matchMaterial(sMaterial);
-//			if(material == null){
-//				try {
-//					material = Material.getMaterial(Integer.parseInt(sMaterial));
-//				} catch (NumberFormatException e) { }
-//			}
-//			if(material == null){
-//				sagaPlayer.message(EconomyMessages.invalidMaterial(sMaterial));
-//				return;
-//			}
-//			
-//		}else{
-//			
-//			// Material:
-//			ItemStack item = sagaPlayer.getItemInHand();
-//			if(item != null && item.getType() != Material.AIR) material = item.getType();
-//			if(material == null){
-//				sagaPlayer.message(EconomyMessages.invalidItemHand());
-//				return;
-//			}
-//			
-//		}
-//		
-//		// Remove price:
-//		selBuilding.removeSellPrice(material);
-//		
-//		// Inform:
-//		sagaPlayer.message(EconomyMessages.removeSell(material));
-//		
-//		// Notify transaction:
-//		selBuilding.notifyTransaction();
-		
-		
-	}
-	
-	@Command(
-			aliases = {"bsetbuy", "setbuy"},
-			usage = "[item] <price>",
-			flags = "",
-			desc = "Sets item buy price. Item in hand if no item is given.",
-			min = 1,
-			max = 2
-	)
-	@CommandPermissions({"saga.user.building.tradingpost.economy.setsell"})
-	public static void setBuy(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-		
-//		// Retrieve building:
-//		TradingPost selBuilding = null;
-//		try {
-//			selBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-//		} catch (Throwable e) {
-//			sagaPlayer.message(e.getMessage());
-//			return;
-//		}
-//		
-//		Material material = null;
-//		Double price = null;
-//
-//		// Permission:
-//		ChunkBundle chunkBundle = selBuilding.getChunkBundle();
-//		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
-//			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
-//			return;
-//		}
-//		
-//		// Arguments:
-//		if(args.argsLength() == 2){
-//			
-//			String sMaterial = args.getString(0);
-//			material = Material.matchMaterial(sMaterial);
-//			if(material == null){
-//				try {
-//					material = Material.getMaterial(Integer.parseInt(sMaterial));
-//				} catch (NumberFormatException e) { }
-//			}
-//			if(material == null){
-//				sagaPlayer.message(EconomyMessages.invalidMaterial(sMaterial));
-//				return;
-//			}
-//			
-//			// Price:
-//			String sValue = args.getString(1);
-//			try {
-//				price = Double.parseDouble(sValue);
-//			} catch (NumberFormatException e) {
-//				sagaPlayer.message(EconomyMessages.invalidPrice(sValue));
-//				return;
-//			}
-//			
-//		}else{
-//			
-//			// Material:
-//			ItemStack item = sagaPlayer.getItemInHand();
-//			if(item != null && item.getType() != Material.AIR) material = item.getType();
-//			if(material == null){
-//				sagaPlayer.message(EconomyMessages.invalidItemHand());
-//				return;
-//			}
-//			
-//			// Price:
-//			String sValue = args.getString(0);
-//			try {
-//				price = Double.parseDouble(sValue);
-//			} catch (NumberFormatException e) {
-//				sagaPlayer.message(EconomyMessages.invalidPrice(sValue));
-//				return;
-//			}
-//			
-//		}
-//		
-//		// Add price:
-//		selBuilding.setBuyPrice(material, price);
-//		
-//		// Inform:
-//		sagaPlayer.message(EconomyMessages.setBuy(material, price));
-//		
-//		// Notify transaction:
-//		selBuilding.notifyTransaction();
-		
-		
-	}
-
-	@Command(
-			aliases = {"bremovebuy", "removebuy"},
-			usage = "[item]",
-			flags = "",
-			desc = "Removes item buy price. Item in hand if no item is given.",
-			min = 1,
-			max = 0
-	)
-	@CommandPermissions({"saga.user.building.tradingpost.economy.removesell"})
-	public static void removeBuy(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-		
-//		// Retrieve building:
-//		TradingPost selBuilding = null;
-//		try {
-//			selBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TradingPost.class);
-//		} catch (Throwable e) {
-//			sagaPlayer.message(e.getMessage());
-//			return;
-//		}
-//		
-//		Material material = null;
-//
-//		// Permission:
-//		ChunkBundle chunkBundle = selBuilding.getChunkBundle();
-//		if(!chunkBundle.hasPermission(sagaPlayer, SettlementPermission.MANAGE_PRICES)){
-//			sagaPlayer.message(GeneralMessages.noPermission(chunkBundle));
-//			return;
-//		}
-//		
-//		// Arguments:
-//		if(args.argsLength() == 1){
-//			
-//			String sMaterial = args.getString(0);
-//			material = Material.matchMaterial(sMaterial);
-//			if(material == null){
-//				try {
-//					material = Material.getMaterial(Integer.parseInt(sMaterial));
-//				} catch (NumberFormatException e) { }
-//			}
-//			if(material == null){
-//				sagaPlayer.message(EconomyMessages.invalidMaterial(sMaterial));
-//				return;
-//			}
-//			
-//		}else{
-//			
-//			// Material:
-//			ItemStack item = sagaPlayer.getItemInHand();
-//			if(item != null && item.getType() != Material.AIR) material = item.getType();
-//			if(material == null){
-//				sagaPlayer.message(EconomyMessages.invalidItemHand());
-//				return;
-//			}
-//			
-//		}
-//		
-//		// Remove price:
-//		selBuilding.removeBuyPrice(material);
-//		
-//		// Inform:
-//		sagaPlayer.message(EconomyMessages.removeSell(material));
-//		
-//		// Notify transaction:
-//		selBuilding.notifyTransaction();
-		
-		
-	}
-	
-	
-	
 	// Town square:
 	@Command(
             aliases = {"sspawn"},
             usage = "",
             flags = "",
-            desc = "Spawn in your settlement town square.",
+            desc = "Spawn in a town square.",
             min = 0,
             max = 1)
-	@CommandPermissions({"saga.user.settlement.building.townsquare.spawn"})
+	@CommandPermissions({"saga.user.building.townsquare.spawn"})
 	public static void spawn(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
@@ -697,69 +600,6 @@ public class BuildingCommands {
 		sagaPlayer.teleport(spawnLocation);
 		
 	
-	}
-	
-	@Command(
-            aliases = {"bupgrade"},
-            usage = "",
-            flags = "",
-            desc = "Upgrade the building.",
-            min = 0,
-            max = 0
-    )
-	@CommandPermissions({"saga.user.settlement.building.upgrade"})
-	public static void upgrade(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-
-		// Retrieve building:
-		SagaChunk selChunk = sagaPlayer.getSagaChunk();
-		if(selChunk == null){
-			sagaPlayer.message(BuildingMessages.noBuilding());
-			return;
-		}
-		
-		Building selBuilding = selChunk.getBuilding();
-		if(selBuilding == null){
-			sagaPlayer.message(BuildingMessages.noBuilding());
-			return;
-		}
-		Bundle selChunkBundle = selBuilding.getChunkBundle();
-
-		Integer bldgScore = selBuilding.getScore();
-		
-		// Permission:
-		if(!selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.BUILDING_UPGRADE)){
-			sagaPlayer.message(GeneralMessages.noPermission());
-			return;
-		}
-		
-		// Limit:
-		if(bldgScore >= selBuilding.getDefinition().getMaxScore()){
-			sagaPlayer.message(BuildingMessages.upgradeLimit(selBuilding));
-			return;
-		}
-
-		// Enough coins:
-		Double cost = selBuilding.getDefinition().getUpgradeCost(bldgScore);
-		if(sagaPlayer.getCoins() < cost){
-			sagaPlayer.message(EconomyMessages.notEnoughCoins());
-			return;
-		}
-
-		// Take coins:
-		sagaPlayer.removeCoins(cost);
-		sagaPlayer.message(EconomyMessages.coinsSpent(cost));
-		
-		// Upgrade:
-		selChunkBundle.setBuildingScore(selBuilding.getName(), bldgScore + 1);
-		
-		// Inform:
-		sagaPlayer.message(BuildingMessages.upgraded(selBuilding));
-	
-		// Play effect:
-		SettlementEffects.playBuildingUpgrade(sagaPlayer, selBuilding);
-		
-		
 	}
 	
 	

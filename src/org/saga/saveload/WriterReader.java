@@ -39,7 +39,8 @@ public class WriterReader {
 	 * 
 	 * @param dir directory
 	 * @param name name
-	 * @throws IOException thrown when read fails
+	 * @param obj object
+	 * @throws IOException when write fails
 	 */
 	public static void write(Directory dir, String name, Object obj) throws IOException {
 		
@@ -81,10 +82,11 @@ public class WriterReader {
 	/**
 	 * Reads a file.
 	 * 
-	 * @param writeType write type
+	 * @param dir directory
 	 * @param name name
-	 * @param configType configuration type
-	 * @throws IOException thrown when read fails
+	 * @param type object type
+	 * @return object
+	 * @throws IOException when read fails
 	 */
 	public static <T> T read(Directory dir, String name, Class<T> type) throws IOException {
 
@@ -141,7 +143,8 @@ public class WriterReader {
 	 * Writes a file.
 	 * 
 	 * @param dir directory
-	 * @throws IOException thrown when read fails
+	 * @param obj object
+	 * @throws IOException when write fails
 	 */
 	public static void write(Directory dir, Object obj) throws IOException {
 		
@@ -152,9 +155,10 @@ public class WriterReader {
 	/**
 	 * Reads a file.
 	 * 
-	 * @param writeType write type
-	 * @param configType configuration type
-	 * @throws IOException thrown when read fails
+	 * @param dir directory
+	 * @param type object type
+	 * @return object
+	 * @throws IOException when read fails
 	 */
 	public static <T> T read(Directory dir, Class<T> type) throws IOException {
 		
@@ -190,6 +194,7 @@ public class WriterReader {
 		
 	}
 
+	
 	/**
 	 * Gets all IDs.
 	 * 
@@ -231,6 +236,7 @@ public class WriterReader {
 		
 	}
 
+	
 	/**
 	 * Moves the file to the directory for deleted files.
 	 * 
@@ -284,6 +290,7 @@ public class WriterReader {
 		
 
 	}
+	
 	
 	/**
 	 * Unpacks default config from the jar.
@@ -348,6 +355,7 @@ public class WriterReader {
 		
 	}
 	
+	
 	/**
 	 * Gets all filenames in the given directory.
 	 * 
@@ -366,6 +374,38 @@ public class WriterReader {
 		return subDirs;
 		
 
+	}
+	
+	/**
+	 * Writes a string.
+	 * 
+	 * @param dir directory
+	 * @param name name
+	 * @throws IOException thrown when write fails
+	 */
+	public static void writeString(Directory dir, String name, String str) throws IOException {
+		
+		
+		// Directory:
+		File directory = new File(dir.getDirectory());
+		if(!directory.exists()){
+			directory.mkdirs();
+			SagaLogger.info("Creating " + directory + " directory.");
+		}
+		
+		// File:
+		File filedir = new File(dir.getDirectory() + dir.getFilename().replace(NAME_SUBS, name));
+		if(!filedir.exists()){
+			filedir.createNewFile();
+			SagaLogger.info("Creating " + filedir + " file.");
+		}
+        
+		// Write:
+		BufferedWriter out = new BufferedWriter(new FileWriter(filedir));
+		out.write(str);
+		out.close();
+
+         
 	}
 	
 }

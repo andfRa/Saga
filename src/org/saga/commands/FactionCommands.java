@@ -41,8 +41,8 @@ public class FactionCommands {
 	
 	// Members:
 	@Command(
-			aliases = {"fcreate"},
-			usage = "<faction name>",
+			aliases = {"fform","fcreate"},
+			usage = "<faction_name>",
 			flags = "",
 			desc = "Create a new faction.",
 			min = 1,
@@ -89,9 +89,9 @@ public class FactionCommands {
 
 	@Command(
             aliases = {"finvite"},
-            usage = "[faction] <player name>",
+            usage = "[faction_name] <player_name>",
             flags = "",
-            desc = "Invite a player to join the faction.",
+            desc = "Send a faction join invitation.",
             min = 1,
             max = 2
 	)
@@ -166,7 +166,7 @@ public class FactionCommands {
 
 	@Command(
             aliases = {"faccept"},
-            usage = "[faction name]",
+            usage = "[faction_name]",
             flags = "",
             desc = "Accept a faction join invitation.",
             min = 0,
@@ -270,9 +270,9 @@ public class FactionCommands {
 	
 	@Command(
             aliases = {"fkick"},
-            usage = "[faction] <player name>",
+            usage = "[faction] <member_name>",
             flags = "",
-            desc = "Kick a member out of the faction.",
+            desc = "Kick a member from faction.",
             min = 1,
             max = 2
 		)
@@ -375,7 +375,7 @@ public class FactionCommands {
             aliases = {"factionquit"},
             usage = "",
             flags = "",
-            desc = "Quit faction.",
+            desc = "Quit the faction.",
             min = 0,
             max = 0
 		)
@@ -430,9 +430,9 @@ public class FactionCommands {
 
 	@Command(
             aliases = {"fsetrank"},
-            usage = "[faction name] <player name> <rank>",
+            usage = "[faction_name] <member_name> <rank>",
             flags = "",
-            desc = "Set a faction members rank.",
+            desc = "Assign a rank.",
             min = 2,
             max = 3
 	)
@@ -534,13 +534,13 @@ public class FactionCommands {
 	
 	@Command(
             aliases = {"fdeclareowner"},
-            usage = "[faction name] <player name>",
+            usage = "[faction_name] <member_name>",
             flags = "",
-            desc = "Declares someone as the new faction owner.",
+            desc = "Declare someone as the new faction owner.",
             min = 1,
             max = 2
 		)
-	@CommandPermissions({"saga.user.settlement.faction.declareowner"})
+	@CommandPermissions({"saga.user.faction.declareowner"})
 	public static void declareOwner(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
@@ -609,7 +609,7 @@ public class FactionCommands {
 	// Stats:
 	@Command(
             aliases = {"fstats"},
-            usage = "[faction name] [page]",
+            usage = "[faction_name] [page]",
             flags = "",
             desc = "List faction stats.",
             min = 0,
@@ -694,7 +694,7 @@ public class FactionCommands {
 	
 	@Command(
             aliases = {"flist"},
-            usage = "[faction name or prefix]",
+            usage = "[faction_name or prefix]",
             flags = "",
             desc = "List faction memebers.",
             min = 0,
@@ -738,10 +738,10 @@ public class FactionCommands {
 	
 	// Alliance:
 	@Command(
-			aliases = {"frquestalliance","frequestally"},
-			usage = "[faction name] <target_faction_name>",
+			aliases = {"frequestally"},
+			usage = "[faction_name] <other_faction_name>",
 			flags = "",
-			desc = "Request an alliane with a faction",
+			desc = "Request an alliane.",
 			min = 1,
 			max = 2
 	)
@@ -826,10 +826,10 @@ public class FactionCommands {
 	}
 
 	@Command(
-			aliases = {"facceptalliance","facceptally"},
-			usage = "[faction name] [target_faction_name]",
+			aliases = {"facceptally"},
+			usage = "[faction_name] [other_faction_name]",
 			flags = "",
-			desc = "Accept an alliane with a faction",
+			desc = "Accept an alliane.",
 			min = 0,
 			max = 2
 	)
@@ -946,10 +946,10 @@ public class FactionCommands {
 	}
 
 	@Command(
-			aliases = {"fdeclinealliance","fdeclinetally"},
-			usage = "[faction name] [target_faction_name]",
+			aliases = {"fdeclinetally"},
+			usage = "[faction_name] [other_faction_name]",
 			flags = "",
-			desc = "Decline an alliane with a faction",
+			desc = "Decline an alliane.",
 			min = 1,
 			max = 2
 	)
@@ -1054,10 +1054,10 @@ public class FactionCommands {
 	}
 
 	@Command(
-			aliases = {"fbreakalliance","fremoveally"},
-			usage = "[faction name] <target_faction_name>",
+			aliases = {"fremoveally"},
+			usage = "[faction_name] <other_faction_name>",
 			flags = "",
-			desc = "Breaks an alliane with a faction",
+			desc = "Break an alliane.",
 			min = 1,
 			max = 2
 	)
@@ -1133,9 +1133,9 @@ public class FactionCommands {
 	// Spawn:
 	@Command(
             aliases = {"fspawn"},
-            usage = "[faction]",
+            usage = "[faction_name]",
             flags = "",
-            desc = "Teleports to a faction spawn point.",
+            desc = "Teleport to the faction spawn point.",
             min = 0,
             max = 1
 		)
@@ -1193,9 +1193,9 @@ public class FactionCommands {
 	
 	@Command(
             aliases = {"fsetspawn"},
-            usage = "[faction]",
+            usage = "[faction_name]",
             flags = "",
-            desc = "Sets a faction spawn point.",
+            desc = "Sets factions spawn point.",
             min = 0,
             max = 1
 		)
@@ -1254,53 +1254,53 @@ public class FactionCommands {
             aliases = {"f"},
             usage = "<message>",
             flags = "",
-            desc = "Sends a message to the player chat.",
+            desc = "Send a faction chat message.",
             min = 1
 	)
 	@CommandPermissions({"saga.user.faction.list"})
 	public static void chat(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 	
-	Faction selFaction = null;
-	
-	// Faction:
-	selFaction = sagaPlayer.getFaction();
-	
-	if(selFaction == null){
-		sagaPlayer.message(FactionMessages.notMember());
-		return;
-	}
-	
-	// Formed:
-	if(!selFaction.isFormed()){
-		sagaPlayer.message(FactionMessages.notFormed(selFaction));
-		sagaPlayer.message(FactionMessages.notFormedInfo(selFaction));
-		return;
-	}
-	
-	// Create message:
-	String message = selFaction.getColour2() + "[" + selFaction.getColour1() + FactionMessages.rankedPlayer(selFaction, sagaPlayer) + selFaction.getColour2() + "] " + args.getJoinedStrings(0);
-	
-	// Inform:
-	selFaction.broadcast(message);
-	
-	// Inform allies:
-	Collection<Faction> allyFactions = selFaction.getAllyFactions();
-	for (Faction allyFaction : allyFactions) {
-		allyFaction.broadcast(message);
-	}
+		Faction selFaction = null;
+		
+		// Faction:
+		selFaction = sagaPlayer.getFaction();
+		
+		if(selFaction == null){
+			sagaPlayer.message(FactionMessages.notMember());
+			return;
+		}
+		
+		// Formed:
+		if(!selFaction.isFormed()){
+			sagaPlayer.message(FactionMessages.notFormed(selFaction));
+			sagaPlayer.message(FactionMessages.notFormedInfo(selFaction));
+			return;
+		}
+		
+		// Create message:
+		String message = selFaction.getColour2() + "[" + selFaction.getColour1() + FactionMessages.rankedPlayer(selFaction, sagaPlayer) + selFaction.getColour2() + "] " + args.getJoinedStrings(0);
+		
+		// Inform:
+		selFaction.broadcast(message);
+		
+		// Inform allies:
+		Collection<Faction> allyFactions = selFaction.getAllyFactions();
+		for (Faction allyFaction : allyFactions) {
+			allyFaction.broadcast(message);
+		}
 	
 
-}
+	}
 	
 	
 	
 	// Appearance:
 	@Command(
 		aliases = {"fsetcolour1","fsetcolor1","fsetprimary"},
-		usage = "<colour>",
+		usage = "<colour name>",
 		flags = "",
-		desc = "Sets the factions primary colour.",
+		desc = "Set factions primary colour.",
 		min = 1,
 		max = 4
 	)
@@ -1351,14 +1351,14 @@ public class FactionCommands {
 	
 	@Command(
 			aliases = {"fsetcolour2","fsetcolor2","fsetsecondary"},
-			usage = "<colour>",
+			usage = "<colour name>",
 			flags = "",
-			desc = "Sets the factions primary colour.",
+			desc = "Set factions secondary colour.",
 			min = 1,
 			max = 4
 	)
 	@CommandPermissions({"saga.user.faction.setcolour2"})
-	public static void setSecondaryColor(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	public static void setColour2(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
 		// Part of a faction:
@@ -1419,38 +1419,17 @@ public class FactionCommands {
 	}
 	
 	
-	
-	// Info:
-	@Command(
-            aliases = {"fquit"},
-            usage = "",
-            flags = "",
-            desc = "Quit faction.",
-            min = 0,
-            max = 0
-		)
-	@CommandPermissions({"saga.user.faction.quit"})
-	public static void wrongQuit(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-		
-		// Inform:
-		sagaPlayer.message(FactionMessages.wrongQuit());
-		
-		
-	}
-	
-	
 
 	// Administration:
 	@Command(
             aliases = {"fdisband"},
-            usage = "[faction name or prefix]",
+            usage = "[faction_name or prefix]",
             flags = "",
-            desc = "Disbands the faction.",
+            desc = "Disband the faction.",
             min = 0,
             max = 1
         )
-	@CommandPermissions({"saga.admin.faction.delete"}
+	@CommandPermissions({"saga.user.faction.delete"}
 	)
 	public static void disband(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
@@ -1498,7 +1477,7 @@ public class FactionCommands {
 	// Other:
 	@Command(
 			aliases = {"frename"},
-			usage = "[faction name] <new faction name>",
+			usage = "[faction_name] <new_name>",
 			flags = "",
 			desc = "Rename the faction.",
 			min = 1,
@@ -1585,16 +1564,19 @@ public class FactionCommands {
 	    	
 	    	
 	}
+
 	
+	
+	// Info:
 	@Command(
 			aliases = {"fhelp"},
-			usage = "[page number]",
+			usage = "[page]",
 			flags = "",
 			desc = "Display faction help.",
 			min = 0,
 			max = 1
 	)
-	@CommandPermissions({"saga.user.faction.help"})
+	@CommandPermissions({"saga.user.help.faction"})
 	public static void help(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
@@ -1617,10 +1599,10 @@ public class FactionCommands {
 	
 
 	}
-
 	
 	
-	// Until:
+	
+	// Utility:
 	public static boolean validateName(String str) {
 
          if(org.saga.utility.text.TextUtil.getComparisonString(str).length() < minimumNameLenght ) {

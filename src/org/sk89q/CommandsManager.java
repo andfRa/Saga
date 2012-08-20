@@ -29,6 +29,9 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.bukkit.ChatColor;
+import org.saga.Saga;
+
 /**
  * <p>Manager for handling commands. This allows you to easily process commands,
  * including nested commands, by correctly annotating methods of a class.</p>
@@ -305,6 +308,8 @@ public abstract class CommandsManager<T> {
     public void execute(String cmd, String[] args, T player,
             Object ... methodArgs) throws CommandException {
         
+    	Saga.broadcast(ChatColor.DARK_AQUA + "HELLOSAGA");
+    	
         String[] newArgs = new String[args.length + 1];
         System.arraycopy(args, 0, newArgs, 1, args.length);
         newArgs[0] = cmd;

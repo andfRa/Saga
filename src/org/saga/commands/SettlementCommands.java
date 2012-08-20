@@ -6,7 +6,6 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.saga.Saga;
 import org.saga.SagaLogger;
-import org.saga.buildings.Building;
 import org.saga.chunks.Bundle;
 import org.saga.chunks.BundleManager;
 import org.saga.chunks.SagaChunk;
@@ -14,9 +13,7 @@ import org.saga.config.EconomyConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
 import org.saga.config.SettlementConfiguration;
-import org.saga.exceptions.InvalidBuildingException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
-import org.saga.messages.BuildingMessages;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.FactionMessages;
 import org.saga.messages.GeneralMessages;
@@ -47,14 +44,14 @@ public class SettlementCommands {
 	// Territory:
 	@Command(
 		aliases = {"ssettle", "settle"},
-		usage = "<settlement name>",
+		usage = "<settlement_name>",
 		flags = "",
 		desc = "Create a new settlement.",
 		min = 1,
 		max = 1
 	)
 	@CommandPermissions({"saga.user.settlement.create"})
-	public static void settle(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	public static void create(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 	
 		
 		// Arguments:
@@ -127,7 +124,7 @@ public class SettlementCommands {
 	
 	@Command(
 		aliases = {"sclaim", "claim"},
-		usage = "[settlement name]",
+		usage = "[settlement_name]",
 		flags = "",
 		desc = "Claim the chunk of land.",
 		min = 0,
@@ -231,7 +228,7 @@ public class SettlementCommands {
 	}
 
 	@Command(
-		aliases = {"abandon", "unclaim", "sabandon", "sunclaim"},
+		aliases = {"sabandon", "sunclaim", "abandon", "unclaim"},
 		usage = "",
 		flags = "",
 		desc = "Abandon the chunk of land. Delete the settlement if no land is left.",
@@ -295,9 +292,9 @@ public class SettlementCommands {
 	
 	@Command(
 		aliases = {"sresign"},
-		usage = "[settlement name] <member name>",
+		usage = "[settlement_name] <member_name>",
 		flags = "",
-		desc = "Resign from the owner role.",
+		desc = "Resign from the owner position.",
 		min = 1,
 		max = 2
 	)
@@ -406,7 +403,7 @@ public class SettlementCommands {
 
 	@Command(
 			aliases = {"sdissolve"},
-			usage = "[settlement name]",
+			usage = "[settlement_name]",
 			flags = "",
 			desc = "Dissolve the settlement.",
 			min = 0,
@@ -472,167 +469,14 @@ public class SettlementCommands {
 		
 	}
 	
-	
-	// Buildings:
-	@Command(
-		aliases = {"ssetbuilding","setbuilding","bset"},
-		usage = "<building_name>",
-		flags = "",
-		desc = "Sets a building on the chunk of land.",
-		min = 1,
-		max = 1
-		)
-	@CommandPermissions({"saga.user.settlement.building.set"})
-	public static void setBuilding(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
 
-		String buildingName = null;
-		Bundle selBundle = null;
-
-		// Arguments:
-		buildingName = GeneralMessages.nameFromArg(args.getString(0));
-		
-		// Selected chunk:
-		SagaChunk selChunk = sagaPlayer.getSagaChunk();
-	   	if(selChunk == null){
-			sagaPlayer.message(BuildingMessages.buildingsOnClaimed(selBundle));
-			return;
-		}
-		
-	   	// Selected chunk bundle:
-	   	selBundle = selChunk.getChunkBundle();
-
-	   	// Valid building:
-	   	if(SettlementConfiguration.config().getBuildingDefinition(buildingName) == null){
-	   		sagaPlayer.message(BuildingMessages.invalidBuilding(buildingName));
-	   		return;
-	   	}
-	   	
-		// Building:
-		Building selBuilding;
-		try {
-			selBuilding = SettlementConfiguration.config().createBuilding(buildingName);
-		} catch (InvalidBuildingException e) {
-			SagaLogger.severe(SettlementCommands.class, sagaPlayer + " tried to set a building with missing definition");
-			sagaPlayer.error("definition missing for " + buildingName + " building");
-			return;
-		}
-		if(selBuilding == null){
-			sagaPlayer.message(BuildingMessages.invalidBuilding(buildingName));
-			return;
-		}
-		
-		// Permission:
-		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.SET_BUILDING)){
-			sagaPlayer.message(GeneralMessages.noPermission(selBundle));
-			return;
-		}
-		
-		// Building points:
-		if(!selBundle.hasBuildPointsAvailable(selBuilding)){
-			sagaPlayer.message(SettlementMessages.notEnoughBuildingPoints(selBuilding));
-			return;
-		}
-
-		// Existing building:
-		if(selChunk.getBuilding() != null){
-			sagaPlayer.message(BuildingMessages.oneBuilding(selBundle));
-			return;
-		}
-
-		// Building available:
-		if(!selBundle.isBuildingAvailable(buildingName)){
-			sagaPlayer.message(BuildingMessages.unavailable(selBuilding));
-			return;
-		}
-		
-		// Set building:
-		selChunk.setBuilding(selBuilding);
-
-		// Inform:
-		if(sagaPlayer.getBundle() == selBundle){
-			sagaPlayer.message(SettlementMessages.setBuilding(selBuilding));
-		}else{
-			sagaPlayer.message(SettlementMessages.setBuilding(selBuilding, selBundle));
-		}
-		
-		// Play effect:
-		SettlementEffects.playBuildingSet(sagaPlayer, selBuilding);
-
-		// Statistics:
-		StatisticsManager.manager().setBuildings(selBundle);
-		
-
-	}
-	
-	@Command(
-		aliases = {"sremovebuilding","abandonbuilding","bremove"},
-		usage = "[settlement name]",
-		flags = "",
-		desc = "Abandons a building on the chunk of land.",
-		min = 0,
-		max = 0
-		)
-	@CommandPermissions({"saga.user.settlement.building.remove"})
-	public static void removeBuilding(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-
-		Bundle selBundle = null;
-		
-		// Arguments:
-		selBundle = getLocationChunkBundle(sagaPlayer);
-		if(selBundle == null){
-			sagaPlayer.message(SettlementMessages.notMember());
-			return;
-		}
-		
-		// Selected chunk:
-		SagaChunk selChunk = sagaPlayer.getSagaChunk();
-	   	if(selChunk == null){
-			sagaPlayer.message(BuildingMessages.buildingsOnClaimed(selBundle));
-			return;
-		}
-		
-		// Existing building:
-		Building selBuilding = selChunk.getBuilding();
-		if(selBuilding == null){
-			sagaPlayer.message(SettlementMessages.noBuilding());
-			return;
-		}
-		
-		// Permission:
-		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.REMOVE_BUILDING)){
-			sagaPlayer.message(GeneralMessages.noPermission(selBundle));
-			return;
-		}
-
-		// Inform:
-		if(sagaPlayer.getBundle() == selBundle){
-			sagaPlayer.message(SettlementMessages.removedBuilding(selBuilding));
-		}else{
-			sagaPlayer.message(SettlementMessages.removedBuilding(selBuilding, selBundle));
-		}
-
-		// Play effect:
-		SettlementEffects.playBuildingRemove(sagaPlayer, selBuilding);
-		
-		// Remove building:
-		selChunk.removeBuilding();
-
-		// Statistics:
-		StatisticsManager.manager().setBuildings(selBundle);
-		
-		
-	}
-
-	
 	
 	// Members:
 	@Command(
 		aliases = {"sinvite"},
-		usage = "[settlement name] <player name>",
+		usage = "[settlement_name] <player_name>",
 		flags = "",
-		desc = "Invite a player to join the settlement.",
+		desc = "Send a settlement join invitation.",
 		min = 1,
 		max = 2
 	)
@@ -721,9 +565,9 @@ public class SettlementCommands {
 	
 	@Command(
 		aliases = {"saccept"},
-		usage = "<settlement name>",
+		usage = "<settlement_name>",
 		flags = "",
-		desc = "Accept a settlement invitation.",
+		desc = "Accept a settlement join invitation.",
 		min = 0,
 		max = 1
 	)
@@ -792,10 +636,10 @@ public class SettlementCommands {
 	}
 
 	@Command(
-		aliases = {"sdeclineall", "sdecline"},
+		aliases = {"sdecline"},
 		usage = "",
 		flags = "",
-		desc = "Decline all settlement join invitations.",
+		desc = "Decline all settlement invitations.",
 		min = 0,
 		max = 0
 	)
@@ -893,7 +737,7 @@ public class SettlementCommands {
 	
 	@Command(
 		aliases = {"skick"},
-		usage = "[settlement name] <player name>",
+		usage = "[settlement_name] <member_name>",
 		flags = "",
 		desc = "Kick a member from the settlement.",
 		min = 1,
@@ -1030,84 +874,10 @@ public class SettlementCommands {
 	}
 
 	@Command(
-		aliases = {"sdeclareowner"},
-		usage = "[settlement name] <player name>",
-		flags = "",
-		desc = "Declares someone as the new settlement owner.",
-		min = 1,
-		max = 2
-		)
-	@CommandPermissions({"saga.user.settlement.declareowner"})
-	public static void declareOwner(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-
-		Bundle selChunkBundle = null;
-		String targetName = null;
-		
-
-		// Arguments:
-		if(args.argsLength() == 2){
-			
-			// Chunk bundle:
-			String groupName = GeneralMessages.nameFromArg(args.getString(0));
-			selChunkBundle = BundleManager.manager().getChunkBundleWithName(groupName);
-			if(selChunkBundle == null){
-				sagaPlayer.message(SettlementMessages.noChunkBundle(groupName));
-				return;
-			}
-
-			// Name:
-			targetName = args.getString(1);
-			
-		}else{
-			
-			// Chunk bundle:
-			selChunkBundle = sagaPlayer.getBundle();
-			if(selChunkBundle == null){
-				sagaPlayer.message(SettlementMessages.notMember());
-				return;
-			}
-
-			// Name:
-			targetName = args.getString(0);
-			
-		}
-		
-		// Permission:
-		if(!selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.DECLARE_OWNER)){
-			sagaPlayer.message(GeneralMessages.noPermission());
-			return;
-		}
-
-		// Force player:
-		SagaPlayer selPlayer;
-		try {
-			selPlayer = Saga.plugin().forceSagaPlayer(targetName);
-		} catch (NonExistantSagaPlayerException e) {
-			sagaPlayer.message(PlayerMessages.invalidPlayer(targetName));
-			return;
-		}
-		
-		// Remove old owner:
-		selChunkBundle.removeOwner();
-		
-		// Set new owner:
-		selChunkBundle.setOwner(selPlayer.getName());
-		
-		// Inform:
-		selChunkBundle.broadcast(SettlementMessages.newOwnerBcast(targetName));
-
-		// Release:
-		selPlayer.indicateRelease();
-
-   		
-	}
-
-	@Command(
 		aliases = {"ssetrole"},
-		usage = "<player name> <role_name>",
+		usage = "<member_name> <role_name>",
 		flags = "",
-		desc = "Set a role for the settlement member.",
+		desc = "Assign a role.",
 		min = 2,
 		max = 3
 	)
@@ -1215,7 +985,7 @@ public class SettlementCommands {
 	// Stats:
 	@Command(
 		aliases = {"sstats"},
-		usage = "[settlement name] [page]",
+		usage = "[settlement_name] [page]",
 		flags = "",
 		desc = "Show settlement stats.",
 		min = 0,
@@ -1308,9 +1078,9 @@ public class SettlementCommands {
 
 	@Command(
 		aliases = {"slist"},
-		usage = "[settlement name]",
+		usage = "[settlement_name]",
 		flags = "",
-		desc = "Lists settlement members.",
+		desc = "List settlement members.",
 		min = 0,
 		max = 1
 		)
@@ -1359,32 +1129,14 @@ public class SettlementCommands {
 	
 	// Info:
 	@Command(
-		aliases = {"squit"},
-		usage = "",
-		flags = "",
-		desc = "Wrong command to quit the settlement.",
-		min = 0,
-		max = 0
-		)
-	@CommandPermissions({"saga.user.faction.quit"})
-	public static void wrongQuit(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-		
-		// Inform:
-		sagaPlayer.message(SettlementMessages.wrongQuit());
-		
-		
-	}
-
-	@Command(
 		aliases = {"shelp"},
-		usage = "[page number]",
+		usage = "[page]",
 		flags = "",
 		desc = "Display settlement help.",
 		min = 0,
 		max = 1
 	)
-	@CommandPermissions({"saga.user.settlement.help"})
+	@CommandPermissions({"saga.user.help.settlement"})
 	public static void help(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
@@ -1413,7 +1165,7 @@ public class SettlementCommands {
 	// Other:
 	@Command(
 		aliases = {"srename"},
-		usage = "[settlement name] <new settlement name>",
+		usage = "[settlement_name] <new_name>",
 		flags = "",
 		desc = "Rename the settlement.",
 		min = 1,
@@ -1547,24 +1299,6 @@ public class SettlementCommands {
 		return true;
 
          
-	}
-	
-	/**
-	 * Gets the chunk bundle the player is standing on.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return chunk bundle, null if none
-	 */
-	private static Bundle getLocationChunkBundle(SagaPlayer sagaPlayer) {
-
-		Location location = sagaPlayer.getLocation();
-		if(location == null) return null;
-		
-		SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(location);
-		if(sagaChunk == null) return null;
-		
-		return sagaChunk.getChunkBundle();
-		
 	}
 	
 	

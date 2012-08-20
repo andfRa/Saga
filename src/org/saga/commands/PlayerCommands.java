@@ -28,7 +28,7 @@ public class PlayerCommands {
 			min = 0,
 			max = 1
 	)
-    @CommandPermissions({"saga.user.stats"})
+    @CommandPermissions({"saga.user.player.stats"})
 	public static void stats(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 	
 		
@@ -61,57 +61,57 @@ public class PlayerCommands {
 	
 	// Guardian stone:
 	@Command(
-			aliases = {"disableguardianrune","grdisable"},
+			aliases = {"grdisable"},
             usage = "",
             flags = "",
-            desc = "Disables the guardian rune.",
+            desc = "Disable guardian rune.",
             min = 0,
             max = 0)
-	@CommandPermissions({"saga.user.guardianrune.disable"})
+	@CommandPermissions({"saga.user.player.guardrune.disable"})
 	public static void disableGuardianStone(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-		GuardianRune stone = sagaPlayer.getGuardRune();
+		GuardianRune rune = sagaPlayer.getGuardRune();
 		
 		// Already disabled:
-		if(!stone.isEnabled()){
-			sagaPlayer.message(PlayerMessages.alreadyDisabled(stone));
+		if(!rune.isEnabled()){
+			sagaPlayer.message(PlayerMessages.alreadyDisabled(rune));
 			return;
 		}
 		
 		// Disable:
-		stone.setEnabled(false);
+		rune.setEnabled(false);
 		
 		// Inform:
-		sagaPlayer.message(PlayerMessages.disabled(stone));
+		sagaPlayer.message(PlayerMessages.disabled(rune));
 		
 		
 	}
 	
 	@Command(
-            aliases = {"enableguardianrune","grenable"},
+            aliases = {"grenable"},
             usage = "",
             flags = "",
-            desc = "Enables the guardian rune.",
+            desc = "Enable guardian rune.",
             min = 0,
             max = 0)
-	@CommandPermissions({"saga.user.guardianrune.enable"})
+	@CommandPermissions({"saga.user.player.guardrune.enable"})
 	public static void enableGuardianStone(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-		GuardianRune stone = sagaPlayer.getGuardRune();
+		GuardianRune rune = sagaPlayer.getGuardRune();
 		
 		// Already enabled:
-		if(stone.isEnabled()){
-			sagaPlayer.message(PlayerMessages.alreadyEnabled(stone));
+		if(rune.isEnabled()){
+			sagaPlayer.message(PlayerMessages.alreadyEnabled(rune));
 			return;
 		}
 		
 		// Disable:
-		stone.setEnabled(true);
+		rune.setEnabled(true);
 		
 		// Inform:
-		sagaPlayer.message(PlayerMessages.enabled(stone));
+		sagaPlayer.message(PlayerMessages.enabled(rune));
 		
 		
 	}
@@ -125,7 +125,7 @@ public class PlayerCommands {
             flags = "",
             desc = "Sends a message in the special chat.",
             min = 1)
-	@CommandPermissions({"saga.special.chat"})
+	@CommandPermissions({"saga.special.player.chat"})
 	public static void specialChat(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
@@ -162,13 +162,13 @@ public class PlayerCommands {
 	// Info:
 	@Command(
 			aliases = {"phelp"},
-			usage = "[page number]",
+			usage = "[page]",
 			flags = "",
 			desc = "Display player help.",
 			min = 0,
 			max = 1
 	)
-	@CommandPermissions({"saga.user.help"})
+	@CommandPermissions({"saga.user.help.player"})
 	public static void help(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		

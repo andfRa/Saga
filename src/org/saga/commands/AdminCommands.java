@@ -5,6 +5,9 @@
 
 package org.saga.commands;
 
+import java.io.IOException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import org.bukkit.ChatColor;
@@ -25,14 +28,16 @@ import org.saga.dependencies.PermissionsManager;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;
 import org.saga.messages.AdminMessages;
+import org.saga.messages.EconomyMessages;
 import org.saga.messages.GeneralMessages;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.SettlementMessages;
 import org.saga.messages.StatsMessages;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
+import org.saga.saveload.Directory;
+import org.saga.saveload.WriterReader;
 import org.saga.settlements.Settlement;
-import org.saga.utility.text.TextUtil;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
 import org.sk89q.CommandPermissions;
@@ -44,9 +49,9 @@ public class AdminCommands {
 	// Stats:
 	@Command(
 		aliases = {"astatsother","astatso"},
-		usage = "<name> [page]",
-		flags = "",
-		desc = "Show other player stats.",
+		usage = "<player_name> [page]",
+		flags = "f",
+		desc = "Show other player stats. With -o flag offline players are also included.",
 		min = 1,
 		max = 2
 	)
@@ -57,6 +62,8 @@ public class AdminCommands {
 		String name = null;
 		Integer page = null;
 		
+		SagaPlayer selPlayer = null;
+		
 		// Arguments:
 		if(args.argsLength() == 2){
 			
@@ -80,13 +87,29 @@ public class AdminCommands {
 			
 		}
 		
-		// Match:
-		SagaPlayer selPlayer = null;
-		try {
-			selPlayer = Saga.plugin().matchPlayer(name);
-		} catch (SagaPlayerNotLoadedException e) {
-			sagaPlayer.message(PlayerMessages.notOnline(name));
-			return;
+		// Force:
+		if(args.hasFlag('o')){
+			
+			try {
+				selPlayer = Saga.plugin().forceSagaPlayer(name);
+			}
+			catch (NonExistantSagaPlayerException e) {
+				sagaPlayer.message(PlayerMessages.invalidPlayer(name));
+				return;
+			}
+			
+		}
+		
+		// Loaded:
+		else{
+			
+			try {
+				selPlayer = Saga.plugin().matchPlayer(name);
+			} catch (SagaPlayerNotLoadedException e) {
+				sagaPlayer.message(PlayerMessages.notOnline(name));
+				return;
+			}
+			
 		}
 		
 		// Inform:
@@ -96,73 +119,12 @@ public class AdminCommands {
 		
 	}
 	
-	@Command(
-		aliases = {"astatsotheroffline","astatsof"},
-		usage = "<name> [page]",
-		flags = "",
-		desc = "Shows other player stats.",
-		min = 1,
-		max = 2
-	)
-	@CommandPermissions({"saga.admin.statsother.offline"})
-	public static void statsOffline(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-
-		String name = null;
-		Integer page = null;
-		
-		// Arguments:
-		if(args.argsLength() == 2){
-			
-			name = args.getString(0);
-			
-			String argsPage = args.getString(1);
-			
-			try {
-				page = Integer.parseInt(argsPage);
-			}
-			catch (NumberFormatException e) {
-				sagaPlayer.message(GeneralMessages.mustBeNumber(argsPage));
-				return;
-			}
-			
-		}else{
-			
-			name = args.getString(0);
-			
-			page = 1;
-			
-		}
-		
-		// Find player:
-		SagaPlayer selPlayer = null;
-		try {
-		
-			// Force:
-			selPlayer = Saga.plugin().forceSagaPlayer(name);
-		
-		} catch (NonExistantSagaPlayerException e) {
-
-			sagaPlayer.message(PlayerMessages.invalidPlayer(name));
-			return;
-		
-		}
-		
-		// Inform:
-		sagaPlayer.message(StatsMessages.stats(selPlayer, page-1));
-
-		// Release:
-		selPlayer.indicateRelease();
-
-		
-	}
-
 
 
 	// Attributes and levels:
 	@Command(
 		aliases = {"asetlevel"},
-		usage = "[player name] <level>",
+		usage = "[player_name] <level>",
 		flags = "",
 		desc = "Set players level.",
 		min = 1,
@@ -245,7 +207,7 @@ public class AdminCommands {
 	
 	@Command(
 		aliases = {"asetattribute","asetattr"},
-		usage = "[player name] <attribute> <score>",
+		usage = "[player_name] <attribute> <score>",
 		flags = "",
 		desc = "Set players attribute score.",
 		min = 2,
@@ -334,11 +296,61 @@ public class AdminCommands {
 	}
 
 	
+	
+	// Economy:
+	@Command(
+			aliases = {"asetwallet"},
+			usage = "<name> <amount>",
+			flags = "",
+			desc = "Set someones balance.",
+			min = 2,
+			max = 2
+	)
+	@CommandPermissions({"saga.admin.setwallet"})
+	public static void setWallet(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+		
+		// Arguments:
+		String targetName = args.getString(0);
+		
+		Double amount = null;
+		try {
+			amount = Double.parseDouble(args.getString(1));
+		} catch (NumberFormatException e) {
+			sagaPlayer.message(EconomyMessages.notNumber(args.getString(1)));
+			return;
+		}
+		
+		// Force player:
+		SagaPlayer selPlayer;
+		try {
+			selPlayer = Saga.plugin().forceSagaPlayer(targetName);
+		} catch (NonExistantSagaPlayerException e) {
+			sagaPlayer.message(PlayerMessages.invalidPlayer(targetName));
+			return;
+		}
 
+		// Set wallet:
+		selPlayer.setCoins(amount);
+		
+		// Inform:
+		sagaPlayer.message(EconomyMessages.setWallet(selPlayer, amount));
+		if(selPlayer != sagaPlayer){
+			selPlayer.message(EconomyMessages.walletWasSet(amount));
+		}
+
+		// Release:
+		selPlayer.indicateRelease();
+
+		
+	}
+	
+
+	
 	// Buildings general:
 	@Command(
 		aliases = {"assetlevel"},
-		usage = "[settlement name] <level>",
+		usage = "[settlement_name] <level>",
 		flags = "",
 		desc = "Set settlement level.",
 		min = 1,
@@ -415,7 +427,7 @@ public class AdminCommands {
 	
 	@Command(
 		aliases = {"asenableoption", "asenableopt", "aenableopt"},
-		usage = "[settlement name] <option>",
+		usage = "[settlement_name] <option>",
 		flags = "",
 		desc = "Enable settlement option.",
 		min = 1,
@@ -492,7 +504,7 @@ public class AdminCommands {
 	
 	@Command(
 		aliases = {"asdisableoption", "asdisableopt", "adisableopt"},
-		usage = "[settlement name] <option>",
+		usage = "[settlement_name] <option>",
 		flags = "",
 		desc = "Disable settlement option.",
 		min = 1,
@@ -571,10 +583,10 @@ public class AdminCommands {
 	
 	// Guard rune:
 	@Command(
-		aliases = {"agrecharge","agrrech"},
-		usage = "[player name]",
+		aliases = {"agrrecharge","agrrech"},
+		usage = "[player_name]",
 		flags = "",
-		desc = "Recharges the guard rune.",
+		desc = "Recharge a guard rune.",
 		min = 0,
 		max = 1)
 	@CommandPermissions({"saga.admin.guardrune"})
@@ -729,7 +741,6 @@ public class AdminCommands {
 	@CommandPermissions({"saga.admin.dcommand"})
 	public static void debugCommand(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
-		sagaPlayer.message(TextUtil.repeat(" ", args.getInteger(0))+"|");
 		
 	}
 	
@@ -756,10 +767,10 @@ public class AdminCommands {
 	
 	// Time of day:
 	@Command(
-		aliases = {"anextdaytime","anexttime"},
+		aliases = {"anextdaytime"},
 		usage = "",
 		flags = "",
-		desc = "Force next daytime.",
+		desc = "Force the next daytime.",
 		min = 0,
 		max = 0
 	)
@@ -855,6 +866,42 @@ public class AdminCommands {
 			// Inform:
 			sagaPlayer.message(AdminMessages.saved());
 
+	}
+	
+	
+	
+	// Wiki:
+	@Command(
+		aliases = {"awritecommands"},
+		usage = "",
+		flags = "",
+		desc = "Write all commands in MediaWiki format.",
+		min = 0
+	)
+	@CommandPermissions({"saga.admin.writecommands"})
+	public static void writeCommands(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		
+		ArrayList<Method> commandMethods = new ArrayList<Method>(PermissionsManager.getCommandMap().getCommandMethods());
+		
+		
+		String wikiCommands = AdminMessages.wikiCommands(commandMethods);
+		
+		Directory dir = Directory.WIKI;
+		String name = "commands";
+		try {
+			WriterReader.writeString(dir, name, wikiCommands);
+		}
+		catch (IOException e) {
+			sagaPlayer.error("Failed to write wiki commands");
+			SagaLogger.severe(AdminCommands.class, "failed to write wiki commands: " + e.getClass().getSimpleName() + ":" + e.getMessage());
+			return;
+		}
+		
+		// Inform:
+		sagaPlayer.message(AdminMessages.writeDone(dir, name));
+		
+		
 	}
 	
 	
