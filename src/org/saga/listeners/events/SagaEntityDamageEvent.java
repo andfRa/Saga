@@ -195,7 +195,7 @@ public class SagaEntityDamageEvent {
 	 * @param amount amount to modify
 	 */
 	public void modifyDamage(double amount) {
-		modifier+=amount;
+		modifier+= amount;
 	}
 	
 	/**
@@ -204,7 +204,7 @@ public class SagaEntityDamageEvent {
 	 * @param amount amount to multiply by
 	 */
 	public void multiplyDamage(double amount) {
-		multiplier+=amount;
+		multiplier*= amount;
 	}
 	
 	/**
@@ -213,7 +213,7 @@ public class SagaEntityDamageEvent {
 	 * @param amount amount to divide by
 	 */
 	public void divideDamage(double amount) {
-		multiplier/=amount;
+		multiplier/= amount;
 	}
 	
 	/**

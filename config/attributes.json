@@ -7,7 +7,7 @@
 
 "attributes":[
   {"name":"strength",
-    "attack":{"MELEE_MODIFIER":{"x1":0,"y1":0.0,"x2":70,"y2":8}},
+    "attack":{"MELEE_MULTIPLIER":{"x1":0,"y1":1.0,"x2":100,"y2":4.0}},
     "defend":{},
     "blockBreak":{},
     "description":"Melee damage."
@@ -15,14 +15,14 @@
 
   {"name":"precision",
     "attack":{
-      "RANGED_MODIFIER":{"x1":0,"y1":0.0,"x2":70,"y2":10},
-      "MELEE_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":70,"y2":0.6},
-      "RANGED_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":70,"y2":0.6}
+      "RANGED_MULTIPLIER":{"x1":0,"y1":1.0,"x2":100,"y2":4.0},
+      "MELEE_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":90,"y2":0.90},
+      "RANGED_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":90,"y2":0.90}
     },
     "defend":{
-      "MELEE_HIT_CHANCE":{"x1":0,"y1":0.0,"x2":40,"y2":-0.6},
-      "RANGED_HIT_CHANCE":{"x1":0,"y1":0.0,"x2":40,"y2":-0.6},
-      "MAGIC_HIT_CHANCE":{"x1":0,"y1":0.0,"x2":40,"y2":-0.6}                  
+      "MELEE_HIT_CHANCE":{"x1":0,"y1":0.0,"x2":90,"y2":-0.90},
+      "RANGED_HIT_CHANCE":{"x1":0,"y1":0.0,"x2":90,"y2":-0.90},
+      "MAGIC_HIT_CHANCE":{"x1":0,"y1":0.0,"x2":90,"y2":-0.90}                  
     },
     "blockBreak":{},
     "description":"Ranged damage, armour penetration and dodge."
@@ -30,8 +30,9 @@
   
   {"name":"willpower",
     "attack":{
-      "MAGIC_MODIFIER":{"x1":0,"y1":6.0,"x2":70,"y2":16.0},
-      "MAGIC_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":70,"y2":0.3}
+      "MAGIC_MULTIPLIER":{"x1":0,"y1":1.0,"x2":100,"y2":4.0},
+      "MAGIC_MODIFIER":{"x1":0,"y1":6.0,"x2":100,"y2":6.0},
+      "MAGIC_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":90,"y2":0.675}
      },
     "defend":{},
     "blockBreak":{},
@@ -41,8 +42,8 @@
   {"name":"toughness",
     "attack":{},
     "defend":{
-      "MELEE_MULTIPLIER":{"x1":0,"y1":0.0,"x2":70,"y2":-0.6},
-      "RANGED_MULTIPLIER":{"x1":0,"y1":0.0,"x2":70,"y2":-0.6}
+      "MELEE_MULTIPLIER":{"x1":0,"y1":0.0,"x2":100,"y2":0.25},
+      "RANGED_MULTIPLIER":{"x1":0,"y1":0.0,"x2":100,"y2":0.25}
     },
     "blockBreak":{},
     "description":"Melee and ranged damage protection."
@@ -51,8 +52,8 @@
   {"name":"warding",
     "attack":{},
     "defend":{
-      "MAGIC_MULTIPLIER":{"x1":0,"y1":0,"x2":70,"y2":-0.6},
-      "BURN_IGNORE_CHANCE":{"x1":0,"y1":0,"x2":70,"y2":0.9}
+      "MAGIC_MULTIPLIER":{"x1":0,"y1":0,"x2":100,"y2":0.25},
+      "BURN_IGNORE_CHANCE":{"x1":0,"y1":0,"x2":75,"y2":1.0}
     },
     "blockBreak":{},
     "description":"Magic damage and burn protection."
@@ -62,7 +63,7 @@
     "attack":{},
     "defend":{},
     "blockBreak":{
-      "DROP_MODIFIER":{"x1":0,"y1":0,"x2":70,"y2":0.50}
+      "DROP_MODIFIER":{"x1":0,"y1":0,"x2":75,"y2":0.50}
     },
     "description":"Additional drops from blocks."
   }
