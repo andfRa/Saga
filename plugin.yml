@@ -1,12 +1,7 @@
 name: Saga
 main: org.saga.Saga
 version: 0.9
-author: andf54
+author: andfRa
 softdepend:
   - GroupManager
   - PermissionsEx
-commands:
-  a:
-    description: Sends admin chat message.
-    permission: saga.admin.chat
-    usage: /<command> <message>.
