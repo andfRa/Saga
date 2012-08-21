@@ -30,7 +30,6 @@ import org.saga.exceptions.SagaPlayerNotLoadedException;
 import org.saga.messages.AdminMessages;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.GeneralMessages;
-import org.saga.messages.GeneralMessages.CustomColour;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.SettlementMessages;
 import org.saga.messages.StatsMessages;
@@ -301,42 +300,69 @@ public class AdminCommands {
 	// Economy:
 	@Command(
 			aliases = {"asetwallet"},
-			usage = "<name> <amount>",
+			usage = "[player_name] <amount>",
 			flags = "",
-			desc = "Set someones balance.",
-			min = 2,
+			desc = "Set players balance.",
+			min = 1,
 			max = 2
 	)
 	@CommandPermissions({"saga.admin.player.setwallet"})
 	public static void setWallet(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
-		// Arguments:
-		String targetName = args.getString(0);
-		
+		SagaPlayer selPlayer = null;
 		Double amount = null;
-		try {
-			amount = Double.parseDouble(args.getString(1));
-		} catch (NumberFormatException e) {
-			sagaPlayer.message(EconomyMessages.notNumber(args.getString(1)));
-			return;
-		}
 		
-		// Force player:
-		SagaPlayer selPlayer;
-		try {
-			selPlayer = Saga.plugin().forceSagaPlayer(targetName);
-		} catch (NonExistantSagaPlayerException e) {
-			sagaPlayer.message(PlayerMessages.invalidPlayer(targetName));
-			return;
+		String argsName = null;
+		String argsAmount = null;
+		
+		
+		// Arguments:
+		switch (args.argsLength()) {
+			case 2:
+				
+				argsName = args.getString(0);
+				try {
+					selPlayer = Saga.plugin().forceSagaPlayer(argsName);
+				} catch (NonExistantSagaPlayerException e) {
+					sagaPlayer.message(PlayerMessages.invalidPlayer(argsName));
+					return;
+				}
+				
+				argsAmount = args.getString(1);
+				try {
+					amount = Double.parseDouble(argsAmount);
+				} catch (NumberFormatException e) {
+					sagaPlayer.message(EconomyMessages.notNumber(argsAmount));
+					return;
+				}
+				
+				break;
+
+			default:
+				
+				selPlayer = sagaPlayer;
+				
+				argsAmount = args.getString(0);
+				try {
+					amount = Double.parseDouble(argsAmount);
+				} catch (NumberFormatException e) {
+					sagaPlayer.message(EconomyMessages.notNumber(argsAmount));
+					return;
+				}
+				
+				break;
+				
 		}
 
 		// Set wallet:
 		selPlayer.setCoins(amount);
 		
 		// Inform:
-		sagaPlayer.message(EconomyMessages.setWallet(selPlayer, amount));
 		if(selPlayer != sagaPlayer){
+			sagaPlayer.message(EconomyMessages.setWallet(selPlayer, amount));
+			selPlayer.message(EconomyMessages.walletWasSet(amount));
+		}else{
 			selPlayer.message(EconomyMessages.walletWasSet(amount));
 		}
 
@@ -741,14 +767,6 @@ public class AdminCommands {
 	)
 	@CommandPermissions({"saga.debug.admin.dcommand"})
 	public static void debugCommand(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-		
-		String str = ChatColor.GREEN + "sfds\"fdsf";
-		String str2 = str.replace("\"", ChatColor.BOLD + " " + CustomColour.RESET_FORMAT);
-		
-		sagaPlayer.message(str);
-		sagaPlayer.message(CustomColour.process(str2));
-		
 		
 	}
 	
