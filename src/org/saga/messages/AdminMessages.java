@@ -609,14 +609,4 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 	}
 	
 	
-	public static void main(String[] args) {
-		
-		TwoPointFunction fn1 = new TwoPointFunction(0.0, 0.0, 100.0, 14.0);
-		TwoPointFunction fn2 = new TwoPointFunction(0.0, 1.0, 100.0, 0.25);
-		
-		System.out.println(fn2.value(50));
-		
-	}
-	
-	
 }
