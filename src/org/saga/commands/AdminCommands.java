@@ -910,14 +910,13 @@ public class AdminCommands {
 		
 		ArrayList<Method> commandMethods = new ArrayList<Method>(PermissionsManager.getCommandMap().getCommandMethods());
 		
-		
-		String wikiCommands = AdminMessages.wikiCommands(commandMethods);
+		String wikiText = AdminMessages.wikiCommands(commandMethods);
 		
 		Directory dir = Directory.WIKI;
 		String name = "commands";
 		
 		try {
-			WriterReader.writeString(dir, name, wikiCommands);
+			WriterReader.writeString(dir, name, wikiText);
 		}
 		catch (IOException e) {
 			sagaPlayer.error("Failed to write wiki " + name);
@@ -943,15 +942,14 @@ public class AdminCommands {
 
 		
 		ArrayList<Method> commandMethods = new ArrayList<Method>(PermissionsManager.getCommandMap().getCommandMethods());
-		
 			
-		String wikiCommands = AdminMessages.wikiPermissions(commandMethods);
+		String wikiText = AdminMessages.wikiPermissions(commandMethods);
 			
 		Directory dir = Directory.WIKI;
 		String name = "permissions";
 		
 		try {
-			WriterReader.writeString(dir, name, wikiCommands);
+			WriterReader.writeString(dir, name, wikiText);
 		}
 		catch (IOException e) {
 			sagaPlayer.error("Failed to write wiki " + name);
@@ -964,7 +962,40 @@ public class AdminCommands {
 		
 		
 	}
+	
+	@Command(
+			aliases = {"awriteattributes"},
+			usage = "",
+			flags = "",
+			desc = "Write all attributes in MediaWiki format.",
+			min = 0
+	)
+	@CommandPermissions({"saga.admin.wiki.writeattributes"})
+	public static void writeAttributes(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		
+		ArrayList<Method> commandMethods = new ArrayList<Method>(PermissionsManager.getCommandMap().getCommandMethods());
 			
+		String wikiText = AdminMessages.wikiAttributes(commandMethods);
+			
+		Directory dir = Directory.WIKI;
+		String name = "attributes";
+		
+		try {
+			WriterReader.writeString(dir, name, wikiText);
+		}
+		catch (IOException e) {
+			sagaPlayer.error("Failed to write wiki " + name);
+			SagaLogger.severe(AdminCommands.class, "failed to write wiki " + name + ": " + e.getClass().getSimpleName() + ":" + e.getMessage());
+			return;
+		}
+		
+		// Inform:
+		sagaPlayer.message(AdminMessages.writeDone(dir, name));
+		
+		
+	}
+	
 	
 	
 }

@@ -1,7 +1,9 @@
 package org.saga.attributes;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
+import java.util.Map.Entry;
 
 import org.bukkit.Effect;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -21,17 +23,17 @@ public class Attribute {
 	/**
 	 * Attack scores.
 	 */
-	private Hashtable<DamageModifiers, TwoPointFunction> attack;
+	private Hashtable<AttributeParameter, TwoPointFunction> attack;
 
 	/**
 	 * Defence scores.
 	 */
-	private Hashtable<DamageModifiers, TwoPointFunction> defend;
+	private Hashtable<AttributeParameter, TwoPointFunction> defend;
 
 	/**
 	 * Block break scores.
 	 */
-	private Hashtable<BlockModifiers, TwoPointFunction> blockBreak;
+	private Hashtable<AttributeParameter, TwoPointFunction> blockBreak;
 	
 	/**
 	 * Description.
@@ -47,9 +49,9 @@ public class Attribute {
 	public Attribute(String name) {
 		
 		this.name = name;
-		attack = new Hashtable<DamageModifiers, TwoPointFunction>();
-		defend = new Hashtable<DamageModifiers, TwoPointFunction>();
-		blockBreak = new Hashtable<BlockModifiers, TwoPointFunction>();
+		attack = new Hashtable<AttributeParameter, TwoPointFunction>();
+		defend = new Hashtable<AttributeParameter, TwoPointFunction>();
+		blockBreak = new Hashtable<AttributeParameter, TwoPointFunction>();
 		description = "";
 		
 	}
@@ -68,7 +70,7 @@ public class Attribute {
 		}
 		
 		if(attack == null){
-			attack = new Hashtable<DamageModifiers, TwoPointFunction>();
+			attack = new Hashtable<AttributeParameter, TwoPointFunction>();
 			SagaLogger.nullField(this, "attack");
 		}
 		Collection<TwoPointFunction> scores = attack.values();
@@ -77,7 +79,7 @@ public class Attribute {
 		}
 		
 		if(defend == null){
-			defend = new Hashtable<DamageModifiers, TwoPointFunction>();
+			defend = new Hashtable<AttributeParameter, TwoPointFunction>();
 			SagaLogger.nullField(this, "defend");
 		}
 		scores = defend.values();
@@ -86,7 +88,7 @@ public class Attribute {
 		}
 		
 		if(blockBreak == null){
-			blockBreak = new Hashtable<BlockModifiers, TwoPointFunction>();
+			blockBreak = new Hashtable<AttributeParameter, TwoPointFunction>();
 			SagaLogger.nullField(this, "blockBreak");
 		}
 		
@@ -121,25 +123,25 @@ public class Attribute {
 		if(event.isPhysical()){
 			
 			// Physical damage:
-			function = attack.get(DamageModifiers.MELEE_MODIFIER);
+			function = attack.get(AttributeParameter.MELEE_MODIFIER);
 			if(function != null){
 				event.modifyDamage(function.value(score));
 			}
 
 			// Physical multiplier:
-			function = attack.get(DamageModifiers.MELEE_MULTIPLIER);
+			function = attack.get(AttributeParameter.MELEE_MULTIPLIER);
 			if(function != null){
 				event.multiplyDamage(function.value(score));
 			}
 			
 			// Hit chance:
-			function = attack.get(DamageModifiers.MELEE_HIT_CHANCE);
+			function = attack.get(AttributeParameter.MELEE_HIT_CHANCE);
 			if(function != null){
 				event.modifyHitChance(function.value(score));
 			}
 
 			// Armour penetration:
-			function = attack.get(DamageModifiers.MELEE_ARMOUR_PENETRATION);
+			function = attack.get(AttributeParameter.MELEE_ARMOUR_PENETRATION);
 			if(function != null){
 				event.modifyArmourPenetration(function.value(score));
 			}
@@ -150,25 +152,25 @@ public class Attribute {
 		else if(event.isRanged()){
 
 			// Ranged damage:
-			function = attack.get(DamageModifiers.RANGED_MODIFIER);
+			function = attack.get(AttributeParameter.RANGED_MODIFIER);
 			if(function != null){
 				event.modifyDamage(function.value(score));
 			}
 
 			// Ranged multiplier:
-			function = attack.get(DamageModifiers.RANGED_MULTIPLIER);
+			function = attack.get(AttributeParameter.RANGED_MULTIPLIER);
 			if(function != null){
 				event.multiplyDamage(function.value(score));
 			}
 			
 			// Hit chance:
-			function = attack.get(DamageModifiers.RANGED_HIT_CHANCE);
+			function = attack.get(AttributeParameter.RANGED_HIT_CHANCE);
 			if(function != null){
 				event.modifyHitChance(function.value(score));
 			}
 
 			// Armour penetration:
-			function = attack.get(DamageModifiers.RANGED_ARMOUR_PENETRATION);
+			function = attack.get(AttributeParameter.RANGED_ARMOUR_PENETRATION);
 			if(function != null){
 				event.modifyArmourPenetration(function.value(score));
 			}
@@ -179,25 +181,25 @@ public class Attribute {
 		if(event.isMagic()){
 
 			// Magic damage:
-			function = attack.get(DamageModifiers.MAGIC_MODIFIER);
+			function = attack.get(AttributeParameter.MAGIC_MODIFIER);
 			if(function != null){
 				event.modifyDamage(function.value(score));
 			}
 
 			// Magic multiplier:
-			function = attack.get(DamageModifiers.MAGIC_MULTIPLIER);
+			function = attack.get(AttributeParameter.MAGIC_MULTIPLIER);
 			if(function != null){
 				event.multiplyDamage(function.value(score));
 			}
 			
 			// Hit chance:
-			function = attack.get(DamageModifiers.MAGIC_HIT_CHANCE);
+			function = attack.get(AttributeParameter.MAGIC_HIT_CHANCE);
 			if(function != null){
 				event.modifyHitChance(function.value(score));
 			}
 
 			// Armour penetration:
-			function = attack.get(DamageModifiers.MAGIC_ARMOUR_PENETRATION);
+			function = attack.get(AttributeParameter.MAGIC_ARMOUR_PENETRATION);
 			if(function != null){
 				event.modifyArmourPenetration(function.value(score));
 			}
@@ -223,25 +225,25 @@ public class Attribute {
 		if(event.isPhysical()){
 
 			// Physical damage:
-			function = defend.get(DamageModifiers.MELEE_MODIFIER);
+			function = defend.get(AttributeParameter.MELEE_MODIFIER);
 			if(function != null){
 				event.modifyDamage(function.value(score));
 			}
 
 			// Physical multiplier:
-			function = defend.get(DamageModifiers.MELEE_MULTIPLIER);
+			function = defend.get(AttributeParameter.MELEE_MULTIPLIER);
 			if(function != null){
 				event.multiplyDamage(function.value(score));
 			}
 
 			// Hit chance:
-			function = defend.get(DamageModifiers.MELEE_HIT_CHANCE);
+			function = defend.get(AttributeParameter.MELEE_HIT_CHANCE);
 			if(function != null){
 				event.modifyHitChance(function.value(score));
 			}
 
 			// Armour penetration:
-			function = defend.get(DamageModifiers.MELEE_ARMOUR_PENETRATION);
+			function = defend.get(AttributeParameter.MELEE_ARMOUR_PENETRATION);
 			if(function != null){
 				event.modifyArmourPenetration(function.value(score));
 			}
@@ -252,25 +254,25 @@ public class Attribute {
 		else if(event.isRanged()){
 
 			// Ranged damage:
-			function = defend.get(DamageModifiers.RANGED_MODIFIER);
+			function = defend.get(AttributeParameter.RANGED_MODIFIER);
 			if(function != null){
 				event.modifyDamage(function.value(score));
 			}
 
 			// Ranged multiplier:
-			function = defend.get(DamageModifiers.RANGED_MULTIPLIER);
+			function = defend.get(AttributeParameter.RANGED_MULTIPLIER);
 			if(function != null){
 				event.multiplyDamage(function.value(score));
 			}
 
 			// Hit chance:
-			function = defend.get(DamageModifiers.RANGED_HIT_CHANCE);
+			function = defend.get(AttributeParameter.RANGED_HIT_CHANCE);
 			if(function != null){
 				event.modifyHitChance(function.value(score));
 			}
 
 			// Armour penetration:
-			function = defend.get(DamageModifiers.RANGED_ARMOUR_PENETRATION);
+			function = defend.get(AttributeParameter.RANGED_ARMOUR_PENETRATION);
 			if(function != null){
 				event.modifyArmourPenetration(function.value(score));
 			}
@@ -281,25 +283,25 @@ public class Attribute {
 		if(event.isMagic()){
 
 			// Magic damage:
-			function = defend.get(DamageModifiers.MAGIC_MODIFIER);
+			function = defend.get(AttributeParameter.MAGIC_MODIFIER);
 			if(function != null){
 				event.modifyDamage(function.value(score));
 			}
 
 			// Magic multiplier:
-			function = defend.get(DamageModifiers.MAGIC_MULTIPLIER);
+			function = defend.get(AttributeParameter.MAGIC_MULTIPLIER);
 			if(function != null){
 				event.multiplyDamage(function.value(score));
 			}
 
 			// Hit chance:
-			function = defend.get(DamageModifiers.MAGIC_HIT_CHANCE);
+			function = defend.get(AttributeParameter.MAGIC_HIT_CHANCE);
 			if(function != null){
 				event.modifyHitChance(function.value(score));
 			}
 
 			// Armour penetration:
-			function = defend.get(DamageModifiers.MAGIC_ARMOUR_PENETRATION);
+			function = defend.get(AttributeParameter.MAGIC_ARMOUR_PENETRATION);
 			if(function != null){
 				event.modifyArmourPenetration(function.value(score));
 			}
@@ -309,7 +311,7 @@ public class Attribute {
 		// Burn resist:
 		if(event.getType() == DamageCause.FIRE_TICK){
 			
-			function = defend.get(DamageModifiers.BURN_IGNORE_CHANCE);
+			function = defend.get(AttributeParameter.BURN_RESIST);
 			if(function != null && function.randomBooleanValue(score)){
 				event.cancel();
 				event.getDefenderPlayer().playGlobalEffect(Effect.EXTINGUISH, 0);
@@ -333,7 +335,7 @@ public class Attribute {
 		TwoPointFunction function = null;
 		
 		// Drop modifier:
-		function = blockBreak.get(BlockModifiers.DROP_MODIFIER);
+		function = blockBreak.get(AttributeParameter.DROP_MODIFIER);
 		if(function != null){
 			event.modifyDrops(function.value(score));
 		}
@@ -361,6 +363,22 @@ public class Attribute {
 		return description;
 	}
 
+	/**
+	 * Gets attack entry set.
+	 * 
+	 * @return attack entry set
+	 */
+	public ArrayList<Entry<AttributeParameter, TwoPointFunction>> getAllEntries() {
+		
+		ArrayList<Entry<AttributeParameter, TwoPointFunction>> entries = new ArrayList<Entry<AttributeParameter,TwoPointFunction>>();
+		
+		entries.addAll(attack.entrySet());
+		entries.addAll(defend.entrySet());
+		entries.addAll(blockBreak.entrySet());
+		
+		return entries;
+		
+	}
 	
 	
 	

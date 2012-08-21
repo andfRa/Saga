@@ -7,7 +7,7 @@
 
 "attributes":[
   {"name":"strength",
-    "attack":{"MELEE_MULTIPLIER":{"x1":0,"y1":1.0,"x2":100,"y2":4.0}},
+    "attack":{"MELEE_MODIFIER":{"x1":0,"y1":0.0,"x2":100,"y2":14.0}},
     "defend":{},
     "blockBreak":{},
     "description":"Melee damage."
@@ -15,7 +15,7 @@
 
   {"name":"precision",
     "attack":{
-      "RANGED_MULTIPLIER":{"x1":0,"y1":1.0,"x2":100,"y2":4.0},
+      "RANGED_MODIFIER":{"x1":0,"y1":0.0,"x2":100,"y2":18.0},
       "MELEE_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":90,"y2":0.90},
       "RANGED_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":90,"y2":0.90}
     },
@@ -30,9 +30,8 @@
   
   {"name":"willpower",
     "attack":{
-      "MAGIC_MULTIPLIER":{"x1":0,"y1":1.0,"x2":100,"y2":4.0},
-      "MAGIC_MODIFIER":{"x1":0,"y1":6.0,"x2":100,"y2":6.0},
-      "MAGIC_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":90,"y2":0.675}
+      "MAGIC_MODIFIER":{"x1":0,"y1":6.0,"x2":100,"y2":30.0},
+      "MAGIC_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":100,"y2":0.5}
      },
     "defend":{},
     "blockBreak":{},
@@ -42,8 +41,8 @@
   {"name":"toughness",
     "attack":{},
     "defend":{
-      "MELEE_MULTIPLIER":{"x1":0,"y1":0.0,"x2":100,"y2":0.25},
-      "RANGED_MULTIPLIER":{"x1":0,"y1":0.0,"x2":100,"y2":0.25}
+      "MELEE_MULTIPLIER":{"x1":0,"y1":1.0,"x2":100,"y2":0.20},
+      "RANGED_MULTIPLIER":{"x1":0,"y1":1.0,"x2":100,"y2":0.20}
     },
     "blockBreak":{},
     "description":"Melee and ranged damage protection."
@@ -52,8 +51,8 @@
   {"name":"warding",
     "attack":{},
     "defend":{
-      "MAGIC_MULTIPLIER":{"x1":0,"y1":0,"x2":100,"y2":0.25},
-      "BURN_IGNORE_CHANCE":{"x1":0,"y1":0,"x2":75,"y2":1.0}
+      "MAGIC_MULTIPLIER":{"x1":0,"y1":1,"x2":100,"y2":0.20},
+      "BURN_RESIST":{"x1":0,"y1":0,"x2":60,"y2":1.0}
     },
     "blockBreak":{},
     "description":"Magic damage and burn protection."
@@ -63,7 +62,7 @@
     "attack":{},
     "defend":{},
     "blockBreak":{
-      "DROP_MODIFIER":{"x1":0,"y1":0,"x2":75,"y2":0.50}
+      "DROP_MODIFIER":{"x1":0,"y1":0,"x2":100,"y2":0.60}
     },
     "description":"Additional drops from blocks."
   }

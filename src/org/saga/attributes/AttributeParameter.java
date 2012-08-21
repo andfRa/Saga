@@ -1,9 +1,9 @@
 package org.saga.attributes;
 
-public enum DamageModifiers {
+public enum AttributeParameter {
 
 	
-	// Combat:
+	// Damage:
 	MELEE_MODIFIER,
 	RANGED_MODIFIER,
 	MAGIC_MODIFIER,
@@ -20,20 +20,15 @@ public enum DamageModifiers {
 	RANGED_ARMOUR_PENETRATION,
 	MAGIC_ARMOUR_PENETRATION,
 	
+	
+	
 	// Resistance:
-	EXPLOSION_MULTIPLIER,
-	FALL_MULTIPLIER,
-	FIRE_MULTIPLIER,
-	BURN_IGNORE_CHANCE,
+	BURN_RESIST,
+	
 	
 	
 	// Blocks:
-	ADITIONAL_DROP,
-	RANDOM_DROP,
-	
-	// Tools:
-	
-	
+	DROP_MODIFIER;
 	
 	
 }
