@@ -279,7 +279,7 @@ public class Bundle extends SagaCustomSerialization{
 		SagaLogger.info("Creating " + bundle + " chunk group.");
 
 		// Update chunk group manager:
-		BundleManager.manager().addChunkBundle(bundle);
+		BundleManager.manager().addBundle(bundle);
 		
 		// Do the first save:
 		bundle.save();
@@ -364,7 +364,7 @@ public class Bundle extends SagaCustomSerialization{
 		WriterReader.delete(Directory.SETTLEMENT_DATA, getId().toString());
 		
 		// Update chunk group manager:
-		BundleManager.manager().removeChunkBundle(this);
+		BundleManager.manager().removeBundle(this);
 		
 		
 	}
@@ -391,7 +391,7 @@ public class Bundle extends SagaCustomSerialization{
 		groupChunks.add(sagaChunk);
 		
 		// Update chunk group manager:
-		BundleManager.manager().addChunk(sagaChunk);
+		BundleManager.manager().addSagaChunk(sagaChunk);
 		
 		// Refresh:
 		sagaChunk.refresh();
@@ -418,7 +418,7 @@ public class Bundle extends SagaCustomSerialization{
 		groupChunks.remove(sagaChunk);
 
 		// Update chunk group manager:
-		BundleManager.manager().removeChunk(sagaChunk);
+		BundleManager.manager().removeSagaChunk(sagaChunk);
 
 		// Refresh:
 		sagaChunk.refresh();
@@ -1482,10 +1482,10 @@ public class Bundle extends SagaCustomSerialization{
 		config.complete();
 		
 		// Add to manager:
-		BundleManager.manager().addChunkBundle(config);
+		BundleManager.manager().addBundle(config);
 		ArrayList<SagaChunk> groupChunks = config.getGroupChunks();
 		for (SagaChunk sagaChunk : groupChunks) {
-			BundleManager.manager().addChunk(sagaChunk);
+			BundleManager.manager().addSagaChunk(sagaChunk);
 		}
 		
 		// Enable:

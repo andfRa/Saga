@@ -59,7 +59,7 @@ public class SettlementMessages {
 		return veryNegative + "" + buildingName + " building isn't fully defined.";
 	}
 	
-	public static String noChunkBundle(String name){
+	public static String invalidBundle(String name){
 		return negative + "Settlement " + name + " doesn't exist.";
 	}
 	
@@ -252,7 +252,7 @@ public class SettlementMessages {
 	
 
 	public static String informAccept() {
-		return normal1 + "Use /saccept to accept a settlement invitation.";
+		return normal1 + "Use /saccept to accept the settlement join invitation.";
 	}
 	
 	
@@ -283,8 +283,12 @@ public class SettlementMessages {
 	}
 
 	
+	public static String declinedInvite(Bundle bundle) {
+		return normal1 + "Declined a join invitation from " + bundle.getName() + " settlement.";
+	}
+	
 	public static String declinedInvites() {
-		return normal1 + "Declined all settlement invitations.";
+		return normal1 + "Declined all settlement join invitations.";
 	}
 
 	public static String pendingInvitations(SagaPlayer sagaPlayer, ArrayList<Bundle> groups) {
@@ -326,12 +330,12 @@ public class SettlementMessages {
 	
 	
 	// Invite join  leave restrictions:
-	public static String playerNoInvites(SagaPlayer sagaPlayer) {
-		return negative + "You don't have a settlement invitation.";
+	public static String noInvites() {
+		return negative + "You don't have any settlement invitations.";
 	}
 	
-	public static String playerNoInvites(SagaPlayer sagaPlayer, String name) {
-		return negative + "You don't have an invitation to " + name + " settlement.";
+	public static String noInvites(String factionName) {
+		return negative + "You don't have an invitation to " + factionName + " settlement.";
 	}
 	
 	public static String factionNoInvites(Faction faction) {
@@ -388,7 +392,7 @@ public class SettlementMessages {
 		return negative + "Player " + sagaPlayer.getName() + " isn't a member of the settlement.";
 	}
 	
-	public static String haveCunkGroup() {
+	public static String alreadyInBundle() {
 		return negative + "You are already in a settlement.";
 	}
 	

@@ -81,14 +81,14 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	
 	
 	// Retrieval:
-	public static String nonExistentFaction(String factionName) {
+	public static String invalidFaction(String factionName) {
 		return negative + "Faction " + factionName + " doesn't exist.";
 	}
 	
-	public static String nonExistantFaction() {
+	public static String invalidFaction() {
 		return negative + "Faction doesn't exist.";
 	}
-
+	
 	public static String alreadyInFaction() {
 		return negative + "You are already in a faction.";
 	}
@@ -219,11 +219,19 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	
 	// Invite join leave:
 	public static String noInvites() {
-		return negative + "You don't have faction invitations.";
+		return negative + "You don't have any faction invitations.";
+	}
+	
+	public static String noInvites(String factionName) {
+		return negative + "You don't have an invitation to " + factionName + " faction.";
+	}
+	
+	public static String declinedInvite(Faction faction) {
+		return normal1 + "Declined a join invitation from " + faction(faction, normal1) + " faction.";
 	}
 	
 	public static String declinedInvites() {
-		return normal1 + "Declined all faction invitations.";
+		return normal1 + "Declined all faction join invitations.";
 	}
 
 	public static String newOwner(Faction faction, String name) {
@@ -231,7 +239,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	}
 	
 	public static String informAccept() {
-		return normal1 + "Use /faccept to accept a faction invitation.";
+		return normal1 + "Use /faccept to accept the faction join invitation.";
 	}
 	
 	

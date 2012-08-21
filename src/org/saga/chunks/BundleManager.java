@@ -1,15 +1,14 @@
 package org.saga.chunks;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Random;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.saga.SagaLogger;
 import org.saga.chunks.SagaChunk.ChunkSide;
-import org.saga.factions.Faction;
 import org.saga.factions.FactionClaimManager;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
@@ -44,163 +43,123 @@ public class BundleManager {
 	transient private Hashtable<String, Hashtable<Integer, Hashtable<Integer, SagaChunk>>> sagaChunks = new Hashtable<String, Hashtable<Integer,Hashtable<Integer,SagaChunk>>>();
 
 	
-	// Player load unload:
+	// Synchronisation:
 	/**
-	 * Registers a faction.
-	 * 
-	 * @param faction saga faction
-	 */
-	public void factionLoaded(Faction faction) {
-
-////		
-////		// Get all chunk group IDs:
-////		ArrayList<Integer> chunkGroupIds = sagaFaction.getChunkGroupIds();
-////		
-//		// Register all chunk groups:
-//		for (Integer groupId : chunkGroupIds) {
-//			
-//			// Retrieve the chunk groups:
-//			ChunkBundle chunkGroup = registeredGroups.get(groupId);
-//			
-//			// No longer exists:
-//			if(chunkGroup == null){
-//				Saga.severe(this, a,"ChunkGroupManager could not register " + groupId + " chunk group for " + sagaFaction + " faction, because the chunk group was not found. Ignoring request.");
-//				continue;
-//			}
-//			
-//			if(!chunkGroup.hasFaction(sagaFaction.getId())){
-//				Saga.severe(this, a,"ChunkGroupManager could not register " + groupId + " chunk group for " + sagaFaction + " faction, because the chunk group doesn't have the faction on its list. Ignoring request.");
-//				continue;
-//			}
-//			
-//			// Register faction:
-////			chunkGroup.(chunkGroup, sagaFaction);
-//
-//		}
-//		
-		
-	}
-	
-	/**
-	 * Unregisters a faction.
+	 * Synchronises players bundle.
 	 * 
 	 * @param sagaPlayer saga player
 	 */
-	public void factionUnloaded(Faction faction) {
-
-//
-//		// Get all chunk group IDs:
-//		ArrayList<Integer> chunkGroupIds = sagaFaction.getChunkGroupIds();
-//		
-//		// Register all chunk groups:
-//		for (Integer groupId : chunkGroupIds) {
-//			
-//			// Retrieve the chunk groups:
-//			ChunkBundle chunkGroup = registeredGroups.get(groupId);
-//			
-//			// No longer exists:
-//			if(chunkGroup == null){
-//				Saga.severe(this, a,"ChunkGroupManager could not unregister " + groupId + " chunk group for " + sagaFaction + " faction, because the chunk group was not found. Ignoring request.");
-//				continue;
-//			}
-//			
-//			if(!chunkGroup.hasFaction(sagaFaction.getId())){
-//				Saga.severe(this, a,"ChunkGroupManager could not unregister " + groupId + " chunk group for " + sagaFaction + " faction, because the chunk group doesn't have the faction on its list. Ignoring request.");
-//				continue;
-//			}
-//			
-//			// Unregister faction:
-////			unregisterFaction(chunkGroup, sagaFaction);
-//			
-//		}
-//		
-		
-	}
-	
-	/**
-	 * Registers a player.
-	 * 
-	 * @param sagaPlayer saga player
-	 */
-	public void playerLoaded(SagaPlayer sagaPlayer) {
+	public void syncBundle(SagaPlayer sagaPlayer) {
 
 
-		// Get all chunk group IDs:
-		Integer groupId = sagaPlayer.getBundleId();
-		
-		// Stop if invalid chunk group:
-		if(groupId <= 0){
-			return;
-		}
+		// No bundle:
+		Integer bundleId = sagaPlayer.getBundleId();
+		if(bundleId == -1) return;
 
-		// Retrieve the chunk group:
-		Bundle bundle = registeredGroups.get(groupId);
-		
 		// No longer exists:
+		Bundle bundle = registeredGroups.get(bundleId);
 		if(bundle == null){
-			SagaLogger.severe(getClass(), "failed to register " + groupId + " chunk group for " + sagaPlayer + " player, because the chunk group was not found");
+			SagaLogger.severe(getClass(), "bundle " + bundleId + "doesn't exist for player " + sagaPlayer.getName());
+			sagaPlayer.removeBundleId();
 			return;
 		}
 		
 		// Not on the list:
 		if(!bundle.isMember(sagaPlayer.getName())){
-			SagaLogger.severe(getClass(), "chunkGroupManager could not register " + groupId + " chunk group for " + sagaPlayer + " player, because the chunk group doesn't have the player on its list");
+			SagaLogger.severe(getClass(), "player " + sagaPlayer.getName() + " is not on the member list for bundle " + bundle);
 			sagaPlayer.removeBundleId();
 			return;
 		}
 		
 		
 	}
+
+	
+	
+	// Chunk bundles:
+	/**
+	 * Gets the chunk bundle for the given ID.
+	 * 
+	 * @param bundleId bundle ID
+	 * @return bundle, null if not found
+	 */
+	public Bundle getBundle(Integer bundleId) {
+		
+		return registeredGroups.get(bundleId);
+		
+	}
+
+	/**
+	 * Gets the chunk bundles for the given IDs.
+	 * 
+	 * @param bundleIds bundle IDs
+	 * @return bundles
+	 */
+	public ArrayList<Bundle> getBundles(ArrayList<Integer> bundleIds) {
+		
+		
+		ArrayList<Bundle> bundles = new ArrayList<Bundle>();
+		
+		for (Integer bundleId : bundleIds) {
+			
+			Bundle bundle = getBundle(bundleId);
+			if(bundle != null) bundles.add(bundle);
+			
+		}
+		
+		return bundles;
+		
+		
+	}
+
+	/**
+	 * Gets the bundle with the given name.
+	 * 
+	 * @param name bundle name
+	 * @return bundle, null if not found
+	 */
+	public Bundle getBundle(String name) {
+
+		
+		Collection<Bundle> bundles = registeredGroups.values();
+
+		for (Bundle bundle : bundles) {
+			if(bundle.getName().equalsIgnoreCase(name)) return bundle;
+		}
+
+        return null;
+        
+        
+    }
+
 	
 	/**
-	 * Unregisters a player.
-	 * 
-	 * @param sagaPlayer saga player
-	 */
-	public void playerUnloaded(SagaPlayer sagaPlayer) {
+     * Matches a bundle with the given name.
+     * 
+     * @param name bundle name
+     * @return bundle, null if not found
+     */
+    public Bundle matchBundle(String name) {
 
-
-		// Get all chunk group IDs:
-		Integer groupId = sagaPlayer.getBundleId();
-
-		// Stop if invalid chunk group:
-		if(groupId <= 0){
-			return;
+    	
+    	// Try complete match:
+    	Bundle bundle = getBundle(name);
+    	if(bundle != null) return bundle;
+    	
+    	Collection<Bundle> factions = this.registeredGroups.values();
+    	for (Bundle matchBundle : factions) {
+			
+    		if(matchBundle.getName().toLowerCase().startsWith(name.toLowerCase())) return matchBundle;
+    		
 		}
-		
-		// Retrieve the chunk group:
-		Bundle bundle = registeredGroups.get(groupId);
-		
-		// No longer exists:
-		if(bundle == null){
-			SagaLogger.severe(this, "could not unregister " + groupId + " chunk group for " + sagaPlayer + " player, because the chunk group was not found");
-			return;
-		}
-		
-		if(!bundle.isMember(sagaPlayer.getName())){
-			SagaLogger.severe(this, "could not unregister " + groupId + " chunk group for " + sagaPlayer + " player, because the chunk group doesn't have the player on its list");
-			return;
-		}
-
-		
+    	
+    	return null;
+    	
+    	
 	}
-
-
-	// Chunk group interaction:
-	/**
-	 * Gets the chunk groups associated with the player.
-	 * 
-	 * @param chunkGroupId group ID
-	 * @return chunk group. null if not found
-	 */
-	public Bundle getChunkBundle(Integer chunkGroupId) {
-
-		
-		return registeredGroups.get(chunkGroupId);
-		
-		
-	}
-
+	
+	
+	// Saga chunks:
 	/**
 	 * Gets a saga chunk.
 	 * 
@@ -292,41 +251,16 @@ public class BundleManager {
 		
 		
 	}
+
 	
+	
+	// Updates:
 	/**
-	 * Gets chunk group with the given name
-	 * 
-	 * @param name name
-	 * @return chunk group. null if not found
-	 */
-	public Bundle getChunkBundleWithName(String name) {
-
-		
-        Iterator<Integer> i = registeredGroups.keySet().iterator();
-
-        while ( i.hasNext() ) {
-
-            Integer id = i.next();
-            Bundle settlement = registeredGroups.get(id);
-            if ( settlement.getName().equalsIgnoreCase(name) ) {
-                return settlement;
-            }
-
-        }
-
-        return null;
-        
-        
-    }
-	
-	
-	// Chunk updates for SagaChunkGroup:
-	/**
-	 * Removes a chunk.
+	 * Removes a saga chunk.
 	 * 
 	 * @param sagaChunk saga chunk
 	 */
-	void removeChunk(SagaChunk sagaChunk) {
+	void removeSagaChunk(SagaChunk sagaChunk) {
 
 		
 		Hashtable<Integer, Hashtable<Integer, SagaChunk>> world = sagaChunks.get(sagaChunk.getWorldName());
@@ -365,11 +299,11 @@ public class BundleManager {
 	}
 	
 	/**
-	 * Adds a chunk.
+	 * Adds a saga chunk.
 	 * 
 	 * @param sagaChunk saga chunk
 	 */
-	void addChunk(SagaChunk sagaChunk) {
+	void addSagaChunk(SagaChunk sagaChunk) {
 
 		
 		Hashtable<Integer, Hashtable<Integer, SagaChunk>> world = sagaChunks.get(sagaChunk.getWorldName());
@@ -404,7 +338,7 @@ public class BundleManager {
 	 * 
 	 * @param bundle chunk group
 	 */
-	void removeChunkBundle(Bundle bundle) {
+	void removeBundle(Bundle bundle) {
 
 		
 		if(!registeredGroups.containsKey(bundle.getId())){
@@ -421,11 +355,11 @@ public class BundleManager {
 	}
 	
 	/**
-	 * Adds a chunk group.
+	 * Adds a bundle.
 	 * 
 	 * @param bundle chunk group
 	 */
-	void addChunkBundle(Bundle bundle) {
+	void addBundle(Bundle bundle) {
 
 		
 		if(registeredGroups.containsKey(bundle.getId())){
@@ -434,13 +368,6 @@ public class BundleManager {
 		}
 		
 		registeredGroups.put(bundle.getId(), bundle);
-		
-//
-//		// Add chunk shortcuts:
-//		ArrayList<SagaChunk> groupChunks = chunkGroup.getGroupChunks();
-//		for (int i = 0; i < groupChunks.size(); i++) {
-//			addChunk(groupChunks.get(i));
-//		}
 		
 		
 	}
@@ -469,9 +396,10 @@ public class BundleManager {
     }
 	
 	
+	
 	// Load unload:
 	/**
-	 * Loads the map.
+	 * Loads the manager.
 	 * 
 	 */
 	public static void load(){

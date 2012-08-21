@@ -263,11 +263,9 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		SagaLogger.info("Loading Saga player for " + name + ".");
 		putSagaPlayer(name, sagaPlayer);
 
-		// Register factions:
-		FactionManager.manager().playerLoaded(sagaPlayer);
-
-		// Register chunk groups:
-		BundleManager.manager().playerLoaded(sagaPlayer);
+		// Synchronise:
+		FactionManager.manager().syncFaction(sagaPlayer);
+		BundleManager.manager().syncBundle(sagaPlayer);
 
 		// Update:
 		sagaPlayer.update();
@@ -297,12 +295,6 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		// Unload:
 		SagaLogger.info("Unloading saga player for " + name + ".");
 		removeSagaPlayer(name);
-
-		// Unregister factions:
-		FactionManager.manager().playerUnloaded(sagaPlayer);
-
-		// Register chunk groups:
-		BundleManager.manager().playerUnloaded(sagaPlayer);
 
 		// Unload:
 		sagaPlayer.unload();

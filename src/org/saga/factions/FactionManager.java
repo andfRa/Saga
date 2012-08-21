@@ -5,9 +5,9 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Random;
+import java.util.Set;
 
 import org.saga.SagaLogger;
-import org.saga.chunks.BundleManager;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
@@ -36,46 +36,32 @@ public class FactionManager {
 	 */
 	private Hashtable<Integer, Faction> factions = new Hashtable<Integer, Faction>();
 	
-
-	// Initialization:
-	/**
-	 * Initializes.
-	 * 
-	 */
-	private FactionManager() {
-	}
-
 	
 
-	// Player load unload:
+	// Synchronisation:
 	/**
-	 * Registers a player.
+	 * Synchronises players faction.
 	 * 
 	 * @param sagaPlayer saga player
 	 */
-	public void playerLoaded(SagaPlayer sagaPlayer) {
+	public void syncFaction(SagaPlayer sagaPlayer) {
 
 
-		// Get faction ID:
+		// No faction:
 		Integer factionId = sagaPlayer.getFactionId();
-		
-		// Stop if invalid faction ID:
-		if(factionId <= 0){
-			return;
-		}
+		if(factionId == -1) return;
 
-		// Retrieve the faction:
-		Faction faction = factions.get(factionId);
-		
 		// No longer exists:
+		Faction faction = factions.get(factionId);
 		if(faction == null){
-			SagaLogger.severe(getClass(), "failed to retrieve faction for " + sagaPlayer + "player with " + factionId + " ID");
+			SagaLogger.severe(getClass(), "faction " + factionId + "doesn't exist for player " + sagaPlayer.getName());
+			sagaPlayer.removeFactionId();
 			return;
 		}
 		
 		// Not on the list:
 		if(!faction.isMember(sagaPlayer.getName())){
-			SagaLogger.severe(getClass(), "failed to register faction for " + sagaPlayer + "player with " + factionId + " ID, because the player is not on its member list");
+			SagaLogger.severe(getClass(), "player " + sagaPlayer.getName() + " is not on the member list for faction " + faction);
 			sagaPlayer.removeFactionId();
 			return;
 		}
@@ -83,32 +69,14 @@ public class FactionManager {
 		
 	}
 	
-	/**
-	 * Unregisters a player.
-	 * 
-	 * @param sagaPlayer saga player
-	 */
-	public void playerUnloaded(SagaPlayer sagaPlayer) {
-
-
-		// Retrieve the faction:
-		Faction faction = sagaPlayer.getFaction();
-
-		// No longer exists:
-		if(faction == null){
-			return;
-		}
-
-		
-	}
 
 	
-	// List:
+	// Faction:
 	/**
-	 * Gets a saga faction from the list.
+	 * Gets a faction from the list.
 	 * 
 	 * @param factionId faction ID
-	 * @return saga faction, null if not found
+	 * @return faction, null if not found
 	 */
 	public Faction getFaction(Integer factionId) {
 
@@ -117,17 +85,17 @@ public class FactionManager {
 	}
 	
 	/**
-	 * Gets saga factions with the given ids.
+	 * Gets factions with the given IDs.
 	 * 
-	 * @param ids faction IDs
-	 * @return saga factions, empty if none
+	 * @param factionIds faction IDs
+	 * @return factions
 	 */
-	public ArrayList<Faction> getFactions(Collection<Integer> ids) {
+	public ArrayList<Faction> getFactions(ArrayList<Integer> factionIds) {
 
 		
 		ArrayList<Faction> factions = new ArrayList<Faction>();
 		
-		for (Integer id : ids) {
+		for (Integer id : factionIds) {
 			
 			Faction faction = getFaction(id);
 			
@@ -138,12 +106,23 @@ public class FactionManager {
 		return factions;
 		
 	}
+	
+	/**
+	 * Gets factions with the given IDs.
+	 * 
+	 * @param factionIds faction IDs
+	 * @return factions
+	 */
+	public ArrayList<Faction> getFactions(Set<Integer> factionIds) {
+		return getFactions(new ArrayList<Integer>(factionIds));
+	}
+
 
     /**
-     * Finds a saga faction with the given name.
+     * Finds a faction with the given name.
      * 
      * @param name name
-     * @return saga faction. null if not found
+     * @return faction. null if not found
      */
     public Faction getFaction(String name) {
 
@@ -166,9 +145,35 @@ public class FactionManager {
 
         
     }
+    
+    /**
+     * Matches a faction with the given name.
+     * 
+     * @param name faction name
+     * @return faction, null if not found
+     */
+    public Faction matchFaction(String name) {
+
+    	
+    	// Try complete match:
+    	Faction faction = getFaction(name);
+    	if(faction != null) return faction;
+    	
+    	Collection<Faction> factions = this.factions.values();
+    	for (Faction matchFaction : factions) {
+			
+    		if(matchFaction.getName().toLowerCase().startsWith(name.toLowerCase())) return matchFaction;
+    		
+		}
+    	
+    	return null;
+    	
+    	
+	}
 	
+    
 	
-	// Faction methods:
+	// Updating:
 	/**
 	 * Adds a faction.
 	 * 
@@ -182,9 +187,6 @@ public class FactionManager {
 		if(oldFaction != null){
 			SagaLogger.severe(getClass(), "added an already existing faction " + oldFaction + " to the faction list");
 		}
-		
-		// Register faction:
-		BundleManager.manager().factionLoaded(faction);
 		
 		
 	}
@@ -203,9 +205,6 @@ public class FactionManager {
 			return;
 		}
 
-		// Unregister faction:
-		BundleManager.manager().factionUnloaded(faction);
-		
 		// Remove from claim manager:
 		FactionClaimManager.manager().removeFaction(faction.getId());
 
@@ -234,12 +233,13 @@ public class FactionManager {
     }
 	
 	
+	
 	// Other:
 	/**
-	 * Gets saga faction names with the given IDs.
+	 * Gets faction names with the given IDs.
 	 * 
 	 * @param ids faction IDs
-	 * @return saga faction names, empty if none
+	 * @return faction names, empty if none
 	 */
 	public ArrayList<String> getFactionNames(Collection<Integer> ids) {
 
@@ -258,6 +258,7 @@ public class FactionManager {
 		
 	}
 
+	
 	
 	// Loading unloading:
 	/**

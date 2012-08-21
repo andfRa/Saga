@@ -534,9 +534,9 @@ public class BuildingCommands {
 			
 			// Chunk group:
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
-			selChunkBundle = BundleManager.manager().getChunkBundleWithName(groupName);
+			selChunkBundle = BundleManager.manager().getBundle(groupName);
 			if(selChunkBundle == null){
-				sagaPlayer.message(SettlementMessages.noChunkBundle(groupName));
+				sagaPlayer.message(SettlementMessages.invalidBundle(groupName));
 				return;
 			}
 			

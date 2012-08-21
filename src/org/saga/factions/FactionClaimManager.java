@@ -444,7 +444,7 @@ public class FactionClaimManager implements SecondTicker{
 			
 			if(!entry.getValue().equals(factionId)) continue;
 			
-			Bundle bundle = BundleManager.manager().getChunkBundle(entry.getKey());
+			Bundle bundle = BundleManager.manager().getBundle(entry.getKey());
 			
 			if(bundle == null || !(bundle instanceof Settlement)) continue;
 			
@@ -549,7 +549,7 @@ public class FactionClaimManager implements SecondTicker{
 			}
 			
 			// Claiming:
-			Bundle bundle = BundleManager.manager().getChunkBundle(bundleId);
+			Bundle bundle = BundleManager.manager().getBundle(bundleId);
 			if(bundle == null){
 				SagaLogger.severe(getClass(), "failed to retrieve chunk bundle for " + bundleId);
 				progress.remove(bundleId);

@@ -371,7 +371,7 @@ public class StatsMessages {
 			
 			for (int i = 0; i < ids.size(); i++) {
 			
-				Bundle faction = BundleManager.manager().getChunkBundle(ids.get(i));
+				Bundle faction = BundleManager.manager().getBundle(ids.get(i));
 				if( faction != null ){
 					bundles.add(faction);
 				}else{

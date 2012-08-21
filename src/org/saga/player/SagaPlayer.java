@@ -921,7 +921,7 @@ public class SagaPlayer implements Trader{
 		
 		if(chunkGroupId == -1) return null;
 		
-		return BundleManager.manager().getChunkBundle(chunkGroupId);
+		return BundleManager.manager().getBundle(chunkGroupId);
 		
 	}
 
