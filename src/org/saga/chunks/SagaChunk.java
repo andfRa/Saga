@@ -38,58 +38,54 @@ public class SagaChunk {
 	 */
 	private Integer x;
 	
-    /**
-     * Chunk z.
-     */
-    private Integer z;
+	/**
+	 * Chunk z.
+	 */
+	private Integer z;
     
-    /**
-     * World name.
-     */
-    private String world;
+	/**
+	 * World name.
+	 */
+	private String world;
 
-    /**
-     * Building.
+	/**
+	 * Building.
      */
-    private Building bld;
-    
-    
-    /**
-     * Bukkit chunk.
-     */
-    transient private Chunk bukkitChunk = null;
-    
-    /**
-     * Chunk group.
-     */
-    transient private Bundle bundle = null;
-    
-    
-    // Initialisation:
-    /**
-     * Creates a saga chunk from a bukkit chunk.
-     * 
-     * @param chunk bukkit chunk
-     */
-    public SagaChunk(Chunk chunk){
-    	
-    	this.world = chunk.getWorld().getName();
-    	this.x = chunk.getX();
-    	this.z = chunk.getZ();
-    	
-    }
-    
-    /**
-     * Creates a saga chunk from a location.
-     * 
-     * @param location location
-     */
-    public SagaChunk(Location location){
-    	
-    	this(location.getWorld().getChunkAt(location));
-    	
-    }
-    
+	private Building bld;
+	
+	
+	/**
+	 * Bundle.
+	 */
+	transient private Bundle bundle = null;
+	
+	
+	
+	// Initialisation:
+	/**
+	 * Creates a saga chunk from a bukkit chunk.
+	 * 
+	 * @param chunk bukkit chunk
+	 */
+	public SagaChunk(Chunk chunk){
+		
+		this.world = chunk.getWorld().getName();
+		this.x = chunk.getX();
+		this.z = chunk.getZ();
+		
+	}
+	
+	/**
+	 * Creates a saga chunk from a location.
+	 * 
+	 * @param location location
+	 */
+	public SagaChunk(Location location){
+		
+		this(location.getWorld().getChunkAt(location));
+		
+	}
+	
 	/**
 	 * Completes the initialisation.
 	 * 
@@ -133,7 +129,7 @@ public class SagaChunk {
 	
 	
 	
-	// Interaction:
+	// Coordinates:
 	/**
 	 * Gets the x.
 	 * 
@@ -162,6 +158,8 @@ public class SagaChunk {
 	}
 
 	
+	
+	// Bukkit chunk:
 	/**
 	 * Gets chunk group associated with this saga chunk.
 	 * 
@@ -179,42 +177,28 @@ public class SagaChunk {
 	 */
 	public World getWorld() {
 		
-
-		if(bukkitChunk != null){
-			return bukkitChunk.getWorld();
-		}
-		
 		return Saga.plugin().getServer().getWorld(getWorldName());
-		
 		
 	}
 	
 	/**
 	 * Gets a bukkit chunk associated with the saga chunk.
 	 * 
-	 * @return bukkit chunk, null if not found
+	 * @return bukkit chunk, null if not loaded
 	 */
 	public Chunk getBukkitChunk() {
 		
 		
-		if(bukkitChunk != null){
-			return bukkitChunk;
-		}
-		
 		World world = getWorld();
 		
-		if(world == null){
-			return null;
-		}
+		if(world == null) return null;
 		
-		Chunk bukkitChunk = world.getChunkAt(x, z);
+		if(!world.isChunkLoaded(x, z)) return null;
 		
-		this.bukkitChunk = bukkitChunk;
+		return world.getChunkAt(x, z);
 		
-        return bukkitChunk;
-        
-        
-    }
+		
+	}
 	
 	
 	/**
@@ -305,21 +289,21 @@ public class SagaChunk {
 	 */
 	public void broadcast(String message) {
 
-        Entity[] entities = getBukkitChunk().getEntities();
+		Entity[] entities = getBukkitChunk().getEntities();
 
-        for ( int i = 0; i < entities.length; i++ ) {
+		for ( int i = 0; i < entities.length; i++ ) {
 
-            if ( entities[i] instanceof Player ) {
+			if ( entities[i] instanceof Player ) {
 
-                Player player = (Player)entities[i];
-                player.sendMessage(message);
+				Player player = (Player)entities[i];
+				player.sendMessage(message);
 
-            }
+			}
 
-        }
+		}
 
 
-    }
+	}
 	
 	
 	/**
@@ -469,6 +453,7 @@ public class SagaChunk {
 	}
 	
 	
+	
 	// Entities:
 	/**
 	 * Counts players on the chunk.
@@ -595,7 +580,6 @@ public class SagaChunk {
 	}
 	
 	
-	
 	// Block events:
 	/**
 	 * Called when a block is placed in the chunk.
@@ -665,7 +649,6 @@ public class SagaChunk {
 		
 	}
 
-	
 
 	// Sign events:
 	/**
@@ -677,11 +660,11 @@ public class SagaChunk {
 	public void onSignChange(SignChangeEvent event, SagaPlayer sagaPlayer) {
 
 		
-    	// Forward to building:
-    	Building building = getBuilding();
-    	if(building != null){
-    		
-    		building.onSignChange(event, sagaPlayer);
+		// Forward to building:
+		Building building = getBuilding();
+		if(building != null){
+			
+			building.onSignChange(event, sagaPlayer);
 
 			// Sign place:
 			if((event.getBlock().getState() instanceof Sign)){
@@ -690,23 +673,22 @@ public class SagaChunk {
 				bld.handleSignPlace(sagaPlayer, sign, event);
 				
 			}
-    		
-    	}
-    	
+			
+		}
+		
 		
 	}
 	
-
 	
 	// Interact events::
-    /**
-     * Called when a player interacts with something on the chunk.
-     * 
-     * @param event event
-     * @param sagaPlayer saga player
-     */
-    public void onPlayerInteract(PlayerInteractEvent event, SagaPlayer sagaPlayer) {
-    	
+	/**
+	 * Called when a player interacts with something on the chunk.
+	 * 
+	 * @param event event
+	 * @param sagaPlayer saga player
+	 */
+	public void onPlayerInteract(PlayerInteractEvent event, SagaPlayer sagaPlayer) {
+		
 
 		// Forward to chunk group:
 		getChunkBundle().onPlayerInteract(event, sagaPlayer, this);
@@ -725,15 +707,13 @@ public class SagaChunk {
 			}
 			
 		}
-    	
+		
+		
+	}
 
-    	
-    }
-
-    
-    
-    // Mob events:
-    /**
+	
+	// Mob events:
+	/**
 	 * Called when a creature spawns on the saga chunk.
 	 * 
 	 * @param event event
@@ -756,7 +736,6 @@ public class SagaChunk {
 		
 	}
 
-	
 	
 	// World change events:
 	/**
@@ -790,21 +769,19 @@ public class SagaChunk {
 	}
 	
 	
-	
 	// Interact events:
 	/**
-     * Called when a player interacts with an entity on the chunk.
-     * 
-     * @param event event
-     * @param sagaPlayer saga player
-     * @param sagaChunk saga chunk
-     */
-    public void onPlayerInteractEntity(PlayerInteractEntityEvent event, SagaPlayer sagaPlayer) {
+	 * Called when a player interacts with an entity on the chunk.
+	 * 
+	 * @param event event
+	 * @param sagaPlayer saga player
+	 * @param sagaChunk saga chunk
+	 */
+	public void onPlayerInteractEntity(PlayerInteractEntityEvent event, SagaPlayer sagaPlayer) {
 		
-    }
+	}
 	
-
-    
+	
 	// Move events:
 	/**
 	 * Called when a player enters the chunk.
@@ -875,7 +852,6 @@ public class SagaChunk {
 
 		
 	}
-
 	
 	
 	// World events:
@@ -895,18 +871,17 @@ public class SagaChunk {
 		
 	}
 
-
 	
-    // Command events:
-    /**
-     * Called when a player performs a command.
-     * 
-     * @param sagaPlayer saga player
-     * @param event event
-     */
-    public void onPlayerCommandPreprocess(SagaPlayer sagaPlayer, PlayerCommandPreprocessEvent event) {
+	// Command events:
+	/**
+	 * Called when a player performs a command.
+	 * 
+	 * @param sagaPlayer saga player
+	 * @param event event
+	 */
+	public void onPlayerCommandPreprocess(SagaPlayer sagaPlayer, PlayerCommandPreprocessEvent event) {
 
-    	
+		
 		// Canceled:
 		if(event.isCancelled()){
 			return;
@@ -916,10 +891,11 @@ public class SagaChunk {
 		getChunkBundle().onPlayerCommandPreprocess(sagaPlayer, event, this);
 
 
-    }
+	}
 	
-    
-    // Other:
+	
+	
+	// Other:
 	/* 
 	 * (non-Javadoc)
 	 * 

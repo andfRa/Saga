@@ -361,6 +361,7 @@ public class FactionClaimManager implements SecondTicker{
 		if(bundleProgess <= 0){
 			progress.remove(bundleId);
 			claiming.remove(bundleId);
+			claimActive.remove(bundleId);
 		}else{
 			progress.put(bundleId, bundleProgess);
 		}

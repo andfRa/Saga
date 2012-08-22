@@ -107,7 +107,7 @@ public class TownSquare extends Building implements SecondTicker{
 		ArrayList<SagaPlayer> sagaPlayers = getSagaChunk().getSagaPlayers();
 		if(sagaPlayers.size() == 0) return false;
 
-		// Bundles and factons:
+		// Bundles and factions:
 		if(getSagaChunk() == null) return false;
 		Bundle bundle = getChunkBundle();
 		Integer bundleId = bundle.getId();
