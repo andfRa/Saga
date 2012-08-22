@@ -5,7 +5,6 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.Hashtable;
 
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -389,37 +388,6 @@ public class Settlement extends Bundle implements MinuteTicker{
 	}
 
 	/**
-	 * Gets the available roles.
-	 * 
-	 * @return all available roles
-	 */
-	public HashSet<String> getRoles2() {
-		
-		HashSet<String> roles = new HashSet<String>();
-		
-//		// Add default role:
-//		roles.add(getDefinition().defaultRole);
-//		
-//		// Add settlement roles:
-//		roles.addAll(getDefinition().getRoles());
-//		
-//		// Add building roles:
-//		ArrayList<SagaChunk> groupChunks = getGroupChunks();
-//		for (SagaChunk sagaChunk : groupChunks) {
-//			
-//			Building building = sagaChunk.getBuilding();
-//			if(building == null) continue;
-//			
-//			ArrayList<String> promotions = building.getDefinition().getRoles();
-//			roles.addAll(promotions);
-//			
-//		}
-		
-		return roles;
-		
-	}
-
-	/**
 	 * Gets the amount of roles used.
 	 * 
 	 * @param hierarchy role hierarchy level
@@ -606,6 +574,26 @@ public class Settlement extends Bundle implements MinuteTicker{
 	
 	
 	
+	// Messages:
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.chunks.Bundle#chat(org.saga.player.SagaPlayer, java.lang.String)
+	 */
+	@Override
+	public void chat(SagaPlayer sagaPlayer, String message) {
+		
+		message = SettlementMessages.normal2 + "[" + SettlementMessages.normal1 + SettlementMessages.roledPlayer(this, sagaPlayer) + SettlementMessages.normal2 + "] " + message;
+		
+		Collection<SagaPlayer> onlineMembers = getOnlineMembers();
+		
+		for (SagaPlayer onlineMember : onlineMembers) {
+			onlineMember.message(message);
+		}
+			
+	}
+	
+	
 	// Information:
 	/**
 	 * Gets the definition for the settlement.
@@ -746,6 +734,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 	}
 
 	
+	
 	// Clock:
 	/* 
 	 * (non-Javadoc)
@@ -766,7 +755,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 			levelUp();
 
 			// Inform:
-			Saga.broadcast(SettlementMessages.settleLevelBcast(this));
+			information(SettlementMessages.levelUp(this));
 			
 		}
 		

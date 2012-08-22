@@ -114,7 +114,7 @@ public class SettlementCommands {
 		Settlement.create(settlement, sagaPlayer);
 		
 		// Inform:
-		Saga.broadcast(SettlementMessages.settledBcast(sagaPlayer, settlement));
+		sagaPlayer.message(SettlementMessages.settled(sagaPlayer, settlement));
 
 		// Play effect:
 		SettlementEffects.playClaim(sagaPlayer, selChunk);
@@ -282,7 +282,7 @@ public class SettlementCommands {
 		// Delete if none left:
 		if( selBundle.getSize() == 0 ){
 			selBundle.delete();
-			Saga.broadcast(SettlementMessages.dissolved(sagaPlayer, selBundle));
+			sagaPlayer.message(SettlementMessages.dissolved(selBundle));
 		}
 		
 		// Statistics:
@@ -396,7 +396,7 @@ public class SettlementCommands {
 		}
 
 		// Inform:
-		selBundle.broadcast(SettlementMessages.newOwnerBcast(targetName));
+		selBundle.information(SettlementMessages.newOwner(targetName));
 		
 		 
 	}
@@ -461,7 +461,7 @@ public class SettlementCommands {
 	   	selBundle.delete();
 				
 		// Inform:
-		Saga.broadcast(SettlementMessages.dissolved(sagaPlayer, selBundle));
+		sagaPlayer.message(SettlementMessages.dissolved(selBundle));
 
 		// Statistics:
 		StatisticsManager.manager().setBuildings(selBundle);
@@ -553,8 +553,8 @@ public class SettlementCommands {
 		selPlayer.addBundleInvite(selBundle.getId());
 		
 		// Inform:
-		selPlayer.message(SettlementMessages.beenInvited(selPlayer, selBundle));
-		selBundle.broadcast(SettlementMessages.invited(selPlayer, selBundle));
+		selPlayer.message(SettlementMessages.wasInvited(selPlayer, selBundle));
+		selBundle.information(SettlementMessages.invited(selPlayer, selBundle));
 		selPlayer.message(SettlementMessages.informAccept());
 		
 		// Release:
@@ -620,7 +620,7 @@ public class SettlementCommands {
 		}
     	
     	// Inform:
-    	selBundle.broadcast(SettlementMessages.joined(sagaPlayer, selBundle));
+    	selBundle.information(SettlementMessages.joined(sagaPlayer, selBundle));
 		sagaPlayer.message(SettlementMessages.haveJoined(sagaPlayer, selBundle));
 
     	// Add to bundle:
@@ -747,7 +747,7 @@ public class SettlementCommands {
 		selBundle.removeMember(sagaPlayer);
 
 		// Inform:
-		selBundle.broadcast(SettlementMessages.quit(sagaPlayer, selBundle));
+		selBundle.information(SettlementMessages.quit(sagaPlayer, selBundle));
 		sagaPlayer.message(SettlementMessages.haveQuit(sagaPlayer, selBundle));
 		
 		// Delete:
@@ -763,7 +763,7 @@ public class SettlementCommands {
 					selsettlement.delete();
 						
 					// Inform:
-					Saga.broadcast(SettlementMessages.dissolved(sagaPlayer, selsettlement));
+					sagaPlayer.message(SettlementMessages.dissolved(selsettlement));
 					
 				}else{
 					
@@ -885,8 +885,8 @@ public class SettlementCommands {
 		selPlayer.indicateRelease();
 
 		// Inform:
-		selBundle.broadcast(SettlementMessages.kicked(selPlayer, selBundle));
-		selPlayer.message(SettlementMessages.beenKicked(selPlayer, selBundle));
+		selBundle.information(SettlementMessages.kicked(selPlayer, selBundle));
+		selPlayer.message(SettlementMessages.wasKicked(selPlayer, selBundle));
 		
 		// Delete:
 		if(selBundle instanceof Settlement){
@@ -901,7 +901,7 @@ public class SettlementCommands {
 					selsettlement.delete();
 						
 					// Inform:
-					Saga.broadcast(SettlementMessages.dissolved(sagaPlayer, selsettlement));
+					sagaPlayer.message(SettlementMessages.dissolved(selsettlement));
 					
 				}else{
 					
@@ -1018,7 +1018,7 @@ public class SettlementCommands {
 		selSettlement.setRole(selPlayer, role);
 		
 		// Inform:
-		selBundle.broadcast(SettlementMessages.newRole(selPlayer, selSettlement, roleName));
+		selBundle.information(SettlementMessages.newRole(selPlayer, selSettlement, roleName));
 
 		// Release:
 		selPlayer.indicateRelease();
@@ -1294,7 +1294,7 @@ public class SettlementCommands {
 	    selBundle.setName(name);
 	    
 	    // Inform:
-	    selBundle.broadcast(SettlementMessages.renamed(selBundle));
+	    selBundle.information(SettlementMessages.renamed(selBundle));
 	    	
 	    	
 	}

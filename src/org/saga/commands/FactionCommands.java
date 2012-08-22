@@ -154,8 +154,8 @@ public class FactionCommands {
 		selPlayer.addFactionInvite(selFaction.getId());
 		
 		// Inform:
-		selFaction.broadcast(FactionMessages.invited(selPlayer, selFaction));
-		selPlayer.message(FactionMessages.beenInvited(selPlayer, selFaction));
+		selFaction.information(FactionMessages.invited(selPlayer, selFaction));
+		selPlayer.message(FactionMessages.wasInvited(selPlayer, selFaction));
 		selPlayer.message(FactionMessages.informAccept());
 		
 		// Release:
@@ -222,7 +222,7 @@ public class FactionCommands {
 		boolean formed = selFaction.isFormed();
 		
     	// Inform:
-    	selFaction.broadcast(FactionMessages.joined(sagaPlayer, selFaction));
+    	selFaction.information(FactionMessages.joined(sagaPlayer, selFaction));
 		sagaPlayer.message(FactionMessages.haveJoined(sagaPlayer, selFaction));
 		
     	// Add to faction:
@@ -235,7 +235,7 @@ public class FactionCommands {
 		
 		// Inform formation:
 		if(!formed && selFaction.isFormed()){
-			Saga.broadcast(FactionMessages.formedBcast(selFaction));
+			selFaction.information(FactionMessages.formed(selFaction));
 		}
 		
     	// Remove all invitations:
@@ -388,12 +388,12 @@ public class FactionCommands {
 		
 		// Inform disband:
 		if(formed && !selFaction.isFormed()){
-			Saga.broadcast(FactionMessages.disbanded(selFaction));
+			selFaction.information(FactionMessages.disbanded(selFaction));
 		}
 		
 		// Inform:
-		selFaction.broadcast(FactionMessages.playerKicked(selPlayer, selFaction));
-		selPlayer.message(FactionMessages.beenKicked(selPlayer, selFaction));
+		selFaction.information(FactionMessages.playerKicked(selPlayer, selFaction));
+		selPlayer.message(FactionMessages.wasKicked(selPlayer, selFaction));
 
 		// Release:
 		selPlayer.indicateRelease();
@@ -445,11 +445,11 @@ public class FactionCommands {
 
 		// Inform disband:
 		if(formed && !selFaction.isFormed()){
-			Saga.broadcast(FactionMessages.disbanded(selFaction));
+			selFaction.information(FactionMessages.disbanded(selFaction));
 		}
 		
 		// Inform:
-		selFaction.broadcast(FactionMessages.quit(sagaPlayer, selFaction));
+		selFaction.information(FactionMessages.quit(sagaPlayer, selFaction));
 		sagaPlayer.message(FactionMessages.haveQuit(sagaPlayer, selFaction));
 
 		// Disband if no players left:
@@ -562,7 +562,7 @@ public class FactionCommands {
 		selFaction.setRank(selPlayer, rank);
 		
 		// Inform:
-		selFaction.broadcast(FactionMessages.newRank(selFaction, rankName, selPlayer));
+		selFaction.information(FactionMessages.newRank(selFaction, rankName, selPlayer));
 
 		// Release:
 		selPlayer.indicateRelease();
@@ -634,7 +634,7 @@ public class FactionCommands {
 		selFaction.setOwner(selPlayer.getName());
 		
 		// Inform:
-		selFaction.broadcast(FactionMessages.newOwner(selFaction, targetName));
+		selFaction.information(FactionMessages.newOwner(selFaction, targetName));
 
 		// Release:
 		selPlayer.indicateRelease();
@@ -857,8 +857,8 @@ public class FactionCommands {
 		targetFaction.addAllianceRequest(selFaction.getId());
 	    	
 		// Inform:
-		selFaction.broadcast(FactionMessages.sentAlliance(selFaction, targetFaction));
-		targetFaction.broadcast(FactionMessages.recievedAlliance(targetFaction, selFaction));
+		selFaction.information(FactionMessages.sentAlliance(selFaction, targetFaction));
+		targetFaction.information(FactionMessages.recievedAlliance(targetFaction, selFaction));
 
 		
 	}
@@ -978,7 +978,8 @@ public class FactionCommands {
 		targetFaction.addAlly(selFaction.getId());
 		
 		// Inform:
-		Saga.broadcast(FactionMessages.formedAllianceBroadcast(selFaction, targetFaction));
+		selFaction.information(FactionMessages.formedAlliance(selFaction, targetFaction));
+		targetFaction.information(FactionMessages.formedAlliance(targetFaction, selFaction));
 
 		
 	}
@@ -1086,7 +1087,7 @@ public class FactionCommands {
 		selFaction.removeAllianceRequest(targetFaction.getId());
 		
 		// Inform:
-		selFaction.broadcast(FactionMessages.declinedAllianceRequest(selFaction, targetFaction));
+		selFaction.information(FactionMessages.declinedAllianceRequest(selFaction, targetFaction));
 
 		
 	}
@@ -1161,7 +1162,8 @@ public class FactionCommands {
 		selFaction.removeAlly(targetFaction.getId());
 
 		// Inform:
-		Saga.broadcast(FactionMessages.brokeAllianceBroadcast(selFaction, targetFaction));
+		selFaction.information(FactionMessages.brokeAlliance(selFaction, targetFaction));
+		targetFaction.information(FactionMessages.brokeAlliance(targetFaction, selFaction));
 
 		
 	}
@@ -1280,7 +1282,7 @@ public class FactionCommands {
 		selFaction.setSpawn(sagaPlayer.getLocation());
 		
 		// Inform:
-		selFaction.broadcast(FactionMessages.newSpawn(selFaction));
+		selFaction.information(FactionMessages.newSpawn(selFaction));
 		
 		
 		
@@ -1317,15 +1319,15 @@ public class FactionCommands {
 		}
 		
 		// Create message:
-		String message = selFaction.getColour2() + "[" + selFaction.getColour1() + FactionMessages.rankedPlayer(selFaction, sagaPlayer) + selFaction.getColour2() + "] " + args.getJoinedStrings(0);
+		String message = args.getJoinedStrings(0);
 		
 		// Inform:
-		selFaction.broadcast(message);
+		selFaction.chat(sagaPlayer, message);
 		
 		// Inform allies:
 		Collection<Faction> allyFactions = selFaction.getAllyFactions();
 		for (Faction allyFaction : allyFactions) {
-			allyFaction.broadcast(message);
+			allyFaction.chat(sagaPlayer, message);
 		}
 	
 
@@ -1382,7 +1384,7 @@ public class FactionCommands {
 		selFaction.setColor1(color);
 		
 		// Inform:
-		selFaction.broadcast(FactionMessages.colour1Set(selFaction));
+		selFaction.information(FactionMessages.colour1Set(selFaction));
 		
 		
 	}
@@ -1435,7 +1437,7 @@ public class FactionCommands {
 		selFaction.setColor2(color);
 		
 		// Inform:
-		selFaction.broadcast(FactionMessages.colour2Set(selFaction));
+		selFaction.information(FactionMessages.colour2Set(selFaction));
 		
 		
 	}
@@ -1598,7 +1600,7 @@ public class FactionCommands {
 	    selFaction.setName(newName);
 	    
 	    // Inform:
-	    selFaction.broadcast(FactionMessages.renamed(selFaction));
+	    selFaction.information(FactionMessages.renamed(selFaction));
 	    	
 	    	
 	}

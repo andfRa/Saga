@@ -1550,12 +1550,15 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	
 	// Messages:
 	/**
-	 * Sends a message to all registered players.
+	 * Sends a chat message to all registered players.
 	 * 
+	 * @param sagaPlayer sender Saga player
 	 * @param message message
 	 */
-	public void broadcast(String message) {
+	public void chat(SagaPlayer sagaPlayer, String message) {
 
+		message = getColour2() + "[" + getColour1() + FactionMessages.rankedPlayer(this, sagaPlayer) + getColour2() + "] " + message;
+		
 		Collection<SagaPlayer> onlineMembers = getOnlineMembers();
 		
 		for (SagaPlayer onelineMember : onlineMembers) {
@@ -1757,7 +1760,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 			levelUp();
 
 			// Inform:
-			Saga.broadcast(FactionMessages.factionLevelBcast(this));
+			information(FactionMessages.levelUp(this));
 			
 		}
 		

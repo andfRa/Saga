@@ -73,13 +73,6 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 
 	
 	
-	// Leveling:
-	public static String factionLevelBcast(Faction faction) {
-		return announce + "Faction " + faction.getColour1() + faction.getName() + announce + " is now level " + faction.getLevel() + ".";
-	}
-	
-	
-	
 	// Retrieval:
 	public static String invalidFaction(String factionName) {
 		return negative + "Faction " + factionName + " doesn't exist.";
@@ -127,78 +120,54 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		
 	}
 	
-	public static String formedBcast(Faction faction) {
+	public static String formed(Faction faction) {
 
-		
-		StringBuffer rString = new StringBuffer();
-		ArrayList<String> members = faction.getActiveMembers();
-		
-		for (int i = 0; i < members.size(); i++) {
-			
-			if(i != 0) rString.append(", ");
-			
-			rString.append(members.get(i));
-			
-		}
-		
-		if(members.size() == 0){
-			rString.append("nobody formed");
-		}else if(members.size() == 1){
-			rString.append(" formed");
-		}else{
-			rString.append(" formed");
-		}
-		
-		rString.append(" "+faction(faction, announce) + " faction.");
-		
-		
-		return announce + rString.toString();
-		
+		return faction.getColour2() + "The faction is now fully formed.";
 		
 	}
 
 	public static String disbanded(Faction faction) {
 
-		return announce + faction(faction, announce) + " faction was disbanded.";
+		return faction.getColour2() + "The faction was disbanded.";
 		
 	}
 	
 
 	
 	// Invite join leave broadcasts:
-	public static String beenInvited(SagaPlayer sagaPlayer, Faction faction) {
-		return faction.getColour2() + "You have been invited to " + faction.getColour1() + faction.getName() + faction.getColour2() + " faction.";
+	public static String wasInvited(SagaPlayer sagaPlayer, Faction faction) {
+		return faction.getColour2() + "You were invited to " + faction.getColour1() + faction.getName() + faction.getColour2() + " faction.";
 	}
 	
 	public static String invited(SagaPlayer sagaPlayer, Faction faction) {
-		return faction.getColour2() + "Player " + sagaPlayer.getName() + " was invited to the faction.";
+		return faction.getColour2() + "" + sagaPlayer.getName() + " was invited to the faction.";
 	}
 	
 	
 	public static String haveJoined(SagaPlayer sagaPlayer, Faction faction) {
-		return faction.getColour2() + "You have joined " + faction.getColour1() + faction.getName() + faction.getColour2() + " faction.";
+		return faction.getColour2() + "Joined " + faction.getColour1() + faction.getName() + faction.getColour2() + " faction.";
 	}
 	
 	public static String joined(SagaPlayer sagaPlayer, Faction faction) {
-		return faction.getColour2() + "Player " + sagaPlayer.getName() + " has joined the faction.";
+		return faction.getColour2() + "" + sagaPlayer.getName() + " joined the faction.";
 	}
 	
 	
 	public static String haveQuit(SagaPlayer sagaPlayer, Faction faction) {
-		return faction.getColour2() + "You have quit your faction.";
+		return faction.getColour2() + "Quit " + faction(faction, faction.getColour2()) + " faction.";
 	}
 	
 	public static String quit(SagaPlayer sagaPlayer, Faction faction) {
-		return faction.getColour2() + "Player " + sagaPlayer.getName() + " has quit the faction.";
+		return faction.getColour2() + "" + sagaPlayer.getName() + " quit the faction.";
 	}
 
 	
-	public static String beenKicked(SagaPlayer sagaPlayer, Faction faction) {
+	public static String wasKicked(SagaPlayer sagaPlayer, Faction faction) {
 		return faction.getColour2() + "You were kicked from the faction.";
 	}
 	
 	public static String playerKicked(SagaPlayer sagaPlayer, Faction faction) {
-		return faction.getColour2() + "Player " + sagaPlayer.getName() + " was kicked from the faction.";
+		return faction.getColour2() + "" + sagaPlayer.getName() + " was kicked from the faction.";
 	}
 	
 	
@@ -690,13 +659,13 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	// Spawn:
 	public static String noSpawn(Faction faction) {
 		
-		return negative + "Faction spawn point hasn't been set.";
+		return negative + "Faction spawn point isn't set.";
 		
 	}
 	
 	public static String newSpawn(Faction faction) {
 		
-		return faction.getColour2() + "New faction spawn point has been set.";
+		return faction.getColour2() + "New faction spawn point was set.";
 		
 	}
 
@@ -727,15 +696,15 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		
 	}
 	
-	public static String formedAllianceBroadcast(Faction faction, Faction target) {
+	public static String formedAlliance(Faction faction, Faction target) {
 		
-		return announce + "An alliance was formed between " + faction(faction, announce) + " and " + faction(target, announce) + " factions.";
+		return faction.getColour2() + "An alliance was formed with " + faction(target, faction.getColour2()) + " faction.";
 		
 	}
 	
-	public static String brokeAllianceBroadcast(Faction faction, Faction target) {
+	public static String brokeAlliance(Faction faction, Faction target) {
 		
-		return announce + "An alliance was broken between " + faction(faction, announce) + " and " + faction(target, announce) + " factions.";
+		return faction.getColour2() + "The alliance with " + faction(target, faction.getColour2()) + " faction was broken.";
 		
 	}
 

@@ -445,7 +445,7 @@ public class AdminCommands {
 		selectedSettlement.setLevel(level);
 		
 		// Inform:
-		selectedChunkBundle.broadcast(SettlementMessages.settleLevelBcast(selectedSettlement));
+		selectedChunkBundle.information(SettlementMessages.levelUp(selectedSettlement));
 		if(selectedChunkBundle != sagaPlayer.getBundle()){
 			sagaPlayer.message(SettlementMessages.setLevel(selectedSettlement));
 		}

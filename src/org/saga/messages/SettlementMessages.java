@@ -21,6 +21,7 @@ import org.saga.factions.FactionClaimManager;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.messages.PlayerMessages.ColourLoop;
 import org.saga.player.Proficiency.ProficiencyType;
+import org.saga.player.Proficiency;
 import org.saga.player.ProficiencyDefinition;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;
@@ -92,8 +93,8 @@ public class SettlementMessages {
 	
 	
 	// Owner:
-	public static String newOwnerBcast(String name) {
-		return announce + "Player " + name + " is the new owner of the settlement.";
+	public static String newOwner(String name) {
+		return normal2 + "Player " + name + " is the new owner of the settlement.";
 	}
 	
 	public static String alreadyOwner() {
@@ -154,12 +155,12 @@ public class SettlementMessages {
 	
 	
 	// Settling and dissolving:
-	public static String settledBcast(SagaPlayer sagaPlayer, Bundle settlement) {
-		return announce + settlement.getName() + " settlement was founded by " + sagaPlayer.getName() + ".";
+	public static String settled(SagaPlayer sagaPlayer, Bundle settlement) {
+		return normal1 + "Founded " + settlement.getName() + " settlement.";
 	}
 
-	public static String dissolved(SagaPlayer sagaPlayer, Bundle settlement) {
-		return announce + settlement.getName() + " settlement was dissolved by " + sagaPlayer.getName() + ".";
+	public static String dissolved(Bundle settlement) {
+		return normal1 + "Dissolved " + settlement.getName() + " settlement.";
 	}
 
 	public static String informDissolveLevel() {
@@ -220,7 +221,7 @@ public class SettlementMessages {
 	}
 
 	public static String chunkClaimed(){
-		return negative + "This chunk of land has already been claimed.";
+		return negative + "This chunk of land is already claimed.";
 	}
 	
 	public static String chunkNotClaimed(){
@@ -242,12 +243,12 @@ public class SettlementMessages {
 	
 	
 	// Invite join leave messages:
-	public static String beenInvited(SagaPlayer sagaPlayer, Bundle settlement) {
-		return normal1 + "You have been invited to " + settlement.getName() + " settlement.";
+	public static String wasInvited(SagaPlayer sagaPlayer, Bundle settlement) {
+		return normal1 + "You were invited to " + settlement.getName() + " settlement.";
 	}
 	
 	public static String invited(SagaPlayer sagaPlayer, Bundle settlement) {
-		return announce + sagaPlayer.getName() + " was invited to the settlement.";
+		return normal2 + sagaPlayer.getName() + " was invited to the settlement.";
 	}
 	
 
@@ -257,29 +258,29 @@ public class SettlementMessages {
 	
 	
 	public static String haveJoined(SagaPlayer sagaPlayer, Bundle settlement) {
-		return normal1 + "You joined " +settlement.getName() + " settlement.";
+		return normal1 + "Joined " +settlement.getName() + " settlement.";
 	}
 	
 	public static String joined(SagaPlayer sagaPlayer, Bundle settlement) {
-		return announce + sagaPlayer.getName() + " has joined the settlement.";
+		return normal2 + sagaPlayer.getName() + " joined the settlement.";
 	}
 	
 	
 	public static String haveQuit(SagaPlayer sagaPlayer, Bundle settlement) {
-		return normal1 + "You left from " + settlement.getName() + " settlement.";
+		return normal1 + "Quit from " + settlement.getName() + " settlement.";
 	}
 	
 	public static String quit(SagaPlayer sagaPlayer, Bundle settlement) {
-		return announce + sagaPlayer.getName() + " has left the settlement.";
+		return normal2 + sagaPlayer.getName() + " quit the settlement.";
 	}
 
 	
-	public static String beenKicked(SagaPlayer sagaPlayer, Bundle settlement) {
-		return normal1 + "You have been kicked out of " + settlement.getName() + " settlement.";
+	public static String wasKicked(SagaPlayer sagaPlayer, Bundle settlement) {
+		return normal1 + "You were kicked out of " + settlement.getName() + " settlement.";
 	}
 	
 	public static String kicked(SagaPlayer sagaPlayer, Bundle settlement) {
-		return announce + sagaPlayer.getName() + " has been kicked from the settlement.";
+		return normal2 + sagaPlayer.getName() + " was kicked from the settlement.";
 	}
 
 	
@@ -743,7 +744,7 @@ public class SettlementMessages {
 	
 	public static String newRole(SagaPlayer sagaPlayer, Bundle settlement, String roleName) {
 		
-		return announce + sagaPlayer.getName() + " is now a " + roleName + ".";
+		return normal2 + sagaPlayer.getName() + " is now a " + roleName + ".";
 		
 	}
 
@@ -756,8 +757,8 @@ public class SettlementMessages {
 	
 	
 	// Levels and building points:
-	public static String settleLevelBcast(Settlement settlement) {
-		return announce + "Settlement " + settlement.getName() + " is now level " + settlement.getLevel() + ".";
+	public static String levelUp(Settlement settlement) {
+		return normal2 + "The settlement is now level " + settlement.getLevel() + ".";
 	}
 	
 	public static String notEnoughBuildingPoints(Building building) {
@@ -773,7 +774,7 @@ public class SettlementMessages {
 	// Rename:
 	public static String renamed(Bundle bundle) {
 
-		return announce + "Settlement was renamed to " + bundle.getName() + ".";
+		return normal2 + "Settlement was renamed to " + bundle.getName() + ".";
 		
 	}
 	
@@ -906,6 +907,22 @@ public class SettlementMessages {
 		return negative + "Name must be " + SettlementCommands.minimumNameLenght + "-" + SettlementCommands.maximumNameLength + ". Letters and numbers only.";
 		
 	}
+	
+	
+	
+	// Roles:
+	public static String roledPlayer(Settlement settlement, SagaPlayer sagaPlayer) {
+
+		Proficiency role = settlement.getRole(sagaPlayer.getName());
+		
+		if(role == null){
+			return sagaPlayer.getName();
+		}else{
+			return role.getName() + " " + sagaPlayer.getName();
+		}
+		
+	}
+	
 	
 	
 }

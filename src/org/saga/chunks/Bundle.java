@@ -1081,12 +1081,14 @@ public class Bundle extends SagaCustomSerialization{
 	
 	// Messages:
 	/**
-	 * Broadcast a message to all members.
+	 * Sends a chat message to all members.
 	 * 
+	 * @param sagaPlayer sender Saga player
 	 * @param message message
 	 */
-	public void broadcast(String message){
+	public void chat(SagaPlayer sagaPlayer, String message){
 		
+		message = SettlementMessages.normal2 + "[" + SettlementMessages.normal1 + sagaPlayer.getName() + "] ";
 		
 		Collection<SagaPlayer> onlineMembers = getOnlineMembers();
 		
@@ -1094,11 +1096,39 @@ public class Bundle extends SagaCustomSerialization{
 			onlineMember.message(message);
 		}
 		
+	}
+	
+	/**
+	 * Sends a information message.
+	 * 
+	 * @param message message
+	 */
+	public void information(String message) {
+
+		Collection<SagaPlayer> onlineMembers = getOnlineMembers();
+		
+		for (SagaPlayer onlineMember : onlineMembers) {
+			information(message, onlineMember);
+		}
 		
 	}
 	
+	/**
+	 * Sends an information message to a member.
+	 * 
+	 * @param message message
+	 * @param member faction member
+	 */
+	public void information(String message, SagaPlayer member) {
+		
+		message = SettlementMessages.normal2 + "(" + SettlementMessages.normal1 + "info" + SettlementMessages.normal2 + ") " + message;
+
+		member.message(message);
+		
+	}
 	
 
+	
 	// Identification:
 	/**
 	 * Gets chunk group ID.

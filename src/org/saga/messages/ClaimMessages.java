@@ -29,7 +29,7 @@ public class ClaimMessages {
 	// All:
 	public static String claimedBcast(Bundle bundle, Faction faction){
 		
-		return announce + "" + ChatColor.UNDERLINE + "Settlement " + bundle.getName() + " was claimed by " + FactionMessages.faction(ChatColor.UNDERLINE, faction, announce)+".";
+		return announce + "" + "Settlement " + bundle.getName() + " was claimed by " + FactionMessages.faction(ChatColor.UNDERLINE, faction, announce)+".";
 	
 	}
 	
