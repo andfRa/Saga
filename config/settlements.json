@@ -57,7 +57,7 @@
     "craftTime":"MIDDAY",
     "functions":{},
     "maxScore":3,
-    "upgradeCost":{"x1":1,"y1":2500,"x2":2,"y2":10000},
+    "upgradeCost":{"x1":1,"y1":10000,"x2":2,"y2":40000},
     "description":"spawns logs",
     "effect":"#craft_daytime: #caft_amount x logs"
   },
@@ -85,7 +85,7 @@
     "craftTime":"MIDDAY",
     "functions":{},
     "maxScore":3,
-    "upgradeCost":{"x1":1,"y1":2500,"x2":2,"y2":10000},
+    "upgradeCost":{"x1":1,"y1":1000,"x2":2,"y2":40000},
     "description":"spawns crops and meat",
     "effect":"#craft_daytime: #caft_amount x crops/raw meat"
   },
@@ -112,7 +112,7 @@
     "craftTime":"MIDDAY",
     "functions":{},
     "maxScore":3,
-    "upgradeCost":{"x1":1,"y1":7500,"x2":2,"y2":30000},
+    "upgradeCost":{"x1":1,"y1":30000,"x2":2,"y2":120000},
     "description":"spawns ores",
     "effect":"#craft_daytime: #caft_amount x ore"
   },
@@ -138,7 +138,7 @@
     "craftTime":"SUNSET",
     "functions":{},
     "maxScore":3,
-    "upgradeCost":{"x1":1,"y1":2500,"x2":2,"y2":10000},
+    "upgradeCost":{"x1":1,"y1":10000,"x2":2,"y2":40000},
     "description":"creates wood from logs",
     "effect":"#craft_daytime: #caft_amount x logs to wood"
   },
@@ -165,7 +165,7 @@
     "craftTime":"SUNSET",
     "functions":{},
     "maxScore":3,
-    "upgradeCost":{"x1":1,"y1":2500,"x2":2,"y2":10000},
+    "upgradeCost":{"x1":1,"y1":10000,"x2":2,"y2":40000},
     "description":"cooks food from farm products",
     "effect":"#craft_daytime: #caft_amount x wheat/meat to food"
   },
@@ -192,7 +192,7 @@
     "craftTime":"SUNSET",
     "functions":{},
     "maxScore":3,
-    "upgradeCost":{"x1":1,"y1":7500,"x2":2,"y2":30000},
+    "upgradeCost":{"x1":1,"y1":30000,"x2":2,"y2":120000},
     "description":"refines ores",
     "effect":"#craft_daytime: #caft_amount x ore refined"
   },
@@ -216,7 +216,7 @@
     "craftTime":"SUNSET",
     "functions":{},
     "maxScore":3,
-    "upgradeCost":{"x1":1,"y1":5000,"x2":2,"y2":20000},
+    "upgradeCost":{"x1":1,"y1":20000,"x2":2,"y2":80000},
     "description":"creates bricks",
     "effect":"#craft_daytime: #caft_amount x bricks"
   },
@@ -240,7 +240,7 @@
     "craftTime":"MIDNIGHT",
     "functions":{},
     "maxScore":3,
-    "upgradeCost":{"x1":1,"y1":12500,"x2":2,"y2":50000},
+    "upgradeCost":{"x1":1,"y1":50000,"x2":2,"y2":200000},
     "description":"spawns gems",
     "effect":"#craft_daytime: #caft_amount x gems"
   },
@@ -263,7 +263,7 @@
     "craftTime":"NONE",
     "functions":{},
     "maxScore":3,
-    "upgradeCost":{"x1":1,"y1":3750,"x2":2,"y2":15000},
+    "upgradeCost":{"x1":1,"y1":15000,"x2":2,"y2":60000},
     "description":"gives firm armour ability",
     "effect":"armour damages weapons"
   },
@@ -284,7 +284,7 @@
     "craftTime":"NONE",
     "functions":{},
     "maxScore":3,
-    "upgradeCost":{"x1":1,"y1":3750,"x2":2,"y2":15000},
+    "upgradeCost":{"x1":1,"y1":15000,"x2":2,"y2":60000},
     "description":"gives force bow ability",
     "effect":"bow causes knockback"
   },
@@ -305,7 +305,7 @@
     "craftTime":"NONE",
     "functions":{},
     "maxScore":3,
-    "upgradeCost":{"x1":1,"y1":3750,"x2":2,"y2":15000},
+    "upgradeCost":{"x1":1,"y1":15000,"x2":2,"y2":60000},
     "description":"gives ignite ability",
     "effect":"fireball ignites targets"
   },
@@ -328,7 +328,7 @@
     "craftTime":"NONE",
     "functions":{},
     "maxScore":1,
-    "upgradeCost":{"x1":1,"y1":8750,"x2":2,"y2":35000},
+    "upgradeCost":{"x1":1,"y1":35000,"x2":2,"y2":140000},
     "description":"enables spawn command",
     "effect":"command: /sspawn"
   },
@@ -349,7 +349,7 @@
     "craftTime":"NONE",
     "functions":{},
     "maxScore":1,
-    "upgradeCost":{"x1":1,"y1":8750,"x2":2,"y2":35000},
+    "upgradeCost":{"x1":1,"y1":35000,"x2":2,"y2":140000},
     "description":"prevents hostile mob spawning",
     "effect":""
   },
@@ -370,7 +370,7 @@
     "craftTime":"NONE",
     "functions":{},
     "maxScore":1,
-    "upgradeCost":{"x1":1,"y1":8750,"x2":2,"y2":35000},
+    "upgradeCost":{"x1":1,"y1":35000,"x2":2,"y2":140000},
     "description":"a place to fight",
     "effect":"keeps score"
   },
@@ -389,9 +389,9 @@
     "relatedBuildings":[],
     "performTime":"MIDDAY",
     "craftTime":"NONE",
-    "functions":{"buy limit":{"x1":1,"y1":15000,"x2":3,"y2":40000}},
+    "functions":{"buy limit":{"x1":1,"y1":7000,"x2":3,"y2":20000}},
     "maxScore":3,
-    "upgradeCost":{"x1":1,"y1":8750,"x2":2,"y2":35000},
+    "upgradeCost":{"x1":1,"y1":12000,"x2":2,"y2":48000},
     "description":"buy items",
     "effect":"#perform_daytime: new goods"
   },
@@ -412,7 +412,7 @@
     "craftTime":"NONE",
     "functions":{},
     "maxScore":1,
-    "upgradeCost":{"x1":1,"y1":8750,"x2":2,"y2":35000},
+    "upgradeCost":{"x1":1,"y1":35000,"x2":2,"y2":140000},
     "description":"only residents and owner can build",
     "effect":""
   },
@@ -433,7 +433,7 @@
     "craftTime":"NONE",
     "functions":{"train limit":{"x1":1,"y1":20,"x2":3,"y2":50}},
     "maxScore":3,
-    "upgradeCost":{"x1":1,"y1":3750,"x2":2,"y2":15000},
+    "upgradeCost":{"x1":1,"y1":35000,"x2":2,"y2":140000},
     "description":"train and reset attributes",
     "effect":"attribute training"
   }
