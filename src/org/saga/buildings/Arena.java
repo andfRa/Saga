@@ -121,15 +121,6 @@ public class Arena extends Building implements SecondTicker{
 	public void disable() {
 
 		super.disable();
-
-		// Disable time of day clock:
-		Clock.clock().unregisterDaytimeTick(this);
-
-		// Disable second clock:
-		if(count > 0){
-			Clock.clock().unregisterSecondTick(this);
-		}
-		
 		
 	}
 
@@ -288,9 +279,7 @@ public class Arena extends Building implements SecondTicker{
 		
 		
 		// Disable clock:
-		if(count <= 0){
-			Clock.clock().unregisterSecondTick(this);
-		}
+		if(count <= 0) return false;
 		
 		// Inform:
 		SagaChunk sagaChunk = getSagaChunk();

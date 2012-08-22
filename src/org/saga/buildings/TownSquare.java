@@ -82,11 +82,7 @@ public class TownSquare extends Building implements SecondTicker{
 	@Override
 	public void disable() {
 		
-		
-		if(Clock.clock().isSecondTicking(this)) Clock.clock().unregisterSecondTick(this);
-		
 		super.disable();
-		
 		
 	}
 	

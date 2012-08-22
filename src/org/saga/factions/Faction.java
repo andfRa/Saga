@@ -384,12 +384,6 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 * 
 	 */
 	public void disable() {
-
-		
-		// Clock:
-		Clock.clock().unregisterMinuteTick(this);
-		Clock.clock().unregisterDaytimeTick(this);
-		
 		
 	}
 	

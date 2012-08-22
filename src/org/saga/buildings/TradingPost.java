@@ -2,7 +2,6 @@ package org.saga.buildings;
 
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
-import org.saga.Clock;
 import org.saga.Clock.DaytimeTicker;
 import org.saga.SagaLogger;
 import org.saga.buildings.signs.BuildingSign;
@@ -87,9 +86,6 @@ public class TradingPost extends Building implements DaytimeTicker{
 
 		super.disable();
 
-		// Register clock:
-		Clock.clock().unregisterDaytimeTick(this);
-		
 	}
 	
 	/* 

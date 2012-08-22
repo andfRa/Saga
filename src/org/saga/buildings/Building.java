@@ -961,8 +961,6 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 */
 	public void disable() {
 
-		Clock.clock().unregisterDaytimeTick(this);
-		
 	}
 
 	/**

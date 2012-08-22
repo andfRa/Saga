@@ -7,7 +7,6 @@ import java.util.Hashtable;
 import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Monster;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.saga.Clock;
 import org.saga.Clock.DaytimeTicker;
 import org.saga.chunks.SagaChunk;
 import org.saga.exceptions.InvalidBuildingException;
@@ -105,11 +104,6 @@ public class Watchtower extends Building implements DaytimeTicker{
 	public void disable() {
 		
 		super.disable();
-		
-		Clock.clock().unregisterDaytimeTick(this);
-		
-		// Unprotect:
-		this.protectedChunks = new ArrayList<SagaChunk>();
 		
 	}
 	

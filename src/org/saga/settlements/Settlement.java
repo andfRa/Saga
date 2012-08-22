@@ -192,8 +192,6 @@ public class Settlement extends Bundle implements MinuteTicker{
 		
 		super.disable();
 		
-		Clock.clock().unregisterMinuteTick(this);
-		
 	}
 	
 	/**

@@ -698,9 +698,6 @@ public class FactionClaimManager implements SecondTicker{
 		// Inform:
 		SagaLogger.info("Unloading faction claims.");
 		
-		// Clock:
-		Clock.clock().unregisterSecondTick(instance);
-		
 		save();
 		
 		instance = null;

@@ -93,11 +93,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		// Messages:
 		SagaLogger.info("Disabling Saga.");
 
-		// Disable automatic saving:
-		Clock.clock().unregisterMinuteTick(this);
-
-		// NOTE: All registered events are automatically unregistered when a
-		// plugin is disabled
+		// NOTE: All registered events are automatically unregistered when a plugin is disabled
 
 		// Unload all saga players:
 		unloadAllSagaPlayers();

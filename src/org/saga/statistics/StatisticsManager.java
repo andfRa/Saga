@@ -293,18 +293,20 @@ public class StatisticsManager implements HourTicker{
 	 * @see org.saga.Clock.HourTicker#clockHourTick()
 	 */
 	@Override
-	public void clockHourTick() {
+	public boolean clockHourTick() {
 		
 		
 		// Check if a day has passed:
 		Integer ageDays = new Double(calcStatisticsAge() / (60.0 * 60.0 * 1000.0)).intValue();
-		if(ageDays < GeneralConfiguration.config().statisticsUpdateAge) return;
+		if(ageDays < GeneralConfiguration.config().statisticsUpdateAge) return true;
 		
 		SagaLogger.info("Resetting statistics.");
 		
 		archive();
 		
 		reset();
+		
+		return true;
 		
 		
 	}
@@ -1102,9 +1104,6 @@ public class StatisticsManager implements HourTicker{
 		
 		// Inform:
 		SagaLogger.info("Unloading statistics.");
-		
-		// Clock:
-		Clock.clock().unregisterHourTick(instance);
 		
 		save();
 		

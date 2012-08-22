@@ -18,7 +18,6 @@ public class Clock implements Runnable{
 	private final static Integer LAG_COMPENSATION = 120;
 
 	
-	
 	/**
 	 * Instance.
 	 */
@@ -32,6 +31,7 @@ public class Clock implements Runnable{
 	public static Clock clock() {
 		return instance;
 	}
+	
 	
 	/**
 	 * Seconds cycle.
@@ -69,21 +69,11 @@ public class Clock implements Runnable{
 	 */
 	private HashSet<DaytimeTicker> daytimes = new HashSet<DaytimeTicker>();
 
+	
 	/**
 	 * Previous daytime.
 	 */
 	private Hashtable<String, Daytime> prevDaytimes = new Hashtable<String, Clock.DaytimeTicker.Daytime>();
-	
-	
-	
-	// Initialisation:
-	/**
-	 * Creates a clock.
-	 * 
-	 */
-	public Clock() {
-
-	}
 	
 	
 	
@@ -100,82 +90,52 @@ public class Clock implements Runnable{
 //		String time = Saga.plugin().getServer().getWorld("world").getTime() +"";
 //		System.out.println("time=" + time);
 		
-		HashSet<SecondTicker> removeSecond = new HashSet<Clock.SecondTicker>();
-		HashSet<MinuteTicker> removeMinute = new HashSet<Clock.MinuteTicker>();
-		
 		// Seconds:
-		synchronized (seconds) {
-			
-			secondsCycle ++;
-			
-			ArrayList<SecondTicker> second = new ArrayList<Clock.SecondTicker>(this.seconds);
-			for (int i = 0; i < second.size(); i++) {
-				
-				 if(!second.get(i).clockSecondTick()){
-					 removeSecond.add(second.get(i));
-				 }
-				 
-			}
-			
-		}
+		secondsCycle ++;
 		
-		for (SecondTicker ticker : removeSecond) {
-			seconds.remove(ticker);
+		ArrayList<SecondTicker> second = new ArrayList<Clock.SecondTicker>(this.seconds);
+		for (SecondTicker ticker : second) {
+			
+			if(!ticker.clockSecondTick()) this.seconds.remove(ticker);
+			
 		}
 		
 		// Minutes:
-		synchronized (minutes) {
+		if(secondsCycle > 59){
 			
-			if(secondsCycle > 59){
+			secondsCycle = 0;
+			minutesCycle++;
+			
+			ArrayList<MinuteTicker> minute = new ArrayList<Clock.MinuteTicker>(this.minutes);
+			for (MinuteTicker ticker : minute) {
 				
-				secondsCycle = 0;
-				minutesCycle++;
-				
-				ArrayList<MinuteTicker> minute = new ArrayList<Clock.MinuteTicker>(this.minutes);
-				for (int i = 0; i < minute.size(); i++) {
-					
-					if(!minute.get(i).clockMinuteTick()){
-						removeMinute.add(minute.get(i));
-					}
-					
-				}
+				if(!ticker.clockMinuteTick()) this.minutes.remove(ticker);
 				
 			}
 			
-		}
-		
-		for (MinuteTicker ticker : removeMinute) {
-			minutes.remove(ticker);
 		}
 		
 		// Hours:
-		synchronized (hours) {
-
-			if(minutesCycle > 59){
-				minutesCycle = 0;
-				hoursCycle ++;
-
-				ArrayList<HourTicker> hour = new ArrayList<HourTicker>(this.hours);
-				SagaLogger.info("Hour tick for " + hour.size() + " registered instances.");
-				for (int i = 0; i < hour.size(); i++) {
-					
-					hour.get(i).clockHourTick();
-					
-				}
-			}
+		if(minutesCycle > 59){
 			
-			if(hoursCycle > 23){
-				hoursCycle = 0;
+			minutesCycle = 0;
+			hoursCycle ++;
+
+			ArrayList<HourTicker> hour = new ArrayList<HourTicker>(this.hours);
+			SagaLogger.info("Hour tick for " + hour.size() + " registered instances.");
+			for (HourTicker ticker : hour) {
+				
+				if(!ticker.clockHourTick()) this.hours.remove(ticker);
+				
 			}
-			
+		}
+		
+		if(hoursCycle > 23){
+			hoursCycle = 0;
 		}
 
 		// Time of day:
-		synchronized (daytimes) {
-			
-			sendDaytimeTicks();
-			
-		}
+		sendDaytimeTicks();
 		
 
 	}
@@ -260,28 +220,6 @@ public class Clock implements Runnable{
 	}
 
 	/**
-	 * Unregisters ticking.
-	 * 
-	 * @param ticker ticker
-	 */
-	public void unregisterSecondTick(SecondTicker ticker) {
-
-		
-		synchronized (seconds) {
-		
-			if(!seconds.contains(ticker)){
-				SagaLogger.warning(getClass(), ticker.getClass().getSimpleName() + "{" + ticker + "}" + " second ticker not registered");
-				return;
-			}
-			seconds.remove(ticker);
-			
-			
-		}
-		
-		
-	}
-	
-	/**
 	 * Checks if the second clock is ticking.
 	 * 
 	 * @param ticker ticker
@@ -307,27 +245,6 @@ public class Clock implements Runnable{
 				return;
 			}
 			minutes.add(ticker);
-			
-		}
-		
-		
-	}
-
-	/**
-	 * Unregisters ticking.
-	 * 
-	 * @param ticker ticker
-	 */
-	public void unregisterMinuteTick(MinuteTicker ticker) {
-
-		
-		synchronized (minutes) {
-
-			if(!minutes.contains(ticker)){
-				SagaLogger.warning(getClass(), ticker.getClass().getSimpleName() + "{" + ticker + "}" + " minute ticker not registered");
-				return;
-			}
-			minutes.remove(ticker);
 			
 		}
 		
@@ -366,27 +283,6 @@ public class Clock implements Runnable{
 		
 	}
 
-	/**
-	 * Unregisters ticking.
-	 * 
-	 * @param ticker ticker
-	 */
-	public void unregisterHourTick(HourTicker ticker) {
-
-		
-		synchronized (hours) {
-
-			if(!hours.contains(ticker)){
-				SagaLogger.warning(getClass(), ticker.getClass().getSimpleName() + "{" + ticker + "}" + " hour ticker not registered");
-				return;
-			}
-			hours.remove(ticker);
-				
-		}
-		
-		
-	}
-
 	
 	/**
 	 * Registers ticking.
@@ -408,28 +304,7 @@ public class Clock implements Runnable{
 		
 		
 	}
-	
-	/**
-	 * Unregisters ticking.
-	 * 
-	 * @param ticker ticker
-	 */
-	public void unregisterDaytimeTick(DaytimeTicker ticker) {
 
-		
-		synchronized (daytimes) {
-		
-			if(!daytimes.contains(ticker)){
-				SagaLogger.warning(getClass(), ticker.getClass().getSimpleName() + "{" + ticker + "}" + " daytime ticker not registered");
-				return;
-			}
-			daytimes.remove(ticker);
-			
-		}
-		
-		
-	}
-	
 	
 	
 	// Loading and unloading:
@@ -506,8 +381,9 @@ public class Clock implements Runnable{
 		/**
 		 * A clock tick.
 		 * 
+		 * @return true if continue
 		 */
-		public void clockHourTick();
+		public boolean clockHourTick();
 		
 		
 	}
