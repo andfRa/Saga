@@ -85,7 +85,7 @@
     "craftTime":"MIDDAY",
     "functions":{},
     "maxScore":3,
-    "upgradeCost":{"x1":1,"y1":1000,"x2":2,"y2":40000},
+    "upgradeCost":{"x1":1,"y1":10000,"x2":2,"y2":40000},
     "description":"spawns crops and meat",
     "effect":"#craft_daytime: #caft_amount x crops/raw meat"
   },
