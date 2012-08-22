@@ -368,6 +368,9 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		// Next exp:
 		table.addLine("next EXP", faction.getRemainingExp().intValue() + "", 2);
 
+		// Exp speed:
+		table.addLine("EXP/minute", TextUtil.round(faction.getExpSpeed(), 1) + "", 2);
+
 		table.collapse();
 		
 		return table;
@@ -409,9 +412,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		// Claims:
 		table.addLine(GeneralMessages.tableTitle("settlements"), "", 2);
 		
-		Settlement[] settlemenents = FactionClaimManager.manager().findSettlements(faction.getId());
-		String claimed = settlemenents.length + "/" + FactionConfiguration.config().getClaimLimit(faction.getLevel());
-		table.addLine("claimed", claimed, 2);
+		table.addLine("claimed", faction.countClaimedSettles() + "", 2);
 		
 		table.collapse();
 		
@@ -811,6 +812,15 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	public static String rankUnavailable(Faction faction, String rankName) {
 		
 		return negative + "Rank " + rankName + " isn't available.";
+		
+	}
+	
+	
+	
+	// Experience:
+	public static String levelUp(Faction faction) {
+		
+		return faction.getColour2() + "The faction reached level " + faction.getLevel() + ".";
 		
 	}
 	

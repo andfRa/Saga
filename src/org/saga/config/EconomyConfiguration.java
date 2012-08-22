@@ -99,9 +99,9 @@ public class EconomyConfiguration {
 	
 	// Wages:
 	/**
-	 * Wage multiplier for settlement levels.
+	 * The amount of wage for claim points.
 	 */
-	private TwoPointFunction factionWageLevelMultiplier;
+	private TwoPointFunction factionClaimsPointsWage;
 
 	/**
 	 * Wage multiplier for hierarchy levels.
@@ -180,17 +180,21 @@ public class EconomyConfiguration {
 			sellMult = 1.0;
 		}
 
-		if(factionWageLevelMultiplier == null){
-			SagaLogger.nullField(getClass(), "factionWageLevelMultiplier");
-			factionWageLevelMultiplier= new TwoPointFunction(0.0);
+		if(factionClaimsPointsWage == null){
+			SagaLogger.nullField(getClass(), "factionClaimsPointsWage");
+			factionClaimsPointsWage= new TwoPointFunction(0.0);
 		}
-		factionWageLevelMultiplier.complete();
+		factionClaimsPointsWage.complete();
+		
+		if(factionClaimsPointsWage.getXMin() != 0){
+			SagaLogger.warning(getClass(), "factionClaimsPointsWage x1 must be 0 to preserver wages linearity");
+		}
 
 		if(factionWageHierarchyMultiplier == null){
-			SagaLogger.nullField(getClass(), "factionWageLevelMultiplier");
-			factionWageLevelMultiplier= new TwoPointFunction(0.0);
+			SagaLogger.nullField(getClass(), "factionWageHierarchyMultiplier");
+			factionWageHierarchyMultiplier= new TwoPointFunction(0.0);
 		}
-		factionWageLevelMultiplier.complete();
+		factionWageHierarchyMultiplier.complete();
 		
 		if(factionWagesTime == null){
 			SagaLogger.nullField(getClass(), "factionWagesTime");
@@ -290,12 +294,12 @@ public class EconomyConfiguration {
 	/**
 	 * Calculates wage for settlement.
 	 * 
-	 * @param settleLevel settlement level
+	 * @param claimPoints claim points
 	 * @return wage for a single settlement
 	 */
-	public double calcWage(Integer settleLevel) {
+	public double calcWage(Double claimPoints) {
 
-		return factionWageLevelMultiplier.value(settleLevel);
+		return factionClaimsPointsWage.value(claimPoints);
 		
 	}
 	

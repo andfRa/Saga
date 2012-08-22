@@ -388,6 +388,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		// Levels:
 		book.addLine("A faction gains levels by killing members from other factions. " +
 			"The amount of exp gained depends on killed players level. " +
+			"Claimed settlements also give a certain amount of exp each minute." +
 			"Use " + GeneralMessages.command("/fstats") + " to see faction level and other stats."
 		);
 		
@@ -512,14 +513,19 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		
 		Integer maxLevel = SettlementConfiguration.config().getSettlementDefinition().getMaxLevel();
 		Integer halfLevel = maxLevel / 2;
+		Integer minLevel = 0;
+		
+		Double maxClaims = FactionConfiguration.config().getClaimPoints(maxLevel);
+		Double halfClaims = FactionConfiguration.config().getClaimPoints(halfLevel);
+		Double minClaims = FactionConfiguration.config().getClaimPoints(minLevel);
 		FactionDefinition definition = FactionConfiguration.config().getDefinition();
 		
 		// Titles:
-		wagesTable.addLine(new String[]{GeneralMessages.columnTitle("rank"), GeneralMessages.columnTitle("lvl 0"), GeneralMessages.columnTitle("lvl " + halfLevel), GeneralMessages.columnTitle("lvl " + maxLevel)});
+		wagesTable.addLine(new String[]{GeneralMessages.columnTitle("rank"), GeneralMessages.columnTitle("lvl 0"), GeneralMessages.columnTitle("lvl " + halfClaims), GeneralMessages.columnTitle("lvl " + maxClaims)});
 
-		Hashtable<Integer, Double> lvl0Wages = EconomyConfiguration.config().calcHierarchyWages(EconomyConfiguration.config().calcWage(0));
-		Hashtable<Integer, Double> lvlHalfWages = EconomyConfiguration.config().calcHierarchyWages(EconomyConfiguration.config().calcWage(halfLevel));
-		Hashtable<Integer, Double> lvlMaxWages = EconomyConfiguration.config().calcHierarchyWages(EconomyConfiguration.config().calcWage(maxLevel));
+		Hashtable<Integer, Double> lvl0Wages = EconomyConfiguration.config().calcHierarchyWages(EconomyConfiguration.config().calcWage(minClaims));
+		Hashtable<Integer, Double> lvlHalfWages = EconomyConfiguration.config().calcHierarchyWages(EconomyConfiguration.config().calcWage(halfClaims));
+		Hashtable<Integer, Double> lvlMaxWages = EconomyConfiguration.config().calcHierarchyWages(EconomyConfiguration.config().calcWage(maxClaims));
 		
 		int min = FactionConfiguration.config().getDefinition().getHierarchyMin();
 		int max = FactionConfiguration.config().getDefinition().getHierarchyMax();

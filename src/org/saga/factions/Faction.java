@@ -12,7 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.saga.Clock;
 import org.saga.Clock.DaytimeTicker;
-import org.saga.Clock.SecondTicker;
+import org.saga.Clock.MinuteTicker;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.config.EconomyConfiguration;
@@ -41,7 +41,7 @@ import com.google.gson.JsonParseException;
  * @author andf
  *
  */
-public class Faction implements SecondTicker, DaytimeTicker{
+public class Faction implements MinuteTicker, DaytimeTicker{
 
 	
 	/**
@@ -90,22 +90,10 @@ public class Faction implements SecondTicker, DaytimeTicker{
 	
 	
 	/**
-	 * Faction definition.
-	 */
-	private FactionDefinition definition;
-	
-	
-	/**
 	 * Player roles.
 	 */
 	private Hashtable<String, Proficiency> playerRanks;
 
-	
-	/**
-	 * True if the clock is enabled.
-	 */
-	transient private boolean clockEnabled;
-	
 	
 	/**
 	 * Enemy factions.
@@ -123,18 +111,23 @@ public class Faction implements SecondTicker, DaytimeTicker{
 	private HashSet<Integer> allyRequests;
 	
 	
+	/**
+	 * Spawn point, null if none.
+	 */
+	private SagaLocation spawn;
+	
+
+	/**
+	 * Faction definition.
+	 */
+	transient private FactionDefinition definition;
+	
+	
 	// Control:
 	/**
 	 * If true then saving is enabled.
 	 */
 	transient private boolean isSavingEnabled = true;
-	
-	
-	// Spawn:
-	/**
-	 * Spawn point, null if none.
-	 */
-	private SagaLocation spawn;
 	
 	
 	
@@ -166,8 +159,6 @@ public class Faction implements SecondTicker, DaytimeTicker{
 		enemies = new HashSet<Integer>();
 		allies = new HashSet<Integer>();
 		allyRequests = new HashSet<Integer>();
-		
-		clockEnabled = false;
 		
 		removeOwner();
 		
@@ -258,13 +249,11 @@ public class Faction implements SecondTicker, DaytimeTicker{
 		
 		// Transient:
 		definition = FactionConfiguration.config().getDefinition();
-		clockEnabled = false;
 		
 		if(spawn != null){
 			
 			try {
 				integrity = spawn.complete() && integrity;
-				startClock();
 			} catch (InvalidLocationException e) {
 				SagaLogger.severe(this, "invalid spawn point: " + spawn);
 				removeSpawnPoint();
@@ -384,6 +373,7 @@ public class Faction implements SecondTicker, DaytimeTicker{
 
 		
 		// Clock:
+		Clock.clock().registerMinuteTick(this);
 		Clock.clock().registerDaytimeTick(this);
 		
 		
@@ -397,6 +387,7 @@ public class Faction implements SecondTicker, DaytimeTicker{
 
 		
 		// Clock:
+		Clock.clock().unregisterMinuteTick(this);
 		Clock.clock().unregisterDaytimeTick(this);
 		
 		
@@ -730,6 +721,15 @@ public class Faction implements SecondTicker, DaytimeTicker{
 		return getDefinition().getLevelUpExp(getLevel()) - exp;
 	}
 
+	/**
+	 * Gets experience gain speed.
+	 * 
+	 * @return experience speed
+	 */
+	public Double getExpSpeed() {
+		return getDefinition().getExpSpeed(countClaimedSettles());
+	}
+	
 	
 	
 	// Naming:
@@ -1382,58 +1382,71 @@ public class Faction implements SecondTicker, DaytimeTicker{
 	
 	
 	
+	// Claiming:
+	/**
+	 * Gets the claimed settlement count.
+	 * 
+	 * @return claimed settlement count
+	 */
+	public int countClaimedSettles() {
+
+		Settlement[] settlemenents = FactionClaimManager.manager().findSettlements(getId());
+		return settlemenents.length;
+		
+		
+	}
+	
+	/**
+	 * Gets factions claim points.
+	 * 
+	 * @return factions claim points
+	 */
+	public Double calcClaimPoints() {
+
+
+		Settlement[] claimedSettles = FactionClaimManager.manager().findSettlements(getId());
+		Integer[] claimedLevels = FactionClaimManager.getLevels(claimedSettles);
+		
+		Double claimPts = 0.0;
+		for (int i = 0; i < claimedLevels.length; i++) {
+			
+			claimPts+= FactionConfiguration.config().getClaimPoints(claimedLevels[i]); 
+			
+		}
+		
+		return claimPts;
+		
+		
+	}
+	
+	
+	
 	// Clock:
-	/**
-	 * Starts the clock.
-	 * 
-	 */
-	private void startClock() {
-		
-		Clock.clock().registerSecondTick(this);
-		
-		clockEnabled = true;
-		
-	}
-	
-	/**
-	 * Stops the clock.
-	 * 
-	 */
-	private void stopClock() {
-		
-		Clock.clock().unregisterSecondTick(this);
-		
-		clockEnabled = false;
-		
-	}
-	
-	/**
-	 * Checks if the clock is enables.
-	 * 
-	 * @return true if enabled
-	 */
-	public boolean isClockEnabled() {
-		return clockEnabled;
-	}
-	
 	/* 
 	 * (non-Javadoc)
 	 * 
 	 * @see org.saga.Clock.SecondTicker#clockSecondTick()
 	 */
 	@Override
-	public boolean clockSecondTick() {
+	public boolean clockMinuteTick() {
+
 		
-		
-		boolean nextTick = false;
-		
-		
-		// Stop clock if last tick:
-		if(!nextTick){
-			stopClock();
+		// Level progress:
+		if(level < getDefinition().getMaxLevel()){
+			
+			exp += getExpSpeed();
+			
+			if(getRemainingExp() > 0) return true;
+			
+			levelUp();
+
+			// Inform:
+			information(FactionMessages.levelUp(this));
+			
 		}
 		
 		return true;
+		
 		
 	}
 
@@ -1503,19 +1516,8 @@ public class Faction implements SecondTicker, DaytimeTicker{
 	 */
 	public Hashtable<Integer, Double> calcWages() {
 
-		
-		Settlement[] claimedSettles = FactionClaimManager.manager().findSettlements(getId());
-		Integer[] claimedLevels = FactionClaimManager.getLevels(claimedSettles);
-		
-		Double rawWage = 0.0;
-		for (int i = 0; i < claimedLevels.length; i++) {
-			
-			rawWage+= EconomyConfiguration.config().calcWage(claimedLevels[i]); 
-			
-		}
-		
+		Double rawWage = EconomyConfiguration.config().calcWage(calcClaimPoints());
 		return EconomyConfiguration.config().calcHierarchyWages(rawWage);
-		
 		
 	}
 	
@@ -1689,6 +1691,7 @@ public class Faction implements SecondTicker, DaytimeTicker{
 	}
 	
 
+	
     // Damage events:
 	/**
 	 * Called when a member damages another player.
@@ -1733,7 +1736,6 @@ public class Faction implements SecondTicker, DaytimeTicker{
 		
 	}
 
-	
 	
 	// Kill events:
 	/**
@@ -1793,9 +1795,6 @@ public class Faction implements SecondTicker, DaytimeTicker{
 		
 		
 	}
-	
-	
-
 	
 	
 }

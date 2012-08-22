@@ -37,6 +37,11 @@ public class FactionDefinition {
 	 */
 	private TwoPointFunction levelUpExp;
 
+	/**
+	 * Experience speed.
+	 */
+	private TwoPointFunction expSpeed;
+	
 	
 	
 	// Initialisation:
@@ -77,6 +82,12 @@ public class FactionDefinition {
 			SagaLogger.nullField(getClass(), "defaultRank");
 			defaultRank = "warmaster";
 		}
+		
+		if(expSpeed == null){
+			expSpeed = new TwoPointFunction(0.0);
+			SagaLogger.nullField(getClass(), "expSpeed");
+		}
+		expSpeed.complete();
 		
 		if(levelUpExp == null){
 			levelUpExp = new TwoPointFunction(10000.0);
@@ -184,6 +195,18 @@ public class FactionDefinition {
 	
 
 	// Experience:
+	/**
+	 * Gets experience speed.
+	 * 
+	 * @param claimed claimed settlements
+	 * @return speed
+	 */
+	public Double getExpSpeed(Integer claimed) {
+		
+		return expSpeed.value(claimed);
+
+	}
+	
 	/**
 	 * Gets experience requirement.
 	 * 

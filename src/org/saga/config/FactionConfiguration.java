@@ -74,6 +74,11 @@ public class FactionConfiguration {
 	 * Faction claim limit for given level.
 	 */
 	private TwoPointFunction claimLimit;
+
+	/**
+	 * Determines how much claims a settlement is worth.
+	 */
+	private TwoPointFunction claimPoints;
 	
 	
 	
@@ -139,6 +144,12 @@ public class FactionConfiguration {
 			claimLimit = new TwoPointFunction(0.0);
 		}
 		claimLimit.complete();
+		
+		if(claimPoints == null){
+			SagaLogger.nullField(getClass(), "claimPoints");
+			claimPoints = new TwoPointFunction(0.0);
+		}
+		claimPoints.complete();
 
 		
 	}
@@ -207,6 +218,18 @@ public class FactionConfiguration {
 	public Integer getClaimLimit(Integer level) {
 		return claimLimit.intValue(level);
 	}
+	
+	/**
+	 * Gets the amount claim points the settlement is worth.
+	 * 
+	 * @param settleLevel settlement level
+	 * @return claim points
+	 */
+	public Double getClaimPoints(Integer settleLevel) {
+		return claimPoints.value(settleLevel);
+	}
+	
+	
 	
 	// Load unload:
 	/**
