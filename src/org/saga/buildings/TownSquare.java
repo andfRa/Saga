@@ -93,6 +93,8 @@ public class TownSquare extends Building implements SecondTicker{
 	public boolean clockSecondTick() {
 
 		
+		if(!isEnabled()) return false;
+		
 		// Counting:
 		count++;
 		if(count > 9){

@@ -277,6 +277,8 @@ public class Arena extends Building implements SecondTicker{
 	@Override
 	public boolean clockSecondTick() {
 		
+
+		if(!isEnabled()) return false;
 		
 		// Disable clock:
 		if(count <= 0) return false;
