@@ -62,7 +62,8 @@ public class Settlement extends Bundle implements MinuteTicker{
 	 * Settlement definition.
 	 */
 	transient private SettlementDefinition definition;
-	
+
+
 	
 	// Initialisation:
 	/**
@@ -182,7 +183,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 		
 		super.enable();
 		
-		Clock.clock().registerMinuteTick(this);
+		Clock.clock().enableMinuteTick(this);
 		
 	}
 	
@@ -744,6 +745,8 @@ public class Settlement extends Bundle implements MinuteTicker{
 	@Override
 	public boolean clockMinuteTick() {
 
+		
+		if(!isEnabled()) return false;
 		
 		// Level progress:
 		if(level < getDefinition().getMaxLevel() && checkActiveMembers()){

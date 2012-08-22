@@ -681,7 +681,7 @@ public class FactionClaimManager implements SecondTicker{
 		instance.complete();
 		
 		// Clock:
-		Clock.clock().registerSecondTick(instance);
+		Clock.clock().enableSecondTick(instance);
 		
 		return instance;
 		

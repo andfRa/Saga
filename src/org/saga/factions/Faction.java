@@ -128,6 +128,11 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 * If true then saving is enabled.
 	 */
 	transient private boolean isSavingEnabled = true;
+
+	/**
+	 * True if enabled.
+	 */
+	transient private boolean enabled = false;
 	
 	
 	
@@ -373,8 +378,10 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 
 		
 		// Clock:
-		Clock.clock().registerMinuteTick(this);
-		Clock.clock().registerDaytimeTick(this);
+		Clock.clock().enableMinuteTick(this);
+		Clock.clock().enableDaytimeTicking(this);
+		
+		enabled = true;
 		
 		
 	}
@@ -385,6 +392,17 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 */
 	public void disable() {
 		
+		enabled = false;
+		
+	}
+
+	/**
+	 * Checks if the faction is enabled.
+	 * 
+	 * @return true if enabled
+	 */
+	public boolean isEnabled() {
+		return enabled;
 	}
 	
 	
@@ -1425,6 +1443,8 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	public boolean clockMinuteTick() {
 
 		
+		if(!isEnabled()) return false;
+		
 		// Level progress:
 		if(level < getDefinition().getMaxLevel()){
 			
@@ -1460,11 +1480,14 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 * @see org.saga.Clock.DaytimeTicker#daytimeTick(org.saga.Clock.DaytimeTicker.Daytime)
 	 */
 	@Override
-	public void daytimeTick(Daytime daytime) {
+	public boolean daytimeTick(Daytime daytime) {
 		
+		if(!isEnabled()) return false;
 		
 		// Wages:
 		if(daytime == EconomyConfiguration.config().getFactionWagesTime()) handleWages();
+		
+		return true;
 		
 		
 	}

@@ -139,7 +139,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 */
 	private void startClock() {
 		
-		Clock.clock().registerSecondTick(this);
+		Clock.clock().enableSecondTick(this);
 		
 		clock = true;
 		

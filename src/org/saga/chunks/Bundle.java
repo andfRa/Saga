@@ -83,7 +83,12 @@ public class Bundle extends SagaCustomSerialization{
 	 * If true then saving is enabled.
 	 */
 	transient private Boolean isSavingEnabled;
-
+	
+	/**
+	 * True if enabled.
+	 */
+	transient private boolean enabled = false;
+	
 	
 	
 	// Options:
@@ -244,6 +249,8 @@ public class Bundle extends SagaCustomSerialization{
 			
 		}
 		
+		enabled = true;
+		
 		
 	}
 	
@@ -262,6 +269,18 @@ public class Bundle extends SagaCustomSerialization{
 			
 		}
 		
+		enabled = false;
+		
+		
+	}
+	
+	/**
+	 * Checks if the bundle is enabled.
+	 * 
+	 * @return true if enabled
+	 */
+	public boolean isEnabled() {
+		return enabled;
 	}
 	
 	

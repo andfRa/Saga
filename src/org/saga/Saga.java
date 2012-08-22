@@ -209,7 +209,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 
 		// Enable automatic saving:
 		saveMinutes = GeneralConfiguration.config().saveInterval;
-		Clock.clock().registerMinuteTick(this);
+		Clock.clock().enableMinuteTick(this);
 
 		
 	}

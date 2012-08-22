@@ -258,7 +258,7 @@ public class Arena extends Building implements SecondTicker{
 
 		// Enable clock if not enabled:
 		if(this.count <= 0){
-			Clock.clock().registerSecondTick(this);
+			Clock.clock().enableSecondTick(this);
 		}
 		
 		this.count = count;

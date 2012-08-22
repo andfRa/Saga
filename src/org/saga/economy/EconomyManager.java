@@ -100,9 +100,8 @@ public class EconomyManager implements DaytimeTicker{
 	 * @see org.saga.Clock.TimeOfDayTicker#timeOfDayTick(org.saga.Clock.TimeOfDayTicker.TimeOfDay)
 	 */
 	@Override
-	public void daytimeTick(Daytime timeOfDay) {
-		
-		
+	public boolean daytimeTick(Daytime timeOfDay) {
+		return false;
 	}
 
 	/* 

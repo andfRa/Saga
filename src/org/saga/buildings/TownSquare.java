@@ -364,7 +364,7 @@ public class TownSquare extends Building implements SecondTicker{
 	public void onPlayerEnter(SagaPlayer sagaPlayer, Building last) {
 		
 		// Enable clock:
-		if(!Clock.clock().isSecondTicking(this)) Clock.clock().registerSecondTick(this);
+		if(!Clock.clock().isSecondTicking(this)) Clock.clock().enableSecondTick(this);
 	
 	}
 	

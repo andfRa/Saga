@@ -1033,7 +1033,7 @@ public class StatisticsManager implements HourTicker{
 		instance.complete();
 		
 		// Clock:
-		Clock.clock().registerHourTick(instance);
+		Clock.clock().enableHourTicking(instance);
 		
 		return instance;
 		

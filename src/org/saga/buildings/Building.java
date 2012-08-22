@@ -42,6 +42,12 @@ import org.saga.utility.items.RecepieBlueprint;
 import org.saga.utility.text.TextUtil;
 import org.sk89q.CommandContext;
 
+/**
+ * 
+ * 
+ * @author andf
+ *
+ */
 public abstract class Building extends SagaCustomSerialization implements DaytimeTicker{
 
 
@@ -72,6 +78,11 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 */
 	transient private BuildingDefinition definition;
 	
+	/**
+	 * True if enabled.
+	 */
+	transient private boolean enabled = false;
+
 	
 	
 	// Initialisation:
@@ -170,6 +181,39 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 
 	}
 
+	
+	/**
+	 * Enables the building
+	 * 
+	 */
+	public void enable() {
+		
+		Clock.clock().enableDaytimeTicking(this);
+		enabled = true;
+		
+	}
+	
+	/**
+	 * Disables the building.
+	 * 
+	 */
+	public void disable() {
+		
+		enabled = false;
+		
+	}
+
+	/**
+	 * Checks if the building is enabled.
+	 * 
+	 * @return true if enabled
+	 */
+	public boolean isEnabled() {
+		return enabled;
+	}
+	
+	
+	// Saga chunk:
 	/**
 	 * Sets origin chunk.
 	 * 
@@ -946,24 +990,6 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	
 	// Updates:
 	/**
-	 * Enables the building
-	 * 
-	 */
-	public void enable() {
-		
-		Clock.clock().registerDaytimeTick(this);
-		
-	}
-	
-	/**
-	 * Disables the building.
-	 * 
-	 */
-	public void disable() {
-
-	}
-
-	/**
 	 * Performs buildings operations.
 	 * 
 	 */
@@ -1045,14 +1071,18 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 * @see org.saga.Clock.DaytimeTicker#daytimeTick(org.saga.Clock.DaytimeTicker.Daytime)
 	 */
 	@Override
-	public final void daytimeTick(Daytime daytime) {
+	public final boolean daytimeTick(Daytime daytime) {
 
+		
+		if(!isEnabled()) return false;
 		
 		// Perform:
 		if(daytime == getDefinition().getPerformTime()) perform();
 		
 		// Produce:
 		if(daytime == getDefinition().getCraftTime()) produce();
+		
+		return true;
 		
 		
 	}
@@ -1064,7 +1094,11 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 */
 	@Override
 	public final boolean checkWorld(String worldName) {
+		
+		if(!isEnabled()) return false;
+		
 		return getSagaChunk().getWorldName().equals(worldName);
+		
 	}
 
 

@@ -162,7 +162,11 @@ public class Clock implements Runnable{
 				ArrayList<DaytimeTicker> daytimes = new ArrayList<DaytimeTicker>(this.daytimes);
 				for (DaytimeTicker ticker : daytimes) {
 					
-					if(ticker.checkWorld(worldName)) ticker.daytimeTick(currDaytime);
+					if(ticker.checkWorld(worldName)){
+						
+						if(!ticker.daytimeTick(currDaytime)) this.daytimes.remove(ticker);
+						
+					}
 					
 				}
 				
@@ -197,13 +201,13 @@ public class Clock implements Runnable{
 
 	
 
-	// Registering:
+	// Ticking:
 	/**
-	 * Registers ticking.
+	 * Enables second ticking.
 	 * 
 	 * @param ticker ticker
 	 */
-	public void registerSecondTick(SecondTicker ticker) {
+	public void enableSecondTick(SecondTicker ticker) {
 
 		
 		synchronized (seconds) {
@@ -231,11 +235,11 @@ public class Clock implements Runnable{
 	
 	
 	/**
-	 * Registers ticking.
+	 * Registers minute ticking.
 	 * 
 	 * @param ticker ticker
 	 */
-	public void registerMinuteTick(MinuteTicker ticker) {
+	public void enableMinuteTick(MinuteTicker ticker) {
 
 		
 		synchronized (minutes) {
@@ -263,16 +267,16 @@ public class Clock implements Runnable{
 	
 	
 	/**
-	 * Registers ticking.
+	 * Enables hour ticking.
 	 * 
 	 * @param ticker ticker
 	 */
-	public void registerHourTick(HourTicker ticker) {
+	public void enableHourTicking(HourTicker ticker) {
 
 		
 		synchronized (hours) {
 			
-			if(minutes.contains(ticker)){
+			if(hours.contains(ticker)){
 				SagaLogger.warning(getClass(), ticker.getClass().getSimpleName() + "{" + ticker + "}" + " hour ticker already registered");
 				return;
 			}
@@ -285,11 +289,11 @@ public class Clock implements Runnable{
 
 	
 	/**
-	 * Registers ticking.
+	 * Enables daytime ticking.
 	 * 
 	 * @param ticker ticker
 	 */
-	public void registerDaytimeTick(DaytimeTicker ticker) {
+	public void enableDaytimeTicking(DaytimeTicker ticker) {
 
 		
 		synchronized (daytimes) {
@@ -395,8 +399,9 @@ public class Clock implements Runnable{
 		 * A clock tick.
 		 * 
 		 * @param daytime daytime
+		 * @return true if the world is correct
 		 */
-		public void daytimeTick(Daytime daytime);
+		public boolean daytimeTick(Daytime daytime);
 
 		/**
 		 * Checks if the world is correct.
