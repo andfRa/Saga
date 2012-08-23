@@ -328,6 +328,9 @@ public class GuardianRune {
 			Player player = sagaPlayer.getPlayer();
 			GuardianRune rune = sagaPlayer.getGuardRune();
 			
+			// Rune disabled:
+			if(!GeneralConfiguration.config().isRuneEnabled()) return;
+			
 			// Rune disabled in the world:
 			if(!GeneralConfiguration.config().isRuneEnabled(rune, sagaPlayer.getLocation().getWorld())) return;
 			
@@ -365,6 +368,9 @@ public class GuardianRune {
 		
 		GuardianRune rune = sagaDead.getGuardRune();
 		Player player = sagaDead.getPlayer();
+
+		// Rune disabled:
+		if(!GeneralConfiguration.config().isRuneEnabled()) return false;
 		
 		// Rune disabled in the world:
 		if(!GeneralConfiguration.config().isRuneEnabled(rune, player.getLocation().getWorld())) return false;

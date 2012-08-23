@@ -22,7 +22,9 @@
   "LAPIS_ORE":9
 },
 
-"guardRuneDisableWorlds":["Creative"],
+"guardRuneEnabled":true,
+"guardRuneDisableWorlds":["creative"],
+
 "defaultWorld":"world",
 
 "xrayMinStone":1500,
