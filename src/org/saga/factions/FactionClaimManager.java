@@ -539,7 +539,7 @@ public class FactionClaimManager implements SecondTicker{
 	public boolean clockSecondTick() {
 		
 
-		Set<Integer> bundleIds = claiming.keySet();
+		Set<Integer> bundleIds = new HashSet<Integer>(claiming.keySet());
 		
 		for (Integer bundleId : bundleIds) {
 			
