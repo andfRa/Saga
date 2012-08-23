@@ -521,7 +521,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		FactionDefinition definition = FactionConfiguration.config().getDefinition();
 		
 		// Titles:
-		wagesTable.addLine(new String[]{GeneralMessages.columnTitle("rank"), GeneralMessages.columnTitle("lvl 0"), GeneralMessages.columnTitle("lvl " + halfClaims), GeneralMessages.columnTitle("lvl " + maxClaims)});
+		wagesTable.addLine(new String[]{GeneralMessages.columnTitle("rank"), GeneralMessages.columnTitle("lvl 0"), GeneralMessages.columnTitle("lvl " + halfLevel), GeneralMessages.columnTitle("lvl " + maxLevel)});
 
 		Hashtable<Integer, Double> lvl0Wages = EconomyConfiguration.config().calcHierarchyWages(EconomyConfiguration.config().calcWage(minClaims));
 		Hashtable<Integer, Double> lvlHalfWages = EconomyConfiguration.config().calcHierarchyWages(EconomyConfiguration.config().calcWage(halfClaims));

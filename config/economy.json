@@ -143,8 +143,8 @@
 "sellMult":0.75,
 
 
-"factionClaimsPointsWage":{"x1":0,"y1":0,"x2":20,"y2":2000},
-"factionWageHierarchyMultiplier":{"x1":1,"y1":0.30,"x2":3,"y2":1.0},
+"factionClaimsPointsWage":{"x1":0,"y1":0,"x2":20,"y2":1000},
+"factionWageHierarchyMultiplier":{"x1":1,"y1":0.45,"x2":3,"y2":1.0},
 "factionWagesTime":"SUNRISE"
 
 }
