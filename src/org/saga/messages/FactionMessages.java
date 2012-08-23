@@ -55,6 +55,10 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		return negative + "You aren't a faction member.";
 	}
 	
+	public static String notMember(Faction faction, String name){
+		return negative + "Player " + name + " isn't a member of the faction.";
+	}
+	
 	public static String noFaction(String factionName) {
 		return negative + "Faction " + factionName + " doesn't exist.";
 	}
@@ -114,7 +118,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		
 	}
 	
-	public static String deleted(Faction faction) {
+	public static String deleted2(Faction faction) {
 
 		return faction.getColour2() + "Deleted " + faction(faction, faction.getColour2()) + " faction.";
 		
@@ -126,9 +130,21 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		
 	}
 
+	public static String unformed(Faction faction) {
+
+		return faction.getColour2() + "The faction is no longer formed.";
+		
+	}
+
 	public static String disbanded(Faction faction) {
 
 		return faction.getColour2() + "The faction was disbanded.";
+		
+	}
+	
+	public static String disbandedOther(Faction faction) {
+
+		return faction.getColour2() + "Disbanded " + faction(faction, faction.getColour2()) + " faction.";
 		
 	}
 	
@@ -203,12 +219,23 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		return normal1 + "Declined all faction join invitations.";
 	}
 
+	public static String informAccept() {
+		return normal1 + "Use /faccept to accept the faction join invitation.";
+	}
+	
+	
+	
+	// Owner:
 	public static String newOwner(Faction faction, String name) {
 		return faction.getColour2() + name + " is the new owner of the faction.";
 	}
+
+	public static String ownerCantQuit() {
+		return negative + "Faction owner can't quit the faction.";
+	}
 	
-	public static String informAccept() {
-		return normal1 + "Use /faccept to accept the faction join invitation.";
+	public static String ownerCantQuitInfo() {
+		return normal1 + "Use /fresign to declare someone else as the owner.";
 	}
 	
 	

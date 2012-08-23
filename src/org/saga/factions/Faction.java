@@ -981,6 +981,30 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	
 	
 	// Permissions:
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.chunkGroups.ChunkBundle#hasPermisson(org.saga.player.SagaPlayer, org.saga.settlements.Settlement.SettlementPermission)
+	 */
+	public boolean hasPermission(SagaPlayer sagaPlayer, FactionPermission permission) {
+
+		
+		// Owner or admin:
+		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
+		
+		// Check role:
+		Proficiency rank = playerRanks.get(sagaPlayer.getName());
+		if(rank == null){
+			return false;
+		}
+		
+		// Check permission:
+		return rank.hasFactionPermission(permission);
+		
+		
+	}
+	
+	
 	/**
 	 * Checks if the player has permission to join the faction with a settlement.
 	 * 
@@ -1811,7 +1835,8 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		RENAME,
 		FORM_ALLIANCE,
 		DECLINE_ALLIANCE,
-		BREAK_ALLIANCE;
+		BREAK_ALLIANCE,
+		RESIGN;
 		
 		
 	}

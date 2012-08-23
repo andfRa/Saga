@@ -10,6 +10,7 @@ import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.factions.Faction;
+import org.saga.factions.Faction.FactionPermission;
 import org.saga.factions.FactionManager;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.FactionMessages;
@@ -386,9 +387,9 @@ public class FactionCommands {
 		// Kick:
 		selFaction.removeMember(selPlayer);
 		
-		// Inform disband:
+		// Inform unform:
 		if(formed && !selFaction.isFormed()){
-			selFaction.information(FactionMessages.disbanded(selFaction));
+			selFaction.information(FactionMessages.unformed(selFaction));
 		}
 		
 		// Inform:
@@ -403,6 +404,9 @@ public class FactionCommands {
 
 			// Delete faction:
 			selFaction.delete();
+			
+			// Inform:
+			sagaPlayer.message(FactionMessages.disbandedOther(selFaction));
 			
 		}
 
@@ -438,6 +442,13 @@ public class FactionCommands {
 			return;
 		}
 
+		// Owner:
+		if(selFaction.isOwner(sagaPlayer.getName()) && selFaction.getMemberCount() > 1){
+			sagaPlayer.message(FactionMessages.ownerCantQuit());
+			sagaPlayer.message(FactionMessages.ownerCantQuitInfo());
+			return;
+		}
+		
 		boolean formed = selFaction.isFormed();
 		
 		// Quit:
@@ -445,7 +456,7 @@ public class FactionCommands {
 
 		// Inform disband:
 		if(formed && !selFaction.isFormed()){
-			selFaction.information(FactionMessages.disbanded(selFaction));
+			selFaction.information(FactionMessages.unformed(selFaction));
 		}
 		
 		// Inform:
@@ -458,14 +469,120 @@ public class FactionCommands {
 			// Delete faction:
 			selFaction.delete();
 			
-//			// Broadcast:
-//	    	Saga.broadcast(FactionMessages.deleted(sagaPlayer, selFaction));
+			// Inform:
+			sagaPlayer.message(FactionMessages.disbanded(selFaction));
 	    	
 		}
 		
 		
 	}
 
+	@Command(
+		aliases = {"fresign"},
+		usage = "[faction_name] <member_name>",
+		flags = "",
+		desc = "Resign from the owner position.",
+		min = 1,
+		max = 2
+	)
+	@CommandPermissions({"saga.user.faction.resign"})
+	public static void resign(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		
+		Faction selFaction = null;
+		SagaPlayer selPlayer = null;
+		
+		String targetName = null;
+		
+		// Arguments:
+		switch (args.argsLength()) {
+			
+			case 2:
+				
+				// Chunk bundle:
+				String factionName = GeneralMessages.nameFromArg(args.getString(0));
+				selFaction = FactionManager.manager().getFaction(factionName);
+				if(selFaction == null){
+					sagaPlayer.message(FactionMessages.invalidFaction(factionName));
+					return;
+				}
+				
+				// New owner:
+				targetName = selFaction.matchName(args.getString(1));
+				if(!selFaction.isMember(targetName)){
+					sagaPlayer.message(FactionMessages.notMember(selFaction, targetName));
+					return;
+				}
+				
+				break;
+
+			default:
+				
+				selFaction = sagaPlayer.getFaction();
+				if(selFaction == null){
+					sagaPlayer.message(SettlementMessages.notMember());
+					return;
+				}
+
+				targetName = selFaction.matchName(args.getString(0));
+				if(!selFaction.isMember(targetName)){
+					sagaPlayer.message(FactionMessages.notMember(selFaction, targetName));
+					return;
+				}
+				
+				break;
+				
+		}
+
+		try {
+			selPlayer = Saga.plugin().forceSagaPlayer(targetName);
+		} catch (NonExistantSagaPlayerException e) {
+			sagaPlayer.message(PlayerMessages.invalidPlayer(targetName));
+			return;
+		}
+		
+		// Permission:
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.RESIGN)){
+			sagaPlayer.message(GeneralMessages.noPermission());
+			return;
+		}
+		
+		// Already owner:
+		if(selFaction.isOwner(targetName)){
+			
+			if(selPlayer == sagaPlayer){
+				sagaPlayer.message(SettlementMessages.alreadyOwner());
+			}else{
+				sagaPlayer.message(SettlementMessages.alreadyOwner(targetName));
+			}
+			
+			return;
+		}
+
+		// Set owner:
+		selFaction.setOwner(targetName);
+		
+		// Set owner role:
+		String roleName = selFaction.getDefinition().getOwnerRank();
+		
+		// Get role:
+		Proficiency rank;
+		try {
+			rank = ProficiencyConfiguration.config().createProficiency(roleName);
+		} catch (InvalidProficiencyException e) {
+			sagaPlayer.message(SettlementMessages.invalidRole(roleName));
+			return;
+		}
+		
+		// Set rank:
+		selFaction.setRank(selPlayer, rank);
+
+		// Inform:
+		selFaction.information(FactionMessages.newOwner(selFaction, targetName));
+		
+		 
+	}
+	
 	@Command(
             aliases = {"fsetrank"},
             usage = "[faction_name] <member_name> <rank>",
@@ -570,79 +687,7 @@ public class FactionCommands {
 		
 	}
 	
-	@Command(
-            aliases = {"fdeclareowner"},
-            usage = "[faction_name] <member_name>",
-            flags = "",
-            desc = "Declare someone as the new faction owner.",
-            min = 1,
-            max = 2
-		)
-	@CommandPermissions({"saga.user.faction.declareowner"})
-	public static void declareOwner(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
 
-		Faction selFaction = null;
-		String targetName = null;
-
-		// Arguments:
-		if(args.argsLength() == 2){
-			
-			String factionName = GeneralMessages.nameFromArg(args.getString(0));
-			selFaction = FactionManager.manager().getFaction(factionName);
-			
-			if(selFaction == null){
-				sagaPlayer.message(FactionMessages.invalidFaction(factionName));
-				return;
-			}
-			
-			targetName = selFaction.matchName(args.getString(1));
-			
-			
-		}else{
-			 
-			selFaction = sagaPlayer.getFaction();
-			
-			if(selFaction == null){
-				sagaPlayer.message(FactionMessages.notMember());
-				return;
-			}
-			
-			targetName = selFaction.matchName(args.getString(0));
-			
-		}
-		
-		// Permission:
-		if(!selFaction.canDeclareOwner(sagaPlayer)){
-			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
-			return;
-		}
-
-		// Force player:
-		SagaPlayer selPlayer;
-		try {
-			selPlayer = Saga.plugin().forceSagaPlayer(targetName);
-		} catch (NonExistantSagaPlayerException e) {
-			sagaPlayer.message(PlayerMessages.invalidPlayer(targetName));
-			return;
-		}
-		
-		// Remove old owner:
-		selFaction.removeOwner();
-		
-		// Set new owner:
-		selFaction.setOwner(selPlayer.getName());
-		
-		// Inform:
-		selFaction.information(FactionMessages.newOwner(selFaction, targetName));
-
-		// Release:
-		selPlayer.indicateRelease();
-		
-   		
-	}
-
-	
 	
 	// Stats:
 	@Command(
@@ -1507,7 +1552,11 @@ public class FactionCommands {
 		selFaction.delete();
 		
 		// Inform:
-		sagaPlayer.message(FactionMessages.deleted(selFaction));
+		if(selFaction == sagaPlayer.getFaction()){
+			sagaPlayer.message(FactionMessages.disbanded(selFaction));
+		}else{
+			sagaPlayer.message(FactionMessages.disbandedOther(selFaction));
+		}
 		
 		
 	}
