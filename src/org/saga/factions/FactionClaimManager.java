@@ -105,6 +105,23 @@ public class FactionClaimManager implements SecondTicker{
 			claiming = new Hashtable<Integer, Integer>();
 		}
 		
+		// Fix factions:
+		HashSet<Integer> facIds = getAllFactionIds();
+		for (Integer id : facIds) {
+			if(FactionManager.manager().getFaction(id) == null){
+				removeFaction(id);
+				SagaLogger.warning(getClass(), "faction with ID " + id + " doesn't exist");
+			}
+		}
+		
+		// Fix bundles:
+		HashSet<Integer> bunIds = getAllBundleIds();
+		for (Integer id : bunIds) {
+			if(BundleManager.manager().getBundle(id) == null){
+				removeBundle(id);
+				SagaLogger.warning(getClass(), "faction with ID " + id + " doesn't exist");
+			}
+		}
 		
 		// Transient:
 		claimActive = new HashSet<Integer>();
@@ -384,6 +401,29 @@ public class FactionClaimManager implements SecondTicker{
 	}
 	
 	
+	/**
+	 * Gets all faction IDs
+	 * 
+	 * @return all faction IDs
+	 */
+	public HashSet<Integer> getAllFactionIds() {
+
+		return new HashSet<Integer>(claims.values());
+		
+	}
+
+	/**
+	 * Gets all bundle IDs
+	 * 
+	 * @return all bundle IDs
+	 */
+	public HashSet<Integer> getAllBundleIds() {
+
+		return new HashSet<Integer>(claims.keySet());
+		
+	}
+	
+	
 	
 	// Factions and settlements:
 	/**
@@ -399,7 +439,7 @@ public class FactionClaimManager implements SecondTicker{
 		// Claimed:
 		bundleIds = new HashSet<Integer>(claims.keySet());
 		for (Integer bundleId : bundleIds) {
-			if(claims.get(bundleId) == factionId) claims.remove(bundleId);
+			if(claims.get(bundleId).equals(factionId)) claims.remove(bundleId);
 		}
 
 		// Claimers and progress:

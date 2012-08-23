@@ -831,8 +831,8 @@ public class SettlementMessages {
 	public static String entered(Bundle bundle) {
 		
 		// Claimed:
-		if(FactionClaimManager.manager().hasOwnerFaction(bundle.getId())){
-			Faction faction = FactionClaimManager.manager().getOwningFaction(bundle.getId());
+		Faction faction = FactionClaimManager.manager().getOwningFaction(bundle.getId());
+		if(faction != null){
 			return normal1 + "[" + FactionMessages.faction(faction, normal1) + "]" + ChatColor.ITALIC + " Entered " + bundle.getName() + " settlement.";
 		}
 		
@@ -843,8 +843,8 @@ public class SettlementMessages {
 	public static String left(Bundle bundle) {
 
 		// Claimed:
-		if(FactionClaimManager.manager().hasOwnerFaction(bundle.getId())){
-			Faction faction = FactionClaimManager.manager().getOwningFaction(bundle.getId());
+		Faction faction = FactionClaimManager.manager().getOwningFaction(bundle.getId());
+		if(faction != null){
 			return normal1 + "[" + FactionMessages.faction(faction, normal1) + "]" + ChatColor.ITALIC + " Left " + bundle.getName() + " settlement.";
 		}
 		
