@@ -245,14 +245,14 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 				if(!permission.startsWith(category)) continue;
 				
 				String flags = "";
-				if(command.flags().length() > 0) flags = " [-" + command.flags().replace(" ", "] [-") + "]";
+				if(command.flags().length() > 0) flags = "[-" + command.flags().replace(" ", "] [-") + "] ";
 				
 				result.append("\n");
 				result.append("|-");
 				result.append("\n");
 				result.append("|" + command.aliases()[0]);
 				result.append("\n");
-				result.append("|" + "<nowiki>" + command.usage() + flags + "</nowiki>");
+				result.append("|" + "<nowiki>" + flags + command.usage() + "</nowiki>");
 				result.append("\n");
 				result.append("|" + command.desc());
 				

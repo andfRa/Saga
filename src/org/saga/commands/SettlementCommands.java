@@ -292,7 +292,7 @@ public class SettlementCommands {
 	
 	@Command(
 		aliases = {"sresign"},
-		usage = "[settlement_name] <member_name>",
+		usage = "[settlement_name] <new_owner_name>",
 		flags = "",
 		desc = "Resign from the owner position.",
 		min = 1,

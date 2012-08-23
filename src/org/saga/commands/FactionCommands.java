@@ -479,7 +479,7 @@ public class FactionCommands {
 
 	@Command(
 		aliases = {"fresign"},
-		usage = "[faction_name] <member_name>",
+		usage = "[faction_name] <new_owner_name>",
 		flags = "",
 		desc = "Resign from the owner position.",
 		min = 1,
@@ -492,6 +492,7 @@ public class FactionCommands {
 		Faction selFaction = null;
 		SagaPlayer selPlayer = null;
 		
+		String factionName = null;
 		String targetName = null;
 		
 		// Arguments:
@@ -499,8 +500,8 @@ public class FactionCommands {
 			
 			case 2:
 				
-				// Chunk bundle:
-				String factionName = GeneralMessages.nameFromArg(args.getString(0));
+				// Faction:
+				factionName = GeneralMessages.nameFromArg(args.getString(0));
 				selFaction = FactionManager.manager().getFaction(factionName);
 				if(selFaction == null){
 					sagaPlayer.message(FactionMessages.invalidFaction(factionName));
