@@ -13,13 +13,16 @@ import org.saga.attributes.Attribute;
 import org.saga.attributes.AttributeParameter;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
+import org.saga.config.FactionConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.dependencies.PermissionsManager;
+import org.saga.factions.Faction;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
+import org.saga.settlements.Settlement;
 import org.saga.utility.TwoPointFunction;
 import org.saga.utility.text.TextUtil;
 import org.sk89q.Command;
@@ -60,11 +63,27 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 		return negative + "Level " + level + " is out of range. Allowed range: 0 - " + ExperienceConfiguration.config().maximumLevel + ".";
 	}
 	
-	// Settlement levels:
+	
+	// Settlement and faction levels:
 	public static String settleLevelOutOfRange(String level){
 		return negative + "Level " + level + " is out of range. Allowed range: 0 - " + SettlementConfiguration.config().getSettlementDefinition().getMaxLevel() + ".";
 	}
+	
+	public static String factionLevelOutOfRange(String level){
+		return negative + "Level " + level + " is out of range. Allowed range: 0 - " + FactionConfiguration.config().getDefinition().getMaxLevel() + ".";
+	}
 
+	public static String setLevel(Settlement settlement){
+		
+		return positive + "Settlement " + settlement.getName() + " level set to " + settlement.getLevel() + ".";
+		
+	}
+	
+	public static String setLevel(Faction faction){
+		
+		return positive + "Faction " + faction.getName() + " level set to " +faction.getLevel() + ".";
+		
+	}
 	
 	
 	// Attributes:

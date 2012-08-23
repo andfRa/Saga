@@ -249,7 +249,7 @@ public class FactionCommands {
 	}
 
 	@Command(
-            aliases = {"fdeclin"},
+            aliases = {"fdecline"},
             usage = "[faction_name]",
             flags = "",
             desc = "Decline a faction join invitation.",

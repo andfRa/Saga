@@ -23,12 +23,16 @@ import org.saga.chunks.BundleManager;
 import org.saga.chunks.BundleToggleable;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
+import org.saga.config.FactionConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.dependencies.PermissionsManager;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;
+import org.saga.factions.Faction;
+import org.saga.factions.FactionManager;
 import org.saga.messages.AdminMessages;
 import org.saga.messages.EconomyMessages;
+import org.saga.messages.FactionMessages;
 import org.saga.messages.GeneralMessages;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.SettlementMessages;
@@ -384,19 +388,19 @@ public class AdminCommands {
 		max = 2
 	)
 	@CommandPermissions({"saga.admin.settlement.setlevel"})
-	public static void setlevel(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	public static void setSettlementLevel(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
 		Integer level = null;
-		Bundle selectedChunkBundle = null;
+		Bundle selBundle = null;
 
 		// Arguments:
 		if(args.argsLength() == 2){
 			
 			// Chunk group:
 			String bundleName = GeneralMessages.nameFromArg(args.getString(0));
-			selectedChunkBundle = BundleManager.manager().getBundle(bundleName);
-			if(selectedChunkBundle == null){
+			selBundle = BundleManager.manager().getBundle(bundleName);
+			if(selBundle == null){
 				sagaPlayer.message(SettlementMessages.invalidBundle(bundleName));
 				return;
 			}
@@ -411,9 +415,9 @@ public class AdminCommands {
 		}else{
 			
 			// Chunk group:
-			selectedChunkBundle = sagaPlayer.getBundle();
-			if(selectedChunkBundle == null){
-				sagaPlayer.message( SettlementMessages.notMember() );
+			selBundle = sagaPlayer.getBundle();
+			if(selBundle == null){
+				sagaPlayer.message(SettlementMessages.notMember());
 				return;
 			}
 
@@ -427,11 +431,11 @@ public class AdminCommands {
 		}
 		
 		// Is a settlement:
-		if(!(selectedChunkBundle instanceof Settlement)){
-			sagaPlayer.message(SettlementMessages.notSettlement(selectedChunkBundle));
+		if(!(selBundle instanceof Settlement)){
+			sagaPlayer.message(SettlementMessages.notSettlement(selBundle));
 			return;
 		}
-		Settlement selectedSettlement = (Settlement) selectedChunkBundle;
+		Settlement selectedSettlement = (Settlement) selBundle;
 
 		// Invalid level:
 		if(level < 0 || level > SettlementConfiguration.config().getSettlementDefinition().getMaxLevel()){
@@ -445,9 +449,79 @@ public class AdminCommands {
 		selectedSettlement.setLevel(level);
 		
 		// Inform:
-		selectedChunkBundle.information(SettlementMessages.levelUp(selectedSettlement));
-		if(selectedChunkBundle != sagaPlayer.getBundle()){
-			sagaPlayer.message(SettlementMessages.setLevel(selectedSettlement));
+		selBundle.information(SettlementMessages.levelUp(selectedSettlement));
+		if(selBundle != sagaPlayer.getBundle()){
+			sagaPlayer.message(AdminMessages.setLevel(selectedSettlement));
+		}
+		
+	}
+	
+	@Command(
+			aliases = {"afsetlevel"},
+			usage = "[faction_name] <level>",
+			flags = "",
+			desc = "Set faction level.",
+			min = 1,
+			max = 2
+		)
+	@CommandPermissions({"saga.admin.faction.setlevel"})
+	public static void setFactionLevel(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+
+		Integer level = null;
+		Faction selFaction = null;
+
+		// Arguments:
+		if(args.argsLength() == 2){
+			
+			// Faction:
+			String factionName = GeneralMessages.nameFromArg(args.getString(0));
+			selFaction = FactionManager.manager().getFaction(factionName);
+			if(selFaction == null){
+				sagaPlayer.message(FactionMessages.invalidFaction(factionName));
+				return;
+			}
+
+			try {
+				level = Integer.parseInt(args.getString(1));
+			} catch (NumberFormatException e) {
+				sagaPlayer.message(GeneralMessages.mustBeNumber(args.getString(1)));
+				return;
+			}
+			
+		}else{
+			
+			// Faction:
+			selFaction = sagaPlayer.getFaction();
+			if(selFaction == null){
+				sagaPlayer.message(FactionMessages.notMember());
+				return;
+			}
+
+			try {
+				level = Integer.parseInt(args.getString(0));
+			} catch (NumberFormatException e) {
+				sagaPlayer.message(GeneralMessages.mustBeNumber(args.getString(0)));
+				return;
+			}
+			
+		}
+		
+		// Invalid level:
+		if(level < 0 || level > FactionConfiguration.config().getDefinition().getMaxLevel()){
+			
+			sagaPlayer.message(AdminMessages.factionLevelOutOfRange(level + ""));
+			return;
+			
+		}
+		
+		// Set level:
+		selFaction.setLevel(level);
+		
+		// Inform:
+		selFaction.information(FactionMessages.levelUp(selFaction));
+		if(selFaction != sagaPlayer.getFaction()){
+			sagaPlayer.message(AdminMessages.setLevel(selFaction));
 		}
 		
 	}

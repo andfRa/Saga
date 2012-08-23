@@ -816,7 +816,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	// Experience:
 	public static String levelUp(Faction faction) {
 		
-		return faction.getColour2() + "The faction reached level " + faction.getLevel() + ".";
+		return faction.getColour2() + "The faction is now level " + faction.getLevel() + ".";
 		
 	}
 	

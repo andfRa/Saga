@@ -892,15 +892,6 @@ public class SettlementMessages {
 	
 	
 	
-	// Admin:
-	public static String setLevel(Settlement settlement){
-		
-		return positive + TextUtil.capitalize(settlement.getName()) + " level set to " +settlement.getLevel() + "."  ;
-		
-	}
-	
-	
-	
 	// Creating:
 	public static String invalidName() {
 		
