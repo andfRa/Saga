@@ -974,8 +974,8 @@ public class AdminCommands {
 	@Command(
 		aliases = {"awritecommands"},
 		usage = "",
-		flags = "",
-		desc = "Write all commands in MediaWiki format.",
+		flags = "c",
+		desc = "Write all commands in MediaWiki format. The c flag changes the format to WikiCreole.",
 		min = 0
 	)
 	@CommandPermissions({"saga.admin.wiki.writecommands"})
@@ -984,7 +984,17 @@ public class AdminCommands {
 		
 		ArrayList<Method> commandMethods = new ArrayList<Method>(PermissionsManager.getCommandMap().getCommandMethods());
 		
-		String wikiText = AdminMessages.wikiCommands(commandMethods);
+		String wikiText = "";
+		
+		// WikiCreole:
+		if(args.hasFlag('c')){
+			wikiText = AdminMessages.wikiCommandsCreole(commandMethods);
+		}
+		
+		// MediaWiki:
+		else{
+			wikiText = AdminMessages.wikiCommands(commandMethods);
+		}
 		
 		Directory dir = Directory.WIKI;
 		String name = "commands";
@@ -1007,8 +1017,8 @@ public class AdminCommands {
 	@Command(
 			aliases = {"awritepermissions"},
 			usage = "",
-			flags = "",
-			desc = "Write all permissions in MediaWiki format.",
+			flags = "c",
+			desc = "Write all permissions in MediaWiki format. The c flag changes the format to WikiCreole.",
 			min = 0
 	)
 	@CommandPermissions({"saga.admin.wiki.writepermissions"})
@@ -1017,7 +1027,17 @@ public class AdminCommands {
 		
 		ArrayList<Method> commandMethods = new ArrayList<Method>(PermissionsManager.getCommandMap().getCommandMethods());
 			
-		String wikiText = AdminMessages.wikiPermissions(commandMethods);
+		String wikiText = "";
+		
+		// WikiCreole:
+		if(args.hasFlag('c')){
+			wikiText = AdminMessages.wikiPermissionsCreole(commandMethods);
+		}
+		
+		// MediaWiki:
+		else{
+			wikiText = AdminMessages.wikiPermissions(commandMethods);
+		}
 			
 		Directory dir = Directory.WIKI;
 		String name = "permissions";

@@ -623,6 +623,197 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 	}
 	
 	
+
+	// Wiki:
+	public static String wikiCommandsCreole(ArrayList<Method> commandMethods) {
+		
+		
+		StringBuffer result = new StringBuffer();
+		ArrayList<String> categories = new ArrayList<String>(){
+			
+			private static final long serialVersionUID = 1L;
+
+			{
+				add("saga.user.help");
+				add("saga.user.player");
+				add("saga.user.settlement");
+				add("saga.user.building");
+				add("saga.user.faction");
+				add("saga.admin");
+				add("saga.special");
+				add("saga.statistics");
+			}
+			
+		};
+		
+		// Sort commands:
+		Comparator<Method> comparator = new Comparator<Method>() {
+			
+			@Override
+			public int compare(Method o1, Method o2) {
+
+				CommandPermissions perm1 = o1.getAnnotation(CommandPermissions.class);
+				CommandPermissions perm2 = o2.getAnnotation(CommandPermissions.class);
+				if(perm1 == null || perm2 == null || perm1.value().length == 0 || perm2.value().length == 0) return o1.getName().compareToIgnoreCase(o2.getName());
+				
+				return perm1.value()[0].compareToIgnoreCase(perm2.value()[0]);
+				
+			}
+			
+		};
+		
+		Collections.sort(commandMethods, comparator);
+		
+		// Categories:
+		for (String category : categories) {
+			
+			if(result.length() > 0) result.append("\n\n");
+			
+			// Begin:
+			result.append("==" + TextUtil.capitalize(getCategoryName(category)) + " commands" + "" + "\n");
+			result.append("|=Command|=Parameters|=Description");
+			
+			// Commands:
+			for (Method method : commandMethods) {
+				
+				Command command = method.getAnnotation(Command.class);
+				if(command == null) continue;
+				
+				CommandPermissions permissions = method.getAnnotation(CommandPermissions.class);
+				String permission = "";
+				if(permissions != null && permissions.value().length != 0) permission = permissions.value()[0];
+				
+				if(!permission.startsWith(category)) continue;
+				
+				String flags = "";
+				if(command.flags().length() > 0) flags = "[-" + command.flags().replace(" ", "] [-") + "] ";
+				
+				result.append("\n");
+				result.append("|" + command.aliases()[0]);
+				result.append("|" + flags + command.usage());
+				result.append("|" + command.desc() + "|");
+				
+//				if(permission.length() > 0){
+//					result.append("\n");
+//					result.append("|" + permission);
+//				}
+				
+				
+			}
+			
+		}
+		
+		return result.toString();
+		
+		
+	}
+	
+	public static String wikiPermissionsCreole(ArrayList<Method> commandMethods) {
+		
+		
+		StringBuffer result = new StringBuffer();
+		ArrayList<String> categories = new ArrayList<String>(){
+			
+			private static final long serialVersionUID = 1L;
+
+			{
+				add("saga.user.help");
+				add("saga.user.player");
+				add("saga.user.settlement");
+				add("saga.user.building");
+				add("saga.user.faction");
+				add("saga.admin");
+				add("saga.special");
+				add("saga.statistics");
+			}
+			
+		};
+		
+		// Sort commands:
+		Comparator<Method> comparator = new Comparator<Method>() {
+			
+			@Override
+			public int compare(Method o1, Method o2) {
+
+				CommandPermissions perm1 = o1.getAnnotation(CommandPermissions.class);
+				CommandPermissions perm2 = o2.getAnnotation(CommandPermissions.class);
+				if(perm1 == null || perm2 == null || perm1.value().length == 0 || perm2.value().length == 0) return o1.getName().compareToIgnoreCase(o2.getName());
+				
+				return perm1.value()[0].compareToIgnoreCase(perm2.value()[0]);
+				
+			}
+			
+		};
+		
+		Collections.sort(commandMethods, comparator);
+		
+
+		// Begin:
+		result.append("==" + "Command permissions" + "" + "\n");
+		result.append("|=Permission|=Command|");		
+		
+		// Commands:
+		for (Method method : commandMethods) {
+			
+			Command command = method.getAnnotation(Command.class);
+			if(command == null) continue;
+			
+			CommandPermissions permissions = method.getAnnotation(CommandPermissions.class);
+			String permission = "";
+			if(permissions != null && permissions.value().length != 0) permission = permissions.value()[0];
+			
+			boolean stop = true;
+			for (String category : categories) {
+				
+				if(permission.startsWith(category)){
+					stop = false;
+					break;
+				}
+				
+			}
+			if(stop) continue;
+			
+			result.append("\n");
+			result.append("|" + permission);			
+			result.append("|" + command.aliases()[0] + "|");
+			
+		}
+		
+		result.append("\n");
+		result.append("\n");
+		
+		// Other permissions:
+		result.append("==" + "Other permissions" + "" + "\n");
+		result.append("|=Permission|=Effect|");		
+		
+		ArrayList<Entry<String, String>> descriptions = new ArrayList<Entry<String,String>>(PermissionsManager.PERMISSION_DESCRIPTIONS.entrySet());
+		
+		// Sort:
+		Comparator<Entry<String, String>> descComparator = new Comparator<Entry<String, String>>() {
+			
+			@Override
+			public int compare(Entry<String, String> o1, Entry<String, String> o2) {
+
+				return o1.getKey().compareToIgnoreCase(o2.getKey());
+				
+			}
+			
+		};
+		Collections.sort(descriptions, descComparator);
+		
+		for (Entry<String, String> entry : descriptions) {
+			
+			result.append("\n");
+			result.append("|" + entry.getKey());			
+			result.append("|" + entry.getValue() + "|");
+			
+		}
+		
+		return result.toString();
+		
+		
+	}
+	
 	public static String writeDone(Directory dir, String name) {
 		return positive + "Write complete: " + dir.getDirectory() + dir.getFilename().replace(WriterReader.NAME_SUBS, name) + ".";
 	}
