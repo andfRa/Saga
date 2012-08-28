@@ -168,7 +168,7 @@ public class BuildingMessages {
 	// Town square:
 	public static String noTownSquare(Bundle bundle){
 		
-		return BuildingMessages.negative + "" + bundle.getName() + " deosen't have a " + TextUtil.className(TownSquare.class) + ".";
+		return BuildingMessages.negative + "" + bundle.getName() + " doesn't have a " + TextUtil.className(TownSquare.class) + ".";
 		
 	}
 	
