@@ -2,13 +2,12 @@ package org.saga.config;
 
 import java.io.IOException;
 
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.saga.SagaLogger;
 import org.saga.factions.FactionDefinition;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.utility.TwoPointFunction;
-
-import com.google.gson.JsonParseException;
 
 public class FactionConfiguration {
 

@@ -8,6 +8,7 @@ import java.util.Hashtable;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.Saga;
@@ -22,8 +23,6 @@ import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.settlements.Settlement;
 import org.saga.statistics.StatisticsManager;
-
-import com.google.gson.JsonParseException;
 
 public class FactionClaimManager implements SecondTicker{
 

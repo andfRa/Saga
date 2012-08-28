@@ -5,13 +5,12 @@ import java.util.Hashtable;
 import java.util.Random;
 
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.SagaLogger;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.utility.TwoPointFunction;
-
-import com.google.gson.JsonParseException;
 
 public class EconomyConfiguration {
 

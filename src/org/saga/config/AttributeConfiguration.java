@@ -4,13 +4,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.saga.SagaLogger;
 import org.saga.attributes.Attribute;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.utility.TwoPointFunction;
-
-import com.google.gson.JsonParseException;
 
 public class AttributeConfiguration {
 

@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.bukkit.ChatColor;
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.saga.SagaLogger;
 import org.saga.buildings.Building;
 import org.saga.buildings.BuildingDefinition;
@@ -14,8 +15,6 @@ import org.saga.exceptions.InvalidBuildingException;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.settlements.SettlementDefinition;
-
-import com.google.gson.JsonParseException;
 
 public class SettlementConfiguration {
 

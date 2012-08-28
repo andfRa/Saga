@@ -3,8 +3,8 @@ package org.sk89q;
 import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * Modification to sk98q CommandsManager.

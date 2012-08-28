@@ -9,6 +9,7 @@ import java.util.Hashtable;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.bukkit.entity.Enderman;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.BlockFromToEvent;
@@ -41,8 +42,6 @@ import org.saga.saveload.SagaCustomSerialization;
 import org.saga.saveload.WriterReader;
 import org.saga.settlements.Settlement.SettlementPermission;
 import org.saga.statistics.StatisticsManager;
-
-import com.google.gson.JsonParseException;
 
 public class Bundle extends SagaCustomSerialization{
 

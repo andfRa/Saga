@@ -14,6 +14,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Fireball;
@@ -48,8 +49,6 @@ import org.saga.saveload.WriterReader;
 import org.saga.settlements.Settlement;
 import org.saga.shape.RelativeShape.Orientation;
 import org.saga.statistics.StatisticsManager;
-
-import com.google.gson.JsonParseException;
 
 public class SagaPlayer implements Trader{
 

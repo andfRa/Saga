@@ -13,6 +13,7 @@ import java.util.Set;
 import java.util.TreeSet;
 
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.saga.Clock;
 import org.saga.Clock.HourTicker;
 import org.saga.SagaLogger;
@@ -31,8 +32,6 @@ import org.saga.saveload.WriterReader;
 import org.saga.settlements.Settlement;
 import org.saga.utility.text.RomanNumeral;
 import org.saga.utility.text.TextUtil;
-
-import com.google.gson.JsonParseException;
 
 public class StatisticsManager implements HourTicker{
 

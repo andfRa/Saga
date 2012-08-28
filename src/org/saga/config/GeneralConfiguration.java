@@ -8,13 +8,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.saga.SagaLogger;
 import org.saga.player.GuardianRune;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.statistics.StatisticsManager;
-
-import com.google.gson.JsonParseException;
 
 public class GeneralConfiguration {
 

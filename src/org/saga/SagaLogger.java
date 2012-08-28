@@ -4,11 +4,10 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.logging.Logger;
 
-import jline.Terminal;
-import jline.console.ConsoleReader;
-
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.libs.jline.Terminal;
+import org.bukkit.craftbukkit.libs.jline.console.ConsoleReader;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.Ansi.Attribute;
 

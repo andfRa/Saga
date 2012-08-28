@@ -10,6 +10,7 @@ import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.saga.Clock;
 import org.saga.Clock.DaytimeTicker;
 import org.saga.Clock.MinuteTicker;
@@ -34,8 +35,6 @@ import org.saga.saveload.WriterReader;
 import org.saga.settlements.Settlement;
 import org.saga.statistics.StatisticsManager;
 import org.saga.utility.SagaLocation;
-
-import com.google.gson.JsonParseException;
 
 /**
  * @author andf

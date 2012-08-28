@@ -5,8 +5,8 @@ import org.saga.config.FactionConfiguration;
 import org.saga.dependencies.PermissionsManager;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
-import org.saga.messages.SettlementMessages;
 import org.saga.messages.PlayerMessages;
+import org.saga.messages.SettlementMessages;
 import org.saga.player.SagaPlayer;
 
 public class SagaEventHandler {

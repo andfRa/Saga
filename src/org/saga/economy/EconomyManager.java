@@ -8,6 +8,7 @@ import java.util.List;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Clock.DaytimeTicker;
 import org.saga.Saga;
@@ -16,8 +17,6 @@ import org.saga.messages.EconomyMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
-
-import com.google.gson.JsonParseException;
 
 
 public class EconomyManager implements DaytimeTicker{

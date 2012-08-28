@@ -15,15 +15,14 @@ import java.net.URISyntaxException;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
+import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
+import org.bukkit.craftbukkit.libs.com.google.gson.GsonBuilder;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
 import org.saga.buildings.Building;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.chunks.Bundle;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 public class WriterReader {
 
