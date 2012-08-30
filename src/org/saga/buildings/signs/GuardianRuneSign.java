@@ -121,6 +121,10 @@ public class GuardianRuneSign extends BuildingSign{
 				}
 
 				break;
+			
+			case INVALIDATED:
+				
+				break;
 				
 			default:
 				

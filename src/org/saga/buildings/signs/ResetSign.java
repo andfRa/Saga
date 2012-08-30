@@ -4,6 +4,7 @@ import org.bukkit.block.Sign;
 import org.saga.buildings.Building;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.EconomyConfiguration;
+import org.saga.config.SettlementConfiguration;
 import org.saga.messages.BuildingMessages;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.effects.AbilityEffects;
@@ -116,6 +117,11 @@ public class ResetSign extends BuildingSign{
 
 				if(index == 1) return getFirstParameter();
 				if(index == 3 && cost > 0.0) return "cost: " + EconomyMessages.coins(cost);
+				break;
+				
+			case INVALIDATED:
+
+				if(index == 1) return SettlementConfiguration.config().invalidSignColor + "amt" + AMOUNT_DIV_DISPLAY + "attribute";
 				break;
 				
 			default:

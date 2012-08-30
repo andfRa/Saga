@@ -4,6 +4,7 @@ import org.bukkit.block.Sign;
 import org.saga.buildings.Building;
 import org.saga.buildings.TrainingCamp;
 import org.saga.config.AttributeConfiguration;
+import org.saga.config.SettlementConfiguration;
 import org.saga.messages.BuildingMessages;
 import org.saga.messages.effects.AbilityEffects;
 import org.saga.player.SagaPlayer;
@@ -104,6 +105,11 @@ public class AttributeSign extends BuildingSign{
 
 				if(index == 1) return getFirstParameter();
 				if(index == 3 && trainLimit > 0 && trainLimit < AttributeConfiguration.config().maxAttributeScore) return "limit: " + trainLimit;
+				break;
+			
+			case INVALIDATED:
+
+				if(index == 1) return SettlementConfiguration.config().invalidSignColor + "attribute";
 				break;
 				
 			default:

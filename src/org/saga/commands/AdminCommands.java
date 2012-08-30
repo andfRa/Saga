@@ -842,6 +842,22 @@ public class AdminCommands {
 	@CommandPermissions({"saga.debug.admin.dcommand"})
 	public static void debugCommand(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
+		
+		Integer numb = 0;
+		if(args.argsLength() > 0){
+			
+			try {
+				numb = args.getInteger(0);
+			}
+			catch (NumberFormatException e) {
+				sagaPlayer.message(ChatColor.RED + args.getString(0) + " must be a number!");
+			}
+			
+		}
+		
+		sagaPlayer.message("numb=" + numb);
+		
+		
 	}
 	
 	@Command(

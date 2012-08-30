@@ -6,6 +6,7 @@ import org.bukkit.inventory.ItemStack;
 import org.saga.buildings.Building;
 import org.saga.buildings.TradingPost;
 import org.saga.config.EconomyConfiguration;
+import org.saga.config.SettlementConfiguration;
 import org.saga.messages.EconomyMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
@@ -211,6 +212,12 @@ public class BuySign extends BuildingSign {
 				if(index == 2) return "price: " + EconomyMessages.coins(price);
 				if(index == 3) return "come back later";
 				break;
+			
+			case INVALIDATED:
+				
+				if(index == 1) return SettlementConfiguration.config().invalidSignColor + "amt" + AMOUNT_DIV_DISPLAY + "item/ID";
+			
+			break;
 				
 			default:
 				
