@@ -825,7 +825,7 @@ public class FactionCommands {
 			aliases = {"frequestally"},
 			usage = "[faction_name] <other_faction_name>",
 			flags = "",
-			desc = "Request an alliane.",
+			desc = "Request an alliance.",
 			min = 1,
 			max = 2
 	)
@@ -913,7 +913,7 @@ public class FactionCommands {
 			aliases = {"facceptally"},
 			usage = "[faction_name] [other_faction_name]",
 			flags = "",
-			desc = "Accept an alliane.",
+			desc = "Accept an alliance.",
 			min = 0,
 			max = 2
 	)
@@ -1034,7 +1034,7 @@ public class FactionCommands {
 			aliases = {"fdeclinetally"},
 			usage = "[faction_name] [other_faction_name]",
 			flags = "",
-			desc = "Decline an alliane.",
+			desc = "Decline an alliance.",
 			min = 1,
 			max = 2
 	)
@@ -1142,7 +1142,7 @@ public class FactionCommands {
 			aliases = {"fremoveally"},
 			usage = "[faction_name] <other_faction_name>",
 			flags = "",
-			desc = "Break an alliane.",
+			desc = "Break an alliance.",
 			min = 1,
 			max = 2
 	)

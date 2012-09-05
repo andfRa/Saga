@@ -55,7 +55,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 
 		
 		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
-		StringBook book = new StringBook("building help", colours);
+		StringBook book = new StringBook("economy help", colours);
 		
 		// General:
 		book.addLine("Faction members receive wages each " + EconomyConfiguration.config().getFactionWagesTime() + ". " +
@@ -383,7 +383,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 
 		
 		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
-		StringBook book = new StringBook("settlement help", colours);
+		StringBook book = new StringBook("faction help", colours);
 
 		// Levels:
 		book.addLine("A faction gains levels by killing members from other factions. " +
@@ -475,7 +475,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		// Alliances:
 		book.addLine("Factions can form alliances. " +
 			"Allied factions share faction chat and can't attack each other. " +
-			"An alliance request can be sent with " + GeneralMessages.command("/frequestally") + ". " +
+			"An alliance request can be requested with " + GeneralMessages.command("/frequestally") + ". " +
 			"Alliance requests can be accepted and declined with " + GeneralMessages.command("/facceptally") + " and " + GeneralMessages.command("/fdeclineally") + ". " +
 			"An alliance can be broken with " + GeneralMessages.command("/fremoveally") + "."
 		);
