@@ -381,6 +381,7 @@ public class SettlementCommands {
 			Settlement selSettlement = (Settlement) selBundle;
 			String roleName = selSettlement.getDefinition().ownerRole;
 			
+			
 			// Get role:
 			Proficiency role;
 			try {
@@ -391,7 +392,7 @@ public class SettlementCommands {
 			}
 			
 			// Set role:
-			selSettlement.setRole(selPlayer, role);
+			if(selSettlement.isRoleAvailable(role.getHierarchy())) selSettlement.setRole(selPlayer, role);
 			
 		}
 

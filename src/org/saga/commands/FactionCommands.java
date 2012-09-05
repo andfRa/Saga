@@ -576,7 +576,7 @@ public class FactionCommands {
 		}
 		
 		// Set rank:
-		selFaction.setRank(selPlayer, rank);
+		if(selFaction.isRankAvailable(rank.getHierarchy())) selFaction.setRank(selPlayer, rank);
 
 		// Inform:
 		selFaction.information(FactionMessages.newOwner(selFaction, targetName));
