@@ -18,7 +18,7 @@ public class SagaEntityDeathEvent {
 	/**
 	 * Damage event.
 	 */
-	private SagaEntityDamageEvent damEvent;
+	private SagaEntityDamageEvent damEvent = null;
 	 
 	
 	/**
@@ -33,7 +33,7 @@ public class SagaEntityDeathEvent {
 		this.event = event;
 		
 		// Entity damage event:
-		damEvent = new SagaEntityDamageEvent(event.getEntity().getLastDamageCause(), event.getEntity());
+		if(event.getEntity().getLastDamageCause() != null) damEvent = new SagaEntityDamageEvent(event.getEntity().getLastDamageCause(), event.getEntity());
 		
 		
 
@@ -46,6 +46,9 @@ public class SagaEntityDeathEvent {
 	 */
 	public void apply() {
 
+		
+		// No cause:
+		if(damEvent == null) return;
 		
 		// Killed a creature:
 		if(damEvent.isPlayerAttackCreature()){
@@ -114,7 +117,7 @@ public class SagaEntityDeathEvent {
 	/**
 	 * Gets the last damage event.
 	 * 
-	 * @return last damage event
+	 * @return last damage event, null if none
 	 */
 	public SagaEntityDamageEvent getLastDamageEvent() {
 		return damEvent;

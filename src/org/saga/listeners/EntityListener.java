@@ -151,9 +151,16 @@ public class EntityListener implements Listener{
 		
 		SagaEntityDeathEvent sagaEvent = new SagaEntityDeathEvent(event, event.getEntity());
 		
-		SagaPlayer sagaDead = sagaEvent.getLastDamageEvent().getDefenderPlayer();
-		SagaPlayer sagaAttacker = sagaEvent.getLastDamageEvent().getAttackerPlayer();
-		Creature deadCreature =  sagaEvent.getLastDamageEvent().getDefenderCreature();
+		SagaPlayer sagaDead = null;
+		SagaPlayer sagaAttacker = null;
+		Creature deadCreature = null;
+		
+		if(sagaEvent.getLastDamageEvent() != null){
+			sagaDead = sagaEvent.getLastDamageEvent().getDefenderPlayer();
+			sagaAttacker = sagaEvent.getLastDamageEvent().getAttackerPlayer();
+			deadCreature =  sagaEvent.getLastDamageEvent().getDefenderCreature();
+		}
+		
 		
 		// Player got killed by a player:
 		if(sagaDead != null && sagaAttacker != null){
