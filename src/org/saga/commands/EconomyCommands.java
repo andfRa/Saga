@@ -61,6 +61,12 @@ public class EconomyCommands {
 			return;
 		}
 		
+		// Other world:
+		if(!playerLocation.getWorld().getName().equals(targetLocation.getWorld().getName())){
+			sagaPlayer.message(EconomyMessages.tooFarPay());
+			return;
+		}
+		
 		double distance = playerLocation.distance(targetLocation);
 		double maxDistance = EconomyConfiguration.config().exchangeDistance;
 		if(distance > maxDistance){
