@@ -523,7 +523,7 @@ public class SagaChunk {
 			SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(player.getName());
 			
 			if(sagaPlayer == null){
-				SagaLogger.severe(this, "failed to retrieve saga player for " + player.getName() + ", because the player isnt loaded");
+//				SagaLogger.severe(this, "failed to retrieve saga player for " + player.getName() + ", because the player isnt loaded");
 				continue;
 			}
 			
