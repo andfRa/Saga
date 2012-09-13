@@ -13,6 +13,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -42,7 +43,7 @@ public class EntityListener implements Listener{
 		LivingEntity defender= (LivingEntity) event.getEntity();
 		
 		// Damage ticks:
-		if(event instanceof EntityDamageEvent && defender.getNoDamageTicks() > defender.getMaximumNoDamageTicks()/2F){
+		if(event instanceof EntityDamageByEntityEvent && defender.getNoDamageTicks() > defender.getMaximumNoDamageTicks()/2F){
 			event.setCancelled(true);
 			return;
 		}
