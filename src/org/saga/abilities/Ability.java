@@ -13,6 +13,7 @@ import org.saga.exceptions.InvalidAbilityException;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaInteractEntityEvent;
 import org.saga.messages.AbilityMessages;
+import org.saga.messages.effects.AbilityEffects;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.SagaCustomSerialization;
 import org.saga.statistics.StatisticsManager;
@@ -432,6 +433,9 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		useItems();
 		startCooldown();
 
+		// Ability effect:
+		AbilityEffects.playAbilityEffect(getSagaPlayer(), this);
+		
 		// Statistics:
 		StatisticsManager.manager().addAbilityUse(this);
 		

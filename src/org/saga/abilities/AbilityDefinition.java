@@ -64,16 +64,6 @@ public class AbilityDefinition{
 	private TwoPointFunction active;
 
 	/**
-	 * Usage description.
-	 */
-	private String usage;
-	
-	/**
-	 * Description.
-	 */
-	private String description;
-
-	/**
 	 * Attribute requirements.
 	 */
 	private Hashtable<String, TwoPointFunction> attributeRequirements;
@@ -88,7 +78,21 @@ public class AbilityDefinition{
 	 */
 	private Hashtable<String, TwoPointFunction> functions;
 	
+	/**
+	 * Effect colour.
+	 */
+	private Integer colour;
 	
+	/**
+	 * Usage description.
+	 */
+	private String usage;
+	
+	/**
+	 * Description.
+	 */
+	private String description;
+
 	
 	
 	// Initialisation:
@@ -164,16 +168,6 @@ public class AbilityDefinition{
 		active.complete();
 		
 
-		if(usage == null){
-			usage = "";
-			SagaLogger.nullField(this, "usage");
-		}
-
-		if(description == null){
-			description = "";
-			SagaLogger.nullField(this, "description");
-		}
-		
 		if(attributeRequirements == null){
 			attributeRequirements = new Hashtable<String, TwoPointFunction>();
 			SagaLogger.nullField(this, "attributeRequirements");
@@ -200,11 +194,25 @@ public class AbilityDefinition{
 		for (TwoPointFunction function : functionsElements) {
 			function.complete();
 		}
+
+		if(usage == null){
+			usage = "";
+			SagaLogger.nullField(this, "usage");
+		}
+
+		if(description == null){
+			description = "";
+			SagaLogger.nullField(this, "description");
+		}
 		
+		if(colour == null){
+			colour = 0;
+			SagaLogger.nullField(this, "colour");
+		}
+
 		
 	}
 
-	
 	
 	
 	// Interaction:
@@ -441,6 +449,18 @@ public class AbilityDefinition{
 	
 	
 	
+	// Effect:
+	/**
+	 * Gets ability colour.
+	 * 
+	 * @return ability colour
+	 */
+	public Integer getColour() {
+		return colour;
+	}
+	
+	
+	
 	// Info:
 	/**
 	 * Gets the description.
@@ -460,6 +480,7 @@ public class AbilityDefinition{
 		return usage;
 	}
 
+	
 	
 	// Other:
 	/* 
