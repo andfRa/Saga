@@ -102,7 +102,7 @@ public class SettlementCommands {
 		
 		// Check name:
 		if(BundleManager.manager().getBundle(settlementName) != null){
-			sagaPlayer.message(FactionMessages.inUse(settlementName));
+			sagaPlayer.message(SettlementMessages.inUse(settlementName));
 			return;
 		}
 		

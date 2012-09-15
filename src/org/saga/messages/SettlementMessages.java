@@ -898,6 +898,10 @@ public class SettlementMessages {
 		return negative + "Name must be " + SettlementCommands.minimumNameLenght + "-" + SettlementCommands.maximumNameLength + ". Letters and numbers only.";
 		
 	}
+
+	public static String inUse(String name) {
+		return negative + "Settlement name " + name + " is already in use.";
+	}
 	
 	
 	
