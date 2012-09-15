@@ -338,17 +338,7 @@ public class SagaChunk {
 	public void refresh() {
 		
 		
-		Entity[] entities = getBukkitChunk().getEntities();
-		ArrayList<SagaPlayer> sagaPlayers = new ArrayList<SagaPlayer>();
-		
-		for (int i = 0; i < entities.length; i++) {
-
-			if(!(entities[i] instanceof Player)) continue;
-			
-			SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(((Player) entities[i]).getName());
-			if(sagaPlayer != null) sagaPlayers.add(sagaPlayer);
-			
-		}
+		ArrayList<SagaPlayer> sagaPlayers = getSagaPlayers();
 		
 		for (SagaPlayer sagaPlayer : sagaPlayers) {
 			sagaPlayer.refreshChunk();
