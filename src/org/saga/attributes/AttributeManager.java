@@ -1,7 +1,9 @@
 package org.saga.attributes;
 
 import java.util.ArrayList;
+import java.util.Random;
 
+import org.bukkit.Effect;
 import org.saga.config.AttributeConfiguration;
 import org.saga.listeners.events.SagaBlockBreakEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent;
@@ -9,6 +11,13 @@ import org.saga.player.SagaPlayer;
 
 public class AttributeManager {
 
+	
+	/**
+	 * Random generator.
+	 */
+	private static Random RANDOM = new Random();
+	
+	
 	/**
 	 * Saga player.
 	 */
@@ -51,6 +60,9 @@ public class AttributeManager {
 
 				// Modifier:
 				event.modifyDamage(attackerManager.getAttackModifier(AttributeParameter.MELEE_MODIFIER));
+
+				// Multiplier:
+				event.multiplyDamage(attackerManager.getAttackModifier(AttributeParameter.MELEE_MULTIPLIER));
 				
 				// Hit chance:
 				event.modifyHitChance(attackerManager.getAttackModifier(AttributeParameter.MELEE_MODIFIER));
@@ -64,6 +76,9 @@ public class AttributeManager {
 
 				// Modifier:
 				event.modifyDamage(attackerManager.getAttackModifier(AttributeParameter.RANGED_MODIFIER));
+
+				// Multiplier:
+				event.multiplyDamage(attackerManager.getAttackModifier(AttributeParameter.RANGED_MULTIPLIER));
 				
 				// Hit chance:
 				event.modifyHitChance(attackerManager.getAttackModifier(AttributeParameter.RANGED_MODIFIER));
@@ -77,6 +92,9 @@ public class AttributeManager {
 
 				// Modifier:
 				event.modifyDamage(attackerManager.getAttackModifier(AttributeParameter.MAGIC_MODIFIER));
+
+				// Multiplier:
+				event.multiplyDamage(attackerManager.getAttackModifier(AttributeParameter.MAGIC_MULTIPLIER));
 				
 				// Hit chance:
 				event.modifyHitChance(attackerManager.getAttackModifier(AttributeParameter.MAGIC_MODIFIER));
@@ -112,6 +130,9 @@ public class AttributeManager {
 				// Modifier:
 				event.modifyDamage(defenderManager.getDefendModifier(AttributeParameter.MELEE_MODIFIER));
 				
+				// Multiplier:
+				event.multiplyDamage(defenderManager.getDefendModifier(AttributeParameter.MELEE_MULTIPLIER));
+				
 				// Hit chance:
 				event.modifyHitChance(defenderManager.getDefendModifier(AttributeParameter.MELEE_MODIFIER));
 
@@ -124,6 +145,9 @@ public class AttributeManager {
 
 				// Modifier:
 				event.modifyDamage(defenderManager.getDefendModifier(AttributeParameter.RANGED_MODIFIER));
+
+				// Multiplier:
+				event.multiplyDamage(defenderManager.getDefendModifier(AttributeParameter.RANGED_MULTIPLIER));
 				
 				// Hit chance:
 				event.modifyHitChance(defenderManager.getDefendModifier(AttributeParameter.RANGED_MODIFIER));
@@ -137,6 +161,9 @@ public class AttributeManager {
 
 				// Modifier:
 				event.modifyDamage(defenderManager.getDefendModifier(AttributeParameter.MAGIC_MODIFIER));
+
+				// Multiplier:
+				event.multiplyDamage(defenderManager.getDefendModifier(AttributeParameter.MAGIC_MULTIPLIER));
 				
 				// Hit chance:
 				event.modifyHitChance(defenderManager.getDefendModifier(AttributeParameter.MAGIC_MODIFIER));
@@ -144,6 +171,15 @@ public class AttributeManager {
 				// Hit chance:
 				event.modifyArmourPenetration(defenderManager.getDefendModifier(AttributeParameter.MAGIC_ARMOUR_PENETRATION));
 				
+				break;
+			
+			case BURN:
+				
+				if(randomBoolean(defenderManager.getDefendModifier(AttributeParameter.BURN_RESIST))){
+					event.cancel();
+					event.defenderPlayer.playGlobalEffect(Effect.EXTINGUISH, 0);
+				}
+
 				break;
 				
 			default:
@@ -226,6 +262,18 @@ public class AttributeManager {
 		}
 		
 		return modifier;
+		
+	}
+	
+	/**
+	 * Gets a random boolean from a double
+	 * 
+	 * @param x
+	 * @return true if x > random double
+	 */
+	private boolean randomBoolean(double x) {
+
+		return x > RANDOM.nextDouble();
 		
 	}
 	

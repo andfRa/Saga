@@ -51,7 +51,7 @@
   {"name":"warding",
     "attack":{},
     "defend":{
-      "MAGIC_MULTIPLIER":{"x1":0,"y1":1,"x2":100,"y2":0.20},
+      "MAGIC_MULTIPLIER":{"x1":0,"y1":-0,"x2":100,"y2":-0.90},
       "BURN_RESIST":{"x1":0,"y1":0,"x2":60,"y2":1.0}
     },
     "passive":{},

@@ -207,7 +207,7 @@ public class SagaEntityDamageEvent {
 	 * @param amount amount to multiply by
 	 */
 	public void multiplyDamage(double amount) {
-		multiplier*= amount;
+		multiplier+= amount;
 	}
 	
 	/**
