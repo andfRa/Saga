@@ -341,16 +341,16 @@ public class TownSquare extends Building implements SecondTicker{
 
 		
 		// Deny damage:
-		if(event.isCreatureAttackPlayer()){
+		if(event.isCvP()){
 			event.cancel();
 		}
 		
-		else if(event.isPlayerAttackPlayer()){
+		else if(event.isPvP()){
 			event.addPvpOverride(PvPOverride.SAFE_AREA_DENY);
 		}
 		
 		// Allow PvP if being claimed:
-		if(event.isFactionAttackFaction() && FactionClaimManager.manager().isFactionClaiming(getChunkBundle().getId())){
+		if(event.isFvF() && FactionClaimManager.manager().isFactionClaiming(getChunkBundle().getId())){
 			event.addPvpOverride(PvPOverride.FACTION_CLAIMING_ALLOW);
 		}
 		

@@ -410,8 +410,8 @@ public class Arena extends Building implements SecondTicker{
 		
 		
 		// Attack from outside of the arena:
-		SagaChunk attackerChunk = event.getAttackerChunk();
-		SagaChunk defenderChunk = event.getDefenderChunk();
+		SagaChunk attackerChunk = event.attackerChunk;
+		SagaChunk defenderChunk = event.defenderChunk;
 		if(attackerChunk == null || defenderChunk == null || attackerChunk != getSagaChunk() || defenderChunk != getSagaChunk()){
 			return;
 		}

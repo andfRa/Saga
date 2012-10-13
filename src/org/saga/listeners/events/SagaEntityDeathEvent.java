@@ -51,7 +51,7 @@ public class SagaEntityDeathEvent {
 		if(damEvent == null) return;
 		
 		// Killed a creature:
-		if(damEvent.isPlayerAttackCreature()){
+		if(damEvent.isPvC()){
 			
 			String group = "creature";
 			
@@ -80,7 +80,7 @@ public class SagaEntityDeathEvent {
 		}
 		
 		// Killed a player:
-		else if(damEvent.isPlayerAttackPlayer()){
+		else if(damEvent.isPvP()){
 			
 			// Award exp:
 			Double exp = ExperienceConfiguration.config().getExp(damEvent.defenderPlayer);

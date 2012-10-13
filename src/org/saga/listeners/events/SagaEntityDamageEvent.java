@@ -311,7 +311,7 @@ public class SagaEntityDamageEvent {
 	 * 
 	 * @return true if player versus player
 	 */
-	public boolean isPlayerAttackPlayer() {
+	public boolean isPvP() {
 
 		return attackerPlayer != null && defenderPlayer != null;
 
@@ -322,7 +322,7 @@ public class SagaEntityDamageEvent {
 	 * 
 	 * @return true if player versus player
 	 */
-	public boolean isPlayerAttackCreature() {
+	public boolean isPvC() {
 
 		return attackerPlayer != null && defenderCreature != null;
 
@@ -333,7 +333,7 @@ public class SagaEntityDamageEvent {
 	 * 
 	 * @return true if player versus player
 	 */
-	public boolean isCreatureAttackCreature() {
+	public boolean isCvC() {
 
 		return attackerCreature != null && defenderCreature != null;
 
@@ -344,11 +344,36 @@ public class SagaEntityDamageEvent {
 	 * 
 	 * @return true if player versus player
 	 */
-	public boolean isCreatureAttackPlayer() {
+	public boolean isCvP() {
 
 		return attackerCreature != null && defenderPlayer != null;
 
 	}
+
+	/**
+	 * Checks if the event is faction versus faction.
+	 * 
+	 * @return true if faction versus faction.
+	 */
+	public boolean isFvF() {
+
+		if(attackerPlayer == null || defenderPlayer == null) return false;
+		return attackerPlayer.getFaction() != null && defenderPlayer.getFaction() != null;
+
+	}
+
+	
+	/**
+	 * Checks if the event is cancelled.
+	 * 
+	 * @return true if cancelled
+	 */
+	public boolean isCancelled() {
+
+		return event.isCancelled();
+
+	}
+
 	
 	/**
 	 * Adds a pvp override.
@@ -373,56 +398,9 @@ public class SagaEntityDamageEvent {
 		return pvpOverride.peek();
 
 	}
-	
-
-	/**
-	 * Gets the attackerChunk.
-	 * 
-	 * @return the attackerChunk
-	 */
-	public SagaChunk getAttackerChunk() {
-	
-	
-		return attackerChunk;
-	}
-
-	/**
-	 * Gets the defenderChunk.
-	 * 
-	 * @return the defenderChunk
-	 */
-	public SagaChunk getDefenderChunk() {
-	
-	
-		return defenderChunk;
-	}
-	
-	
-	/**
-	 * Checks if the event is faction versus faction.
-	 * 
-	 * @return true if faction versus faction.
-	 */
-	public boolean isFactionAttackFaction() {
-
-		if(attackerPlayer == null || defenderPlayer == null) return false;
-		return attackerPlayer.getFaction() != null && defenderPlayer.getFaction() != null;
-
-	}
-	
-	
-	/**
-	 * Checks if the event is cancelled.
-	 * 
-	 * @return true if cancelled
-	 */
-	public boolean isCancelled() {
-
-		return event.isCancelled();
-
-	}
 
 
+	
 	/**
 	 * Pvp overrides.
 	 * 
@@ -474,9 +452,6 @@ public class SagaEntityDamageEvent {
 		
 		
 	}
-	
-	
-	// TODO: Explode on attack.
 	
 	
 }

@@ -59,7 +59,7 @@ public class TownHall extends Building{
 	public void onEntityDamage(SagaEntityDamageEvent event){
 
 		
-		if(event.isPlayerAttackPlayer()){
+		if(event.isPvP()){
 			event.addPvpOverride(PvPOverride.SAFE_AREA_DENY);
 		}
 		

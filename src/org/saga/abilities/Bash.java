@@ -40,7 +40,7 @@ public class Bash extends Ability{
 
 		
 		// Only player vs player:
-		if(!event.isPlayerAttackPlayer()) return false;
+		if(!event.isPvP()) return false;
 		
 		// Only physical:
 		if(event.type != DamageType.MELEE) return false;

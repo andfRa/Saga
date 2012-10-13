@@ -47,19 +47,19 @@ public class SagaEventHandler {
 
 
 		// PvP event:
-		if(event.isPlayerAttackPlayer()){
+		if(event.isPvP()){
 			
 			// Damaged self:
 			if(event.defenderPlayer == event.attackerPlayer) event.addPvpOverride(PvPOverride.SELF_ALLOW);
 			
 			// Forward to Saga chunks:
-			SagaChunk attackerChunk = event.getAttackerChunk();
-			SagaChunk defenderChunk = event.getDefenderChunk();
+			SagaChunk attackerChunk = event.attackerChunk;
+			SagaChunk defenderChunk = event.defenderChunk;
 			if(attackerChunk != null) attackerChunk.onEntityDamage(event);
 			if(defenderChunk != null && attackerChunk != defenderChunk) defenderChunk.onEntityDamage(event);
 			
 			// Only faction versus faction:
-			if(FactionConfiguration.config().factionOnlyPvp && !event.isFactionAttackFaction()) event.addPvpOverride(PvPOverride.FACTION_ONLY_PVP_DENY);
+			if(FactionConfiguration.config().factionOnlyPvp && !event.isFvF()) event.addPvpOverride(PvPOverride.FACTION_ONLY_PVP_DENY);
 			
 			// Forward to Saga factions:
 			if(event.attackerPlayer.getFaction() != null) event.attackerPlayer.getFaction().onAttack(event);

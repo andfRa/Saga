@@ -205,11 +205,11 @@ public class Home extends Building {
 	public void onEntityDamage(SagaEntityDamageEvent event){
 			
 		// Deny damage:
-		if(event.isCreatureAttackPlayer()){
+		if(event.isCvP()){
 			event.cancel();
 		}
 		
-		else if(event.isPlayerAttackPlayer()){
+		else if(event.isPvP()){
 			event.addPvpOverride(PvPOverride.SAFE_AREA_DENY);
 		}
 		
