@@ -59,7 +59,7 @@
     "maxScore":3,
     "upgradeCost":{"x1":1,"y1":10000,"x2":2,"y2":40000},
     "description":"spawns logs",
-    "effect":"#craft_daytime: #caft_amount x logs"
+    "effect":"#craft_daytime: #craft_amount x logs"
   },
 
   {
@@ -87,7 +87,7 @@
     "maxScore":3,
     "upgradeCost":{"x1":1,"y1":10000,"x2":2,"y2":40000},
     "description":"spawns crops and meat",
-    "effect":"#craft_daytime: #caft_amount x crops/raw meat"
+    "effect":"#craft_daytime: #craft_amount x crops/raw meat"
   },
   
   {
@@ -114,7 +114,7 @@
     "maxScore":3,
     "upgradeCost":{"x1":1,"y1":30000,"x2":2,"y2":120000},
     "description":"spawns ores",
-    "effect":"#craft_daytime: #caft_amount x ore"
+    "effect":"#craft_daytime: #craft_amount x ore"
   },
   
   {
@@ -140,7 +140,7 @@
     "maxScore":3,
     "upgradeCost":{"x1":1,"y1":10000,"x2":2,"y2":40000},
     "description":"creates wood from logs",
-    "effect":"#craft_daytime: #caft_amount x logs to wood"
+    "effect":"#craft_daytime: #craft_amount x logs to wood"
   },
 
   {
@@ -167,7 +167,7 @@
     "maxScore":3,
     "upgradeCost":{"x1":1,"y1":10000,"x2":2,"y2":40000},
     "description":"cooks food from farm products",
-    "effect":"#craft_daytime: #caft_amount x wheat/meat to food"
+    "effect":"#craft_daytime: #craft_amount x wheat/meat to food"
   },
   
   {
@@ -194,7 +194,7 @@
     "maxScore":3,
     "upgradeCost":{"x1":1,"y1":30000,"x2":2,"y2":120000},
     "description":"refines ores",
-    "effect":"#craft_daytime: #caft_amount x ore refined"
+    "effect":"#craft_daytime: #craft_amount x ore refined"
   },
 
   {
@@ -218,7 +218,7 @@
     "maxScore":3,
     "upgradeCost":{"x1":1,"y1":20000,"x2":2,"y2":80000},
     "description":"creates bricks",
-    "effect":"#craft_daytime: #caft_amount x bricks"
+    "effect":"#craft_daytime: #craft_amount x bricks"
   },
   
   {
@@ -242,7 +242,7 @@
     "maxScore":3,
     "upgradeCost":{"x1":1,"y1":50000,"x2":2,"y2":200000},
     "description":"spawns gems",
-    "effect":"#craft_daytime: #caft_amount x gems"
+    "effect":"#craft_daytime: #craft_amount x gems"
   },
   
 

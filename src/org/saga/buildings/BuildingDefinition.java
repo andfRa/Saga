@@ -17,7 +17,7 @@ public class BuildingDefinition {
 	/**
 	 * Replace string for craft amount.
 	 */
-	public final static String CRAFT_AMOUNT_REPLACE = "#caft_amount";
+	public final static String CRAFT_AMOUNT_REPLACE = "#craft_amount";
 	
 	/**
 	 * Replace string for craft daytime.
