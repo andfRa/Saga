@@ -27,55 +27,53 @@ public class SagaEntityDamageEvent {
 	private static Random RANDOM = new Random();
 
 	
-	
-	
 	/**
 	 * Damage type.
 	 */
 	public DamageType type;
 	
 	/**
-	 * Minecraft event.
-	 */
-	private EntityDamageEvent event;
-	
-	/**
 	 * Projectile.
 	 */
-	public Projectile projectile = null;
+	public final Projectile projectile;
 	
 	
 	/**
 	 * Attacker creature, null if none.
 	 */
-	public Creature attackerCreature = null;
+	public final Creature attackerCreature;
 	
 	/**
 	 * Defender creature, null if none
 	 */
-	public Creature defenderCreature = null;
+	public final Creature defenderCreature;
 	
 	/**
 	 * Attacker player, null if none.
 	 */
-	public SagaPlayer attackerPlayer = null;
+	public final SagaPlayer attackerPlayer;
 	
 	/**
 	 * Defender player, null if none
 	 */
-	public SagaPlayer defenderPlayer = null;
+	public final SagaPlayer defenderPlayer;
 	
 	
 	/**
-	 * Attackers saga chunk.
+	 * Attackers saga chunk, null if none.
 	 */
-	public SagaChunk attackerChunk = null;
+	public final SagaChunk attackerChunk;
 	
 	/**
-	 * Defenders saga chunk.
+	 * Defenders saga chunk, null if none.
 	 */
-	public SagaChunk defenderChunk = null;
+	public final SagaChunk defenderChunk;
 
+	
+	/**
+	 * Minecraft event.
+	 */
+	private final EntityDamageEvent event;
 	
 	/**
 	 * Damage modifier.
@@ -138,12 +136,10 @@ public class SagaEntityDamageEvent {
 		if(attacker instanceof Player){
 
 			attackerPlayer = Saga.plugin().getLoadedPlayer( ((Player) attacker).getName() );
-
+			attackerCreature = null;
+			
 	    	// No player:
-	    	if(attackerPlayer == null){
-	    		SagaLogger.severe(getClass(), "failed to load saga player for "+ ((Player) attacker).getName());
-	    		return;
-	    	}
+	    	if(attackerPlayer == null) SagaLogger.severe(getClass(), "failed to load saga player for "+ ((Player) attacker).getName());
 	    	
 		}
 
@@ -151,6 +147,12 @@ public class SagaEntityDamageEvent {
 		else if(attacker instanceof Creature){
 			
 			attackerCreature = (Creature)attacker;
+			attackerPlayer = null;
+			
+		}else{
+			
+			attackerCreature = null;
+			attackerPlayer = null;
 			
 		}
 		
@@ -158,25 +160,31 @@ public class SagaEntityDamageEvent {
 		if(defender instanceof Player){
 
 			defenderPlayer = Saga.plugin().getLoadedPlayer( ((Player) defender).getName() );
-
+			defenderCreature = null;
+			
 	    	// No player:
-	    	if(defenderPlayer == null){
-	    		SagaLogger.severe(getClass(), "failed to load saga player for "+ ((Player) attacker).getName());
-	    		return;
-	    	}
+	    	if(defenderPlayer == null) SagaLogger.severe(getClass(), "failed to load saga player for "+ ((Player) attacker).getName());
 			
 		}
 		
 		// Get defender creature:
 		else if(defender instanceof Creature){
 			
+			defenderPlayer = null;
 			defenderCreature = (Creature)defender;
 			
 		}
 		
+		else{
+			
+			defenderPlayer = null;
+			defenderCreature = null;
+			
+		}
+		
 		// Get chunks:
-		if(attacker != null) attackerChunk = BundleManager.manager().getSagaChunk(attacker.getLocation());
-		if(defender != null) defenderChunk = BundleManager.manager().getSagaChunk(defender.getLocation());
+		attackerChunk = (attacker != null) ? BundleManager.manager().getSagaChunk(attacker.getLocation()) : null;
+		defenderChunk = (defender != null) ? BundleManager.manager().getSagaChunk(defender.getLocation()) : null;
 		
 
 	}
@@ -299,16 +307,6 @@ public class SagaEntityDamageEvent {
 	
 	// Event information:
 	/**
-	 * Gets the type.
-	 * 
-	 * @return the type
-	 */
-	public DamageType getType() {
-		return type;
-	}
-
-	
-	/**
 	 * Checks if player attacked a player.
 	 * 
 	 * @return true if player versus player
@@ -351,53 +349,7 @@ public class SagaEntityDamageEvent {
 		return attackerCreature != null && defenderPlayer != null;
 
 	}
-
 	
-	/**
-	 * Gets the attackerCreature.
-	 * 
-	 * @return the attackerCreature
-	 */
-	public Creature getAttackerCreature() {
-	
-	
-		return attackerCreature;
-	}
-	
-	/**
-	 * Gets the defenderCreature.
-	 * 
-	 * @return the defenderCreature
-	 */
-	public Creature getDefenderCreature() {
-	
-	
-		return defenderCreature;
-	}
-	
-	/**
-	 * Gets the attackerPlayer.
-	 * 
-	 * @return the attackerPlayer
-	 */
-	public SagaPlayer getAttackerPlayer() {
-	
-	
-		return attackerPlayer;
-	}
-	
-	/**
-	 * Gets the defenderPlayer.
-	 * 
-	 * @return the defenderPlayer
-	 */
-	public SagaPlayer getDefenderPlayer() {
-	
-	
-		return defenderPlayer;
-	}
-	
-
 	/**
 	 * Adds a pvp override.
 	 * 

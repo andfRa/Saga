@@ -43,8 +43,8 @@ public class Ignite extends Ability{
 		if(duration < 1) return false;
 		
 		// Ignite:
-		SagaPlayer defenderPlayer = event.getDefenderPlayer();
-		Creature defenderCreature = event.getDefenderCreature();
+		SagaPlayer defenderPlayer = event.defenderPlayer;
+		Creature defenderCreature = event.defenderCreature;
 		
 		if(defenderPlayer != null){
 			

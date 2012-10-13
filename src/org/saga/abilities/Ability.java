@@ -11,7 +11,6 @@ import org.saga.config.AbilityConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.exceptions.InvalidAbilityException;
 import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.listeners.events.SagaInteractEntityEvent;
 import org.saga.messages.AbilityMessages;
 import org.saga.messages.effects.AbilityEffects;
 import org.saga.player.SagaPlayer;
@@ -444,16 +443,6 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	
 	
 	// Triggering:
-	/**
-	 * Triggers the ability.
-	 * 
-	 * @param event event
-	 * @return true if triggered
-	 */
-	public boolean trigger(SagaInteractEntityEvent event) {
-		return false;
-	}
-	
 	/**
 	 * Triggers the ability.
 	 * 

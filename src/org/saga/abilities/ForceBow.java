@@ -42,9 +42,9 @@ public class ForceBow extends Ability{
 		if(speed < 0) return false;
 		
 		// Force:
-		SagaPlayer attackerPlayer = event.getAttackerPlayer();
-		SagaPlayer defenderPlayer = event.getDefenderPlayer();
-		Creature defenderCreature = event.getDefenderCreature();
+		SagaPlayer attackerPlayer = event.attackerPlayer;
+		SagaPlayer defenderPlayer = event.defenderPlayer;
+		Creature defenderCreature = event.defenderCreature;
 		
 		if(defenderPlayer != null){
 			

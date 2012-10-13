@@ -38,17 +38,17 @@ public class DamageWeapon extends Ability{
 
 		
 		// Only pvp:
-		if(event.getAttackerPlayer() == null) return false;
+		if(event.attackerPlayer == null) return false;
 		
 		// Targets item:
-		ItemStack targetItem = event.getAttackerPlayer().getItemInHand();
+		ItemStack targetItem = event.attackerPlayer.getItemInHand();
 		
 		// Can be damaged:
 		if(targetItem == null || targetItem.getType().getMaxDurability() < 1) return false;
 		
 		// Damage:
 		double raw = getDefinition().getFunction(WEAPON_DAMAGE_KEY).value(getScore());
-		double armour = getArmourMultiplier(event.getDefenderPlayer());
+		double armour = getArmourMultiplier(event.defenderPlayer);
 		short damage = TwoPointFunction.randomRound(raw * armour).shortValue();
 		
 		// Damage:

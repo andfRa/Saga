@@ -56,7 +56,7 @@ public class SagaEntityDeathEvent {
 			String group = "creature";
 			
 			// Get exp:
-			Double exp = ExperienceConfiguration.config().getExp(damEvent.getDefenderCreature());
+			Double exp = ExperienceConfiguration.config().getExp(damEvent.defenderCreature);
 			
 			// Unnatural spawn:
 			if(event.getEntity().hasMetadata(SpawnerTag.METADATA_KEY)){
@@ -71,10 +71,10 @@ public class SagaEntityDeathEvent {
 			}
 			
 			// Award exp:
-			damEvent.getAttackerPlayer().awardExp(exp);
+			damEvent.attackerPlayer.awardExp(exp);
 			
 			// Statistics:
-			String creatureName = damEvent.getDefenderCreature().getClass().getSimpleName().replace("_", " ").toLowerCase().replace("craft","");
+			String creatureName = damEvent.defenderCreature.getClass().getSimpleName().replace("_", " ").toLowerCase().replace("craft","");
 			StatisticsManager.manager().addExp(group, creatureName, exp);
 			
 		}
@@ -83,11 +83,11 @@ public class SagaEntityDeathEvent {
 		else if(damEvent.isPlayerAttackPlayer()){
 			
 			// Award exp:
-			Double exp = ExperienceConfiguration.config().getExp(damEvent.getDefenderPlayer());
-			damEvent.getAttackerPlayer().awardExp(exp);
+			Double exp = ExperienceConfiguration.config().getExp(damEvent.defenderPlayer);
+			damEvent.attackerPlayer.awardExp(exp);
 			
 			// Statistics:
-			Integer level = damEvent.getDefenderPlayer().getLevel();
+			Integer level = damEvent.defenderPlayer.getLevel();
 			String range = "";
 			for (int maxi = 0; maxi <= ExperienceConfiguration.config().maximumLevel; maxi+=10) {
 				

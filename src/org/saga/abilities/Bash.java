@@ -46,11 +46,11 @@ public class Bash extends Ability{
 		if(event.type != DamageType.MELEE) return false;
 		
 		// Only if the target is holding a sword:
-		Material targetsItem = event.getDefenderPlayer().getItemInHand().getType();
+		Material targetsItem = event.defenderPlayer.getItemInHand().getType();
 		if(targetsItem != Material.DIAMOND_SWORD && targetsItem != Material.GOLD_SWORD && targetsItem != Material.IRON_SWORD && targetsItem != Material.STONE_SWORD && targetsItem != Material.WOOD_SWORD) return false;
 		
 		
-		Player defender = event.getDefenderPlayer().getPlayer();
+		Player defender = event.defenderPlayer.getPlayer();
 		
 		// Determine disarm:
 		Random random = new Random();

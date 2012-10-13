@@ -1745,14 +1745,14 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		
 		
 		// Same faction:
-		if(isMember(event.getDefenderPlayer().getName())){
+		if(isMember(event.defenderPlayer.getName())){
 			
 			event.addPvpOverride(PvPOverride.SAME_FACTION_DENY);
 			
 		}
 
 		// Ally:
-		if(isAlly(event.getDefenderPlayer().getFactionId())){
+		if(isAlly(event.defenderPlayer.getFactionId())){
 
 			event.addPvpOverride(PvPOverride.ALLY_DENY);
 			
@@ -1770,7 +1770,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		
 
 		// Ally:
-		if(isAlly(event.getAttackerPlayer().getFactionId())){
+		if(isAlly(event.attackerPlayer.getFactionId())){
 			
 			event.addPvpOverride(PvPOverride.ALLY_DENY);
 			

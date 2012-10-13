@@ -57,7 +57,7 @@ public class EntityListener implements Listener{
 		if(damageEvent.isCancelled()) return;
 		
 		// Forward to managers:
-		SagaPlayer attackerPlayer = damageEvent.getAttackerPlayer();
+		SagaPlayer attackerPlayer = damageEvent.attackerPlayer;
 		if(attackerPlayer != null){
 			
 			attackerPlayer.getAttributeManager().handleAttack(damageEvent);
@@ -65,7 +65,7 @@ public class EntityListener implements Listener{
 			
 		}
 		
-		SagaPlayer defenderPlayer = damageEvent.getDefenderPlayer();
+		SagaPlayer defenderPlayer = damageEvent.defenderPlayer;
 		if(defenderPlayer != null){
 			
 			defenderPlayer.getAttributeManager().handleDefend(damageEvent);
@@ -161,9 +161,9 @@ public class EntityListener implements Listener{
 		Creature deadCreature = null;
 		
 		if(sagaEvent.getLastDamageEvent() != null){
-			sagaDead = sagaEvent.getLastDamageEvent().getDefenderPlayer();
-			sagaAttacker = sagaEvent.getLastDamageEvent().getAttackerPlayer();
-			deadCreature =  sagaEvent.getLastDamageEvent().getDefenderCreature();
+			sagaDead = sagaEvent.getLastDamageEvent().defenderPlayer;
+			sagaAttacker = sagaEvent.getLastDamageEvent().attackerPlayer;
+			deadCreature =  sagaEvent.getLastDamageEvent().defenderCreature;
 		}
 		
 		

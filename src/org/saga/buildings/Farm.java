@@ -32,8 +32,8 @@ public class Farm extends Building{
 	public void onEntityDamage(SagaEntityDamageEvent event) {
 	
 		
-		Creature damaged = event.getDefenderCreature();
-		SagaPlayer damager = event.getAttackerPlayer();
+		Creature damaged = event.defenderCreature;
+		SagaPlayer damager = event.attackerPlayer;
 		
 		// Stop animal abuse by non members:
 		if(damaged instanceof Animals && damager != null){

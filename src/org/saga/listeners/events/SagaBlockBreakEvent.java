@@ -24,12 +24,7 @@ public class SagaBlockBreakEvent {
 	 */
 	private static Random RANDOM = new Random();
 
-	
-	/**
-	 * Minecraft event.
-	 */
-	public final BlockBreakEvent event;
-	
+
 	/**
 	 * target block.
 	 */
@@ -44,6 +39,12 @@ public class SagaBlockBreakEvent {
 	 * Location saga chunk.
 	 */
 	public final SagaChunk blockSagaChunk;
+	
+
+	/**
+	 * Minecraft event.
+	 */
+	private BlockBreakEvent event;
 	
 	/**
 	 * Drop modifier.
