@@ -5,11 +5,7 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 
-import org.bukkit.Effect;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.saga.SagaLogger;
-import org.saga.listeners.events.SagaBlockBreakEvent;
-import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.utility.TwoPointFunction;
 
 public class Attribute {
@@ -31,9 +27,9 @@ public class Attribute {
 	private Hashtable<AttributeParameter, TwoPointFunction> defend;
 
 	/**
-	 * Block break scores.
+	 * Passive scores.
 	 */
-	private Hashtable<AttributeParameter, TwoPointFunction> blockBreak;
+	private Hashtable<AttributeParameter, TwoPointFunction> passive;
 	
 	/**
 	 * Description.
@@ -51,7 +47,7 @@ public class Attribute {
 		this.name = name;
 		attack = new Hashtable<AttributeParameter, TwoPointFunction>();
 		defend = new Hashtable<AttributeParameter, TwoPointFunction>();
-		blockBreak = new Hashtable<AttributeParameter, TwoPointFunction>();
+		passive = new Hashtable<AttributeParameter, TwoPointFunction>();
 		description = "";
 		
 	}
@@ -87,12 +83,12 @@ public class Attribute {
 			twoPointFunction.complete();
 		}
 		
-		if(blockBreak == null){
-			blockBreak = new Hashtable<AttributeParameter, TwoPointFunction>();
-			SagaLogger.nullField(this, "blockBreak");
+		if(passive == null){
+			passive = new Hashtable<AttributeParameter, TwoPointFunction>();
+			SagaLogger.nullField(this, "passive");
 		}
 		
-		scores = blockBreak.values();
+		scores = passive.values();
 		for (TwoPointFunction twoPointFunction : scores) {
 			twoPointFunction.complete();
 		}
@@ -106,242 +102,56 @@ public class Attribute {
 	}
 	
 	
-	// Attribute triggers:
+	
+	// Modifiers:
 	/**
-	 * Triggered when the player attacks.
+	 * Get the attack modifier for the given parameter.
 	 * 
-	 * @param event entity damage event
+	 * @param parameter parameter
 	 * @param score attribute score
+	 * @return parameter modifier, 0 if none
 	 */
-	public void triggerAttack(SagaEntityDamageEvent event, Integer score) {
+	public double getAttackModifier(AttributeParameter parameter, Integer score) {
 
+		TwoPointFunction function = attack.get(parameter);
+		if(function == null) return 0.0;
 		
-		TwoPointFunction function = null;
+		return function.value(score);
 		
-		
-		// Physical:
-		if(event.isPhysical()){
-			
-			// Physical damage:
-			function = attack.get(AttributeParameter.MELEE_MODIFIER);
-			if(function != null){
-				event.modifyDamage(function.value(score));
-			}
-
-			// Physical multiplier:
-			function = attack.get(AttributeParameter.MELEE_MULTIPLIER);
-			if(function != null){
-				event.multiplyDamage(function.value(score));
-			}
-			
-			// Hit chance:
-			function = attack.get(AttributeParameter.MELEE_HIT_CHANCE);
-			if(function != null){
-				event.modifyHitChance(function.value(score));
-			}
-
-			// Armour penetration:
-			function = attack.get(AttributeParameter.MELEE_ARMOUR_PENETRATION);
-			if(function != null){
-				event.modifyArmourPenetration(function.value(score));
-			}
-			
-		}
-
-		// Ranged:
-		else if(event.isRanged()){
-
-			// Ranged damage:
-			function = attack.get(AttributeParameter.RANGED_MODIFIER);
-			if(function != null){
-				event.modifyDamage(function.value(score));
-			}
-
-			// Ranged multiplier:
-			function = attack.get(AttributeParameter.RANGED_MULTIPLIER);
-			if(function != null){
-				event.multiplyDamage(function.value(score));
-			}
-			
-			// Hit chance:
-			function = attack.get(AttributeParameter.RANGED_HIT_CHANCE);
-			if(function != null){
-				event.modifyHitChance(function.value(score));
-			}
-
-			// Armour penetration:
-			function = attack.get(AttributeParameter.RANGED_ARMOUR_PENETRATION);
-			if(function != null){
-				event.modifyArmourPenetration(function.value(score));
-			}
-			
-		}
-		
-		// Magic:
-		if(event.isMagic()){
-
-			// Magic damage:
-			function = attack.get(AttributeParameter.MAGIC_MODIFIER);
-			if(function != null){
-				event.modifyDamage(function.value(score));
-			}
-
-			// Magic multiplier:
-			function = attack.get(AttributeParameter.MAGIC_MULTIPLIER);
-			if(function != null){
-				event.multiplyDamage(function.value(score));
-			}
-			
-			// Hit chance:
-			function = attack.get(AttributeParameter.MAGIC_HIT_CHANCE);
-			if(function != null){
-				event.modifyHitChance(function.value(score));
-			}
-
-			// Armour penetration:
-			function = attack.get(AttributeParameter.MAGIC_ARMOUR_PENETRATION);
-			if(function != null){
-				event.modifyArmourPenetration(function.value(score));
-			}
-			
-		}
-		
-
 	}
 	
 	/**
-	 * Triggered when the player defends.
+	 * Get the attack modifier for the given parameter.
 	 * 
-	 * @param event entity damage event
+	 * @param parameter parameter
 	 * @param score attribute score
+	 * @return parameter modifier, 0 if none
 	 */
-	public void triggerDefence(SagaEntityDamageEvent event, Integer score) {
+	public double getDefendModifier(AttributeParameter parameter, Integer score) {
 
+		TwoPointFunction function = defend.get(parameter);
+		if(function == null) return 0.0;
 		
-		TwoPointFunction function = null;
+		return function.value(score);
 		
-
-		// Physical:
-		if(event.isPhysical()){
-
-			// Physical damage:
-			function = defend.get(AttributeParameter.MELEE_MODIFIER);
-			if(function != null){
-				event.modifyDamage(function.value(score));
-			}
-
-			// Physical multiplier:
-			function = defend.get(AttributeParameter.MELEE_MULTIPLIER);
-			if(function != null){
-				event.multiplyDamage(function.value(score));
-			}
-
-			// Hit chance:
-			function = defend.get(AttributeParameter.MELEE_HIT_CHANCE);
-			if(function != null){
-				event.modifyHitChance(function.value(score));
-			}
-
-			// Armour penetration:
-			function = defend.get(AttributeParameter.MELEE_ARMOUR_PENETRATION);
-			if(function != null){
-				event.modifyArmourPenetration(function.value(score));
-			}
-			
-		}
-
-		// Ranged:
-		else if(event.isRanged()){
-
-			// Ranged damage:
-			function = defend.get(AttributeParameter.RANGED_MODIFIER);
-			if(function != null){
-				event.modifyDamage(function.value(score));
-			}
-
-			// Ranged multiplier:
-			function = defend.get(AttributeParameter.RANGED_MULTIPLIER);
-			if(function != null){
-				event.multiplyDamage(function.value(score));
-			}
-
-			// Hit chance:
-			function = defend.get(AttributeParameter.RANGED_HIT_CHANCE);
-			if(function != null){
-				event.modifyHitChance(function.value(score));
-			}
-
-			// Armour penetration:
-			function = defend.get(AttributeParameter.RANGED_ARMOUR_PENETRATION);
-			if(function != null){
-				event.modifyArmourPenetration(function.value(score));
-			}
-			
-		}
-		
-		// Magic:
-		if(event.isMagic()){
-
-			// Magic damage:
-			function = defend.get(AttributeParameter.MAGIC_MODIFIER);
-			if(function != null){
-				event.modifyDamage(function.value(score));
-			}
-
-			// Magic multiplier:
-			function = defend.get(AttributeParameter.MAGIC_MULTIPLIER);
-			if(function != null){
-				event.multiplyDamage(function.value(score));
-			}
-
-			// Hit chance:
-			function = defend.get(AttributeParameter.MAGIC_HIT_CHANCE);
-			if(function != null){
-				event.modifyHitChance(function.value(score));
-			}
-
-			// Armour penetration:
-			function = defend.get(AttributeParameter.MAGIC_ARMOUR_PENETRATION);
-			if(function != null){
-				event.modifyArmourPenetration(function.value(score));
-			}
-			
-		}
-		
-		// Burn resist:
-		if(event.getType() == DamageCause.FIRE_TICK){
-			
-			function = defend.get(AttributeParameter.BURN_RESIST);
-			if(function != null && function.randomBooleanValue(score)){
-				event.cancel();
-				event.getDefenderPlayer().playGlobalEffect(Effect.EXTINGUISH, 0);
-				return;
-			}
-			
-		}
-		
-
 	}
-
+	
 	/**
-	 * Triggers when a block is broken
+	 * Get the passive modifier for the given parameter.
 	 * 
-	 * @param event event
+	 * @param parameter parameter
 	 * @param score attribute score
+	 * @return parameter modifier, 0 if none
 	 */
-	public void triggerBreak(SagaBlockBreakEvent event, Integer score) {
+	public double getPassiveModifier(AttributeParameter parameter, Integer score) {
 
-
-		TwoPointFunction function = null;
+		TwoPointFunction function = passive.get(parameter);
+		if(function == null) return 0.0;
 		
-		// Drop modifier:
-		function = blockBreak.get(AttributeParameter.DROP_MODIFIER);
-		if(function != null){
-			event.modifyDrops(function.value(score));
-		}
-
-
+		return function.value(score);
+		
 	}
+	
 	
 	
 	// Getters:
@@ -374,7 +184,7 @@ public class Attribute {
 		
 		entries.addAll(attack.entrySet());
 		entries.addAll(defend.entrySet());
-		entries.addAll(blockBreak.entrySet());
+		entries.addAll(passive.entrySet());
 		
 		return entries;
 		

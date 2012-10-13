@@ -28,22 +28,22 @@ public class SagaBlockBreakEvent {
 	/**
 	 * Minecraft event.
 	 */
-	private BlockBreakEvent event;
+	public final BlockBreakEvent event;
 	
 	/**
 	 * target block.
 	 */
-	private Block block;
+	public final Block block;
 
 	/**
 	 * Saga player.
 	 */
-	private SagaPlayer sagaPlayer;
+	public final SagaPlayer sagaPlayer;
 	
 	/**
 	 * Location saga chunk.
 	 */
-	private SagaChunk blockSagaChunk = null;
+	public final SagaChunk blockSagaChunk;
 	
 	/**
 	 * Drop modifier.

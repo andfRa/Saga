@@ -5,6 +5,7 @@ import java.util.Random;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.saga.attributes.DamageType;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 
 public class Bash extends Ability{
@@ -42,7 +43,7 @@ public class Bash extends Ability{
 		if(!event.isPlayerAttackPlayer()) return false;
 		
 		// Only physical:
-		if(!event.isPhysical()) return false;
+		if(event.type != DamageType.MELEE) return false;
 		
 		// Only if the target is holding a sword:
 		Material targetsItem = event.getDefenderPlayer().getItemInHand().getType();

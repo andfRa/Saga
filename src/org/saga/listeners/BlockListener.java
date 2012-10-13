@@ -57,8 +57,8 @@ public class BlockListener implements Listener{
     	
     	if(event.isCancelled()) return;
     	
-    	// Forward to manager:
-    	sagaPlayer.getAttributeManager().onBlockBreak(eventS);
+    	// Handle event:
+    	sagaPlayer.getAttributeManager().handleBlockBreak(eventS);
     	
     	// X-ray:
     	XrayIndicator.onBlockBreak(sagaPlayer, event);

@@ -31,44 +31,202 @@ public class AttributeManager {
 		this.attributes = AttributeConfiguration.config().getAttributes();
 
 	}
+
 	
+	
+	// Modification:
 	/**
-	 * Called when the player attacks.
+	 * Handles attack.
 	 * 
 	 * @param event event
 	 */
-	public void onAttack(SagaEntityDamageEvent event) {
+	public void handleAttack(SagaEntityDamageEvent event) {
 
-		for (Attribute attribute : attributes) {
-			attribute.triggerAttack(event, sagaPlayer.getAttributeScore(attribute.getName()));
+		
+		AttributeManager attackerManager = sagaPlayer.getAttributeManager();
+		
+		switch (event.type) {
+			
+			case MELEE:
+
+				// Modifier:
+				event.modifyDamage(attackerManager.getAttackModifier(AttributeParameter.MELEE_MODIFIER));
+				
+				// Hit chance:
+				event.modifyHitChance(attackerManager.getAttackModifier(AttributeParameter.MELEE_MODIFIER));
+
+				// Hit chance:
+				event.modifyArmourPenetration(attackerManager.getAttackModifier(AttributeParameter.MELEE_ARMOUR_PENETRATION));
+				
+				break;
+
+			case RANGED:
+
+				// Modifier:
+				event.modifyDamage(attackerManager.getAttackModifier(AttributeParameter.RANGED_MODIFIER));
+				
+				// Hit chance:
+				event.modifyHitChance(attackerManager.getAttackModifier(AttributeParameter.RANGED_MODIFIER));
+
+				// Hit chance:
+				event.modifyArmourPenetration(attackerManager.getAttackModifier(AttributeParameter.RANGED_ARMOUR_PENETRATION));
+				
+				break;
+
+			case MAGIC:
+
+				// Modifier:
+				event.modifyDamage(attackerManager.getAttackModifier(AttributeParameter.MAGIC_MODIFIER));
+				
+				// Hit chance:
+				event.modifyHitChance(attackerManager.getAttackModifier(AttributeParameter.MAGIC_MODIFIER));
+
+				// Hit chance:
+				event.modifyArmourPenetration(attackerManager.getAttackModifier(AttributeParameter.MAGIC_ARMOUR_PENETRATION));
+				
+				break;
+				
+			default:
+				
+				break;
+				
 		}
-
+		
+		
 	}
 	
 	/**
-	 * Called when the player defends.
+	 * Handles defend.
 	 * 
 	 * @param event event
 	 */
-	public void onDefend(SagaEntityDamageEvent event) {
+	public void handleDefend(SagaEntityDamageEvent event) {
 
-		for (Attribute attribute : attributes) {
-			attribute.triggerDefence(event, sagaPlayer.getAttributeScore(attribute.getName()));
+		
+		AttributeManager defenderManager = sagaPlayer.getAttributeManager();
+		
+		switch (event.type) {
+			
+			case MELEE:
+
+				// Modifier:
+				event.modifyDamage(defenderManager.getDefendModifier(AttributeParameter.MELEE_MODIFIER));
+				
+				// Hit chance:
+				event.modifyHitChance(defenderManager.getDefendModifier(AttributeParameter.MELEE_MODIFIER));
+
+				// Hit chance:
+				event.modifyArmourPenetration(defenderManager.getDefendModifier(AttributeParameter.MELEE_ARMOUR_PENETRATION));
+				
+				break;
+
+			case RANGED:
+
+				// Modifier:
+				event.modifyDamage(defenderManager.getDefendModifier(AttributeParameter.RANGED_MODIFIER));
+				
+				// Hit chance:
+				event.modifyHitChance(defenderManager.getDefendModifier(AttributeParameter.RANGED_MODIFIER));
+
+				// Hit chance:
+				event.modifyArmourPenetration(defenderManager.getDefendModifier(AttributeParameter.RANGED_ARMOUR_PENETRATION));
+				
+				break;
+
+			case MAGIC:
+
+				// Modifier:
+				event.modifyDamage(defenderManager.getDefendModifier(AttributeParameter.MAGIC_MODIFIER));
+				
+				// Hit chance:
+				event.modifyHitChance(defenderManager.getDefendModifier(AttributeParameter.MAGIC_MODIFIER));
+
+				// Hit chance:
+				event.modifyArmourPenetration(defenderManager.getDefendModifier(AttributeParameter.MAGIC_ARMOUR_PENETRATION));
+				
+				break;
+				
+			default:
+				
+				break;
+				
 		}
+		
+		
+	}
+	
+	/**
+	 * Handles block break.
+	 * 
+	 * @param event event
+	 */
+	public void handleBlockBreak(SagaBlockBreakEvent event) {
 
+		
+		AttributeManager manager = (event.sagaPlayer != null) ? event.sagaPlayer.getAttributeManager() : null;
+		if(manager == null) return;
+
+		// Modifier:
+		event.modifyDrops(manager.getPassiveModifier(AttributeParameter.DROP_MODIFIER));
+		
+		
+	}
+	
+	
+	
+	// Modifiers:
+	/**
+	 * Sums all attack modifiers.
+	 * 
+	 * @param parameter parameter
+	 * @return sum of attack modifiers
+	 */
+	private double getAttackModifier(AttributeParameter parameter) {
+
+		double modifier = 0.0;
+		
+		for (Attribute attribute : attributes) {
+			modifier+= attribute.getAttackModifier(parameter, sagaPlayer.getAttributeScore(attribute.getName()));
+		}
+		
+		return modifier;
+		
 	}
 
 	/**
-	 * Called when the player breaks a block.
+	 * Sums all defend modifiers.
 	 * 
-	 * @param event event
+	 * @param parameter parameter
+	 * @return sum of attack modifiers
 	 */
-	public void onBlockBreak(SagaBlockBreakEvent event) {
+	private double getDefendModifier(AttributeParameter parameter) {
 
+		double modifier = 0.0;
+		
 		for (Attribute attribute : attributes) {
-			attribute.triggerBreak(event, sagaPlayer.getAttributeScore(attribute.getName()));
+			modifier+= attribute.getDefendModifier(parameter, sagaPlayer.getAttributeScore(attribute.getName()));
 		}
+		
+		return modifier;
+		
+	}
+	
+	/**
+	 * Sums all passive modifiers.
+	 * 
+	 * @param parameter parameter
+	 * @return sum of attack modifiers
+	 */
+	private double getPassiveModifier(AttributeParameter parameter) {
 
+		double modifier = 0.0;
+		
+		for (Attribute attribute : attributes) {
+			modifier+= attribute.getPassiveModifier(parameter, sagaPlayer.getAttributeScore(attribute.getName()));
+		}
+		
+		return modifier;
+		
 	}
 	
 	

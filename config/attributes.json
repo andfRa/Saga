@@ -9,7 +9,7 @@
   {"name":"strength",
     "attack":{"MELEE_MODIFIER":{"x1":0,"y1":0.0,"x2":100,"y2":14.0}},
     "defend":{},
-    "blockBreak":{},
+    "passive":{},
     "description":"Melee damage."
   },
 
@@ -24,7 +24,7 @@
       "RANGED_HIT_CHANCE":{"x1":0,"y1":0.0,"x2":90,"y2":-0.90},
       "MAGIC_HIT_CHANCE":{"x1":0,"y1":0.0,"x2":90,"y2":-0.90}                  
     },
-    "blockBreak":{},
+    "passive":{},
     "description":"Ranged damage, armour penetration and dodge."
   },
   
@@ -34,7 +34,7 @@
       "MAGIC_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":100,"y2":0.5}
      },
     "defend":{},
-    "blockBreak":{},
+    "passive":{},
     "description":"Magic damage and magical armour penetration."
   },
 
@@ -44,7 +44,7 @@
       "MELEE_MULTIPLIER":{"x1":0,"y1":1.0,"x2":100,"y2":0.20},
       "RANGED_MULTIPLIER":{"x1":0,"y1":1.0,"x2":100,"y2":0.20}
     },
-    "blockBreak":{},
+    "passive":{},
     "description":"Melee and ranged damage protection."
   },
 
@@ -54,14 +54,14 @@
       "MAGIC_MULTIPLIER":{"x1":0,"y1":1,"x2":100,"y2":0.20},
       "BURN_RESIST":{"x1":0,"y1":0,"x2":60,"y2":1.0}
     },
-    "blockBreak":{},
+    "passive":{},
     "description":"Magic damage and burn protection."
   },
   
   {"name":"luck",
     "attack":{},
     "defend":{},
-    "blockBreak":{
+    "passive":{
       "DROP_MODIFIER":{"x1":0,"y1":0,"x2":100,"y2":0.60}
     },
     "description":"Additional drops from blocks."

@@ -3,18 +3,16 @@ package org.saga.listeners.events;
 import java.util.PriorityQueue;
 import java.util.Random;
 
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.Fireball;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.saga.Saga;
 import org.saga.SagaLogger;
+import org.saga.attributes.DamageType;
 import org.saga.chunks.BundleManager;
 import org.saga.chunks.SagaChunk;
 import org.saga.player.SagaPlayer;
@@ -32,9 +30,9 @@ public class SagaEntityDamageEvent {
 	
 	
 	/**
-	 * Event type.
+	 * Damage type.
 	 */
-	private DamageCause type;
+	public DamageType type;
 	
 	/**
 	 * Minecraft event.
@@ -44,39 +42,39 @@ public class SagaEntityDamageEvent {
 	/**
 	 * Projectile.
 	 */
-	private Projectile projectile = null;
+	public Projectile projectile = null;
 	
 	
 	/**
 	 * Attacker creature, null if none.
 	 */
-	private Creature attackerCreature = null;
+	public Creature attackerCreature = null;
 	
 	/**
 	 * Defender creature, null if none
 	 */
-	private Creature defenderCreature = null;
+	public Creature defenderCreature = null;
 	
 	/**
 	 * Attacker player, null if none.
 	 */
-	private SagaPlayer attackerPlayer = null;
+	public SagaPlayer attackerPlayer = null;
 	
 	/**
 	 * Defender player, null if none
 	 */
-	private SagaPlayer defenderPlayer = null;
+	public SagaPlayer defenderPlayer = null;
 	
 	
 	/**
 	 * Attackers saga chunk.
 	 */
-	private SagaChunk attackerChunk = null;
+	public SagaChunk attackerChunk = null;
 	
 	/**
 	 * Defenders saga chunk.
 	 */
-	private SagaChunk defenderChunk = null;
+	public SagaChunk defenderChunk = null;
 
 	
 	/**
@@ -119,7 +117,7 @@ public class SagaEntityDamageEvent {
 		Entity attacker = null;
 
 		this.event = event;
-		type = event.getCause();
+		type = DamageType.getDamageType(event);
 		
 		// Attacked by an entity:
 		if(event instanceof EntityDamageByEntityEvent) attacker = ((EntityDamageByEntityEvent) event).getDamager();
@@ -135,9 +133,6 @@ public class SagaEntityDamageEvent {
 			projectile = null;
 			
 		}
-		
-		// Magic:
-		if(projectile instanceof Fireball) type = DamageCause.MAGIC;
 		
 		// Get attacker saga player:
 		if(attacker instanceof Player){
@@ -245,42 +240,6 @@ public class SagaEntityDamageEvent {
 	
 	
 	
-	// Types:
-	/**
-	 * Checks if the attack is physical.
-	 * 
-	 * @return true if physical
-	 */
-	public boolean isPhysical() {
-
-		return projectile == null && type == DamageCause.ENTITY_ATTACK;
-
-	}
-	
-	/**
-	 * Checks if the attack is ranged.
-	 * 
-	 * @return true if ranged
-	 */
-	public boolean isRanged() {
-
-		return projectile instanceof Arrow && type == DamageCause.PROJECTILE;
-
-	}
-	
-	/**
-	 * Checks if the attack is magic.
-	 * 
-	 * @return true if magic
-	 */
-	public boolean isMagic() {
-
-		return projectile instanceof Fireball && type == DamageCause.MAGIC;
-
-	}
-	
-	
-	
 	// Conclude:
 	/**
 	 * Applies the event.
@@ -344,7 +303,7 @@ public class SagaEntityDamageEvent {
 	 * 
 	 * @return the type
 	 */
-	public DamageCause getType() {
+	public DamageType getType() {
 		return type;
 	}
 

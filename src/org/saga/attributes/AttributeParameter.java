@@ -27,8 +27,9 @@ public enum AttributeParameter {
 	
 	
 	
-	// Blocks:
-	DROP_MODIFIER;
+	// Passive:
+	DROP_MODIFIER,
+	HEALTH_BONUS;
 	
 	
 }
