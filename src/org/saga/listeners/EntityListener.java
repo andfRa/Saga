@@ -13,16 +13,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.chunks.BundleManager;
 import org.saga.chunks.SagaChunk;
 import org.saga.config.GeneralConfiguration;
+import org.saga.config.VanillaConfiguration;
 import org.saga.factions.Faction;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDeathEvent;
@@ -34,20 +35,25 @@ import org.saga.player.SagaPlayer;
 public class EntityListener implements Listener{
 
 	
-	@EventHandler(priority = EventPriority.NORMAL)
+	int maxticks = 0;
+	int prevhp = 0;
+	
+	
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamage(EntityDamageEvent event) {
 
-
+		
+		
 		// Not a living:
 		if(!(event.getEntity() instanceof LivingEntity)) return;
 		LivingEntity defender= (LivingEntity) event.getEntity();
 		
 		// Damage ticks:
-		if(event instanceof EntityDamageByEntityEvent && defender.getNoDamageTicks() > defender.getMaximumNoDamageTicks()/2F){
+		if(VanillaConfiguration.hasTicks(event.getCause()) && defender.getNoDamageTicks() > defender.getMaximumNoDamageTicks()/2F){
 			event.setCancelled(true);
 			return;
 		}
-
+		
 		// Dead:
 		if(defender.getHealth() <= 0) return;
 
@@ -207,5 +213,40 @@ public class EntityListener implements Listener{
 		
 	}
 
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onEntityRegainHealth(EntityRegainHealthEvent event) {
+
+		
+		if(event.getEntity() instanceof Player){
+
+			Player player = (Player) event.getEntity();
+			
+			// Get player:
+	    	final SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(player.getName());
+
+	    	if(sagaPlayer == null){
+	    		SagaLogger.severe(EntityListener.class, "onEntityRegainHealth failed to retrieve saga player for "+ player.getName());
+	    		return;
+	    	}
+
+			// Synchronise:
+			sagaPlayer.synchHealth();
+	    	
+	    	int prevHearths = sagaPlayer.getHalfHearts();
+	    	
+	    	// Heal:
+	    	sagaPlayer.heal((double)event.getAmount());
+			
+	    	int nextHearths = sagaPlayer.getHalfHearts();
+	    	
+	    	event.setAmount(nextHearths - prevHearths);
+	    	
+	    	
+		}
+
+		
+		
+	}
+	
 
 }

@@ -40,11 +40,10 @@
 
   {"name":"toughness",
     "attack":{},
-    "defend":{
-      "MELEE_MULTIPLIER":{"x1":0,"y1":1.0,"x2":100,"y2":0.20},
-      "RANGED_MULTIPLIER":{"x1":0,"y1":1.0,"x2":100,"y2":0.20}
+    "defend":{},
+    "passive":{
+    	"HEALTH_MODIFIER":{"x1":0,"y1":0.0,"x2":100,"y2":160.0}
     },
-    "passive":{},
     "description":"Melee and ranged damage protection."
   },
 

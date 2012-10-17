@@ -86,6 +86,9 @@ public class PlayerListener implements Listener {
     	// Set player:
     	sagaPlayer.setPlayer(player);
     	
+    	// Synchronise health:
+    	sagaPlayer.synchHealth();
+    	
     	// Forward to chunk group:
     	if(sagaPlayer.getBundle() != null) sagaPlayer.getBundle().onMemberJoin(event, sagaPlayer);
     	
@@ -130,6 +133,9 @@ public class PlayerListener implements Listener {
     		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerRespawn, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
     	}
+
+		// Restore health:
+    	sagaPlayer.restoreHealth();
 
     	// Get chunk group:
     	Bundle bundle = sagaPlayer.getBundle();

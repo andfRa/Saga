@@ -123,6 +123,9 @@ public class StatsMessages {
 			
 		}
 		
+		// Health:
+		table.addLine("Health", TextUtil.round((double)sagaPlayer.getHealth(), 0) + "/" + TextUtil.round((double)sagaPlayer.getTotalHealth(), 0), 2);
+		
 		// Levels:
 		table.addLine("Level", sagaPlayer.getLevel() + "/" + ExperienceConfiguration.config().maximumLevel, 2);
 		table.addLine("Next EXP", sagaPlayer.getRemainingExp().intValue() + "", 2);

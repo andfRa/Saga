@@ -277,5 +277,24 @@ public class AttributeManager {
 		
 	}
 	
+	/**
+	 * Gets the health modifier.
+	 * 
+	 * @return health modifier
+	 */
+	public int getHealthModifier() {
+
+		
+		double modifier = 0.0;
+		
+		for (Attribute attribute : attributes) {
+			modifier+= attribute.getPassiveModifier(AttributeParameter.HEALTH_MODIFIER, sagaPlayer.getAttributeScore(attribute.getName()));
+		}
+		
+		return (int)modifier;
+		
+		
+	}
+	
 	
 }

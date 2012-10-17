@@ -300,6 +300,70 @@ public class AdminCommands {
 	}
 
 	
+	// Health:
+
+	@Command(
+		aliases = {"aheal"},
+		usage = "[player_name]",
+		flags = "",
+		desc = "Heal a player.",
+		min = 0,
+		max = 1)
+	@CommandPermissions({"saga.admin.player.heal"})
+	public static void heal(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		
+		SagaPlayer selPlayer = null;
+		
+		String playerName = null;
+		
+		// Arguments:
+		switch (args.argsLength()) {
+			case 0:
+				
+				playerName = sagaPlayer.getName();
+				
+				break;
+
+			default:
+
+				playerName = args.getString(0);
+				
+				break;
+				
+		}
+		
+		try {
+			
+			// Force:
+			selPlayer = Saga.plugin().forceSagaPlayer(playerName);
+			
+		} catch (NonExistantSagaPlayerException e) {
+			
+			sagaPlayer.message(SettlementMessages.nonExistantPlayer(playerName));
+			return;
+			
+		}
+		
+		// Heal:
+		selPlayer.restoreHealth();
+		selPlayer.synchHealth();
+		
+		// Inform:
+		if(selPlayer != sagaPlayer){
+			selPlayer.message(AdminMessages.healed());
+			sagaPlayer.message(AdminMessages.healed(selPlayer));
+		}else{
+			selPlayer.message(AdminMessages.healed());
+		}
+
+		// Release:
+		selPlayer.indicateRelease();
+
+		
+	}
+
+	
 	
 	// Economy:
 	@Command(
@@ -856,7 +920,6 @@ public class AdminCommands {
 		}
 		
 		sagaPlayer.message("numb=" + numb);
-		
 		
 	}
 	

@@ -3,6 +3,7 @@ package org.saga.listeners.events;
 import java.util.PriorityQueue;
 import java.util.Random;
 
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -15,8 +16,8 @@ import org.saga.SagaLogger;
 import org.saga.attributes.DamageType;
 import org.saga.chunks.BundleManager;
 import org.saga.chunks.SagaChunk;
+import org.saga.config.VanillaConfiguration;
 import org.saga.player.SagaPlayer;
-import org.saga.utility.TwoPointFunction;
 
 public class SagaEntityDamageEvent {
 
@@ -78,22 +79,22 @@ public class SagaEntityDamageEvent {
 	/**
 	 * Damage modifier.
 	 */
-	private double modifier = 0;
+	private double modifier = 0.0;
 	
 	/**
 	 * Damage multiplier.
 	 */
-	private double multiplier = 1;
+	private double multiplier = 1.0;
 
 	/**
 	 * Hit chance modifier.
 	 */
-	private double hitChance = 1;
+	private double hitChance = 1.0;
 
 	/**
 	 * Armour penetration modifier.
 	 */
-	private double penetration = 0;
+	private double penetration = 0.0;
 	
 	/**
 	 * PvP override.
@@ -138,9 +139,9 @@ public class SagaEntityDamageEvent {
 			attackerPlayer = Saga.plugin().getLoadedPlayer( ((Player) attacker).getName() );
 			attackerCreature = null;
 			
-	    	// No player:
-	    	if(attackerPlayer == null) SagaLogger.severe(getClass(), "failed to load saga player for "+ ((Player) attacker).getName());
-	    	
+			// No player:
+			if(attackerPlayer == null) SagaLogger.severe(getClass(), "failed to retrieve saga player for "+ ((Player) attacker).getName());
+			
 		}
 
 		// Get attacker creature:
@@ -162,8 +163,8 @@ public class SagaEntityDamageEvent {
 			defenderPlayer = Saga.plugin().getLoadedPlayer( ((Player) defender).getName() );
 			defenderCreature = null;
 			
-	    	// No player:
-	    	if(defenderPlayer == null) SagaLogger.severe(getClass(), "failed to load saga player for "+ ((Player) attacker).getName());
+			// No player:
+			if(defenderPlayer == null) SagaLogger.severe(getClass(), "failed to retrieve saga player for "+ ((Player) defender).getName());
 			
 		}
 		
@@ -258,32 +259,58 @@ public class SagaEntityDamageEvent {
 
 		// Dodge:
 		if(hitChance <= RANDOM.nextDouble()) {
-//			if(defenderPlayer != null) defenderPlayer.message(ChatColor.GREEN + "dodge!");
-//			if(attackerPlayer != null) attackerPlayer.message(ChatColor.GREEN + "dodge!");
 			event.setCancelled(true);
 			return;
 		}
 		
-//		if(attackerPlayer != null) attackerPlayer.message(ChatColor.GREEN + "dam=" + event.getDamage() + " mod=" + modifier +  " pen=" + penetration + " hit=" + hitChance + " mult=" + multiplier);
-//		if(defenderPlayer != null) defenderPlayer.message(ChatColor.GREEN + "dam=" + event.getDamage() + " mod=" + modifier +  " pen=" + penetration + " hit=" + hitChance + " mult=" + multiplier);
-
-		// Normalise multiplier:
-		if(multiplier < 0) multiplier = 0;
-		
-		// Multiply and modify damage:
+		// Modify damage:
 		double damage = (event.getDamage() + modifier) * multiplier;
+		event.setDamage((int)damage);
 		
-		// Penetrating damage:
-		if(penetration > 1) penetration = 1;
-		if(penetration < 0) penetration = 0;
-		double penetrating = damage * penetration;
+		// Apply damage to player:
+		if(defenderPlayer != null){
+			
+			System.out.print(event.getCause() + ":" + damage);
+			
+			double harm = damage;
+			
+			// Armour:
+			double armour = VanillaConfiguration.getArmourMultiplier(event, defenderPlayer) + penetration;
+			if(armour < 0.0) armour = 0.0;
+			if(armour > 1.0) armour = 1.0;
+			harm*= armour;
 		
-		// Normal damage:
-		double normal = damage - penetrating;
-		
-		// Apply damage:
-		event.setDamage(TwoPointFunction.randomRound(normal));
-		if(event.getEntity() instanceof LivingEntity) ((LivingEntity) event.getEntity()).damage(TwoPointFunction.randomRound(penetrating));
+			System.out.print("*" + armour);
+			
+			// Enchantments:
+			double ench = VanillaConfiguration.getEPFMultiplier(event, defenderPlayer);
+			if(ench < 0.0) ench = 0.0;
+			if(ench > 1.0) ench = 1.0;
+			harm*= ench;
+			
+			System.out.print("*" + ench);
+			
+			System.out.print("=" + harm);
+			
+			defenderPlayer.damage(harm);
+			
+			// Prevent death:
+			if(defenderPlayer.getHealth() > 0 && defenderPlayer.getHalfHearts() <= damage){
+				event.setDamage(defenderPlayer.getHalfHearts() - 1);
+			}
+			
+			// Schedule synchronisation:
+			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Saga.plugin(), new Runnable() {
+			@Override
+				public void run() {
+					Player player = defenderPlayer.getPlayer();
+					if(player == null)  return;
+					if(player.isDead() || player.getHealth() == 0) return;
+					defenderPlayer.synchHealth();
+				}
+			}, 1);
+			
+		}
 		
 		// Player killed player:
 		if(attackerPlayer != null && defenderPlayer != null){

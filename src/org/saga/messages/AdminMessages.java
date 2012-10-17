@@ -86,6 +86,17 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 	}
 	
 	
+	// Healing:
+	public static String healed(){
+		return positive + "You got healed" + ".";
+	}
+	
+	public static String healed(SagaPlayer selPlayer){
+		return positive + "Healed " + selPlayer.getName() + ".";
+	}
+	
+	
+	
 	// Attributes:
 	public static String attributeSet(String attribute, Integer score){
 		return positive + TextUtil.capitalize(attribute) + " was set to " + score + ".";

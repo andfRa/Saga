@@ -65,6 +65,12 @@ public class SagaPlayer implements Trader{
 	 * Name.
 	 */
 	private String name;
+
+	/**
+	 * Players health.
+	 */
+	private Double health;
+
 	
 	/**
 	 * Level.
@@ -194,6 +200,7 @@ public class SagaPlayer implements Trader{
 		this.attributeScores = new Hashtable<String, Integer>();
 		this.abilityManager = new AbilityManager(this);
 		this.attributeManager = new AttributeManager(this);
+		this.health = getTotalHealth();
 		
 	}
 	
@@ -207,6 +214,11 @@ public class SagaPlayer implements Trader{
 		// Fields:
 		if(name == null){
 			name = "none";
+		}
+		
+		if(health == null){
+			health = 20.0;
+			SagaLogger.nullField(this, "health");
 		}
 		
 		if(level == null){
@@ -602,6 +614,119 @@ public class SagaPlayer implements Trader{
 	
 	
 	
+	// Health:
+	/**
+	 * Gets players health.
+	 * 
+	 * @return players health
+	 */
+	public Double getHealth() {
+		
+		if(health < 0) health = 0.0;
+		
+		return health;
+		
+	}
+	
+	/**
+	 * Damages the player.
+	 * 
+	 * @param amount damage amount
+	 */
+	public void damage(Double amount) {
+
+		health-= amount;
+		
+	}
+	
+	/**
+	 * Damages the player.
+	 * 
+	 * @param amount damage amount
+	 */
+	public void heal(Double amount) {
+
+		health+= amount;
+		if(health > getTotalHealth()) health = getTotalHealth();
+		
+	}
+	
+	/**
+	 * Synchronises players health.
+	 * 
+	 */
+	public void synchHealth() {
+		
+		
+		if(player == null) return;
+		
+		player.setHealth(getHalfHearts());
+		
+		
+	}
+	
+	/**
+	 * Gets the health in half hearts format.
+	 * 
+	 * @return health in half hearts
+	 */
+	public int getHalfHearts() {
+
+		double totalHealth = getTotalHealth();
+		
+		int hearths = (int)(20.0 * getHealth() / totalHealth);
+		
+		if(hearths == 0 && this.health > 0){
+			return 1;
+		}
+		
+		if(hearths == 20 && this.health < totalHealth){
+			return 19;
+		}
+		
+		if(player != null && player.getHealth() == 20 && this.health < totalHealth){
+			return 19;
+		}
+		
+		if(hearths > 20) hearths = 20;
+		
+		return hearths;
+		
+	}
+	
+	/**
+	 * Gets players total health.
+	 * 
+	 * @return players total health
+	 */
+	public Double getTotalHealth() {
+		
+		return attributeManager.getHealthModifier() + 20.0;
+		
+	}
+	
+	/**
+	 * Restores health.
+	 * 
+	 */
+	public void restoreHealth() {
+		
+		health = getTotalHealth();
+		
+	}
+	
+	/**
+	 * Checks if the saga player is dead.
+	 * 
+	 * @return true if dead
+	 */
+	public boolean isDead() {
+
+		return health <= 0;
+		
+	}
+	
+	
 	// Level:
 	/**
 	 * Gets player level.
@@ -726,21 +851,6 @@ public class SagaPlayer implements Trader{
 	
 	// Items:
 	/**
-	 * Gets player armour.
-	 * 
-	 * @return player armor, no idea if nulls
-	 */
-	public ItemStack[] getArmour() {
-
-		
-		if(!isOnline()) return new ItemStack[0];
-		
-		return player.getInventory().getArmorContents();
-		
-		
-	}
-	
-	/**
 	 * Gets player item in hand.
 	 * 
 	 * @return player item in hand air if not online or none
@@ -755,72 +865,6 @@ public class SagaPlayer implements Trader{
 		
 	}
 	
-	/**
-	 * Gets player item in hand.
-	 * 
-	 * @return player item in hand air if not online or none
-	 */
-	public int getInventorySize() {
-
-		
-		if(!isOnline()) return 0;
-		
-		return player.getInventory().getSize();
-		
-		
-	}
-	
-	/**
-	 * Gets player item.
-	 * 
-	 * @return player item in hand air if not online or none
-	 */
-	public ItemStack getInventoryItem(int index) {
-
-		
-		if(!isOnline()) return new ItemStack(Material.AIR);
-		
-		return player.getInventory().getItem(index);
-		
-		
-	}
-	
-	/**
-	 * Remove player item.
-	 * 
-	 */
-	@SuppressWarnings("deprecation")
-	public void removeInventoryItem(int index) {
-
-		
-		if(!isOnline()) return;
-		
-		player.getInventory().clear(index);
-		
-		player.updateInventory();
-		
-		
-	}
-	
-	/**
-	 * Removed item in hand.
-	 * 
-	 * @return removed item stack
-	 */
-	@SuppressWarnings("deprecation")
-	public ItemStack removeItemInHand() {
-
-		if(isOnline()){
-			ItemStack itemInHand = player.getInventory().getItemInHand();
-			player.getInventory().clear(player.getInventory().getHeldItemSlot());
-			player.updateInventory();
-			return itemInHand;
-		}
-		return new ItemStack(Material.AIR, 0);
-		
-		
-	}
-
 	/**
 	 * Damages item in hand.
 	 * 

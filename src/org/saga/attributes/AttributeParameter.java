@@ -29,7 +29,7 @@ public enum AttributeParameter {
 	
 	// Passive:
 	DROP_MODIFIER,
-	HEALTH_BONUS;
+	HEALTH_MODIFIER;
 	
 	
 }
