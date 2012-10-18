@@ -67,8 +67,11 @@ public class AttributeManager {
 				// Hit chance:
 				event.modifyHitChance(attackerManager.getAttackModifier(AttributeParameter.MELEE_MODIFIER));
 
-				// Hit chance:
+				// Armour penetration:
 				event.modifyArmourPenetration(attackerManager.getAttackModifier(AttributeParameter.MELEE_ARMOUR_PENETRATION));
+
+				// Enchant penetration:
+				event.modifyArmourPenetration(attackerManager.getAttackModifier(AttributeParameter.MELEE_ENCHANT_PENETRATION));
 				
 				break;
 
@@ -83,8 +86,11 @@ public class AttributeManager {
 				// Hit chance:
 				event.modifyHitChance(attackerManager.getAttackModifier(AttributeParameter.RANGED_MODIFIER));
 
-				// Hit chance:
+				// Armour penetration:
 				event.modifyArmourPenetration(attackerManager.getAttackModifier(AttributeParameter.RANGED_ARMOUR_PENETRATION));
+
+				// Enchant penetration:
+				event.modifyArmourPenetration(attackerManager.getAttackModifier(AttributeParameter.RANGED_ENCHANT_PENETRATION));
 				
 				break;
 
@@ -99,8 +105,11 @@ public class AttributeManager {
 				// Hit chance:
 				event.modifyHitChance(attackerManager.getAttackModifier(AttributeParameter.MAGIC_MODIFIER));
 
-				// Hit chance:
+				// Armour penetration:
 				event.modifyArmourPenetration(attackerManager.getAttackModifier(AttributeParameter.MAGIC_ARMOUR_PENETRATION));
+
+				// Enchant penetration:
+				event.modifyArmourPenetration(attackerManager.getAttackModifier(AttributeParameter.MAGIC_ENCHANT_PENETRATION));
 				
 				break;
 				
@@ -136,7 +145,7 @@ public class AttributeManager {
 				// Hit chance:
 				event.modifyHitChance(defenderManager.getDefendModifier(AttributeParameter.MELEE_MODIFIER));
 
-				// Hit chance:
+				// Armour penetration:
 				event.modifyArmourPenetration(defenderManager.getDefendModifier(AttributeParameter.MELEE_ARMOUR_PENETRATION));
 				
 				break;
@@ -152,7 +161,7 @@ public class AttributeManager {
 				// Hit chance:
 				event.modifyHitChance(defenderManager.getDefendModifier(AttributeParameter.RANGED_MODIFIER));
 
-				// Hit chance:
+				// Armour penetration:
 				event.modifyArmourPenetration(defenderManager.getDefendModifier(AttributeParameter.RANGED_ARMOUR_PENETRATION));
 				
 				break;
@@ -168,7 +177,7 @@ public class AttributeManager {
 				// Hit chance:
 				event.modifyHitChance(defenderManager.getDefendModifier(AttributeParameter.MAGIC_MODIFIER));
 
-				// Hit chance:
+				// Armour penetration:
 				event.modifyArmourPenetration(defenderManager.getDefendModifier(AttributeParameter.MAGIC_ARMOUR_PENETRATION));
 				
 				break;

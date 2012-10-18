@@ -95,6 +95,11 @@ public class SagaEntityDamageEvent {
 	 * Armour penetration modifier.
 	 */
 	private double penetration = 0.0;
+
+	/**
+	 * Enchantment penetration modifier.
+	 */
+	private double disenchant = 0.0;
 	
 	/**
 	 * PvP override.
@@ -228,7 +233,7 @@ public class SagaEntityDamageEvent {
 	public void modifyHitChance(double amount) {
 		hitChance+=amount;
 	}
-	
+
 	/**
 	 * Modifies armour penetration.
 	 * 
@@ -236,6 +241,15 @@ public class SagaEntityDamageEvent {
 	 */
 	public void modifyArmourPenetration(double amount) {
 		penetration+=amount;
+	}
+
+	/**
+	 * Modifies enchantment penetration.
+	 * 
+	 * @param amount amount to modify
+	 */
+	public void modifyEnchantPenetration(double amount) {
+		disenchant+=amount;
 	}
 	
 	/**
@@ -283,7 +297,7 @@ public class SagaEntityDamageEvent {
 			System.out.print("*" + armour);
 			
 			// Enchantments:
-			double ench = VanillaConfiguration.getEPFMultiplier(event, defenderPlayer);
+			double ench = VanillaConfiguration.getEPFMultiplier(event, defenderPlayer) + disenchant;
 			if(ench < 0.0) ench = 0.0;
 			if(ench > 1.0) ench = 1.0;
 			harm*= ench;
