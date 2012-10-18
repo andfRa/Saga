@@ -16,6 +16,7 @@ import org.saga.SagaLogger;
 import org.saga.attributes.DamageType;
 import org.saga.chunks.BundleManager;
 import org.saga.chunks.SagaChunk;
+import org.saga.config.AttributeConfiguration;
 import org.saga.config.VanillaConfiguration;
 import org.saga.player.SagaPlayer;
 
@@ -102,6 +103,12 @@ public class SagaEntityDamageEvent {
 	private double disenchant = 0.0;
 	
 	/**
+	 * Penalty multiplier.
+	 * Prevents massive damage from weak attacks.
+	 */
+	private double penalty = 1.0;
+	
+	/**
 	 * PvP override.
 	 */
 	private PriorityQueue<PvPOverride> pvpOverride = new PriorityQueue<SagaEntityDamageEvent.PvPOverride>();
@@ -122,6 +129,11 @@ public class SagaEntityDamageEvent {
 
 		this.event = event;
 		type = DamageType.getDamageType(event);
+		
+		// Damage penalty:
+		// Prevents massive damage from weak attacks.
+		double tresh = AttributeConfiguration.config().getPenaltyValue(type);
+		if(tresh > 0 && event.getDamage() < tresh) penalty = event.getDamage() / tresh;
 		
 		// Attacked by an entity:
 		if(event instanceof EntityDamageByEntityEvent) attacker = ((EntityDamageByEntityEvent) event).getDamager();
@@ -278,13 +290,11 @@ public class SagaEntityDamageEvent {
 		}
 		
 		// Modify damage:
-		double damage = (event.getDamage() + modifier) * multiplier;
+		double damage = (event.getDamage() + modifier) * multiplier * penalty;
 		event.setDamage((int)damage);
 		
 		// Apply damage to player:
 		if(defenderPlayer != null){
-			
-			System.out.print(event.getCause() + ":" + damage);
 			
 			double harm = damage;
 			
@@ -294,17 +304,11 @@ public class SagaEntityDamageEvent {
 			if(armour > 1.0) armour = 1.0;
 			harm*= armour;
 		
-			System.out.print("*" + armour);
-			
 			// Enchantments:
 			double ench = VanillaConfiguration.getEPFMultiplier(event, defenderPlayer) + disenchant;
 			if(ench < 0.0) ench = 0.0;
 			if(ench > 1.0) ench = 1.0;
 			harm*= ench;
-			
-			System.out.print("*" + ench);
-			
-			System.out.print("=" + harm);
 			
 			defenderPlayer.damage(harm);
 			

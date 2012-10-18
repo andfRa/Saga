@@ -117,8 +117,12 @@ public class VanillaConfiguration {
 			cause = DamageCause.FIRE;
 		}
 		
+		boolean protection = false;
 		switch (cause) {
 			case ENTITY_ATTACK:
+				
+				protection = true;
+				break;
 				
 			case FIRE:
 				
@@ -127,6 +131,9 @@ public class VanillaConfiguration {
 				if(chestplate != null) epf+= getEPF(chestplate.getEnchantmentLevel(Enchantment.PROTECTION_FIRE));
 				if(leggings != null) epf+= getEPF(leggings.getEnchantmentLevel(Enchantment.PROTECTION_FIRE));
 				if(boots != null) epf+= getEPF(boots.getEnchantmentLevel(Enchantment.PROTECTION_FIRE));
+				
+				protection = true;
+				break;
 
 			case LAVA:
 
@@ -135,6 +142,9 @@ public class VanillaConfiguration {
 				if(chestplate != null) epf+= getEPF(chestplate.getEnchantmentLevel(Enchantment.PROTECTION_FIRE));
 				if(leggings != null) epf+= getEPF(leggings.getEnchantmentLevel(Enchantment.PROTECTION_FIRE));
 				if(boots != null) epf+= getEPF(boots.getEnchantmentLevel(Enchantment.PROTECTION_FIRE));
+				
+				protection = true;
+				break;
 
 			case BLOCK_EXPLOSION:
 
@@ -144,6 +154,9 @@ public class VanillaConfiguration {
 				if(leggings != null) epf+= getEPF(leggings.getEnchantmentLevel(Enchantment.PROTECTION_EXPLOSIONS));
 				if(boots != null) epf+= getEPF(boots.getEnchantmentLevel(Enchantment.PROTECTION_EXPLOSIONS));
 				
+				protection = true;
+				break;
+				
 			case ENTITY_EXPLOSION:
 
 				// Explosion protection:
@@ -151,6 +164,9 @@ public class VanillaConfiguration {
 				if(chestplate != null) epf+= getEPF(chestplate.getEnchantmentLevel(Enchantment.PROTECTION_EXPLOSIONS));
 				if(leggings != null) epf+= getEPF(leggings.getEnchantmentLevel(Enchantment.PROTECTION_EXPLOSIONS));
 				if(boots != null) epf+= getEPF(boots.getEnchantmentLevel(Enchantment.PROTECTION_EXPLOSIONS));
+				
+				protection = true;
+				break;
 				
 			case PROJECTILE:
 
@@ -160,6 +176,9 @@ public class VanillaConfiguration {
 				if(leggings != null) epf+= getEPF(leggings.getEnchantmentLevel(Enchantment.PROTECTION_PROJECTILE));
 				if(boots != null) epf+= getEPF(boots.getEnchantmentLevel(Enchantment.PROTECTION_PROJECTILE));
 				
+				protection = true;
+				break;
+				
 			case FALL:
 
 				// Fall protection:
@@ -168,16 +187,23 @@ public class VanillaConfiguration {
 				if(leggings != null) epf+= 2*getEPF(leggings.getEnchantmentLevel(Enchantment.PROTECTION_FALL));
 				if(boots != null) epf+= 2*getEPF(boots.getEnchantmentLevel(Enchantment.PROTECTION_FALL));
 				
+				protection = true;
+				break;
+				
 			default:
-
-				// Protection:
-				if(helmet != null) epf+= getEPF(helmet.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL));
-				if(chestplate != null) epf+= getEPF(chestplate.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL));
-				if(leggings != null) epf+= getEPF(leggings.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL));
-				if(boots != null) epf+= getEPF(boots.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL));
 				
 				break;
 				
+		}
+		
+		if(protection){
+
+			// Protection:
+			if(helmet != null) epf+= getEPF(helmet.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL));
+			if(chestplate != null) epf+= getEPF(chestplate.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL));
+			if(leggings != null) epf+= getEPF(leggings.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL));
+			if(boots != null) epf+= getEPF(boots.getEnchantmentLevel(Enchantment.PROTECTION_ENVIRONMENTAL));
+			
 		}
 		
 		// Cap I:
@@ -202,6 +228,8 @@ public class VanillaConfiguration {
 	 */
 	public static int getEPF(int enchLevel) {
 
+		if(enchLevel == 0) return 0;
+		
 		return (int) ( (6 + enchLevel * enchLevel) / 2 );
 		
 	}

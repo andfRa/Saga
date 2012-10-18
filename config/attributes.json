@@ -5,9 +5,15 @@
 "attributePoints":{"x1":0,"y1":5.0,"x2":70,"y2":140},
 
 
+"damagePenaltyValues":{
+  "MELEE":7,
+  "RANGED":10
+},
+
+
 "attributes":[
   {"name":"strength",
-    "attack":{"MELEE_MODIFIER":{"x1":0,"y1":0.0,"x2":100,"y2":14.0}},
+    "attack":{"MELEE_MODIFIER":{"x1":0,"y1":0.0,"x2":100,"y2":21}},
     "defend":{},
     "passive":{},
     "description":"Melee damage."
@@ -15,46 +21,35 @@
 
   {"name":"precision",
     "attack":{
-      "RANGED_MODIFIER":{"x1":0,"y1":0.0,"x2":100,"y2":18.0},
-      "MELEE_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":90,"y2":0.90},
-      "RANGED_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":90,"y2":0.90}
+      "RANGED_MODIFIER":{"x1":0,"y1":0.0,"x2":100,"y2":30.0},
+      "MELEE_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":100,"y2":1.0},
+      "RANGED_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":100,"y2":1.0},
+      "MAGIC_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":100,"y2":1.0}
     },
-    "defend":{
-      "MELEE_HIT_CHANCE":{"x1":0,"y1":0.0,"x2":90,"y2":-0.90},
-      "RANGED_HIT_CHANCE":{"x1":0,"y1":0.0,"x2":90,"y2":-0.90},
-      "MAGIC_HIT_CHANCE":{"x1":0,"y1":0.0,"x2":90,"y2":-0.90}                  
-    },
+    "defend":{},
     "passive":{},
-    "description":"Ranged damage, armour penetration and dodge."
+    "description":"Ranged damage and armour penetration."
   },
   
   {"name":"willpower",
     "attack":{
-      "MAGIC_MODIFIER":{"x1":0,"y1":6.0,"x2":100,"y2":30.0},
-      "MAGIC_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":100,"y2":0.5}
+      "MAGIC_MODIFIER":{"x1":0,"y1":0.0,"x2":100,"y2":18.0},
+      "MELEE_ENCHANT_PENETRATION":{"x1":0,"y1":0.0,"x2":100,"y2":1.0},
+      "RANGED_ENCHANT_PENETRATION":{"x1":0,"y1":0.0,"x2":100,"y2":1.0},
+      "MAGIC_ENCHANT_PENETRATION":{"x1":0,"y1":0.0,"x2":100,"y2":1.0}
      },
     "defend":{},
     "passive":{},
-    "description":"Magic damage and magical armour penetration."
+    "description":"Magic damage and enchantment penetration."
   },
 
   {"name":"toughness",
     "attack":{},
     "defend":{},
     "passive":{
-    	"HEALTH_MODIFIER":{"x1":0,"y1":0.0,"x2":100,"y2":160.0}
+    	"HEALTH_MODIFIER":{"x1":0,"y1":0.0,"x2":100,"y2":60.0}
     },
-    "description":"Melee and ranged damage protection."
-  },
-
-  {"name":"warding",
-    "attack":{},
-    "defend":{
-      "MAGIC_MULTIPLIER":{"x1":0,"y1":-0,"x2":100,"y2":-0.90},
-      "BURN_RESIST":{"x1":0,"y1":0,"x2":60,"y2":1.0}
-    },
-    "passive":{},
-    "description":"Magic damage and burn protection."
+    "description":"Health bonus."
   },
   
   {"name":"luck",

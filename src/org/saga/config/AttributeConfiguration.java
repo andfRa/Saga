@@ -2,11 +2,13 @@ package org.saga.config;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Iterator;
 
 import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.saga.SagaLogger;
 import org.saga.attributes.Attribute;
+import org.saga.attributes.DamageType;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.utility.TwoPointFunction;
@@ -39,6 +41,12 @@ public class AttributeConfiguration {
 	private TwoPointFunction attributePoints;
 
 	/**
+	 * Damage penalty totals.
+	 * If Minecraft damage is below these values, then a penalty is applied to the resulting damage.
+	 */
+	private Hashtable<DamageType, Double> damagePenaltyValues;
+	
+	/**
 	 * Attributes.
 	 */
 	private ArrayList<Attribute> attributes; 
@@ -64,6 +72,11 @@ public class AttributeConfiguration {
 			attributePoints= new TwoPointFunction(0.0);
 		}
 		
+		if(damagePenaltyValues == null){
+			SagaLogger.nullField(getClass(), "damagePenaltyValues");
+			damagePenaltyValues= new Hashtable<DamageType, Double>();
+		}
+		
 		if(attributes == null){
 			SagaLogger.nullField(getClass(), "attributes");
 			attributes = new ArrayList<Attribute>();
@@ -81,6 +94,21 @@ public class AttributeConfiguration {
 	
 	
 	// Getters:
+	/**
+	 * Get damage penalty value.
+	 * 
+	 * @param type damage type
+	 * @return penalty value, null if none
+	 */
+	public Double getPenaltyValue(DamageType type) {
+
+		Double penalty = damagePenaltyValues.get(type);
+		if(penalty == null) penalty = 0.0;
+		
+		return penalty;
+		
+	}
+	
 	/**
 	 * Gets the attributes.
 	 * 

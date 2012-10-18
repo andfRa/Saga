@@ -140,7 +140,7 @@
     "activationAction":"RIGHT_CLICK",
     "usedItem":"COAL",
     "usedAmount":{"x1":1,"y1":1.0,"x2":3,"y2":1.0},
-    "cooldown":{"x1":1,"y1":5.0,"x2":3,"y2":2.0},
+    "cooldown":{"x1":1,"y1":3.0,"x2":3,"y2":3.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
     "attributeRequirements":{
       "willpower":{"x1":1,"y1":8.0,"x2":3,"y2":45.0}
