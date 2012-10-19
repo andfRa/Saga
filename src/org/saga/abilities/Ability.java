@@ -2,7 +2,6 @@ package org.saga.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.saga.Clock;
@@ -309,7 +308,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		// Nothing to remove.
 		if(material.equals(Material.AIR) || amount == 0) return;
 		
-		((Inventory) sagaLiving).removeItem(new ItemStack(material, amount));
+		((SagaPlayer) sagaLiving).removeItem(new ItemStack(material, amount));
 		
 	}
 	
