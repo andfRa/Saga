@@ -459,8 +459,20 @@ public class SagaPlayer implements Trader{
 	 * @param score score
 	 */
 	public void setAttributeScore(String attribute, Integer score) {
+		
+		int beforeHhearts = getHalfHearts();
+		
 		this.attributeScores.put(attribute, score);
 		abilityManager.update();
+		
+		int afterHhearts = getHalfHearts();
+		
+		// Compensate heart loss and synch:
+		if(beforeHhearts != afterHhearts){
+			health = getHealth(afterHhearts);
+		}
+		synchHealth();
+		
 	}
 
 	
@@ -629,6 +641,18 @@ public class SagaPlayer implements Trader{
 	}
 	
 	/**
+	 * Gets player health for given amount of half hearts
+	 * 
+	 * @param halfhearts
+	 * @return
+	 */
+	public Double getHealth(int halfhearts) {
+		
+		return getTotalHealth() / 20.0 * halfhearts;
+		
+	}
+	
+	/**
 	 * Damages the player.
 	 * 
 	 * @param amount damage amount
@@ -674,13 +698,13 @@ public class SagaPlayer implements Trader{
 
 		double totalHealth = getTotalHealth();
 		
-		int hearths = (int)(20.0 * getHealth() / totalHealth);
+		int hhearts = (int)(20.0 * getHealth() / totalHealth);
 		
-		if(hearths == 0 && this.health > 0){
+		if(hhearts == 0 && this.health > 0){
 			return 1;
 		}
 		
-		if(hearths == 20 && this.health < totalHealth){
+		if(hhearts == 20 && this.health < totalHealth){
 			return 19;
 		}
 		
@@ -688,9 +712,9 @@ public class SagaPlayer implements Trader{
 			return 19;
 		}
 		
-		if(hearths > 20) hearths = 20;
+		if(hhearts > 20) hhearts = 20;
 		
-		return hearths;
+		return hhearts;
 		
 	}
 	
