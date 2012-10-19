@@ -1,7 +1,6 @@
 package org.saga.player;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
@@ -24,6 +23,7 @@ import org.saga.chunks.Bundle;
 import org.saga.chunks.BundleManager;
 import org.saga.chunks.SagaChunk;
 import org.saga.config.AbilityConfiguration;
+import org.saga.config.AttributeConfiguration;
 import org.saga.exceptions.InvalidAbilityException;
 import org.saga.shape.RelativeShape.Orientation;
 
@@ -274,15 +274,13 @@ public class SagaLiving <T extends LivingEntity>{
 	 */
 	public Integer getUsedAttributePoints() {
 
-		
-		Collection<Integer> attrVals = attributeScores.values();
+		ArrayList<String> attributes = AttributeConfiguration.config().getAttributeNames();
 		Integer total = 0;
-		for (Integer score : attrVals) {
-			total += score;
+		for (String attribute : attributes) {
+			total+= getAttributeScore(attribute);
 		}
 		
 		return total;
-				
 		
 	}
 
