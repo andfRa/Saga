@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.messages.AbilityMessages;
-import org.saga.player.SagaPlayer;
+import org.saga.player.SagaLiving;
 
 public class Repair extends Ability{
 
@@ -68,7 +68,7 @@ public class Repair extends Ability{
 		}
 		
 		Integer skillLevel = getScore();
-		SagaPlayer sagaPlayer = getSagaPlayer();
+		SagaLiving<?> sagaPlayer = getSagaLiving();
 		
 		// Requirements:
 		Material usedMaterial = getRepairMaterial(item.getType());

@@ -11,6 +11,7 @@ import org.bukkit.entity.LivingEntity;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
+import org.saga.player.SagaLiving;
 import org.saga.player.SagaPlayer;
 
 public class StatsEffectHandler {
@@ -19,12 +20,11 @@ public class StatsEffectHandler {
 	public static void playeLevelUp(SagaPlayer sagaPlayer) {
 
 		// TODO: Fix playLevelUp
-		sagaPlayer.playGlobalSound(Sound.LEVEL_UP, 0, 0);
+		sagaPlayer.playGlobalSound(Sound.LEVEL_UP, 1.0F, 0.5F);
 		
 	}
 	
 	public static void playAbility(SagaPlayer sagaPlayer, Ability ability) {
-		
 		
 		Integer colour = ability.getDefinition().getColour();
 		if(colour < 1) return;
@@ -36,38 +36,32 @@ public class StatsEffectHandler {
 			SagaLogger.severe(StatsEffectHandler.class, "failed to play ability effect: " + e.getClass().getSimpleName() + ":" + e.getMessage());
 		}
 		
-		
 	}
 	
-	public static void playSpellCast(SagaPlayer sagaPlayer) {
-		
+	public static void playSpellCast(SagaLiving<?> sagaLiving) {
 		
 		// Smoke:
 		for (int i = 5; i <= 12; i++) {
-			sagaPlayer.playGlobalEffect(Effect.SMOKE, i);
+			sagaLiving.playGlobalEffect(Effect.SMOKE, i);
 		}
 		
 		// Sound:
-		sagaPlayer.playGlobalEffect(Effect.GHAST_SHOOT, 0);
-		
+		sagaLiving.playGlobalEffect(Effect.GHAST_SHOOT, 0);
 		
 	}
 	
-	public static void playRecharge(SagaPlayer sagaPlayer) {
-	
+	public static void playRecharge(SagaLiving<?> sagaLiving) {
 	
 		// Flames:
-		sagaPlayer.playGlobalEffect(Effect.BLAZE_SHOOT, 0);
-		sagaPlayer.playGlobalEffect(Effect.MOBSPAWNER_FLAMES, 6);
+		sagaLiving.playGlobalEffect(Effect.BLAZE_SHOOT, 0);
+		sagaLiving.playGlobalEffect(Effect.MOBSPAWNER_FLAMES, 6);
 		
 		// Sound:
-		sagaPlayer.playGlobalEffect(Effect.GHAST_SHOOT, 0);
-	
+		sagaLiving.playGlobalEffect(Effect.GHAST_SHOOT, 0);
 	
 	}
 	
 	public static void playSign(SagaPlayer sagaPlayer) {
-		
 		
 		// Flames:
 //		sagaPlayer.playGlobalEffect(Effect.BLAZE_SHOOT, 0);
@@ -75,7 +69,6 @@ public class StatsEffectHandler {
 		
 		// Sound:
 		sagaPlayer.playEffect(Effect.CLICK1, 0);
-	
 	
 	}
 	

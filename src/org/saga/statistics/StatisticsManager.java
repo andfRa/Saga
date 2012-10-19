@@ -897,8 +897,10 @@ public class StatisticsManager implements HourTicker{
 	
 	public void addAbilityUse(Ability ability) {
 
+		if(!(ability.getSagaLiving() instanceof SagaPlayer)) return;
+		SagaPlayer sagaPlayer = (SagaPlayer) ability.getSagaLiving();
+		
 		String abilityName = ability.getName() + "." + ability.getName() + " " + RomanNumeral.binaryToRoman(ability.getScore());
-		SagaPlayer sagaPlayer = ability.getSagaPlayer();
 		
 		modifyValue("abilities" + "." + "used" + "." + abilityName  + "." + sagaPlayer.getName(), 1);
 		

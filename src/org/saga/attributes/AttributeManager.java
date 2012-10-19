@@ -7,7 +7,7 @@ import org.bukkit.Effect;
 import org.saga.config.AttributeConfiguration;
 import org.saga.listeners.events.SagaBlockBreakEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.player.SagaPlayer;
+import org.saga.player.SagaLiving;
 
 public class AttributeManager {
 
@@ -19,9 +19,9 @@ public class AttributeManager {
 	
 	
 	/**
-	 * Saga player.
+	 * Saga living entity.
 	 */
-	private SagaPlayer sagaPlayer;
+	private SagaLiving<?> sagaLiving;
 	
 	/**
 	 * Attributes.
@@ -32,11 +32,11 @@ public class AttributeManager {
 	/**
 	 * Sets saga player and initialises.
 	 * 
-	 * @param sagaPlayer
+	 * @param sagaLiving Saga living entity
 	 */
-	public AttributeManager(SagaPlayer sagaPlayer) {
+	public AttributeManager(SagaLiving<?> sagaLiving) {
 
-		this.sagaPlayer = sagaPlayer;
+		this.sagaLiving = sagaLiving;
 		this.attributes = AttributeConfiguration.config().getAttributes();
 
 	}
@@ -52,7 +52,7 @@ public class AttributeManager {
 	public void handleAttack(SagaEntityDamageEvent event) {
 
 		
-		AttributeManager attackerManager = sagaPlayer.getAttributeManager();
+		AttributeManager attackerManager = sagaLiving.getAttributeManager();
 		
 		switch (event.type) {
 			
@@ -130,7 +130,7 @@ public class AttributeManager {
 	public void handleDefend(SagaEntityDamageEvent event) {
 
 		
-		AttributeManager defenderManager = sagaPlayer.getAttributeManager();
+		AttributeManager defenderManager = sagaLiving.getAttributeManager();
 		
 		switch (event.type) {
 			
@@ -240,7 +240,7 @@ public class AttributeManager {
 		double modifier = 0.0;
 		
 		for (Attribute attribute : attributes) {
-			modifier+= attribute.getAttackModifier(parameter, sagaPlayer.getAttributeScore(attribute.getName()));
+			modifier+= attribute.getAttackModifier(parameter, sagaLiving.getAttributeScore(attribute.getName()));
 		}
 		
 		return modifier;
@@ -258,7 +258,7 @@ public class AttributeManager {
 		double modifier = 0.0;
 		
 		for (Attribute attribute : attributes) {
-			modifier+= attribute.getDefendModifier(parameter, sagaPlayer.getAttributeScore(attribute.getName()));
+			modifier+= attribute.getDefendModifier(parameter, sagaLiving.getAttributeScore(attribute.getName()));
 		}
 		
 		return modifier;
@@ -276,7 +276,7 @@ public class AttributeManager {
 		double modifier = 0.0;
 		
 		for (Attribute attribute : attributes) {
-			modifier+= attribute.getPassiveModifier(parameter, sagaPlayer.getAttributeScore(attribute.getName()));
+			modifier+= attribute.getPassiveModifier(parameter, sagaLiving.getAttributeScore(attribute.getName()));
 		}
 		
 		return modifier;
@@ -306,7 +306,7 @@ public class AttributeManager {
 		double modifier = 0.0;
 		
 		for (Attribute attribute : attributes) {
-			modifier+= attribute.getPassiveModifier(AttributeParameter.HEALTH_MODIFIER, sagaPlayer.getAttributeScore(attribute.getName()));
+			modifier+= attribute.getPassiveModifier(AttributeParameter.HEALTH_MODIFIER, sagaLiving.getAttributeScore(attribute.getName()));
 		}
 		
 		return (int)modifier;

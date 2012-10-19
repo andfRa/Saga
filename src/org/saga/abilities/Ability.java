@@ -2,6 +2,7 @@ package org.saga.abilities;
 
 import org.bukkit.Material;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.saga.Clock;
@@ -13,6 +14,7 @@ import org.saga.exceptions.InvalidAbilityException;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.messages.AbilityMessages;
 import org.saga.messages.effects.StatsEffectHandler;
+import org.saga.player.SagaLiving;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.SagaCustomSerialization;
 import org.saga.statistics.StatisticsManager;
@@ -44,7 +46,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	/**
 	 * Saga player.
 	 */
-	transient private SagaPlayer sagaPlayer = null;
+	transient private SagaLiving<?> sagaLiving = null;
 
 	/**
 	 * Clock is enabled if true.
@@ -154,8 +156,8 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	public boolean clockSecondTick() {
 		
 		
-		if(cooldown == 1){
-			getSagaPlayer().message(AbilityMessages.cooldownEnd(this));
+		if(cooldown == 1 && sagaLiving instanceof SagaPlayer){
+			((SagaPlayer) sagaLiving).message(AbilityMessages.cooldownEnd(this));
 		}
 		
 		if(cooldown > 0) cooldown --;
@@ -196,11 +198,11 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	/**
 	 * Sets the player.
 	 * 
-	 * @param sagaPlayer saga player
+	 * @param sagaLiving saga player
 	 */
-	public void setPlayer(SagaPlayer sagaPlayer) {
+	public void setSagaLiving(SagaLiving<?> sagaLiving) {
 		
-		this.sagaPlayer = sagaPlayer;
+		this.sagaLiving = sagaLiving;
 		
 	}
 	
@@ -209,8 +211,8 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 * 
 	 * @return saga player
 	 */
-	public SagaPlayer getSagaPlayer() {
-		return sagaPlayer;
+	public SagaLiving<?> getSagaLiving() {
+		return sagaLiving;
 	}
 
 	/**
@@ -220,7 +222,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 */
 	public Integer getScore() {
 
-		return sagaPlayer.getAbilityScore(getName());
+		return sagaLiving.getAbilityScore(getName());
 
 	}
 	
@@ -261,8 +263,10 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 */
 	public Double awardExp(Integer value) {
 
+		if(!(sagaLiving instanceof SagaPlayer)) return 0.0;
+		
 		Double exp = ExperienceConfiguration.config().getExp(this, value);
-		sagaPlayer.awardExp(exp);
+		((SagaPlayer) sagaLiving).awardExp(exp);
 		
 		// Statistics:
 		StatisticsManager.manager().addExp("ability", getName(), exp);
@@ -280,6 +284,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 */
 	public void useItems() {
 
+		if(!(sagaLiving instanceof SagaPlayer)) return;
 		
 		Material material = definition.getUsedItem();
 		Integer amount = definition.getUsedAmount(getScore());
@@ -287,8 +292,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		// Nothing to remove.
 		if(material.equals(Material.AIR) || amount == 0) return;
 		
-		getSagaPlayer().removeItem(material, amount);
-		
+		((SagaPlayer) sagaLiving).removeItem(material, amount);
 		
 	}
 	
@@ -300,12 +304,12 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 */
 	public void useItems(Material material, Integer amount) {
 
+		if(!(sagaLiving instanceof SagaPlayer)) return;
 		
 		// Nothing to remove.
 		if(material.equals(Material.AIR) || amount == 0) return;
 		
-		getSagaPlayer().removeItem(new ItemStack(material, amount));
-		
+		((Inventory) sagaLiving).removeItem(new ItemStack(material, amount));
 		
 	}
 	
@@ -316,13 +320,14 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 */
 	public boolean checkActivation() {
 
-		PlayerInventory inventory = sagaPlayer.getPlayer().getInventory();
+		if(!(sagaLiving instanceof SagaPlayer)) return true;
+		
+		PlayerInventory inventory = ((SagaPlayer) sagaLiving).getPlayer().getInventory();
 		
 		ItemStack itemHand = inventory.getItemInHand();
 		if(itemHand == null) itemHand = new ItemStack(Material.AIR);
 		
 		return getDefinition().getItemRestrictions().contains(itemHand.getType()) || getDefinition().getItemRestrictions().size() == 0;
-		
 
 	}
 	
@@ -333,8 +338,9 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 */
 	public boolean checkCost() {
 
+		if(!(sagaLiving instanceof SagaPlayer)) return true;
 		
-		PlayerInventory inventory = sagaPlayer.getPlayer().getInventory();
+		PlayerInventory inventory = ((SagaPlayer) sagaLiving).getPlayer().getInventory();
 		
 		Material usedItem = getDefinition().getUsedItem();
 		Integer usedAmount = getDefinition().getUsedAmount(getScore());
@@ -355,8 +361,9 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 */
 	public boolean checkCost(Material material, Integer amount) {
 
+		if(!(sagaLiving instanceof SagaPlayer)) return true;
 		
-		PlayerInventory inventory = sagaPlayer.getPlayer().getInventory();
+		PlayerInventory inventory = ((SagaPlayer) sagaLiving).getPlayer().getInventory();
 		
 		if(material == Material.AIR) return true;
 		
@@ -404,7 +411,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 			
 			// Prevent cooldown spam:
 			if(getCooldown() != lastCooldown){
-				getSagaPlayer().message(AbilityMessages.onCooldown(this));
+				getSagaLiving().message(AbilityMessages.onCooldown(this));
 			}
 			lastCooldown = getCooldown();
 			
@@ -415,7 +422,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		if(getScore() < 1) return false;
 		
 		if(!checkCost()){
-			sagaPlayer.message(AbilityMessages.insufficientItems(this, definition.getUsedItem(), definition.getUsedAmount(getScore())));
+			sagaLiving.message(AbilityMessages.insufficientItems(this, definition.getUsedItem(), definition.getUsedAmount(getScore())));
 			return false;
 		}
 
@@ -432,11 +439,16 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		useItems();
 		startCooldown();
 
-		// Ability effect:
-		StatsEffectHandler.playAbility(getSagaPlayer(), this);
-		
-		// Statistics:
-		StatisticsManager.manager().addAbilityUse(this);
+		if(sagaLiving instanceof SagaPlayer){
+
+			// Ability effect:
+			StatsEffectHandler.playAbility((SagaPlayer) sagaLiving, this);
+			
+			// Statistics:
+			StatisticsManager.manager().addAbilityUse(this);
+			
+			
+		}
 		
 	}
 	

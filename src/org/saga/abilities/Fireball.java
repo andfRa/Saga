@@ -4,7 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 import org.saga.messages.effects.StatsEffectHandler;
-import org.saga.player.SagaPlayer;
+import org.saga.player.SagaLiving;
 
 public class Fireball extends Ability{
 
@@ -32,16 +32,16 @@ public class Fireball extends Ability{
 	public boolean trigger(PlayerInteractEvent event) {
 		
 		
-		SagaPlayer sagaPlayer = getSagaPlayer();
+		SagaLiving<?> sagaLiving = getSagaLiving();
 		
 		Vector shootDirection = event.getPlayer().getEyeLocation().getDirection().normalize();
 
 		Location shootLocation = event.getPlayer().getEyeLocation().add(shootDirection);
 
-		sagaPlayer.shootFireball(getDefinition().getFunction(SPEED_KEY).value(getScore()), shootLocation);
+		sagaLiving.shootFireball(getDefinition().getFunction(SPEED_KEY).value(getScore()), shootLocation);
 
 		// Effect:
-		StatsEffectHandler.playSpellCast(sagaPlayer);
+		StatsEffectHandler.playSpellCast(sagaLiving);
 		
 		return true;
 		

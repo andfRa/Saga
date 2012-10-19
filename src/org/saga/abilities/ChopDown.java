@@ -79,7 +79,7 @@ public class ChopDown extends Ability{
 		
 		if(ratio < MINIMUM_LEAVES_LOGS_RATIO){
 			
-			getSagaPlayer().message(notTree());
+			getSagaLiving().message(notTree());
 			return false;
 			
 		}
@@ -88,7 +88,7 @@ public class ChopDown extends Ability{
 		Integer treeSize = getDefinition().getFunction(TREE_SIZE_KEY).value(getScore()).intValue();
 		if(treeSize < blocks.size()){
 			
-			getSagaPlayer().message(notStroungEnough(blocks.size(), treeSize));
+			getSagaLiving().message(notStroungEnough(blocks.size(), treeSize));
 			return false;
 			
 		}
@@ -102,7 +102,7 @@ public class ChopDown extends Ability{
 			if(eventB.isCancelled()) return triggered;
 			
 			block.breakNaturally(itemHand);
-			getSagaPlayer().damageTool();
+			getSagaLiving().damageTool();
 			
 			triggered = true;
 			

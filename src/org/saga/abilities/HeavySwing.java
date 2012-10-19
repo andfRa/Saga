@@ -70,7 +70,7 @@ public class HeavySwing extends Ability{
 		
 		// Check blocks:
 		if(event.getClickedBlock() == null){
-			getSagaPlayer().message(AbilityMessages.targetStone(this));
+			getSagaLiving().message(AbilityMessages.targetStone(this));
 			return false;
 		}
 		
@@ -83,11 +83,11 @@ public class HeavySwing extends Ability{
 		
 		// Get shape:
 		RelativeShape shape = SPAHPE;
-		ArrayList<Block> blocks = shape.getBlocks(targetLocation, getSagaPlayer().getOrientation(), size);
+		ArrayList<Block> blocks = shape.getBlocks(targetLocation, getSagaLiving().getOrientation(), size);
 		
 		// Check if target block is included:
 		if(!blocks.contains(event.getClickedBlock())){
-			getSagaPlayer().message(AbilityMessages.targetStone(this));
+			getSagaLiving().message(AbilityMessages.targetStone(this));
 			return false;
 		}
 		
@@ -100,7 +100,7 @@ public class HeavySwing extends Ability{
 			if(eventB.isCancelled()) return triggered;
 			
 			block.breakNaturally(itemHand);
-			getSagaPlayer().damageTool();
+			getSagaLiving().damageTool();
 			
 			triggered = true;
 			
@@ -133,7 +133,7 @@ public class HeavySwing extends Ability{
 		}
 
 		// Effect:
-		getSagaPlayer().playGlobalEffect(Effect.STEP_SOUND, Material.STONE.getId());
+		getSagaLiving().playGlobalEffect(Effect.STEP_SOUND, Material.STONE.getId());
 
 		return true;
 		

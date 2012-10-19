@@ -1,7 +1,7 @@
 package org.saga.abilities;
 
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.saga.player.SagaPlayer;
+import org.saga.player.SagaLiving;
 
 public class Dart extends Ability{
 
@@ -34,8 +34,8 @@ public class Dart extends Ability{
 		
 
 		// Shoot:
-		SagaPlayer sagaPlayer = getSagaPlayer();
-		sagaPlayer.shootArrow(getDefinition().getFunction(SPEED_KEY).value(getScore()));
+		SagaLiving<?> sagaLiving = getSagaLiving();
+		sagaLiving.shootArrow(getDefinition().getFunction(SPEED_KEY).value(getScore()));
 
 		return true;
 		

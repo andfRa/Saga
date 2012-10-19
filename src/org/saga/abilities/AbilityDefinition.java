@@ -10,7 +10,7 @@ import org.bukkit.Material;
 import org.saga.SagaLogger;
 import org.saga.chunks.Bundle;
 import org.saga.config.AbilityConfiguration;
-import org.saga.player.SagaPlayer;
+import org.saga.player.SagaLiving;
 import org.saga.utility.TwoPointFunction;
 
 
@@ -324,17 +324,17 @@ public class AbilityDefinition{
 	/**
 	 * Gets players ability score.
 	 * 
-	 * @param sagaPlayer saga player
+	 * @param sagaLiving saga player
 	 * @return ability score
 	 */
-	public Integer getScore(SagaPlayer sagaPlayer) {
+	public Integer getScore(SagaLiving<?> sagaLiving) {
 
 		
 		int prevScore = 0;
 		
 		for (int score = 1; score <= AbilityConfiguration.config().maxAbilityScore; score++) {
 			
-			if(!checkRequirements(sagaPlayer, score)) return prevScore;
+			if(!checkRequirements(sagaLiving, score)) return prevScore;
 			prevScore = score;
 			
 		}
@@ -353,7 +353,7 @@ public class AbilityDefinition{
 	 * @param abilityScore ability score
 	 * @return true if requirements are met
 	 */
-	public boolean checkAttributes(SagaPlayer sagaPlayer, Integer abilityScore) {
+	public boolean checkAttributes(SagaLiving<?> sagaPlayer, Integer abilityScore) {
 
 
 		Set<String> attributeNames = attributeRequirements.keySet();
@@ -409,15 +409,15 @@ public class AbilityDefinition{
 	/**
 	 * Checks ability building requirements.
 	 * 
-	 * @param sagaPlayer saga player
+	 * @param sagaLiving saga player
 	 * @param abilityScore ability score
 	 * @return true if requirements are met
 	 */
-	public boolean checkBuildings(SagaPlayer sagaPlayer, Integer abilityScore) {
+	public boolean checkBuildings(SagaLiving<?> sagaLiving, Integer abilityScore) {
 
 
 		Set<String> bldgNames = buildingRequirements.keySet();
-		Bundle bundle = sagaPlayer.getBundle();
+		Bundle bundle = sagaLiving.getBundle();
 		
 		if(bldgNames.size() == 0) return true;
 		
@@ -439,12 +439,12 @@ public class AbilityDefinition{
 	/**
 	 * Checks ability requirements.
 	 * 
-	 * @param sagaPlayer saga player
+	 * @param sagaLiving saga player
 	 * @param abilityScore ability score
 	 * @return true if the requirements are met
 	 */
-	public boolean checkRequirements(SagaPlayer sagaPlayer, Integer abilityScore) {
-		return checkAttributes(sagaPlayer, abilityScore) && checkBuildings(sagaPlayer, abilityScore);
+	public boolean checkRequirements(SagaLiving<?> sagaLiving, Integer abilityScore) {
+		return checkAttributes(sagaLiving, abilityScore) && checkBuildings(sagaLiving, abilityScore);
 	}
 	
 	

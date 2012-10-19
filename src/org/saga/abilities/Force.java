@@ -13,6 +13,7 @@ import org.bukkit.util.Vector;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.messages.effects.StatsEffectHandler;
+import org.saga.player.SagaLiving;
 import org.saga.player.SagaPlayer;
 
 public class Force extends Ability{
@@ -51,12 +52,12 @@ public class Force extends Ability{
 	public boolean trigger(PlayerInteractEvent event) {
 		
 
-		SagaPlayer sagaPlayer = getSagaPlayer();
+		SagaLiving<?> sagaLiving = getSagaLiving();
 		Integer abilityLevel = getScore();
 		
-		Player player = sagaPlayer.getPlayer();
+		LivingEntity player = sagaLiving.getLivingEntity();
 		if(player == null){
-			SagaLogger.severe(this, "cant continue with trigger because the player isn't online");
+			SagaLogger.severe(this, "can't continue with trigger because the player isn't online");
 			return false;
 		}
 		
@@ -116,7 +117,7 @@ public class Force extends Ability{
 		}
 		
 		// Effect:
-		StatsEffectHandler.playSpellCast(sagaPlayer);
+		StatsEffectHandler.playSpellCast(sagaLiving);
 		
 		return true;
 		

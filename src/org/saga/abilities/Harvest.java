@@ -69,7 +69,7 @@ public class Harvest extends Ability{
 		
 		// Get shape:
 		RelativeShape shape = SPAHPE;
-		ArrayList<Block> blocks = shape.getBlocks(dropLocation, getSagaPlayer().getOrientation(), range);
+		ArrayList<Block> blocks = shape.getBlocks(dropLocation, getSagaLiving().getOrientation(), range);
 		
 		// Not a farm:
 		if(blocks.size() == 0){
@@ -86,7 +86,7 @@ public class Harvest extends Ability{
 			if(eventB.isCancelled()) return reedTrigger || wheatTrigger;
 			
 			block.breakNaturally(itemHand);
-			getSagaPlayer().damageTool();
+			getSagaLiving().damageTool();
 
 			// Drop indication:
 			if(block.getType() == Material.SUGAR_CANE_BLOCK){
@@ -100,10 +100,10 @@ public class Harvest extends Ability{
 
 		// Effects:
 		if(reedTrigger){
-			getSagaPlayer().playGlobalEffect(Effect.STEP_SOUND, Material.SUGAR_CANE_BLOCK.getId());
+			getSagaLiving().playGlobalEffect(Effect.STEP_SOUND, Material.SUGAR_CANE_BLOCK.getId());
 		}
 		if(wheatTrigger){
-			getSagaPlayer().playGlobalEffect(Effect.STEP_SOUND, Material.CROPS.getId());
+			getSagaLiving().playGlobalEffect(Effect.STEP_SOUND, Material.CROPS.getId());
 		}
 		
 		return true;

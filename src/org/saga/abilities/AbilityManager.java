@@ -6,7 +6,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.abilities.AbilityDefinition.ActivationAction;
 import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.player.SagaPlayer;
+import org.saga.player.SagaLiving;
 
 public class AbilityManager {
 
@@ -17,21 +17,21 @@ public class AbilityManager {
 	private HashSet<Ability> abilities;
 	
 	/**
-	 * Saga player.
+	 * Saga living entity.
 	 */
-	private SagaPlayer sagaPlayer;
+	private SagaLiving<?> sagaLiving;
 	
 	
 	// Initialisation:
 	/**
 	 * Sets player.
 	 * 
-	 * @param sagaPlayer saga player
+	 * @param sagaLiving saga living entity
 	 */
-	public AbilityManager(SagaPlayer sagaPlayer) {
+	public AbilityManager(SagaLiving<?> sagaLiving) {
 
 		
-		this.sagaPlayer = sagaPlayer;
+		this.sagaLiving = sagaLiving;
 		abilities = new HashSet<Ability>();
 		
 		update();
@@ -46,7 +46,7 @@ public class AbilityManager {
 	public void update() {
 
 		
-		HashSet<Ability> allAbilities = sagaPlayer.getAbilities();
+		HashSet<Ability> allAbilities = sagaLiving.getAbilities();
 		abilities = new HashSet<Ability>();
 		
 		// Only add abilities if the requirements are met:

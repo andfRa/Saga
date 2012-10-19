@@ -12,6 +12,7 @@ import org.saga.config.ExperienceConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.messages.GeneralMessages;
 import org.saga.metadata.UnnaturalTag;
+import org.saga.player.SagaLiving;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
 import org.saga.utility.TwoPointFunction;
@@ -31,9 +32,9 @@ public class SagaBlockBreakEvent {
 	public final Block block;
 
 	/**
-	 * Saga player.
+	 * Saga living.
 	 */
-	public final SagaPlayer sagaPlayer;
+	public final SagaLiving<?> sagaPlayer;
 	
 	/**
 	 * Location saga chunk.
@@ -66,7 +67,7 @@ public class SagaBlockBreakEvent {
 	 * @param sagaPlayer saga player
 	 * @param sagaChunk saga chunk
 	 */
-	public SagaBlockBreakEvent(BlockBreakEvent event, SagaPlayer sagaPlayer, SagaChunk sagaChunk) {
+	public SagaBlockBreakEvent(BlockBreakEvent event, SagaLiving<?> sagaPlayer, SagaChunk sagaChunk) {
 
 		
 		this.event = event;
@@ -127,10 +128,10 @@ public class SagaBlockBreakEvent {
 		if(isNatural){
 
 			// Award exp:
-			if(sagaPlayer != null){
+			if(sagaPlayer != null && sagaPlayer instanceof SagaPlayer){
 				
 				Double exp = ExperienceConfiguration.config().getExp(block);
-				sagaPlayer.awardExp(exp);
+				((SagaPlayer)sagaPlayer).awardExp(exp);
 				
 				// Statistics:
 				StatisticsManager.manager().addExp("block", GeneralMessages.material(block.getType()), exp);
@@ -209,13 +210,11 @@ public class SagaBlockBreakEvent {
 	}
 
 	/**
-	 * Gets the sagaPlayer.
+	 * Gets the Saga living entity.
 	 * 
-	 * @return the sagaPlayer
+	 * @return the Saga living entity
 	 */
-	public SagaPlayer getSagaPlayer() {
-	
-	
+	public SagaLiving<?> getSagaPlayer() {
 		return sagaPlayer;
 	}
 
@@ -225,8 +224,6 @@ public class SagaBlockBreakEvent {
 	 * @return the blockSagaChunk
 	 */
 	public SagaChunk getBlockSagaChunk() {
-	
-	
 		return blockSagaChunk;
 	}
 
