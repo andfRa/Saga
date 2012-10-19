@@ -268,7 +268,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		
 		// Compensate heart loss and synch:
 		if(beforeHhearts != afterHhearts){
-			health = getHealth(afterHhearts);
+			health = getHealth(beforeHhearts);
 		}
 		synchHealth();
 		
