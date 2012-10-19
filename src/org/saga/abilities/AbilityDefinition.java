@@ -322,9 +322,9 @@ public class AbilityDefinition{
 	}
 	
 	/**
-	 * Gets players ability score.
+	 * Gets entities ability score.
 	 * 
-	 * @param sagaLiving saga player
+	 * @param sagaLiving saga entity
 	 * @return ability score
 	 */
 	public Integer getScore(SagaLiving<?> sagaLiving) {
@@ -349,18 +349,18 @@ public class AbilityDefinition{
 	/**
 	 * Checks ability attribute requirements.
 	 * 
-	 * @param sagaPlayer saga player
+	 * @param sagaLiving saga entity
 	 * @param abilityScore ability score
 	 * @return true if requirements are met
 	 */
-	public boolean checkAttributes(SagaLiving<?> sagaPlayer, Integer abilityScore) {
+	public boolean checkAttributes(SagaLiving<?> sagaLiving, Integer abilityScore) {
 
 
 		Set<String> attributeNames = attributeRequirements.keySet();
 		
 		for (String attrName : attributeNames) {
 			
-			if(sagaPlayer.getAttributeScore(attrName) < getAttrReq(attrName, abilityScore)){
+			if(sagaLiving.getAttributeScore(attrName) < getAttrReq(attrName, abilityScore)){
 				return false;
 			}
 			
@@ -409,7 +409,7 @@ public class AbilityDefinition{
 	/**
 	 * Checks ability building requirements.
 	 * 
-	 * @param sagaLiving saga player
+	 * @param sagaLiving saga entity
 	 * @param abilityScore ability score
 	 * @return true if requirements are met
 	 */
@@ -439,7 +439,7 @@ public class AbilityDefinition{
 	/**
 	 * Checks ability requirements.
 	 * 
-	 * @param sagaLiving saga player
+	 * @param sagaLiving saga entity
 	 * @param abilityScore ability score
 	 * @return true if the requirements are met
 	 */

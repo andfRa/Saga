@@ -196,9 +196,9 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	}
 
 	/**
-	 * Sets the player.
+	 * Sets the entity.
 	 * 
-	 * @param sagaLiving saga player
+	 * @param sagaLiving saga entity
 	 */
 	public void setSagaLiving(SagaLiving<?> sagaLiving) {
 		
@@ -207,9 +207,9 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	}
 	
 	/**
-	 * Gets the saga player
+	 * Gets the saga entity.
 	 * 
-	 * @return saga player
+	 * @return saga entity
 	 */
 	public SagaLiving<?> getSagaLiving() {
 		return sagaLiving;
@@ -332,7 +332,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	}
 	
 	/**
-	 * Checks if the player has enough of the required item.
+	 * Checks if the entity has enough of the required item.
 	 * 
 	 * @return true if enough items
 	 */
@@ -353,7 +353,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	}
 	
 	/**
-	 * Checks if the player has enough of the required item.
+	 * Checks if the entity has enough of the required item.
 	 * 
 	 * @param material used item
 	 * @param amount used amount

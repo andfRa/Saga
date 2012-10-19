@@ -36,7 +36,7 @@ public class SagaLiving <T extends LivingEntity>{
 	
 	// Positioning:
 	/**
-	 * Last chunk the player was on.
+	 * Last chunk the entity was on.
 	 */
 	transient public SagaChunk lastSagaChunk = null;
 	
@@ -327,10 +327,10 @@ public class SagaLiving <T extends LivingEntity>{
 	}
 	
 	/**
-	 * Checks if the player has an ability.
+	 * Checks if the entity has an ability.
 	 * 
 	 * @param name ability name
-	 * @return true if the player has the ability
+	 * @return true if the entity has the ability
 	 */
 	public boolean hasAbility(String name) {
 		return getAbility(name) != null;	
@@ -418,7 +418,7 @@ public class SagaLiving <T extends LivingEntity>{
 	public void shootFireball(Double speed, Location shootLocation) {
 
 		
-		// Ignore if the player isn't online:
+		// Ignore if no entity is wrapped:
 		if(livingEntity == null) return;
 		
 		// Direction vector:
@@ -446,7 +446,7 @@ public class SagaLiving <T extends LivingEntity>{
 	public void shootArrow(double speed) {
 
 		
-		// Ignore if the player isn't online:
+		// Ignore if no entity is wrapped:
 		if(livingEntity == null) return;
 		
 		Arrow arrow = livingEntity.launchProjectile(Arrow.class);
@@ -465,7 +465,7 @@ public class SagaLiving <T extends LivingEntity>{
 	}
 
 	/**
-	 * Pushes away an entity from the player
+	 * Pushes away an entity from the entity.
 	 * 
 	 * @param entity entity
 	 * @param speed speed
@@ -473,7 +473,7 @@ public class SagaLiving <T extends LivingEntity>{
 	public void pushAwayEntity(Entity entity, double speed) {
 
 		
-		// Ignore if the player isn't online:
+		// Ignore if no entity is wrapped:
 		if(livingEntity == null) return;
 		
 		// Get velocity unit vector:
@@ -489,9 +489,9 @@ public class SagaLiving <T extends LivingEntity>{
 	
 	// Positioning:
 	/**
-	 * Gets the player location.
+	 * Gets the entity location.
 	 * 
-	 * @return player location, null if not wrapped
+	 * @return entity location, null if not wrapped
 	 */
 	public Location getLocation() {
 
@@ -502,7 +502,7 @@ public class SagaLiving <T extends LivingEntity>{
 	}
 
 	/**
-	 * Moves the player to the given location.
+	 * Moves the entity to the given location.
 	 * Must be used when the teleport is part of an ability.
 	 * 
 	 * @param location location
@@ -514,9 +514,9 @@ public class SagaLiving <T extends LivingEntity>{
 	}
 	
 	/**
-	 * Puts a player on the given blocks centre.
+	 * Puts a entity on the given blocks centre.
 	 * 
-	 * @param locationBlock block the player will be placed on
+	 * @param locationBlock block the entity will be placed on
 	 */
 	public void teleportCentered(Block locationBlock) {
 		
@@ -527,7 +527,7 @@ public class SagaLiving <T extends LivingEntity>{
 	}
 
 	/**
-	 * Gets player orientation.
+	 * Gets entity orientation.
 	 * 
 	 * @return orientation, {@link Orientation#NORTH} if not online
 	 */
@@ -536,8 +536,8 @@ public class SagaLiving <T extends LivingEntity>{
 		
 		if(livingEntity == null) return Orientation.NORTH;
 		
-		Location playerLocation = livingEntity.getEyeLocation();
-		double yaw = playerLocation.getYaw();
+		Location entityLocation = livingEntity.getEyeLocation();
+		double yaw = entityLocation.getYaw();
 		
 		if( (yaw >= 315.0 && yaw <= 360) || (yaw >= 0 && yaw <= 45.0) || (yaw <= 0 && yaw >= -45.0) || (yaw <= -315 && yaw >= -360.0) ){
 			
@@ -568,7 +568,7 @@ public class SagaLiving <T extends LivingEntity>{
 	
 	// Saga chunk:
 	/**
-	 * Gets the Saga chunk the player is in.
+	 * Gets the Saga chunk the entity is in.
 	 * 
 	 * @return Saga chunk, null if not found
 	 */
@@ -635,10 +635,10 @@ public class SagaLiving <T extends LivingEntity>{
 	
 	// Entities:
 	/**
-	 * Returns the player distance to a location
+	 * Returns the entity distance to a location.
 	 * 
 	 * @param location location
-	 * @return distance. 0 if player not online
+	 * @return distance, 0 if entity not online
 	 */
 	public Double getDistance(Location location) {
 		
@@ -649,12 +649,12 @@ public class SagaLiving <T extends LivingEntity>{
 	}
 	
 	/**
-	 * Gets nearby entities
+	 * Gets nearby entities.
 	 * 
 	 * @param x x radius
 	 * @param y y radius
 	 * @param z z radius
-	 * @return nearby entities. emplty if player isn't online.
+	 * @return nearby entities
 	 */
 	public List<Entity> getNearbyEntities(double x, double y, double z) {
 		
@@ -668,7 +668,7 @@ public class SagaLiving <T extends LivingEntity>{
 
 	// Messages:
 	/**
-	 * Sends the player a message.
+	 * Sends the entity a message.
 	 * 
 	 * @param message message
 	 */

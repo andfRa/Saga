@@ -30,7 +30,7 @@ public class AttributeManager {
 	
 	
 	/**
-	 * Sets saga player and initialises.
+	 * Sets saga entity and initialises.
 	 * 
 	 * @param sagaLiving Saga living entity
 	 */

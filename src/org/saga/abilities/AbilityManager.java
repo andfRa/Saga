@@ -24,7 +24,7 @@ public class AbilityManager {
 	
 	// Initialisation:
 	/**
-	 * Sets player.
+	 * Sets entity.
 	 * 
 	 * @param sagaLiving saga living entity
 	 */
@@ -99,7 +99,7 @@ public class AbilityManager {
 	}
 	
 	/**
-	 * Called when the player attacks.
+	 * Called when the entity attacks.
 	 * 
 	 * @param event event
 	 */
@@ -120,7 +120,7 @@ public class AbilityManager {
 	}
 	
 	/**
-	 * Called when the player defends.
+	 * Called when the entity defends.
 	 * 
 	 * @param event event
 	 */
