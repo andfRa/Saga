@@ -2,12 +2,18 @@ package org.saga.messages.effects;
 
 import net.minecraft.server.DataWatcher;
 import net.minecraft.server.EntityLiving;
+import net.minecraft.server.Packet18ArmAnimation;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
+import org.bukkit.Location;
 import org.bukkit.Sound;
+import org.bukkit.craftbukkit.CraftServer;
+import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
@@ -17,9 +23,17 @@ import org.saga.player.SagaPlayer;
 public class StatsEffectHandler {
 
 	
-	public static void playeLevelUp(SagaPlayer sagaPlayer) {
+	public static void playAnimateArm(SagaPlayer sagaPlayer) {
 
-		// TODO: Fix playLevelUp
+		Player player = sagaPlayer.getPlayer();
+		Location loc = player.getLocation();
+		
+		((CraftServer)Bukkit.getServer()).getServer().getServerConfigurationManager().sendPacketNearby(loc.getX(),loc.getY(),loc.getZ(),64,((CraftWorld)loc.getWorld()).getHandle().dimension, new Packet18ArmAnimation(((CraftPlayer)player).getHandle(), 1));
+		
+	}
+	
+	public static void playLevelUp(SagaPlayer sagaPlayer) {
+
 		sagaPlayer.playGlobalSound(Sound.LEVEL_UP, 1.0F, 0.5F);
 		
 	}

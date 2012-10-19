@@ -7,6 +7,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.SagaLogger;
+import org.saga.abilities.AbilityDefinition.ActivationAction;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.exceptions.InvalidAbilityException;
@@ -409,7 +410,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		if(isCooldown()){
 			
 			// Prevent cooldown spam:
-			if(getCooldown() != lastCooldown){
+			if(getCooldown() != lastCooldown && getDefinition().getActivationAction() != ActivationAction.NONE){
 				getSagaLiving().message(AbilityMessages.onCooldown(this));
 			}
 			lastCooldown = getCooldown();

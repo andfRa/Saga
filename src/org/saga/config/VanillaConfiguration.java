@@ -91,6 +91,24 @@ public class VanillaConfiguration {
 		
 	}
 	
+	
+	/**
+	 * Gets the blocking multiplier.
+	 * 
+	 * 
+	 * @param event event
+	 * @param sagaPlayer saga player
+	 * @return blocking multiplier
+	 */
+	public static double getBlockingMultiplier(EntityDamageEvent event, SagaPlayer sagaPlayer) {
+		
+		DamageCause cause = event.getCause();
+		if(cause == DamageCause.ENTITY_ATTACK || cause == DamageCause.PROJECTILE || cause == DamageCause.ENTITY_EXPLOSION || cause == DamageCause.BLOCK_EXPLOSION) return 0.5;
+			
+		return 1.0;
+		
+	}
+	
 	/**
 	 * Gets the damage amount EPF multiplier for enchantments.
 	 * 
@@ -244,6 +262,46 @@ public class VanillaConfiguration {
 	public static boolean hasTicks(DamageCause cause) {
 
 		return cause == DamageCause.ENTITY_ATTACK || cause == DamageCause.FIRE || cause == DamageCause.CONTACT || cause == DamageCause.SUFFOCATION || cause == DamageCause.LAVA;
+		
+	}
+	
+	
+	/**
+	 * Gets item base damage.
+	 * 
+	 * @param material item material
+	 * @return base damage
+	 */
+	public static int getBaseDamage(Material material) {
+		
+		switch (material) {
+			
+			case DIAMOND_SWORD: return 7;
+			case IRON_SWORD: return 6;
+			case STONE_SWORD: return 5;
+			case GOLD_SWORD: return 4;
+			case WOOD_SWORD: return 4;
+
+			case DIAMOND_AXE: return 6;
+			case IRON_AXE: return 5;
+			case STONE_AXE: return 4;
+			case GOLD_AXE: return 3;
+			case WOOD_AXE: return 3;
+
+			case DIAMOND_PICKAXE: return 5;
+			case IRON_PICKAXE: return 4;
+			case STONE_PICKAXE: return 3;
+			case GOLD_PICKAXE: return 2;
+			case WOOD_PICKAXE: return 2;
+
+			case DIAMOND_SPADE: return 4;
+			case IRON_SPADE: return 3;
+			case STONE_SPADE: return 2;
+			case GOLD_SPADE: return 1;
+			case WOOD_SPADE: return 1;
+			default: return 1;
+			
+		}
 		
 	}
 	

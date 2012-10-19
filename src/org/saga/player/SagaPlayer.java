@@ -521,7 +521,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		setLevel(level + 1);
 		
 		message(StatsMessages.levelup(getLevel()));
-		StatsEffectHandler.playeLevelUp(this);
+		StatsEffectHandler.playLevelUp(this);
 		
 	}
 

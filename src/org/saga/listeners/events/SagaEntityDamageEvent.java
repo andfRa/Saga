@@ -282,6 +282,9 @@ public class SagaEntityDamageEvent {
 	 */
 	public void apply() {
 
+		
+		// Ignore cancelled:
+		if(isCancelled()) return;
 
 		// Dodge:
 		if(hitChance <= RANDOM.nextDouble()) {
@@ -309,6 +312,10 @@ public class SagaEntityDamageEvent {
 			if(ench < 0.0) ench = 0.0;
 			if(ench > 1.0) ench = 1.0;
 			harm*= ench;
+			
+			// Blocking:
+			double blocking = VanillaConfiguration.getBlockingMultiplier(event, defenderPlayer);
+			harm*= blocking;
 			
 			defenderPlayer.damage(harm);
 			
