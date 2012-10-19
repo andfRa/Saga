@@ -110,7 +110,7 @@
       "strength":{"x1":1,"y1":8.0,"x2":3,"y2":45.0}
     },
     "buildingRequirements":{},
-    "functions":{"disarm chance":{"x1":1,"y1":0.8,"x2":3,"y2":0.8}},
+    "functions":{"disarm chance":{"x1":1,"y1":0.65,"x2":3,"y2":0.65}},
     "colour":3599321,
     "description":"shifts targets sword",
     "usage":"random chance"
