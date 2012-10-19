@@ -161,7 +161,7 @@
     "cooldown":{"x1":0,"y1":18.0,"x2":3,"y2":4.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
     "attributeRequirements":{
-      "warding":{"x1":1,"y1":8.0,"x2":3,"y2":45.0}
+      "willpower":{"x1":1,"y1":8.0,"x2":3,"y2":45.0}
     },
     "buildingRequirements":{},
     "functions":{
