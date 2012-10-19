@@ -6,7 +6,7 @@ import org.saga.buildings.TrainingCamp;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.messages.BuildingMessages;
-import org.saga.messages.effects.AbilityEffects;
+import org.saga.messages.effects.StatsEffectHandler;
 import org.saga.player.SagaPlayer;
 
 
@@ -183,7 +183,7 @@ public class AttributeSign extends BuildingSign{
 		sagaPlayer.message(BuildingMessages.attributeIncreased(attribute, attributeScore));
 		
 		// Play effect:
-		AbilityEffects.playSign(sagaPlayer);
+		StatsEffectHandler.playSign(sagaPlayer);
 		
 		
 	}

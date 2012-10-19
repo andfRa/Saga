@@ -20,7 +20,7 @@ import org.saga.messages.GeneralMessages;
 import org.saga.messages.HelpMessages;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.SettlementMessages;
-import org.saga.messages.effects.SettlementEffects;
+import org.saga.messages.effects.SettlementEffectHandler;
 import org.saga.player.Proficiency;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.SagaPlayer;
@@ -117,7 +117,7 @@ public class SettlementCommands {
 		sagaPlayer.message(SettlementMessages.settled(sagaPlayer, settlement));
 
 		// Play effect:
-		SettlementEffects.playClaim(sagaPlayer, selChunk);
+		SettlementEffectHandler.playClaim(sagaPlayer, selChunk);
 		
 		
 	}
@@ -222,7 +222,7 @@ public class SettlementCommands {
 		sagaChunk.refresh();
 		
 		// Play effect:
-		SettlementEffects.playClaim(sagaPlayer, sagaChunk);
+		SettlementEffectHandler.playClaim(sagaPlayer, sagaChunk);
 		
 		
 	}
@@ -277,7 +277,7 @@ public class SettlementCommands {
 		selChunk.refresh();
 		
 		// Play effect:
-		SettlementEffects.playAbandon(sagaPlayer, selChunk);
+		SettlementEffectHandler.playAbandon(sagaPlayer, selChunk);
 		
 		// Delete if none left:
 		if( selBundle.getSize() == 0 ){

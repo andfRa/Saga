@@ -11,7 +11,7 @@ import org.saga.buildings.storage.StorageArea;
 import org.saga.chunks.SagaChunk;
 import org.saga.player.SagaPlayer;
 
-public class SettlementEffects {
+public class SettlementEffectHandler {
 
 	
 	public static void playClaim(SagaPlayer sagaPlayer, SagaChunk sagaChunk) {

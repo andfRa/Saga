@@ -12,7 +12,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 import org.saga.Saga;
 import org.saga.SagaLogger;
-import org.saga.messages.effects.AbilityEffects;
+import org.saga.messages.effects.StatsEffectHandler;
 import org.saga.player.SagaPlayer;
 
 public class Force extends Ability{
@@ -116,7 +116,7 @@ public class Force extends Ability{
 		}
 		
 		// Effect:
-		AbilityEffects.playSpellCast(sagaPlayer);
+		StatsEffectHandler.playSpellCast(sagaPlayer);
 		
 		return true;
 		

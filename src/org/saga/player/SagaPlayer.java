@@ -12,6 +12,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
 import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
@@ -42,6 +43,7 @@ import org.saga.exceptions.InvalidAbilityException;
 import org.saga.factions.Faction;
 import org.saga.factions.FactionManager;
 import org.saga.messages.GeneralMessages.CustomColour;
+import org.saga.messages.effects.StatsEffectHandler;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.StatsMessages;
 import org.saga.saveload.Directory;
@@ -786,6 +788,7 @@ public class SagaPlayer implements Trader{
 		setLevel(level + 1);
 		
 		message(StatsMessages.levelup(getLevel()));
+		StatsEffectHandler.playeLevelUp(this);
 		
 	}
 
@@ -1399,12 +1402,10 @@ public class SagaPlayer implements Trader{
 	 * @param value effect value
 	 */
 	public void playEffect(Effect effect, int value) {
-
 		
-		if(!isOnline()) return;
+		if(player == null)  return;
 		
 		player.playEffect(getLocation(), effect, value);
-		
 		
 	}
 	
@@ -1415,12 +1416,10 @@ public class SagaPlayer implements Trader{
 	 * @param value effect value
 	 */
 	public void playGlobalEffect(Effect effect, int value) {
-
 		
-		if(!isOnline()) return;
+		if(player == null) return;
 		
 		player.getLocation().getWorld().playEffect(getLocation(), effect, value);
-		
 		
 	}
 	
@@ -1433,12 +1432,42 @@ public class SagaPlayer implements Trader{
 	 */
 	public void playGlobalEffect(Effect effect, int value, Location location) {
 
-		
 		location.getWorld().playEffect(location, effect, value);
+		
+	}
+
+	
+	/**
+	 * Plays a sound.
+	 * 
+	 * @param sound sound
+	 * @param arg2
+	 * @param arg2
+	 */
+	public void playSound(Sound sound, float arg2, float arg3) {
+		
+		if(player == null) return;
+		
+		// TODO: Play sound
+		player.playSound(getLocation(), sound, arg2, arg3);
 		
 		
 	}
 	
+	/**
+	 * Plays a sound.
+	 * 
+	 * @param sound sound
+	 */
+	public void playGlobalSound(Sound sound, float arg2, float arg3) {
+
+		
+		if(player == null) return;
+		// TODO: Play global sound
+		player.getLocation().getWorld().playSound(getLocation(), sound, arg2, arg3);
+		
+		
+	}
 	
 	
 	// Entities:

@@ -5,6 +5,7 @@ import net.minecraft.server.EntityLiving;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
+import org.bukkit.Sound;
 import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.entity.LivingEntity;
 import org.saga.Saga;
@@ -12,22 +13,17 @@ import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
 import org.saga.player.SagaPlayer;
 
-public class AbilityEffects {
+public class StatsEffectHandler {
 
 	
-	public static void playMinorAbility(SagaPlayer sagaPlayer, Integer level) {
+	public static void playeLevelUp(SagaPlayer sagaPlayer) {
 
-		sagaPlayer.playGlobalEffect(Effect.MOBSPAWNER_FLAMES, 6, sagaPlayer.getLocation());
-		sagaPlayer.playGlobalEffect(Effect.MOBSPAWNER_FLAMES, 6, sagaPlayer.getLocation().add(0.0, 1.0, 0.0));
-		sagaPlayer.playGlobalEffect(Effect.MOBSPAWNER_FLAMES, 6, sagaPlayer.getLocation().add(0.0, 2.0, 0.0));
-
-		for (int i = 0; i < level; i++) {
-			sagaPlayer.playGlobalEffect(Effect.MOBSPAWNER_FLAMES, 6, sagaPlayer.getLocation().add(0.0, i, 0.0));
-		}
-
+		// TODO: Fix playLevelUp
+		sagaPlayer.playGlobalSound(Sound.LEVEL_UP, 0, 0);
+		
 	}
 	
-	public static void playAbilityEffect(SagaPlayer sagaPlayer, Ability ability) {
+	public static void playAbility(SagaPlayer sagaPlayer, Ability ability) {
 		
 		
 		Integer colour = ability.getDefinition().getColour();
@@ -37,12 +33,11 @@ public class AbilityEffects {
 			addPotionGraphicalEffect(sagaPlayer.getPlayer(), colour, 30);
 		}
 		catch (Throwable e) {
-			SagaLogger.severe(AbilityEffects.class, "failed to play ability effect: " + e.getClass().getSimpleName() + ":" + e.getMessage());
+			SagaLogger.severe(StatsEffectHandler.class, "failed to play ability effect: " + e.getClass().getSimpleName() + ":" + e.getMessage());
 		}
 		
 		
 	}
-	
 	
 	public static void playSpellCast(SagaPlayer sagaPlayer) {
 		

@@ -5,7 +5,7 @@ import org.saga.buildings.Building;
 import org.saga.config.EconomyConfiguration;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.PlayerMessages;
-import org.saga.messages.effects.AbilityEffects;
+import org.saga.messages.effects.StatsEffectHandler;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
@@ -179,7 +179,7 @@ public class GuardianRuneSign extends BuildingSign{
 		StatisticsManager.manager().addGuardRuneRecharge(sagaPlayer);
 		
 		// Play effect:
-		AbilityEffects.playRecharge(sagaPlayer);
+		StatsEffectHandler.playRecharge(sagaPlayer);
 		
 		
 	}

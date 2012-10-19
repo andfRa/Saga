@@ -22,7 +22,7 @@ import org.saga.messages.ClaimMessages;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.GeneralMessages;
 import org.saga.messages.SettlementMessages;
-import org.saga.messages.effects.SettlementEffects;
+import org.saga.messages.effects.SettlementEffectHandler;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement.SettlementPermission;
 import org.saga.statistics.StatisticsManager;
@@ -118,7 +118,7 @@ public class BuildingCommands {
 		}
 			
 		// Play effect:
-		SettlementEffects.playBuildingSet(sagaPlayer, selBuilding);
+		SettlementEffectHandler.playBuildingSet(sagaPlayer, selBuilding);
 
 		// Statistics:
 		StatisticsManager.manager().setBuildings(selBundle);
@@ -177,7 +177,7 @@ public class BuildingCommands {
 		}
 
 		// Play effect:
-		SettlementEffects.playBuildingRemove(sagaPlayer, selBuilding);
+		SettlementEffectHandler.playBuildingRemove(sagaPlayer, selBuilding);
 		
 		// Remove building:
 		selChunk.removeBuilding();
@@ -246,7 +246,7 @@ public class BuildingCommands {
 		sagaPlayer.message(BuildingMessages.upgraded(selBuilding));
 	
 		// Play effect:
-		SettlementEffects.playBuildingUpgrade(sagaPlayer, selBuilding);
+		SettlementEffectHandler.playBuildingUpgrade(sagaPlayer, selBuilding);
 		
 		
 	}	
@@ -307,7 +307,7 @@ public class BuildingCommands {
 		sagaPlayer.message(BuildingMessages.storeAreaAdded(selBuilding));
 		
 		// Effect:
-		SettlementEffects.playStoreAreaCreate(sagaPlayer, newStoreArea);
+		SettlementEffectHandler.playStoreAreaCreate(sagaPlayer, newStoreArea);
 		
 		
 	}
@@ -354,7 +354,7 @@ public class BuildingCommands {
 		sagaPlayer.message(BuildingMessages.storeAreaRemoved(selBuilding));
 		
 		// Effect:
-		SettlementEffects.playStoreAreaRemove(sagaPlayer, storageArea);
+		SettlementEffectHandler.playStoreAreaRemove(sagaPlayer, storageArea);
 		
 		
 	}
