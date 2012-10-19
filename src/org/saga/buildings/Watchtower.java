@@ -4,16 +4,15 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
-import org.bukkit.entity.Enderman;
 import org.bukkit.entity.Monster;
 import org.bukkit.event.entity.CreatureSpawnEvent;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.saga.Clock.DaytimeTicker;
 import org.saga.chunks.SagaChunk;
 import org.saga.exceptions.InvalidBuildingException;
 
 public class Watchtower extends Building implements DaytimeTicker{
 
-	// TODO: Improve watchtower
 	
 	/**
 	 * True if is on cool down.
@@ -124,7 +123,7 @@ public class Watchtower extends Building implements DaytimeTicker{
 
 	
 	
-	
+	// Event:
 	/**
 	 * Gets the protection radius.
 	 * 
@@ -145,19 +144,17 @@ public class Watchtower extends Building implements DaytimeTicker{
 	public void onCreatureSpawn(CreatureSpawnEvent event, SagaChunk locationChunk) {
 		
 		
-		// Ignore canceled events:
-		if(event.isCancelled()){
-			return;
-		}
+		// Ignore cancelled:
+		if(event.isCancelled()) return;
+		
+		// Only naturals:
+		if(event.getSpawnReason() != SpawnReason.NATURAL) return;
 		
 		// Check if the chunk is under protection:
-		if(!protectedChunks.contains(locationChunk)){
-			return;
-		}
+		if(!protectedChunks.contains(locationChunk)) return;
 		
-		if(!(event.getEntity() instanceof Enderman) && !(event.getEntity() instanceof Monster)){
-			return;
-		}
+		// Only hostiles:
+		if(!(event.getEntity() instanceof Monster)) return;
 		
 		// Take control of the event:
 		event.setCancelled(true);
@@ -170,7 +167,6 @@ public class Watchtower extends Building implements DaytimeTicker{
 		
 		
 	}
-	
 	
 	
 	/* 
