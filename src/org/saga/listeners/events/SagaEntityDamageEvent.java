@@ -293,7 +293,7 @@ public class SagaEntityDamageEvent {
 		}
 		
 		// Modify damage:
-		double damage = (event.getDamage() + modifier) * multiplier * penalty;
+		double damage = calcDamage();
 		event.setDamage((int)damage);
 		
 		// Apply damage to player:
@@ -358,6 +358,17 @@ public class SagaEntityDamageEvent {
 	
 	
 	// Event information:
+	/**
+	 * Calculates damage.
+	 * 
+	 * @return damage
+	 */
+	public double calcDamage() {
+
+		return (event.getDamage() + modifier) * multiplier * penalty;
+		
+	}
+	
 	/**
 	 * Checks if player attacked a player.
 	 * 

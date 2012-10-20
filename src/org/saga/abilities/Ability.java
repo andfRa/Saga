@@ -121,9 +121,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		
 		// Transient:
 		clock = false;
-		if(cooldown > 0 || active > 0){
-			startClock();
-		}
+		updateClock();
 		
 		lastCooldown = -1;
 		
@@ -134,20 +132,41 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	
 	
 	
-	
 	// Clock:
 	/**
-	 * Starts the clock.
+	 * Updates the clock state.
+	 * Use this method with {@link #checkClock()} if you need second ticks.
 	 * 
+	 * @return current clock state.
 	 */
-	private void startClock() {
+	public final boolean updateClock() {
+
+		// Clock running:
+		if(clock){
+			clock = checkClock();
+		}
 		
-		Clock.clock().enableSecondTick(this);
+		// Clock not running:
+		else{
+			clock = checkClock();
+			if(clock) Clock.clock().enableSecondTick(this);
+		}
 		
-		clock = true;
+		return clock;
 		
 	}
-
+	
+	/**
+	 * Checks if the clock should be running.
+	 * 
+	 * @return true if clock should be running
+	 */
+	public boolean checkClock() {
+		
+		return active > 0 || cooldown > 0;
+		
+	}
+	
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -156,7 +175,6 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	@Override
 	public boolean clockSecondTick() {
 		
-		
 		if(cooldown == 1 && sagaLiving instanceof SagaPlayer){
 			((SagaPlayer) sagaLiving).message(AbilityMessages.cooldownEnd(this));
 		}
@@ -164,17 +182,11 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		if(cooldown > 0) cooldown --;
 		if(active > 0) active --;
 		
-		// Stop clock:
-		if(cooldown <= 0 && active <= 0){
-			clock = false;
-			return false;
-		}else{
-			return true;
-		}
+		// Clock state:
+		return updateClock();
 		
 	}
 
-	
 	
 	
 	// Interaction:
@@ -382,8 +394,8 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 
 		this.cooldown = definition.getCooldown(getScore());
 		
-		// Start clock:
-		if(!clock) startClock();
+		// Update clock:
+		updateClock();
 
 	}
 
@@ -452,6 +464,36 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		}
 		
 	}
+
+	/**
+	 * True if attack pre-trigger should be ignored.
+	 * Used when the ability is active and requires access to different triggers.
+	 * 
+	 * @return true if the trigger should be ignored
+	 */
+	public boolean ignoreAttackPreTrigger(){
+		return false;
+	}
+
+	/**
+	 * True if defend pre-trigger should be ignored.
+	 * Used when the ability is active and requires access to different triggers.
+	 * 
+	 * @return true if the trigger should be ignored
+	 */
+	public boolean ignoreDefendPreTrigger(){
+		return false;
+	}
+
+	/**
+	 * True if projectile hit pre-trigger should be ignored.
+	 * Used when the ability is active and requires access to different triggers.
+	 * 
+	 * @return true if the trigger should be ignored
+	 */
+	public boolean ignoreProjectileHitPreTrigger(){
+		return false;
+	}
 	
 	
 	
@@ -475,16 +517,6 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	public boolean triggerAttack(SagaEntityDamageEvent event) {
 		return false;
 	}
-	
-	/**
-	 * Triggers projectile hit.
-	 * 
-	 * @param event event
-	 * @return projectile hit.
-	 */
-	public boolean triggerProjectileHit(ProjectileHitEvent event) {
-		return false;
-	}
 
 	/**
 	 * Triggers the ability.
@@ -495,6 +527,17 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	public boolean triggerDefend(SagaEntityDamageEvent event) {
 		return false;
 	}
+
+	/**
+	 * Triggers projectile hit.
+	 * 
+	 * @param event event
+	 * @return projectile hit.
+	 */
+	public boolean triggerProjectileHit(ProjectileHitEvent event) {
+		return false;
+	}
+
 	
 	
 	// Other:
@@ -512,6 +555,5 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		return false;
 		
 	}
-
 	
 }

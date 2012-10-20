@@ -109,7 +109,7 @@ public class AbilityManager {
 		
 		for (Ability ability : abilities) {
 			
-			if(ability.handlePreTrigger()){
+			if(ability.ignoreAttackPreTrigger() || ability.handlePreTrigger()){
 				
 				if(ability.triggerAttack(event)) ability.handleAfterTrigger();
 				
@@ -130,7 +130,7 @@ public class AbilityManager {
 		
 		for (Ability ability : abilities) {
 			
-			if(ability.handlePreTrigger()){
+			if(ability.ignoreDefendPreTrigger() || ability.handlePreTrigger()){
 				
 				if(ability.triggerDefend(event)) ability.handleAfterTrigger();
 				
@@ -151,7 +151,7 @@ public class AbilityManager {
 		
 		for (Ability ability : abilities) {
 			
-			if(ability.handlePreTrigger()){
+			if(ability.ignoreProjectileHitPreTrigger() || ability.handlePreTrigger()){
 				
 				if(ability.triggerProjectileHit(event)) ability.handleAfterTrigger();
 				
