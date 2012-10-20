@@ -7,6 +7,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.SagaLogger;
 import org.saga.exceptions.InvalidAbilityException;
 import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.messages.effects.StatsEffectHandler;
+import org.saga.player.SagaPlayer;
 
 public class Stoneskin extends Ability{
 
@@ -83,11 +85,14 @@ public class Stoneskin extends Ability{
 		if(this.absorb >= absorb) return false;
 
 		this.absorb = absorb;
+
+		updateClock();
 		
+		// Effect:
 		Location loc = event.getPlayer().getLocation();
 		loc.getWorld().playEffect(loc, Effect.STEP_SOUND, Material.STONE.getId());
 		
-		updateClock();
+		if(getSagaLiving() instanceof SagaPlayer) StatsEffectHandler.playAnimateArm((SagaPlayer) getSagaLiving());
 		
 		return true;
 		

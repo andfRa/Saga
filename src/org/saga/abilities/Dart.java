@@ -1,7 +1,9 @@
 package org.saga.abilities;
 
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.saga.messages.effects.StatsEffectHandler;
 import org.saga.player.SagaLiving;
+import org.saga.player.SagaPlayer;
 
 public class Dart extends Ability{
 
@@ -50,6 +52,8 @@ public class Dart extends Ability{
 		SagaLiving<?> sagaLiving = getSagaLiving();
 		sagaLiving.shootArrow(getDefinition().getFunction(SPEED_KEY).value(getScore()));
 
+		if(getSagaLiving() instanceof SagaPlayer) StatsEffectHandler.playAnimateArm((SagaPlayer) getSagaLiving());
+		
 		return true;
 		
 		

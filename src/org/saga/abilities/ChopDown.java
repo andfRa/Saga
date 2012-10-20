@@ -12,6 +12,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
 import org.saga.messages.PlayerMessages;
+import org.saga.messages.effects.StatsEffectHandler;
+import org.saga.player.SagaPlayer;
 import org.saga.utility.text.TextUtil;
 
 public class ChopDown extends Ability{
@@ -121,7 +123,9 @@ public class ChopDown extends Ability{
 		
 		// Play effect:
 		player.playEffect(clickedBlock.getLocation(), Effect.STEP_SOUND, Material.LOG.getId());
-
+		
+		if(getSagaLiving() instanceof SagaPlayer) StatsEffectHandler.playAnimateArm((SagaPlayer) getSagaLiving());
+		
 		return true;
 
 		

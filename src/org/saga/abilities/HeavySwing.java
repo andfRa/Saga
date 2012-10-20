@@ -14,6 +14,8 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
 import org.saga.messages.AbilityMessages;
+import org.saga.messages.effects.StatsEffectHandler;
+import org.saga.player.SagaPlayer;
 import org.saga.shape.BlockFilter;
 import org.saga.shape.RelativeShape;
 
@@ -145,7 +147,9 @@ public class HeavySwing extends Ability{
 
 		// Effect:
 		getSagaLiving().playGlobalEffect(Effect.STEP_SOUND, Material.STONE.getId());
-
+		
+		if(getSagaLiving() instanceof SagaPlayer) StatsEffectHandler.playAnimateArm((SagaPlayer) getSagaLiving());
+		
 		return true;
 		
 		

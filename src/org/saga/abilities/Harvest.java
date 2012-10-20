@@ -11,6 +11,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
+import org.saga.messages.effects.StatsEffectHandler;
+import org.saga.player.SagaPlayer;
 import org.saga.shape.BlockFilter;
 import org.saga.shape.RelativeShape;
 
@@ -115,6 +117,8 @@ public class Harvest extends Ability{
 		if(wheatTrigger){
 			getSagaLiving().playGlobalEffect(Effect.STEP_SOUND, Material.CROPS.getId());
 		}
+		
+		if(getSagaLiving() instanceof SagaPlayer) StatsEffectHandler.playAnimateArm((SagaPlayer) getSagaLiving());
 		
 		return true;
 		

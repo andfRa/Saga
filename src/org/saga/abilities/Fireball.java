@@ -5,6 +5,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 import org.saga.messages.effects.StatsEffectHandler;
 import org.saga.player.SagaLiving;
+import org.saga.player.SagaPlayer;
 
 public class Fireball extends Ability{
 
@@ -54,6 +55,8 @@ public class Fireball extends Ability{
 
 		// Effect:
 		StatsEffectHandler.playSpellCast(sagaLiving);
+		
+		if(getSagaLiving() instanceof SagaPlayer) StatsEffectHandler.playAnimateArm((SagaPlayer) getSagaLiving());
 		
 		return true;
 		
