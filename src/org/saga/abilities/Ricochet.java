@@ -15,7 +15,6 @@ import org.saga.Saga;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 
 public class Ricochet extends Ability{
-
 	
 	/**
 	 * Disarm chance key.
@@ -90,6 +89,7 @@ public class Ricochet extends Ability{
 	
 	
 	
+	// Initialise:
 	/**
 	 * Initialises using definition.
 	 * 
@@ -101,6 +101,17 @@ public class Ricochet extends Ability{
 	
 	}
 
+	/* 
+	 * Listen to attack trigger.
+	 * 
+	 * @see org.saga.abilities.Ability#ignoreAttackPreTrigger()
+	 */
+	@Override
+	public boolean ignoreAttackPreTrigger() {
+		return true;
+	}
+	
+	
 	
 	// Ability usage:
 	/* 
@@ -220,6 +231,5 @@ public class Ricochet extends Ability{
 		
 		
 	}
-	
 	
 }
