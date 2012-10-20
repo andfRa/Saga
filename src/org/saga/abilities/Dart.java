@@ -10,6 +10,8 @@ public class Dart extends Ability{
 	 */
 	private static String SPEED_KEY = "speed";
 	
+	
+	
 	// Initialisation:
 	/**
 	 * Initialises using definition.
@@ -22,6 +24,17 @@ public class Dart extends Ability{
 	
 	}
 
+	/* 
+	 * Trigger indication.
+	 * 
+	 * @see org.saga.abilities.Ability#hasAttackPreTrigger()
+	 */
+	@Override
+	public boolean hasInteractPreTrigger() {
+		return true;
+	}
+	
+
 	
 	// Usage:
 	/* 
@@ -30,7 +43,7 @@ public class Dart extends Ability{
 	 * @see org.saga.abilities.Ability#trigger()
 	 */
 	@Override
-	public boolean trigger(PlayerInteractEvent event) {
+	public boolean triggerInteract(PlayerInteractEvent event) {
 		
 
 		// Shoot:

@@ -13,8 +13,15 @@ import org.saga.messages.effects.StatsEffectHandler;
 import org.saga.player.SagaPlayer;
 
 public class Counterattack extends Ability{
-
 	
+	/**
+	 * Used to prevent loops of death.
+	 */
+	private Boolean progress = null;
+
+
+
+	// Initialisation:
 	/**
 	 * Initialises using definition.
 	 * 
@@ -26,11 +33,16 @@ public class Counterattack extends Ability{
 	
 	}
 	
-	/**
-	 * Used to prevent loops of death.
+	/* 
+	 * Trigger indication.
+	 * 
+	 * @see org.saga.abilities.Ability#hasAttackPreTrigger()
 	 */
-	private Boolean progress = null;
-
+	@Override
+	public boolean hasDefendPreTrigger() {
+		return true;
+	}
+	
 	
 	
 	// Ability usage:

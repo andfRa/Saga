@@ -17,18 +17,17 @@ import org.saga.shape.RelativeShape;
 
 public class Harvest extends Ability{
 	
-	
 	/**
 	 * Range key.
 	 */
 	private static String RANGE_KEY = "range";
-	
 
 	/**
 	 * Shape for the ability.
 	 */
 	private static RelativeShape SPAHPE = createShape();
 
+	
 	
 	// Initialisation:
 	/**
@@ -42,6 +41,17 @@ public class Harvest extends Ability{
 	
 	}
 
+	/* 
+	 * Trigger indication.
+	 * 
+	 * @see org.saga.abilities.Ability#hasAttackPreTrigger()
+	 */
+	@Override
+	public boolean hasInteractPreTrigger() {
+		return true;
+	}
+	
+	
 	
 	// Ability trigger:
 	/* 
@@ -50,7 +60,7 @@ public class Harvest extends Ability{
 	 * @see org.saga.abilities.Ability#instant(org.bukkit.event.player.PlayerInteractEvent)
 	 */
 	@Override
-	public boolean trigger(PlayerInteractEvent event) {
+	public boolean triggerInteract(PlayerInteractEvent event) {
 
 		
 		ItemStack itemHand = event.getItem();
@@ -480,8 +490,5 @@ public class Harvest extends Ability{
 		
 		
 	}
-
-	
-	
 	
 }

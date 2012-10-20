@@ -6,13 +6,15 @@ import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.player.SagaPlayer;
 
 public class Ignite extends Ability{
-
 	
 	/**
 	 * Duration key.
 	 */
 	private static String DURATION_KEY = "fireticks";
 	
+	
+	
+	// Initialisation:
 	/**
 	 * Initialises using definition.
 	 * 
@@ -24,6 +26,17 @@ public class Ignite extends Ability{
 	
 	}
 
+	/* 
+	 * Trigger indication.
+	 * 
+	 * @see org.saga.abilities.Ability#hasAttackPreTrigger()
+	 */
+	@Override
+	public boolean hasAttackPreTrigger() {
+		return true;
+	}
+	
+	
 	
 	// Ability usage:
 	/* 
@@ -70,6 +83,5 @@ public class Ignite extends Ability{
 		
 		
 	}
-	
 	
 }

@@ -20,7 +20,6 @@ import org.saga.shape.RelativeShape;
 
 public class HeavySwing extends Ability{
 
-
 	/**
 	 * Size key.
 	 */
@@ -38,6 +37,7 @@ public class HeavySwing extends Ability{
 	private static RelativeShape SPAHPE = createShape();
 
 	
+	
 	// Initialisation:
 	/**
 	 * Initialises using definition.
@@ -50,6 +50,17 @@ public class HeavySwing extends Ability{
 	
 	}
 
+	/* 
+	 * Trigger indication.
+	 * 
+	 * @see org.saga.abilities.Ability#hasAttackPreTrigger()
+	 */
+	@Override
+	public boolean hasInteractPreTrigger() {
+		return true;
+	}
+	
+	
 	
 	// Ability usage:
 	/* 
@@ -58,7 +69,7 @@ public class HeavySwing extends Ability{
 	 * @see org.saga.abilities.Ability#instant(org.bukkit.event.player.PlayerInteractEvent)
 	 */
 	@Override
-	public boolean trigger(PlayerInteractEvent event) {
+	public boolean triggerInteract(PlayerInteractEvent event) {
 
 		
 		ItemStack itemHand = event.getItem();
@@ -341,8 +352,5 @@ public class HeavySwing extends Ability{
 		
 		
 	}
-
-	
-	
 	
 }

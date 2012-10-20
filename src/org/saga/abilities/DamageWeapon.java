@@ -26,6 +26,7 @@ public class DamageWeapon extends Ability{
 	
 	}
 
+
 	
 	// Ability usage:
 	/* 

@@ -26,7 +26,8 @@ public class Bash extends Ability{
         super(definition);
 	
 	}
-
+	
+	
 	
 	// Ability usage:
 	/* 

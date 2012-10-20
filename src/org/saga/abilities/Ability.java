@@ -418,6 +418,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 */
 	public boolean handlePreTrigger() {
 		
+		
 		if(!checkActivation()) return false;
 		
 		if(isCooldown()){
@@ -465,36 +466,43 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		
 	}
 
+
 	/**
-	 * True if attack pre-trigger should be ignored.
-	 * Used when the ability is active and requires access to different triggers.
+	 * True if interact pre-trigger should not be ignored.
 	 * 
-	 * @return true if the trigger should be ignored
+	 * @return true if the trigger should not be ignored
 	 */
-	public boolean ignoreAttackPreTrigger(){
+	public boolean hasInteractPreTrigger(){
 		return false;
 	}
 
 	/**
-	 * True if defend pre-trigger should be ignored.
-	 * Used when the ability is active and requires access to different triggers.
+	 * True if attack pre-trigger should not be ignored.
 	 * 
-	 * @return true if the trigger should be ignored
+	 * @return true if the trigger should not be ignored
 	 */
-	public boolean ignoreDefendPreTrigger(){
-		return false;
-	}
-
-	/**
-	 * True if projectile hit pre-trigger should be ignored.
-	 * Used when the ability is active and requires access to different triggers.
-	 * 
-	 * @return true if the trigger should be ignored
-	 */
-	public boolean ignoreProjectileHitPreTrigger(){
+	public boolean hasAttackPreTrigger(){
 		return false;
 	}
 	
+	/**
+	 * True if defend pre-trigger should not be ignored.
+	 * 
+	 * @return true if the trigger should not be ignored
+	 */
+	public boolean hasDefendPreTrigger(){
+		return false;
+	}
+	
+	/**
+	 * True if projectile hit pre-trigger should not be ignored.
+	 * 
+	 * @return true if the trigger should not be ignored
+	 */
+	public boolean hasProjectileHitPreTrigger(){
+		return false;
+	}
+
 	
 	
 	// Triggering:
@@ -504,7 +512,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 * @param event event
 	 * @return true if triggered
 	 */
-	public boolean trigger(PlayerInteractEvent event) {
+	public boolean triggerInteract(PlayerInteractEvent event) {
 		return false;
 	}
 	

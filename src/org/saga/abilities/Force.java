@@ -29,6 +29,7 @@ public class Force extends Ability{
 	private static String POWER_KEY = "power";
 	
 	
+	
 	// Initialisation:
 	/**
 	 * Initialises using definition.
@@ -41,6 +42,17 @@ public class Force extends Ability{
 	
 	}
 
+	/* 
+	 * Trigger indication.
+	 * 
+	 * @see org.saga.abilities.Ability#hasAttackPreTrigger()
+	 */
+	@Override
+	public boolean hasInteractPreTrigger() {
+		return true;
+	}
+	
+
 	
 	// Usage:
 	/* 
@@ -49,7 +61,7 @@ public class Force extends Ability{
 	 * @see org.saga.abilities.Ability#trigger()
 	 */
 	@Override
-	public boolean trigger(PlayerInteractEvent event) {
+	public boolean triggerInteract(PlayerInteractEvent event) {
 		
 
 		SagaLiving<?> sagaLiving = getSagaLiving();
@@ -123,7 +135,5 @@ public class Force extends Ability{
 		
 		
 	}
-	
-	
 	
 }

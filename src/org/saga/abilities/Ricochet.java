@@ -100,16 +100,6 @@ public class Ricochet extends Ability{
         super(definition);
 	
 	}
-
-	/* 
-	 * Listen to attack trigger.
-	 * 
-	 * @see org.saga.abilities.Ability#ignoreAttackPreTrigger()
-	 */
-	@Override
-	public boolean ignoreAttackPreTrigger() {
-		return true;
-	}
 	
 	
 	

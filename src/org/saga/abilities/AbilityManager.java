@@ -88,9 +88,9 @@ public class AbilityManager {
 			
 			if(ability.getDefinition().getActivationAction() != action) continue;
 			
-			if(ability.handlePreTrigger()){
+			if(!ability.hasInteractPreTrigger() || ability.handlePreTrigger()){
 				
-				if(ability.trigger(event)) ability.handleAfterTrigger();
+				if(ability.triggerInteract(event)) ability.handleAfterTrigger();
 				
 			}
 			
@@ -109,7 +109,7 @@ public class AbilityManager {
 		
 		for (Ability ability : abilities) {
 			
-			if(ability.ignoreAttackPreTrigger() || ability.handlePreTrigger()){
+			if(!ability.hasAttackPreTrigger() || ability.handlePreTrigger()){
 				
 				if(ability.triggerAttack(event)) ability.handleAfterTrigger();
 				
@@ -130,7 +130,7 @@ public class AbilityManager {
 		
 		for (Ability ability : abilities) {
 			
-			if(ability.ignoreDefendPreTrigger() || ability.handlePreTrigger()){
+			if(!ability.hasDefendPreTrigger() || ability.handlePreTrigger()){
 				
 				if(ability.triggerDefend(event)) ability.handleAfterTrigger();
 				
@@ -151,7 +151,7 @@ public class AbilityManager {
 		
 		for (Ability ability : abilities) {
 			
-			if(ability.ignoreProjectileHitPreTrigger() || ability.handlePreTrigger()){
+			if(!ability.hasProjectileHitPreTrigger() || ability.handlePreTrigger()){
 				
 				if(ability.triggerProjectileHit(event)) ability.handleAfterTrigger();
 				

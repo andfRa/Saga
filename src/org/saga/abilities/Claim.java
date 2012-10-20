@@ -20,6 +20,17 @@ public class Claim extends Ability{
         super(definition);
 	
 	}
+	
+	/* 
+	 * Trigger indication.
+	 * 
+	 * @see org.saga.abilities.Ability#hasAttackPreTrigger()
+	 */
+	@Override
+	public boolean hasInteractPreTrigger() {
+		return true;
+	}
+
 
 	
 	// Usage:
@@ -29,7 +40,7 @@ public class Claim extends Ability{
 	 * @see org.saga.abilities.Ability#trigger()
 	 */
 	@Override
-	public boolean trigger(PlayerInteractEvent event) {
+	public boolean triggerInteract(PlayerInteractEvent event) {
 		
 		if(!(getSagaLiving() instanceof SagaPlayer)) return false;
 
@@ -40,6 +51,8 @@ public class Claim extends Ability{
 		return true;
 		
 	}
+	
+	
 	
 	
 }

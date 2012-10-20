@@ -14,6 +14,7 @@ public class Fireball extends Ability{
 	private static String SPEED_KEY = "speed";
 	
 	
+	
 	// Initialisation:
 	/**
 	 * Initialises using definition.
@@ -26,10 +27,21 @@ public class Fireball extends Ability{
 	
 	}
 
+	/* 
+	 * Trigger indication.
+	 * 
+	 * @see org.saga.abilities.Ability#hasAttackPreTrigger()
+	 */
+	@Override
+	public boolean hasInteractPreTrigger() {
+		return true;
+	}
+	
+	
 	
 	// Usage:
 	@Override
-	public boolean trigger(PlayerInteractEvent event) {
+	public boolean triggerInteract(PlayerInteractEvent event) {
 		
 		
 		SagaLiving<?> sagaLiving = getSagaLiving();
@@ -47,6 +59,5 @@ public class Fireball extends Ability{
 		
 		
 	}
-	
 	
 }

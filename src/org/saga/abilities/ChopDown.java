@@ -44,6 +44,17 @@ public class ChopDown extends Ability{
 	
 	}
 
+	/* 
+	 * Trigger indication.
+	 * 
+	 * @see org.saga.abilities.Ability#hasAttackPreTrigger()
+	 */
+	@Override
+	public boolean hasInteractPreTrigger() {
+		return true;
+	}
+	
+
 	
 	// Usage:
 	/* 
@@ -52,7 +63,7 @@ public class ChopDown extends Ability{
 	 * @see org.saga.abilities.Ability#trigger(org.bukkit.event.player.PlayerInteractEvent)
 	 */
 	@Override
-	public boolean trigger(PlayerInteractEvent event) {
+	public boolean triggerInteract(PlayerInteractEvent event) {
 
 		
 		ItemStack itemHand = event.getItem();

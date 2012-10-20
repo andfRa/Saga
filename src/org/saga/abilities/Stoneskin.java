@@ -63,19 +63,20 @@ public class Stoneskin extends Ability{
 	}
 	
 	/* 
-	 * Listening to getting hit.
+	 * Trigger indication.
 	 * 
-	 * @see org.saga.abilities.Ability#ignoreDefendPreTrigger()
+	 * @see org.saga.abilities.Ability#hasAttackPreTrigger()
 	 */
 	@Override
-	public boolean ignoreDefendPreTrigger() {
+	public boolean hasInteractPreTrigger() {
 		return true;
 	}
 	
 	
+	
 	// Ability usage:
 	@Override
-	public boolean trigger(PlayerInteractEvent event) {
+	public boolean triggerInteract(PlayerInteractEvent event) {
 		
 		double absorb = getDefinition().getFunction(ABSORB_TOTAL_KEY).value(getScore());
 

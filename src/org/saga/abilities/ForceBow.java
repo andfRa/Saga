@@ -6,12 +6,14 @@ import org.saga.player.SagaPlayer;
 
 public class ForceBow extends Ability{
 
-	
 	/**
 	 * Speed key.
 	 */
 	private static String SPEED_KEY = "speed";
 	
+	
+	
+	// Initialisation:
 	/**
 	 * Initialises using definition.
 	 * 
@@ -22,6 +24,17 @@ public class ForceBow extends Ability{
         super(definition);
 	
 	}
+	
+	/* 
+	 * Trigger indication.
+	 * 
+	 * @see org.saga.abilities.Ability#hasAttackPreTrigger()
+	 */
+	@Override
+	public boolean hasAttackPreTrigger() {
+		return true;
+	}
+	
 
 	
 	// Ability usage:
@@ -68,6 +81,5 @@ public class ForceBow extends Ability{
 		
 		
 	}
-	
 	
 }

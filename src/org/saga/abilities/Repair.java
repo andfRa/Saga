@@ -14,7 +14,6 @@ import org.saga.player.SagaLiving;
 
 public class Repair extends Ability{
 
-
 	/**
 	 * Consume chance key.
 	 */
@@ -31,6 +30,7 @@ public class Repair extends Ability{
 	private static String ENCHANTMENT_REPAIR_KEY = "ench multiplier";
 	
 	
+	
 	// Initialisation:
 	/**
 	 * Initialises using definition.
@@ -43,6 +43,17 @@ public class Repair extends Ability{
 	
 	}
 
+	/* 
+	 * Trigger indication.
+	 * 
+	 * @see org.saga.abilities.Ability#hasAttackPreTrigger()
+	 */
+	@Override
+	public boolean hasInteractPreTrigger() {
+		return true;
+	}
+	
+	
 	
 	// Usage:
 	/* 
@@ -51,7 +62,7 @@ public class Repair extends Ability{
 	 * @see org.saga.abilities.Ability#trigger()
 	 */
 	@Override
-	public boolean trigger(PlayerInteractEvent event) {
+	public boolean triggerInteract(PlayerInteractEvent event) {
 		
 		
 		Player player = event.getPlayer();
@@ -291,6 +302,5 @@ public class Repair extends Ability{
 		return itemEnch;
 
 	}
-	
 	
 }
