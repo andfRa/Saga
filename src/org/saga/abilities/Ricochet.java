@@ -204,16 +204,16 @@ public class Ricochet extends Ability{
 	private void handleRicochet() {
 
 		
-		if(target == null || arrow == null){
-			return;
-		}
+		if(target == null || arrow == null) return;
 	
+		LivingEntity shooter = getSagaLiving().getLivingEntity();
+		
 		Location origLoc = arrow.getLocation();
 		origLoc.add(0, 0.5, 0);
 		Float speed = (float)arrow.getVelocity().length();
 		
-		LivingEntity shooter = getSagaLiving().getLivingEntity();
-		Vector velocity = target.getLocation().subtract(origLoc).toVector().normalize();
+		Location targetLoc = target.getEyeLocation();
+		Vector velocity = targetLoc.subtract(origLoc).toVector().normalize();
 		
 		Arrow newArrow = origLoc.getWorld().spawnArrow(origLoc, velocity, speed, 0);
     	newArrow.setShooter(shooter);
