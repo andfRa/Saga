@@ -177,7 +177,6 @@ public class Ricochet extends Ability{
 		
 		// Successful hit doesn't need ricochet:
 		if(event.getProjectile() == arrow){
-			System.out.println("hit success");
 			target = null;
 			arrow = null;
 		}
@@ -195,7 +194,6 @@ public class Ricochet extends Ability{
 
 		
 		if(target == null || arrow == null){
-			System.out.println("no ricochet");
 			return;
 		}
 	
