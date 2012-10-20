@@ -2,7 +2,6 @@ package org.saga.listeners;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
-import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.LivingEntity;
@@ -14,7 +13,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -37,17 +35,9 @@ import org.saga.player.SagaPlayer;
 public class EntityListener implements Listener{
 
 	
-	int maxticks = 0;
-	int prevhp = 0;
-	
-	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamage(EntityDamageEvent event) {
 
-		
-		if(event instanceof EntityDamageByEntityEvent && ((EntityDamageByEntityEvent) event).getDamager() instanceof Arrow){
-			System.out.println("damaged:" + event.getDamage());
-		}
 		
 		// Not a living:
 		if(!(event.getEntity() instanceof LivingEntity)) return;
