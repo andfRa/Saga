@@ -2,6 +2,7 @@ package org.saga.listeners;
 
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Creeper;
 import org.bukkit.entity.LivingEntity;
@@ -13,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
@@ -43,6 +45,9 @@ public class EntityListener implements Listener{
 	public void onEntityDamage(EntityDamageEvent event) {
 
 		
+		if(event instanceof EntityDamageByEntityEvent && ((EntityDamageByEntityEvent) event).getDamager() instanceof Arrow){
+			System.out.println("damaged:" + event.getDamage());
+		}
 		
 		// Not a living:
 		if(!(event.getEntity() instanceof LivingEntity)) return;
@@ -91,17 +96,23 @@ public class EntityListener implements Listener{
 		
 		if(!(event.getEntity() instanceof Projectile)) return;
 		Projectile projectile = (Projectile) event.getEntity();
+	
+		// Shot by player:
+		if((projectile.getShooter() instanceof Player)){
+			
+			Player player = (Player) projectile.getShooter();
+			
+			// Get player:
+	    	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(player.getName());
+	    	if(sagaPlayer == null){
+	    		SagaLogger.severe(BlockListener.class, "can't continue with onProjectileHit, because the saga player for "+ player.getName() + " isn't loaded.");
+	    		return;
+	    	}
+	    	
+	    	sagaPlayer.getAbilityManager().onProjectileHit(event);
+			
+		}
 		
-		if(!(projectile.getShooter() instanceof Player)) return;
-		Player player = (Player) projectile.getShooter();
-		
-		// Get player:
-    	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(player.getName());
-    	if(sagaPlayer == null){
-    		SagaLogger.severe(BlockListener.class, "can't continue with onProjectileHit, because the saga player for "+ player.getName() + " isn't loaded.");
-    		return;
-    	}
-
 		
 	}
 

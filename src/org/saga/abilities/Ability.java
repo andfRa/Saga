@@ -1,6 +1,7 @@
 package org.saga.abilities;
 
 import org.bukkit.Material;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
@@ -474,6 +475,16 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	public boolean triggerAttack(SagaEntityDamageEvent event) {
 		return false;
 	}
+	
+	/**
+	 * Triggers projectile hit.
+	 * 
+	 * @param event event
+	 * @return projectile hit.
+	 */
+	public boolean triggerProjectileHit(ProjectileHitEvent event) {
+		return false;
+	}
 
 	/**
 	 * Triggers the ability.
@@ -501,6 +512,6 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		return false;
 		
 	}
-	
+
 	
 }

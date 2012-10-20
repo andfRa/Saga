@@ -3,6 +3,7 @@ package org.saga.abilities;
 import java.util.HashSet;
 
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.abilities.AbilityDefinition.ActivationAction;
 import org.saga.listeners.events.SagaEntityDamageEvent;
@@ -139,6 +140,28 @@ public class AbilityManager {
 		
 
 	}
+	
+	/**
+	 * Called when the entity attacks.
+	 * 
+	 * @param event event
+	 */
+	public void onProjectileHit(ProjectileHitEvent event) {
+
+		
+		for (Ability ability : abilities) {
+			
+			if(ability.handlePreTrigger()){
+				
+				if(ability.triggerProjectileHit(event)) ability.handleAfterTrigger();
+				
+			}
+			
+		}
+		
+
+	}
+	
 	
 	
 	// Getters:
