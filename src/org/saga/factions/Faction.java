@@ -57,7 +57,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	/**
 	 * Faction members.
 	 */
-	private ArrayList<String> members;
+	private HashSet<String> members;
 
 	
 	/**
@@ -154,7 +154,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		
 		this.id = factionId;
 		this.name = factionName;
-		members = new ArrayList<String>();
+		members = new HashSet<String>();
 		level = 0;
 		exp = 0.0;
 		colour1 = ChatColor.WHITE;
@@ -193,7 +193,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		
 		if(members == null){
 			SagaLogger.nullField(this, "memberNames");
-			members = new ArrayList<String>();
+			members = new HashSet<String>();
 			integrity = false;
 		}
 
@@ -416,10 +416,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		
 		
 		// Check if already in this faction:
-		if(members.contains(sagaPlayer.getName())){
-			SagaLogger.severe(this, "tried to add an already existing member " + sagaPlayer.getName());
-			return;
-		}
+		if(members.contains(sagaPlayer.getName())) SagaLogger.severe(this, "tried to add an already existing member " + sagaPlayer.getName());
 		
 		// Add member:
 		members.add(sagaPlayer.getName());
