@@ -18,7 +18,7 @@ import org.saga.chunks.BundleManager;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
-import org.saga.dependencies.PermissionsManager;
+import org.saga.dependencies.PermissionsDependency;
 import org.saga.dependencies.Trader;
 import org.saga.factions.Faction;
 import org.saga.factions.FactionManager;
@@ -319,7 +319,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		super.setLivingEntity(player);
 		
 		// Admin mode:
-		if(isAdminMode() && !PermissionsManager.hasPermission(player, PermissionsManager.ADMIN_MODE_PERMISSION)){
+		if(isAdminMode() && !PermissionsDependency.hasPermission(player, PermissionsDependency.ADMIN_MODE_PERMISSION)){
 			disableAdminMode();
 			SagaLogger.info(this, "no permission for admin mode");
 		}
@@ -339,7 +339,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	public void removePlayer() {
 
 		// Admin mode:
-		if(isAdminMode() && !PermissionsManager.hasPermission(livingEntity, PermissionsManager.ADMIN_MODE_PERMISSION)){
+		if(isAdminMode() && !PermissionsDependency.hasPermission(livingEntity, PermissionsDependency.ADMIN_MODE_PERMISSION)){
 			disableAdminMode();
 			SagaLogger.info(this, "no permission for admin mode");
 		}
@@ -591,12 +591,12 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 
 
 		// Triple exp:
-		if(PermissionsManager.hasPermission(this, PermissionsManager.SPECIAL_TRIPLE_EXP_BONUS)){
+		if(PermissionsDependency.hasPermission(this, PermissionsDependency.SPECIAL_TRIPLE_EXP_BONUS)){
 			return 3.0;
 		}
 
 		// Double exp:
-		if(PermissionsManager.hasPermission(this, PermissionsManager.SPECIAL_DOUBLE_EXP_BONUS)){
+		if(PermissionsDependency.hasPermission(this, PermissionsDependency.SPECIAL_DOUBLE_EXP_BONUS)){
 			return 2.0;
 		}
 		

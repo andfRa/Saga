@@ -16,7 +16,7 @@ import org.saga.config.ExperienceConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.SettlementConfiguration;
-import org.saga.dependencies.PermissionsManager;
+import org.saga.dependencies.PermissionsDependency;
 import org.saga.factions.Faction;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
@@ -400,7 +400,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 		result.append("\n");
 		result.append("!Effect");		
 		
-		ArrayList<Entry<String, String>> descriptions = new ArrayList<Entry<String,String>>(PermissionsManager.PERMISSION_DESCRIPTIONS.entrySet());
+		ArrayList<Entry<String, String>> descriptions = new ArrayList<Entry<String,String>>(PermissionsDependency.PERMISSION_DESCRIPTIONS.entrySet());
 		
 		// Sort:
 		Comparator<Entry<String, String>> descComparator = new Comparator<Entry<String, String>>() {
@@ -797,7 +797,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 		result.append("==" + "Other permissions" + "" + "\n");
 		result.append("|=Permission|=Effect|");		
 		
-		ArrayList<Entry<String, String>> descriptions = new ArrayList<Entry<String,String>>(PermissionsManager.PERMISSION_DESCRIPTIONS.entrySet());
+		ArrayList<Entry<String, String>> descriptions = new ArrayList<Entry<String,String>>(PermissionsDependency.PERMISSION_DESCRIPTIONS.entrySet());
 		
 		// Sort:
 		Comparator<Entry<String, String>> descComparator = new Comparator<Entry<String, String>>() {

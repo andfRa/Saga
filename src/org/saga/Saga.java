@@ -29,7 +29,7 @@ import org.saga.config.GeneralConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.dependencies.EconomyDependency;
-import org.saga.dependencies.PermissionsManager;
+import org.saga.dependencies.PermissionsDependency;
 import org.saga.dependencies.spout.ClientManager;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;
@@ -119,7 +119,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		Clock.unload(); // Needs access to Saga.pluging().
 
 		// Dependencies:
-		PermissionsManager.disable();
+		PermissionsDependency.disable();
 		EconomyDependency.disable();
 
 		// Disable client manager:
@@ -160,7 +160,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		loadedPlayers = new Hashtable<String, SagaPlayer>();
 
 		// Dependencies:
-		PermissionsManager.enable();
+		PermissionsDependency.enable();
 		EconomyDependency.enable();
 
 		// Enable client manager:
@@ -191,7 +191,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		pluginManager.registerEvents(new WorldListener(), this);
 
 		// Commands map:
-		CommandsManager<Player> commandMap = PermissionsManager.getCommandMap();
+		CommandsManager<Player> commandMap = PermissionsDependency.getCommandMap();
 
 		// Register Command Classes to the command map
 		commandMap.register(AdminCommands.class);
@@ -513,7 +513,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 	public boolean handleCommand(Player player, String[] split, String command) {
 
 		
-		CommandsManager<Player> commandMap = PermissionsManager.getCommandMap();
+		CommandsManager<Player> commandMap = PermissionsDependency.getCommandMap();
 
 		try {
 

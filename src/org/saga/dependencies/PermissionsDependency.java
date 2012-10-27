@@ -20,13 +20,13 @@ import ru.tehkode.permissions.bukkit.PermissionsEx;
  * @author andf
  *
  */
-public class PermissionsManager {
+public class PermissionsDependency {
 
 	
 	/**
 	 * Manager instance.
 	 */
-	private static PermissionsManager manager;
+	private static PermissionsDependency manager;
 
 	
 	
@@ -103,7 +103,7 @@ public class PermissionsManager {
 	public static void enable() {
 
 		
-		manager = new PermissionsManager();
+		manager = new PermissionsDependency();
 		
 		final PluginManager pluginManager = Saga.plugin().getServer().getPluginManager();
 		Plugin plugin = null;
@@ -113,7 +113,7 @@ public class PermissionsManager {
 
 			@Override
 			public boolean hasPermission(Player player, String perm) {
-				return PermissionsManager.hasPermission(player, perm);
+				return PermissionsDependency.hasPermission(player, perm);
 			}
 			
 		};

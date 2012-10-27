@@ -4,7 +4,7 @@ import java.util.Collection;
 
 import org.saga.Saga;
 import org.saga.SagaLogger;
-import org.saga.dependencies.PermissionsManager;
+import org.saga.dependencies.PermissionsDependency;
 import org.saga.messages.GeneralMessages;
 import org.saga.messages.HelpMessages;
 import org.saga.messages.PlayerMessages;
@@ -145,7 +145,7 @@ public class PlayerCommands {
 		
 		for (SagaPlayer loadedPlayer : allPlayers) {
 			
-			if(PermissionsManager.hasPermission(loadedPlayer, PermissionsManager.SPECIAL_CHAT_PERMISSION)){
+			if(PermissionsDependency.hasPermission(loadedPlayer, PermissionsDependency.SPECIAL_CHAT_PERMISSION)){
 				loadedPlayer.message(message);
 			}
 			

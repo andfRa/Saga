@@ -2,7 +2,7 @@ package org.saga.listeners.events;
 
 import org.saga.chunks.SagaChunk;
 import org.saga.config.FactionConfiguration;
-import org.saga.dependencies.PermissionsManager;
+import org.saga.dependencies.PermissionsDependency;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.messages.PlayerMessages;
@@ -26,7 +26,7 @@ public class SagaEventHandler {
 		}
     	
     	// Wilderness:
-    	else if(!PermissionsManager.hasPermission(sagaPlayer, PermissionsManager.WILDERNESS_BUILD_PERMISSION)){
+    	else if(!PermissionsDependency.hasPermission(sagaPlayer, PermissionsDependency.WILDERNESS_BUILD_PERMISSION)){
     		
     		event.addBuildOverride(BuildOverride.WILDERNESS_DENY);
     		

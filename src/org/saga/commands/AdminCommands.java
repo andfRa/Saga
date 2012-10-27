@@ -26,7 +26,7 @@ import org.saga.config.ExperienceConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.dependencies.EconomyDependency;
-import org.saga.dependencies.PermissionsManager;
+import org.saga.dependencies.PermissionsDependency;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;
 import org.saga.factions.Faction;
@@ -874,7 +874,7 @@ public class AdminCommands {
 		
 		for (SagaPlayer loadedPlayer : allPlayers) {
 			
-			if(PermissionsManager.hasPermission(loadedPlayer, PermissionsManager.ADMIN_CHAT_PERMISSION)){
+			if(PermissionsDependency.hasPermission(loadedPlayer, PermissionsDependency.ADMIN_CHAT_PERMISSION)){
 				loadedPlayer.message(message);
 			}
 			
@@ -1072,7 +1072,7 @@ public class AdminCommands {
 	public static void writeCommands(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-		ArrayList<Method> commandMethods = new ArrayList<Method>(PermissionsManager.getCommandMap().getCommandMethods());
+		ArrayList<Method> commandMethods = new ArrayList<Method>(PermissionsDependency.getCommandMap().getCommandMethods());
 		
 		String wikiText = "";
 		
@@ -1115,7 +1115,7 @@ public class AdminCommands {
 	public static void writePermissions(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-		ArrayList<Method> commandMethods = new ArrayList<Method>(PermissionsManager.getCommandMap().getCommandMethods());
+		ArrayList<Method> commandMethods = new ArrayList<Method>(PermissionsDependency.getCommandMap().getCommandMethods());
 			
 		String wikiText = "";
 		
@@ -1158,7 +1158,7 @@ public class AdminCommands {
 	public static void writeAttributes(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-		ArrayList<Method> commandMethods = new ArrayList<Method>(PermissionsManager.getCommandMap().getCommandMethods());
+		ArrayList<Method> commandMethods = new ArrayList<Method>(PermissionsDependency.getCommandMap().getCommandMethods());
 			
 		String wikiText = AdminMessages.wikiAttributes(commandMethods);
 			
