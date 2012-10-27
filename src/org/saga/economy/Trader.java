@@ -1,29 +1,17 @@
 package org.saga.economy;
 
-import java.util.ArrayList;
-
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
-import org.saga.economy.EconomyManager.TransactionType;
-
-
 
 public interface Trader{
-	
 	
 	/**
 	 * Gets the trading name.
 	 * 
 	 * @return trading name
 	 */
-	public String getTradingName();
+	public String getName();
 
-	/**
-	 * Checks if the transaction is active.
-	 * 
-	 * @return true if active
-	 */
-	public boolean isActive(TransactionType type, Material material);
 	
 	/**
 	 * Adds coins
@@ -69,6 +57,7 @@ public interface Trader{
 	 */
 	public Integer getAmount(Material material);
 	
+	
 	/**
 	 * Gets item price.
 	 * 
@@ -82,20 +71,5 @@ public interface Trader{
 	 * @return item price, null if none
 	 */
 	public Double getBuyPrice(Material material);
-	
-	/**
-	 * Gets all trade deals.
-	 * 
-	 * @return trade deals, empty if none
-	 */
-	public ArrayList<TradeDeal> getDeals();
-
-	
-	/**
-	 * Notifies that a transaction has occurred.
-	 * 
-	 */
-	public void notifyTransaction();
-	
 	
 }

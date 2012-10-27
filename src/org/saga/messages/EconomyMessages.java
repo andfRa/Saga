@@ -242,7 +242,7 @@ public class EconomyMessages {
 	
 	public static String insufItems(Trader trader, Material items) {
 		
-		return negative + TextUtil.capitalize(trader.getTradingName()) + " doesn't have enough " + GeneralMessages.material(items) + ".";
+		return negative + TextUtil.capitalize(trader.getName()) + " doesn't have enough " + GeneralMessages.material(items) + ".";
 		
 	}
 	
@@ -254,7 +254,7 @@ public class EconomyMessages {
 	
 	public static String insufCoins(Trader trader) {
 		
-		return negative + TextUtil.capitalize(trader.getTradingName()) + " doesn't have enough " + coins() + ".";
+		return negative + TextUtil.capitalize(trader.getName()) + " doesn't have enough " + coins() + ".";
 		
 	}
 	

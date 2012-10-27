@@ -19,9 +19,7 @@ import org.saga.config.AttributeConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.dependencies.PermissionsManager;
-import org.saga.economy.EconomyManager.TransactionType;
 import org.saga.economy.InventoryUtil;
-import org.saga.economy.TradeDeal;
 import org.saga.economy.Trader;
 import org.saga.factions.Faction;
 import org.saga.factions.FactionManager;
@@ -980,26 +978,6 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	/* 
 	 * (non-Javadoc)
 	 * 
-	 * @see saga.economy.Trader#getTradingName()
-	 */
-	@Override
-	public String getTradingName() {
-		return getName();
-	}
-
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see saga.economy.Trader#isActive(saga.economy.EconomyManager.TransactionType, org.bukkit.Material)
-	 */
-	@Override
-	public boolean isActive(TransactionType type, Material material) {
-		return livingEntity != null;
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
 	 * @see saga.economy.Transaction.Trader#addCurrency(java.lang.Double)
 	 */
 	@Override
@@ -1132,29 +1110,6 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	@Override
 	public Double getBuyPrice(Material material) {
 		return 100000.0;
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see saga.economy.Trader#getTradeDeals()
-	 */
-	@Override
-	public ArrayList<TradeDeal> getDeals() {
-		return new ArrayList<TradeDeal>();
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.economy.Trader#notifyTransaction()
-	 */
-	@Override
-	public void notifyTransaction() {
-	
-	
-		// TODO Auto-generated method stub
-		
 	}
 	
 	

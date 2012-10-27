@@ -273,9 +273,6 @@ public class SellSign extends BuildingSign {
 		// Inform:
 		sagaPlayer.message(EconomyMessages.sold(material, usedAmount, price));
 		
-		// Notify transaction:
-		trader.notifyTransaction();
-
 		// Statistics:
 		StatisticsManager.manager().onPlayerSell(sagaPlayer, material, usedAmount, price * usedAmount);
 		
