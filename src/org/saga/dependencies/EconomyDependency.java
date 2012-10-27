@@ -9,6 +9,7 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.saga.Saga;
 import org.saga.SagaLogger;
+import org.saga.config.EconomyConfiguration;
 import org.saga.player.SagaPlayer;
 
 public class EconomyDependency {
@@ -36,7 +37,10 @@ public class EconomyDependency {
 
 		final PluginManager pluginManager = Saga.plugin().getServer().getPluginManager();
 		Plugin plugin = null;
-		 
+		
+		// No hooking:
+		if(!EconomyConfiguration.config().canHook()) return;
+		
 		// Vault:
 		plugin = pluginManager.getPlugin("Vault");
 		if (plugin != null && plugin.isEnabled()) {

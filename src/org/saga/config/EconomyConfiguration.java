@@ -46,28 +46,24 @@ public class EconomyConfiguration {
 	public String coinName;
 
 	
-	// Player:
 	/**
 	 * Exchange distance.
 	 */
 	public Double exchangeDistance;
 
 	
-	// Other prices:
 	/**
 	 * Guardian stone price.
 	 */
 	public Double guardianRuneRechargeCost;
 
 	
-	// Attributes:
 	/**
 	 * Reset cost.
 	 */
 	private Double attributeResetCost;
 
 	
-	// Rename:
 	/**
 	 * Faction rename cost.
 	 */
@@ -79,7 +75,6 @@ public class EconomyConfiguration {
 	public Double chunkGroupRenameCost;
 
 	
-	// Prices:
 	/**
 	 * Material prices.
 	 */
@@ -96,7 +91,6 @@ public class EconomyConfiguration {
 	public Double buyMult;
 	
 	
-	// Wages:
 	/**
 	 * The amount of wage for claim points.
 	 */
@@ -111,6 +105,12 @@ public class EconomyConfiguration {
 	 * Time when wages are payed.
 	 */
 	private Daytime factionWagesTime;
+	
+	
+	/**
+	 * True to enable hooking with other economy plugins.
+	 */
+	private Boolean enableHooking; 
 	
 	
 	
@@ -194,10 +194,15 @@ public class EconomyConfiguration {
 			factionWageHierarchyMultiplier= new TwoPointFunction(0.0);
 		}
 		factionWageHierarchyMultiplier.complete();
-		
+
 		if(factionWagesTime == null){
 			SagaLogger.nullField(getClass(), "factionWagesTime");
 			factionWagesTime= Daytime.NONE;
+		}
+
+		if(enableHooking == null){
+			SagaLogger.nullField(getClass(), "enableHooking");
+			enableHooking= true;
 		}
 		
 		
@@ -334,6 +339,18 @@ public class EconomyConfiguration {
 	 */
 	public Daytime getFactionWagesTime() {
 		return factionWagesTime;
+	}
+	
+	
+	
+	// Hooking:
+	/**
+	 * Checks if Saga can hook into other economy managers.
+	 * 
+	 * @return true if Saga can hook
+	 */
+	public boolean canHook() {
+		return enableHooking;
 	}
 	
 	
