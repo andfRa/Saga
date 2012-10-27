@@ -22,6 +22,7 @@ import org.saga.chunks.Bundle;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.SettlementConfiguration;
+import org.saga.dependencies.EconomyDependency;
 import org.saga.factions.Faction;
 import org.saga.factions.FactionClaimManager;
 import org.saga.messages.GeneralMessages;
@@ -976,7 +977,7 @@ public class StatisticsManager implements HourTicker{
 
 	public void setWallet(SagaPlayer sagaPlayer) {
 
-		setValue("wallet" + "." + sagaPlayer.getName(), sagaPlayer.getCoins());
+		setValue("wallet" + "." + sagaPlayer.getName(), EconomyDependency.getCoins(sagaPlayer));
 		
 	}
 	

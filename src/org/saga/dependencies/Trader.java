@@ -1,4 +1,4 @@
-package org.saga.economy;
+package org.saga.dependencies;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -14,18 +14,20 @@ public interface Trader{
 
 	
 	/**
-	 * Adds coins
+	 * Adds coins.
 	 * 
 	 * @param amount amount
+	 * @return true if coins were added
 	 */
-	public void addCoins(Double amount);
+	public boolean addCoins(Double amount);
 	
 	/**
 	 * Removes coins.
 	 * 
 	 * @param amount amount
+	 * @return true if coins were removed
 	 */
-	public void removeCoins(Double amount);
+	public boolean removeCoins(Double amount);
 
 	/**
 	 * Gets traders currency.

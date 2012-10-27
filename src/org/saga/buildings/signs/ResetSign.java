@@ -5,6 +5,7 @@ import org.saga.buildings.Building;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.SettlementConfiguration;
+import org.saga.dependencies.EconomyDependency;
 import org.saga.messages.BuildingMessages;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.effects.StatsEffectHandler;
@@ -224,13 +225,13 @@ public class ResetSign extends BuildingSign{
 		
 		// Enough coins:
 		Double cost = getResetCost(amount);
-		if(sagaPlayer.getCoins() < cost){
+		if(EconomyDependency.getCoins(sagaPlayer) < cost){
 			sagaPlayer.message(EconomyMessages.notEnoughCoins());
 			return;
 		}
 
 		// Take coins:
-		sagaPlayer.removeCoins(cost);
+		EconomyDependency.removeCoins(sagaPlayer, cost);
 		sagaPlayer.message(EconomyMessages.coinsSpent(cost));
 		
 		// Reset:

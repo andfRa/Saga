@@ -3,6 +3,7 @@ package org.saga.buildings.signs;
 import org.bukkit.block.Sign;
 import org.saga.buildings.Building;
 import org.saga.config.EconomyConfiguration;
+import org.saga.dependencies.EconomyDependency;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.effects.StatsEffectHandler;
@@ -159,14 +160,14 @@ public class GuardianRuneSign extends BuildingSign{
 
 		// Enough coins:
 		Double price = EconomyConfiguration.config().guardianRuneRechargeCost;
-		if(sagaPlayer.getCoins() < price){
+		if(EconomyDependency.getCoins(sagaPlayer) < price){
 			sagaPlayer.message(EconomyMessages.notEnoughCoins());
 			return;
 		}
 
 		// Take coins:
 		if(price > 0){
-			sagaPlayer.removeCoins(price);
+			EconomyDependency.removeCoins(sagaPlayer, price);
 		}
 		
 		// Recharges rune:

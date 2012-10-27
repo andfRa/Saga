@@ -1,4 +1,4 @@
-package org.saga.economy;
+package org.saga.utility;
 
 import java.util.HashMap;
 import java.util.Set;

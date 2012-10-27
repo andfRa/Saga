@@ -22,6 +22,7 @@ import org.saga.config.FactionConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
+import org.saga.dependencies.EconomyDependency;
 import org.saga.exceptions.InvalidLocationException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.listeners.events.SagaEntityDamageEvent;
@@ -1577,7 +1578,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 			Double wage = wages.get(rank.getHierarchy());
 			if(wage == null || wage == 0) continue;
 			
-			sagaPlayer.addCoins(wage);
+			EconomyDependency.addCoins(sagaPlayer, wage);
 			
 			information(EconomyMessages.gotPaid(this, wage), sagaPlayer);
 			

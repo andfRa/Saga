@@ -28,9 +28,9 @@ import org.saga.config.FactionConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
+import org.saga.dependencies.EconomyDependency;
 import org.saga.dependencies.PermissionsManager;
 import org.saga.dependencies.spout.ClientManager;
-import org.saga.economy.EconomyManager;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;
 import org.saga.factions.FactionClaimManager;
@@ -105,7 +105,6 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		FactionClaimManager.unload(); // Needs access to factions and bundles.
 		BundleManager.unload(); // Needs building manager.
 		FactionManager.unload(); // Needs access to chunk group manager.
-		EconomyManager.unload();
 		StatisticsManager.unload(); // Needs access to clock.
 
 		// Configuration:
@@ -119,8 +118,9 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		FactionConfiguration.unload();
 		Clock.unload(); // Needs access to Saga.pluging().
 
-		// Disable permissions:
+		// Dependencies:
 		PermissionsManager.disable();
+		EconomyDependency.disable();
 
 		// Disable client manager:
 		ClientManager.disable();
@@ -159,8 +159,9 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		// Players:
 		loadedPlayers = new Hashtable<String, SagaPlayer>();
 
-		// Enable permissions:
+		// Dependencies:
 		PermissionsManager.enable();
+		EconomyDependency.enable();
 
 		// Enable client manager:
 		ClientManager.enable();
@@ -180,7 +181,6 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		StatisticsManager.load(); // Needs access to clock.
 		BundleManager.load();
 		FactionManager.load(); // Needs access to chunk group manager.
-		EconomyManager.load(); // Needs access to clock.
 		FactionClaimManager.load(); // Needs access to factions and bundles.
 
 		// Register events:
@@ -439,7 +439,6 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 
 		BundleManager.save();
 		FactionManager.save();
-		EconomyManager.save();
 		FactionClaimManager.save();
 		StatisticsManager.save();
 

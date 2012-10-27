@@ -13,6 +13,7 @@ import org.saga.chunks.BundleManager;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.SettlementConfiguration;
+import org.saga.dependencies.EconomyDependency;
 import org.saga.factions.Faction;
 import org.saga.factions.FactionManager;
 import org.saga.messages.PlayerMessages.ColourLoop;
@@ -186,7 +187,7 @@ public class StatsMessages {
 		StringTable table = new StringTable(new ColourLoop().addColor(normal1).addColor(normal2));
 
 		// Wallet:
-		table.addLine("Wallet", EconomyMessages.coins(sagaPlayer.getCoins()), 0);
+		table.addLine("Wallet", EconomyMessages.coins(EconomyDependency.getCoins(sagaPlayer)), 0);
 		
 		// Guard rune:
 		GuardianRune guardRune = sagaPlayer.getGuardRune();

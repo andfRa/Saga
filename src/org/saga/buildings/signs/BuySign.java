@@ -7,6 +7,7 @@ import org.saga.buildings.Building;
 import org.saga.buildings.TradingPost;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.SettlementConfiguration;
+import org.saga.dependencies.EconomyDependency;
 import org.saga.messages.EconomyMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
@@ -261,7 +262,7 @@ public class BuySign extends BuildingSign {
 		if(price == null) return;
 		price*= EconomyConfiguration.config().getBuyMult();
 		
-		while(sagaPlayer.getCoins() < price * usedAmount && usedAmount > 0){
+		while(EconomyDependency.getCoins(sagaPlayer) < price * usedAmount && usedAmount > 0){
 			usedAmount--; 
 		}
 		
@@ -273,7 +274,7 @@ public class BuySign extends BuildingSign {
 		ItemStack item = new ItemStack(material, usedAmount);
 		
 		// Transaction:
-		sagaPlayer.removeCoins(price * usedAmount);
+		EconomyDependency.removeCoins(sagaPlayer, price * usedAmount);
 		sagaPlayer.addItem(item);
 		
 		// Inform:

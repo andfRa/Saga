@@ -6,7 +6,6 @@ import org.saga.Clock.DaytimeTicker;
 import org.saga.SagaLogger;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.BuySign;
-import org.saga.buildings.signs.SellSign;
 import org.saga.exceptions.InvalidBuildingException;
 
 
@@ -117,8 +116,6 @@ public class TradingPost extends Building implements DaytimeTicker{
 	@Override
 	protected boolean isBuildingSign(String firstLine) {
 		
-		if(firstLine.equalsIgnoreCase(SellSign.SIGN_NAME)) return true;
-		
 		if(firstLine.equalsIgnoreCase(BuySign.SIGN_NAME)) return true;
 		
 		return super.isBuildingSign(firstLine);
@@ -135,11 +132,7 @@ public class TradingPost extends Building implements DaytimeTicker{
 		
 		
 		// Stone fix sign:
-		if(event.getLine(0).equalsIgnoreCase(SellSign.SIGN_NAME)){
-			
-			return SellSign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
-			
-		}else if(event.getLine(0).equalsIgnoreCase(BuySign.SIGN_NAME)){
+		if(event.getLine(0).equalsIgnoreCase(BuySign.SIGN_NAME)){
 			
 			return BuySign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
 			

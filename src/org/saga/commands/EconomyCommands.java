@@ -3,6 +3,7 @@ package org.saga.commands;
 import org.bukkit.Location;
 import org.saga.Saga;
 import org.saga.config.EconomyConfiguration;
+import org.saga.dependencies.EconomyDependency;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.HelpMessages;
 import org.saga.messages.SettlementMessages;
@@ -48,7 +49,7 @@ public class EconomyCommands {
 		}
 		
 		// Enough currency:
-		if(sagaPlayer.getCoins() < amount){
+		if(EconomyDependency.getCoins(sagaPlayer) < amount){
 			sagaPlayer.message(EconomyMessages.notEnoughCoins());
 			return;
 		}
@@ -75,8 +76,8 @@ public class EconomyCommands {
 		}
 		
 		// Pay:
-		sagaPlayer.removeCoins(amount);
-		selPlayer.addCoins(amount);
+		EconomyDependency.removeCoins(sagaPlayer, amount);
+		EconomyDependency.addCoins(selPlayer, amount);
 		
 		// Inform:
 		sagaPlayer.message(EconomyMessages.paid(selPlayer, amount));

@@ -8,6 +8,7 @@ import org.saga.Saga;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
+import org.saga.dependencies.EconomyDependency;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.factions.Faction;
 import org.saga.factions.Faction.FactionPermission;
@@ -1634,13 +1635,13 @@ public class FactionCommands {
 	    if(selFaction.isFormed() && cost > 0){
 
 		    // Check coins:
-		    if(sagaPlayer.getCoins() < cost){
+		    if(EconomyDependency.getCoins(sagaPlayer) < cost){
 		    	sagaPlayer.message(EconomyMessages.insuficcientCoins(cost));
 		    	return;
 		    }
 		    
 	    	// Take coins:
-		    sagaPlayer.removeCoins(cost);
+		    EconomyDependency.removeCoins(sagaPlayer, cost);
 		    
 		    // Inform:
 		    sagaPlayer.message(EconomyMessages.spent(cost));

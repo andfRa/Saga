@@ -5,11 +5,9 @@ import java.util.HashSet;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.saga.chunks.Bundle;
 import org.saga.config.EconomyConfiguration;
-import org.saga.economy.EconomyManager.TransactionType;
-import org.saga.economy.Trader;
-import org.saga.economy.Transaction;
+import org.saga.dependencies.EconomyDependency;
+import org.saga.dependencies.Trader;
 import org.saga.factions.Faction;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.text.TextUtil;
@@ -142,38 +140,6 @@ public class EconomyMessages {
 		
 	}
 	
-	// Transactions:
-	public static String addedTransactionBroadcast(Transaction transaction, Bundle bundle, SagaPlayer sagaPlayer) {
-		
-		return announce + sagaPlayer.getName() + " set up a new transaction: " + transaction.getType().name() + " " + transaction.getAmount() + " " + GeneralMessages.material(transaction.getMaterial()) + " for " + EconomyMessages.coins(transaction.getValue()) + " each.";
-		
-	}
-	
-	public static String removedTransactionBroadcast(TransactionType type, Material material, Bundle bundle, SagaPlayer sagaPlayer) {
-		
-		return announce + sagaPlayer.getName() + " removed a transaction: " + type.name() + " " + GeneralMessages.material(material) + ".";
-		
-	}
-	
-	public static String targeterTrade(Transaction transaction) {
-		
-		if(transaction.getType().equals(TransactionType.SELL)){
-			
-			return positive + "Sold " + transaction.getAmount() + " " + GeneralMessages.material(transaction.getMaterial()) + " for " + coins(transaction.getTotalValue()) + ".";
-			
-		}else if(transaction.getType().equals(TransactionType.BUY)){
-			
-			return positive + "Bought " + transaction.getAmount() + " " + GeneralMessages.material(transaction.getMaterial()) + " for " + coins(transaction.getTotalValue()) + ".";
-			
-		}else{
-			
-			return veryNegative + " Invalid transaction type: " +transaction.getType() + ", " + transaction.getAmount() + ", " + GeneralMessages.material(transaction.getMaterial()) + ", " + coins(transaction.getTotalValue());
-			
-		}
-		
-		
-	}
-	
 	
 	
 	// Economy general:
@@ -216,19 +182,27 @@ public class EconomyMessages {
 		return negative + "Too far to exchange " + coins() + ".";
 	}
 	
-	public static String setWallet(SagaPlayer targetPlayer, Double amount) {
-		return positive + "Set "  + targetPlayer.getName() + " wallet to " + coins(amount) + "s.";
+	public static String walletModified(SagaPlayer targetPlayer, Double amount) {
+		
+		if(amount >= 0) return positive + "Added " + EconomyMessages.coins(amount) + " to players " + targetPlayer.getName() + " wallet.";
+		
+		return positive + "Removed " + EconomyMessages.coins(amount) + " from players " + targetPlayer.getName() + " wallet.";
+		
 	}
 	
-	public static String walletWasSet(Double amount) {
-		return positive + "Wallet was set to " + coins(amount) + "s.";
+	public static String walletModified(Double amount) {
+	
+		if(amount >= 0) return positive + "Added " + EconomyMessages.coins(amount) + " to wallet.";
+		
+		return positive + "Removed " + EconomyMessages.coins(amount) + " from wallet.";
+		
 	}
 	
 	
 	
 	// User:
 	public static String wallet(SagaPlayer sagaPlayer) {
-		return positive + "Wallet: " + EconomyMessages.coins(sagaPlayer.getCoins()) + ".";
+		return positive + "Wallet: " + EconomyMessages.coins(EconomyDependency.getCoins(sagaPlayer)) + ".";
 	}
 	
 

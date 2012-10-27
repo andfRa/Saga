@@ -25,6 +25,7 @@ import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.SettlementConfiguration;
+import org.saga.dependencies.EconomyDependency;
 import org.saga.dependencies.PermissionsManager;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;
@@ -367,14 +368,14 @@ public class AdminCommands {
 	
 	// Economy:
 	@Command(
-			aliases = {"asetwallet"},
+			aliases = {"amodifywallet"},
 			usage = "[player_name] <amount>",
 			flags = "",
-			desc = "Set players balance.",
+			desc = "Modifies players balance.",
 			min = 1,
 			max = 2
 	)
-	@CommandPermissions({"saga.admin.player.setwallet"})
+	@CommandPermissions({"saga.admin.player.modifywallet"})
 	public static void setWallet(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
@@ -423,15 +424,25 @@ public class AdminCommands {
 				
 		}
 
-		// Set wallet:
-		selPlayer.setCoins(amount);
+		// Normalise:
+		if(amount < 0 && EconomyDependency.getCoins(selPlayer) < -amount) amount = -EconomyDependency.getCoins(selPlayer); 
+		
+		if(amount == -0.0) amount = 0.0; // Really?
+		
+		// Modify wallet:
+		if(amount >= 0){
+			EconomyDependency.addCoins(selPlayer, amount);
+		}
+		else{
+			EconomyDependency.removeCoins(selPlayer, -1 * amount);
+		}
 		
 		// Inform:
 		if(selPlayer != sagaPlayer){
-			sagaPlayer.message(EconomyMessages.setWallet(selPlayer, amount));
-			selPlayer.message(EconomyMessages.walletWasSet(amount));
+			sagaPlayer.message(EconomyMessages.walletModified(selPlayer, amount));
+			selPlayer.message(EconomyMessages.walletModified(amount));
 		}else{
-			selPlayer.message(EconomyMessages.walletWasSet(amount));
+			selPlayer.message(EconomyMessages.walletModified(amount));
 		}
 
 		// Release:

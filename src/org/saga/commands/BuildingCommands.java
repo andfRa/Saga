@@ -14,6 +14,7 @@ import org.saga.chunks.Bundle;
 import org.saga.chunks.BundleManager;
 import org.saga.chunks.SagaChunk;
 import org.saga.config.SettlementConfiguration;
+import org.saga.dependencies.EconomyDependency;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.factions.Faction;
 import org.saga.factions.FactionClaimManager;
@@ -230,13 +231,13 @@ public class BuildingCommands {
 
 		// Enough coins:
 		Double cost = selBuilding.getDefinition().getUpgradeCost(bldgScore);
-		if(sagaPlayer.getCoins() < cost){
+		if(EconomyDependency.getCoins(sagaPlayer) < cost){
 			sagaPlayer.message(EconomyMessages.notEnoughCoins());
 			return;
 		}
 
 		// Take coins:
-		sagaPlayer.removeCoins(cost);
+		EconomyDependency.removeCoins(sagaPlayer, cost);
 		sagaPlayer.message(EconomyMessages.coinsSpent(cost));
 		
 		// Upgrade:

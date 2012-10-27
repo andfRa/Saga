@@ -19,8 +19,7 @@ import org.saga.config.AttributeConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.dependencies.PermissionsManager;
-import org.saga.economy.InventoryUtil;
-import org.saga.economy.Trader;
+import org.saga.dependencies.Trader;
 import org.saga.factions.Faction;
 import org.saga.factions.FactionManager;
 import org.saga.messages.GeneralMessages.CustomColour;
@@ -31,6 +30,7 @@ import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.settlements.Settlement;
 import org.saga.statistics.StatisticsManager;
+import org.saga.utility.InventoryUtil;
 
 public class SagaPlayer extends SagaLiving<Player> implements Trader{
 
@@ -978,21 +978,23 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	/* 
 	 * (non-Javadoc)
 	 * 
-	 * @see saga.economy.Transaction.Trader#addCurrency(java.lang.Double)
+	 * @see org.saga.dependencies.Trader#addCoins(java.lang.Double)
 	 */
 	@Override
-	public void addCoins(Double amount) {
-		setCoins(coins + amount);
+	public boolean addCoins(Double amount) {
+		coins = coins + amount;
+		return true;
 	}
 	
 	/* 
 	 * (non-Javadoc)
 	 * 
-	 * @see saga.economy.Transaction.Trader#removeCurrency(java.lang.Double)
+	 * @see org.saga.dependencies.Trader#removeCoins(java.lang.Double)
 	 */
 	@Override
-	public void removeCoins(Double amount) {
-		setCoins(coins - amount);
+	public boolean removeCoins(Double amount) {
+		coins = coins - amount;
+		return true;
 	}
 	
 	/* 
@@ -1002,18 +1004,10 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	 */
 	@Override
 	public Double getCoins() {
-		return (double)coins.intValue();
+		return coins;
 	}
 	
-	/**
-	 * Sets coins.
-	 * 
-	 * @param coins currency
-	 */
-	public void setCoins(Double coins) {
-		this.coins = coins;
-	}
-
+	
 	/* 
 	 * (non-Javadoc)
 	 * 
