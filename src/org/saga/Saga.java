@@ -107,6 +107,10 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		FactionManager.unload(); // Needs access to chunk group manager.
 		StatisticsManager.unload(); // Needs access to clock.
 
+		// Dependencies:
+		PermissionsDependency.disable();
+		EconomyDependency.disable();
+
 		// Configuration:
 		ExperienceConfiguration.unload();
 		ProficiencyConfiguration.unload();
@@ -117,10 +121,6 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		EconomyConfiguration.unload();
 		FactionConfiguration.unload();
 		Clock.unload(); // Needs access to Saga.pluging().
-
-		// Dependencies:
-		PermissionsDependency.disable();
-		EconomyDependency.disable();
 
 		// Disable client manager:
 		ClientManager.disable();
@@ -159,10 +159,6 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		// Players:
 		loadedPlayers = new Hashtable<String, SagaPlayer>();
 
-		// Dependencies:
-		PermissionsDependency.enable();
-		EconomyDependency.enable();
-
 		// Enable client manager:
 		ClientManager.enable();
 
@@ -176,6 +172,10 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		SettlementConfiguration.load();
 		EconomyConfiguration.load();
 		FactionConfiguration.load();
+
+		// Dependencies:
+		PermissionsDependency.enable();
+		EconomyDependency.enable();
 
 		// Managers:
 		StatisticsManager.load(); // Needs access to clock.
