@@ -277,7 +277,7 @@ public class SagaLiving <T extends LivingEntity>{
 		ArrayList<String> attributes = AttributeConfiguration.config().getAttributeNames();
 		Integer total = 0;
 		for (String attribute : attributes) {
-			total+= getAttributeScore(attribute);
+			total+= getRawAttributeScore(attribute);
 		}
 		
 		return total;
