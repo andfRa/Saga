@@ -1121,51 +1121,51 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	public static SagaPlayer load(String playerName){
 		
 		
-            // Try loading:
-            SagaPlayer sagaPlayer;
-            
-            // New players:
-            if(!WriterReader.checkExists(Directory.PLAYER_DATA, playerName)){
-            	
-            	sagaPlayer = new SagaPlayer(playerName);
-            	sagaPlayer.save();
-            	return sagaPlayer;
-            	
-            }
-            
-            // Try loading:
-            try {
+		// Try loading:
+		SagaPlayer sagaPlayer;
+		
+		// New players:
+		if(!checkExists(playerName)){
+		
+			sagaPlayer = new SagaPlayer(playerName);
+			sagaPlayer.save();
+			return sagaPlayer;
+		
+		}
+		
+		// Try loading:
+		try {
 
-                sagaPlayer = WriterReader.read(Directory.PLAYER_DATA, playerName.toLowerCase(), SagaPlayer.class);
+			sagaPlayer = WriterReader.read(Directory.PLAYER_DATA, playerName.toLowerCase(), SagaPlayer.class);
+	
+			// Complete:
+			sagaPlayer.complete();
 
-                // Complete:
-                sagaPlayer.complete();
+		
+		} catch (FileNotFoundException e) {
 
-                
-            } catch (FileNotFoundException e) {
+			SagaLogger.info(SagaPlayer.class, "player information file not found for " + playerName);
+			sagaPlayer = new SagaPlayer(playerName);
 
-            	SagaLogger.info("Player information file not found for " + playerName + ". Loading default.");
-                sagaPlayer = new SagaPlayer(playerName);
+		} catch (IOException e) {
 
-            } catch (IOException e) {
+			SagaLogger.severe(SagaPlayer.class, "player information file read failure for " + playerName + ":" + e.getClass().getSimpleName() + ":" + e.getMessage());
+			SagaLogger.info("disabling player information saving");
+			sagaPlayer= new SagaPlayer(playerName);
+			sagaPlayer.setSavingEnabled(false);
 
-            	SagaLogger.severe(SagaPlayer.class, "player information file read failure for " + playerName + ":" + e.getClass().getSimpleName() + ":" + e.getMessage());
-            	SagaLogger.info("disabling player information saving");
-                sagaPlayer= new SagaPlayer(playerName);
-                sagaPlayer.setSavingEnabled(false);
+		} catch (JsonParseException e) {
 
-            } catch (JsonParseException e) {
+			SagaLogger.severe(SagaPlayer.class, "player information parse load failure for " + playerName + ":" + e.getClass().getSimpleName() + ":" + e.getMessage());
+			SagaLogger.info("disabling player information saving");
+			SagaLogger.info("Parse message: " + e.getMessage());
+			sagaPlayer= new SagaPlayer(playerName);
+			sagaPlayer.setSavingEnabled(false);
 
-            	SagaLogger.severe(SagaPlayer.class, "player information parse load failure for " + playerName + ":" + e.getClass().getSimpleName() + ":" + e.getMessage());
-            	SagaLogger.info("disabling player information saving");
-            	SagaLogger.info("Parse message: " + e.getMessage());
-                sagaPlayer= new SagaPlayer(playerName);
-                sagaPlayer.setSavingEnabled(false);
+		}
 
-            }
-
-            return sagaPlayer;
-				
+		return sagaPlayer;
+		
 
 	}
 	
@@ -1206,7 +1206,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	 * @return true if exists
 	 */
 	public static boolean checkExists(String name){
-		return WriterReader.checkExists(Directory.PLAYER_DATA, name);
+		return WriterReader.checkExists(Directory.PLAYER_DATA, name.toLowerCase());
 	}
 
 	
