@@ -197,9 +197,6 @@ public class PermissionsDependency {
 	public static boolean hasPermission(Player player, String permission) {
 
 		
-		// Full access:
-		if(player.isOp()) return true;
-
 		// GroupManager:
 		if(manager.groupManager != null){
 			
@@ -228,7 +225,8 @@ public class PermissionsDependency {
 		// Default:
 		if(permission.startsWith("saga.user")) return true;
 		
-		return false;
+		// Bukkit:
+		return player.hasPermission(permission);
 		
 		
 	}
