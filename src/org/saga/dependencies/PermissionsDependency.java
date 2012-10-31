@@ -2,11 +2,14 @@ package org.saga.dependencies;
 
 import java.util.Hashtable;
 
+import net.milkbowl.vault.permission.Permission;
+
 import org.anjocaido.groupmanager.GroupManager;
 import org.anjocaido.groupmanager.permissions.AnjoPermissionsHandler;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.player.SagaPlayer;
@@ -93,6 +96,11 @@ public class PermissionsDependency {
 	 * Group manager.
 	 */
 	private PermissionsEx permissionsEx = null;
+
+	/**
+	 * Vault permissions.
+	 */
+	private Permission vaultPermissions = null;
 	
 	
 	
@@ -137,6 +145,23 @@ public class PermissionsDependency {
 			return;
 			
 		}
+
+		// Vault:
+		try {
+			Class.forName("net.milkbowl.vault.permission.Permission");
+			
+			RegisteredServiceProvider<net.milkbowl.vault.permission.Permission> permissionProvider = Saga.plugin().getServer().getServicesManager().getRegistration(net.milkbowl.vault.permission.Permission.class);
+			if (permissionProvider != null) {
+	            manager.vaultPermissions = permissionProvider.getProvider();
+	        }
+			
+			if(manager.vaultPermissions != null){
+	        	SagaLogger.info("Using Vault permissions.");
+	        	return;
+	        }
+			
+		}
+		catch (ClassNotFoundException e) {}
 		
 		SagaLogger.warning("Permissions plugin not found, using defaults.");
 		
@@ -153,6 +178,7 @@ public class PermissionsDependency {
 		manager.commandMap = null;
 		manager.groupManager = null;
 		manager.permissionsEx = null;
+		manager.vaultPermissions = null;
 		
 		manager = null;
 		
@@ -188,6 +214,14 @@ public class PermissionsDependency {
 			
 			String world = player.getLocation().getWorld().getName();
 			return manager.permissionsEx.has(player, permission, world);
+			
+		}
+		
+		// Vault:
+		if(manager.vaultPermissions != null){
+			
+			String world = player.getLocation().getWorld().getName();
+			return manager.vaultPermissions.has(world, player.getName(), permission);
 			
 		}
 		

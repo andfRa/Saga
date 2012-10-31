@@ -4,8 +4,6 @@ import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 import net.milkbowl.vault.economy.EconomyResponse.ResponseType;
 
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.saga.Saga;
 import org.saga.SagaLogger;
@@ -35,26 +33,24 @@ public class EconomyDependency {
 		
 		manager = new EconomyDependency();
 
-		final PluginManager pluginManager = Saga.plugin().getServer().getPluginManager();
-		Plugin plugin = null;
-		
 		// No hooking:
 		if(!EconomyConfiguration.config().canHook()) return;
 		
 		// Vault:
-		plugin = pluginManager.getPlugin("Vault");
-		if (plugin != null && plugin.isEnabled()) {
-		
-			RegisteredServiceProvider<Economy> economyProvider = Saga.plugin().getServer().getServicesManager().getRegistration(Economy.class);
+		try {
+			Class.forName("net.milkbowl.vault.economy.Economy");
+			
+			RegisteredServiceProvider<net.milkbowl.vault.economy.Economy> economyProvider = Saga.plugin().getServer().getServicesManager().getRegistration(net.milkbowl.vault.economy.Economy.class);
 	        if (economyProvider != null) {
 	        	manager.vaultEconomy = economyProvider.getProvider();
 	        }
+	        
 	        if(manager.vaultEconomy != null){
 	        	SagaLogger.info("Using Vault economy.");
 	        	return;
 	        }
-			
 		}
+		catch (ClassNotFoundException e) {}
 		
 		SagaLogger.warning("Economy plugin not found, using default.");
 		
@@ -87,15 +83,6 @@ public class EconomyDependency {
 		if(manager.vaultEconomy != null){
 			
 			String player = sagaPlayer.getName();
-			
-//			if(!vaultEconomy.hasAccount(player)){
-//				
-//				if(!vaultEconomy.createPlayerAccount(player)){
-//					SagaLogger.severe(getClass(), "failed to create vault player account for " + player);
-//					return;
-//				}
-//				
-//			}
 			
 			EconomyResponse response = manager.vaultEconomy.depositPlayer(player, amount);
 			
