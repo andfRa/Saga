@@ -28,6 +28,7 @@ import org.saga.config.FactionConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
+import org.saga.dependencies.ChatDependency;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.dependencies.PermissionsDependency;
 import org.saga.dependencies.spout.ClientManager;
@@ -110,6 +111,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		// Dependencies:
 		PermissionsDependency.disable();
 		EconomyDependency.disable();
+		ChatDependency.disable();
 
 		// Configuration:
 		ExperienceConfiguration.unload();
@@ -176,7 +178,8 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		// Dependencies:
 		PermissionsDependency.enable();
 		EconomyDependency.enable();
-
+		ChatDependency.enable();
+		
 		// Managers:
 		StatisticsManager.load(); // Needs access to clock.
 		BundleManager.load();

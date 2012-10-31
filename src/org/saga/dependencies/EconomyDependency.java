@@ -52,7 +52,7 @@ public class EconomyDependency {
 		}
 		catch (ClassNotFoundException e) {}
 		
-		SagaLogger.warning("Economy plugin not found, using default.");
+		SagaLogger.info("Using default economy.");
 		
 
 	}

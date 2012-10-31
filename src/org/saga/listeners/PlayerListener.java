@@ -5,7 +5,6 @@
 
 package org.saga.listeners;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -16,6 +15,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -30,8 +30,7 @@ import org.saga.SagaLogger;
 import org.saga.chunks.Bundle;
 import org.saga.chunks.BundleManager;
 import org.saga.chunks.SagaChunk;
-import org.saga.config.FactionConfiguration;
-import org.saga.factions.Faction;
+import org.saga.dependencies.ChatDependency;
 import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaEventHandler;
 import org.saga.player.GuardianRune;
@@ -88,7 +87,7 @@ public class PlayerListener implements Listener {
     	
     	// Synchronise health:
     	sagaPlayer.synchHealth();
-    	
+
     	// Forward to chunk group:
     	if(sagaPlayer.getBundle() != null) sagaPlayer.getBundle().onMemberJoin(event, sagaPlayer);
     	
@@ -106,7 +105,7 @@ public class PlayerListener implements Listener {
     		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerQuit, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
     	}
-    	
+
     	// Forward to chunk group:
     	if(sagaPlayer.getBundle() != null) sagaPlayer.getBundle().onMemberQuit(event, sagaPlayer);
     	
@@ -251,24 +250,7 @@ public class PlayerListener implements Listener {
     		return;
     	}
     	
-    	// No faction or not formed yet:
-    	Faction faction = sagaPlayer.getFaction();
-    	if(faction == null || !faction.isFormed()) return;
-    	
-    	ChatColor primaryColor = faction.getColour1();
-    	ChatColor secondaryColor = faction.getColour2();
-    	ChatColor normalColor = ChatColor.WHITE;
-    	
-    	String formatString = event.getFormat();
-    	
-    	formatString = formatString.replace("<", "<" + primaryColor + faction.getName() + FactionConfiguration.config().prefixNameSeparator + secondaryColor);
-    	formatString = formatString.replace(">", normalColor.toString() + ">");
-    	
-    	try {
-    		event.setFormat(formatString);
-		} catch (Exception e) {
-			SagaLogger.severe(PlayerListener.class, "onPlayerChat failed to set format: " +e.getClass().getSimpleName() + ":" + e.getMessage());
-		}
+    	event.setFormat(ChatDependency.modifyChatFormat(event.getFormat(), sagaPlayer));
     	
     	
     }
@@ -288,6 +270,24 @@ public class PlayerListener implements Listener {
     	
     	
     }
+    
+    @EventHandler(priority = EventPriority.NORMAL)
+    public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
+
+
+    	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
+    	
+    	// Invalid player:
+    	if(sagaPlayer == null){
+    		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerWorldChange, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
+    		return;
+    	}
+    	
+    	// Update chat prefix:
+    	ChatDependency.updatePrefix(sagaPlayer);
+    	
+    	
+	}
     
     
     private void handleChunkChange(SagaPlayer sagaPlayer, PlayerMoveEvent event){

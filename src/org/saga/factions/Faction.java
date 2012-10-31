@@ -22,6 +22,7 @@ import org.saga.config.FactionConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
+import org.saga.dependencies.ChatDependency;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.exceptions.InvalidLocationException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
@@ -416,8 +417,11 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	public void addMember(SagaPlayer sagaPlayer) {
 		
 		
+		boolean formed = isFormed();
+		
 		// Check if already in this faction:
 		if(members.contains(sagaPlayer.getName())) SagaLogger.severe(this, "tried to add an already existing member " + sagaPlayer.getName());
+		
 		
 		// Add member:
 		members.add(sagaPlayer.getName());
@@ -432,8 +436,15 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		} catch (InvalidProficiencyException e) {
 			SagaLogger.severe(this, "failed to set " + getDefinition().getDefaultRank() + " rank, because the rank name is invalid");
 		}
+
+    	// Update chat prefix:
+    	if(isFormed() == formed){
+    		ChatDependency.updatePrefix(sagaPlayer, this);
+    	}else{
+    		updatePrefix();
+    	}
 		
-		
+    	
 	}
 	
 	/**
@@ -457,7 +468,10 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		
 		// Remove faction:
 		sagaPlayer.removeFactionId();
-		
+
+    	// Update chat prefix:
+    	ChatDependency.updatePrefix(sagaPlayer, this);
+    	
 		
 	}
 	
@@ -757,7 +771,11 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 * @param factionName the factionName to set
 	 */
 	public void setName(String factionName) {
+		
 		this.name = factionName;
+		
+		updatePrefix();
+		
 	}
 
 	/**
@@ -785,6 +803,20 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 */
 	public FactionDefinition getDefinition() {
 		return definition;
+	}
+	
+	/**
+	 * Updates all prefixes:
+	 * 
+	 */
+	private void updatePrefix() {
+
+		Collection<SagaPlayer> online = getOnlineMembers();
+		
+		for (SagaPlayer sagaPlayer : online) {
+			ChatDependency.updatePrefix(sagaPlayer, this);
+		}
+		
 	}
 	
 	
@@ -826,7 +858,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		this.colour2 = colour2;
 	}
 
-
+	
 	
 	// Allies enemies:
 	/**

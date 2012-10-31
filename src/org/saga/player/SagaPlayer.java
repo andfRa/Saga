@@ -18,6 +18,7 @@ import org.saga.chunks.BundleManager;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
+import org.saga.dependencies.ChatDependency;
 import org.saga.dependencies.PermissionsDependency;
 import org.saga.dependencies.Trader;
 import org.saga.factions.Faction;
@@ -324,6 +325,9 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 			SagaLogger.info(this, "no permission for admin mode");
 		}
 		
+    	// Update chat prefix:
+    	ChatDependency.updatePrefix(this);
+		
 		// Saving disabled:
 		if(!isSavingEnabled){
 			error("player information saving disabled");
@@ -343,6 +347,9 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 			disableAdminMode();
 			SagaLogger.info(this, "no permission for admin mode");
 		}
+		
+    	// Update chat prefix:
+    	ChatDependency.updatePrefix(this);
 		
 		lastSagaChunk = null;
 

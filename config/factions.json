@@ -23,7 +23,7 @@
 },
 
 "factionOnlyPvp":true,
-"prefixNameSeparator":"-",
+
 "formationAmount":4,
 
 "claimSpeed":{"x1":0,"y1":0.2,"x2":50,"y2":0.0166},

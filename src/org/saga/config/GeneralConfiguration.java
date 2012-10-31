@@ -60,6 +60,11 @@ public class GeneralConfiguration {
 	 * Special chat colour.
 	 */
 	public ChatColor specialChatMessageColor;
+
+	/**
+	 * Prefix separator.
+	 */
+	public String prefixSeparator;
 	
 	
 
@@ -162,6 +167,11 @@ public class GeneralConfiguration {
 		if(specialChatMessageColor == null){
 			SagaLogger.nullField(getClass(), "specialChatMessageColor");
 			specialChatMessageColor = ChatColor.BLUE;
+		}
+		
+		if(prefixSeparator == null){
+			SagaLogger.nullField(getClass(), "prefixSeparator");
+			prefixSeparator = "-";
 		}
 		
 		if(stopCreeperExplosions == null){

@@ -38,11 +38,6 @@ public class FactionConfiguration {
 	public Boolean factionOnlyPvp;
 	
 	/**
-	 * Prefix name separator.
-	 */
-	public String prefixNameSeparator;
-
-	/**
 	 * Amount of members needed for the faction to form.
 	 */
 	public Integer formationAmount;
@@ -98,11 +93,6 @@ public class FactionConfiguration {
 		if(factionOnlyPvp == null){
 			SagaLogger.nullField(getClass(), "factionOnlyPvp");
 			factionOnlyPvp = true;
-		}
-		
-		if(prefixNameSeparator == null){
-			SagaLogger.nullField(getClass(), "prefixNameSeparator");
-			prefixNameSeparator = "-";
 		}
 		
 		if(formationAmount == null){

@@ -4,9 +4,9 @@
 
 "adminChatNameColor":"DARK_GREEN",
 "adminChatMessageColor":"GREEN",
-
 "specialChatNameColor":"DARK_AQUA",
 "specialChatMessageColor":"AQUA",
+"prefixSeparator":"-",
 
 "harmfulSplashPotions":[16388,16392,16394,16396,16420,16428,16452,16456],
 "statisticsUpdateAge":33600000,

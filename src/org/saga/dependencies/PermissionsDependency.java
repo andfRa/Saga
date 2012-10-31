@@ -131,7 +131,7 @@ public class PermissionsDependency {
 		if (plugin != null && plugin.isEnabled()) {
 		
 			manager.groupManager = (GroupManager)plugin;
-			SagaLogger.info("Using GroupManager.");
+			SagaLogger.info("Using GroupManager permissions.");
 			return;
 			
 		}
@@ -141,7 +141,7 @@ public class PermissionsDependency {
 		if (plugin != null && plugin.isEnabled()) {
 			
 			manager.permissionsEx = (PermissionsEx)plugin;
-			SagaLogger.info("Using PermissionsEx.");
+			SagaLogger.info("Using PermissionsEx permissions.");
 			return;
 			
 		}
@@ -163,7 +163,7 @@ public class PermissionsDependency {
 		}
 		catch (ClassNotFoundException e) {}
 		
-		SagaLogger.warning("Permissions plugin not found, using defaults.");
+		SagaLogger.info("Using default permissions.");
 		
 
 	}
