@@ -30,6 +30,7 @@ import org.saga.SagaLogger;
 import org.saga.chunks.Bundle;
 import org.saga.chunks.BundleManager;
 import org.saga.chunks.SagaChunk;
+import org.saga.config.GeneralConfiguration;
 import org.saga.dependencies.ChatDependency;
 import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaEventHandler;
@@ -42,6 +43,8 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
 
+		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
+    	
     	
     	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
     	
@@ -85,6 +88,9 @@ public class PlayerListener implements Listener {
     	// Set player:
     	sagaPlayer.setPlayer(player);
     	
+
+		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
+    	
     	// Synchronise health:
     	sagaPlayer.synchHealth();
 
@@ -112,6 +118,9 @@ public class PlayerListener implements Listener {
     	// Unload player:
     	Saga.plugin().unloadSagaPlayer(player.getName());
 
+    	
+		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
+    	
 		// Statistics:
     	sagaPlayer.updateStatistics();
     	
@@ -124,7 +133,9 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerRespawn(PlayerRespawnEvent event) {
     	
+		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
     	
+		
     	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
     	
     	// Invalid player:
@@ -155,7 +166,10 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerMove(PlayerMoveEvent event) {
 
-    	
+    	if(event.getFrom().getChunk() != event.getTo().getChunk()) return;
+		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
+		
+		
     	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
     	
     	// Invalid player:
@@ -163,7 +177,8 @@ public class PlayerListener implements Listener {
     		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerMove, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
     	}
-    	
+
+		
     	// Handle chunk change:
     	handleChunkChange(sagaPlayer, event);
     	
@@ -172,8 +187,10 @@ public class PlayerListener implements Listener {
 
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-    	
 
+		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
+    	
+		
     	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
     	
     	// Invalid player:
@@ -191,7 +208,9 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerInteract(PlayerInteractEvent event) {
 
+		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
     	
+		
     	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
     	
     	// Bukkit bug workaround: 
@@ -241,7 +260,9 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerChat(AsyncPlayerChatEvent event) {
 
+		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
     	
+		
     	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
     	
     	// Invalid player:
@@ -258,7 +279,9 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 
+		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
     	
+		
     	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
     	
     	// Invalid player:
@@ -271,7 +294,7 @@ public class PlayerListener implements Listener {
     	
     }
     
-    @EventHandler(priority = EventPriority.NORMAL)
+    @EventHandler(priority = EventPriority.LOW)
     public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
 
 

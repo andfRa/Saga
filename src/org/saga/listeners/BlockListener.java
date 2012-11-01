@@ -30,6 +30,9 @@ public class BlockListener implements Listener{
 	public void onBlockBreak(BlockBreakEvent event) {
 
 
+		// Saga disabled:
+		if(GeneralConfiguration.isDisabled(event.getPlayer().getLocation().getWorld())) return;
+    	
 		// Get saga chunk:
     	SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(event.getBlock().getLocation());
     	
@@ -48,7 +51,7 @@ public class BlockListener implements Listener{
     	SagaBuildEvent eventB = new SagaBuildEvent(event, sagaPlayer, sagaChunk);
     	SagaEventHandler.onBuild(eventB);
     	if(eventB.isCancelled()) return;
-    	
+
     	// Saga event:
     	SagaBlockBreakEvent eventS = new SagaBlockBreakEvent(event, sagaPlayer, sagaChunk);
     	
@@ -72,7 +75,10 @@ public class BlockListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		
-		
+
+		// Saga disabled:
+		if(GeneralConfiguration.isDisabled(event.getPlayer().getLocation().getWorld())) return;
+    	
 		Block block = event.getBlock();
 		
 		// Get saga chunk:
@@ -113,7 +119,10 @@ public class BlockListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onSignChange(SignChangeEvent event) {
 
-		
+
+		// Saga disabled:
+		if(GeneralConfiguration.isDisabled(event.getPlayer().getLocation().getWorld())) return;
+    	
     	// Get saga chunk:
     	Location location = event.getBlock().getLocation();
     	SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
@@ -146,7 +155,10 @@ public class BlockListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockSpread(BlockSpreadEvent event) {
 
-		
+
+		// Saga disabled:
+		if(GeneralConfiguration.isDisabled(event.getBlock().getWorld())) return;
+    	
     	// Get saga chunk:
     	Location location = event.getBlock().getLocation();
     	SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(location);
@@ -161,6 +173,9 @@ public class BlockListener implements Listener{
 	public void onBlockFromTo(BlockFromToEvent event) {
 
 
+		// Saga disabled:
+		if(GeneralConfiguration.isDisabled(event.getBlock().getWorld())) return;
+    	
 		// Get saga chunk:
     	Location location = event.getBlock().getLocation();
     	SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));

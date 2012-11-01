@@ -37,7 +37,6 @@ public class EntityListener implements Listener{
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamage(EntityDamageEvent event) {
-
 		
 		// Not a living:
 		if(!(event.getEntity() instanceof LivingEntity)) return;
@@ -48,6 +47,9 @@ public class EntityListener implements Listener{
 			event.setCancelled(true);
 			return;
 		}
+		
+		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
+    	
 		
 		// Dead:
 		if(defender.getHealth() <= 0) return;
@@ -83,6 +85,8 @@ public class EntityListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onProjectileHit(ProjectileHitEvent event) {
 		
+		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
+    	
 		
 		if(!(event.getEntity() instanceof Projectile)) return;
 		Projectile projectile = (Projectile) event.getEntity();
@@ -109,6 +113,8 @@ public class EntityListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityExplode(EntityExplodeEvent event) {
 		
+		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
+    	
 		
 		// Stop creeper terrain damage.
 		if(GeneralConfiguration.config().stopCreeperExplosions && event.getEntity() instanceof Creeper){
@@ -127,7 +133,9 @@ public class EntityListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityBlockForm(EntityBlockFormEvent event) {
 		
-
+		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
+    	
+		
 		// Get saga chunk:
 		SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(event.getBlock().getLocation());
 		
@@ -140,6 +148,8 @@ public class EntityListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onCreatureSpawn(CreatureSpawnEvent event) {
 		
+		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
+    	
 		
 		LivingEntity entity = event.getEntity();
 		
@@ -160,6 +170,8 @@ public class EntityListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityDeath(EntityDeathEvent event) {
 
+		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
+    	
 		
 		SagaEntityDeathEvent sagaEvent = new SagaEntityDeathEvent(event, event.getEntity());
 		
@@ -217,7 +229,10 @@ public class EntityListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityRegainHealth(EntityRegainHealthEvent event) {
 
+		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
+    	
 		
+		// Players:
 		if(event.getEntity() instanceof Player){
 
 			Player player = (Player) event.getEntity();

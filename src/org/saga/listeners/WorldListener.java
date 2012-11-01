@@ -7,6 +7,7 @@ import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.saga.chunks.BundleManager;
 import org.saga.chunks.SagaChunk;
+import org.saga.config.GeneralConfiguration;
 
 public class WorldListener implements Listener{
 
@@ -14,6 +15,8 @@ public class WorldListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onChunkLoadEvent(ChunkLoadEvent event) {
 
+		if(GeneralConfiguration.isDisabled(event.getWorld())) return;
+    	
 		
 		SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(event.getChunk());
 

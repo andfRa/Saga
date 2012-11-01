@@ -66,15 +66,7 @@ public class GeneralConfiguration {
 	 */
 	public String prefixSeparator;
 	
-	
 
-	// Terrain damage:
-	/**
-	 * True to stop all creeper explosion land damage.
-	 */
-	public Boolean stopCreeperExplosions;
-	
-	
 	// Potions:
 	/**
 	 * Harmful splash potions.
@@ -87,6 +79,11 @@ public class GeneralConfiguration {
 	 * Data set on block place:
 	 */
 	private Hashtable<Material, Byte> blockPlaceData;
+	
+	/**
+	 * True to stop all creeper explosion land damage.
+	 */
+	public Boolean stopCreeperExplosions;
 	
 	
 	// Statistics:
@@ -113,6 +110,12 @@ public class GeneralConfiguration {
 	 * Default world name.
 	 */
 	private String defaultWorld;
+	
+	/**
+	 * Worlds where Saga is disabled.
+	 */
+	private HashSet<String> disableWorlds;
+	
 	
 	
 	// X-ray:
@@ -174,11 +177,6 @@ public class GeneralConfiguration {
 			prefixSeparator = "-";
 		}
 		
-		if(stopCreeperExplosions == null){
-			SagaLogger.nullField(getClass(), "stopCreeperExplosions");
-			stopCreeperExplosions = false;
-		}
-		
 		if(harmfulSplashPotions == null){
 			SagaLogger.nullField(getClass(), "badSplashPotions");
 			harmfulSplashPotions = new HashSet<Short>();
@@ -198,6 +196,11 @@ public class GeneralConfiguration {
 			blockPlaceData = new Hashtable<Material, Byte>();
 		}
 		
+		if(stopCreeperExplosions == null){
+			SagaLogger.nullField(getClass(), "stopCreeperExplosions");
+			stopCreeperExplosions = false;
+		}
+		
 		if(guardRuneEnabled == null){
 			SagaLogger.nullField(getClass(), "guardRuneEnabled");
 			guardRuneEnabled = false;
@@ -215,6 +218,11 @@ public class GeneralConfiguration {
 		if(defaultWorld == null){
 			SagaLogger.nullField(getClass(), "defaultWorld");
 			defaultWorld = "world";
+		}
+		
+		if(disableWorlds == null){
+			SagaLogger.nullField(getClass(), "disableWorlds");
+			disableWorlds = new HashSet<String>();
 		}
 
 		if(xrayMinStone == null){
@@ -312,6 +320,16 @@ public class GeneralConfiguration {
 	 */
 	public String getDefaultWorld() {
 		return defaultWorld;
+	}
+	
+	/**
+	 * Checks if Saga is disabled on the given world.
+	 * 
+	 * @param world world
+	 * @return true if disabled
+	 */
+	public static boolean isDisabled(World world) {
+		return instance.disableWorlds.contains(world.getName());
 	}
 	
 	

@@ -111,7 +111,7 @@ public class ChatDependency {
 
 		// Prefix:
 		String prefix = "";
-		if(faction != null && faction.isFormed()) prefix = faction.getColour1() + faction.getName() + GeneralConfiguration.config().prefixSeparator + faction.getColour2();
+		if(!GeneralConfiguration.isDisabled(player.getWorld()) && faction != null && faction.isFormed()) prefix = faction.getColour1() + faction.getName() + GeneralConfiguration.config().prefixSeparator + faction.getColour2();
 		
 		// GroupManager:
 		if(manager.groupManager != null){
