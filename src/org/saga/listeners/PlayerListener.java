@@ -294,7 +294,7 @@ public class PlayerListener implements Listener {
     	
     }
     
-    @EventHandler(priority = EventPriority.LOW)
+    @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
 
 

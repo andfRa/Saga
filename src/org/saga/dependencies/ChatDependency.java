@@ -109,9 +109,11 @@ public class ChatDependency {
 		Player player = sagaPlayer.getPlayer();
 		if(player == null) return;
 
+		if(GeneralConfiguration.isDisabled(player.getWorld())) return;
+		
 		// Prefix:
 		String prefix = "";
-		if(!GeneralConfiguration.isDisabled(player.getWorld()) && faction != null && faction.isFormed()) prefix = faction.getColour1() + faction.getName() + GeneralConfiguration.config().prefixSeparator + faction.getColour2();
+		if(faction != null && faction.isFormed()) prefix = faction.getColour1() + faction.getName() + GeneralConfiguration.config().prefixSeparator + faction.getColour2();
 		
 		// GroupManager:
 		if(manager.groupManager != null){
