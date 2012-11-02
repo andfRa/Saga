@@ -3,7 +3,6 @@ package org.saga.dependencies;
 import net.milkbowl.vault.chat.Chat;
 
 import org.anjocaido.groupmanager.GroupManager;
-import org.anjocaido.groupmanager.data.User;
 import org.anjocaido.groupmanager.dataholder.OverloadedWorldHolder;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -118,7 +117,7 @@ public class ChatDependency {
 		// GroupManager:
 		if(manager.groupManager != null){
 
-			setGroupManagerPrefix(player.getLocation().getWorld().getName(), player.getName(), prefix);
+			setGroupManagerPrefix(player, prefix);
 			return;
 			
 		}
@@ -172,26 +171,19 @@ public class ChatDependency {
 	/**
 	 * Sets GroupManager prefix.
 	 * 
-	 * @param worldName world name
-	 * @param playerName player name
+	 * @param player player
 	 * @param prefix prefix
 	 */
-	private static void setGroupManagerPrefix(String worldName, String playerName, String prefix) {
+	private static void setGroupManagerPrefix(Player player, String prefix) {
 
-		 OverloadedWorldHolder owh;
-	        if (worldName == null) {
-	            owh = manager.groupManager.getWorldsHolder().getWorldDataByPlayerName(playerName);
-	        } else {
-	            owh = manager.groupManager.getWorldsHolder().getWorldData(worldName);
-	        }
-	        if (owh == null) {
-	            return;
-	        }
-	        User user = owh.getUser(playerName);
-	        if (user == null) {
-	            return;
-	        }
-	        user.getVariables().addVar("prefix", prefix);
+		
+		final OverloadedWorldHolder handler = manager.groupManager.getWorldsHolder().getWorldData(player);
+		if (handler == null) {
+			return;
+		}
+		
+		handler.getUser(player.getName()).getVariables().addVar("prefix", prefix);
+
 		
 	}
 	
