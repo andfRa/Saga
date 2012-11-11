@@ -64,37 +64,6 @@
     "description":"breaks stone",
     "usage":"rclick stone w/ pickaxe"
   },
-  
-  {"className":"org.saga.abilities.Repair",
-    "name":"repair",
-    "itemRestrictions":["DIAMOND_HELMET","DIAMOND_CHESTPLATE","DIAMOND_LEGGINGS","DIAMOND_BOOTS",
-      "GOLD_HELMET","GOLD_CHESTPLATE","GOLD_LEGGINGS","GOLD_BOOTS",
-      "IRON_HELMET","IRON_CHESTPLATE","IRON_LEGGINGS","IRON_BOOTS",
-      "LEATHER_HELMET","LEATHER_CHESTPLATE","LEATHER_LEGGINGS","LEATHER_BOOTS",
-      "DIAMOND_PICKAXE","DIAMOND_SPADE","DIAMOND_AXE","DIAMOND_HOE","DIAMOND_SWORD",
-      "GOLD_PICKAXE","GOLD_SPADE","GOLD_AXE","GOLD_HOE","GOLD_SWORD",
-      "IRON_PICKAXE","IRON_SPADE","IRON_AXE","IRON_HOE","IRON_SWORD",      
-      "BOW"
-    ],
-    "activationAction":"RIGHT_CLICK",
-    "usedItem":"AIR",
-    "usedAmount":{"x1":1,"y1":1.0,"x2":3,"y2":1.0},
-    "cooldown":{"x1":1,"y1":1.0,"x2":3,"y2":1.0},
-    "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
-    "attributeRequirements":{
-      "willpower":{"x1":1,"y1":5.0,"x2":3,"y2":45.0},
-      "toughness":{"x1":1,"y1":3.0,"x2":3,"y2":25.0}
-    },
-    "buildingRequirements":{},
-    "functions":{
-      "consume chance":{"x1":1,"y1":1.0,"x2":3,"y2":0.35},
-      "ench level cost":{"x1":1,"y1":0.5,"x2":15,"y2":2.0},
-      "ench multiplier":{"x1":1,"y1":0.85,"x2":15,"y2":0.05}
-    },
-    "colour":12724739,
-    "description":"repairs items",
-    "usage":"rclick iron block"
-  },  
 
   
   
