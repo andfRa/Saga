@@ -20,8 +20,8 @@
 
 "creatureExp":{
 
-  "creeper":20.0,
-  "enderman":20.0,
+  "creeper":18.0,
+  "enderman":10.0,
   "ghast":20.0,
   "blaze":15.0,
   "bigslime":12.5,
@@ -40,9 +40,7 @@
 
 },
 
-"abilityExp":{
-  "repair":{"x1":0,"y1":0.0,"x2":500,"y2":37.5}
-},
+"abilityExp":{},
 
 "spawnerEncPointMult":0.5,
 "spawnerExpMult":0.01
