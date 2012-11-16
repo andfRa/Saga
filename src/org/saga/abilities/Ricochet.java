@@ -114,10 +114,7 @@ public class Ricochet extends Ability{
 
 			
 		// Only arrows:
-		if(!(event.getEntity() instanceof Arrow)){
-			System.out.println("not arrow");
-			return false;
-		}
+		if(!(event.getEntity() instanceof Arrow)) return false;
 		
 		Arrow arrow = (Arrow) event.getEntity();
     	Location loc = arrow.getLocation();
