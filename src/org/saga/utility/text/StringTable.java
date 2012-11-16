@@ -212,15 +212,6 @@ public class StringTable {
 	}
 	
 	/**
-	 * Adds a page break.
-	 */
-	public void nextPage() {
-
-		addLine(StringBook.PAGE_BREAK);
-		
-	}
-	
-	/**
 	 * Gets the table size.
 	 * 
 	 * @return table size

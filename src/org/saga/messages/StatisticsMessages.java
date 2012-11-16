@@ -86,9 +86,6 @@ public class StatisticsMessages {
 	public static String exp(int page) {
 	
 		
-		int maxLines = 20;
-		int lines = 0;
-		
 		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
 		StringTable table = new StringTable(colours);
 
@@ -111,14 +108,7 @@ public class StatisticsMessages {
 					if(exp <= 0) continue;
 					
 					table.addLine(GeneralMessages.TAB + subcateg, exp.intValue() + "", 0);
-					
-					lines++;
-					
-					if(lines > maxLines){
-						lines = 0;
-						table.nextPage();
-					}
-					
+
 				}
 				
 			}
