@@ -27,6 +27,7 @@ import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;
 import org.saga.settlements.SettlementDefinition;
 import org.saga.utility.text.RomanNumeral;
+import org.saga.utility.text.StringFramer;
 import org.saga.utility.text.StringTable;
 import org.saga.utility.text.TextUtil;
 
@@ -441,7 +442,7 @@ public class SettlementMessages {
 				
 		}
 		
-		return TextUtil.frame(settlement.getName() + " stats " + (page + 1) + "/" + 3, result.toString(), normal1);
+		return StringFramer.frame(settlement.getName() + " stats " + (page + 1) + "/" + 3, result.toString(), normal1);
 
 		
 	}
@@ -616,7 +617,7 @@ public class SettlementMessages {
 		
 		result.append(listMembers(settlement));
 		
-		return TextUtil.frame(settlement.getName() + " members", result.toString(), colours.nextColour());
+		return StringFramer.frame(settlement.getName() + " members", result.toString(), colours.nextColour());
 		
 		
 	}
@@ -885,7 +886,7 @@ public class SettlementMessages {
 		Chunk locationChunk = location.getWorld().getChunkAt(location);
 		String title = locationChunk.getWorld().getName() + " map " + "(" + locationChunk.getX() + ", " + locationChunk.getZ() + ")";
 		
-		return TextUtil.frame(title, result.toString(), ChatColor.GOLD);
+		return StringFramer.frame(title, result.toString(), ChatColor.GOLD);
 		
 		
 	}

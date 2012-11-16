@@ -43,6 +43,7 @@ import org.saga.listeners.ServerListener;
 import org.saga.listeners.WorldListener;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
+import org.saga.utility.text.StringFramer;
 import org.sk89q.CommandPermissionsException;
 import org.sk89q.CommandUsageException;
 import org.sk89q.CommandsManager;
@@ -214,6 +215,14 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		saveMinutes = GeneralConfiguration.config().saveInterval;
 		Clock.clock().enableMinuteTick(this);
 
+		// Special characters:
+		try {
+			StringFramer.enableBonusCharacters();
+		}
+		catch (Throwable e) {
+			SagaLogger.severe(getClass(), "failed to enable special chars: " + e.getClass().getSimpleName() + ":" + e.getMessage());
+		}
+		
 		
 	}
 

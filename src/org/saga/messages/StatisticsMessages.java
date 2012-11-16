@@ -15,6 +15,7 @@ import org.saga.utility.ArrayUtil;
 import org.saga.utility.Histogram;
 import org.saga.utility.MetricPrefix;
 import org.saga.utility.text.StringBook;
+import org.saga.utility.text.StringFramer;
 import org.saga.utility.text.StringTable;
 import org.saga.utility.text.TextUtil;
 
@@ -278,7 +279,7 @@ public class StatisticsMessages {
 		
 		table.collapse();
 		
-		return TextUtil.frame(title, table.createTable(), colours.nextColour());
+		return StringFramer.frame(title, table.createTable(), colours.nextColour());
 		
 		
 	}

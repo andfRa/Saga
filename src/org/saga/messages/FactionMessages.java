@@ -19,6 +19,7 @@ import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.ProficiencyDefinition;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;
+import org.saga.utility.text.StringFramer;
 import org.saga.utility.text.StringTable;
 import org.saga.utility.text.TextUtil;
 
@@ -334,7 +335,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 				
 		}
 		
-		return TextUtil.frame(faction.getName() + " stats " + (page + 1) + "/" + 3, result.toString(), faction.getColour2());
+		return StringFramer.frame(faction.getName() + " stats " + (page + 1) + "/" + 3, result.toString(), faction.getColour2());
 
 		
 	}
@@ -451,8 +452,8 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		
 		StringBuffer result = new StringBuffer();
 		
-		ChatColor general = normal1;
-		ChatColor normal = normal2;
+		ChatColor general = faction.getColour1();
+		ChatColor normal = faction.getColour2();
 		
 		int hMin = faction.getDefinition().getHierarchyMin();
 		int hMax = faction.getDefinition().getHierarchyMax();
@@ -549,12 +550,12 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		
 		// Offline:
 		else if(!faction.isMemberOnline(name)){
-			return unavailable + name + normal1;
+			return unavailable + name + faction.getColour2();
 		}
 		
 		// Normal:
 		else{
-			return normal1 + name;
+			return faction.getColour2() + name;
 		}
 		
 		
@@ -772,11 +773,10 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 
 		
 		StringBuffer result = new StringBuffer();
-		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
 		
 		result.append(listMembers(faction));
 		
-		return TextUtil.frame(faction.getName() + " members", result.toString(), colours.nextColour());
+		return StringFramer.frame(faction.getName() + " members", result.toString(), faction.getColour2());
 		
 		
 	}

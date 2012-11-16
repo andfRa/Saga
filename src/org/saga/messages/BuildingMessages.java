@@ -11,6 +11,7 @@ import org.saga.buildings.TownSquare;
 import org.saga.chunks.Bundle;
 import org.saga.config.AttributeConfiguration;
 import org.saga.messages.PlayerMessages.ColourLoop;
+import org.saga.utility.text.StringFramer;
 import org.saga.utility.text.StringTable;
 import org.saga.utility.text.TextUtil;
 
@@ -226,7 +227,7 @@ public class BuildingMessages {
 		
 		table.collapse();
 		
-		return TextUtil.frame("Top " + count, table.createTable(), messageColor.nextColour());
+		return StringFramer.frame("top " + count, table.createTable(), messageColor.nextColour());
 		
 		
 	}

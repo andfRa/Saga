@@ -136,9 +136,9 @@ public class StringBook {
 		if(page  > getLastPage()) page = getLastPage();
 		
 		// Create page:
-		String content = StringFiller.adjustFillers(page(page));
+		String content = page(page);
 		
-		return TextUtil.frame(title + " " + (page+1) + "/" + (getLastPage()+1), content, PlayerMessages.normal1);
+		return StringFramer.frame(title + " " + (page+1) + "/" + (getLastPage()+1), content, PlayerMessages.normal1);
 		
 		
 	}

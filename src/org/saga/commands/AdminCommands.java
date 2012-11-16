@@ -12,7 +12,6 @@ import java.util.Collection;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Clock;
 import org.saga.Clock.DaytimeTicker.Daytime;
@@ -890,7 +889,7 @@ public class AdminCommands {
 	
 	// Debug:
 	@Command(
-		aliases = {"debuginfo"},
+		aliases = {"debuginfo", "di"},
 		usage = "",
 		flags = "",
 		desc = "Debug assist command.",
@@ -900,10 +899,8 @@ public class AdminCommands {
 	@CommandPermissions({"saga.debug.admin.dinfo"})
 	public static void debugInfo(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
-		Player player = sagaPlayer.getPlayer();
-		
-		sagaPlayer.message(ChatColor.GREEN + "level=" + player.getLevel() + " exp=" + player.getExp() + " totexp=" + player.getTotalExperience() + " exhaust=" + player.getExhaustion() + ".");
-		
+		sagaPlayer.message("LL\u2502\u2502\u2502\u2502\u2502\u2502LL");
+		sagaPlayer.message("LL\u2510\u2510LL");
 		
 	}
 	

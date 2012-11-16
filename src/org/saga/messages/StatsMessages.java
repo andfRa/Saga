@@ -20,6 +20,7 @@ import org.saga.messages.PlayerMessages.ColourLoop;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.text.RomanNumeral;
+import org.saga.utility.text.StringFramer;
 import org.saga.utility.text.StringTable;
 import org.saga.utility.text.TextUtil;
 
@@ -88,7 +89,7 @@ public class StatsMessages {
 				
 		}
 		
-		return TextUtil.smallFrame("player stats " + (page+1) + "/" + 3, result.toString(), normal1);
+		return StringFramer.smallFrame("player stats " + (page+1) + "/" + 3, result.toString(), normal1);
 		
 		
 	}

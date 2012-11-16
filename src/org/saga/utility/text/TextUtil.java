@@ -209,67 +209,6 @@ public class TextUtil {
 		
 	}
 	
-	
-	
-	// Frame:
-	public static String frame(String title, String message, ChatColor colour, double width) {
-
-		
-		StringBuffer result = new StringBuffer();
-		
-		// Upper bound:
-		String upperBound = "=[ " + title.toUpperCase() + " ]=";
-		boolean left = true;
-		while(StringFiller.calcLength(upperBound + "-") <= width){
-			
-			if(left){
-				upperBound = "-" + upperBound;
-			}else{
-				upperBound = upperBound + "-";
-			}
-			left = !left;
-			
-		}
-		
-		// Lower bound:
-		String lowerBound = "";
-		while(StringFiller.calcLength(lowerBound + "_") <= width){
-			
-			lowerBound += "-";
-			
-		}
-		
-		// Combine:
-		result.append(" \n");
-		result.append(colour);
-		result.append(upperBound);
-		
-		result.append("\n");
-		result.append(message);
-		result.append("\n");
-		
-		result.append(colour);
-		result.append(lowerBound);
-		result.append("\n ");
-		
-		return result.toString();
-		
-		
-	}
-
-	public static String frame(String title, String message, ChatColor color) {
-
-		return frame(title, message, color, 80.0);
-		
-	}
-	
-	public static String smallFrame(String title, String message, ChatColor colour) {
-
-		return frame(title, message, colour, 0.75*80);
-		
-	}
-	
-	
 }
 
 
