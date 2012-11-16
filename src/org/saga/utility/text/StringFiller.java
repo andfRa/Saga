@@ -9,22 +9,32 @@ import org.saga.messages.GeneralMessages.CustomColour;
 
 public class StringFiller {
 
-
+	
 	/**
 	 * Default character length.
 	 */
-	private static Double defaultLength = 3.0 / 2.0;
+	public final static Double DEFAULT_LENGTH = 3.0 / 2.0;
+	
+	/**
+	 * Maximum character length.
+	 */
+	public final static Double MAX_LENGTH = 3.0 / 2.0;
 
 	/**
 	 * Gap fill string maximum size.
 	 */
-	private static Double maxGap = 1.25;
+	private final static Double MAX_GAP = 1.25;
+	
+	/**
+	 * Chat width.
+	 */
+	public final static Double CHAT_WIDTH = 80.0;
 	
 	
 	/**
 	 * Size map.
 	 */
-	private static HashMap<Character, Double> sizeMap = new HashMap<Character, Double>(){
+	private final static HashMap<Character, Double> SIZE_MAP = new HashMap<Character, Double>(){
 		
 		/**
 		 * Serial version UID.
@@ -60,6 +70,7 @@ public class StringFiller {
 			put(' ', 1.0 / 1.0);
 			put('\"', 5.0 / 4.0);
 			put('`', 0.5);
+			put('\0', 0.0);
 			put('\u2500', 5.0/4.0);
 			put('\u2502', 1.0/4.0);
 			put('\u250C', 3.0/4.0);
@@ -70,10 +81,11 @@ public class StringFiller {
 		}
 	};
 	
+	
 	/**
 	 * Gap fill chars.
 	 */
-	private static HashSet<Character> fillChars = new HashSet<Character>(){
+	private final static HashSet<Character> FILL_CHARS = new HashSet<Character>(){
 		
 		/**
 		 * Serial version UID.
@@ -88,6 +100,9 @@ public class StringFiller {
 		}
 		
 	};
+
+	
+	
 
 	
 	
@@ -109,8 +124,8 @@ public class StringFiller {
 		// Cut size:
 		for (int i = 0; i < chars.length; i++) {
 			
-			Double charLength = sizeMap.get(chars[i]);
-			if(charLength == null) charLength = defaultLength;
+			Double charLength = SIZE_MAP.get(chars[i]);
+			if(charLength == null) charLength = DEFAULT_LENGTH;
 			
 			if(length + charLength > reqLength) break;
 			
@@ -132,12 +147,12 @@ public class StringFiller {
 			if(gapLength <= 0) break;
 			
 			// Add custom fillers: 
-			if(gapLength <= maxGap){
+			if(gapLength <= MAX_GAP){
 
 				fillChar = findCustom(gapLength, reqLength);
 				if(fillChar != null){
 					result.append(fillChar);
-					fillLength = sizeMap.get(fillChar);
+					fillLength = SIZE_MAP.get(fillChar);
 				}
 				
 				break;
@@ -164,13 +179,13 @@ public class StringFiller {
 	private static Character findCustom(Double gapLen, Double reqLength) {
 		
 
-		Set<Character> gapStrs = new HashSet<Character>(fillChars);
+		Set<Character> gapStrs = new HashSet<Character>(FILL_CHARS);
 		Double bestFitLen = -1.0;
 		Character bestFitStr = null;
 		
 		for (Character gapStr : gapStrs) {
 			
-			Double gapStrLen = sizeMap.get(gapStr);
+			Double gapStrLen = SIZE_MAP.get(gapStr);
 			
 			if(gapLen - gapStrLen >= 0 && gapStrLen > bestFitLen){
 				bestFitLen = gapStrLen;
@@ -183,6 +198,7 @@ public class StringFiller {
 		
 		
 	}
+	
 	
 	/**
 	 * Calculates the length of a string.
@@ -199,8 +215,8 @@ public class StringFiller {
 		
 		for (int i = 0; i < chars.length; i++) {
 			
-			Double charLength = sizeMap.get(chars[i]);
-			if(charLength == null) charLength = defaultLength;
+			Double charLength = SIZE_MAP.get(chars[i]);
+			if(charLength == null) charLength = DEFAULT_LENGTH;
 			
 			if(!(chars[i] == ChatColor.COLOR_CHAR || (i > 0 && chars[i-1] == ChatColor.COLOR_CHAR)))
 			length += charLength;
@@ -211,6 +227,7 @@ public class StringFiller {
 		
 		
 	}
+
 	
 	/**
 	 * Adjusts filler characters.
@@ -220,12 +237,14 @@ public class StringFiller {
 	 */
 	public static String adjustFillers(String str) {
 
+		str = str.replace("`", ChatColor.DARK_GRAY + "`");
+		str = str.replace("\'", ChatColor.DARK_GRAY + "\'");
+		str = str.replace("\"", ChatColor.DARK_GRAY + "\"");
 		
 		str = str.replace("\"", ChatColor.BOLD + " " + CustomColour.RESET_FORMAT);
 		str = str.replace("\'", ChatColor.BOLD + "`" + CustomColour.RESET_FORMAT);
 		
 		return CustomColour.process(str);
-		
 		
 	}
 	

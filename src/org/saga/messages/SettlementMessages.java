@@ -27,6 +27,7 @@ import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;
 import org.saga.settlements.SettlementDefinition;
 import org.saga.utility.text.RomanNumeral;
+import org.saga.utility.text.StringBook;
 import org.saga.utility.text.StringFramer;
 import org.saga.utility.text.StringTable;
 import org.saga.utility.text.TextUtil;
@@ -404,45 +405,25 @@ public class SettlementMessages {
 	public static String stats(SagaPlayer sagaPlayer, Settlement settlement, Integer page) {
 		
 		
-		StringBuffer result = new StringBuffer();
+		StringBook book = new StringBook(settlement.getName() + " stats", new ColourLoop().addColor(normal1).addColor(normal2));
 		
-		switch (page) {
-			
-			// Buildings:
-			case 1:
-				
-				result.append(buildings(settlement).createTable());
-				
-				break;
-
-			// Roles:	
-			case 2:
-				
-				result.append(listMembers(settlement));
-				
-				break;
-				
-			// Main stats:
-			default:
-				
-				page = 0;
-				
-				// Levels and claims:
-				result.append(main(settlement).createTable());
-
-				result.append("\n");
-				result.append("\n");
-				
-				// Active members:
-				result.append(GeneralMessages.tableTitle("required"));
-				result.append("\n");
-				result.append(requirements(settlement).createTable());
-				
-				break;
-				
-		}
+		// Levels, claims and active members:
+		book.addTable(main(settlement));
+		book.addLine("");
+		book.addLine(GeneralMessages.tableTitle("required"));
+		book.addTable(requirements(settlement));
 		
-		return StringFramer.frame(settlement.getName() + " stats " + (page + 1) + "/" + 3, result.toString(), normal1);
+		book.nextPage();
+
+		// Buildings:
+		book.addTable(buildings(settlement));
+
+		book.nextPage();
+		
+		// Members:
+		book.addLine(listMembers(settlement));
+		
+		return book.framedPage(page);
 
 		
 	}

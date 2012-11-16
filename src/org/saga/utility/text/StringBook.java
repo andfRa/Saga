@@ -2,7 +2,7 @@ package org.saga.utility.text;
 
 import java.util.ArrayList;
 
-import org.saga.messages.GeneralMessages.CustomColour;
+import org.bukkit.ChatColor;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.PlayerMessages.ColourLoop;
 
@@ -15,14 +15,18 @@ public class StringBook {
 	public final static String PAGE_BREAK = "\\p";
 	
 	
-	
 	/**
 	 * Book title.
 	 */
 	private String title;
+
+	/**
+	 * Book page width.
+	 */
+	private double width;
 	
 	/**
-	 * Book pages.
+	 * Book lines.
 	 */
 	private ArrayList<String> lines = new ArrayList<String>();
 	
@@ -35,47 +39,138 @@ public class StringBook {
 	
 	// Initialisation:
 	/**
-	 * Sets message colour and lines.
+	 * Creates a book.
 	 * 
+	 * @param title book title
+	 * @param width book width of total chat width
+	 * @param colours book line colours
 	 */
-	public StringBook(String title, ColourLoop colours) {
+	public StringBook(String title, Double width, ColourLoop colours) {
 		
 		this.title = title;
+		this.width = width;
 		this.colours = colours;
 		
 	}
 	
 	/**
-	 * Adds a line.
+	 * Creates a book.
+	 * 
+	 * @param title book title
+	 * @param colours book line colours
+	 */
+	public StringBook(String title, ColourLoop colours) {
+		this(title, 1.0, colours);
+	}
+	
+	
+	
+	// Content:
+	/**
+	 * Adds line.
+	 * 
+	 * @param line line
+	 * @param allowBreak true if breaking into lines additional lines is allowed
+	 */
+	public void addLine(String line, boolean allowBreak) {
+
+		
+		// Multiple lines:
+		if(line.contains("\n")){
+			
+			String[] lines = line.split("\n");
+			for (int i = 0; i < lines.length; i++) {
+				addLine(lines[i]);
+			}
+			
+			return;
+			
+		}
+		
+		// Long line:
+		if(allowBreak && StringFiller.MAX_LENGTH * line.length() > StringFramer.MAX_CONTENTS_WIDTH){
+			
+			String[] words = line.split(" ");
+			StringBuffer text = new StringBuffer();
+			double length = 0.0;
+			
+			for (int i = 0; i < words.length; i++) {
+				
+				double wordLength = StringFiller.calcLength(words[i]);
+				if(i != 0) wordLength+= 1.0;
+				
+				// Flush:
+				if(length + wordLength > StringFramer.MAX_CONTENTS_WIDTH){
+					
+					lines.add(colours.nextColour() + text.toString());
+					
+					length = 0.0;
+					text = new StringBuffer();
+					
+				}
+				
+				// Add words:
+				length+= wordLength;
+				if(i != 0) text.append(" ");
+				text.append(words[i]);
+				
+			}
+			
+			// Flush remaining:
+			if(length > 0) lines.add(colours.nextColour() + text.toString());
+			
+		}
+		
+		// Short line:
+		else{
+			lines.add(colours.nextColour() + line);
+		}
+		
+		
+	}
+	
+	/**
+	 * Adds line. The line can be broken in to additional lines.
 	 * 
 	 * @param line line
 	 */
 	public void addLine(String line) {
-
-		lines.add(line);
-		
+		addLine(line, true);
 	}
-	
-	/**
-	 * Adds a page break.
-	 */
-	public void nextPage() {
 
-		addLine(PAGE_BREAK);
-		
-	}
-	
+
 	/**
-	 * Adds a table.
+	 * Adds a table to the book.
 	 * 
 	 * @param table table
 	 */
 	public void addTable(StringTable table) {
 
-		ArrayList<String> lines = table.getLines();
-		for (String line : lines) {
-			addLine(line);
+		String[][] contents = table.getTable();
+		
+		for (int row = 0; row < contents.length; row++) {
+			
+			StringBuffer line = new StringBuffer();
+			ChatColor colour = colours.nextColour();
+			
+			for (int col = 0; col < contents[row].length; col++) {
+				
+				line.append(colour + contents[row][col]);
+				
+			}
+			
+			lines.add(line.toString());
+			
 		}
+		
+	}
+
+	/**
+	 * Adds a page break.
+	 */
+	public void nextPage() {
+
+		lines.add(PAGE_BREAK);
 		
 	}
 	
@@ -112,7 +207,7 @@ public class StringBook {
 			
 			if(result.length() > 0) result.append("\n");
 			
-			result.append(CustomColour.process(colours.nextColour() + line));
+			result.append(line);
 			
 		}
 		
@@ -130,16 +225,18 @@ public class StringBook {
 	 */
 	public String framedPage(Integer page) {
 
-
-		// Normalise:
+		// Trim:
 		if(page < 0 ) page = 0;
 		if(page  > getLastPage()) page = getLastPage();
 		
 		// Create page:
 		String content = page(page);
 		
-		return StringFramer.frame(title + " " + (page+1) + "/" + (getLastPage()+1), content, PlayerMessages.normal1);
+		String title = this.title;
+		int lastPage = getLastPage();
+		if(lastPage != 0) title+= ", page " + (page+1) + " of " + (lastPage+1);
 		
+		return StringFramer.frame(title, content, PlayerMessages.normal1, width);
 		
 	}
 
@@ -170,18 +267,6 @@ public class StringBook {
 	public Integer lines() {
 		return lines.size();
 	}
-	
-	
-	
-	// Other:
-	public static void main(String[] args) {
-		
-		
-		System.out.println(21 % 10);
-		
-		
-		
-	}
-	
+
 	
 }

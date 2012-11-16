@@ -10,6 +10,16 @@ import org.bukkit.ChatColor;
 public class StringFramer {
 
 	/**
+	 * Title top left character.
+	 */
+	public static char TITLE_TOP_LEFT = '\0';
+	
+	/**
+	 * Title top right character.
+	 */
+	public static char TITLE_TOP_RIGHT = '\0';
+	
+	/**
 	 * Frame top left character.
 	 */
 	public static char FRAME_TOP_LEFT = '\0';
@@ -40,7 +50,13 @@ public class StringFramer {
 	public static char FRAME_VERTICAL = '-';
 	
 	
+	/**
+	 * Maximum width of contents.
+	 */
+	public final static Double MAX_CONTENTS_WIDTH = StringFiller.CHAT_WIDTH - StringFiller.calcLength(" " + " " + FRAME_VERTICAL + FRAME_VERTICAL);
+	
 
+	
 	// Frame:
 	public static String frame(String title, String message, ChatColor colour, double width) {
 
@@ -48,37 +64,47 @@ public class StringFramer {
 		if(width > 1.0) width = 1.0;
 		if(width < 0.0) width = 0.0;
 		
-		double length = 78.5*width;
+		double length = (StringFiller.CHAT_WIDTH - StringFiller.calcLength(FRAME_VERTICAL + " " + " " + FRAME_VERTICAL)) * width;
 
 		StringBuffer result = new StringBuffer();
 		
-		// Lower:
-		StringBuffer down = new StringBuffer();
-		while(StringFiller.calcLength(down.toString() + FRAME_HORIZONTAL) < length){
-			down.append(FRAME_HORIZONTAL);
+		// Frame bottom:
+		StringBuffer frameBottom = new StringBuffer();
+		while(StringFiller.calcLength(frameBottom.toString() + FRAME_HORIZONTAL) <= length){
+			frameBottom.append(FRAME_HORIZONTAL);
 		}
-		down.insert(0, FRAME_BOTTOM_LEFT);
-		down.insert(0, colour);
-		down.append(FRAME_BOTTOM_RIGHT);
+		frameBottom.insert(0, FRAME_BOTTOM_LEFT);
+		frameBottom.insert(0, colour);
+		frameBottom.append(FRAME_BOTTOM_RIGHT);
 		
-		// Upper:
-		StringBuffer up = new StringBuffer();
-		while(StringFiller.calcLength(up.toString() + FRAME_HORIZONTAL) < length){
-			up.append(FRAME_HORIZONTAL);
+		// Frame upper:
+		StringBuffer frameUp = new StringBuffer();
+		while(StringFiller.calcLength(frameUp.toString() + FRAME_HORIZONTAL) <= length){
+			frameUp.append(FRAME_HORIZONTAL);
 		}
-		up.insert(0, FRAME_TOP_LEFT);
-		up.insert(0, colour);
-		up.append(FRAME_TOP_RIGHT);
-		up.append("\n");
+		frameUp.insert(0, FRAME_TOP_LEFT);
+		frameUp.insert(0, colour);
+		frameUp.append(FRAME_TOP_RIGHT);
+		frameUp.append("\n");
 
+		// Label upper:
+		StringBuffer labelUp = new StringBuffer();
+		while(StringFiller.calcLength(labelUp.toString() + FRAME_HORIZONTAL) <= length){
+			labelUp.append(FRAME_HORIZONTAL);
+		}
+		labelUp.insert(0, TITLE_TOP_LEFT);
+		labelUp.append(TITLE_TOP_RIGHT);
+		labelUp.insert(0, colour);
+		labelUp.append("\n");
+		
 		// Adjust width:
-		length = StringFiller.calcLength(down.toString()) - StringFiller.calcLength(" " + " " + FRAME_VERTICAL + FRAME_VERTICAL);
+		length = StringFiller.calcLength(frameBottom.toString()) - StringFiller.calcLength(" " + " " + FRAME_VERTICAL + FRAME_VERTICAL);
 		
 		// Label:
+		title = title.toUpperCase();
 		StringBuffer label = new StringBuffer();
-		label.append("=[ " + title.toUpperCase() + " ]=" + "\n");
-		int labelShift = (int)(length/2.0 - StringFiller.calcLength(label.toString())/2.0);
-		label.insert(0, StringFiller.fillString("", (double)labelShift));
+		int labelShift = (int)(length/2.0 - StringFiller.calcLength(title)/2.0);
+		label.append(FRAME_VERTICAL + " " + StringFiller.fillString(StringFiller.fillString("", (double)labelShift) + title, length) + " " + colour + FRAME_VERTICAL + "\n");
 		label.insert(0, colour);
 		
 		// Content:
@@ -88,9 +114,10 @@ public class StringFramer {
 		}
 		
 		// Add up and down:
-		result.insert(0, up);
+		result.insert(0, frameUp);
 		result.insert(0, label);
-		result.append(down);
+		result.insert(0, labelUp);
+		result.append(frameBottom);
 		
 		return StringFiller.adjustFillers(result.toString());
 		
@@ -102,13 +129,6 @@ public class StringFramer {
 		return frame(title, message, color, 1.0);
 		
 	}
-	
-	public static String smallFrame(String title, String message, ChatColor colour) {
-
-		return frame(title, message, colour, 0.75);
-		
-	}
-	
 	
 
 	/**
@@ -135,8 +155,10 @@ public class StringFramer {
 		sb.append(custom);
 		field.set( null, sb.toString() );
 		
-		FRAME_TOP_LEFT = '\u250C';
-		FRAME_TOP_RIGHT = '\u2510';
+		TITLE_TOP_LEFT = '\u250C';
+		TITLE_TOP_RIGHT = '\u2510';
+		FRAME_TOP_LEFT = '\u251C';
+		FRAME_TOP_RIGHT = '\u2524';
 		FRAME_BOTTOM_LEFT = '\u2514';
 		FRAME_BOTTOM_RIGHT = '\u2518';
 		FRAME_HORIZONTAL = '\u2500';

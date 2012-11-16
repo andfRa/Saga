@@ -19,6 +19,7 @@ import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.ProficiencyDefinition;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;
+import org.saga.utility.text.StringBook;
 import org.saga.utility.text.StringFramer;
 import org.saga.utility.text.StringTable;
 import org.saga.utility.text.TextUtil;
@@ -291,51 +292,28 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	
 	// Stats:
 	public static String stats(Faction faction, Integer page) {
-		
-		
-		StringBuffer result = new StringBuffer();
-		
-		switch (page) {
 
-			// Ranks:	
-			case 1:
-				
-				result.append(listMembers(faction));
-				
-				break;
-
-				// Ranks:	
-			case 2:
-				
-				result.append(claimed(faction).createTable());
-					
-				break;
-					
-			// Main stats:
-			default:
-				
-				page = 0;
-				
-				// Levels and claims:
-				result.append(main(faction).createTable());
-				
-				result.append("\n");
-				result.append("\n");
-				
-				// Claims:
-				result.append(claims(faction).createTable());
-				
-				result.append("\n");
-				result.append("\n");
-				
-				// Allies:
-				result.append(allies(faction));
-				
-				break;
-				
-		}
 		
-		return StringFramer.frame(faction.getName() + " stats " + (page + 1) + "/" + 3, result.toString(), faction.getColour2());
+		StringBook book = new StringBook(faction.getName() + " stats", new ColourLoop().addColor(faction.getColour2()));
+		
+		// Levels, claims and allies:
+		book.addTable(main(faction));
+		book.addLine("");
+		book.addTable(claims(faction));
+		book.addLine("");
+		book.addLine(allies(faction));
+		
+		book.nextPage();
+		
+		// Members:
+		book.addLine(listMembers(faction));
+		
+		book.nextPage();
+		
+		// Claimed:
+		book.addTable(claimed(faction));
+		
+		return book.framedPage(page);
 
 		
 	}
@@ -776,7 +754,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		
 		result.append(listMembers(faction));
 		
-		return StringFramer.frame(faction.getName() + " members", result.toString(), faction.getColour2());
+		return StringFramer.frame(faction.getName() + " members", result.toString(), normal1);
 		
 		
 	}

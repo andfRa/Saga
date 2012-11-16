@@ -5,15 +5,9 @@ import java.util.ArrayList;
 import org.bukkit.ChatColor;
 import org.saga.messages.PlayerMessages.ColourLoop;
 
-
-
 public class StringTable {
 
-	/**
-	 * Chat width.
-	 */
-	private static double CHAT_WIDTH = 79;
-
+	
 	/**
 	 * Book pages.
 	 */
@@ -61,7 +55,7 @@ public class StringTable {
 	 */
 	private Double getColumnWidth(int i) {
 
-		if(customWidths == null || i >= customWidths.size() || i < 0) return CHAT_WIDTH / table.size();
+		if(customWidths == null || i >= customWidths.size() || i < 0) return StringFiller.CHAT_WIDTH / table.size();
 		
 		return customWidths.get(i);
 		
@@ -156,7 +150,7 @@ public class StringTable {
 	
 	
 	
-	// Data:
+	// Contents:
 	/**
 	 * Adds a line to a column.
 	 * 
@@ -208,7 +202,6 @@ public class StringTable {
 	 * @param line line
 	 */
 	public void addLine(String[] lines) {
-		
 		
 		for (int i = 0; i < lines.length; i++) {
 		
@@ -292,9 +285,47 @@ public class StringTable {
 		
 	}
 	
+	/**
+	 * Gets all cells with correct widths.
+	 * 
+	 * @return table
+	 */
+	public String[][] getTable() {
+		
+		
+		int rows = 0;
+		int cols = table.size();
+		
+		for (ArrayList<String> column : table) {
+			if(rows < column.size()) rows = column.size();
+		}
+		
+		String[][] result = new String[rows][cols];
+		
+		for (int col = 0; col < cols; col++) {
+			
+			double width = getColumnWidth(col);
+			
+			for (int row = 0; row < rows; row++) {
+				
+				if(row < table.get(col).size()){
+					result[row][col] = StringFiller.fillString(table.get(col).get(row), width);
+				}else{
+					result[row][col] = StringFiller.fillString("", width);
+				}
+				
+			}
+			
+		}
+		
+		return result;
+		
+		
+	}
 	
 	
-	// Message:
+	
+	// Creation:
 	/**
 	 * Creates a table from the data.
 	 * 

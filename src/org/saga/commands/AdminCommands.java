@@ -899,8 +899,17 @@ public class AdminCommands {
 	@CommandPermissions({"saga.debug.admin.dinfo"})
 	public static void debugInfo(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
-		sagaPlayer.message("LL\u2502\u2502\u2502\u2502\u2502\u2502LL");
-		sagaPlayer.message("LL\u2510\u2510LL");
+		
+		for (int i = 300; i <= 325; i++) {
+			StringBuffer buffer = new StringBuffer();
+			for (int j = 1; j <=i; j++) {
+				buffer.append("\u2502");
+			}
+			sagaPlayer.message(i+":");
+			sagaPlayer.message(buffer.toString());
+			sagaPlayer.message(" ");
+		}
+		
 		
 	}
 	

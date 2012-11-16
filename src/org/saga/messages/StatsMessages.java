@@ -20,7 +20,7 @@ import org.saga.messages.PlayerMessages.ColourLoop;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.text.RomanNumeral;
-import org.saga.utility.text.StringFramer;
+import org.saga.utility.text.StringBook;
 import org.saga.utility.text.StringTable;
 import org.saga.utility.text.TextUtil;
 
@@ -50,47 +50,27 @@ public class StatsMessages {
 	public static String stats(SagaPlayer sagaPlayer, Integer page) {
 
 		
-		if(page > 2) page = 2;
-		if(page < 0) page = 0;
+		StringBook book = new StringBook("stats", new ColourLoop().addColor(normal1).addColor(normal2));
 		
-		StringBuffer result = new StringBuffer();
-		
-		switch (page) {
-			case 2:
-				
-				result.append(invites(sagaPlayer).createTable());
-				
-				break;
-				
-			case 1:
-				
-				result.append(abilities(sagaPlayer).createTable());
-				
-				break;
+		// Attributes and levels:
+		book.addTable(attributesLevels(sagaPlayer));
+		book.addLine("");
+		book.addTable(factionSettlement(sagaPlayer));
+		book.addLine("");
+		book.addTable(general(sagaPlayer));
 
-			default:
-				
-				// Attributes and levels:
-				result.append(attributesLevels(sagaPlayer).createTable());
-				
-				result.append("\n");
-				result.append("\n");
-				
-				// Faction and settlement:
-				result.append(factionSettlement(sagaPlayer).createTable());
-				
-				result.append("\n");
-				result.append("\n");
-				
-				// General:
-				result.append(general(sagaPlayer).createTable());
-				
-				break;
-				
-		}
+		book.nextPage();
 		
-		return StringFramer.smallFrame("player stats " + (page+1) + "/" + 3, result.toString(), normal1);
+		// Abilities:
+		book.addTable(abilities(sagaPlayer));
+
+		book.nextPage();
 		
+		// Invites:
+		book.addTable(invites(sagaPlayer));
+		
+		return book.framedPage(page);
+
 		
 	}
 	
