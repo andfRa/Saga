@@ -117,7 +117,12 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 */
 	private SagaLocation spawn;
 	
+	/**
+	 * Daily kills.
+	 */
+	private HashSet<String> dailyKills;
 
+	
 	/**
 	 * Faction definition.
 	 */
@@ -162,6 +167,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		colour1 = ChatColor.WHITE;
 		colour2 = ChatColor.WHITE;
 		playerRanks = new Hashtable<String, Proficiency>();
+		dailyKills = new HashSet<String>();
 		enemies = new HashSet<Integer>();
 		allies = new HashSet<Integer>();
 		allyRequests = new HashSet<Integer>();
@@ -253,9 +259,6 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 			}
 		}
 		
-		// Transient:
-		definition = FactionConfiguration.config().getDefinition();
-		
 		if(spawn != null){
 			
 			try {
@@ -265,6 +268,12 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 				removeSpawnPoint();
 			}
 			
+		}
+		
+		if(dailyKills == null){
+			SagaLogger.nullField(this, "dailyKills");
+			dailyKills = new HashSet<String>();
+			integrity = false;
 		}
 		
 		if(enemies == null){
@@ -285,6 +294,9 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 			integrity = false;
 		}
 
+		// Transient:
+		definition = FactionConfiguration.config().getDefinition();
+		
 		//Statistics:
 		StatisticsManager.manager().setLevel(this);
 		
@@ -1537,6 +1549,12 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		
 		if(!isEnabled()) return false;
 		
+		// Formed:
+		if(!isFormed()) return true;
+		
+		// Reset kills:
+		if(daytime == Daytime.SUNRISE) dailyKills = new HashSet<String>();
+		
 		// Wages:
 		if(daytime == EconomyConfiguration.config().getFactionWagesTime()) handleWages();
 		
@@ -1820,11 +1838,24 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	public void onPvpKill(SagaPlayer attacker, SagaPlayer defender){
 
 		
+		// Formed:
+		if(!isFormed()) return;
+		
 		// Only when other faction member is killed:
 		Faction attackerFaction = attacker.getFaction();
 		Faction defenderFaction = defender.getFaction();
-		
 		if(!(attackerFaction != null && attackerFaction == this && defenderFaction != attackerFaction)) return;
+		
+		// Daily kills:
+		if(attackerFaction == this){
+			
+			if(dailyKills.add(attacker.getName())){
+				Double reward = EconomyConfiguration.config().getFactionKillReward(defender, defenderFaction);
+				EconomyDependency.addCoins(attacker, reward);
+				information(EconomyMessages.gotKillReward(attacker, defender, attackerFaction, reward));
+			}
+		
+		}
 		
 		// Level progress:
 		if(level < getDefinition().getMaxLevel()){

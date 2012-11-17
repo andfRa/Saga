@@ -140,9 +140,10 @@
 "buyMult":1.25,
 "sellMult":0.75,
 
-"factionClaimsPointsWage":{"x1":0,"y1":0,"x2":40,"y2":500},
+"factionClaimsPointsWage":{"x1":0,"y1":0,"x2":40,"y2":100},
 "factionWageHierarchyMultiplier":{"x1":1,"y1":0.60,"x2":3,"y2":1.0},
 "factionWagesTime":"SUNRISE",
+"factionKillReward":{"x1":0,"y1":50,"x2":3,"y2":500},
 
 "enableHooking":true
 

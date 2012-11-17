@@ -253,6 +253,10 @@ public class EconomyMessages {
 		
 	}
 	
+	public static String gotKillReward(SagaPlayer attakerPlayer, SagaPlayer defenderPlayer, Faction faction, Double amount) {
+		return faction.getColour2() + attakerPlayer.getName() + " received " + coins(amount) + " for killing " + defenderPlayer.getName() + ".";
+	}
+	
 	
 	
 	// Naming:

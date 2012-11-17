@@ -8,6 +8,9 @@ import org.bukkit.Material;
 import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.SagaLogger;
+import org.saga.factions.Faction;
+import org.saga.player.Proficiency;
+import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.utility.TwoPointFunction;
@@ -106,6 +109,11 @@ public class EconomyConfiguration {
 	 */
 	private Daytime factionWagesTime;
 	
+	/**
+	 * Amount rewarded for a kill for a hierarchy level.
+	 */
+	private TwoPointFunction factionKillReward;
+	
 	
 	/**
 	 * True to enable hooking with other economy plugins.
@@ -192,6 +200,12 @@ public class EconomyConfiguration {
 		if(factionWageHierarchyMultiplier == null){
 			SagaLogger.nullField(getClass(), "factionWageHierarchyMultiplier");
 			factionWageHierarchyMultiplier= new TwoPointFunction(0.0);
+		}
+		factionWageHierarchyMultiplier.complete();
+		
+		if(factionKillReward == null){
+			SagaLogger.nullField(getClass(), "factionKillReward");
+			factionKillReward= new TwoPointFunction(0.0);
 		}
 		factionWageHierarchyMultiplier.complete();
 
@@ -339,6 +353,25 @@ public class EconomyConfiguration {
 	 */
 	public Daytime getFactionWagesTime() {
 		return factionWagesTime;
+	}
+
+	/**
+	 * Gets the reward for a killer player with a certain hierarchy level.
+	 * 0 hierarchy if none.
+	 * 
+	 * @param killedPlayer, player killed
+	 * @param killedFaction faction where the killed player was from, null if none
+	 * @return reward gained
+	 */
+	public Double getFactionKillReward(SagaPlayer killedPlayer, Faction killedFaction) {
+	
+		Proficiency rank = null;
+		if(killedFaction != null) rank = killedFaction.getRank(killedPlayer.getName());
+		
+		if(rank != null) return factionKillReward.value(rank.getHierarchy());
+	
+		return factionKillReward.value(0);
+		
 	}
 	
 	
