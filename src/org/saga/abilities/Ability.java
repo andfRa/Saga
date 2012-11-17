@@ -114,9 +114,9 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 			integrity = false;
 		}
 		
-		definition = AbilityConfiguration.config().getDefinition(getName());
+		definition = AbilityConfiguration.config().getDefinition(name);
 		if(definition == null){
-			throw new InvalidAbilityException(getName());
+			throw new InvalidAbilityException(name);
 		}
 		
 		// Transient:

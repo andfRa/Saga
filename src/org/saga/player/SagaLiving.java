@@ -121,7 +121,7 @@ public class SagaLiving <T extends LivingEntity>{
 				ability.complete();
 				
 			} catch (InvalidAbilityException e) {
-				SagaLogger.severe(this, "abilities element invalid: " + e.getMessage());
+				SagaLogger.info(this, "ability " + ability.getName() + " doesn't exist");
 				abilities.remove(i);
 				i--;
 				continue;
