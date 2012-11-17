@@ -1847,7 +1847,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		if(!(attackerFaction != null && attackerFaction == this && defenderFaction != attackerFaction)) return;
 		
 		// Daily kills:
-		if(attackerFaction == this){
+		if(attackerFaction == this && defenderFaction != this){
 			
 			if(dailyKills.add(attacker.getName())){
 				Double reward = EconomyConfiguration.config().getFactionKillReward(defender, defenderFaction);
