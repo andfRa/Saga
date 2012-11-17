@@ -1853,6 +1853,11 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 				Double reward = EconomyConfiguration.config().getFactionKillReward(defender, defenderFaction);
 				EconomyDependency.addCoins(attacker, reward);
 				information(EconomyMessages.gotKillReward(attacker, defender, attackerFaction, reward));
+				
+				//Statistics:
+				StatisticsManager.manager().addWages(this, reward);
+				
+				
 			}
 		
 		}

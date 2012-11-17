@@ -936,6 +936,12 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 	
+	public void addWages(Faction faction, Double bounty) {
+
+		modifyValue("wages.factions.pvp." + faction.getName(), bounty);
+		
+	}
+	
 	
 	public void addBundleClaimed(Faction faction, Bundle bundle) {
 
