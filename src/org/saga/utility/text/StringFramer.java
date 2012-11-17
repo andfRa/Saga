@@ -49,11 +49,15 @@ public class StringFramer {
 	 */
 	public static char FRAME_VERTICAL = '-';
 	
-	
 	/**
 	 * Maximum width of contents.
 	 */
 	public final static Double MAX_CONTENTS_WIDTH = StringFiller.CHAT_WIDTH - StringFiller.calcLength(" " + " " + FRAME_VERTICAL + FRAME_VERTICAL);
+
+	/**
+	 * Fix in content length to account for centring.
+	 */
+	private static Double CONTENT_CENTRING_FIX = -1.0/4.0;
 	
 
 	
@@ -98,7 +102,7 @@ public class StringFramer {
 		labelUp.append("\n");
 		
 		// Adjust width:
-		length = StringFiller.calcLength(frameBottom.toString()) - StringFiller.calcLength(" " + " " + FRAME_VERTICAL + FRAME_VERTICAL);
+		length = StringFiller.calcLength(frameBottom.toString()) - StringFiller.calcLength(" " + " " + FRAME_VERTICAL + FRAME_VERTICAL) + CONTENT_CENTRING_FIX;
 		
 		// Label:
 		title = title.toUpperCase();
@@ -149,21 +153,31 @@ public class StringFramer {
 		modifiersField.setAccessible( true );
 		modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
 		String oldallowedchars = (String)field.get(null);
-		String custom = "\u2500\u2510\u2514\u2518\u250C\u2502";
+//		String custom = "\u2500\u2510\u2514\u2518\u250C\u2502";
+		String custom = "\u2554\u2557\u2560\u2563\u255A\u255D\u2550\u2551";
 		StringBuilder sb = new StringBuilder();
 		sb.append(oldallowedchars);
 		sb.append(custom);
 		field.set( null, sb.toString() );
 		
-		TITLE_TOP_LEFT = '\u250C';
-		TITLE_TOP_RIGHT = '\u2510';
-		FRAME_TOP_LEFT = '\u251C';
-		FRAME_TOP_RIGHT = '\u2524';
-		FRAME_BOTTOM_LEFT = '\u2514';
-		FRAME_BOTTOM_RIGHT = '\u2518';
+//		TITLE_TOP_LEFT = '\u250C';
+//		TITLE_TOP_RIGHT = '\u2510';
+//		FRAME_TOP_LEFT = '\u251C';
+//		FRAME_TOP_RIGHT = '\u2524';
+//		FRAME_BOTTOM_LEFT = '\u2514';
+//		FRAME_BOTTOM_RIGHT = '\u2518';
 		FRAME_HORIZONTAL = '\u2500';
 		FRAME_VERTICAL = '\u2502';
-				
+		
+		TITLE_TOP_LEFT = '\u2554';
+		TITLE_TOP_RIGHT = '\u2557';
+		FRAME_TOP_LEFT = '\u2560';
+		FRAME_TOP_RIGHT = '\u2563';
+		FRAME_BOTTOM_LEFT = '\u255A';
+		FRAME_BOTTOM_RIGHT = '\u255D';
+//		FRAME_HORIZONTAL = '\u2550';
+//		FRAME_VERTICAL = '\u2551';
+
 	}
 	
 	

@@ -900,16 +900,41 @@ public class AdminCommands {
 	public static void debugInfo(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
-		for (int i = 300; i <= 325; i++) {
-			StringBuffer buffer = new StringBuffer();
-			for (int j = 1; j <=i; j++) {
-				buffer.append("\u2502");
-			}
-			sagaPlayer.message(i+":");
-			sagaPlayer.message(buffer.toString());
-			sagaPlayer.message(" ");
-		}
+
+		sagaPlayer.message(" ");
+		sagaPlayer.message("LL\u2502\u2502\u2502\u2502LL");
+		sagaPlayer.message("LL\u2557LL");
+
+		sagaPlayer.message(" ");
+		sagaPlayer.message("LL\u2502\u2502\u2502\u2502LL");
+		sagaPlayer.message("LL\u2563LL");
+
+		sagaPlayer.message(" ");
+		sagaPlayer.message("LL\u2502\u2502\u2502\u2502LL");
+		sagaPlayer.message("LL\u255DLL");
+
 		
+
+		sagaPlayer.message(" ");
+		sagaPlayer.message("LL\u2502\u2502\u2502\u2502\u2502LL");
+		sagaPlayer.message("LL\u2550LL");
+
+		sagaPlayer.message(" ");
+		sagaPlayer.message("LL\u2502\u2502LL");
+		sagaPlayer.message("LL\u2551LL");
+
+		sagaPlayer.message(" ");
+		sagaPlayer.message("LL\u2502\u2502\u2502LL");
+		sagaPlayer.message("LL\u2554LL");
+
+		sagaPlayer.message(" ");
+		sagaPlayer.message("LL\u2502\u2502\u2502LL");
+		sagaPlayer.message("LL\u2560LL");
+
+		sagaPlayer.message(" ");
+		sagaPlayer.message("LL\u2502\u2502\u2502LL");
+		sagaPlayer.message("LL\u255ALL");
+
 		
 	}
 	
