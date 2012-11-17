@@ -51,16 +51,16 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 	
 
 	// Player levels:
-	public static String playerLevelSet(Integer level, SagaPlayer sagaPlayer){
-		return positive + "Player " + sagaPlayer.getName() + " level set to " + level + ".";
+	public static String playerExpSet(Integer exp, SagaPlayer sagaPlayer){
+		return positive + "Player " + sagaPlayer.getName() + " exp set to " + exp + ".";
 	}
 	
-	public static String playerLevelSet(Integer level){
-		return positive + "Level was set to " + level + ".";
+	public static String playerExpSet(Integer exp){
+		return positive + "Exp was set to " + exp + ".";
 	}
 
-	public static String playerLevelOutOfRange(String level){
-		return negative + "Level " + level + " is out of range. Allowed range: 0 - " + ExperienceConfiguration.config().maximumLevel + ".";
+	public static String playerExpOutOfRange(String exp){
+		return negative + "Exp " + exp + " is out of range. Allowed range: 0 - " + ExperienceConfiguration.config().getMaxExp() + ".";
 	}
 	
 	

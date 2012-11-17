@@ -31,19 +31,19 @@ public class ExperienceConfiguration {
 	public static ExperienceConfiguration config() {
 		return instance;
 	}
-
 	
 	
 	/**
-	 * Maximum level.
+	 * Attribute point cost.
 	 */
-	public Integer maximumLevel;
-	
-	/**
-	 * Experience needed to level up.
-	 */
-	private TwoPointFunction levelUpExp;
+	private Double attributePointCost;
 
+	/**
+	 * Experience gain multiplier for given exp value.
+	 */
+	private TwoPointFunction expGainMultiplier;
+	
+	
 	/**
 	 * Block break experience.
 	 */
@@ -98,38 +98,38 @@ public class ExperienceConfiguration {
 		// Set instance:
 		instance = this;
 
-		if(maximumLevel == null){
-			SagaLogger.nullField(getClass(), "maximumLevel");
-			maximumLevel= 1;
+		if(attributePointCost == null){
+			SagaLogger.nullField(getClass(), "attributePointCost");
+			attributePointCost = 500.0;
 		}
-		
-		if(levelUpExp == null){
-			SagaLogger.severe(getClass(), "levelUpExp field not initialized");
-			levelUpExp = new TwoPointFunction(0.0);
-			integrity=false;
+
+		if(expGainMultiplier == null){
+			expGainMultiplier = new TwoPointFunction(1.0);
+			SagaLogger.nullField(getClass(), "expGainMultiplier");
+			integrity = false;
 		}
 		
 		if(blockExp == null){
 			blockExp = new Hashtable<Material, Hashtable<Byte,Double>>();
-			SagaLogger.severe(this, "blockExp field failed to intialize");
+			SagaLogger.nullField(getClass(), "blockExp");
 			integrity = false;
 		}
 		
 		if(playerExp == null){
 			playerExp = new TwoPointFunction(0.0);
-			SagaLogger.severe(this, "playerExp field failed to intialize");
+			SagaLogger.nullField(getClass(), "playerExp");
 			integrity = false;
 		}
 		
 		if(creatureExp == null){
 			creatureExp = new Hashtable<String, Double>();
-			SagaLogger.severe(this, "creatureExp field failed to intialize");
+			SagaLogger.nullField(getClass(), "creatureExp");
 			integrity = false;
 		}
 		
 		if(abilityExp == null){
 			abilityExp = new Hashtable<String, TwoPointFunction>();
-			SagaLogger.severe(this, "abilityExp field failed to intialize");
+			SagaLogger.nullField(getClass(), "abilityExp");
 			integrity = false;
 		}
 		Collection<TwoPointFunction> abExpVals = abilityExp.values();
@@ -154,37 +154,60 @@ public class ExperienceConfiguration {
 		
 	}
 
-
 	
 	
-	// Levels:
+	// Leveling:
 	/**
-	 * Gets the experience required to level up.
+	 * Gets the cost of a single attribute point.
 	 * 
-	 * @param level level
-	 * @return experience required
+	 * @return attribute point cost
 	 */
-	public Integer getLevelExp(Integer level) {
-		
-		return levelUpExp.value(level).intValue();
-
+	public Double getAttributePointCost() {
+		return attributePointCost;
 	}
 	
 	/**
-	 * Gets the maximum level.
+	 * Gets the amount of attribute points available
 	 * 
-	 * @return maximum level
+	 * @param exp player exp
+	 * @return attribute points
 	 */
-	public Integer getMaxLevel() {
-		
-		return levelUpExp.getXMax().intValue();
-
+	public Integer getAttributePoints(Double exp) {
+		return (int) (exp / attributePointCost);
 	}
 	
+	/**
+	 * Gets max experience points.
+	 * 
+	 * @return max experience points
+	 */
+	public Double getMaxExp() {
+		return attributePointCost * AttributeConfiguration.config().getMaxAttributePoints();
+	}
 
+	/**
+	 * Calculates experience points needed for given attribute points.
+	 * 
+	 * @param attrPoints attribute points
+	 * @return experience needed
+	 */
+	public Double calcExp(Integer attrPoints) {
+		return attributePointCost * attrPoints;
+	}
 	
 	
 	// Experience:
+	/**
+	 * Gets the experience gain multiplier.
+	 * 
+	 * @param exp exp
+	 * @return experience gain multiplier
+	 */
+	public Double getExpGainMultiplier(Double exp) {
+		return expGainMultiplier.value(exp);
+	}
+
+	
 	/**
 	 * Gets the experience for a block break.
 	 * 

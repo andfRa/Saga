@@ -11,7 +11,6 @@ import org.saga.attributes.Attribute;
 import org.saga.attributes.DamageType;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
-import org.saga.utility.TwoPointFunction;
 
 public class AttributeConfiguration {
 
@@ -29,16 +28,16 @@ public class AttributeConfiguration {
 	public static AttributeConfiguration config() {
 		return instance;
 	}
-	
+
 	/**
 	 * Maximum attribute score.
 	 */
 	public Integer maxAttributeScore;
-	
+
 	/**
-	 * Available attribute points.
+	 * Maximum attribute points.
 	 */
-	private TwoPointFunction attributePoints;
+	public Integer maxAttributePoints;
 
 	/**
 	 * Damage penalty totals.
@@ -67,9 +66,9 @@ public class AttributeConfiguration {
 			maxAttributeScore= 1;
 		}
 		
-		if(attributePoints == null){
-			SagaLogger.nullField(getClass(), "attributePoints");
-			attributePoints= new TwoPointFunction(0.0);
+		if(maxAttributePoints == null){
+			SagaLogger.nullField(getClass(), "maxAttributePoints");
+			maxAttributePoints= 50;
 		}
 		
 		if(damagePenaltyValues == null){
@@ -138,51 +137,15 @@ public class AttributeConfiguration {
 		
 		
 	}
-	
+
 	/**
-	 * Gets the amount of attribute points available
+	 * Gets the maximum amount of attribute points.
 	 * 
-	 * @param level player level
-	 * @return attribute points
+	 * @return maximum amount of attribute points.
 	 */
-	public Integer getAttributePoints(Integer level) {
-		return attributePoints.intValue(level);
+	public Integer getMaxAttributePoints() {
+		return maxAttributePoints;
 	}
-	
-	/**
-	 * Find the maximum number of attribute points given.
-	 * 
-	 * @return maximum attribute points
-	 */
-	public int findMaxAttrPoints() {
-
-		int max = 0;
-		int val = getAttributePoints(0);
-		for (int level = 1; level <= ExperienceConfiguration.config().maximumLevel; level++) {
-			val = getAttributePoints(level) - getAttributePoints(level - 1);
-			if(val > max) max = val;
-		}
-		return max;
-
-	}
-	
-	/**
-	 * Find the minimum number of attribute points given.
-	 * 
-	 * @return minimum attribute points
-	 */
-	public int findMinAttrPoints() {
-
-		int min = AttributeConfiguration.config().maxAttributeScore.intValue();
-		int val = getAttributePoints(0);
-		for (int level = 1; level <= ExperienceConfiguration.config().maximumLevel; level++) {
-			val = getAttributePoints(level) - getAttributePoints(level - 1);
-			if(val < min) min = val;
-		}
-		return min;
-
-	}
-
 	
 	
 	

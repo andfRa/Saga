@@ -81,15 +81,10 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		ColourLoop messageColor = new ColourLoop().addColor(normal1).addColor(normal2);
 		StringBook book = new StringBook("player help", messageColor);
 
-		int maxAttr = AttributeConfiguration.config().findMaxAttrPoints();
-		int minAttr = AttributeConfiguration.config().findMinAttrPoints();
-		String attrGain = minAttr + "-" + maxAttr;
-		if(minAttr == maxAttr) attrGain = minAttr + "";
-		
 		// Attributes:
 		book.addLine( 
-			"Player levels are gained from killing creatures, getting crafting materials and pvp. " +
-			"Each level gives " + attrGain + " attribute points that can be used to increase attribute scores. " +
+			"Players gain attribute points from killing creatures, getting crafting materials and pvp. " +
+			"Attribute points can be used to increase attribute scores. " +
 			"Higher attribute scores make you stronger and unlock new abilities. " +
 			"Attributes can be increased by interacting with " + AttributeSign.SIGN_NAME + " signs. " +
 			"Use " + GeneralMessages.command("/stats") + " to see your attributes."

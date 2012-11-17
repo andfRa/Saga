@@ -15,7 +15,6 @@ import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.chunks.Bundle;
 import org.saga.chunks.BundleManager;
-import org.saga.config.AttributeConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.dependencies.ChatDependency;
@@ -281,7 +280,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	 */
 	public Integer getAvailableAttributePoints() {
 
-		return AttributeConfiguration.config().getAttributePoints(getLevel());
+		return ExperienceConfiguration.config().getAttributePoints(exp);
 		
 	}
 	
@@ -503,14 +502,17 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		
 	}
 	
+	
+
+	// Experience:
 	/**
-	 * Sets player level.
+	 * Sets player experience.
 	 * 
-	 * @param level level
+	 * @param exp experience
 	 */
-	public void setLevel(int level) {
+	public void setExp(Integer exp) {
 		
-		this.level = level;
+		this.exp = exp.doubleValue();
 		
 		// Update managers:
 		abilityManager.update();
@@ -518,45 +520,12 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	}
 	
 	/**
-	 * Levels up the player.
-	 * 
-	 */
-	public void levelUp() {
-		
-		setLevel(level + 1);
-		
-		message(StatsMessages.levelup(getLevel()));
-		StatsEffectHandler.playLevelUp(this);
-		
-	}
-
-	/**
-	 * Decreases the player level.
-	 * 
-	 * @param amount amount to decrease
-	 */
-	public void decreaseLevel(Integer amount) {
-
-		
-		if(livingEntity == null) return;
-		
-		setLevel(getLevel() - amount);
-		
-		
-	}
-	
-	
-
-	// Experience:
-	/**
 	 * Gets player experience.
 	 * 
 	 * @return player experience
 	 */
 	public Double getExp() {
-		
 		return exp;
-		
 	}
 	
 	/**
@@ -566,7 +535,9 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	 */
 	public Double getRemainingExp() {
 		
-		return ExperienceConfiguration.config().getLevelExp(getLevel()).doubleValue() - getExp();
+		int attrPoints = ExperienceConfiguration.config().getAttributePoints(exp);
+		
+		return ExperienceConfiguration.config().calcExp(attrPoints + 1) - exp;
 		
 	}
 
@@ -577,14 +548,20 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	 */
 	public void awardExp(Double amount) {
 		
-		if(level > ExperienceConfiguration.config().getMaxLevel()) return;
-		
+		amount*= ExperienceConfiguration.config().getExpGainMultiplier(exp);
 		amount*= getExpMult();
 		
-		this.exp += amount;
+		int befAttrPoints = ExperienceConfiguration.config().getAttributePoints(exp);
 		
-		if(this.exp >= ExperienceConfiguration.config().getLevelExp(getLevel())){
-			levelUp();
+		this.exp += amount;
+		if(exp > ExperienceConfiguration.config().getMaxExp()) exp = ExperienceConfiguration.config().getMaxExp().doubleValue(); 
+		
+		int aftAttrPoints = ExperienceConfiguration.config().getAttributePoints(exp);
+		
+		// Inform:
+		if(befAttrPoints < aftAttrPoints){
+			message(StatsMessages.gaineAttributePoints(aftAttrPoints - befAttrPoints));
+			StatsEffectHandler.playLevelUp(this);
 		}
 		
 	}

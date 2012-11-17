@@ -1,8 +1,8 @@
 {
 
-"maximumLevel":50,
+"attributePointCost":150,
 
-"levelUpExp":{"x1":0,"y1":200.0,"x2":49,"y2":15000.0},
+"expGainMultiplier":{"x1":0,"y1":1.0,"x2":15000.0,"y2":0.2},
 
 "blockExp":{
   "DIAMOND_ORE":{"0":16.0},

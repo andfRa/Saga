@@ -2,6 +2,7 @@ package org.saga.listeners.events;
 
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.metadata.SpawnerTag;
 import org.saga.statistics.StatisticsManager;
@@ -87,16 +88,16 @@ public class SagaEntityDeathEvent {
 			damEvent.attackerPlayer.awardExp(exp);
 			
 			// Statistics:
-			Integer level = damEvent.defenderPlayer.getLevel();
+			Integer usedAttr = damEvent.defenderPlayer.getUsedAttributePoints();
 			String range = "";
-			for (int maxi = 0; maxi <= ExperienceConfiguration.config().maximumLevel; maxi+=10) {
+			for (int maxi = 0; maxi <= AttributeConfiguration.config().maxAttributeScore; maxi+=10) {
 				
-				if(level < maxi + 1){
+				if(usedAttr < maxi + 1){
 
-					if(level == 0){
-						range = "level " + level;
+					if(usedAttr == 0){
+						range = "attributes " + usedAttr;
 					}else{
-						range = "levels " + (maxi - 9) + "-" + (maxi);
+						range = "attributes " + (maxi - 9) + "-" + (maxi);
 					}
 					break;
 					

@@ -127,18 +127,18 @@ public class AdminCommands {
 
 	// Attributes and levels:
 	@Command(
-		aliases = {"asetlevel"},
-		usage = "[player_name] <level>",
+		aliases = {"asetexp"},
+		usage = "[player_name] <exp>",
 		flags = "",
-		desc = "Set players level.",
+		desc = "Set players experience.",
 		min = 1,
 		max = 2)
-	@CommandPermissions({"saga.admin.player.setlevel"})
+	@CommandPermissions({"saga.admin.player.setexp"})
 	public static void setLevel(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
 		SagaPlayer selPlayer = null;
-		Integer level = null;
+		Integer exp = null;
 		
 		String playerName = null;
 		String argsLevel = null;
@@ -152,7 +152,7 @@ public class AdminCommands {
 				
 				argsLevel = args.getString(0);
 				try {
-					level = Integer.parseInt(argsLevel);
+					exp = Integer.parseInt(argsLevel);
 				} catch (NumberFormatException e) {
 					sagaPlayer.message(GeneralMessages.mustBeNumber(argsLevel));
 				}
@@ -165,7 +165,7 @@ public class AdminCommands {
 				
 				argsLevel = args.getString(1);
 				try {
-					level = Integer.parseInt(argsLevel);
+					exp = Integer.parseInt(argsLevel);
 				} catch (NumberFormatException e) {
 					sagaPlayer.message(GeneralMessages.mustBeNumber(argsLevel));
 				}
@@ -186,21 +186,21 @@ public class AdminCommands {
 			
 		}
 		
-		// Invalid level:
-		if(level < 0 || level > ExperienceConfiguration.config().maximumLevel){
+		// Invalid exp:
+		if(exp < 0 || exp > ExperienceConfiguration.config().getMaxExp()){
 			
-			sagaPlayer.message(AdminMessages.playerLevelOutOfRange(level + ""));
+			sagaPlayer.message(AdminMessages.playerExpOutOfRange(exp + ""));
 			return;
 			
 		}
 		
-		// Set level:
-		selPlayer.setLevel(level);
+		// Set exp:
+		selPlayer.setExp(exp);
 		
 		// Inform:
-		selPlayer.message(AdminMessages.playerLevelSet(level));
+		selPlayer.message(AdminMessages.playerExpSet(exp));
 		if(selPlayer != sagaPlayer){
-			sagaPlayer.message(AdminMessages.playerLevelSet(level, selPlayer));
+			sagaPlayer.message(AdminMessages.playerExpSet(exp, selPlayer));
 		}
 
 		// Release:

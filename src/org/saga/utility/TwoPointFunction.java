@@ -111,7 +111,56 @@ public class TwoPointFunction {
 		
 	}
 
+	
+	// X values:
+	/**
+	 * Gets the x value for the given y.
+	 * 
+	 * @param y y value
+	 * @return x value, x2, if undefined
+	 */
+	public Double xValue(Double y) {
 
+		double k= (y2 - y1)/(x2-x1);
+		double b= y1 - k * x1;
+		
+		if(k == 0) return x2;
+		
+		return new Double((y - b) / k);
+		
+	}
+	
+	/**
+	 * Gets the x value for the given y.
+	 * 
+	 * @param y y value
+	 * @return x value, x2, if undefined
+	 */
+	public Double xValue(Integer y) {
+		return xValue(y.doubleValue());
+	}
+	
+	/**
+	 * Gets the x value for the given y.
+	 * 
+	 * @param y y value
+	 * @return x value, x2, if undefined
+	 */
+	public Integer intxValue(Double y) {
+		return xValue(y).intValue();
+	}
+	
+	/**
+	 * Gets the x value for the given y.
+	 * 
+	 * @param y y value
+	 * @return x value, x2, if undefined
+	 */
+	public Integer intxValue(Integer y) {
+		return xValue(y.doubleValue()).intValue();
+	}
+
+	
 	
 	// Values:
 	/**
@@ -156,6 +205,17 @@ public class TwoPointFunction {
 	public Integer intValue(Integer x) {
 		
 		return value(x.doubleValue()).intValue();
+		
+	}
+	
+	/**
+	 * Calculates the value for the given y value.
+	 * 
+	 * @param x x value
+	 */
+	public Integer intValue(Double x) {
+		
+		return value(x).intValue();
 		
 	}
 	

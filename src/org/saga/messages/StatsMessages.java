@@ -56,8 +56,6 @@ public class StatsMessages {
 		book.addTable(attributesLevels(sagaPlayer));
 		book.addLine("");
 		book.addTable(factionSettlement(sagaPlayer));
-		book.addLine("");
-		book.addTable(general(sagaPlayer));
 
 		book.nextPage();
 		
@@ -108,10 +106,6 @@ public class StatsMessages {
 		// Health:
 		table.addLine("Health", TextUtil.round((double)sagaPlayer.getHealth(), 0) + "/" + TextUtil.round((double)sagaPlayer.getTotalHealth(), 0), 2);
 		
-		// Levels:
-		table.addLine("Level", sagaPlayer.getLevel() + "/" + ExperienceConfiguration.config().maximumLevel, 2);
-		table.addLine("Next EXP", sagaPlayer.getRemainingExp().intValue() + "", 2);
-		
 		String attrPoints = sagaPlayer.getUsedAttributePoints() + "/" + sagaPlayer.getAvailableAttributePoints();
 		if(sagaPlayer.getRemainingAttributePoints() < 0){
 			attrPoints = ChatColor.DARK_RED + attrPoints;
@@ -120,8 +114,27 @@ public class StatsMessages {
 			attrPoints = ChatColor.DARK_GREEN + attrPoints;
 		}
 		table.addLine("Attributes", attrPoints, 2);
+
+		// Exp:
+		table.addLine("Progress", (int)(100.0 * sagaPlayer.getRemainingExp() / ExperienceConfiguration.config().getAttributePointCost()) + "%", 2);
+
+		// Wallet:
+		table.addLine("Wallet", EconomyMessages.coins(EconomyDependency.getCoins(sagaPlayer)), 2);
 		
-		// Style:
+		// Guard rune:
+		GuardianRune guardRune = sagaPlayer.getGuardRune();
+		String rune = "";
+		if(!guardRune.isEnabled()){
+			rune = "disabled";
+		}else{
+			if(guardRune.isCharged()){
+				rune= "charged";
+			}else{
+				rune= "discharged";
+			}
+		}
+		table.addLine("Guard rune", rune, 2);
+		
 		table.collapse();
 		
 		return table;
@@ -162,37 +175,6 @@ public class StatsMessages {
 		
 
 	}
-	
-	private static StringTable general(SagaPlayer sagaPlayer) {
-
-		StringTable table = new StringTable(new ColourLoop().addColor(normal1).addColor(normal2));
-
-		// Wallet:
-		table.addLine("Wallet", EconomyMessages.coins(EconomyDependency.getCoins(sagaPlayer)), 0);
-		
-		// Guard rune:
-		GuardianRune guardRune = sagaPlayer.getGuardRune();
-		String rune = "";
-		if(!guardRune.isEnabled()){
-			rune = "disabled";
-		}else{
-
-			if(guardRune.isCharged()){
-				rune= "charged";
-			}else{
-				rune= "discharged";
-			}
-
-		}
-		table.addLine("Guard rune", rune, 2);
-		
-		table.collapse();
-		
-		return table;
-		
-
-	}
-
 	
 	private static StringTable abilities(SagaPlayer sagaPlayer) {
 
@@ -372,13 +354,12 @@ public class StatsMessages {
 		
 	}
 	
+
 	
-	
-	
-	// Level:
-	public static String levelup(Integer level) {
+	// Attribute points:
+	public static String gaineAttributePoints(Integer amount) {
 		
-		return veryPositive + "Reached level " + level + ".";
+		return veryPositive + "Gained " + amount + " attribute points.";
 		
 	}
 	
