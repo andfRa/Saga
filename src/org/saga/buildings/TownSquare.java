@@ -177,8 +177,8 @@ public class TownSquare extends Building implements SecondTicker{
 		// Initiating:
 		else{
 			
-			// Non members:
-			sagaPlayers = getNonMembers();
+			// Claiming players:
+			sagaPlayers = getSagaChunk().getSagaPlayers();
 			
 			// Available:
 			if(!FactionClaimManager.manager().checkAvailable(bundleId, sagaPlayers)) return true;
@@ -392,29 +392,6 @@ public class TownSquare extends Building implements SecondTicker{
 		}
 		
 		return false;
-		
-		
-	}
-	
-	/**
-	 * Gets all saga players that are not members of the bundle.
-	 * 
-	 * @return all non bundle members
-	 */
-	public ArrayList<SagaPlayer> getNonMembers(){
-		
-		
-		Bundle bundle = getChunkBundle();
-		if(bundle == null) return new ArrayList<SagaPlayer>();
-		
-		ArrayList<SagaPlayer> sagaPlayers = getSagaChunk().getSagaPlayers();
-		ArrayList<SagaPlayer> filteredPlayers = new ArrayList<SagaPlayer>();
-		
-		for (SagaPlayer sagaPlayer : sagaPlayers) {
-			if(!bundle.isMember(sagaPlayer.getName())) filteredPlayers.add(sagaPlayer);
-		}
-		
-		return filteredPlayers;
 		
 		
 	}
