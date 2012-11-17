@@ -17,7 +17,7 @@
     "type":"ROLE",
     "hierarchyLevel":"2",
     "attributeBonuses":{"toughness":6,"strength":4},
-    "settlementPermissions":["BUILD","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE"],
+    "settlementPermissions":["BUILD","BUILD_BUILDING","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE"],
     "factionPermissions":[]
   },
 
@@ -25,7 +25,7 @@
     "type":"ROLE",
     "hierarchyLevel":"2",
     "attributeBonuses":{"strength":6,"precision":4},
-    "settlementPermissions":["BUILD","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE"],
+    "settlementPermissions":["BUILD","BUILD_BUILDING","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE"],
     "factionPermissions":[]
   },
 
@@ -33,7 +33,7 @@
     "type":"ROLE",
     "hierarchyLevel":"2",
     "attributeBonuses":{"precision":6,"willpower":4},
-    "settlementPermissions":["BUILD","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE"],
+    "settlementPermissions":["BUILD","BUILD_BUILDING","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE"],
     "factionPermissions":[]
   },
 
@@ -41,7 +41,7 @@
     "type":"ROLE",
     "hierarchyLevel":"2",
     "attributeBonuses":{"willpower":6,"toughness":4},
-    "settlementPermissions":["BUILD","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE"],
+    "settlementPermissions":["BUILD","BUILD_BUILDING","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE"],
     "factionPermissions":[]
   },
 
