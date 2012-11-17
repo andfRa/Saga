@@ -406,7 +406,7 @@ public class BundleManager {
 		
 
 		// Inform:
-		SagaLogger.info("Loading chunk groups.");
+		SagaLogger.info("Loading bundles.");
 		
 		BundleManager manager = new BundleManager();
 		
