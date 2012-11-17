@@ -4,6 +4,7 @@ import java.util.PriorityQueue;
 import java.util.Random;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -11,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.attributes.DamageType;
@@ -19,6 +21,7 @@ import org.saga.chunks.SagaChunk;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.VanillaConfiguration;
 import org.saga.player.SagaPlayer;
+import org.saga.utility.TwoPointFunction;
 
 public class SagaEntityDamageEvent {
 
@@ -38,6 +41,11 @@ public class SagaEntityDamageEvent {
 	 * Projectile.
 	 */
 	public final Projectile projectile;
+	
+	/**
+	 * Tool material.
+	 */
+	public final Material tool;
 	
 	
 	/**
@@ -109,6 +117,12 @@ public class SagaEntityDamageEvent {
 	private double penalty = 1.0;
 	
 	/**
+	 * Tool sloppiness multiplier.
+	 */
+	private double sloppiness = 1.0;
+	
+	
+	/**
 	 * PvP override.
 	 */
 	private PriorityQueue<PvPOverride> pvpOverride = new PriorityQueue<SagaEntityDamageEvent.PvPOverride>();
@@ -156,6 +170,9 @@ public class SagaEntityDamageEvent {
 			attackerPlayer = Saga.plugin().getLoadedPlayer( ((Player) attacker).getName() );
 			attackerCreature = null;
 			
+			// Tool:
+			tool = ((Player) attacker).getItemInHand().getType();
+			
 			// No player:
 			if(attackerPlayer == null) SagaLogger.severe(getClass(), "failed to retrieve saga player for "+ ((Player) attacker).getName());
 			
@@ -166,11 +183,13 @@ public class SagaEntityDamageEvent {
 			
 			attackerCreature = (Creature)attacker;
 			attackerPlayer = null;
+			tool = Material.AIR;
 			
 		}else{
 			
 			attackerCreature = null;
 			attackerPlayer = null;
+			tool = Material.AIR;
 			
 		}
 		
@@ -265,6 +284,15 @@ public class SagaEntityDamageEvent {
 	}
 	
 	/**
+	 * Modifies tool handling.
+	 * 
+	 * @param amount amount to modify
+	 */
+	public void modifyToolHandling(double amount) {
+		sloppiness-= amount;
+	}
+	
+	/**
 	 * Gets the projectile.
 	 * 
 	 * @return projectile, null if none
@@ -272,7 +300,7 @@ public class SagaEntityDamageEvent {
 	public Projectile getProjectile() {
 		return projectile;
 	}
-	
+
 	
 	
 	// Conclude:
@@ -324,18 +352,39 @@ public class SagaEntityDamageEvent {
 				event.setDamage(defenderPlayer.getHalfHearts() - 1);
 			}
 			
-			// Schedule synchronisation:
-			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Saga.plugin(), new Runnable() {
+		}
+		
+		// Reduce tool damage:
+		final int undurability;
+		if(attackerPlayer != null) undurability = attackerPlayer.getItemInHand().getDurability();
+		else undurability = 0;
+		
+		// Schedule for next tick:
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Saga.plugin(), new Runnable() {
+			@SuppressWarnings("deprecation")
 			@Override
-				public void run() {
+			public void run() {
+				
+				// Health synchronisation:
+				if(defenderPlayer != null){
 					Player player = defenderPlayer.getPlayer();
-					if(player == null)  return;
 					if(player.isDead() || player.getHealth() == 0) return;
 					defenderPlayer.synchHealth();
 				}
-			}, 1);
-			
-		}
+				
+				// Tool damage reduction:
+				if(attackerPlayer != null){
+					Player player = attackerPlayer.getPlayer();
+					ItemStack item = player.getItemInHand();
+					int damage = item.getDurability() - undurability;
+					damage = TwoPointFunction.randomRound(sloppiness * damage).shortValue();
+					int pundurability = item.getDurability();
+					item.setDurability((short) (undurability + damage));
+					if(item.getDurability() != pundurability) player.updateInventory();
+				}
+				
+			}
+		}, 1);
 		
 		// Player killed player:
 		if(attackerPlayer != null && defenderPlayer != null){

@@ -3,10 +3,14 @@ package org.saga.listeners.events;
 import java.util.ArrayList;
 import java.util.Random;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
+import org.saga.Saga;
 import org.saga.chunks.SagaChunk;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.GeneralConfiguration;
@@ -32,6 +36,11 @@ public class SagaBlockBreakEvent {
 	public final Block block;
 
 	/**
+	 * Tool material.
+	 */
+	public final Material tool;
+	
+	/**
 	 * Saga living.
 	 */
 	public final SagaLiving<?> sagaPlayer;
@@ -53,6 +62,11 @@ public class SagaBlockBreakEvent {
 	private Double modifier = 0.0;
 
 	/**
+	 * Tool sloppiness multiplier.
+	 */
+	private double sloppiness = 1.0;
+	
+	/**
 	 * True if the block is considered player placed.
 	 */
 	private Boolean isNatural = true;
@@ -71,6 +85,7 @@ public class SagaBlockBreakEvent {
 
 		
 		this.event = event;
+		this.tool = event.getPlayer().getItemInHand().getType();
 		this.sagaPlayer = sagaPlayer;
 		this.block = event.getBlock();
     	this.blockSagaChunk = sagaChunk;
@@ -103,7 +118,15 @@ public class SagaBlockBreakEvent {
 	public void modifyDrops(Double amount) {
 		modifier += amount;
 	}
-	
+
+	/**
+	 * Modifies tool handling.
+	 * 
+	 * @param amount amount to modify
+	 */
+	public void modifyToolHandling(double amount) {
+		sloppiness-= amount;
+	}
 	
 	
 
@@ -116,15 +139,12 @@ public class SagaBlockBreakEvent {
 		
 		
 		ItemStack item = event.getPlayer().getItemInHand();
+		ArrayList<ItemStack> drops = new ArrayList<ItemStack>(event.getBlock().getDrops(item));
+
+		// Reduce tool damage:
+		final int undurability = item.getDurability();
 		
-		// Drops:
-		ArrayList<ItemStack> drops = null;
-		if(item == null){
-			drops = new ArrayList<ItemStack>(event.getBlock().getDrops());
-		}else{
-			drops = new ArrayList<ItemStack>(event.getBlock().getDrops(item));
-		}
-		
+		// Natural break:
 		if(isNatural){
 
 			// Award exp:
@@ -145,8 +165,26 @@ public class SagaBlockBreakEvent {
 				location.getWorld().dropItemNaturally(location, drop);
 			}
 			
-			
 		}
+		
+		// Schedule for next tick:
+		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Saga.plugin(), new Runnable() {
+			@SuppressWarnings("deprecation")
+			@Override
+			public void run() {
+				
+				// Tool damage reduction:
+				Player player = event.getPlayer();
+				ItemStack item = player.getItemInHand();
+				int damage = item.getDurability() - undurability;
+				damage = TwoPointFunction.randomRound(sloppiness * damage).shortValue();
+				int pundurability = item.getDurability();
+				item.setDurability((short) (undurability + damage));
+				if(item.getDurability() != pundurability) player.updateInventory();
+				
+			}
+		}, 1);
+		
 		
 		
 		
@@ -191,10 +229,6 @@ public class SagaBlockBreakEvent {
 
 	}
 
-
-
-
-	
 	
 	
 	// Event information:

@@ -1,22 +1,24 @@
 {
 
 "maxAttributeScore":50,
-
 "attributePoints":{"x1":0,"y1":5.0,"x2":50,"y2":100},
-
 
 "damagePenaltyValues":{
   "MELEE":7,
   "RANGED":10
 },
 
-
 "attributes":[
   {"name":"strength",
     "attack":{"MELEE_MODIFIER":{"x1":0,"y1":0.0,"x2":100,"y2":21}},
     "defend":{},
     "passive":{},
-    "description":"Melee damage."
+    "handling":{
+      "STONE_AXE":{"x1":0,"y1":0.0,"x2":100,"y2":1.0},
+      "IRON_AXE":{"x1":0,"y1":0.0,"x2":100,"y2":1.0},
+      "DIAMOND_AXE":{"x1":0,"y1":0.0,"x2":100,"y2":1.0}
+    },
+    "description":"Melee damage, axe handling"
   },
 
   {"name":"precision",
@@ -28,7 +30,12 @@
     },
     "defend":{},
     "passive":{},
-    "description":"Ranged damage and armour penetration."
+    "handling":{
+      "STONE_SPADE":{"x1":0,"y1":0.0,"x2":100,"y2":1.0},
+      "IRON_SPADE":{"x1":0,"y1":0.0,"x2":100,"y2":1.0},
+      "DIAMOND_SPADE":{"x1":0,"y1":0.0,"x2":100,"y2":1.0}
+    },
+    "description":"Ranged damage, armour pierce, shovel handling."
   },
   
   {"name":"willpower",
@@ -40,7 +47,12 @@
      },
     "defend":{},
     "passive":{},
-    "description":"Magic damage and enchantment penetration."
+    "handling":{
+      "STONE_PICKAXE":{"x1":0,"y1":0.0,"x2":100,"y2":1.0},
+      "IRON_PICKAXE":{"x1":0,"y1":0.0,"x2":100,"y2":1.0},
+      "DIAMOND_PICKAXE":{"x1":0,"y1":0.0,"x2":100,"y2":1.0}
+    },
+    "description":"Magic damage, enchant pierce, pickaxe handling."
   },
 
   {"name":"toughness",
@@ -49,6 +61,7 @@
     "passive":{
     	"HEALTH_MODIFIER":{"x1":0,"y1":0.0,"x2":100,"y2":60.0}
     },
+    "handling":{},
     "description":"Health bonus."
   },
   
@@ -58,7 +71,9 @@
     "passive":{
       "DROP_MODIFIER":{"x1":0,"y1":0,"x2":100,"y2":0.60}
     },
+    "handling":{},
     "description":"Additional drops from blocks."
   }
 ]
+
 }

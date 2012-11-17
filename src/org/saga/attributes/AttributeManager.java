@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import org.bukkit.Effect;
+import org.bukkit.Material;
 import org.saga.config.AttributeConfiguration;
 import org.saga.listeners.events.SagaBlockBreakEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent;
@@ -54,6 +55,7 @@ public class AttributeManager {
 		
 		AttributeManager attackerManager = sagaLiving.getAttributeManager();
 		
+		// Damage:
 		switch (event.type) {
 			
 			case MELEE:
@@ -119,6 +121,9 @@ public class AttributeManager {
 				
 		}
 		
+		// Tool:
+		event.modifyToolHandling(getToolHandlingModifier(event.tool));
+		
 		
 	}
 	
@@ -132,6 +137,7 @@ public class AttributeManager {
 		
 		AttributeManager defenderManager = sagaLiving.getAttributeManager();
 		
+		// Damage:
 		switch (event.type) {
 			
 			case MELEE:
@@ -220,8 +226,11 @@ public class AttributeManager {
 		AttributeManager manager = (event.sagaPlayer != null) ? event.sagaPlayer.getAttributeManager() : null;
 		if(manager == null) return;
 
-		// Modifier:
+		// Drops:
 		event.modifyDrops(manager.getPassiveModifier(AttributeParameter.DROP_MODIFIER));
+
+		// Tool:
+		event.modifyToolHandling(getToolHandlingModifier(event.tool));
 		
 		
 	}
@@ -277,6 +286,24 @@ public class AttributeManager {
 		
 		for (Attribute attribute : attributes) {
 			modifier+= attribute.getPassiveModifier(parameter, sagaLiving.getAttributeScore(attribute.getName()));
+		}
+		
+		return modifier;
+		
+	}
+	
+	/**
+	 * Sums all tool handling modifiers.
+	 * 
+	 * @param material tool material
+	 * @return sum of tool handling modifiers
+	 */
+	private double getToolHandlingModifier(Material material) {
+
+		double modifier = 0.0;
+		
+		for (Attribute attribute : attributes) {
+			modifier+= attribute.getToolHandlingModifier(material, sagaLiving.getAttributeScore(attribute.getName()));
 		}
 		
 		return modifier;

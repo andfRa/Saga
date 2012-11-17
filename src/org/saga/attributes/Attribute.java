@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Map.Entry;
 
+import org.bukkit.Material;
 import org.saga.SagaLogger;
 import org.saga.utility.TwoPointFunction;
 
@@ -30,6 +31,12 @@ public class Attribute {
 	 * Passive scores.
 	 */
 	private Hashtable<AttributeParameter, TwoPointFunction> passive;
+
+	/**
+	 * Tool handling scores.
+	 */
+	private Hashtable<Material, TwoPointFunction> handling;
+	
 	
 	/**
 	 * Description.
@@ -48,6 +55,7 @@ public class Attribute {
 		attack = new Hashtable<AttributeParameter, TwoPointFunction>();
 		defend = new Hashtable<AttributeParameter, TwoPointFunction>();
 		passive = new Hashtable<AttributeParameter, TwoPointFunction>();
+		handling = new Hashtable<Material, TwoPointFunction>();
 		description = "";
 		
 	}
@@ -82,13 +90,21 @@ public class Attribute {
 		for (TwoPointFunction twoPointFunction : scores) {
 			twoPointFunction.complete();
 		}
-		
+
 		if(passive == null){
 			passive = new Hashtable<AttributeParameter, TwoPointFunction>();
 			SagaLogger.nullField(this, "passive");
 		}
-		
 		scores = passive.values();
+		for (TwoPointFunction twoPointFunction : scores) {
+			twoPointFunction.complete();
+		}
+
+		if(handling == null){
+			handling = new Hashtable<Material, TwoPointFunction>();
+			SagaLogger.nullField(this, "handling");
+		}
+		scores = handling.values();
 		for (TwoPointFunction twoPointFunction : scores) {
 			twoPointFunction.complete();
 		}
@@ -146,6 +162,22 @@ public class Attribute {
 	public double getPassiveModifier(AttributeParameter parameter, Integer score) {
 
 		TwoPointFunction function = passive.get(parameter);
+		if(function == null) return 0.0;
+		
+		return function.value(score);
+		
+	}
+
+	/**
+	 * Get the tool handling modifier for the given parameter.
+	 * 
+	 * @param material tool material
+	 * @param score attribute score
+	 * @return tool handling modifier, 0 if none
+	 */
+	public double getToolHandlingModifier(Material material, Integer score) {
+
+		TwoPointFunction function = handling.get(material);
 		if(function == null) return 0.0;
 		
 		return function.value(score);
