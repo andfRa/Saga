@@ -113,7 +113,7 @@ public class EntityListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityExplode(EntityExplodeEvent event) {
 		
-		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
+		if(GeneralConfiguration.isDisabled(event.getLocation().getWorld())) return;
     	
 		
 		// Stop creeper terrain damage.

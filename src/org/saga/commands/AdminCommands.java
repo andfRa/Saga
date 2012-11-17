@@ -899,42 +899,7 @@ public class AdminCommands {
 	@CommandPermissions({"saga.debug.admin.dinfo"})
 	public static void debugInfo(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
-		
-
-		sagaPlayer.message(" ");
-		sagaPlayer.message("LL\u2502\u2502\u2502\u2502LL");
-		sagaPlayer.message("LL\u2557LL");
-
-		sagaPlayer.message(" ");
-		sagaPlayer.message("LL\u2502\u2502\u2502\u2502LL");
-		sagaPlayer.message("LL\u2563LL");
-
-		sagaPlayer.message(" ");
-		sagaPlayer.message("LL\u2502\u2502\u2502\u2502LL");
-		sagaPlayer.message("LL\u255DLL");
-
-		
-
-		sagaPlayer.message(" ");
-		sagaPlayer.message("LL\u2502\u2502\u2502\u2502\u2502LL");
-		sagaPlayer.message("LL\u2550LL");
-
-		sagaPlayer.message(" ");
-		sagaPlayer.message("LL\u2502\u2502LL");
-		sagaPlayer.message("LL\u2551LL");
-
-		sagaPlayer.message(" ");
-		sagaPlayer.message("LL\u2502\u2502\u2502LL");
-		sagaPlayer.message("LL\u2554LL");
-
-		sagaPlayer.message(" ");
-		sagaPlayer.message("LL\u2502\u2502\u2502LL");
-		sagaPlayer.message("LL\u2560LL");
-
-		sagaPlayer.message(" ");
-		sagaPlayer.message("LL\u2502\u2502\u2502LL");
-		sagaPlayer.message("LL\u255ALL");
-
+		sagaPlayer.message("debug info command");
 		
 	}
 	
