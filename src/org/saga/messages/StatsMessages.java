@@ -116,7 +116,7 @@ public class StatsMessages {
 		table.addLine("Attributes", attrPoints, 2);
 
 		// Exp:
-		table.addLine("Progress", (int)(100.0 * sagaPlayer.getRemainingExp() / ExperienceConfiguration.config().getAttributePointCost()) + "%", 2);
+		table.addLine("Progress", (int)(100.0 - 100.0 * sagaPlayer.getRemainingExp() / ExperienceConfiguration.config().getAttributePointCost()) + "%", 2);
 
 		// Wallet:
 		table.addLine("Wallet", EconomyMessages.coins(EconomyDependency.getCoins(sagaPlayer)), 2);

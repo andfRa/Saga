@@ -2,7 +2,7 @@
 
 "attributePointCost":150,
 
-"expGainMultiplier":{"x1":0,"y1":1.0,"x2":15000.0,"y2":0.2},
+"expGainMultiplier":{"x1":0,"y1":1.0,"x2":15000.0,"y2":0.05},
 
 "blockExp":{
   "DIAMOND_ORE":{"0":16.0},
