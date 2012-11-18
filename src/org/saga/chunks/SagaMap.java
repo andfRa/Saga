@@ -8,10 +8,35 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.bukkit.block.Biome;
 import org.saga.player.SagaPlayer;
-import org.saga.settlements.Settlement;
 import org.saga.utility.AsciiCompass;
 
 public class SagaMap {
+	
+	/**
+	 * Building character. 'B' will be replaced with actual building charatcer.
+	 */
+	public static String BUILDING = "B";
+
+	/**
+	 * Wilderness character.
+	 */
+	public static String WILDERNESS = "-";
+
+	/**
+	 * Claimed character.
+	 */
+	public static String CLAIMED = "+";
+
+	/**
+	 * Border character.
+	 */
+	public static String BORDER = "|||";
+
+	/**
+	 * Border character.
+	 */
+	public static String YOUAREHERE = "X";
+	
 	
 	
 	/**
@@ -65,17 +90,19 @@ public class SagaMap {
 	/**
 	 * Creates a chunk map.
 	 */
-	public static ArrayList<String> getMap(SagaPlayer player, Location location) {
+	public static ArrayList<String> getMap(SagaPlayer sagaPlayer, Location location) {
 		
 
 		ArrayList<String> map = new ArrayList<String>();
 		
-		int halfHeight = 12 / 2;
-		int halfWidth = 44 / 2;
+		int halfHeight = 14 / 2;
+		int halfWidth = 24 / 2;
 		
 		double inDegrees = location.getYaw();
 		
 		Chunk locationChunk = location.getWorld().getChunkAt(location);
+		SagaChunk locationSagaChunk = sagaPlayer.getSagaChunk();
+
 		
 		int topLeftX = locationChunk.getX() - halfWidth;
 		int topLeftZ = locationChunk.getZ() + halfHeight;
@@ -84,7 +111,7 @@ public class SagaMap {
 		int height = halfWidth * 2 + 1;
 		
 		ChatColor prevColor = null;
-		ChatColor color = ChatColor.WHITE;
+		ChatColor color = ChatColor.GRAY;
 		
 		// Row:
 		for (int dz = -width + 1; dz <= 0; dz++) {
@@ -97,52 +124,38 @@ public class SagaMap {
 				
 				SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(location.getWorld().getName(), topLeftX + dx, topLeftZ + dz);
 
-				Bundle settlement = null;
-				
-				if (sagaChunk != null) {
-					settlement = sagaChunk.getChunkBundle();
-				}
-				
 				String symbol = "?";
 				
-				// Settlement:
-				if (settlement != null && settlement instanceof Settlement) {
+				// Claimed:
+				if (sagaChunk != null) {
 					
 					// Building:
 					if (sagaChunk.getBuilding() != null) {
-						symbol = sagaChunk.getBuilding().getMapChar();
+						symbol = BUILDING.replace("B", sagaChunk.getBuilding().getMapChar());
 						color = ChatColor.DARK_PURPLE;
 					}
 					
 					// Border:
 					else if (sagaChunk.isBorder()) {
-						symbol = "|||";
+						symbol = BORDER;
 						color = ChatColor.GOLD;
 					}
 					
-					// Nothing:
+					// Claimed:
 					else {
-						symbol = "+";
+						symbol = CLAIMED;
 						color = ChatColor.YELLOW;
 					}
 					
 				}
 				
-				// Bundle:
-				else if (settlement != null) {
-					symbol = "D";
-					color = ChatColor.DARK_GRAY;
-				}
-				
 				// Not claimed:
-				else if (sagaChunk == null) {
+				else {
 
-					symbol = "-";
+					symbol = WILDERNESS;
 					
-					// Biome:
 					Biome biome = location.getWorld().getBiome((topLeftX + dx)*16 + 8, (topLeftZ + dz)*16 + 8);
 					color = BIOME_COLOURS.get(biome);
-					
 					if(color == null) color = ChatColor.GRAY;
 					
 				}
@@ -150,21 +163,22 @@ public class SagaMap {
 				// Player location:
 				if (dx == halfWidth && dz == -halfHeight) {
 					color = ChatColor.DARK_RED;
-					symbol = "X";
+					symbol = YOUAREHERE;
 				}
 				
-				// Only append new colours:
+				// Append new colour:
 				if(prevColor != color){
-					
 					row.append(color);
 					prevColor = color;
-					
 				}
 				
+				// Append symbol:
 				row.append(symbol);
 				
 			}
+			
 			map.add(row.toString());
+			
 		}
 		
 		// Get the compass:
@@ -175,9 +189,37 @@ public class SagaMap {
 		map.set(1, map.get(1) + " " + asciiCompass.get(1));
 		map.set(2, map.get(2) + " " + asciiCompass.get(2));
 		
+		// Add name:
+		char[] locationName = null;
+		
+		if (locationSagaChunk != null) {
+			locationName = locationSagaChunk.getChunkBundle().getName().toUpperCase().toCharArray();
+		}else{
+			locationName = "WILDERNESS".toCharArray();
+		}
+		
+		for (int i = 0; i+4 < map.size() && i < locationName.length; i++) {
+			map.set(i+4, map.get(i+4) + "   " + ChatColor.GOLD + locationName[i]);
+		}
+		
 		return map;
 		
 		
 	}
+
+	/**
+	 * Enables bonus characters.
+	 * 
+	 */
+	public static void enableBonusCharacters(){
+		
+		BUILDING = "\u2502B\u2502";
+		WILDERNESS = "\u2591";
+		BORDER = "[]";
+		CLAIMED = "| |";
+		YOUAREHERE = "\u2502X\u2502";
+
+	}
+	
 	
 }

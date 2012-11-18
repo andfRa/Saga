@@ -853,22 +853,16 @@ public class SettlementMessages {
 		StringBuffer result = new StringBuffer();
 		
 		// Add borders:
-		result.append(" ");
-		map.add(0, " ");
 		for (int i = 0; i < map.size(); i++) {
-			
 			if(i != 0) result.append("\n");
-			
-			result.append("  " + map.get(i) + "  ");
-			
+			result.append(map.get(i));
 		}
-		result.append(" ");
 		
 		Chunk locationChunk = location.getWorld().getChunkAt(location);
 		String title = locationChunk.getWorld().getName() + " map " + "(" + locationChunk.getX() + ", " + locationChunk.getZ() + ")";
 		
-		return StringFramer.frame(title, result.toString(), ChatColor.GOLD);
-		
+		return StringFramer.frame(title, result.toString(), ChatColor.GOLD, 0.75);
+		//TODO: Remove frame size limitation for special map characters when chat handles them correctly.
 		
 	}
 	

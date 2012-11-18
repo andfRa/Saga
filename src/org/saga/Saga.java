@@ -28,6 +28,7 @@ import org.saga.config.FactionConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
+import org.saga.config.VanillaConfiguration;
 import org.saga.dependencies.ChatDependency;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.dependencies.PermissionsDependency;
@@ -43,7 +44,6 @@ import org.saga.listeners.ServerListener;
 import org.saga.listeners.WorldListener;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
-import org.saga.utility.text.StringFramer;
 import org.sk89q.CommandPermissionsException;
 import org.sk89q.CommandUsageException;
 import org.sk89q.CommandsManager;
@@ -122,6 +122,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		GeneralConfiguration.unload();
 		SettlementConfiguration.unload();
 		EconomyConfiguration.unload();
+		VanillaConfiguration.unload();
 		FactionConfiguration.unload();
 		Clock.unload(); // Needs access to Saga.pluging().
 
@@ -175,6 +176,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		SettlementConfiguration.load();
 		EconomyConfiguration.load();
 		FactionConfiguration.load();
+		VanillaConfiguration.load();
 
 		// Dependencies:
 		PermissionsDependency.enable();
@@ -215,14 +217,6 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		saveMinutes = GeneralConfiguration.config().saveInterval;
 		Clock.clock().enableMinuteTick(this);
 
-		// Special characters:
-		try {
-			StringFramer.enableBonusCharacters();
-		}
-		catch (Throwable e) {
-			SagaLogger.severe(getClass(), "failed to enable special chars: " + e.getClass().getSimpleName() + ":" + e.getMessage());
-		}
-		
 		
 	}
 

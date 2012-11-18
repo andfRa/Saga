@@ -90,6 +90,8 @@ public class StringFiller {
 			put('\u2563', 4.0/4.0);
 			put('\u255D', 4.0/4.0);
 			
+			put('\u2591', 2.0);
+			
 		}
 	};
 	

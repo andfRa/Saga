@@ -1,6 +1,10 @@
 package org.saga.config;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Random;
+
+import net.minecraft.server.SharedConstants;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -10,7 +14,10 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
+import org.saga.SagaLogger;
+import org.saga.chunks.SagaMap;
 import org.saga.player.SagaPlayer;
+import org.saga.utility.text.StringFramer;
 
 public class VanillaConfiguration {
 
@@ -18,8 +25,19 @@ public class VanillaConfiguration {
 	/**
 	 * Random generator.
 	 */
-	public static Random random = new Random();
+	public static Random RANDOM = new Random();
+
+	/**
+	 * Instance of the configuration.
+	 */
+	transient private static VanillaConfiguration instance;
 	
+	
+	
+	/**
+	 * True if bonus characters enabled.
+	 */
+	transient private boolean bonusCharacters = false;
 	
 	
 	/**
@@ -228,7 +246,7 @@ public class VanillaConfiguration {
 		if(epf > 25) epf = 25;
 
 		// Randomise:
-		epf = (int) Math.ceil(((random.nextDouble() * epf + epf) / 2.0));
+		epf = (int) Math.ceil(((RANDOM.nextDouble() * epf + epf) / 2.0));
 		
 		// Cap II:
 		if(epf > 20) epf = 20;
@@ -304,5 +322,91 @@ public class VanillaConfiguration {
 		}
 		
 	}
+	
+	
+	
+	// Bonus characters:
+	/**
+	 * Checks if bonus characters are enabled.
+	 * 
+	 * @return true if enabled
+	 */
+	public boolean checkBonusCharacters() {
+		return bonusCharacters;
+	}
+
+	/**
+	 * Enables bonus characters.
+	 * http://forums.bukkit.org/threads/printing-special-characters-%E2%99%A0-%E2%99%A3-%E2%99%A5-%E2%99%A6-in-chat.72293/
+	 * thanks, Father Of Time
+	 * 
+	 * @throws NoSuchFieldException
+	 * @throws SecurityException
+	 * @throws IllegalArgumentException
+	 * @throws IllegalAccessException
+	 */
+	public static void enableBonusCharacters() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
+		
+		Field field = SharedConstants.class.getDeclaredField("allowedCharacters");
+		field.setAccessible(true);
+		
+		Field modifiersField = Field.class.getDeclaredField("modifiers");
+		modifiersField.setAccessible(true);
+		modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+		
+		String oldallowedchars = (String)field.get(null);
+		String custom = "" +
+				"\u2554\u2557\u2560\u2563\u255A\u255D\u2550\u2551" +
+				"\u263B\u25D8\u263C" +
+				"\u2591\u2592\u2593";
+		
+		if(!oldallowedchars.contains(custom)){
+			StringBuilder sb = new StringBuilder();
+			sb.append(oldallowedchars);
+			sb.append(custom);
+			field.set(null, sb.toString());
+		}
+		
+		instance.bonusCharacters = true;
+
+		// Enable all bonus characters:
+		StringFramer.enableBonusCharacters();
+		SagaMap.enableBonusCharacters();
+		
+		
+	}
+	
+	
+	
+
+	// Load unload:
+	/**
+	 * Loads configuration.
+	 * 
+	 * @return configuration
+	 */
+	public static VanillaConfiguration load(){
+
+		instance = new VanillaConfiguration();
+		
+		try {
+			enableBonusCharacters();
+		}
+		catch (Throwable e) {
+			SagaLogger.severe(VanillaConfiguration.class, "failed to enable special chars: " + e.getClass().getSimpleName() + ":" + e.getMessage());
+		}
+		
+		return instance;
+		
+	}
+	
+	/**
+	 * Unloads the configuration.
+	 * 
+	 */
+	public static void unload(){
+		instance = null;
+	}
+	
 	
 }

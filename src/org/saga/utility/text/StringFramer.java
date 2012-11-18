@@ -1,43 +1,39 @@
 package org.saga.utility.text;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-
-import net.minecraft.server.SharedConstants;
-
 import org.bukkit.ChatColor;
 
 public class StringFramer {
 
+	
 	/**
 	 * Title top left character.
 	 */
-	public static char TITLE_TOP_LEFT = '\0';
+	public static char TITLE_TOP_LEFT = 'o';
 	
 	/**
 	 * Title top right character.
 	 */
-	public static char TITLE_TOP_RIGHT = '\0';
+	public static char TITLE_TOP_RIGHT = 'o';
 	
 	/**
 	 * Frame top left character.
 	 */
-	public static char FRAME_TOP_LEFT = '\0';
+	public static char FRAME_TOP_LEFT = 'o';
 	
 	/**
 	 * Frame top right character.
 	 */
-	public static char FRAME_TOP_RIGHT = '\0';
+	public static char FRAME_TOP_RIGHT = 'o';
 	
 	/**
 	 * Frame bottom left character.
 	 */
-	public static char FRAME_BOTTOM_LEFT = '\0';
+	public static char FRAME_BOTTOM_LEFT = 'o';
 	
 	/**
 	 * Frame bottom right character.
 	 */
-	public static char FRAME_BOTTOM_RIGHT = '\0';
+	public static char FRAME_BOTTOM_RIGHT = 'o';
 
 	/**
 	 * Frame horizontal character.
@@ -47,7 +43,7 @@ public class StringFramer {
 	/**
 	 * Frame character.
 	 */
-	public static char FRAME_VERTICAL = '-';
+	public static char FRAME_VERTICAL = '|';
 	
 	/**
 	 * Maximum width of contents.
@@ -137,28 +133,9 @@ public class StringFramer {
 
 	/**
 	 * Enables bonus characters.
-	 * http://forums.bukkit.org/threads/printing-special-characters-%E2%99%A0-%E2%99%A3-%E2%99%A5-%E2%99%A6-in-chat.72293/
-	 * thanks, Father Of Time
 	 * 
-	 * @throws NoSuchFieldException
-	 * @throws SecurityException
-	 * @throws IllegalArgumentException
-	 * @throws IllegalAccessException
 	 */
-	public static void enableBonusCharacters() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
-		
-		Field field = SharedConstants.class.getDeclaredField("allowedCharacters");
-		field.setAccessible(true);
-		Field modifiersField = Field.class.getDeclaredField( "modifiers" );
-		modifiersField.setAccessible( true );
-		modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
-		String oldallowedchars = (String)field.get(null);
-//		String custom = "\u2500\u2510\u2514\u2518\u250C\u2502";
-		String custom = "\u2554\u2557\u2560\u2563\u255A\u255D\u2550\u2551";
-		StringBuilder sb = new StringBuilder();
-		sb.append(oldallowedchars);
-		sb.append(custom);
-		field.set( null, sb.toString() );
+	public static void enableBonusCharacters(){
 		
 //		TITLE_TOP_LEFT = '\u250C';
 //		TITLE_TOP_RIGHT = '\u2510';
