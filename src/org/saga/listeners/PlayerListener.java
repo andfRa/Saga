@@ -45,7 +45,13 @@ public class PlayerListener implements Listener {
 
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
     	
-    	
+
+        String[] split = event.getMessage().split(" ");
+
+		// Command override:
+        if(GeneralConfiguration.config().checkOverride(split[0])) return;
+		split[0] = GeneralConfiguration.config().getCommand(split[0]);
+        
     	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
     	
     	// Invalid player:
@@ -63,12 +69,12 @@ public class PlayerListener implements Listener {
     	
     	if(event.isCancelled()) return;
     	
-        String[] split = event.getMessage().split(" ");
-
+		// Handle command:
         if (Saga.plugin().handleCommand(event.getPlayer(), split, event.getMessage())) {
             event.setCancelled(true);
         }
 
+        
     }
     
     @EventHandler(priority = EventPriority.NORMAL)

@@ -1,6 +1,7 @@
 package org.saga.config;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
 
@@ -131,6 +132,14 @@ public class GeneralConfiguration {
 	
 	
 	
+	// Commands:
+	/**
+	 * Commands override.
+	 */
+	private Hashtable<String, String> commandsOverride;
+	
+	
+	
 	// Initialisation:
 	/**
 	 * Used by gson.
@@ -233,6 +242,11 @@ public class GeneralConfiguration {
 		if(xrayDiamondRatio == null){
 			SagaLogger.nullField(getClass(), "xrayDiamondRatio");
 			xrayDiamondRatio = 1.0;
+		}
+		
+		if(commandsOverride == null){
+			SagaLogger.nullField(getClass(), "commandsOverride");
+			commandsOverride = new Hashtable<String, String>();
 		}
 		
 		
@@ -353,6 +367,39 @@ public class GeneralConfiguration {
 		return xrayDiamondRatio;
 	}
 	
+	
+	
+	// Override:
+	/**
+	 * Gets command override.
+	 * 
+	 * @param command command
+	 * @return command override, same command if none
+	 */
+	public String getCommand(String command) {
+		
+		System.out.println("command=" + command);
+		
+		String override = commandsOverride.get(command);
+		System.out.println("override=" + override);
+		if(override == null) return command;
+		
+		return override;
+		
+	}
+	
+	/**
+	 * Checks if the command is overridden.
+	 * 
+	 * @param command command
+	 * @return true if overridden
+	 */
+	public boolean checkOverride(String command) {
+
+		Collection<String> overrides = commandsOverride.values();
+		return overrides.contains(command);
+		
+	}
 	
 	
 	// Load unload:

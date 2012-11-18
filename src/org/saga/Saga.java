@@ -526,7 +526,8 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 
 		
 		CommandsManager<Player> commandMap = PermissionsDependency.getCommandMap();
-
+		
+		// Handle:
 		try {
 
 			split[0] = split[0].substring(1);
@@ -543,8 +544,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 			}
 
 			// Check for command:
-			if (!commandMap.hasCommand(split[0]))
-				return false;
+			if (!commandMap.hasCommand(split[0])) return false;
 
 			try {
 
@@ -564,15 +564,13 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 			}
 			catch (CommandUsageException e) {
 
-				if (e.getMessage() != null)
-					player.sendMessage(e.getMessage());
+				if (e.getMessage() != null) player.sendMessage(e.getMessage());
 				player.sendMessage(e.getUsage());
 
 			}
 			catch (WrappedCommandException e) {
 
-				if (e.getMessage() != null)
-					player.sendMessage(ChatColor.RED + e.getMessage());
+				if (e.getMessage() != null) player.sendMessage(ChatColor.RED + e.getMessage());
 				throw e;
 
 			}
@@ -590,8 +588,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		catch (Throwable t) {
 
 			player.sendMessage("Failed to handle command: " + command);
-			if (t.getMessage() != null)
-				player.sendMessage(t.getMessage());
+			if (t.getMessage() != null) player.sendMessage(t.getMessage());
 			t.printStackTrace();
 			return false;
 

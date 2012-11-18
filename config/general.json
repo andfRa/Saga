@@ -28,6 +28,8 @@
 "disableWorlds":["creative"],
 
 "xrayMinStone":1500,
-"xrayDiamondRatio":0.010
+"xrayDiamondRatio":0.010,
+
+"commandsOverride":{}
 
 }
