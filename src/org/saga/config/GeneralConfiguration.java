@@ -378,10 +378,7 @@ public class GeneralConfiguration {
 	 */
 	public String getCommand(String command) {
 		
-		System.out.println("command=" + command);
-		
 		String override = commandsOverride.get(command);
-		System.out.println("override=" + override);
 		if(override == null) return command;
 		
 		return override;
