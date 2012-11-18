@@ -45,6 +45,9 @@ public class PlayerListener implements Listener {
 
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
     	
+    	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
+    	if(sagaPlayer == null) return;
+
 
         String[] split = event.getMessage().split(" ");
 
@@ -52,14 +55,6 @@ public class PlayerListener implements Listener {
         if(GeneralConfiguration.config().checkOverride(split[0])) return;
 		split[0] = GeneralConfiguration.config().getCommand(split[0]);
         
-    	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
-    	
-    	// Invalid player:
-    	if(sagaPlayer == null){
-    		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerCommandPreprocess, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
-    		return;
-    	}
-
     	// Get saga chunk:
     	Location location = event.getPlayer().getLocation();
     	SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(location);
@@ -85,7 +80,6 @@ public class PlayerListener implements Listener {
 
     	SagaPlayer sagaPlayer = Saga.plugin().loadSagaPlayer(player.getName());
     	
-    	// Invalid player:
     	if(sagaPlayer == null){
     		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerJoin, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
@@ -109,16 +103,16 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerQuit(PlayerQuitEvent event) {
 
-
+    	
     	Player player = event.getPlayer();
-
     	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(player.getName());
+    	
     	if(sagaPlayer == null){
     		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerQuit, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
     		return;
     	}
 
-    	// Forward to chunk group:
+    	// Forward to bundle:
     	if(sagaPlayer.getBundle() != null) sagaPlayer.getBundle().onMemberQuit(event, sagaPlayer);
     	
     	// Unload player:
@@ -140,16 +134,11 @@ public class PlayerListener implements Listener {
     public void onPlayerRespawn(PlayerRespawnEvent event) {
     	
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
-    	
 		
     	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
-    	
-    	// Invalid player:
-    	if(sagaPlayer == null){
-    		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerRespawn, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
-    		return;
-    	}
+    	if(sagaPlayer == null) return;
 
+    	
 		// Restore health:
     	sagaPlayer.restoreHealth();
 
@@ -175,14 +164,8 @@ public class PlayerListener implements Listener {
     	if(event.getFrom().getChunk() != event.getTo().getChunk()) return;
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
 		
-		
     	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
-    	
-    	// Invalid player:
-    	if(sagaPlayer == null){
-    		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerMove, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
-    		return;
-    	}
+    	if(sagaPlayer == null) return;
 
 		
     	// Handle chunk change:
@@ -195,15 +178,10 @@ public class PlayerListener implements Listener {
     public void onPlayerTeleport(PlayerTeleportEvent event) {
 
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
-    	
 		
     	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
+    	if(sagaPlayer == null) return;
     	
-    	// Invalid player:
-    	if(sagaPlayer == null){
-    		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerTeleport, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
-    		return;
-    	}
     	
     	// Handle chunk change:
     	handleChunkChange(sagaPlayer, event);
@@ -215,13 +193,15 @@ public class PlayerListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
 
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
-    	
 		
     	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
+    	if(sagaPlayer == null) return;
+    	
     	
     	// Bukkit bug workaround: 
     	if(event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
     		event.setCancelled(false);
+    		// TODO: Check if bug still exists.
     	}
 
     	// Get Saga chunk:
@@ -232,16 +212,6 @@ public class PlayerListener implements Listener {
     		location = event.getPlayer().getLocation();
     	}
     	SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
-    	
-    	// Invalid player:
-    	if(sagaPlayer == null){
-    		
-    		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerInteract, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
-    		event.setCancelled(true);
-    		
-    		return;
-    		
-    	}
     	
     	// Build event:
     	if(isBuildEvent(event)){
@@ -267,15 +237,10 @@ public class PlayerListener implements Listener {
     public void onPlayerChat(AsyncPlayerChatEvent event) {
 
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
-    	
 		
     	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
+    	if(sagaPlayer == null) return;
     	
-    	// Invalid player:
-    	if(sagaPlayer == null){
-    		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerChat, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
-    		return;
-    	}
     	
     	event.setFormat(ChatDependency.modifyChatFormat(event.getFormat(), sagaPlayer));
     	
@@ -286,16 +251,9 @@ public class PlayerListener implements Listener {
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
 
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
-    	
 		
     	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
-    	
-    	// Invalid player:
-    	if(sagaPlayer == null){
-    		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerInteractEntity, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
-    		return;
-    	}
-    	
+    	if(sagaPlayer == null) return;
     	
     	
     }
@@ -303,14 +261,9 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH)
     public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
 
-
     	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
+    	if(sagaPlayer == null) return;
     	
-    	// Invalid player:
-    	if(sagaPlayer == null){
-    		SagaLogger.severe(PlayerListener.class, "can't continue with onPlayerWorldChange, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
-    		return;
-    	}
     	
     	// Update chat prefix:
     	ChatDependency.updatePrefix(sagaPlayer);

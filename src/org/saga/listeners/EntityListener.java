@@ -19,7 +19,6 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.saga.Saga;
-import org.saga.SagaLogger;
 import org.saga.chunks.BundleManager;
 import org.saga.chunks.SagaChunk;
 import org.saga.config.GeneralConfiguration;
@@ -96,12 +95,8 @@ public class EntityListener implements Listener{
 			
 			Player player = (Player) projectile.getShooter();
 			
-			// Get player:
 	    	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(player.getName());
-	    	if(sagaPlayer == null){
-	    		SagaLogger.severe(BlockListener.class, "can't continue with onProjectileHit, because the saga player for "+ player.getName() + " isn't loaded.");
-	    		return;
-	    	}
+	    	if(sagaPlayer == null) return;
 	    	
 	    	sagaPlayer.getAbilityManager().onProjectileHit(event);
 			
@@ -235,15 +230,10 @@ public class EntityListener implements Listener{
 		// Players:
 		if(event.getEntity() instanceof Player){
 
-			Player player = (Player) event.getEntity();
-			
 			// Get player:
+			Player player = (Player) event.getEntity();
 	    	final SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(player.getName());
-
-	    	if(sagaPlayer == null){
-	    		SagaLogger.severe(EntityListener.class, "onEntityRegainHealth failed to retrieve saga player for "+ player.getName());
-	    		return;
-	    	}
+	    	if(sagaPlayer == null) return;
 
 			// Synchronise:
 			sagaPlayer.synchHealth();
@@ -257,9 +247,7 @@ public class EntityListener implements Listener{
 	    	
 	    	event.setAmount(nextHearths - prevHearths);
 	    	
-	    	
 		}
-
 		
 		
 	}

@@ -14,7 +14,6 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
-import org.saga.SagaLogger;
 import org.saga.attributes.DamageType;
 import org.saga.chunks.BundleManager;
 import org.saga.chunks.SagaChunk;
@@ -173,9 +172,6 @@ public class SagaEntityDamageEvent {
 			// Tool:
 			tool = ((Player) attacker).getItemInHand().getType();
 			
-			// No player:
-			if(attackerPlayer == null) SagaLogger.severe(getClass(), "failed to retrieve saga player for "+ ((Player) attacker).getName());
-			
 		}
 
 		// Get attacker creature:
@@ -198,9 +194,6 @@ public class SagaEntityDamageEvent {
 
 			defenderPlayer = Saga.plugin().getLoadedPlayer( ((Player) defender).getName() );
 			defenderCreature = null;
-			
-			// No player:
-			if(defenderPlayer == null) SagaLogger.severe(getClass(), "failed to retrieve saga player for "+ ((Player) defender).getName());
 			
 		}
 		

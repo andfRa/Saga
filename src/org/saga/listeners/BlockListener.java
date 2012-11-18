@@ -12,7 +12,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.saga.Saga;
-import org.saga.SagaLogger;
 import org.saga.chunks.BundleManager;
 import org.saga.chunks.SagaChunk;
 import org.saga.config.GeneralConfiguration;
@@ -29,24 +28,18 @@ public class BlockListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockBreak(BlockBreakEvent event) {
 
-
-		// Saga disabled:
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getLocation().getWorld())) return;
     	
+    	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
+    	if(sagaPlayer == null){
+    		event.setCancelled(true);
+    		return;
+    	}
+    	
+
 		// Get saga chunk:
     	SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(event.getBlock().getLocation());
     	
-		// Get player:
-    	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
-    	if(sagaPlayer == null){
-    		
-    		SagaLogger.severe(BlockListener.class, "can't continue with onBlockBreak, because the saga player for "+ event.getPlayer().getName() + " isn't loaded");
-    		event.setCancelled(true);
-    		
-    		return;
-    		
-    	}
-
     	// Build event:
     	SagaBuildEvent eventB = new SagaBuildEvent(event, sagaPlayer, sagaChunk);
     	SagaEventHandler.onBuild(eventB);
@@ -75,25 +68,18 @@ public class BlockListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		
-
-		// Saga disabled:
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getLocation().getWorld())) return;
-    	
-		Block block = event.getBlock();
+
+		SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
+    	if(sagaPlayer == null){
+    		event.setCancelled(true);
+    		return;
+    	}
+		
 		
 		// Get saga chunk:
-    	SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(event.getBlock().getLocation());
-    	
-		// Get player:
-    	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
-    	if(sagaPlayer == null){
-    		
-    		SagaLogger.severe(BlockListener.class, "can't continue with onBlockPlace, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
-    		event.setCancelled(true);
-    		
-    		return;
-    		
-    	}
+    	Block block = event.getBlock();
+		SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(event.getBlock().getLocation());
 
     	// Build event:
     	SagaBuildEvent eventB = new SagaBuildEvent(event, sagaPlayer, sagaChunk);
@@ -119,20 +105,15 @@ public class BlockListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onSignChange(SignChangeEvent event) {
 
-
-		// Saga disabled:
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getLocation().getWorld())) return;
+    	
+		SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
+    	if(sagaPlayer == null) return;
+		
     	
     	// Get saga chunk:
     	Location location = event.getBlock().getLocation();
     	SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
-    	
-		// Get player:
-    	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
-    	if(sagaPlayer == null){
-    		SagaLogger.severe(BlockListener.class, "can't continue with onSignChange, because the saga player for "+ event.getPlayer().getName() + " isn't loaded.");
-    		return;
-    	}
     	
     	// Build event:
     	SagaBuildEvent eventB = new SagaBuildEvent(event, sagaPlayer, sagaChunk);
