@@ -41,9 +41,9 @@ public class Arena extends Building implements SecondTicker{
 	transient public static Double KDR_MULTIPLIER = 0.4;
 
 	/**
-	 * Level multiplier.
+	 * Attribute point multiplier.
 	 */
-	transient public static Double LEVEL_MULTIPLIER = 0.25;
+	transient public static Double ATTRIBUTE_MULTIPLIER = 0.075;
 	
 	
 	/**
@@ -436,7 +436,7 @@ public class Arena extends Building implements SecondTicker{
 		addDeath(defender.getName());
 		
 		// Points:
-		addPoints(attacker.getName(), defender.getLevel().doubleValue() * LEVEL_MULTIPLIER);
+		addPoints(attacker.getName(), defender.getUsedAttributePoints().doubleValue() * ATTRIBUTE_MULTIPLIER);
 		
 	
 	}

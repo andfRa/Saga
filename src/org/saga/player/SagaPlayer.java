@@ -48,10 +48,6 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	private Double health;
 
 	
-	/**
-	 * Level.
-	 */
-	private Integer level;
 
 	/**
 	 * Experience.
@@ -129,7 +125,6 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		super(name);
 		
 		this.name = name;
-		this.level = 0;
 		this.exp = 0.0;
 		this.factionId = -1;
 		this.chunkGroupId = -1;
@@ -158,11 +153,6 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		if(health == null){
 			health = 20.0;
 			SagaLogger.nullField(this, "health");
-		}
-		
-		if(level == null){
-			level = 0;
-			SagaLogger.nullField(this, "level");
 		}
 		
 		if(exp == null){
@@ -214,7 +204,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	public void updateStatistics() {
 	
 		StatisticsManager.manager().setWallet(this);
-		StatisticsManager.manager().setLevel(this);
+		StatisticsManager.manager().setSpentAttributes(this);
     	StatisticsManager.manager().setAttributes(this);
 
 	}
@@ -486,19 +476,6 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	public boolean isDead() {
 
 		return health <= 0;
-		
-	}
-	
-	
-	// Level:
-	/**
-	 * Gets player level.
-	 * 
-	 * @return 0 if not online or nor a player
-	 */
-	public Integer getLevel() {
-		
-		return level;
 		
 	}
 	

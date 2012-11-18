@@ -352,7 +352,7 @@ public class StatisticsManager implements HourTicker{
 
 	
 	// Levels:
-	public Integer[] getLevels() {
+	public Integer[] getSpentAttributes() {
 
 		return playerLevels.values().toArray(new Integer[0]);
 		
@@ -603,9 +603,9 @@ public class StatisticsManager implements HourTicker{
 	
 	
 	// Level and attributes:
-	public void setLevel(SagaPlayer sagaPlayer) {
+	public void setSpentAttributes(SagaPlayer sagaPlayer) {
 
-		playerLevels.put(sagaPlayer.getName(), sagaPlayer.getLevel());
+		playerLevels.put(sagaPlayer.getName(), sagaPlayer.getUsedAttributePoints());
 
 	}
 	

@@ -237,7 +237,7 @@ public class ExperienceConfiguration {
 	public Double getExp(SagaPlayer sagaPlayer) {
 
 		
-		Double exp = playerExp.value(sagaPlayer.getLevel());
+		Double exp = playerExp.value(sagaPlayer.getUsedAttributePoints());
 		if(exp == null) return 0.0;
 		
 		return exp;

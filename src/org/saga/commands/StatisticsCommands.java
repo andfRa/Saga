@@ -361,22 +361,22 @@ public class StatisticsCommands {
 	}
 	
 	@Command(
-			aliases = {"stlevelshist"},
+			aliases = {"stattrhist"},
 			usage = "",
 			flags = "",
-			desc = "Show level distribution histogram.",
+			desc = "Show spent attribute distribution histogram.",
 			min = 0,
 			max = 0
 	)
-	@CommandPermissions({"saga.statistics.histogram.levels"})
+	@CommandPermissions({"saga.statistics.histogram.attributes"})
 	public static void levelsHistogram(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
     	// Data:
-    	Integer[] data = StatisticsManager.manager().getLevels();
+    	Integer[] data = StatisticsManager.manager().getSpentAttributes();
     	
 	    // Inform:
-    	sagaPlayer.message(StatisticsMessages.histogram("level histogram", data, 10, 0));
+    	sagaPlayer.message(StatisticsMessages.histogram("spent attribute histogram", data, 10, 0));
 	    
     	sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
 	    
