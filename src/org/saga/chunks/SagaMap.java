@@ -73,7 +73,7 @@ public class SagaMap {
 			
 			put(Biome.PLAINS, ChatColor.GRAY);
 			
-			put(Biome.RIVER, ChatColor.DARK_BLUE);
+			put(Biome.RIVER, ChatColor.BLUE);
 			
 			put(Biome.SKY, ChatColor.WHITE);
 			
