@@ -6,6 +6,7 @@ import java.util.Collection;
 import org.bukkit.ChatColor;
 import org.saga.Saga;
 import org.saga.config.EconomyConfiguration;
+import org.saga.config.FactionConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
 import org.saga.dependencies.EconomyDependency;
@@ -31,10 +32,6 @@ import org.sk89q.CommandPermissions;
 public class FactionCommands {
 
 
-	public static Integer maximumNameLength = 6;
-	
-	public static Integer minimumNameLenght = 3;
-	
 	public static Integer noDeleteMemberCount = 15;
 	
 	public static Integer noDeleteClaimCount = 5;
@@ -1696,11 +1693,11 @@ public class FactionCommands {
 	// Utility:
 	public static boolean validateName(String str) {
 
-         if(org.saga.utility.text.TextUtil.getComparisonString(str).length() < minimumNameLenght ) {
+         if(org.saga.utility.text.TextUtil.getComparisonString(str).length() < FactionConfiguration.config().getMinNameLength()) {
         	 return false;
          }
 
-         if(str.length() > maximumNameLength) {
+         if(str.length() > FactionConfiguration.config().getMaxNameLength()) {
         	 return false;
          }
 

@@ -6,7 +6,6 @@ import java.util.Hashtable;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.saga.buildings.TownSquare;
-import org.saga.commands.FactionCommands;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.ProficiencyConfiguration;
@@ -245,7 +244,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	// Other:
 	public static String invalidName() {
 		
-		return negative + "Name must be " + FactionCommands.minimumNameLenght + "-" + FactionCommands.maximumNameLength + " characters long and only contain letters and numbers.";
+		return negative + "Name must be " + FactionConfiguration.config().getMinNameLength() + "-" + FactionConfiguration.config().getMaxNameLength() + " characters long and only contain letters and numbers.";
 		
 	}
 

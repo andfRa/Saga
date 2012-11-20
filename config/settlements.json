@@ -443,7 +443,11 @@
 "enabledSignColor":"DARK_GREEN",
 "disabledSignColor":"DARK_GRAY",
 "invalidSignColor":"DARK_RED",
+
 "formationAmount":2,
+"minNameLength":3,
+"maxNameLength":15,
+
 "memberOnlyCommands":["sethome"]
 
 }

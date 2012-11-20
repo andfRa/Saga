@@ -28,6 +28,7 @@ import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement;
 import org.saga.settlements.Settlement.SettlementPermission;
 import org.saga.statistics.StatisticsManager;
+import org.saga.utility.text.TextUtil;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
 import org.sk89q.CommandPermissions;
@@ -35,12 +36,6 @@ import org.sk89q.CommandPermissions;
 
 public class SettlementCommands {
 
-	
-	public static Integer maximumNameLength = 15;
-	
-	public static Integer minimumNameLenght = 3;
-	
-	
 	
 	// Territory:
 	@Command(
@@ -1328,11 +1323,11 @@ public class SettlementCommands {
 	public static boolean validateName(String name) {
 
 		
-		if(org.saga.utility.text.TextUtil.getComparisonString(name).length() < minimumNameLenght ) {
+		if(TextUtil.getComparisonString(name).length() < SettlementConfiguration.config().getMinNameLength()) {
 			return false;
 		}
 
-		if(name.length() > maximumNameLength) {
+		if(name.length() > SettlementConfiguration.config().getMaxNameLength()) {
 			return false;
 		}
 

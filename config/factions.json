@@ -25,6 +25,8 @@
 "factionOnlyPvp":true,
 
 "formationAmount":4,
+"minNameLength":3,
+"maxNameLength":6,
 
 "claimSpeed":{"x1":0,"y1":0.2,"x2":50,"y2":0.0166},
 "unclaimSpeed":{"x1":0,"y1":0.4,"x2":50,"y2":0.0332},

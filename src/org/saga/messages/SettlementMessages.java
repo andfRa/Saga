@@ -13,7 +13,6 @@ import org.saga.chunks.Bundle;
 import org.saga.chunks.BundleToggleable;
 import org.saga.chunks.SagaChunk;
 import org.saga.chunks.SagaMap;
-import org.saga.commands.SettlementCommands;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.factions.Faction;
@@ -870,9 +869,7 @@ public class SettlementMessages {
 	
 	// Creating:
 	public static String invalidName() {
-		
-		return negative + "Name must be " + SettlementCommands.minimumNameLenght + "-" + SettlementCommands.maximumNameLength + ". Letters and numbers only.";
-		
+		return negative + "Name must be " + SettlementConfiguration.config().getMinNameLength() + "-" + SettlementConfiguration.config().getMaxNameLength() + ". Letters and numbers only.";
 	}
 
 	public static String inUse(String name) {

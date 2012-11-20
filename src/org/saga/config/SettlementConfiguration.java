@@ -83,6 +83,17 @@ public class SettlementConfiguration {
 	 * Amount of members needed for the chunk group to form.
 	 */
 	public Integer formationAmount;
+
+	/**
+	 * Minimum name length.
+	 */
+	private Integer minNameLength;
+
+	/**
+	 * Maximum name length.
+	 */
+	private Integer maxNameLength;
+	
 	
 	
 	// Commands:
@@ -145,6 +156,16 @@ public class SettlementConfiguration {
 			SagaLogger.nullField(getClass(), "formationAmount");
 			formationAmount = 2;
 		}
+
+		if(minNameLength == null){
+			SagaLogger.nullField(getClass(), "minNameLength");
+			minNameLength = 1;
+		}
+		
+		if(maxNameLength == null){
+			SagaLogger.nullField(getClass(), "maxNameLength");
+			maxNameLength = 15;
+		}
 		
 		if(memberOnlyCommands == null){
 			SagaLogger.nullField(getClass(), "memberOnlyCommands");
@@ -169,6 +190,27 @@ public class SettlementConfiguration {
 
 		return definition;
 		
+	}
+
+	
+	
+	// Creation:
+	/**
+	 * Gets the minimum name length.
+	 * 
+	 * @return minimum name length
+	 */
+	public Integer getMinNameLength() {
+		return minNameLength;
+	}
+	
+	/**
+	 * Gets the maximum name length.
+	 * 
+	 * @return maximum name length
+	 */
+	public Integer getMaxNameLength() {
+		return maxNameLength;
 	}
 	
 	
