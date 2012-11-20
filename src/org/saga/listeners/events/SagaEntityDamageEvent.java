@@ -108,6 +108,11 @@ public class SagaEntityDamageEvent {
 	 * Enchantment penetration modifier.
 	 */
 	private double disenchant = 0.0;
+
+	/**
+	 * Block multiplier.
+	 */
+	private double blocking = VanillaConfiguration.getBlockingMultiplier();
 	
 	/**
 	 * Penalty multiplier.
@@ -120,11 +125,6 @@ public class SagaEntityDamageEvent {
 	 */
 	private double sloppiness = 1.0;
 
-	/**
-	 * Block multiplier.
-	 */
-	private double blocking = VanillaConfiguration.getBlockingMultiplier();
-	
 	/**
 	 * PvP override.
 	 */
@@ -278,6 +278,15 @@ public class SagaEntityDamageEvent {
 	 */
 	public void modifyEnchantPenetration(double amount) {
 		disenchant+=amount;
+	}
+	
+	/**
+	 * Modifies blocking.
+	 * 
+	 * @param amount amount to modify
+	 */
+	public void modifyBlocking(double amount) {
+		blocking-= amount;
 	}
 	
 	/**

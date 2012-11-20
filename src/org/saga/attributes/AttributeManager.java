@@ -155,7 +155,10 @@ public class AttributeManager {
 				event.modifyArmourPenetration(defenderManager.getDefendModifier(AttributeParameter.MELEE_ARMOUR_PENETRATION));
 
 				// Enchant penetration:
-				event.modifyEnchantPenetration(defenderManager.getAttackModifier(AttributeParameter.MELEE_ENCHANT_PENETRATION));
+				event.modifyEnchantPenetration(defenderManager.getDefendModifier(AttributeParameter.MELEE_ENCHANT_PENETRATION));
+				
+				// Block:
+				event.modifyEnchantPenetration(defenderManager.getDefendModifier(AttributeParameter.MELEE_BLOCK_MODIFIER));
 				
 				break;
 
@@ -174,8 +177,11 @@ public class AttributeManager {
 				event.modifyArmourPenetration(defenderManager.getDefendModifier(AttributeParameter.RANGED_ARMOUR_PENETRATION));
 
 				// Enchant penetration:
-				event.modifyEnchantPenetration(defenderManager.getAttackModifier(AttributeParameter.RANGED_ENCHANT_PENETRATION));
-				
+				event.modifyEnchantPenetration(defenderManager.getDefendModifier(AttributeParameter.RANGED_ENCHANT_PENETRATION));
+
+				// Block:
+				event.modifyEnchantPenetration(defenderManager.getDefendModifier(AttributeParameter.RANGED_BLOCK_MODIFIER));
+			
 				break;
 
 			case MAGIC:
@@ -193,8 +199,11 @@ public class AttributeManager {
 				event.modifyArmourPenetration(defenderManager.getDefendModifier(AttributeParameter.MAGIC_ARMOUR_PENETRATION));
 
 				// Enchant penetration:
-				event.modifyEnchantPenetration(defenderManager.getAttackModifier(AttributeParameter.MAGIC_ENCHANT_PENETRATION));
-				
+				event.modifyEnchantPenetration(defenderManager.getDefendModifier(AttributeParameter.MAGIC_ENCHANT_PENETRATION));
+
+				// Block:
+				event.modifyEnchantPenetration(defenderManager.getDefendModifier(AttributeParameter.MAGIC_BLOCK_MODIFIER));
+			
 				break;
 			
 			case BURN:
