@@ -74,6 +74,10 @@ public class FactionConfiguration {
 	 */
 	private TwoPointFunction claimPoints;
 	
+	/**
+	 * Determines if claimed storage areas are considered open.
+	 */
+	private Boolean openClaimedStorageAreas;
 	
 	
 	// Initialisation:
@@ -140,6 +144,11 @@ public class FactionConfiguration {
 		}
 		claimPoints.complete();
 
+		if(openClaimedStorageAreas == null){
+			SagaLogger.nullField(getClass(), "openClaimedStorageAreas");
+			openClaimedStorageAreas = false;
+		}
+		
 		
 	}
 
@@ -216,6 +225,15 @@ public class FactionConfiguration {
 	 */
 	public Double getClaimPoints(Integer settleLevel) {
 		return claimPoints.value(settleLevel);
+	}
+	
+	/**
+	 * Checks if claimed storage areas are open for factions.
+	 * 
+	 * @return true if open
+	 */
+	public Boolean isOpenClaimedStorageAreas() {
+		return openClaimedStorageAreas;
 	}
 	
 	
