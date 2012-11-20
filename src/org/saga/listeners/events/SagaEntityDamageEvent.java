@@ -119,7 +119,11 @@ public class SagaEntityDamageEvent {
 	 * Tool sloppiness multiplier.
 	 */
 	private double sloppiness = 1.0;
-	
+
+	/**
+	 * Block multiplier.
+	 */
+	private double blocking = VanillaConfiguration.getBlockingMultiplier();
 	
 	/**
 	 * PvP override.
@@ -335,9 +339,9 @@ public class SagaEntityDamageEvent {
 			harm*= ench;
 			
 			// Blocking:
-			double blocking = VanillaConfiguration.getBlockingMultiplier(event, defenderPlayer);
-			harm*= blocking;
+			if(VanillaConfiguration.checkBlocking(event, defenderPlayer)) harm*= blocking;
 			
+			// Apply Saga damage:
 			defenderPlayer.damage(harm);
 			
 			// Prevent death:

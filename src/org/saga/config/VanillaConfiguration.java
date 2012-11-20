@@ -118,12 +118,24 @@ public class VanillaConfiguration {
 	 * @param sagaPlayer saga player
 	 * @return blocking multiplier
 	 */
-	public static double getBlockingMultiplier(EntityDamageEvent event, SagaPlayer sagaPlayer) {
+	public static double getBlockingMultiplier() {
 		
-		DamageCause cause = event.getCause();
-		if(cause == DamageCause.ENTITY_ATTACK || cause == DamageCause.PROJECTILE || cause == DamageCause.ENTITY_EXPLOSION || cause == DamageCause.BLOCK_EXPLOSION) return 0.5;
 			
-		return 1.0;
+		return 0.5;
+		
+	}
+	
+	/**
+	 * Checks if the damage will be blocked.
+	 * 
+	 * @param event event
+	 * @param defenderPlayer defender player
+	 * @return true if blocked
+	 */
+	public static boolean checkBlocking(EntityDamageEvent event, SagaPlayer defenderPlayer) {
+
+		DamageCause cause = event.getCause();
+		return defenderPlayer.getPlayer().isBlocking() && (cause == DamageCause.ENTITY_ATTACK || cause == DamageCause.PROJECTILE || cause == DamageCause.ENTITY_EXPLOSION || cause == DamageCause.BLOCK_EXPLOSION);
 		
 	}
 	

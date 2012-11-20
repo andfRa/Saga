@@ -94,7 +94,8 @@ public class Counterattack extends Ability{
 			
 			damage*= VanillaConfiguration.getArmourMultiplier(edbeEvent, (SagaPlayer)event.attackerPlayer);
 			damage*= VanillaConfiguration.getEPFMultiplier(edbeEvent, (SagaPlayer)event.attackerPlayer);
-			damage*= VanillaConfiguration.getBlockingMultiplier(edbeEvent, (SagaPlayer)event.attackerPlayer);
+			if(VanillaConfiguration.checkBlocking(edbeEvent, (SagaPlayer)event.attackerPlayer))
+				damage*= VanillaConfiguration.getBlockingMultiplier();
 			
 		}
 		
