@@ -258,6 +258,10 @@ public class BuildingMessages {
 		return SettlementMessages.positive + "Removed " + name + " from the resident list.";
 	}
 
+	public static String chestLocked() {
+		return SettlementMessages.negative + "The chest is locked.";
+	}
+
 	
 	
 	// Attribute sign:

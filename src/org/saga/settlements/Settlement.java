@@ -793,6 +793,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 		
 		ACCESS_WAREHOUSE,
 		ACCESS_STORAGE,
+		OPEN_HOME_CHESTS,
 		BUILD,
 		BUILD_BUILDING,
 		BUILDING_UPGRADE,

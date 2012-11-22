@@ -2,13 +2,18 @@ package org.saga.buildings;
 
 import java.util.ArrayList;
 
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.SagaLogger;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
+import org.saga.messages.BuildingMessages;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.Settlement.SettlementPermission;
 
 public class Home extends Building {
 
@@ -237,6 +242,24 @@ public class Home extends Building {
 		}
 		
 		
+	}
+	
+	@Override
+	public void onPlayerInteract(PlayerInteractEvent event, SagaPlayer sagaPlayer) {
+		
+		Block block = event.getClickedBlock();
+		if(block == null) return;
+		
+		// Protect chests:
+		if(block.getType() == Material.CHEST){
+			
+			if(!getChunkBundle().hasPermission(sagaPlayer, SettlementPermission.OPEN_HOME_CHESTS) && !isResident(sagaPlayer.getName())){
+				event.setCancelled(true);
+				sagaPlayer.message(BuildingMessages.chestLocked());
+			}
+			
+		}
+			
 	}
 	
 	
