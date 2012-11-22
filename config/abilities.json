@@ -73,13 +73,13 @@
     "activationAction":"NONE",
     "usedItem":"AIR",
     "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "cooldown":{"x1":1,"y1":10.0,"x2":3,"y2":5.0},
+    "cooldown":{"x1":1,"y1":15.0,"x2":3,"y2":7.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
     "attributeRequirements":{
       "strength":{"x1":1,"y1":8.0,"x2":3,"y2":45.0}
     },
     "buildingRequirements":{},
-    "functions":{"disarm chance":{"x1":1,"y1":0.30,"x2":3,"y2":0.30}},
+    "functions":{"disarm chance":{"x1":1,"y1":0.15,"x2":3,"y2":0.15}},
     "colour":3599321,
     "description":"shifts targets sword",
     "usage":"random chance"
