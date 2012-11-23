@@ -2,17 +2,17 @@ package org.saga.messages;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.saga.abilities.Ability;
 import org.saga.abilities.AbilityDefinition;
 import org.saga.chunks.Bundle;
 import org.saga.chunks.BundleManager;
+import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
-import org.saga.config.SettlementConfiguration;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.factions.Faction;
 import org.saga.factions.FactionManager;
@@ -188,24 +188,39 @@ public class StatsMessages {
     		for (Ability ability : allAbilities) {
     			
     			String name = ability.getName() + " " + RomanNumeral.binaryToRoman(ability.getScore());
+    			String required = "";
     			String status = "";
     			
-    			if(ability.getScore() <= 0){
+    			if(ability.getScore() == 0){
     				name = unavailable + name;
-    				status = unavailable + "(" + requirements(ability.getDefinition(), 1) + ")";
+    				required = unavailable + required;
+    				status = unavailable + status;
     			}
     			
-    			else{
+    			if(ability.getScore() < AbilityConfiguration.config().maxAbilityScore){
     				
-    				if(ability.getCooldown() <= 0){
-    					status = "ready";
-    				}else{
-    					status = ability.getCooldown() + "s";
+    				String requirements = requirements2(ability.getDefinition(), ability.getScore() + 1);
+    				String restrictions = restrictions(ability.getDefinition());
+    				
+    				
+    				if(restrictions.length() > 0){
+    					if(requirements.length() > 0) requirements+= ", ";
+    					requirements+= restrictions;
     				}
     				
+    				required+= requirements;
+    				
+    			}else{
+    				required = "-";
     			}
     			
-    			table.addLine(name, status, 0);
+    			if(ability.getCooldown() <= 0){
+					status+= "ready";
+				}else{
+					status = ability.getCooldown() + "s";
+				}
+    			
+    			table.addLine(new String[]{name, required, status});
     			
     		}
     		
@@ -223,7 +238,7 @@ public class StatsMessages {
 		
 	}
 	
-	public static String requirements(AbilityDefinition ability, Integer abilityScore) {
+	public static String requirements2(AbilityDefinition definition, Integer score) {
 
 		
 		StringBuffer result = new StringBuffer();
@@ -233,7 +248,7 @@ public class StatsMessages {
 		
 		for (String attribute : attributeNames) {
 			
-			Integer reqScore = ability.getAttrReq(attribute, abilityScore);
+			Integer reqScore = definition.getAttrReq(attribute, score);
 			if(reqScore <= 0) continue;
 			
 			if(result.length() > 0) result.append(", ");
@@ -241,20 +256,27 @@ public class StatsMessages {
 			result.append(GeneralMessages.attrAbrev(attribute) + " " + reqScore);
 			
 		}
-		
-		// Buildings:
-		Collection<String> bldgNames = SettlementConfiguration.config().getBuildingNames();
-		
-		for (String bldgName : bldgNames) {
 
-			Integer reqScore = ability.getBldgReq(bldgName, abilityScore);
-			if(reqScore <= 0) continue;
-			
+		// Buildings:
+		List<String> buildings = definition.getBldgReq(score);
+		if(buildings.size() > 0){
 			if(result.length() > 0) result.append(", ");
-			
-			result.append(bldgName + " " + RomanNumeral.binaryToRoman(reqScore));
-			
+			result.append(TextUtil.flatten(buildings));
 		}
+		
+		return result.toString();
+		
+		
+	}
+	
+	public static String restrictions(AbilityDefinition definition) {
+
+
+		StringBuffer result = new StringBuffer();
+		
+		// Proficiencies:
+		HashSet<String> proficiencies = definition.getProfRestr();
+		if(proficiencies.size() > 0) result.append(TextUtil.flatten(proficiencies));
 		
 		return result.toString();
 		

@@ -10,7 +10,9 @@ import org.bukkit.Material;
 import org.saga.SagaLogger;
 import org.saga.chunks.Bundle;
 import org.saga.config.AbilityConfiguration;
+import org.saga.player.Proficiency;
 import org.saga.player.SagaLiving;
+import org.saga.player.SagaPlayer;
 import org.saga.utility.TwoPointFunction;
 
 
@@ -71,7 +73,12 @@ public class AbilityDefinition{
 	/**
 	 * Building requirements.
 	 */
-	private Hashtable<String, TwoPointFunction> buildingRequirements;
+	private Hashtable<Integer, ArrayList<String>> buildingsRequired;
+
+	/**
+	 * Proficiency restrictions.
+	 */
+	private HashSet<String> proficiencyRestrictions;
 	
 	/**
 	 * Ability functions.
@@ -177,13 +184,14 @@ public class AbilityDefinition{
 			reqFunction.complete();
 		}
 		
-		if(buildingRequirements == null){
-			buildingRequirements = new Hashtable<String, TwoPointFunction>();
-			SagaLogger.nullField(this, "buildingRequirements");
+		if(buildingsRequired == null){
+			buildingsRequired = new Hashtable<Integer, ArrayList<String>>();
+			SagaLogger.nullField(this, "buildingsRequired");
 		}
-		reqFunctions = buildingRequirements.values();
-		for (TwoPointFunction reqFunction : reqFunctions) {
-			reqFunction.complete();
+		
+		if(proficiencyRestrictions == null){
+			proficiencyRestrictions = new HashSet<String>();
+			SagaLogger.nullField(this, "proficiencyRestrictions");
 		}
 		
 		if(functions == null){
@@ -347,6 +355,74 @@ public class AbilityDefinition{
 	
 	// Requirements:
 	/**
+	 * Gets attribute requirement.
+	 * 
+	 * @param attribute attribute
+	 * @param abilityScore ability score
+	 * @return ability attribute requirement
+	 */
+	public Integer getAttrReq(String attribute, Integer abilityScore) {
+
+		
+		TwoPointFunction function = attributeRequirements.get(attribute);
+		if(function == null) return 0;
+		
+		return function.intValue(abilityScore);
+		
+		
+	}
+
+	/**
+	 * Gets building requirements.
+	 * 
+	 * @return buildings requirements
+	 */
+	public ArrayList<String> getBldgReq(Integer score) {
+		
+		ArrayList<String> req = buildingsRequired.get(score);
+		if(req == null) return new ArrayList<String>();
+		return req;
+		
+	}
+
+	/**
+	 * Gets proficiency restrictions.
+	 * 
+	 * @return proficiency restrictions
+	 */
+	public HashSet<String> getProfRestr() {
+		return new HashSet<String>(proficiencyRestrictions);
+	}
+	
+	
+	/**
+	 * Checks ability building requirements.
+	 * 
+	 * @param sagaLiving saga entity
+	 * @param abilityScore ability score
+	 * @return true if requirements are met
+	 */
+	public boolean checkBuildings(SagaLiving<?> sagaLiving, Integer abilityScore) {
+
+		
+		ArrayList<String> req = getBldgReq(abilityScore);
+		
+		if(req.size() == 0) return true;
+		Bundle bundle = sagaLiving.getBundle();
+		if(bundle == null) return false;
+		
+		for (String building : req) {
+			
+			if(bundle.getFirstBuilding(building) == null) return false;
+			
+		}
+		
+		return true;
+
+
+	}
+	
+	/**
 	 * Checks ability attribute requirements.
 	 * 
 	 * @param sagaLiving saga entity
@@ -370,68 +446,27 @@ public class AbilityDefinition{
 		
 
 	}
-
+	
 	/**
-	 * Gets attribute requirement.
-	 * 
-	 * @param attribute attribute
-	 * @param abilityScore ability score
-	 * @return ability attribute requirement
-	 */
-	public Integer getAttrReq(String attribute, Integer abilityScore) {
-
-		
-		TwoPointFunction function = attributeRequirements.get(attribute);
-		if(function == null) return 0;
-		
-		return function.intValue(abilityScore);
-		
-		
-	}
-
-	/**
-	 * Gets building requirement.
-	 * 
-	 * @param bldgName building name
-	 * @param abilityScore ability score
-	 * @return ability attribute requirement
-	 */
-	public Integer getBldgReq(String bldgName, Integer abilityScore) {
-
-		
-		TwoPointFunction function = buildingRequirements.get(bldgName);
-		if(function == null) return 0;
-		
-		return function.intValue(abilityScore);
-		
-		
-	}
-	/**
-	 * Checks ability building requirements.
+	 * Checks ability proficiency requirements.
 	 * 
 	 * @param sagaLiving saga entity
 	 * @param abilityScore ability score
 	 * @return true if requirements are met
 	 */
-	public boolean checkBuildings(SagaLiving<?> sagaLiving, Integer abilityScore) {
+	public boolean checkProficiencies(SagaLiving<?> sagaLiving, Integer abilityScore) {
 
+		
+		if(proficiencyRestrictions.size() == 0) return true;
 
-		Set<String> bldgNames = buildingRequirements.keySet();
-		Bundle bundle = sagaLiving.getBundle();
-		
-		if(bldgNames.size() == 0) return true;
-		
-		if(bundle == null) return false;
-		
-		for (String bldgName : bldgNames) {
-			
-			if(bundle.getBuildingScore(bldgName) < getBldgReq(bldgName, abilityScore)){
-				return false;
-			}
-			
+		if(sagaLiving instanceof SagaPlayer){
+			Proficiency role = ((SagaPlayer) sagaLiving).getRole();
+			Proficiency rank = ((SagaPlayer) sagaLiving).getRank();
+			if(role != null && proficiencyRestrictions.contains(role.getName())) return true;
+			if(rank != null && proficiencyRestrictions.contains(rank.getName())) return true;
 		}
 		
-		return true;
+		return false;
 		
 
 	}
@@ -444,7 +479,9 @@ public class AbilityDefinition{
 	 * @return true if the requirements are met
 	 */
 	public boolean checkRequirements(SagaLiving<?> sagaLiving, Integer abilityScore) {
-		return checkAttributes(sagaLiving, abilityScore) && checkBuildings(sagaLiving, abilityScore);
+		return checkAttributes(sagaLiving, abilityScore)&&
+				checkBuildings(sagaLiving, abilityScore) &&
+				checkProficiencies(sagaLiving, abilityScore);
 	}
 	
 	

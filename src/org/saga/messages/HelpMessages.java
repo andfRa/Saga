@@ -161,9 +161,9 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 			
 			for (AbilityDefinition ability : abilities) {
 				upgrTable.addLine(new String[]{ability.getName(),
-					StatsMessages.requirements(ability, score1),
-					StatsMessages.requirements(ability, score2),
-					StatsMessages.requirements(ability, score3)
+					StatsMessages.requirements2(ability, score1),
+					StatsMessages.requirements2(ability, score2),
+					StatsMessages.requirements2(ability, score3)
 				});
 			}
 			

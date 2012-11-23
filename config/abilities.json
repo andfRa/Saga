@@ -17,7 +17,8 @@
       "strength":{"x1":1,"y1":5.0,"x2":3,"y2":45.0},
       "precision":{"x1":1,"y1":3.0,"x2":3,"y2":25.0}
     },
-    "buildingRequirements":{},
+    "buildingsRequired":{},
+    "proficiencyRestrictions":[],
     "functions":{"tree size":{"x1":1,"y1":10.0,"x2":3,"y2":50.0}},
     "colour":6304529,
     "description":"chops down a tree",
@@ -36,7 +37,8 @@
       "precision":{"x1":1,"y1":5.0,"x2":3,"y2":45.0},
       "willpower":{"x1":1,"y1":3.0,"x2":3,"y2":25.0}
     },
-    "buildingRequirements":{},
+    "buildingsRequired":{},
+    "proficiencyRestrictions":[],
     "functions":{"range":{"x1":1,"y1":20.0,"x2":3,"y2":60.0}},
     "colour":4841998,
     "description":"cuts wheat and reeds",
@@ -55,7 +57,8 @@
       "strength":{"x1":1,"y1":5.0,"x2":3,"y2":45.0},
       "willpower":{"x1":1,"y1":3.0,"x2":3,"y2":25.0}
     },
-    "buildingRequirements":{},
+    "buildingsRequired":{},
+    "proficiencyRestrictions":[],
     "functions":{
       "size":{"x1":0,"y1":1.0,"x2":3,"y2":60.0},
       "crumble":{"x1":0,"y1":5.0,"x2":50,"y2":10.0}
@@ -78,7 +81,8 @@
     "attributeRequirements":{
       "strength":{"x1":1,"y1":8.0,"x2":3,"y2":45.0}
     },
-    "buildingRequirements":{},
+    "buildingsRequired":{},
+    "proficiencyRestrictions":[],
     "functions":{"disarm chance":{"x1":1,"y1":0.01,"x2":3,"y2":0.05}},
     "colour":3599321,
     "description":"shifts targets sword",
@@ -96,7 +100,8 @@
     "attributeRequirements":{
       "precision":{"x1":1,"y1":8.0,"x2":3,"y2":45.0}
     },
-    "buildingRequirements":{},
+    "buildingsRequired":{},
+    "proficiencyRestrictions":[],
     "functions":{"speed":{"x1":1,"y1":1.0,"x2":3,"y2":3.0}},
     "colour":8873510,
     "description":"shoots an arrow",
@@ -114,7 +119,8 @@
     "attributeRequirements":{
       "precision":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
     },
-    "buildingRequirements":{},
+    "buildingsRequired":{},
+    "proficiencyRestrictions":[],
     "functions":{"range":{"x1":1,"y1":5.0,"x2":3,"y2":8.0}},
     "colour":8873510,
     "description":"arrows ricochet",
@@ -132,7 +138,8 @@
     "attributeRequirements":{
       "willpower":{"x1":1,"y1":8.0,"x2":3,"y2":45.0}
     },
-    "buildingRequirements":{},
+    "buildingsRequired":{},
+    "proficiencyRestrictions":[],
     "functions":{"speed":{"x1":1,"y1":0.70,"x2":3,"y2":2.0}},
     "colour":12724739,
     "description":"shoots a fireball",
@@ -150,7 +157,8 @@
     "attributeRequirements":{
       "willpower":{"x1":1,"y1":8.0,"x2":3,"y2":45.0}
     },
-    "buildingRequirements":{},
+    "buildingsRequired":{},
+    "proficiencyRestrictions":[],
     "functions":{
       "radius":{"x1":1,"y1":4.5,"x2":3,"y2":9.0},
       "power":{"x1":1,"y1":1.2,"x2":3,"y2":2.0}
@@ -171,7 +179,8 @@
     "attributeRequirements":{
       "willpower":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
     },
-    "buildingRequirements":{},
+    "buildingsRequired":{},
+    "proficiencyRestrictions":[],
     "functions":{
       "absorb total":{"x1":1,"y1":50.0,"x2":3,"y2":100.0},
       "decay per second":{"x1":1,"y1":2.0,"x2":3,"y2":2.0}
@@ -191,7 +200,8 @@
     "cooldown":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "active":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "attributeRequirements":{},
-    "buildingRequirements":{"academy":{"x1":1,"y1":1.0,"x2":3,"y2":3.0}},
+    "buildingsRequired":{1:["academy"]},
+    "proficiencyRestrictions":[],
     "functions":{"fireticks":{"x1":1,"y1":80.0,"x2":3,"y2":160.0}},
     "colour":12724739,
     "description":"fireball ignites",
@@ -207,7 +217,8 @@
     "cooldown":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
     "attributeRequirements":{},
-    "buildingRequirements":{"armoury":{"x1":1,"y1":1.0,"x2":3,"y2":3.0}},
+    "buildingsRequired":{1:["armoury"]},
+    "proficiencyRestrictions":[],
     "functions":{
       "weapon damage":{"x1":1,"y1":2.0,"x2":3,"y2":5.0}
     },
@@ -225,7 +236,8 @@
     "cooldown":{"x1":0,"y1":0.0,"x2":3,"y2":0.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
     "attributeRequirements":{},
-    "buildingRequirements":{"bowyer":{"x1":1,"y1":1.0,"x2":3,"y2":3.0}},
+    "buildingsRequired":{1:["bowyer"]},
+    "proficiencyRestrictions":[],
     "functions":{"speed":{"x1":1,"y1":1.0,"x2":3,"y2":1.5}},
     "colour":16777215,
     "description":"bow pushes back",
@@ -241,7 +253,8 @@
     "cooldown":{"x1":1,"y1":7.0,"x2":3,"y2":3.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
     "attributeRequirements":{ "precision":{"x1":1,"y1":20.0,"x2":3,"y2":50.0} },
-    "buildingRequirements":{},
+    "buildingsRequired":{},
+    "proficiencyRestrictions":["warrior"],
     "functions":{},
     "colour":3599322,
     "description":"redirects melee damage",
@@ -257,7 +270,8 @@
     "cooldown":{"x1":0,"y1":0.0,"x2":3,"y2":0.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
     "attributeRequirements":{"strength":{ "x1":1,"y1":20.0,"x2":3,"y2":50.0} },
-    "buildingRequirements":{},
+    "buildingsRequired":{},
+    "proficiencyRestrictions":["warrior"],
     "functions":{
       "facing half angle":{"x1":1,"y1":45.0,"x2":3,"y2":100.0},
       "active time":{"x1":1,"y1":2.0,"x2":3,"y2":2.0},
@@ -277,7 +291,8 @@
     "cooldown":{"x1":0,"y1":0.0,"x2":3,"y2":0.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
     "attributeRequirements":{"strength":{ "x1":1,"y1":20.0,"x2":3,"y2":50.0} },
-    "buildingRequirements":{},
+    "buildingsRequired":{},
+    "proficiencyRestrictions":["warrior"],
     "functions":{
       "increase per second":{"x1":1,"y1":1.0,"x2":3,"y2":1.0},
       "decrease per second":{"x1":1,"y1":2.0,"x2":3,"y2":2.0},
