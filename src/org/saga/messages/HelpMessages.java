@@ -297,7 +297,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		ArrayList<BuildingDefinition> bldgsDefinitions = SettlementConfiguration.config().getBuildingDefinitions();
 			
 		// Titles:
-		bldgsTable.addLine(new String[]{GeneralMessages.columnTitle("building"), GeneralMessages.columnTitle("points"), GeneralMessages.columnTitle("description")});
+		bldgsTable.addLine(new String[]{GeneralMessages.columnTitle("building"), GeneralMessages.columnTitle("pts."), GeneralMessages.columnTitle("description")});
 
 		if(bldgsDefinitions.size() != 0){
 			
