@@ -302,6 +302,28 @@
     "colour":16777215,
     "description":"bow pushes back",
     "usage":"on arrow hit"
+  },
+
+  {"className":"org.saga.abilities.Backstab",
+    "name":"backstab",
+    "itemRestrictions":[],
+    "activationAction":"NONE",
+    "usedItem":"AIR",
+    "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "cooldown":{"x1":0,"y1":0.0,"x2":3,"y2":0.0},
+    "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
+    "attributeRequirements":{ "precision":{"x1":1,"y1":20.0,"x2":3,"y2":50.0} },
+    "buildingsRequired":{3:["bowyer"]},
+    "proficiencyRestrictions":["archer"],
+    "functions":{
+      "facing half angle":{"x1":1,"y1":45.0,"x2":3,"y2":100.0},
+      "damage multiplier":{"x1":1,"y1":0.0,"x2":3,"y2":0.5},
+      "armour penetration":{"x1":1,"y1":0.5,"x2":3,"y2":0.5},
+      "enchant penetration":{"x1":1,"y1":0.5,"x2":3,"y2":0.5}
+    },
+    "colour":13434880,
+    "description":"increased damage",
+    "usage":"hit from behind"
   }
   
 ]
