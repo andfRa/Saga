@@ -227,37 +227,25 @@
     "usage":"on hit by item"
   },
 
-  {"className":"org.saga.abilities.ForceBow",
-    "name":"force bow",
-    "itemRestrictions":["BOW"],
+  {"className":"org.saga.abilities.Berserk",
+    "name":"berserk",
+    "itemRestrictions":[],
     "activationAction":"NONE",
     "usedItem":"AIR",
     "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "cooldown":{"x1":0,"y1":0.0,"x2":3,"y2":0.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
-    "attributeRequirements":{},
-    "buildingsRequired":{1:["bowyer"]},
-    "proficiencyRestrictions":[],
-    "functions":{"speed":{"x1":1,"y1":1.0,"x2":3,"y2":1.5}},
-    "colour":16777215,
-    "description":"bow pushes back",
-    "usage":"on arrow hit"
-  },
-  
-  {"className":"org.saga.abilities.Counterattack",
-    "name":"counter",
-    "itemRestrictions":["DIAMOND_SWORD","GOLD_SWORD","IRON_SWORD","STONE_SWORD"],
-    "activationAction":"NONE",
-    "usedItem":"AIR",
-    "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "cooldown":{"x1":1,"y1":7.0,"x2":3,"y2":3.0},
-    "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
-    "attributeRequirements":{ "precision":{"x1":1,"y1":20.0,"x2":3,"y2":50.0} },
-    "buildingsRequired":{},
+    "attributeRequirements":{"strength":{ "x1":1,"y1":20.0,"x2":3,"y2":50.0} },
+    "buildingsRequired":{3:["armoury"]},
     "proficiencyRestrictions":["warrior"],
-    "functions":{},
-    "colour":3599322,
-    "description":"redirects melee damage",
+    "functions":{
+      "increase per second":{"x1":1,"y1":1.0,"x2":3,"y2":1.0},
+      "decrease per second":{"x1":1,"y1":2.0,"x2":3,"y2":2.0},
+      "damage per hit":{"x1":0,"y1":0.0,"x2":20,"y2":20.0},
+      "max hits":{"x1":1,"y1":2.5,"x2":3,"y2":7.5}
+    },
+    "colour":13434880,
+    "description":"combat increases melee",
     "usage":"block w/ sword"
   },
 
@@ -269,8 +257,8 @@
     "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "cooldown":{"x1":0,"y1":0.0,"x2":3,"y2":0.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
-    "attributeRequirements":{"strength":{ "x1":1,"y1":20.0,"x2":3,"y2":50.0} },
-    "buildingsRequired":{},
+    "attributeRequirements":{"precision":{ "x1":1,"y1":20.0,"x2":3,"y2":50.0} },
+    "buildingsRequired":{3:["armoury"]},
     "proficiencyRestrictions":["warrior"],
     "functions":{
       "facing half angle":{"x1":1,"y1":45.0,"x2":3,"y2":100.0},
@@ -281,27 +269,39 @@
     "description":"lower hit chance",
     "usage":"block w/ sword"
   },
+  
+  {"className":"org.saga.abilities.Counterattack",
+    "name":"counter",
+    "itemRestrictions":["DIAMOND_SWORD","GOLD_SWORD","IRON_SWORD","STONE_SWORD"],
+    "activationAction":"NONE",
+    "usedItem":"AIR",
+    "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "cooldown":{"x1":1,"y1":7.0,"x2":3,"y2":3.0},
+    "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
+    "attributeRequirements":{ "willpower":{"x1":1,"y1":20.0,"x2":3,"y2":50.0} },
+    "buildingsRequired":{3:["armoury"]},
+    "proficiencyRestrictions":["warrior"],
+    "functions":{},
+    "colour":3599322,
+    "description":"redirects melee damage",
+    "usage":"block w/ sword"
+  },
 
-  {"className":"org.saga.abilities.Berserk",
-    "name":"berserk",
-    "itemRestrictions":[],
+  {"className":"org.saga.abilities.ForceBow",
+    "name":"force bow",
+    "itemRestrictions":["BOW"],
     "activationAction":"NONE",
     "usedItem":"AIR",
     "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "cooldown":{"x1":0,"y1":0.0,"x2":3,"y2":0.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
-    "attributeRequirements":{"strength":{ "x1":1,"y1":20.0,"x2":3,"y2":50.0} },
-    "buildingsRequired":{},
-    "proficiencyRestrictions":["warrior"],
-    "functions":{
-      "increase per second":{"x1":1,"y1":1.0,"x2":3,"y2":1.0},
-      "decrease per second":{"x1":1,"y1":2.0,"x2":3,"y2":2.0},
-      "damage per hit":{"x1":0,"y1":0.0,"x2":20,"y2":20.0},
-      "max hits":{"x1":1,"y1":2.5,"x2":3,"y2":7.5}
-    },
-    "colour":13434880,
-    "description":"combat increases melee",
-    "usage":"block w/ sword"
+    "attributeRequirements":{ "strength":{"x1":1,"y1":20.0,"x2":3,"y2":50.0} },
+    "buildingsRequired":{3:["bowyer"]},
+    "proficiencyRestrictions":["archer"],
+    "functions":{"speed":{"x1":1,"y1":1.5,"x2":3,"y2":3.0}},
+    "colour":16777215,
+    "description":"bow pushes back",
+    "usage":"on arrow hit"
   }
   
 ]

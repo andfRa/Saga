@@ -199,7 +199,7 @@ public class StatsMessages {
     			
     			if(ability.getScore() < AbilityConfiguration.config().maxAbilityScore){
     				
-    				String requirements = requirements2(ability.getDefinition(), ability.getScore() + 1);
+    				String requirements = requirements(ability.getDefinition(), ability.getScore() + 1);
     				String restrictions = restrictions(ability.getDefinition());
     				
     				
@@ -238,7 +238,7 @@ public class StatsMessages {
 		
 	}
 	
-	public static String requirements2(AbilityDefinition definition, Integer score) {
+	public static String requirements(AbilityDefinition definition, Integer score) {
 
 		
 		StringBuffer result = new StringBuffer();

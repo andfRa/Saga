@@ -262,7 +262,7 @@
     "performTime":"NONE",
     "craftTime":"NONE",
     "functions":{},
-    "maxScore":3,
+    "maxScore":1,
     "upgradeCost":{"x1":1,"y1":15000,"x2":2,"y2":60000},
     "description":"gives firm armour ability",
     "effect":"armour damages weapons"
@@ -283,7 +283,7 @@
     "performTime":"NONE",
     "craftTime":"NONE",
     "functions":{},
-    "maxScore":3,
+    "maxScore":1,
     "upgradeCost":{"x1":1,"y1":15000,"x2":2,"y2":60000},
     "description":"gives force bow ability",
     "effect":"bow causes knockback"
@@ -304,7 +304,7 @@
     "performTime":"NONE",
     "craftTime":"NONE",
     "functions":{},
-    "maxScore":3,
+    "maxScore":1,
     "upgradeCost":{"x1":1,"y1":15000,"x2":2,"y2":60000},
     "description":"gives ignite ability",
     "effect":"fireball ignites targets"

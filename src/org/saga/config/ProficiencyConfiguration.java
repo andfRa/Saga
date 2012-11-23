@@ -123,6 +123,15 @@ public class ProficiencyConfiguration {
 		return null;
 		
 	}
+	
+	/**
+	 * Gets all definitions.
+	 * 
+	 * @return all proficiency definitions
+	 */
+	public ArrayList<ProficiencyDefinition> getDefinitions() {
+		return new ArrayList<ProficiencyDefinition>(definitions);
+	}
 
 	/**
 	 * Gets proficiency definitions.

@@ -25,6 +25,7 @@ import org.saga.player.ProficiencyDefinition;
 import org.saga.utility.text.RomanNumeral;
 import org.saga.utility.text.StringBook;
 import org.saga.utility.text.StringTable;
+import org.saga.utility.text.TextUtil;
 
 public class HelpMessages {
 
@@ -140,8 +141,28 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		book.addLine(
 			"Abilities can be upgraded by increasing attributes. " +
 			"Upgraded abilities are more efficient and have lower cooldown times. " +
-			"Some abilities require certain buildings."
+			"Some abilities require certain buildings and some are only available for certain roles/ranks."
 		);
+		
+		book.addLine("");
+		
+		// Ability restriction table:
+		StringTable restrTable = new StringTable(messageColor);
+		restrTable.addLine(new String[]{
+			GeneralMessages.columnTitle("role/rank"),
+			GeneralMessages.columnTitle("available abilities")
+		});
+		ArrayList<ProficiencyDefinition> proficiencies = ProficiencyConfiguration.config().getDefinitions();
+		for (ProficiencyDefinition proficiency : proficiencies) {
+			
+			ArrayList<String> restrAbilities = getRestrictedAbilities(proficiency.getName());
+			if(restrAbilities.size() == 0) continue;
+			
+			restrTable.addLine(proficiency.getName(), TextUtil.flatten(restrAbilities), 0);
+			
+		}
+		restrTable.collapse();
+		book.addTable(restrTable);
 		
 		book.addLine("");
 		
@@ -151,19 +172,20 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		Integer score3 = AbilityConfiguration.config().maxAbilityScore;
 		Integer score2 = new Double((score1.doubleValue() + score3.doubleValue())/2.0).intValue();
 		
-		upgrTable.addLine(new String[]{GeneralMessages.columnTitle("ability"),
-				GeneralMessages.columnTitle("required " + RomanNumeral.binaryToRoman(score1)),
-				GeneralMessages.columnTitle("required " + RomanNumeral.binaryToRoman(score2)),
-				GeneralMessages.columnTitle("required " + RomanNumeral.binaryToRoman(score3))
+		upgrTable.addLine(new String[]{
+				GeneralMessages.columnTitle("ability"),
+				GeneralMessages.columnTitle("score " + RomanNumeral.binaryToRoman(score1)),
+				GeneralMessages.columnTitle("score " + RomanNumeral.binaryToRoman(score2)),
+				GeneralMessages.columnTitle("score " + RomanNumeral.binaryToRoman(score3))
 		});
 		
 		if(abilities.size() > 0){
 			
 			for (AbilityDefinition ability : abilities) {
 				upgrTable.addLine(new String[]{ability.getName(),
-					StatsMessages.requirements2(ability, score1),
-					StatsMessages.requirements2(ability, score2),
-					StatsMessages.requirements2(ability, score3)
+					StatsMessages.requirements(ability, score1),
+					StatsMessages.requirements(ability, score2),
+					StatsMessages.requirements(ability, score3)
 				});
 			}
 			
@@ -559,6 +581,19 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		
 	}
 
+	
+	private static ArrayList<String> getRestrictedAbilities(String profName) {
+
+		ArrayList<String> abilities = new ArrayList<String>();
+		
+		ArrayList<AbilityDefinition> definitions = AbilityConfiguration.config().getDefinitions();
+		for (AbilityDefinition abilityDefinition : definitions) {
+			if(abilityDefinition.getProfRestr().contains(profName)) abilities.add(abilityDefinition.getName());
+		}
+		
+		return abilities;
+		
+	}
 
 	
 	// Utility:
@@ -586,7 +621,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 	
 	}
 	
-public static String townSquare(){
+	public static String townSquare(){
 		
 		
 		ArrayList<BuildingDefinition> buildings = SettlementConfiguration.config().getBuildingDefinitions();
