@@ -12,9 +12,14 @@ public class Bash extends Ability{
 
 	
 	/**
-	 * Disarm chance key.
+	 * Melee disarm chance key.
 	 */
-	private static String DISARM_CHANCE_KEY = "disarm chance";
+	private static String MELEE_DISARM_CHANCE_KEY = "melee disarm chance";
+	
+	/**
+	 * Ranged disarm chance key.
+	 */
+	private static String RANGED_DISARM_CHANCE_KEY = "ranged disarm chance";
 	
 	/**
 	 * Initialises using definition.
@@ -33,7 +38,7 @@ public class Bash extends Ability{
 	/* 
 	 * (non-Javadoc)
 	 * 
-	 * @see org.saga.abilities.Ability#onPlayerInteractPlayer(org.bukkit.event.player.PlayerInteractEntityEvent, org.saga.player.SagaPlayer)
+	 * @see org.saga.abilities.Ability#triggerAttack(org.saga.listeners.events.SagaEntityDamageEvent)
 	 */
 	@SuppressWarnings("deprecation")
 	@Override
@@ -43,19 +48,23 @@ public class Bash extends Ability{
 		// Only player vs player:
 		if(!event.isPvP()) return false;
 		
-		// Only physical:
-		if(event.type != DamageType.MELEE) return false;
+		// Only melee and ranged:
+		if(event.type != DamageType.MELEE && event.type != DamageType.RANGED) return false;
 		
 		// Only if the target is holding a sword:
 		Material targetsItem = event.defenderPlayer.getItemInHand().getType();
-		if(targetsItem != Material.DIAMOND_SWORD && targetsItem != Material.GOLD_SWORD && targetsItem != Material.IRON_SWORD && targetsItem != Material.STONE_SWORD && targetsItem != Material.WOOD_SWORD) return false;
-		
+		if(targetsItem != Material.DIAMOND_SWORD && targetsItem != Material.GOLD_SWORD && targetsItem != Material.IRON_SWORD && targetsItem != Material.STONE_SWORD && targetsItem != Material.WOOD_SWORD && targetsItem != Material.BOW) return false;
 		
 		Player defender = event.defenderPlayer.getPlayer();
 		
 		// Determine disarm:
 		Random random = new Random();
-		double disarm = getDefinition().getFunction(DISARM_CHANCE_KEY).value(getScore());
+		double disarm = 0.0;
+		if(event.type == DamageType.MELEE){
+			disarm = getDefinition().getFunction(MELEE_DISARM_CHANCE_KEY).value(getScore());
+		}else{
+			disarm = getDefinition().getFunction(RANGED_DISARM_CHANCE_KEY).value(getScore());
+		}
 		if(random.nextDouble() > disarm) return false;
 		
 		// Slots:
