@@ -284,7 +284,7 @@
       "damage per hit":{"x1":0,"y1":0.0,"x2":20,"y2":20.0},
       "max hits":{"x1":1,"y1":2.5,"x2":3,"y2":7.5}
     },
-    "colour":3599321,
+    "colour":13434880,
     "description":"combat increases melee",
     "usage":"block w/ sword"
   }
