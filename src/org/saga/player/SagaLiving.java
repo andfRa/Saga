@@ -467,18 +467,22 @@ public class SagaLiving <T extends LivingEntity>{
 	 * 
 	 * @param entity entity
 	 * @param speed speed
+	 * @return entities velocity vector, zero length if none
 	 */
-	public void pushAwayEntity(Entity entity, double speed) {
+	public Vector pushAwayEntity(Entity entity, double speed) {
 
 		
 		// Ignore if no entity is wrapped:
-		if(livingEntity == null) return;
+		if(livingEntity == null) return new Vector(0, 0, 0);
 		
 		// Get velocity unit vector:
-		Vector unitVector = entity.getLocation().toVector().subtract(getLocation().toVector()).normalize();
+		Vector velocity = entity.getLocation().toVector().subtract(getLocation().toVector()).normalize();
+		velocity.multiply(speed);
 		
 		// Set speed and push entity:
-		entity.setVelocity(unitVector.multiply(speed));
+		entity.setVelocity(velocity);
+		
+		return velocity;
 		
 		
 	}

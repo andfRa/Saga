@@ -425,6 +425,16 @@ public class SagaEntityDamageEvent {
 	}
 	
 	/**
+	 * Checks if the defender player is blocking.
+	 * 
+	 * @return true if blocking
+	 */
+	public boolean isBlocking() {
+		if(defenderPlayer == null) return false;
+		return VanillaConfiguration.checkBlocking(event, defenderPlayer);
+	}
+	
+	/**
 	 * Checks if player attacked a player.
 	 * 
 	 * @return true if player versus player
@@ -480,6 +490,27 @@ public class SagaEntityDamageEvent {
 
 	}
 
+
+	/**
+	 * Gets the attacker.
+	 * 
+	 * @return attacker, null if none
+	 */
+	public LivingEntity getAttacker() {
+		if(attackerPlayer != null) return attackerPlayer.getPlayer();
+		return attackerCreature;
+	}
+
+	/**
+	 * Gets the defender.
+	 * 
+	 * @return defender, null if none
+	 */
+	public LivingEntity getDefender() {
+		if(defenderPlayer != null) return defenderPlayer.getPlayer();
+		return defenderCreature;
+	}
+	
 	
 	/**
 	 * Checks if the event is cancelled.

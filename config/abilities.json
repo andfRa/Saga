@@ -85,24 +85,6 @@
     "usage":"random chance"
   },
   
-  {"className":"org.saga.abilities.Counterattack",
-    "name":"counter",
-    "itemRestrictions":["DIAMOND_SWORD","GOLD_SWORD","IRON_SWORD","STONE_SWORD"],
-    "activationAction":"NONE",
-    "usedItem":"AIR",
-    "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "cooldown":{"x1":1,"y1":7.0,"x2":3,"y2":3.0},
-    "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
-    "attributeRequirements":{
-      "strength":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
-    },
-    "buildingRequirements":{},
-    "functions":{},
-    "colour":3599322,
-    "description":"redirects melee damage",
-    "usage":"block w/ sword"
-  },
-  
   {"className":"org.saga.abilities.Dart",
     "name":"dart",
     "itemRestrictions":["ARROW"],
@@ -248,6 +230,44 @@
     "colour":16777215,
     "description":"bow pushes back",
     "usage":"on arrow hit"
+  },
+  
+  {"className":"org.saga.abilities.Counterattack",
+    "name":"counter",
+    "itemRestrictions":["DIAMOND_SWORD","GOLD_SWORD","IRON_SWORD","STONE_SWORD"],
+    "activationAction":"NONE",
+    "usedItem":"AIR",
+    "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "cooldown":{"x1":1,"y1":7.0,"x2":3,"y2":3.0},
+    "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
+    "attributeRequirements":{
+      "strength":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
+    },
+    "buildingRequirements":{},
+    "functions":{},
+    "colour":3599322,
+    "description":"redirects melee damage",
+    "usage":"block w/ sword"
+  },
+
+  {"className":"org.saga.abilities.Parry",
+    "name":"parry",
+    "itemRestrictions":[],
+    "activationAction":"NONE",
+    "usedItem":"AIR",
+    "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "cooldown":{"x1":0,"y1":0.0,"x2":3,"y2":0.0},
+    "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
+    "attributeRequirements":{"strength":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}},
+    "buildingRequirements":{},
+    "functions":{
+      "facing half angle":{"x1":1,"y1":45.0,"x2":3,"y2":100.0},
+      "active time":{"x1":1,"y1":2.0,"x2":3,"y2":2.0},
+      "hit chance":{"x1":1,"y1":-0.5,"x2":3,"y2":-0.90}
+    },
+    "colour":3599321,
+    "description":"lower hit chance",
+    "usage":"block w/ sword"
   }
   
 ]
