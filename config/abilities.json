@@ -266,6 +266,27 @@
     "colour":3599321,
     "description":"lower hit chance",
     "usage":"block w/ sword"
+  },
+
+  {"className":"org.saga.abilities.Berserk",
+    "name":"berserk",
+    "itemRestrictions":[],
+    "activationAction":"NONE",
+    "usedItem":"AIR",
+    "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "cooldown":{"x1":0,"y1":0.0,"x2":3,"y2":0.0},
+    "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
+    "attributeRequirements":{"strength":{ "x1":1,"y1":20.0,"x2":3,"y2":50.0} },
+    "buildingRequirements":{},
+    "functions":{
+      "increase per second":{"x1":1,"y1":1.0,"x2":3,"y2":1.0},
+      "decrease per second":{"x1":1,"y1":2.0,"x2":3,"y2":2.0},
+      "damage per hit":{"x1":0,"y1":0.0,"x2":20,"y2":20.0},
+      "max hits":{"x1":1,"y1":2.5,"x2":3,"y2":7.5}
+    },
+    "colour":3599321,
+    "description":"combat increases melee",
+    "usage":"block w/ sword"
   }
   
 ]

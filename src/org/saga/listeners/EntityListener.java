@@ -60,18 +60,18 @@ public class EntityListener implements Listener{
 		
 		// Forward to managers:
 		SagaPlayer attackerPlayer = damageEvent.attackerPlayer;
-		if(attackerPlayer != null){
-			
-			attackerPlayer.getAttributeManager().handleAttack(damageEvent);
-			attackerPlayer.getAbilityManager().onAttack(damageEvent);
-			
-		}
-		
 		SagaPlayer defenderPlayer = damageEvent.defenderPlayer;
 		if(defenderPlayer != null){
 			
 			defenderPlayer.getAttributeManager().handleDefend(damageEvent);
 			defenderPlayer.getAbilityManager().onDefend(damageEvent);
+			
+		}
+		
+		if(attackerPlayer != null){
+			
+			attackerPlayer.getAttributeManager().handleAttack(damageEvent);
+			attackerPlayer.getAbilityManager().onAttack(damageEvent);
 			
 		}
 		
