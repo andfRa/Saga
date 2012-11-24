@@ -343,6 +343,30 @@
     "usage":"lclick w/ book"
   },
   
+  {"className":"org.saga.abilities.Meteors",
+    "name":"meteors",
+    "itemRestrictions":[COAL],
+    "activationAction":"LEFT_CLICK",
+    "usedItem":"COAL",
+    "usedAmount":{"x1":1,"y1":3.0,"x2":3,"y2":3.0},
+    "cooldown":{"x1":0,"y1":10.0,"x2":3,"y2":5.0},
+    "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
+    "attributeRequirements":{
+      "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":10.0},
+      "precision":{"x1":1,"y1":10.0,"x2":3,"y2":40.0}
+    },
+    "buildingsRequired":{3:["academy"]},
+    "proficiencyRestrictions":["mage"],
+    "functions":{
+      "distance":{"x1":1,"y1":16.0,"x2":3,"y2":32.0},
+      "speed":{"x1":1,"y1":1.25,"x2":3,"y2":2.0},
+      "bonus fireballs":{"x1":1,"y1":2.0,"x2":3,"y2":6.0}
+    },
+    "colour":12724739,
+    "description":"calls meteors",
+    "usage":"lclick w/ coal"
+  },
+  
   {"className":"org.saga.abilities.Lightning",
     "name":"lightning",
     "itemRestrictions":[REDSTONE],
