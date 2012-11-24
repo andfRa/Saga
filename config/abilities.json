@@ -338,6 +338,29 @@
     "colour":16777215,
     "description":"bow pushes back",
     "usage":"on arrow hit"
+  },
+  
+  {"className":"org.saga.abilities.Lightning",
+    "name":"lightning",
+    "itemRestrictions":[BOOK],
+    "activationAction":"LEFT_CLICK",
+    "usedItem":"REDSTONE",
+    "usedAmount":{"x1":1,"y1":10.0,"x2":3,"y2":5.0},
+    "cooldown":{"x1":0,"y1":20.0,"x2":3,"y2":15.0},
+    "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
+    "attributeRequirements":{
+      "willpower":{"x1":1,"y1":20.0,"x2":3,"y2":50.0}
+    },
+    "buildingsRequired":{3:["academy"]},
+    "proficiencyRestrictions":["mage"],
+    "functions":{
+      "damage":{"x1":1,"y1":6.0,"x2":3,"y2":15.0},
+      "damage range":{"x1":1,"y1":2.5,"x2":3,"y2":3.5},
+      "distance":{"x1":1,"y1":16.0,"x2":3,"y2":32.0}
+    },
+    "colour":16777215,
+    "description":"calls a lightning bolt",
+    "usage":"rclick w/ redstone"
   }
   
 ]

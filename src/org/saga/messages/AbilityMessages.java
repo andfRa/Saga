@@ -76,6 +76,21 @@ public class AbilityMessages {
 		return negative + TextUtil.capitalize(ability.getName()) + " can only be used on stone.";
 	
 	}
+	
+	
+	
+	// General usage:
+	public static String targetTooFar(Ability ability) {
+		
+		return negative + "Target block too far.";
+	
+	}
+	
+	public static String cantUseUnderground(Ability ability) {
+		
+		return negative + TextUtil.capitalize(ability.getName()) + " can't be used below ground.";
+	
+	}
 
 	
 }

@@ -337,6 +337,18 @@ public class VanillaConfiguration {
 	
 	
 	
+	// World:
+	/**
+	 * Gets the sky light level.
+	 * 
+	 * @return light from sky
+	 */
+	public static byte getSkyLightLevel(){
+		return 15;
+	}
+	
+	
+	
 	// Bonus characters:
 	/**
 	 * Checks if bonus characters are enabled.
