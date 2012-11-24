@@ -68,25 +68,26 @@
     "usage":"rclick stone w/ pickaxe"
   },
 
-  
-  
-  {"className":"org.saga.abilities.Dart",
-    "name":"dart",
-    "itemRestrictions":["ARROW"],
-    "activationAction":"RIGHT_CLICK",
-    "usedItem":"ARROW",
-    "usedAmount":{"x1":1,"y1":1.0,"x2":3,"y2":1.0},
-    "cooldown":{"x1":1,"y1":5.0,"x2":3,"y2":2.0},
+
+
+  {"className":"org.saga.abilities.Bash",
+    "name":"disarm",
+    "itemRestrictions":["DIAMOND_SWORD","GOLD_SWORD","IRON_SWORD","STONE_SWORD","BOW"],
+    "activationAction":"NONE",
+    "usedItem":"AIR",
+    "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "cooldown":{"x1":1,"y1":15.0,"x2":3,"y2":7.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
-    "attributeRequirements":{
-      "precision":{"x1":1,"y1":8.0,"x2":3,"y2":45.0}
+    "attributeRequirements":{ "strength":{"x1":1,"y1":15.0,"x2":3,"y2":50.0} },
+    "buildingsRequired":{3:["bowyer"]},
+    "proficiencyRestrictions":["archer"],
+    "functions":{
+      "melee disarm chance":{"x1":1,"y1":0.05,"x2":3,"y2":0.15},
+      "ranged disarm chance":{"x1":1,"y1":0.10,"x2":3,"y2":0.30}
     },
-    "buildingsRequired":{},
-    "proficiencyRestrictions":[],
-    "functions":{"speed":{"x1":1,"y1":1.0,"x2":3,"y2":3.0}},
-    "colour":8873510,
-    "description":"shoots an arrow",
-    "usage":"rclick w/ arrow"
+    "colour":3599321,
+    "description":"shifts targets weapon",
+    "usage":"random chance"
   },
   
   {"className":"org.saga.abilities.Ricochet",
@@ -97,9 +98,7 @@
     "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "cooldown":{"x1":1,"y1":5.0,"x2":3,"y2":2.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
-    "attributeRequirements":{
-      "precision":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
-    },
+    "attributeRequirements":{ "precision":{"x1":1,"y1":15.0,"x2":3,"y2":50.0} },
     "buildingsRequired":{},
     "proficiencyRestrictions":[],
     "functions":{"range":{"x1":1,"y1":5.0,"x2":3,"y2":8.0}},
@@ -116,9 +115,7 @@
     "usedAmount":{"x1":1,"y1":1.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":1,"y1":3.0,"x2":3,"y2":3.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
-    "attributeRequirements":{
-      "willpower":{"x1":1,"y1":8.0,"x2":3,"y2":45.0}
-    },
+    "attributeRequirements":{ "strength":{"x1":1,"y1":15.0,"x2":3,"y2":50.0} },
     "buildingsRequired":{},
     "proficiencyRestrictions":[],
     "functions":{"speed":{"x1":1,"y1":0.70,"x2":3,"y2":2.0}},
@@ -148,43 +145,8 @@
     "description":"pushes back",
     "usage":"rclick w/ book"
   },
-
-
-  {"className":"org.saga.abilities.Ignite",
-    "name":"ignite",
-    "itemRestrictions":[],
-    "activationAction":"NONE",
-    "usedItem":"AIR",
-    "usedAmount":{"x1":1,"y1":0.0},
-    "cooldown":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "active":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "attributeRequirements":{},
-    "buildingsRequired":{1:["academy"]},
-    "proficiencyRestrictions":[],
-    "functions":{"fireticks":{"x1":1,"y1":80.0,"x2":3,"y2":160.0}},
-    "colour":12724739,
-    "description":"fireball ignites",
-    "usage":"on fireball hit"
-  },
-
-  {"className":"org.saga.abilities.DamageWeapon",
-    "name":"firm armour",
-    "itemRestrictions":[],
-    "activationAction":"NONE",
-    "usedItem":"AIR",
-    "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "cooldown":{"x1":0,"y1":0.0,"x2":50,"y2":0.0},
-    "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
-    "attributeRequirements":{},
-    "buildingsRequired":{1:["armoury"]},
-    "proficiencyRestrictions":[],
-    "functions":{
-      "weapon damage":{"x1":1,"y1":2.0,"x2":3,"y2":5.0}
-    },
-    "colour":16711680,
-    "description":"damages weapon",
-    "usage":"on hit by item"
-  },
+  
+  
 
   {"className":"org.saga.abilities.Berserk",
     "name":"berserk",
@@ -251,29 +213,27 @@
     "description":"redirects melee damage",
     "usage":"block w/ sword"
   },
-
-
-  {"className":"org.saga.abilities.Bash",
-    "name":"disarm",
-    "itemRestrictions":["DIAMOND_SWORD","GOLD_SWORD","IRON_SWORD","STONE_SWORD","BOW"],
-    "activationAction":"NONE",
-    "usedItem":"AIR",
-    "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "cooldown":{"x1":1,"y1":15.0,"x2":3,"y2":7.0},
+  
+  
+  
+  {"className":"org.saga.abilities.Dart",
+    "name":"dart",
+    "itemRestrictions":["ARROW"],
+    "activationAction":"RIGHT_CLICK",
+    "usedItem":"ARROW",
+    "usedAmount":{"x1":1,"y1":1.0,"x2":3,"y2":1.0},
+    "cooldown":{"x1":1,"y1":5.0,"x2":3,"y2":2.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
     "attributeRequirements":{
       "precision":{"x1":1,"y1":10.0,"x2":3,"y2":10.0},
       "strength":{"x1":1,"y1":10.0,"x2":3,"y2":40.0}
     },
-    "buildingsRequired":{3:["bowyer"]},
-    "proficiencyRestrictions":["archer"],
-    "functions":{
-      "melee disarm chance":{"x1":1,"y1":0.05,"x2":3,"y2":0.15},
-      "ranged disarm chance":{"x1":1,"y1":0.10,"x2":3,"y2":0.30}
-    },
-    "colour":3599321,
-    "description":"shifts targets weapon",
-    "usage":"random chance"
+    "buildingsRequired":{},
+    "proficiencyRestrictions":[],
+    "functions":{"speed":{"x1":1,"y1":1.0,"x2":3,"y2":3.0}},
+    "colour":8873510,
+    "description":"shoots an arrow",
+    "usage":"rclick w/ arrow"
   },
 
   {"className":"org.saga.abilities.Backstab",
