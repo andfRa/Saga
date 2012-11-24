@@ -115,7 +115,7 @@
     "usedAmount":{"x1":1,"y1":1.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":1,"y1":3.0,"x2":3,"y2":3.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
-    "attributeRequirements":{ "strength":{"x1":1,"y1":15.0,"x2":3,"y2":50.0} },
+    "attributeRequirements":{ "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":50.0} },
     "buildingsRequired":{},
     "proficiencyRestrictions":[],
     "functions":{"speed":{"x1":1,"y1":0.70,"x2":3,"y2":2.0}},
@@ -132,9 +132,7 @@
     "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "cooldown":{"x1":0,"y1":18.0,"x2":3,"y2":4.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
-    "attributeRequirements":{
-      "willpower":{"x1":1,"y1":8.0,"x2":3,"y2":45.0}
-    },
+    "attributeRequirements":{ "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":50.0} },
     "buildingsRequired":{},
     "proficiencyRestrictions":[],
     "functions":{
