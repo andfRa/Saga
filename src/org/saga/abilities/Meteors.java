@@ -37,14 +37,23 @@ public class Meteors extends Ability{
 	@SuppressWarnings("serial")
 	transient private final static ArrayList<Vector> SHOOT_SHIFTS = new ArrayList<Vector>(){
 		{
-			add(new Vector(2.0, SHOOT_HEIGHT, 0));
-			add(new Vector(-2.0, SHOOT_HEIGHT, 0));
-			add(new Vector(0.0, SHOOT_HEIGHT, 2.0));
-			add(new Vector(0.0, SHOOT_HEIGHT, -2.0));
-			add(new Vector(2.0, SHOOT_HEIGHT, 2.0));
-			add(new Vector(-2.0, SHOOT_HEIGHT, -2.0));
-			add(new Vector(2.0, SHOOT_HEIGHT,- 2.0));
-			add(new Vector(-2.0, SHOOT_HEIGHT, 2.0));
+			add(new Vector(1.25, SHOOT_HEIGHT, 0));
+			add(new Vector(-1.25, SHOOT_HEIGHT, 0));
+			add(new Vector(0.0, SHOOT_HEIGHT, 1.25));
+			add(new Vector(0.0, SHOOT_HEIGHT, -1.25));
+			add(new Vector(1.25, SHOOT_HEIGHT, 1.25));
+			add(new Vector(-1.25, SHOOT_HEIGHT, -1.25));
+			add(new Vector(1.25, SHOOT_HEIGHT,- 1.25));
+			add(new Vector(-1.25, SHOOT_HEIGHT, 1.25));
+			
+			add(new Vector(2.5, SHOOT_HEIGHT, 0));
+			add(new Vector(-2.5, SHOOT_HEIGHT, 0));
+			add(new Vector(0.0, SHOOT_HEIGHT, 2.5));
+			add(new Vector(0.0, SHOOT_HEIGHT, -2.5));
+			add(new Vector(2.5, SHOOT_HEIGHT, 2.5));
+			add(new Vector(-2.5, SHOOT_HEIGHT, -2.5));
+			add(new Vector(2.5, SHOOT_HEIGHT,- 2.5));
+			add(new Vector(-2.5, SHOOT_HEIGHT, 2.5));
 		}
 	};
 	
