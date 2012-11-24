@@ -747,11 +747,17 @@ public class Settlement extends Bundle implements MinuteTicker{
 
 		
 		if(!isEnabled()) return false;
+
+		// Statistics:
+		StatisticsManager.manager().addManminutes(this);
 		
 		// Level progress:
 		if(level < getDefinition().getMaxLevel() && checkActiveMembers()){
 			
 			exp += getExpSpeed();
+
+			// Statistics:
+			StatisticsManager.manager().addManminutesExp(this, getExpSpeed());
 			
 			if(getRemainingExp() > 0) return true;
 			

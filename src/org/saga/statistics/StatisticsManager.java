@@ -989,6 +989,24 @@ public class StatisticsManager implements HourTicker{
 	
 	
 	
+	public void addManminutes(Faction faction) {
+		modifyValue("online.factions." + faction.getName(), faction.getOnlineMembers().size());
+	}
+	
+	public void addManminutes(Settlement settlement) {
+		modifyValue("online.settlements." + settlement.getName(), settlement.getOnlineMembers().size());
+	}
+	
+	public void addManminutesExp(Settlement settlement, Double amount) {
+		modifyValue("exp.settlements." + settlement.getName(), amount);
+	}
+	
+	public void addManminutesExp(Faction faction, Double amount) {
+		modifyValue("exp.factions." + faction.getName(), amount);
+	}
+	
+	
+	
 	// Load unload:
 	/**
 	 * Loads the manager.

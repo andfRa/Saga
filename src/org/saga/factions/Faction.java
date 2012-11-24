@@ -1510,10 +1510,16 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		
 		if(!isEnabled()) return false;
 		
+		// Statistics:
+		StatisticsManager.manager().addManminutes(this);
+
 		// Level progress:
 		if(level < getDefinition().getMaxLevel()){
 			
 			exp += getExpSpeed();
+
+			// Statistics:
+			StatisticsManager.manager().addManminutesExp(this, getExpSpeed());
 			
 			if(getRemainingExp() > 0) return true;
 			

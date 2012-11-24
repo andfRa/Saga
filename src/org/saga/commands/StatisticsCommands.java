@@ -452,6 +452,26 @@ public class StatisticsCommands {
 	    
 	}
 
+
+	@Command(
+		aliases = {"stonline"},
+		usage = "",
+		flags = "a",
+		desc = "Show online statistics. The -a flag shows individual factions and settlements.",
+		min = 0,
+		max = 0
+		)
+	@CommandPermissions({"saga.statistics.claimed"})
+	public static void online(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	
+		// Inform:
+		sagaPlayer.message(StatisticsMessages.values("online exp", "online", "online", "exp", "group", "minutes", "exp", !args.hasFlag('a'), 0, 0));
+		
+		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+	            	
+	}
+
+	
 	
 	@Command(
 			aliases = {"stupdateplayers"},

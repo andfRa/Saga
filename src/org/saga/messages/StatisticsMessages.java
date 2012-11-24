@@ -221,6 +221,46 @@ public class StatisticsMessages {
 		
 	}
 	
+	public static String values(String title, String category, String varCategMain, String varCateg1, String column1, String column2, String column3, boolean ignoreBottom, int decimals, int page) {
+
+		
+		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
+		StringBook book = new StringBook(title, colours);
+		StringTable table = new StringTable(colours);
+		
+		Collection<String> subCategs = StatisticsManager.manager().getSubCategs(category, ignoreBottom);
+		
+		// Column names:
+		table.addLine(new String[]{GeneralMessages.columnTitle(column1), GeneralMessages.columnTitle(column2), GeneralMessages.columnTitle(column3)});
+		
+		if(subCategs.size() != 0){
+			
+			for (String subCateg : subCategs) {
+				
+				String name = StatisticsManager.formatCategName(subCateg);
+				String sumCategory = category + "." + subCateg;
+				String sumCategory2 = sumCategory.replace(varCategMain, varCateg1);
+				String value1 = TextUtil.round(StatisticsManager.manager().getSumValue(sumCategory, ignoreBottom), decimals);
+				String value2 = TextUtil.round(StatisticsManager.manager().getSumValue(sumCategory2, ignoreBottom), decimals);
+				
+				table.addLine(new String[]{name, value1, value2});
+				
+			}
+			
+		}else{
+			
+			table.addLine(new String[]{"-", "-", "-"});
+			
+		}
+		
+		table.collapse();
+		book.addTable(table);
+		
+		return book.framedPage(page);
+		
+		
+	}
+	
 	
 	
 	// Histogram:
