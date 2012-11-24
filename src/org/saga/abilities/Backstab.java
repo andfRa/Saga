@@ -1,5 +1,6 @@
 package org.saga.abilities;
 
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 import org.saga.listeners.events.SagaEntityDamageEvent;
@@ -50,7 +51,12 @@ public class Backstab extends Ability{
 		if(defender == null || attacker == null) return false;
 		
 		// Facing:
-		double deg = getFacing(defender, attacker);
+		double deg = 0.0;
+		if(event.getProjectile() == null){
+			deg = getFacing(defender, attacker);
+		}else{
+			deg = getFacing(defender, event.getProjectile());
+		}
 		
 		// Check degrees:
 		if(Math.abs(deg) > getDefinition().getFunction(FACING_HALF_ANGLE).value(getCooldown())) return false;
@@ -59,8 +65,6 @@ public class Backstab extends Ability{
 		event.multiplyDamage(getDefinition().getFunction(DAMAGE_MULTIPLIER).value(getScore()));
 		event.modifyArmourPenetration(getDefinition().getFunction(ARMOUR_PENETRATION).value(getScore()));
 		event.modifyEnchantPenetration(getDefinition().getFunction(ENCHANT_PENETRATION).value(getScore()));
-		
-		System.out.println("BACKSTAB");
 		
 		return true;
 		
@@ -74,7 +78,7 @@ public class Backstab extends Ability{
 	 * @param attacker attacker
 	 * @return direction of facing from line connecting both entities, values 0-180 degrees
 	 */
-	public static double getFacing(LivingEntity defender, LivingEntity attacker) {
+	public static double getFacing(Entity defender, Entity attacker) {
 		
 		Vector defenderDirection = defender.getLocation().getDirection();
 		Vector stevesVector = defender.getLocation().subtract(attacker.getLocation()).toVector().normalize();
