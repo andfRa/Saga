@@ -1,6 +1,7 @@
 package org.saga.listeners;
 
 import org.bukkit.Chunk;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Creeper;
@@ -36,6 +37,9 @@ public class EntityListener implements Listener{
 	
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamage(EntityDamageEvent event) {
+		
+		// Creative or cancelled:
+		if(event.getEntity() instanceof Player && ((Player)event.getEntity()).getGameMode() == GameMode.CREATIVE || event.isCancelled()) return;
 		
 		// Not a living:
 		if(!(event.getEntity() instanceof LivingEntity)) return;
