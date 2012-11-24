@@ -149,28 +149,6 @@
     "usage":"rclick w/ book"
   },
 
-  {"className":"org.saga.abilities.Stoneskin",
-    "name":"stoneskin",
-    "itemRestrictions":["BOOK"],
-    "activationAction":"LEFT_CLICK",
-    "usedItem":"COBBLESTONE",
-    "usedAmount":{"x1":1,"y1":6.0,"x2":3,"y2":6.0},
-    "cooldown":{"x1":0,"y1":18.0,"x2":3,"y2":4.0},
-    "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
-    "attributeRequirements":{
-      "willpower":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
-    },
-    "buildingsRequired":{},
-    "proficiencyRestrictions":[],
-    "functions":{
-      "absorb total":{"x1":1,"y1":50.0,"x2":3,"y2":100.0},
-      "decay per second":{"x1":1,"y1":2.0,"x2":3,"y2":2.0}
-    },
-    "colour":16777215,
-    "description":"absorbs damage",
-    "usage":"lclick w/ book"
-  },
-
 
   {"className":"org.saga.abilities.Ignite",
     "name":"ignite",
@@ -338,6 +316,31 @@
     "colour":16777215,
     "description":"bow pushes back",
     "usage":"on arrow hit"
+  },
+
+
+
+  {"className":"org.saga.abilities.Stoneskin",
+    "name":"stoneskin",
+    "itemRestrictions":["BOOK"],
+    "activationAction":"LEFT_CLICK",
+    "usedItem":"COBBLESTONE",
+    "usedAmount":{"x1":1,"y1":6.0,"x2":3,"y2":6.0},
+    "cooldown":{"x1":0,"y1":18.0,"x2":3,"y2":4.0},
+    "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
+    "attributeRequirements":{
+      "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":10.0},
+      "strength":{"x1":1,"y1":10.0,"x2":3,"y2":40.0}
+    },
+    "buildingsRequired":{3:["academy"]},
+    "proficiencyRestrictions":["mage"],
+    "functions":{
+      "absorb total":{"x1":1,"y1":50.0,"x2":3,"y2":100.0},
+      "decay per second":{"x1":1,"y1":2.0,"x2":3,"y2":2.0}
+    },
+    "colour":16777215,
+    "description":"absorbs damage",
+    "usage":"lclick w/ book"
   },
   
   {"className":"org.saga.abilities.Lightning",
