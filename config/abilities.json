@@ -364,7 +364,7 @@
     },
     "colour":12724739,
     "description":"calls meteors",
-    "usage":"lclick w/ coal"
+    "usage":"rclick w/ ghast tear"
   },
   
   {"className":"org.saga.abilities.Lightning",
