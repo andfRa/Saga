@@ -122,7 +122,7 @@ public class Clock implements Runnable{
 			hoursCycle ++;
 
 			ArrayList<HourTicker> hour = new ArrayList<HourTicker>(this.hours);
-			SagaLogger.info("Hour tick for " + hour.size() + " registered instances.");
+//			SagaLogger.info("Hour tick for " + hour.size() + " registered instances.");
 			for (HourTicker ticker : hour) {
 				
 				if(!ticker.clockHourTick()) this.hours.remove(ticker);
