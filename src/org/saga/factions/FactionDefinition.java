@@ -107,7 +107,7 @@ public class FactionDefinition {
 	 * @param hierarchyLevel hierarchy level
 	 * @return amount of ranks available
 	 */
-	public Integer getAvailableRanks(Integer factLevel, Integer hierarchyLevel) {
+	public Integer getAvailableRanks2(Integer factLevel, Integer hierarchyLevel) {
 		
 		
 		TwoPointFunction function = hierarchy.get(hierarchyLevel);

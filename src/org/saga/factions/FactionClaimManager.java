@@ -13,6 +13,7 @@ import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.Saga;
 import org.saga.SagaLogger;
+import org.saga.buildings.Building;
 import org.saga.buildings.TownSquare;
 import org.saga.chunks.Bundle;
 import org.saga.chunks.BundleManager;
@@ -723,6 +724,45 @@ public class FactionClaimManager implements SecondTicker{
 	 */
 	public boolean checkClaimLimit(Faction faction) {
 		return findSettlementsIds(faction.getId()).length < FactionConfiguration.config().getMaxClaims();
+	}
+	
+	
+	
+	// Ranks:
+	/**
+	 * Gets all ranks for the given faction.
+	 * 
+	 * @param factionId faction ID
+	 * @return faction ranks
+	 */
+	public Hashtable<String, Integer> getRanks(Integer factionId) {
+
+		
+		Hashtable<String, Integer> ranks = new Hashtable<String, Integer>();
+		
+		Settlement[] settlements = findSettlements(factionId);
+		for (int i = 0; i < settlements.length; i++) {
+			
+			ArrayList<Building> buildings = settlements[i].getBuildings();
+			for (Building building : buildings) {
+				
+				Set<String> bldranks = building.getDefinition().getAllRanks();
+				for (String rank : bldranks) {
+					
+					Integer count = ranks.get(rank);
+					if(count == null) count = 0;
+					count+= building.getDefinition().getRanks(rank);
+					ranks.put(rank, count);
+					
+				}
+				
+			}
+			
+		}
+		
+		return ranks;
+		
+		
 	}
 	
 

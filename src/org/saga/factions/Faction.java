@@ -31,6 +31,7 @@ import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.FactionMessages;
 import org.saga.player.Proficiency;
+import org.saga.player.ProficiencyDefinition;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
@@ -1077,10 +1078,10 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	/**
 	 * Gets the amount of ranks used.
 	 * 
-	 * @param hierarchy hierarchy level
+	 * @param rankName rank name
 	 * @return amount of ranks used
 	 */
-	public Integer getUsedRanks(Integer hierarchy) {
+	public Integer getUsedRanks(String rankName) {
 
 		Integer total = 0;
 		
@@ -1088,7 +1089,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		
 		for (Proficiency rank : ranks) {
 			
-			if(rank.getHierarchy() == hierarchy) total++;
+			if(rank.getName().equals(rankName)) total++;
 
 		}
 		
@@ -1097,26 +1098,29 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	}
 	
 	/**
-	 * Gets the amount of ranks available
+	 * Gets the amount of ranks available.
 	 * 
 	 * @param rankName rank name
-	 * @return amont of ranks available
+	 * @return amount of ranks available
 	 */
-	public Integer getAvailableRanks(Integer hierarchy) {
+	public Integer getAvailableRanks(String rankName) {
 		
-		return getDefinition().getAvailableRanks(getLevel(), hierarchy);
+		Hashtable<String, Integer> ranks = FactionClaimManager.manager().getRanks(id);
+		Integer amount = ranks.get(rankName);
+		if(amount == null) return 0;
 		
+		return amount;
 	}
 
 	/**
 	 * Gets the amount of ranks remaining.
 	 * 
-	 * @param hierarchy hierarchy level
+	 * @param rankName rank name
 	 * @return amount of remaining ranks
 	 */
-	public Integer getRemainingRanks(Integer hierarchy) {
+	public Integer getRemainingRanks(String rankName) {
 		
-		return getAvailableRanks(hierarchy) - getUsedRanks(hierarchy);
+		return getAvailableRanks(rankName) - getUsedRanks(rankName);
 		
 	}
 	
@@ -1126,13 +1130,14 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 * @param rankName rank name
 	 * @return true if available
 	 */
-	public boolean isRankAvailable(Integer hierarchy) {
+	public boolean isRankAvailable(String rankName) {
 		
-		if(hierarchy == getDefinition().getHierarchyMin()){
-			return true;
-		}
+		ProficiencyDefinition rank = ProficiencyConfiguration.config().getDefinition(rankName);
+		if(rank == null) return false;
 		
-		return getRemainingRanks(hierarchy) > 0;
+		if(rank.getHierarchyLevel() == getDefinition().getHierarchyMin()) return true;
+		
+		return getRemainingRanks(rankName) > 0;
 		
 	}
 	

@@ -446,32 +446,13 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 			if(groupName.length() == 0) groupName = "-";
 			result.append(GeneralMessages.tableTitle(general + groupName));
 			
-			// Rank amounts:
-			if(hierarchy != faction.getDefinition().getHierarchyMin()){
-				
-				String amounts = faction.getUsedRanks(hierarchy) + "/" + faction.getAvailableRanks(hierarchy);
-				
-				if(faction.isRankAvailable(hierarchy)){
-					amounts = positive + amounts;
-				}else{
-					amounts = negative + amounts;
-				}
-				
-				result.append(" " + amounts);
-				
-			}else{
-				
-				String amounts = faction.getUsedRanks(hierarchy) + "/-";
-				result.append(" " + amounts);
-				
-			}
-			
 			// All ranks:
 			StringBuffer resultRanks = new StringBuffer();
 			
-			ArrayList<ProficiencyDefinition> ranks = ProficiencyConfiguration.config().getDefinitions(ProficiencyType.RANK, hierarchy);
+			Hashtable<String, Integer> allAvailRanks = FactionClaimManager.manager().getRanks(faction.getId());
+			ArrayList<ProficiencyDefinition> allRanks = ProficiencyConfiguration.config().getDefinitions(ProficiencyType.RANK, hierarchy);
 			
-			for (ProficiencyDefinition definition : ranks) {
+			for (ProficiencyDefinition definition : allRanks) {
 				
 				// Members:
 				if(resultRanks.length() > 0) resultRanks.append("\n");
@@ -484,8 +465,18 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 				
 				// Add members:
 				resultRanks.append(normal);
+				resultRanks.append(roleName);
 				
-				resultRanks.append(roleName + ": ");
+				// Amounts:
+				Integer usedRanks = faction.getUsedRanks(roleName);
+				Integer availRanks = allAvailRanks.get(roleName);
+				if(availRanks == null) availRanks = 0;
+				
+				if(definition.getHierarchyLevel() > faction.getDefinition().getHierarchyMin()){
+					resultRanks.append(" " + usedRanks + "/" + availRanks);
+				}
+				
+				resultRanks.append(": ");
 				
 				if(members.size() != 0){
 					resultRanks.append(TextUtil.flatten(members));

@@ -577,7 +577,7 @@ public class FactionCommands {
 		}
 		
 		// Set rank:
-		if(selFaction.isRankAvailable(rank.getHierarchy())) selFaction.setRank(selPlayer, rank);
+		if(selFaction.isRankAvailable(rank.getName())) selFaction.setRank(selPlayer, rank);
 
 		// Inform:
 		selFaction.information(FactionMessages.newOwner(selFaction, targetName));
@@ -672,7 +672,7 @@ public class FactionCommands {
 		}
 		
 		// Rank available:
-		if(!selFaction.isRankAvailable(rank.getHierarchy())){
+		if(!selFaction.isRankAvailable(rank.getName())){
 			sagaPlayer.message(FactionMessages.rankUnavailable(selFaction, rankName));
 			return;
 		}
