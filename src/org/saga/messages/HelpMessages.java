@@ -246,7 +246,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		// Roles:
 		book.addLine("Use " + GeneralMessages.command("/ssetrole") + " to assign a role to a member. " +
 			"Each role gives certain attribute bonuses. " +
-			"The amount of available roles increases when the settlement gains levels. " +
+			"The amount of available roles increases when certain buildings are set. " +
 			"Roles also determine which actions and commands are permitted."
 		);
 		
@@ -436,7 +436,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		// Ranks:
 		book.addLine("Use " + GeneralMessages.command("/fsetrank") + " to assign a rank to a member. " +
 			"Each rank gives certain attribute bonuses. " +
-			"The amount of available ranks increases when the faction claims settlements. " +
+			"The amount of available ranks increases when the faction claims settlements with certain buildings. " +
 			"Ranks also determine which commands are permitted."
 		);
 		
