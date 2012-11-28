@@ -60,7 +60,7 @@
     "hierarchyLevel":"3",
     "attributeBonuses":{"toughness":10},
     "settlementPermissions":[],
-    "factionPermissions":["INVITE","KICK","SET_COLOR","RENAME","SET_RANK"]
+    "factionPermissions":["INVITE","KICK","SET_COLOR","RENAME","SET_RANK","SPAWN"]
   },
 
  {"name":"warrior",
@@ -68,7 +68,7 @@
     "hierarchyLevel":"2",
     "attributeBonuses":{"strength":8,"toughness":2},
     "settlementPermissions":[],
-    "factionPermissions":[]
+    "factionPermissions":["SPAWN"]
   },
 
   {"name":"archer",
@@ -76,7 +76,7 @@
     "hierarchyLevel":"2",
     "attributeBonuses":{"precision":8,"toughness":2},
     "settlementPermissions":[],
-    "factionPermissions":[]
+    "factionPermissions":["SPAWN"]
   },
 
   {"name":"mage",
@@ -84,7 +84,7 @@
     "hierarchyLevel":"2",
     "attributeBonuses":{"willpower":8,"toughness":2},
     "settlementPermissions":[],
-    "factionPermissions":[]
+    "factionPermissions":["SPAWN"]
   },
 
   {"name":"recruiter",
@@ -92,7 +92,7 @@
     "hierarchyLevel":"1",
     "attributeBonuses":{},
     "settlementPermissions":[],
-    "factionPermissions":["INVITE"]
+    "factionPermissions":["INVITE","SPAWN"]
   },
 
   {"name":"novice",
@@ -100,7 +100,7 @@
     "hierarchyLevel":"1",
     "attributeBonuses":{},
     "settlementPermissions":[],
-    "factionPermissions":[]
+    "factionPermissions":["SPAWN"]
   }
   
 ]

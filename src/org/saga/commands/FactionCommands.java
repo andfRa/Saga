@@ -132,7 +132,7 @@ public class FactionCommands {
 		}
 		
 		// Permission:
-		if(!selFaction.canInvite(sagaPlayer)){
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.INVITE)){
 			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
 			return;
 		}
@@ -351,7 +351,7 @@ public class FactionCommands {
 		}
 		
 		// Permission:
-		if(!selFaction.canKick(sagaPlayer)){
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.KICK)){
 			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
 			return;
 		}
@@ -437,11 +437,11 @@ public class FactionCommands {
 			
 		}
 		
-		// Permission:
-		if(!selFaction.canQuit(sagaPlayer)){
-			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
-			return;
-		}
+//		// Permission:
+//		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.QUIT)){
+//			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
+//			return;
+//		}
 
 		// Owner:
 		if(selFaction.isOwner(sagaPlayer.getName()) && selFaction.getMemberCount() > 1){
@@ -608,7 +608,7 @@ public class FactionCommands {
 		}
 		
 		// Permission:
-		if(!selFaction.canSetRank(sagaPlayer)){
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.SET_RANK)){
 			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
 			return;
 		}
@@ -726,7 +726,7 @@ public class FactionCommands {
 		}
 		
 		// Permission:
-		if(!selFaction.canDelete(sagaPlayer)){
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.DELETE)){
 			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
 			return;
 		}
@@ -938,7 +938,7 @@ public class FactionCommands {
 		}
 		
 		// Permission:
-		if(!selFaction.canFormAlliance(sagaPlayer)){
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.FORM_ALLIANCE)){
 			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
 			return;
 		}
@@ -1066,7 +1066,7 @@ public class FactionCommands {
 		}
 		
 		// Permission:
-		if(!selFaction.canFormAlliance(sagaPlayer)){
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.FORM_ALLIANCE)){
 			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
 			return;
 		}
@@ -1180,7 +1180,7 @@ public class FactionCommands {
 		}
 
 		// Permission:
-		if(!selFaction.canDeclineAlliance(sagaPlayer)){
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.DECLINE_ALLIANCE)){
 			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
 			return;
 		}
@@ -1248,7 +1248,7 @@ public class FactionCommands {
 		}
 
 		// Permission:
-		if(!selFaction.canBreakAlliance(sagaPlayer)){
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.BREAK_ALLIANCE)){
 			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
 			return;
 		}
@@ -1315,7 +1315,7 @@ public class FactionCommands {
 		}
 		
 		// Permission:
-		if(!selFaction.canSpawn(sagaPlayer)){
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.SPAWN)){
 			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
 			return;
 		}
@@ -1375,7 +1375,7 @@ public class FactionCommands {
 		}
 		
 		// Permission:
-		if(!selFaction.canSetSpawn(sagaPlayer)){
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.SET_SPAWN)){
 			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
 			return;
 		}
@@ -1558,7 +1558,7 @@ public class FactionCommands {
 		}
 		
 		// Permission:
-		if(!selFaction.canSetColor(sagaPlayer)){
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.SET_COLOR)){
 			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
 			return;
 		}
@@ -1611,7 +1611,7 @@ public class FactionCommands {
 		}
 		
 		// Permission:
-		if(!selFaction.canSetColor(sagaPlayer)){
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.SET_COLOR)){
 			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
 			return;
 		}
@@ -1706,7 +1706,7 @@ public class FactionCommands {
 		}
 
 		// Permission:
-		if(!selFaction.canRename(sagaPlayer)){
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.RENAME)){
 			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
 			return;
 		}

@@ -100,12 +100,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 */
 	private Hashtable<String, Proficiency> playerRanks;
 
-	
-	/**
-	 * Enemy factions.
-	 */
-	private HashSet<Integer> enemies;
-	
+
 	/**
 	 * Ally factions.
 	 */
@@ -121,6 +116,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 * Spawn point, null if none.
 	 */
 	private SagaLocation spawn;
+	
 	
 	/**
 	 * Daily kills.
@@ -172,7 +168,6 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		colour2 = ChatColor.WHITE;
 		playerRanks = new Hashtable<String, Proficiency>();
 		dailyKills = new HashSet<String>();
-		enemies = new HashSet<Integer>();
 		allies = new HashSet<Integer>();
 		allyRequests = new HashSet<Integer>();
 		
@@ -276,12 +271,6 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		if(dailyKills == null){
 			SagaLogger.nullField(this, "dailyKills");
 			dailyKills = new HashSet<String>();
-			integrity = false;
-		}
-		
-		if(enemies == null){
-			SagaLogger.nullField(this, "enemies");
-			enemies = new HashSet<Integer>();
 			integrity = false;
 		}
 		
@@ -895,52 +884,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 
 	
 	
-	// Allies enemies:
-	/**
-	 * Adds a faction enemy.
-	 * 
-	 * @param id enemy faction ID
-	 * @return true, if the id was on the list
-	 */
-	public boolean addEnemy(Integer id) {
-
-		return enemies.add(id);
-		
-	}
-	
-	/**
-	 * Adds a faction enemy.
-	 * 
-	 * @param id enemy faction ID
-	 * @return true, if the id was on the list
-	 */
-	public boolean removeEnemy(Integer id) {
-
-		return enemies.remove(id);
-		
-	}
-	
-	/**
-	 * Checks if the faction with the given ID is an enemy.
-	 * 
-	 * @param id id
-	 * @return true if enemy
-	 */
-	public boolean isEnemy(Integer id) {
-		
-		return enemies.contains(id);
-		
-	}
-
-	/**
-	 * Gets the enemies.
-	 * 
-	 * @return the enemies
-	 */
-	public HashSet<Integer> getEnemies() {
-		return new HashSet<Integer>(enemies);
-	}
-	
+	// Allies:
 	/**
 	 * Adds a faction ally.
 	 * 
@@ -1065,270 +1009,6 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		// Check permission:
 		return rank.hasFactionPermission(permission);
 		
-		
-	}
-	
-	
-	/**
-	 * Checks if the player has permission to join the faction with a settlement.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if can join with a settlement
-	 */
-	public boolean canJoinSettlement(SagaPlayer sagaPlayer) {
-		return isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode();
-	}
-	
-	/**
-	 * Checks if the player has permission to delete the faction.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if can delete
-	 */
-	public boolean canDelete(SagaPlayer sagaPlayer) {
-		return isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode();
-	}
-
-	/**
-	 * Checks if the player has permission to invite.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if can invite
-	 */
-	public boolean canInvite(SagaPlayer sagaPlayer) {
-
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// Check rank:
-		Proficiency rank = playerRanks.get(sagaPlayer.getName());
-		if(rank == null){
-			return false;
-		}
-		
-		// Check permission:
-		return rank.hasFactionPermission(FactionPermission.INVITE);
-		
-	}
-
-	/**
-	 * Checks if the player has permission to kick.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if can kick
-	 */
-	public boolean canKick(SagaPlayer sagaPlayer) {
-
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// Check rank:
-		Proficiency role = playerRanks.get(sagaPlayer.getName());
-		if(role == null){
-			return false;
-		}
-		
-		// Check permission:
-		return role.hasFactionPermission(FactionPermission.KICK);
-		
-	}
-
-	/**
-	 * Checks if the player can quit.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if can quit
-	 */
-	public boolean canQuit(SagaPlayer sagaPlayer) {
-		return true;
-	}
-
-	/**
-	 * Checks if the player has permission to set color.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if can set color
-	 */
-	public boolean canSetColor(SagaPlayer sagaPlayer) {
-
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// Check rank:
-		Proficiency role = playerRanks.get(sagaPlayer.getName());
-		if(role == null){
-			return false;
-		}
-		
-		// Check permission:
-		return role.hasFactionPermission(FactionPermission.SET_COLOR);
-		
-	}
-
-	/**
-	 * Checks if the player has permission to rename.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if can set color
-	 */
-	public boolean canRename(SagaPlayer sagaPlayer) {
-
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// Check rank:
-		Proficiency role = playerRanks.get(sagaPlayer.getName());
-		if(role == null){
-			return false;
-		}
-		
-		// Check permission:
-		return role.hasFactionPermission(FactionPermission.RENAME);
-		
-	}
-
-	/**
-	 * Checks if the player has permission to form an alliance.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if can form an alliance
-	 */
-	public boolean canFormAlliance(SagaPlayer sagaPlayer) {
-
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// Check rank:
-		Proficiency role = playerRanks.get(sagaPlayer.getName());
-		if(role == null){
-			return false;
-		}
-		
-		// Check permission:
-		return role.hasFactionPermission(FactionPermission.FORM_ALLIANCE);
-		
-	}
-	
-	/**
-	 * Checks if the player has permission to deline an alliance.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if has permission
-	 */
-	public boolean canDeclineAlliance(SagaPlayer sagaPlayer) {
-
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// Check rank:
-		Proficiency role = playerRanks.get(sagaPlayer.getName());
-		if(role == null){
-			return false;
-		}
-		
-		// Check permission:
-		return role.hasFactionPermission(FactionPermission.DECLINE_ALLIANCE);
-		
-	}
-	
-	/**
-	 * Checks if the player has permission to break an alliance.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if can break an alliance
-	 */
-	public boolean canBreakAlliance(SagaPlayer sagaPlayer) {
-
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// Check rank:
-		Proficiency role = playerRanks.get(sagaPlayer.getName());
-		if(role == null){
-			return false;
-		}
-		
-		// Check permission:
-		return role.hasFactionPermission(FactionPermission.BREAK_ALLIANCE);
-		
-	}
-	
-	
-
-	/**
-	 * Checks if the player has permission to invite.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if can invite
-	 */
-	public boolean canSetRank(SagaPlayer sagaPlayer) {
-
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// Check rank:
-		Proficiency rank = playerRanks.get(sagaPlayer.getName());
-		if(rank == null){
-			return false;
-		}
-		
-		// Check permission:
-		return rank.hasFactionPermission(FactionPermission.SET_RANK);
-		
-	}
-
-
-	/**
-	 * Checks if the player can declare an owner.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if can declare owner
-	 */
-	public boolean canDeclareOwner(SagaPlayer sagaPlayer) {
-
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// No owner:
-		return !hasOwner() && (isMember(sagaPlayer.getName()) || getActiveMemberCount() == 0);
-		
-	}
-
-	/**
-	 * Checks if the player can set spawn.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if can set spawn
-	 */
-	public boolean canSetSpawn(SagaPlayer sagaPlayer) {
-
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// Check rank:
-		Proficiency role = playerRanks.get(sagaPlayer.getName());
-		if(role == null){
-			return false;
-		}
-		
-		// Check permission:
-		return role.hasFactionPermission(FactionPermission.SET_SPAWN);
-		
-	}
-
-	/**
-	 * Checks if the player can spawn.
-	 * 
-	 * @param sagaPlayer saga player
-	 * @return true if can spawn
-	 */
-	public boolean canSpawn(SagaPlayer sagaPlayer) {
-
-		// Owner:
-		if(isOwner(sagaPlayer.getName()) || sagaPlayer.isAdminMode()) return true;
-		
-		// Check permission:
-		return isMember(sagaPlayer.getName());
 		
 	}
 	
@@ -1586,7 +1266,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 
 	
 	
-	// Spawn point:
+	// Spawn:
 	/**
 	 * Removes the spawn point.
 	 * 
@@ -1619,18 +1299,6 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	
 	// Wages:
 	/**
-	 * Gets the wages for hierarchy levels.
-	 * 
-	 * @return wages hierarchy levels
-	 */
-	public Hashtable<Integer, Double> calcWages() {
-
-		Double rawWage = EconomyConfiguration.config().calcWage(calcClaimPoints());
-		return EconomyConfiguration.config().calcHierarchyWages(rawWage);
-		
-	}
-	
-	/**
 	 * Pays all wages.
 	 * 
 	 */
@@ -1658,6 +1326,18 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 			
 		}
 		
+		
+	}
+	
+	/**
+	 * Gets the wages for hierarchy levels.
+	 * 
+	 * @return wages hierarchy levels
+	 */
+	public Hashtable<Integer, Double> calcWages() {
+
+		Double rawWage = EconomyConfiguration.config().calcWage(calcClaimPoints());
+		return EconomyConfiguration.config().calcHierarchyWages(rawWage);
 		
 	}
 	
@@ -1790,6 +1470,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	}
 	
 	
+	
 	// Control:
 	/**
 	 * Disables saving.
@@ -1804,7 +1485,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	
 
 	
-    // Damage events:
+    // Events:
 	/**
 	 * Called when a member damages another player.
 	 * 
@@ -1848,8 +1529,6 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		
 	}
 
-	
-	// Kill events:
 	/**
 	 * Called when a player is killed by another player.
 	 * 
@@ -1913,11 +1592,14 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 
 		
 		DISBAND,
+		DELETE,
 		INVITE,
 		KICK,
+		QUIT,
 		SET_RANK,
 		SET_COLOR,
 		SET_SPAWN,
+		SPAWN,
 		RENAME,
 		FORM_ALLIANCE,
 		DECLINE_ALLIANCE,
