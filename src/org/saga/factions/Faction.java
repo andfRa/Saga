@@ -72,6 +72,11 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 */
 	private Double exp;
 	
+	/**
+	 * Available claims.
+	 */
+	private Double claims;
+	
 	
 	/**
 	 * Primary colour.
@@ -162,8 +167,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		this.id = factionId;
 		this.name = factionName;
 		members = new HashSet<String>();
-		level = 0;
-		exp = 0.0;
+		claims = FactionConfiguration.config().getInitialClaims().doubleValue();
 		colour1 = ChatColor.WHITE;
 		colour2 = ChatColor.WHITE;
 		playerRanks = new Hashtable<String, Proficiency>();
@@ -205,15 +209,14 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 			integrity = false;
 		}
 
-		if(level == null){
-			SagaLogger.nullField(this, "level");
-			level = 0;
-			integrity = false;
-		}
-		
-		if(exp == null){
-			SagaLogger.nullField(this, "exp "+ this +" levelProgress");
-			exp = 0.0;
+		if(claims == null){
+			SagaLogger.nullField(this, "claims");
+			double maxLevel = FactionConfiguration.config().getDefinition().getMaxLevel();
+			if(maxLevel != 0 && level != null){
+				claims = level.doubleValue() / maxLevel * FactionConfiguration.config().getMaxClaims();
+			}else{
+				claims = 0.0;
+			}
 			integrity = false;
 		}
 		
@@ -704,6 +707,26 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		return !owner.equals("");
 	}
 	
+	
+	
+	// Claims:
+	/**
+	 * Gets the amount of available claims.
+	 * 
+	 * @return amount of available claims
+	 */
+	public Integer getAvailableClaims() {
+		return claims.intValue();
+	}
+	
+	/**
+	 * Gets the claim progress.
+	 * 
+	 * @return claim progress, values 0.0 - 1.0
+	 */
+	public Double getClaimProgress() {
+		return claims - claims.intValue();
+	}
 	
 
 	// Leveling:
@@ -1507,31 +1530,23 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	@Override
 	public boolean clockMinuteTick() {
 
-		
 		if(!isEnabled()) return false;
 		
+		int online = getOnlineMembers().size();
+		
 		// Statistics:
-		StatisticsManager.manager().addManminutes(this);
+		StatisticsManager.manager().addManminutes(this, online);
 
-		// Level progress:
-		if(level < getDefinition().getMaxLevel()){
-			
-			exp += getExpSpeed();
+		// Increase claims:
+		if(claims < FactionConfiguration.config().getMaxClaims()){
+			claims+= FactionConfiguration.config().getClaimsPerMinute(online);
 
 			// Statistics:
-			StatisticsManager.manager().addManminutesExp(this, getExpSpeed());
-			
-			if(getRemainingExp() > 0) return true;
-			
-			levelUp();
-
-			// Inform:
-			information(FactionMessages.levelUp(this));
+			StatisticsManager.manager().addFactionClaims(this, FactionConfiguration.config().getClaimsPerMinute(online));
 			
 		}
 		
 		return true;
-		
 		
 	}
 

@@ -28,6 +28,9 @@
 "minNameLength":3,
 "maxNameLength":6,
 
+"claimsPerMinute":{"x1":0,"y1":0.0,"x2":20,"y2":0.030},
+"initClaims":1,
+"maxClaims":15,
 "claimSpeed":{"x1":0,"y1":0.2,"x2":50,"y2":0.0166},
 "unclaimSpeed":{"x1":0,"y1":0.4,"x2":50,"y2":0.0332},
 "memberSpeedMult":{"x1":1,"y1":0.5,"x2":5,"y2":3.0},

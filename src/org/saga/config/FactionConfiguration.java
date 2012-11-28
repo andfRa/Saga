@@ -55,9 +55,22 @@ public class FactionConfiguration {
 	private Integer maxNameLength;
 	
 	
-	
-	
 	// Claiming:
+	/**
+	 * Claims gained per minute.
+	 */
+	private TwoPointFunction claimsPerMinute;
+
+	/**
+	 * Maximum number of claims when a faction is formed.
+	 */
+	private Integer initClaims;
+
+	/**
+	 * Maximum number of claims a faction can have.
+	 */
+	private Integer maxClaims;
+
 	/**
 	 * Chunk bundle claim speed.
 	 */
@@ -77,11 +90,6 @@ public class FactionConfiguration {
 	 * Members required from both factions to be able to claim.
 	 */
 	private Integer toClaimMembers;
-
-	/**
-	 * Faction claim limit for given level.
-	 */
-	private TwoPointFunction claimLimit;
 
 	/**
 	 * Determines how much claims a settlement is worth.
@@ -132,6 +140,12 @@ public class FactionConfiguration {
 			SagaLogger.nullField(getClass(), "definition");
 			definition = FactionDefinition.defaultDefinition();
 		}
+		
+		if(claimsPerMinute == null){
+			SagaLogger.nullField(getClass(), "claimsPerMinute");
+			claimsPerMinute = new TwoPointFunction(0.0);
+		}
+		claimsPerMinute.complete();
 
 		if(claimSpeed == null){
 			SagaLogger.nullField(getClass(), "claimSpeed");
@@ -155,12 +169,16 @@ public class FactionConfiguration {
 			SagaLogger.nullField(getClass(), "toClaimMembers");
 			toClaimMembers = 3;
 		}
-		
-		if(claimLimit == null){
-			SagaLogger.nullField(getClass(), "claimLimit");
-			claimLimit = new TwoPointFunction(0.0);
+
+		if(initClaims == null){
+			SagaLogger.nullField(getClass(), "initClaims");
+			initClaims = 1;
 		}
-		claimLimit.complete();
+
+		if(maxClaims == null){
+			SagaLogger.nullField(getClass(), "maxClaims");
+			maxClaims = 2;
+		}
 		
 		if(claimPoints == null){
 			SagaLogger.nullField(getClass(), "claimPoints");
@@ -213,6 +231,16 @@ public class FactionConfiguration {
 	
 	// Faction claiming:
 	/**
+	 * Gets claims per minute.
+	 * 
+	 * @param onlinePlayers players online
+	 * @return amount of claim points per minute
+	 */
+	public Double getClaimsPerMinute(Integer onlinePlayers) {
+		return claimsPerMinute.value(onlinePlayers);
+	}
+	
+	/**
 	 * Gets claim speed.
 	 * 
 	 * @param bundleLevel chunk bundle level
@@ -253,13 +281,21 @@ public class FactionConfiguration {
 	}
 	
 	/**
-	 * Gets claim limit.
+	 * Gets the initial amount of claims the faction can have.
 	 * 
-	 * @param level faction level
-	 * @return claim limit
+	 * @return initial claims
 	 */
-	public Integer getClaimLimit(Integer level) {
-		return claimLimit.intValue(level);
+	public Integer getInitialClaims() {
+		return initClaims;
+	}
+	
+	/**
+	 * Gets the maximum amount of claims the faction can have.
+	 * 
+	 * @return max claims
+	 */
+	public Integer getMaxClaims() {
+		return maxClaims;
 	}
 	
 	/**

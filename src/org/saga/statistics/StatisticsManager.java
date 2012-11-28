@@ -989,8 +989,8 @@ public class StatisticsManager implements HourTicker{
 	
 	
 	
-	public void addManminutes(Faction faction) {
-		modifyValue("online.factions." + faction.getName(), faction.getOnlineMembers().size());
+	public void addManminutes(Faction faction, Integer online) {
+		modifyValue("online.factions." + faction.getName(), online);
 	}
 	
 	public void addManminutes(Settlement settlement) {
@@ -1001,8 +1001,8 @@ public class StatisticsManager implements HourTicker{
 		modifyValue("exp.settlements." + settlement.getName(), amount);
 	}
 	
-	public void addManminutesExp(Faction faction, Double amount) {
-		modifyValue("exp.factions." + faction.getName(), amount);
+	public void addFactionClaims(Faction faction, Double amount) {
+		modifyValue("claims.factions." + faction.getName(), amount);
 	}
 	
 	

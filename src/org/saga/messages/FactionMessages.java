@@ -337,14 +337,16 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 			table.addLine("owner", veryNegative + "none", 0);
 		}
 		
-		// Level:
-		table.addLine("level", faction.getLevel() + "/" + faction.getDefinition().getMaxLevel(), 2);
+		
+		int claimed = FactionClaimManager.manager().findSettlementsIds(faction.getId()).length;
+		int availClaims = faction.getAvailableClaims();
+		double progress = faction.getClaimProgress();
+		
+		// Claimed:
+		table.addLine("claimed", claimed + "/" + availClaims, 2);
 
 		// Next exp:
-		table.addLine("next EXP", faction.getRemainingExp().intValue() + "", 2);
-
-		// Exp speed:
-		table.addLine("EXP/minute", TextUtil.round(faction.getExpSpeed(), 1) + "", 2);
+		table.addLine("next claim", (int)(progress*100) + "%", 2);
 
 		table.collapse();
 		
@@ -383,13 +385,6 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 			table.addLine("-", "-", 0);
 			
 		}
-		
-		// Claims:
-		table.addLine(GeneralMessages.tableTitle("settlements"), "", 2);
-		
-		int claimed = FactionClaimManager.manager().findSettlementsIds(faction.getId()).length;
-		int maxClaimed = FactionConfiguration.config().getClaimLimit(faction.getLevel());
-		table.addLine("claimed", claimed + "/" + maxClaimed, 2);
 		
 		table.collapse();
 		
