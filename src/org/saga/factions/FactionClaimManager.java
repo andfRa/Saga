@@ -300,24 +300,24 @@ public class FactionClaimManager implements SecondTicker{
 	 * @param bundleId bundle ID
 	 * @return true if claiming 
 	 */
-	public boolean isFactionClaiming(Integer bundleId) {
+	public boolean isClaiming(Integer bundleId) {
 
 		return claiming.get(bundleId) != null;
 		
 	}
 	
 	/**
-	 * Gets the contester faction ID.
+	 * Gets the claimer faction ID.
 	 * 
 	 * @param bundleId bundle ID
-	 * @return contester faction ID
+	 * @return claimer faction ID, -1 if none
 	 */
-	public Integer getClaimerFactionId(Integer bundleId) {
+	public Integer getClaimerId(Integer bundleId) {
 
-		Integer contester = claiming.get(bundleId);
-		if(contester == null) contester = -1;
+		Integer claimer = claiming.get(bundleId);
+		if(claimer == null) return -1;
 		
-		return contester;
+		return claimer;
 		
 	}
 
@@ -361,6 +361,19 @@ public class FactionClaimManager implements SecondTicker{
 		return bundleProgess;
 		
 	}
+
+	/**
+	 * Sets the progress for the given bundle.
+	 * 
+	 * @param bundleId bundle ID
+	 * @param progress progress
+	 */
+	public void setProgress(Integer bundleId, Double progress) {
+		
+		this.progress.put(bundleId, progress);
+		
+	}
+	
 	
 	/**
 	 * Modifies claim progress
@@ -497,6 +510,30 @@ public class FactionClaimManager implements SecondTicker{
 		
 	}
 	
+
+	/**
+	 * Finds settlements IDs owned by the faction.
+	 * 
+	 * @param factionId faction Id
+	 * @return settlements IDs owned
+	 */
+	public Integer[] findSettlementsIds(Integer factionId) {
+
+		
+		ArrayList<Integer> ids = new ArrayList<Integer>();
+		
+		Set<Entry<Integer, Integer>> claimed = claims.entrySet();
+		
+		for (Entry<Integer, Integer> entry : claimed) {
+			if(!entry.getValue().equals(factionId)) continue;
+			ids.add(entry.getKey());
+		}
+		
+		return ids.toArray(new Integer[ids.size()]);
+	
+		
+	}
+	
 	/**
 	 * Gets levels for given settlements.
 	 * 
@@ -541,7 +578,7 @@ public class FactionClaimManager implements SecondTicker{
 	 */
 	public Faction getClaimerFaction(Integer bundleId) {
 		
-		Integer id = getClaimerFactionId(bundleId);
+		Integer id = getClaimerId(bundleId);
 		if(id == null) return null;
 		
 		return FactionManager.manager().getFaction(id);
@@ -566,6 +603,16 @@ public class FactionClaimManager implements SecondTicker{
 		
 	}
 
+	
+	/**
+	 * Clears the owner of the bundle.
+	 * 
+	 * @param bundleId bundle id
+	 */
+	public void clearOwner(Integer bundleId) {
+		claims.remove(bundleId);
+	}
+	
 	
 	
 	// Timing:
@@ -658,7 +705,7 @@ public class FactionClaimManager implements SecondTicker{
 	public boolean checkClaimer(Integer bundleId, ArrayList<SagaPlayer> sagaPlayers) {
 
 
-		Integer claimFactionId = getClaimerFactionId(bundleId);
+		Integer claimFactionId = getClaimerId(bundleId);
 		HashSet<Integer> allClaimerIds = getAllFactionIds(sagaPlayers);
 		
 		if(!allClaimerIds.contains(claimFactionId)) return false;
@@ -668,6 +715,16 @@ public class FactionClaimManager implements SecondTicker{
 		
 	}
 
+	/**
+	 * Checks if the faction has not reached its claim limit.
+	 * 
+	 * @param faction faction
+	 * @return true if the faction can claim
+	 */
+	public boolean checkClaimLimit(Faction faction) {
+		return findSettlementsIds(faction.getId()).length < FactionConfiguration.config().getClaimLimit(faction.getLevel());
+	}
+	
 
 	
 	// Load unload:

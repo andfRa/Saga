@@ -5,6 +5,8 @@ import java.util.Collection;
 
 import org.bukkit.ChatColor;
 import org.saga.Saga;
+import org.saga.chunks.Bundle;
+import org.saga.chunks.BundleManager;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.ProficiencyConfiguration;
@@ -13,6 +15,7 @@ import org.saga.dependencies.EconomyDependency;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.factions.Faction;
 import org.saga.factions.Faction.FactionPermission;
+import org.saga.factions.FactionClaimManager;
 import org.saga.factions.FactionManager;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.FactionMessages;
@@ -686,7 +689,62 @@ public class FactionCommands {
 		
 	}
 	
+	@Command(
+            aliases = {"fdisband"},
+            usage = "[faction_name or prefix]",
+            flags = "",
+            desc = "Disband the faction.",
+            min = 0,
+            max = 1
+        )
+	@CommandPermissions({"saga.user.faction.delete"}
+	)
+	public static void disband(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
 
+		Faction selFaction = null;
+		
+		// Arguments:
+		if(args.argsLength() == 1){
+			
+			selFaction = FactionManager.manager().getFaction(args.getString(0));
+			
+			if(selFaction == null){
+				sagaPlayer.message(FactionMessages.invalidFaction(args.getString(0)));
+				return;
+			}
+			
+		}else{
+			 
+			selFaction = sagaPlayer.getFaction();
+			
+			if(selFaction == null){
+				sagaPlayer.message(FactionMessages.notMember());
+				return;
+			}
+			
+		}
+		
+		// Permission:
+		if(!selFaction.canDelete(sagaPlayer)){
+			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
+			return;
+		}
+		
+		// Delete:
+		selFaction.delete();
+		
+		// Inform:
+		if(selFaction == sagaPlayer.getFaction()){
+			sagaPlayer.message(FactionMessages.disbanded(selFaction));
+		}else{
+			sagaPlayer.message(FactionMessages.disbandedOther(selFaction));
+		}
+		
+		
+	}
+
+	
 	
 	// Stats:
 	@Command(
@@ -1333,6 +1391,106 @@ public class FactionCommands {
 	}
 
 	
+	
+	// Claiming:
+
+	@Command(
+            aliases = {"funclaim"},
+            usage = "[faction_name] <settlement_name>",
+            flags = "",
+            desc = "Unclaims a claimed settlement.",
+            min = 0,
+            max = 1
+		)
+	@CommandPermissions({"saga.user.faction.spawn.set"})
+	public static void unclaim(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+		
+		Faction selFaction = null;
+		Bundle selBundle = null;
+		
+		String bundleName = null;
+
+		// Arguments:
+		switch (args.argsLength()) {
+			case 2:
+				
+				// Faction:
+				String factionName = GeneralMessages.nameFromArg(args.getString(0));
+				selFaction = FactionManager.manager().getFaction(factionName);
+				
+				if(selFaction == null){
+					sagaPlayer.message(FactionMessages.invalidFaction(factionName));
+					return;
+				}
+
+				// Bundle:
+				bundleName = GeneralMessages.nameFromArg(args.getString(1));
+				selBundle = BundleManager.manager().getBundle(bundleName);
+				
+				if(selBundle == null){
+					sagaPlayer.message(SettlementMessages.invalidBundle(bundleName));
+					return;
+				}
+				
+				break;
+
+			default:
+				
+				// Faction:
+				selFaction = sagaPlayer.getFaction();
+				
+				if(selFaction == null){
+					sagaPlayer.message(FactionMessages.notMember());
+					return;
+				}
+
+				// Bundle:
+				bundleName = GeneralMessages.nameFromArg(args.getString(0));
+				selBundle = BundleManager.manager().getBundle(bundleName);
+				
+				if(selBundle == null){
+					sagaPlayer.message(SettlementMessages.invalidBundle(bundleName));
+					return;
+				}
+				
+				break;
+				
+		}
+		
+		// Permission:
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.UNCLAIM)){
+			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
+			return;
+		}
+
+		Integer bundleId = selBundle.getId();
+		
+		// Not claimed:
+		if(!FactionClaimManager.manager().getOwningFactionId(bundleId).equals(selFaction.getId())){
+			sagaPlayer.message(FactionMessages.notClaimed(selFaction, selBundle));
+			return;
+		}
+		
+		// Remove owner:
+		FactionClaimManager.manager().clearOwner(bundleId);
+		
+		// Set progress:
+		if(FactionClaimManager.manager().getClaimerId(bundleId) == -1){
+			FactionClaimManager.manager().setClaimer(bundleId, selFaction.getId());
+			FactionClaimManager.manager().setProgress(bundleId, 0.95);
+		}
+		
+		// Inform:
+		selFaction.information(FactionMessages.unclaimed(selFaction, selBundle));
+		if(!selFaction.isMember(sagaPlayer.getName())){
+			selFaction.information(FactionMessages.unclaimed(selFaction, selBundle), sagaPlayer);
+		}
+		
+		
+	}
+
+	
 	// Messages:
 	@Command(
             aliases = {"f"},
@@ -1498,64 +1656,6 @@ public class FactionCommands {
 		}
 		
 		return availableColours.toArray(new ChatColor[availableColours.size()]);
-		
-		
-	}
-	
-	
-
-	// Administration:
-	@Command(
-            aliases = {"fdisband"},
-            usage = "[faction_name or prefix]",
-            flags = "",
-            desc = "Disband the faction.",
-            min = 0,
-            max = 1
-        )
-	@CommandPermissions({"saga.user.faction.delete"}
-	)
-	public static void disband(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-
-		Faction selFaction = null;
-		
-		// Arguments:
-		if(args.argsLength() == 1){
-			
-			selFaction = FactionManager.manager().getFaction(args.getString(0));
-			
-			if(selFaction == null){
-				sagaPlayer.message(FactionMessages.invalidFaction(args.getString(0)));
-				return;
-			}
-			
-		}else{
-			 
-			selFaction = sagaPlayer.getFaction();
-			
-			if(selFaction == null){
-				sagaPlayer.message(FactionMessages.notMember());
-				return;
-			}
-			
-		}
-		
-		// Permission:
-		if(!selFaction.canDelete(sagaPlayer)){
-			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
-			return;
-		}
-		
-		// Delete:
-		selFaction.delete();
-		
-		// Inform:
-		if(selFaction == sagaPlayer.getFaction()){
-			sagaPlayer.message(FactionMessages.disbanded(selFaction));
-		}else{
-			sagaPlayer.message(FactionMessages.disbandedOther(selFaction));
-		}
 		
 		
 	}

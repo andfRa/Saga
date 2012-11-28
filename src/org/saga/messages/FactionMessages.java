@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.saga.buildings.TownSquare;
+import org.saga.chunks.Bundle;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.ProficiencyConfiguration;
@@ -386,7 +387,9 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		// Claims:
 		table.addLine(GeneralMessages.tableTitle("settlements"), "", 2);
 		
-		table.addLine("claimed", faction.countClaimedSettles() + "", 2);
+		int claimed = FactionClaimManager.manager().findSettlementsIds(faction.getId()).length;
+		int maxClaimed = FactionConfiguration.config().getClaimLimit(faction.getLevel());
+		table.addLine("claimed", claimed + "/" + maxClaimed, 2);
 		
 		table.collapse();
 		
@@ -797,6 +800,16 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		
 	}
 	
+	
+	
+	// Claiming:
+	public static String notClaimed(Faction faction, Bundle bundle) {
+		return negative + "Settlement " + bundle.getName() + " is not claimed by the faction.";
+	}
+	
+	public static String unclaimed(Faction faction, Bundle bundle) {
+		return faction.getColour2() + "Settlement " + bundle.getName() + " was unclaimed.";
+	}
 	
 	
 	// Utility:

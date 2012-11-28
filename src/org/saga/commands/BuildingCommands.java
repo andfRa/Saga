@@ -557,7 +557,7 @@ public class BuildingCommands {
 		if(ownerFaction != null && ownerFaction == sagaPlayer.getFaction()){
 			
 			// Being claimed:
-			if(FactionClaimManager.manager().isFactionClaiming(selChunkBundle.getId())){
+			if(FactionClaimManager.manager().isClaiming(selChunkBundle.getId())){
 				sagaPlayer.message(ClaimMessages.spawnDeny(ownerFaction));
 				return;
 			}

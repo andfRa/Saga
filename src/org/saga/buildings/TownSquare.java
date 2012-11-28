@@ -125,7 +125,7 @@ public class TownSquare extends Building implements SecondTicker{
 		if(count == 5) message = true;
 		
 		// Claiming:
-		if(FactionClaimManager.manager().isFactionClaiming(bundleId)){
+		if(FactionClaimManager.manager().isClaiming(bundleId)){
 
 			// Check claiming faction:
 			if(!FactionClaimManager.manager().checkClaimer(bundleId, sagaPlayers)) return true;
@@ -183,10 +183,14 @@ public class TownSquare extends Building implements SecondTicker{
 			// Available:
 			if(!FactionClaimManager.manager().checkAvailable(bundleId, sagaPlayers)) return true;
 
-			// Initiate:
+			// Initiating faction:
 			Faction initFaction = FactionClaimManager.getInitFacton(bundleId, sagaPlayers);
 			if(initFaction == null) return true;
 			
+			// Claim limit:
+			if(!FactionClaimManager.manager().checkClaimLimit(initFaction)) return true;
+			
+			// Initiate:
 			FactionClaimManager.manager().initiate(bundle, initFaction);
 			
 		}
@@ -350,7 +354,7 @@ public class TownSquare extends Building implements SecondTicker{
 		}
 		
 		// Allow PvP if being claimed:
-		if(event.isFvF() && FactionClaimManager.manager().isFactionClaiming(getChunkBundle().getId())){
+		if(event.isFvF() && FactionClaimManager.manager().isClaiming(getChunkBundle().getId())){
 			event.addPvpOverride(PvPOverride.FACTION_CLAIMING_ALLOW);
 		}
 		

@@ -1686,13 +1686,13 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 * Sends a faction message to a member.
 	 * 
 	 * @param message message
-	 * @param member faction member
+	 * @param target message target
 	 */
-	public void information(String message, SagaPlayer member) {
+	public void information(String message, SagaPlayer target) {
 		
 		message = getColour2() + "[" + getColour1() + "info" + getColour2() + "] " + message;
 
-		member.message(message);
+		target.message(message);
 		
 	}
 	
@@ -1907,7 +1907,8 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		FORM_ALLIANCE,
 		DECLINE_ALLIANCE,
 		BREAK_ALLIANCE,
-		RESIGN;
+		RESIGN,
+		UNCLAIM;
 		
 		
 	}
