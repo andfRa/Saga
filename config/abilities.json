@@ -226,7 +226,7 @@
     },
     "buildingsRequired":{3:["bowyer"]},
     "proficiencyRestrictions":["archer","marksman"],
-    "functions":{"speed":{"x1":1,"y1":1.0,"x2":3,"y2":3.0}},
+    "functions":{"speed":{"x1":1,"y1":2.0,"x2":3,"y2":4.0}},
     "colour":8873510,
     "description":"shoots an arrow",
     "usage":"rclick w/ arrow"
