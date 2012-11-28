@@ -104,10 +104,10 @@ public class FactionConfiguration {
 	 */
 	private String defaultRank;
 
-	/**
-	 * Rank assigned to faction owner.
-	 */
-	private String ownerRank;
+//	/**
+//	 * Rank assigned to faction owner.
+//	 */
+//	private String ownerRank;
 
 	/**
 	 * Hierarchy minimum.
@@ -220,14 +220,14 @@ public class FactionConfiguration {
 			SagaLogger.nullField(getClass(), "hierarchyNames");
 		}
 		
-		if(ownerRank == null){
-			SagaLogger.nullField(getClass(), "ownerRank");
-			ownerRank = "novice";
-		}
+//		if(ownerRank == null){
+//			SagaLogger.nullField(getClass(), "ownerRank");
+//			ownerRank = "novice";
+//		}
 		
 		if(defaultRank == null){
 			SagaLogger.nullField(getClass(), "defaultRank");
-			defaultRank = "warmaster";
+			defaultRank = "novice";
 		}
 		
 		
@@ -390,14 +390,14 @@ public class FactionConfiguration {
 		return defaultRank;
 	}
 	
-	/**
-	 * Gets owner rank.
-	 * 
-	 * @return owner rank
-	 */
-	public String getOwnerRank() {
-		return ownerRank;
-	}
+//	/**
+//	 * Gets owner rank.
+//	 * 
+//	 * @return owner rank
+//	 */
+//	public String getOwnerRank() {
+//		return ownerRank;
+//	}
 	
 	
 	

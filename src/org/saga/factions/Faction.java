@@ -345,13 +345,13 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		// Save:
 		faction.save();
 
-		// Set owner rank:
-		try {
-			Proficiency rank = ProficiencyConfiguration.config().createProficiency(FactionConfiguration.config().getOwnerRank());
-			faction.setRank(owner, rank);
-		} catch (InvalidProficiencyException e) {
-			SagaLogger.severe(faction, "failed to set " + FactionConfiguration.config().getOwnerRank() + " rank, because the rank name is invalid");
-		}
+//		// Set owner rank:
+//		try {
+//			Proficiency rank = ProficiencyConfiguration.config().createProficiency(FactionConfiguration.config().getOwnerRank());
+//			faction.setRank(owner, rank);
+//		} catch (InvalidProficiencyException e) {
+//			SagaLogger.severe(faction, "failed to set " + FactionConfiguration.config().getOwnerRank() + " rank, because the rank name is invalid");
+//		}
 		
 		// Enable:
 		faction.enable();

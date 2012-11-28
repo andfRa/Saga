@@ -564,20 +564,20 @@ public class FactionCommands {
 		// Set owner:
 		selFaction.setOwner(targetName);
 		
-		// Set owner role:
-		String roleName = FactionConfiguration.config().getOwnerRank();
-		
-		// Get role:
-		Proficiency rank;
-		try {
-			rank = ProficiencyConfiguration.config().createProficiency(roleName);
-		} catch (InvalidProficiencyException e) {
-			sagaPlayer.message(SettlementMessages.invalidRole(roleName));
-			return;
-		}
-		
-		// Set rank:
-		if(selFaction.isRankAvailable(rank.getName())) selFaction.setRank(selPlayer, rank);
+//		// Set owner rank:
+//		String roleName = FactionConfiguration.config().getOwnerRank();
+//		
+//		// Get rank:
+//		Proficiency rank;
+//		try {
+//			rank = ProficiencyConfiguration.config().createProficiency(roleName);
+//		} catch (InvalidProficiencyException e) {
+//			sagaPlayer.message(SettlementMessages.invalidRole(roleName));
+//			return;
+//		}
+//		
+//		// Set rank:
+//		if(selFaction.isRankAvailable(rank.getName())) selFaction.setRank(selPlayer, rank);
 
 		// Inform:
 		selFaction.information(FactionMessages.newOwner(selFaction, targetName));
