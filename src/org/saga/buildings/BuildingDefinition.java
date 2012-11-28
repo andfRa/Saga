@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.Set;
 
 import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.SagaLogger;
@@ -123,6 +124,17 @@ public class BuildingDefinition {
 	 */
 	private TwoPointFunction upgradeCost;
 
+	
+	// Proficiencies:
+	/**
+	 * Available roles.
+	 */
+	private Hashtable<String, Integer> roles;
+	
+	/**
+	 * Available ranks.
+	 */
+	private Hashtable<String, Integer> ranks;
 	
 	
 	// Info:
@@ -253,6 +265,16 @@ public class BuildingDefinition {
 			SagaLogger.nullField(BuildingDefinition.class, "upgradeCost");
 		}
 		upgradeCost.complete();
+		
+		if(roles == null){
+			roles = new Hashtable<String, Integer>();
+			SagaLogger.nullField(BuildingDefinition.class, "roles");
+		}
+		
+		if(ranks == null){
+			ranks = new Hashtable<String, Integer>();
+			SagaLogger.nullField(BuildingDefinition.class, "ranks");
+		}
 		
 		if(description == null){
 			description = "<no description>";
@@ -479,6 +501,51 @@ public class BuildingDefinition {
 	
 	
 	
+	// Proficiencies:
+	/**
+	 * Gets all role names.
+	 * 
+	 * @return all role names
+	 */
+	public Set<String> getAllRoles() {
+		return roles.keySet();
+	}
+	
+	/**
+	 * Gets amount of roles available.
+	 * 
+	 * @param role role name
+	 * @return roles available
+	 */
+	public Integer getRoles(String role) {
+		Integer amount = roles.get(role);
+		if(amount == null) return 0;
+		return amount;
+	}
+	
+	/**
+	 * Gets all rank names.
+	 * 
+	 * @return all rank names
+	 */
+	public Set<String> getAllRanks() {
+		return ranks.keySet();
+	}
+	
+	/**
+	 * Gets amount of ranks available.
+	 * 
+	 * @param rank rank name
+	 * @return ranks available
+	 */
+	public Integer getRanks(String rank) {
+		Integer amount = ranks.get(rank);
+		if(amount == null) return 0;
+		return amount;
+	}
+	
+	
+	
 	// Info:
 	/**
 	 * Gets the description.
@@ -516,5 +583,6 @@ public class BuildingDefinition {
 	public String toString() {
 		return getName();
 	}
+	
 	
 }

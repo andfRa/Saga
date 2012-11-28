@@ -58,6 +58,8 @@
     "functions":{},
     "maxScore":3,
     "upgradeCost":{"x1":1,"y1":10000,"x2":2,"y2":40000},
+    "roles":{},
+    "ranks":{},
     "description":"spawns logs",
     "effect":"#craft_daytime: #craft_amount x logs"
   },
@@ -86,6 +88,8 @@
     "functions":{},
     "maxScore":3,
     "upgradeCost":{"x1":1,"y1":10000,"x2":2,"y2":40000},
+    "roles":{},
+    "ranks":{},
     "description":"spawns crops and meat",
     "effect":"#craft_daytime: #craft_amount x crops/raw meat"
   },
@@ -113,6 +117,8 @@
     "functions":{},
     "maxScore":3,
     "upgradeCost":{"x1":1,"y1":30000,"x2":2,"y2":120000},
+    "roles":{},
+    "ranks":{},
     "description":"spawns ores",
     "effect":"#craft_daytime: #craft_amount x ore"
   },
@@ -139,6 +145,8 @@
     "functions":{},
     "maxScore":3,
     "upgradeCost":{"x1":1,"y1":10000,"x2":2,"y2":40000},
+    "roles":{},
+    "ranks":{},
     "description":"creates wood from logs",
     "effect":"#craft_daytime: #craft_amount x logs to wood"
   },
@@ -166,6 +174,8 @@
     "functions":{},
     "maxScore":3,
     "upgradeCost":{"x1":1,"y1":10000,"x2":2,"y2":40000},
+    "roles":{},
+    "ranks":{},
     "description":"cooks food from farm products",
     "effect":"#craft_daytime: #craft_amount x wheat/meat to food"
   },
@@ -193,6 +203,8 @@
     "functions":{},
     "maxScore":3,
     "upgradeCost":{"x1":1,"y1":30000,"x2":2,"y2":120000},
+    "roles":{},
+    "ranks":{},
     "description":"refines ores",
     "effect":"#craft_daytime: #craft_amount x ore refined"
   },
@@ -217,6 +229,8 @@
     "functions":{},
     "maxScore":3,
     "upgradeCost":{"x1":1,"y1":20000,"x2":2,"y2":80000},
+    "roles":{},
+    "ranks":{},
     "description":"creates bricks",
     "effect":"#craft_daytime: #craft_amount x bricks"
   },
@@ -241,6 +255,8 @@
     "functions":{},
     "maxScore":3,
     "upgradeCost":{"x1":1,"y1":50000,"x2":2,"y2":200000},
+    "roles":{},
+    "ranks":{},
     "description":"spawns gems",
     "effect":"#craft_daytime: #craft_amount x gems"
   },
@@ -264,6 +280,8 @@
     "functions":{},
     "maxScore":1,
     "upgradeCost":{"x1":1,"y1":15000,"x2":2,"y2":60000},
+    "roles":{},
+    "ranks":{"warrior":5},
     "description":"gives firm armour ability",
     "effect":"armour damages weapons"
   },
@@ -285,6 +303,8 @@
     "functions":{},
     "maxScore":1,
     "upgradeCost":{"x1":1,"y1":15000,"x2":2,"y2":60000},
+    "roles":{},
+    "ranks":{"archer":5},
     "description":"gives force bow ability",
     "effect":"bow causes knockback"
   },
@@ -306,6 +326,8 @@
     "functions":{},
     "maxScore":1,
     "upgradeCost":{"x1":1,"y1":15000,"x2":2,"y2":60000},
+    "roles":{},
+    "ranks":{"mage":5},
     "description":"gives ignite ability",
     "effect":"fireball ignites targets"
   },
@@ -329,6 +351,8 @@
     "functions":{},
     "maxScore":1,
     "upgradeCost":{"x1":1,"y1":35000,"x2":2,"y2":140000},
+    "roles":{},
+    "ranks":{},
     "description":"enables spawn command",
     "effect":"command: /sspawn"
   },
@@ -350,6 +374,8 @@
     "functions":{},
     "maxScore":1,
     "upgradeCost":{"x1":1,"y1":35000,"x2":2,"y2":140000},
+    "roles":{},
+    "ranks":{},
     "description":"prevents hostile mob spawning",
     "effect":""
   },
@@ -371,6 +397,8 @@
     "functions":{},
     "maxScore":1,
     "upgradeCost":{"x1":1,"y1":35000,"x2":2,"y2":140000},
+    "roles":{},
+    "ranks":{},
     "description":"a place to fight",
     "effect":"keeps score"
   },
@@ -392,6 +420,8 @@
     "functions":{"buy limit":{"x1":1,"y1":7000,"x2":3,"y2":20000}},
     "maxScore":3,
     "upgradeCost":{"x1":1,"y1":12000,"x2":2,"y2":48000},
+    "roles":{},
+    "ranks":{},
     "description":"buy items",
     "effect":"#perform_daytime: new goods"
   },
@@ -413,6 +443,8 @@
     "functions":{},
     "maxScore":1,
     "upgradeCost":{"x1":1,"y1":35000,"x2":2,"y2":140000},
+    "roles":{},
+    "ranks":{},
     "description":"build and chest protection from members",
     "effect":""
   },
@@ -434,6 +466,8 @@
     "functions":{"train limit":{"x1":1,"y1":20,"x2":3,"y2":50}},
     "maxScore":3,
     "upgradeCost":{"x1":1,"y1":35000,"x2":2,"y2":140000},
+    "roles":{},
+    "ranks":{},
     "description":"train and reset attributes",
     "effect":"attribute training"
   }
