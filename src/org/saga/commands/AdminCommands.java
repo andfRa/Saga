@@ -532,14 +532,14 @@ public class AdminCommands {
 	}
 	
 	@Command(
-			aliases = {"afsetClaims"},
+			aliases = {"afsetclaims"},
 			usage = "[faction_name] <level>",
 			flags = "",
 			desc = "Set factions available claims.",
 			min = 1,
 			max = 2
 		)
-	@CommandPermissions({"saga.admin.faction.setlevel"})
+	@CommandPermissions({"saga.admin.faction.setlevelclaims"})
 	public static void setFactionLevel(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
