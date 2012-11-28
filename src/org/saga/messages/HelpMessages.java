@@ -401,11 +401,12 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
 		StringBook book = new StringBook("faction help", colours);
 
-		// Levels:
-		book.addLine("A faction gains levels by killing members from other factions. " +
-			"The amount of exp gained depends on killed players level. " +
-			"Claimed settlements also give a certain amount of exp each minute." +
-			"Use " + GeneralMessages.command("/fstats") + " to see faction level and other stats."
+		// Claiming:
+		String townSquare = townSquare();
+		book.addLine("Every settlement that has a " + townSquare + " can be claimed by a faction. " +
+			"To claim a settlement, faction members must hold the " + townSquare + " for a certain amount of time. " +
+			"The amount of settlement claimed increases over time. " +
+			"To abandon a settlement use " + GeneralMessages.command("/funclaim") + ". "
 		);
 		
 		// Pvp:
@@ -435,7 +436,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		// Ranks:
 		book.addLine("Use " + GeneralMessages.command("/fsetrank") + " to assign a rank to a member. " +
 			"Each rank gives certain attribute bonuses. " +
-			"The amount of available ranks increases when the faction gains levels. " +
+			"The amount of available ranks increases when the faction claims settlements. " +
 			"Ranks also determine which commands are permitted."
 		);
 		
@@ -497,19 +498,6 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		);
 
 		book.nextPage();
-
-		// Claiming:
-		String toClaim = "";
-//		if(FactionConfiguration.config().getToClaimMembers() > 0){
-//			toClaim = "Settlements can only be siezed if at least " + FactionConfiguration.config().getToClaimMembers() + " members are online from both factions.";
-//		}
-		
-		String townSquare = townSquare();
-		book.addLine("Every settlement that has a " + townSquare + " can be claimed by a faction. " +
-			"To claim a settlement, faction members must hold the " + townSquare + " for a certain amount of time. " +
-			"Claiming can not be initiated by settlement members." + 
-			" " + toClaim
-		);
 
 		// Spawning:
 		book.addLine("All faction members can use " + GeneralMessages.command("/sspawn settle_name") + " command for claimed settlements. " +
