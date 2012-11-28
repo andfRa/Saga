@@ -365,14 +365,14 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		table.addLine(GeneralMessages.tableTitle("wages"), "", 0);
 		
 		Hashtable<Integer, Double> wages = faction.calcWages();
-		int min = FactionConfiguration.config().getDefinition().getHierarchyMin();
-		int max = FactionConfiguration.config().getDefinition().getHierarchyMax();
+		int min = FactionConfiguration.config().getHierarchyMin();
+		int max = FactionConfiguration.config().getHierarchyMax();
 		
 		if(min != max){
 		
 			for (int hiera = max; hiera >= min; hiera--) {
 				
-				String name = faction.getDefinition().getHierarchyName(hiera);
+				String name = FactionConfiguration.config().getHierarchyName(hiera);
 				Double wage = wages.get(hiera);
 				if(wage == null) wage = 0.0;
 				
@@ -430,8 +430,8 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		ChatColor general = faction.getColour1();
 		ChatColor normal = faction.getColour2();
 		
-		int hMin = faction.getDefinition().getHierarchyMin();
-		int hMax = faction.getDefinition().getHierarchyMax();
+		int hMin = FactionConfiguration.config().getHierarchyMin();
+		int hMax = FactionConfiguration.config().getHierarchyMax();
 		
 		// Hierarchy levels:
 		for (int hierarchy = hMax; hierarchy >= hMin; hierarchy--) {
@@ -442,7 +442,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 			}
 			
 			// Group name:
-			String groupName = faction.getDefinition().getHierarchyName(hierarchy);
+			String groupName = FactionConfiguration.config().getHierarchyName(hierarchy);
 			if(groupName.length() == 0) groupName = "-";
 			result.append(GeneralMessages.tableTitle(general + groupName));
 			
@@ -472,7 +472,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 				Integer availRanks = allAvailRanks.get(roleName);
 				if(availRanks == null) availRanks = 0;
 				
-				if(definition.getHierarchyLevel() > faction.getDefinition().getHierarchyMin()){
+				if(definition.getHierarchyLevel() > FactionConfiguration.config().getHierarchyMin()){
 					resultRanks.append(" " + usedRanks + "/" + availRanks);
 				}
 				
@@ -774,15 +774,6 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	public static String rankUnavailable(Faction faction, String rankName) {
 		
 		return negative + "Rank " + rankName + " isn't available.";
-		
-	}
-	
-	
-	
-	// Experience:
-	public static String levelUp(Faction faction) {
-		
-		return faction.getColour2() + "The faction is now level " + faction.getLevel() + ".";
 		
 	}
 	

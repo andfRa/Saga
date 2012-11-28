@@ -968,9 +968,9 @@ public class StatisticsManager implements HourTicker{
 	}
 	
 	
-	public void setLevel(Faction faction) {
+	public void setClaims(Faction faction) {
 
-		setValue("factions.levels" + "." + faction.getName(), faction.getLevel());
+		setValue("factions.claims" + "." + faction.getName(), faction.getClaims());
 		
 	}
 	

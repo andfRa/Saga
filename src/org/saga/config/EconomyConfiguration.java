@@ -332,8 +332,8 @@ public class EconomyConfiguration {
 		
 		Hashtable<Integer, Double> wages = new Hashtable<Integer, Double>();
 		
-		int min = FactionConfiguration.config().getDefinition().getHierarchyMin();
-		int max = FactionConfiguration.config().getDefinition().getHierarchyMax();
+		int min = FactionConfiguration.config().getHierarchyMin();
+		int max = FactionConfiguration.config().getHierarchyMax();
 		
 		for (int hiera = min; hiera <= max; hiera++) {
 			

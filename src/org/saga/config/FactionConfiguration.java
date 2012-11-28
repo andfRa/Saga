@@ -1,10 +1,10 @@
 package org.saga.config;
 
 import java.io.IOException;
+import java.util.Hashtable;
 
 import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.saga.SagaLogger;
-import org.saga.factions.FactionDefinition;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.utility.TwoPointFunction;
@@ -26,11 +26,6 @@ public class FactionConfiguration {
 		return instance;
 	}
 	
-	
-	/**
-	 * Faction definition.
-	 */
-	private FactionDefinition definition;
 
 	/**
 	 * If true then only faction vs faction pvp is allowed.
@@ -102,6 +97,35 @@ public class FactionConfiguration {
 	private Boolean openClaimedStorageAreas;
 	
 	
+	
+	// Ranks:
+	/**
+	 * Rank assigned to joined members.
+	 */
+	private String defaultRank;
+
+	/**
+	 * Rank assigned to faction owner.
+	 */
+	private String ownerRank;
+
+	/**
+	 * Hierarchy minimum.
+	 */
+	private Integer hierarchyMin;
+	
+	/**
+	 * Hierarchy maximum.
+	 */
+	private Integer hierarchyMax;
+	
+	/**
+	 * Hierarchy level names.
+	 */
+	private Hashtable<Integer, String> hierarchyNames;
+	
+	
+	
 	// Initialisation:
 	/**
 	 * Fixes all problematic fields.
@@ -109,12 +133,6 @@ public class FactionConfiguration {
 	 */
 	public void complete() {
 		
-		
-		if(definition == null){
-			SagaLogger.nullField(getClass(), "definition");
-			definition = FactionDefinition.defaultDefinition();
-		}
-		definition.complete();
 		
 		if(factionOnlyPvp == null){
 			SagaLogger.nullField(getClass(), "factionOnlyPvp");
@@ -134,11 +152,6 @@ public class FactionConfiguration {
 		if(maxNameLength == null){
 			SagaLogger.nullField(getClass(), "maxNameLength");
 			maxNameLength = 5;
-		}
-		
-		if(definition == null){
-			SagaLogger.nullField(getClass(), "definition");
-			definition = FactionDefinition.defaultDefinition();
 		}
 		
 		if(claimsPerMinute == null){
@@ -192,20 +205,34 @@ public class FactionConfiguration {
 		}
 		
 		
+		if(hierarchyMin == null){
+			SagaLogger.nullField(getClass(), "hierarchyMin");
+			hierarchyMin = 0;
+		}
+		
+		if(hierarchyMax == null){
+			SagaLogger.nullField(getClass(), "hierarchyMax");
+			hierarchyMax = 1;
+		}
+		
+		if(hierarchyNames == null){
+			hierarchyNames = new Hashtable<Integer, String>();
+			SagaLogger.nullField(getClass(), "hierarchyNames");
+		}
+		
+		if(ownerRank == null){
+			SagaLogger.nullField(getClass(), "ownerRank");
+			ownerRank = "novice";
+		}
+		
+		if(defaultRank == null){
+			SagaLogger.nullField(getClass(), "defaultRank");
+			defaultRank = "warmaster";
+		}
+		
+		
 	}
 
-	
-	
-	// Definition:
-	/**
-	 * Gets faction definition.
-	 * 
-	 * @return faction definition
-	 */
-	public FactionDefinition getDefinition() {
-		return definition;
-	}
-	
 	
 	
 	// Creation:
@@ -315,6 +342,61 @@ public class FactionConfiguration {
 	 */
 	public Boolean isOpenClaimedStorageAreas() {
 		return openClaimedStorageAreas;
+	}
+	
+	
+
+	// Ranks:
+	/**
+	 * Gets hierarchy level name.
+	 * 
+	 * @param hierarchy hierarchy level
+	 * @return hierarchy level name, null if none
+	 */
+	public String getHierarchyName(Integer hierarchy) {
+		
+		String roleName = hierarchyNames.get(hierarchy);
+		if(roleName == null) return null;
+		
+		return roleName;
+		
+	}
+
+	/**
+	 * Gets min hierarchy level.
+	 * 
+	 * @return min hierarchy level
+	 */
+	public Integer getHierarchyMin() {
+		return hierarchyMin;
+	}
+	
+	/**
+	 * Gets max hierarchy level.
+	 * 
+	 * @return max hierarchy level
+	 */
+	public Integer getHierarchyMax() {
+		return hierarchyMax;
+	}
+
+	
+	/**
+	 * Gets the default rank.
+	 * 
+	 * @return default rank
+	 */
+	public String getDefaultRank() {
+		return defaultRank;
+	}
+	
+	/**
+	 * Gets owner rank.
+	 * 
+	 * @return owner rank
+	 */
+	public String getOwnerRank() {
+		return ownerRank;
 	}
 	
 	

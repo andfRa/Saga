@@ -565,7 +565,7 @@ public class FactionCommands {
 		selFaction.setOwner(targetName);
 		
 		// Set owner role:
-		String roleName = selFaction.getDefinition().getOwnerRank();
+		String roleName = FactionConfiguration.config().getOwnerRank();
 		
 		// Get role:
 		Proficiency rank;

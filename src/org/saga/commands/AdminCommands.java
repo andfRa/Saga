@@ -528,13 +528,14 @@ public class AdminCommands {
 			sagaPlayer.message(AdminMessages.setLevel(selectedSettlement));
 		}
 		
+		
 	}
 	
 	@Command(
-			aliases = {"afsetlevel"},
+			aliases = {"afsetClaims"},
 			usage = "[faction_name] <level>",
 			flags = "",
-			desc = "Set faction level.",
+			desc = "Set factions available claims.",
 			min = 1,
 			max = 2
 		)
@@ -542,7 +543,7 @@ public class AdminCommands {
 	public static void setFactionLevel(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
-		Integer level = null;
+		Double claims = null;
 		Faction selFaction = null;
 
 		// Arguments:
@@ -557,7 +558,7 @@ public class AdminCommands {
 			}
 
 			try {
-				level = Integer.parseInt(args.getString(1));
+				claims = Double.parseDouble(args.getString(1));
 			} catch (NumberFormatException e) {
 				sagaPlayer.message(GeneralMessages.mustBeNumber(args.getString(1)));
 				return;
@@ -573,7 +574,7 @@ public class AdminCommands {
 			}
 
 			try {
-				level = Integer.parseInt(args.getString(0));
+				claims = Double.parseDouble(args.getString(0));
 			} catch (NumberFormatException e) {
 				sagaPlayer.message(GeneralMessages.mustBeNumber(args.getString(0)));
 				return;
@@ -581,22 +582,18 @@ public class AdminCommands {
 			
 		}
 		
-		// Invalid level:
-		if(level < 0 || level > FactionConfiguration.config().getDefinition().getMaxLevel()){
-			
-			sagaPlayer.message(AdminMessages.factionLevelOutOfRange(level + ""));
+		// Invalid claims:
+		if(claims < 0 || claims > FactionConfiguration.config().getMaxClaims()){
+			sagaPlayer.message(AdminMessages.factionClaimsOutOfRange(claims + ""));
 			return;
-			
 		}
 		
-		// Set level:
-		selFaction.setLevel(level);
+		// Set claims:
+		selFaction.setClaims(claims);
 		
 		// Inform:
-		selFaction.information(FactionMessages.levelUp(selFaction));
-		if(selFaction != sagaPlayer.getFaction()){
-			sagaPlayer.message(AdminMessages.setLevel(selFaction));
-		}
+		sagaPlayer.message(AdminMessages.setClaims(selFaction));
+		
 		
 	}
 	

@@ -17,7 +17,6 @@ import org.saga.Clock.MinuteTicker;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.config.EconomyConfiguration;
-import org.saga.config.ExperienceConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.ProficiencyConfiguration;
@@ -69,11 +68,6 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	private Integer level;
 
 	/**
-	 * Experience.
-	 */
-	private Double exp;
-	
-	/**
 	 * Available claims.
 	 */
 	private Double claims;
@@ -124,12 +118,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 */
 	private HashSet<String> dailyKills;
 
-	
-	/**
-	 * Faction definition.
-	 */
-	transient private FactionDefinition definition;
-	
+
 	
 	// Control:
 	/**
@@ -207,7 +196,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 
 		if(claims == null){
 			SagaLogger.nullField(this, "claims");
-			double maxLevel = FactionConfiguration.config().getDefinition().getMaxLevel();
+			double maxLevel = 50;
 			if(maxLevel != 0 && level != null){
 				claims = level.doubleValue() / maxLevel * FactionConfiguration.config().getMaxClaims();
 			}else{
@@ -287,11 +276,8 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 			integrity = false;
 		}
 
-		// Transient:
-		definition = FactionConfiguration.config().getDefinition();
-		
 		//Statistics:
-		StatisticsManager.manager().setLevel(this);
+		StatisticsManager.manager().setClaims(this);
 		
 		return integrity;
 		
@@ -361,10 +347,10 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 
 		// Set owner rank:
 		try {
-			Proficiency rank = ProficiencyConfiguration.config().createProficiency(faction.getDefinition().getOwnerRank());
+			Proficiency rank = ProficiencyConfiguration.config().createProficiency(FactionConfiguration.config().getOwnerRank());
 			faction.setRank(owner, rank);
 		} catch (InvalidProficiencyException e) {
-			SagaLogger.severe(faction, "failed to set " + faction.getDefinition().getOwnerRank() + " rank, because the rank name is invalid");
+			SagaLogger.severe(faction, "failed to set " + FactionConfiguration.config().getOwnerRank() + " rank, because the rank name is invalid");
 		}
 		
 		// Enable:
@@ -436,10 +422,10 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		
 		// Set default rank:
 		try {
-			Proficiency rank = ProficiencyConfiguration.config().createProficiency(getDefinition().getDefaultRank());
+			Proficiency rank = ProficiencyConfiguration.config().createProficiency(FactionConfiguration.config().getDefaultRank());
 			setRank(sagaPlayer, rank);
 		} catch (InvalidProficiencyException e) {
-			SagaLogger.severe(this, "failed to set " + getDefinition().getDefaultRank() + " rank, because the rank name is invalid");
+			SagaLogger.severe(this, "failed to set " + FactionConfiguration.config().getDefaultRank() + " rank, because the rank name is invalid");
 		}
 
     	// Update chat prefix:
@@ -701,6 +687,24 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	
 	// Claims:
 	/**
+	 * Gets the amount of claims.
+	 * 
+	 * @return amount of claims
+	 */
+	public Double getClaims() {
+		return claims;
+	}
+	
+	/**
+	 * Sets the amount of claims.
+	 * 
+	 * @param claims amount of claims
+	 */
+	public void setClaims(Double claims) {
+		this.claims = claims;
+	}
+	
+	/**
 	 * Gets the amount of available claims.
 	 * 
 	 * @return amount of available claims
@@ -718,64 +722,40 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		return claims - claims.intValue();
 	}
 	
+	/**
+	 * Gets the claimed settlement count.
+	 * 
+	 * @return claimed settlement count
+	 */
+	public int countClaimedSettles() {
 
-	// Leveling:
-	/**
-	 * Gets settlement level.
-	 * 
-	 */
-	public Integer getLevel() {
-		return level;
-	}
-	
-	/**
-	 * Sets the level of the settlement.
-	 * 
-	 * @param level level
-	 */
-	public void setLevel(Integer level) {
+		Settlement[] settlemenents = FactionClaimManager.manager().findSettlements(getId());
+		return settlemenents.length;
 		
-		// Set related fields:
-		this.level = level;
-		
-		//Statistics:
-		StatisticsManager.manager().setLevel(this);
 		
 	}
 	
 	/**
-	 * Levels up the settlement.
+	 * Gets factions claim points.
 	 * 
+	 * @return factions claim points
 	 */
-	public void levelUp() {
-		setLevel(getLevel() + 1);
-	}
-	
-	/**
-	 * Gets experience.
-	 * 
-	 * @return experience
-	 */
-	public Double getExp() {
-		return exp;
-	}
+	public Double calcClaimPoints() {
 
-	/**
-	 * Gets remaining experience.
-	 * 
-	 * @return remaining experience
-	 */
-	public Double getRemainingExp() {
-		return getDefinition().getLevelUpExp(getLevel()) - exp;
-	}
 
-	/**
-	 * Gets experience gain speed.
-	 * 
-	 * @return experience speed
-	 */
-	public Double getExpSpeed() {
-		return getDefinition().getExpSpeed(countClaimedSettles());
+		Settlement[] claimedSettles = FactionClaimManager.manager().findSettlements(getId());
+		Integer[] claimedLevels = FactionClaimManager.getLevels(claimedSettles);
+		
+		Double claimPts = 0.0;
+		for (int i = 0; i < claimedLevels.length; i++) {
+			
+			claimPts+= FactionConfiguration.config().getClaimPoints(claimedLevels[i]); 
+			
+		}
+		
+		return claimPts;
+		
+		
 	}
 	
 	
@@ -821,15 +801,6 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		this.id = factionId;
 	}
 
-	/**
-	 * Gets the definition.
-	 * 
-	 * @return definition
-	 */
-	public FactionDefinition getDefinition() {
-		return definition;
-	}
-	
 	/**
 	 * Updates all prefixes:
 	 * 
@@ -1135,7 +1106,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		ProficiencyDefinition rank = ProficiencyConfiguration.config().getDefinition(rankName);
 		if(rank == null) return false;
 		
-		if(rank.getHierarchyLevel() == getDefinition().getHierarchyMin()) return true;
+		if(rank.getHierarchyLevel() == FactionConfiguration.config().getHierarchyMin()) return true;
 		
 		return getRemainingRanks(rankName) > 0;
 		
@@ -1161,45 +1132,6 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		}
 		
 		return filtMembers;
-		
-		
-	}
-	
-	
-	
-	// Claiming:
-	/**
-	 * Gets the claimed settlement count.
-	 * 
-	 * @return claimed settlement count
-	 */
-	public int countClaimedSettles() {
-
-		Settlement[] settlemenents = FactionClaimManager.manager().findSettlements(getId());
-		return settlemenents.length;
-		
-		
-	}
-	
-	/**
-	 * Gets factions claim points.
-	 * 
-	 * @return factions claim points
-	 */
-	public Double calcClaimPoints() {
-
-
-		Settlement[] claimedSettles = FactionClaimManager.manager().findSettlements(getId());
-		Integer[] claimedLevels = FactionClaimManager.getLevels(claimedSettles);
-		
-		Double claimPts = 0.0;
-		for (int i = 0; i < claimedLevels.length; i++) {
-			
-			claimPts+= FactionConfiguration.config().getClaimPoints(claimedLevels[i]); 
-			
-		}
-		
-		return claimPts;
 		
 		
 	}
@@ -1565,20 +1497,6 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 				
 			}
 		
-		}
-		
-		// Level progress:
-		if(level < getDefinition().getMaxLevel()){
-			
-			exp += ExperienceConfiguration.config().getExp(defender);
-			
-			if(getRemainingExp() > 0) return;
-			
-			levelUp();
-
-			// Inform:
-			information(FactionMessages.levelUp(this));
-			
 		}
 		
 		

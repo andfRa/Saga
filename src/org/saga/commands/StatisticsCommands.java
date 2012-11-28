@@ -407,22 +407,22 @@ public class StatisticsCommands {
 	}
 	
 	@Command(
-			aliases = {"stflevelshist"},
+			aliases = {"stfclaimshist"},
 			usage = "",
 			flags = "",
-			desc = "Show faction level distribution histogram.",
+			desc = "Show faction available claims distribution histogram.",
 			min = 0,
 			max = 0
 	)
-	@CommandPermissions({"saga.statistics.histogram.factionlevels"})
+	@CommandPermissions({"saga.statistics.histogram.factionclaims"})
 	public static void flevelsHistogram(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
     	// Data:
-    	Double[] data = StatisticsManager.manager().createHistogramData("factions.levels");
+    	Double[] data = StatisticsManager.manager().createHistogramData("factions.claims");
     	
 	    // Inform:
-    	sagaPlayer.message(StatisticsMessages.histogram("faction level histogram", data, 10, 0));
+    	sagaPlayer.message(StatisticsMessages.histogram("faction available claims histogram", data, 10, 0));
 	    
     	sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
 	    

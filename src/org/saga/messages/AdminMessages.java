@@ -69,19 +69,19 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 		return negative + "Level " + level + " is out of range. Allowed range: 0 - " + SettlementConfiguration.config().getSettlementDefinition().getMaxLevel() + ".";
 	}
 	
-	public static String factionLevelOutOfRange(String level){
-		return negative + "Level " + level + " is out of range. Allowed range: 0 - " + FactionConfiguration.config().getDefinition().getMaxLevel() + ".";
+	public static String factionClaimsOutOfRange(String claims){
+		return negative + "Claims " + claims + " is out of range. Allowed range: 0 - " + FactionConfiguration.config().getMaxClaims() + ".";
 	}
 
 	public static String setLevel(Settlement settlement){
 		
-		return positive + "Settlement " + settlement.getName() + " level set to " + settlement.getLevel() + ".";
+		return positive + "Settlement " + settlement.getName() + " claims set to " + settlement.getAvailableClaims() + ".";
 		
 	}
 	
-	public static String setLevel(Faction faction){
+	public static String setClaims(Faction faction){
 		
-		return positive + "Faction " + faction.getName() + " level set to " +faction.getLevel() + ".";
+		return positive + "Faction " + faction.getName() + " claims set to " +faction.getAvailableClaims() + ".";
 		
 	}
 	

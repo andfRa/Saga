@@ -18,7 +18,6 @@ import org.saga.config.EconomyConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
-import org.saga.factions.FactionDefinition;
 import org.saga.messages.PlayerMessages.ColourLoop;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.ProficiencyDefinition;
@@ -535,7 +534,6 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		Double maxClaims = FactionConfiguration.config().getClaimPoints(maxLevel);
 		Double halfClaims = FactionConfiguration.config().getClaimPoints(halfLevel);
 		Double minClaims = FactionConfiguration.config().getClaimPoints(minLevel);
-		FactionDefinition definition = FactionConfiguration.config().getDefinition();
 		
 		// Titles:
 		wagesTable.addLine(new String[]{GeneralMessages.columnTitle("rank"), GeneralMessages.columnTitle("lvl 0"), GeneralMessages.columnTitle("lvl " + halfLevel), GeneralMessages.columnTitle("lvl " + maxLevel)});
@@ -544,14 +542,14 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		Hashtable<Integer, Double> lvlHalfWages = EconomyConfiguration.config().calcHierarchyWages(EconomyConfiguration.config().calcWage(halfClaims));
 		Hashtable<Integer, Double> lvlMaxWages = EconomyConfiguration.config().calcHierarchyWages(EconomyConfiguration.config().calcWage(maxClaims));
 		
-		int min = FactionConfiguration.config().getDefinition().getHierarchyMin();
-		int max = FactionConfiguration.config().getDefinition().getHierarchyMax();
+		int min = FactionConfiguration.config().getHierarchyMin();
+		int max = FactionConfiguration.config().getHierarchyMax();
 		
 		if(min != max){
 		
 			for (int hiera = max; hiera >= min; hiera--) {
 				
-				String name = definition.getHierarchyName(hiera);
+				String name = FactionConfiguration.config().getHierarchyName(hiera);
 
 				Double wage0 = lvl0Wages.get(hiera);
 				if(wage0 == null) wage0 = 0.0;

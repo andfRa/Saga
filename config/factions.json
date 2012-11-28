@@ -1,26 +1,14 @@
 {
 
-"definition":{
-
-  "hierarchy":{
-    "1":{"x1":1,"y1":5.0,"x2":50,"y2":50.0},
-    "2":{"x1":1,"y1":3.0,"x2":50,"y2":30.0},
-    "3":{"x1":1,"y1":1.0,"x2":50,"y2":8.0}
-  },
-
-  "hierarchyNames":{
-    "1":"recruits",
-    "2":"combatants",
-    "3":"war council"
-  },
-
-  "levelUpExp":{"x1":0,"y1":30.0,"x2":50,"y2":100000.0},
-  "expSpeed":{"x1":1,"y1":1.0,"x2":15,"y2":5.5},
-  
-  "ownerRank":"warmaster",
-  "defaultRank":"novice"
-  
+"hierarchyMin":1,
+"hierarchyMax":3,
+"hierarchyNames":{
+  "1":"recruits",
+  "2":"combatants",
+  "3":"war council"
 },
+"ownerRank":"warmaster",
+"defaultRank":"novice",
 
 "factionOnlyPvp":true,
 
