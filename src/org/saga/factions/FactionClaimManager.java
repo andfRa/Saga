@@ -735,10 +735,10 @@ public class FactionClaimManager implements SecondTicker{
 	 * @param factionId faction ID
 	 * @return faction ranks
 	 */
-	public Hashtable<String, Integer> getRanks(Integer factionId) {
+	public Hashtable<String, Double> getRanks(Integer factionId) {
 
 		
-		Hashtable<String, Integer> ranks = new Hashtable<String, Integer>();
+		Hashtable<String, Double> ranks = new Hashtable<String, Double>();
 		
 		Settlement[] settlements = findSettlements(factionId);
 		for (int i = 0; i < settlements.length; i++) {
@@ -749,8 +749,8 @@ public class FactionClaimManager implements SecondTicker{
 				Set<String> bldranks = building.getDefinition().getAllRanks();
 				for (String rank : bldranks) {
 					
-					Integer count = ranks.get(rank);
-					if(count == null) count = 0;
+					Double count = ranks.get(rank);
+					if(count == null) count = 0.0;
 					count+= building.getDefinition().getRanks(rank);
 					ranks.put(rank, count);
 					

@@ -449,7 +449,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 			// All ranks:
 			StringBuffer resultRanks = new StringBuffer();
 			
-			Hashtable<String, Integer> allAvailRanks = FactionClaimManager.manager().getRanks(faction.getId());
+			Hashtable<String, Double> allAvailRanks = FactionClaimManager.manager().getRanks(faction.getId());
 			ArrayList<ProficiencyDefinition> allRanks = ProficiencyConfiguration.config().getDefinitions(ProficiencyType.RANK, hierarchy);
 			
 			for (ProficiencyDefinition definition : allRanks) {
@@ -469,11 +469,11 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 				
 				// Amounts:
 				Integer usedRanks = faction.getUsedRanks(roleName);
-				Integer availRanks = allAvailRanks.get(roleName);
-				if(availRanks == null) availRanks = 0;
+				Double availRanks = allAvailRanks.get(roleName);
+				if(availRanks == null) availRanks = 0.0;
 				
 				if(definition.getHierarchyLevel() > FactionConfiguration.config().getHierarchyMin()){
-					resultRanks.append(" " + usedRanks + "/" + availRanks);
+					resultRanks.append(" " + usedRanks + "/" + availRanks.intValue());
 				}
 				
 				resultRanks.append(": ");

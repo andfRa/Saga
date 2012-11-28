@@ -56,14 +56,38 @@
 
 
   {"name":"warmaster",
-    "type":"RANK",
+    "type":"INVALID",
     "hierarchyLevel":"3",
     "attributeBonuses":{"toughness":10},
     "settlementPermissions":[],
     "factionPermissions":["INVITE","KICK","SET_COLOR","RENAME","SET_RANK","SPAWN"]
   },
 
- {"name":"warrior",
+  {"name":"knight",
+    "type":"RANK",
+    "hierarchyLevel":"3",
+    "attributeBonuses":{"strength":10,toughness":5},
+    "settlementPermissions":[],
+    "factionPermissions":["INVITE","KICK","SET_COLOR","RENAME","SET_RANK","SPAWN"]
+  },
+
+  {"name":"marksman",
+    "type":"RANK",
+    "hierarchyLevel":"3",
+    "attributeBonuses":{"precision":10,toughness":5},
+    "settlementPermissions":[],
+    "factionPermissions":["INVITE","KICK","SET_COLOR","RENAME","SET_RANK","SPAWN"]
+  },
+
+  {"name":"wizard",
+    "type":"RANK",
+    "hierarchyLevel":"3",
+    "attributeBonuses":{"willpower":10,toughness":5},
+    "settlementPermissions":[],
+    "factionPermissions":["INVITE","KICK","SET_COLOR","RENAME","SET_RANK","SPAWN"]
+  },
+
+  {"name":"warrior",
     "type":"RANK",
     "hierarchyLevel":"2",
     "attributeBonuses":{"strength":8,"toughness":2},

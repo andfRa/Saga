@@ -253,12 +253,12 @@ public class ProficiencyConfiguration {
 			
 		} catch (IOException e) {
 			
-			SagaLogger.severe(SettlementConfiguration.class, "failed to read configuration: " + e.getClass().getSimpleName());
+			SagaLogger.severe(ProficiencyConfiguration.class, "failed to read configuration: " + e.getClass().getSimpleName());
 			config = new ProficiencyConfiguration();
 			
 		} catch (JsonParseException e) {
 
-			SagaLogger.severe(SettlementConfiguration.class, "failed to parse configuration: " + e.getClass().getSimpleName());
+			SagaLogger.severe(ProficiencyConfiguration.class, "failed to parse configuration: " + e.getClass().getSimpleName());
 			SagaLogger.info("message: " + e.getMessage());
 			config = new ProficiencyConfiguration();
 			

@@ -1076,11 +1076,12 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 */
 	public Integer getAvailableRanks(String rankName) {
 		
-		Hashtable<String, Integer> ranks = FactionClaimManager.manager().getRanks(id);
-		Integer amount = ranks.get(rankName);
+		Hashtable<String, Double> ranks = FactionClaimManager.manager().getRanks(id);
+		Double amount = ranks.get(rankName);
 		if(amount == null) return 0;
 		
-		return amount;
+		return amount.intValue();
+		
 	}
 
 	/**

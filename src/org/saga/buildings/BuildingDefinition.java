@@ -129,12 +129,12 @@ public class BuildingDefinition {
 	/**
 	 * Available roles.
 	 */
-	private Hashtable<String, Integer> roles;
+	private Hashtable<String, Double> roles;
 	
 	/**
 	 * Available ranks.
 	 */
-	private Hashtable<String, Integer> ranks;
+	private Hashtable<String, Double> ranks;
 	
 	
 	// Info:
@@ -267,12 +267,12 @@ public class BuildingDefinition {
 		upgradeCost.complete();
 		
 		if(roles == null){
-			roles = new Hashtable<String, Integer>();
+			roles = new Hashtable<String, Double>();
 			SagaLogger.nullField(BuildingDefinition.class, "roles");
 		}
 		
 		if(ranks == null){
-			ranks = new Hashtable<String, Integer>();
+			ranks = new Hashtable<String, Double>();
 			SagaLogger.nullField(BuildingDefinition.class, "ranks");
 		}
 		
@@ -517,9 +517,9 @@ public class BuildingDefinition {
 	 * @param role role name
 	 * @return roles available
 	 */
-	public Integer getRoles(String role) {
-		Integer amount = roles.get(role);
-		if(amount == null) return 0;
+	public Double getRoles(String role) {
+		Double amount = roles.get(role);
+		if(amount == null) return 0.0;
 		return amount;
 	}
 	
@@ -538,9 +538,9 @@ public class BuildingDefinition {
 	 * @param rank rank name
 	 * @return ranks available
 	 */
-	public Integer getRanks(String rank) {
-		Integer amount = ranks.get(rank);
-		if(amount == null) return 0;
+	public Double getRanks(String rank) {
+		Double amount = ranks.get(rank);
+		if(amount == null) return 0.0;
 		return amount;
 	}
 	

@@ -4,7 +4,6 @@
 
 
 "definitions":[
-
   {"className":"org.saga.abilities.ChopDown",
     "name":"chop down",
     "itemRestrictions":["DIAMOND_AXE","GOLD_AXE","IRON_AXE","STONE_AXE"],
@@ -24,7 +23,7 @@
     "description":"chops down a tree",
     "usage":"rclick tree w/ axe"
   },
-
+  
   {"className":"org.saga.abilities.Harvest",
     "name":"harvest",
     "itemRestrictions":["DIAMOND_HOE","GOLD_HOE","IRON_HOE","STONE_HOE"],
@@ -44,7 +43,7 @@
     "description":"cuts wheat and reeds",
     "usage":"rclick w/ hoe"
   },
-
+  
   {"className":"org.saga.abilities.HeavySwing",
     "name":"heavy swing",
     "itemRestrictions":["DIAMOND_PICKAXE","GOLD_PICKAXE","IRON_PICKAXE"],
@@ -67,9 +66,9 @@
     "description":"breaks stone",
     "usage":"rclick stone w/ pickaxe"
   },
-
-
-
+  
+  
+  
   {"className":"org.saga.abilities.Bash",
     "name":"disarm",
     "itemRestrictions":["DIAMOND_SWORD","GOLD_SWORD","IRON_SWORD","STONE_SWORD","BOW"],
@@ -80,7 +79,7 @@
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
     "attributeRequirements":{ "strength":{"x1":1,"y1":15.0,"x2":3,"y2":50.0} },
     "buildingsRequired":{},
-    "proficiencyRestrictions":["archer"],
+    "proficiencyRestrictions":[],
     "functions":{
       "melee disarm chance":{"x1":1,"y1":0.05,"x2":3,"y2":0.15},
       "ranged disarm chance":{"x1":1,"y1":0.10,"x2":3,"y2":0.30}
@@ -106,7 +105,7 @@
     "description":"arrows ricochet",
     "usage":"miss target"
   },
-
+  
   {"className":"org.saga.abilities.Fireball",
     "name":"fireball",
     "itemRestrictions":["COAL"],
@@ -123,7 +122,7 @@
     "description":"shoots a fireball",
     "usage":"rclick w/ coal"
   },
-
+  
   {"className":"org.saga.abilities.Force",
     "name":"force",
     "itemRestrictions":["BOOK"],
@@ -145,7 +144,7 @@
   },
   
   
-
+  
   {"className":"org.saga.abilities.Berserk",
     "name":"berserk",
     "itemRestrictions":[],
@@ -156,7 +155,7 @@
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
     "attributeRequirements":{"strength":{ "x1":1,"y1":20.0,"x2":3,"y2":50.0} },
     "buildingsRequired":{3:["armoury"]},
-    "proficiencyRestrictions":["warrior"],
+    "proficiencyRestrictions":["warrior","knight"],
     "functions":{
       "increase per second":{"x1":1,"y1":1.0,"x2":3,"y2":1.0},
       "decrease per second":{"x1":1,"y1":2.0,"x2":3,"y2":2.0},
@@ -167,7 +166,7 @@
     "description":"combat increases melee",
     "usage":"block w/ sword"
   },
-
+  
   {"className":"org.saga.abilities.Parry",
     "name":"parry",
     "itemRestrictions":[],
@@ -181,7 +180,7 @@
       "precision":{ "x1":1,"y1":10.0,"x2":3,"y2":40.0}
     },
     "buildingsRequired":{3:["armoury"]},
-    "proficiencyRestrictions":["warrior"],
+    "proficiencyRestrictions":["warrior","knight"],
     "functions":{
       "facing half angle":{"x1":1,"y1":45.0,"x2":3,"y2":100.0},
       "active time":{"x1":1,"y1":2.0,"x2":3,"y2":2.0},
@@ -205,13 +204,12 @@
       "willpower":{ "x1":1,"y1":10.0,"x2":3,"y2":40.0}
     },
     "buildingsRequired":{3:["armoury"]},
-    "proficiencyRestrictions":["warrior"],
+    "proficiencyRestrictions":["warrior","knight"],
     "functions":{},
     "colour":3599322,
     "description":"redirects melee damage",
     "usage":"block w/ sword"
   },
-  
   
   
   {"className":"org.saga.abilities.Dart",
@@ -227,13 +225,13 @@
       "strength":{"x1":1,"y1":10.0,"x2":3,"y2":40.0}
     },
     "buildingsRequired":{3:["bowyer"]},
-    "proficiencyRestrictions":[],
+    "proficiencyRestrictions":["archer","marksman"],
     "functions":{"speed":{"x1":1,"y1":1.0,"x2":3,"y2":3.0}},
     "colour":8873510,
     "description":"shoots an arrow",
     "usage":"rclick w/ arrow"
   },
-
+  
   {"className":"org.saga.abilities.Backstab",
     "name":"backstab",
     "itemRestrictions":[],
@@ -244,7 +242,7 @@
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
     "attributeRequirements":{ "precision":{"x1":1,"y1":20.0,"x2":3,"y2":50.0} },
     "buildingsRequired":{3:["bowyer"]},
-    "proficiencyRestrictions":["archer"],
+    "proficiencyRestrictions":["archer","marksman"],
     "functions":{
       "facing half angle":{"x1":1,"y1":55.0,"x2":3,"y2":100.0},
       "damage multiplier":{"x1":1,"y1":0.0,"x2":3,"y2":0.5},
@@ -269,15 +267,14 @@
       "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":40.0}
     },
     "buildingsRequired":{3:["bowyer"]},
-    "proficiencyRestrictions":["archer"],
+    "proficiencyRestrictions":["archer","marksman"],
     "functions":{"speed":{"x1":1,"y1":1.5,"x2":3,"y2":3.0}},
     "colour":16777215,
     "description":"bow pushes back",
     "usage":"on arrow hit"
   },
-
-
-
+  
+  
   {"className":"org.saga.abilities.Stoneskin",
     "name":"stoneskin",
     "itemRestrictions":[],
@@ -291,7 +288,7 @@
       "strength":{"x1":1,"y1":10.0,"x2":3,"y2":40.0}
     },
     "buildingsRequired":{3:["academy"]},
-    "proficiencyRestrictions":["mage"],
+    "proficiencyRestrictions":["mage","wizard"],
     "functions":{
       "absorbed hits":{"x1":1,"y1":3.0,"x2":3,"y2":7.0},
       "hits per second":{"x1":1,"y1":0.6,"x2":3,"y2":1.4}
@@ -314,7 +311,7 @@
       "precision":{"x1":1,"y1":10.0,"x2":3,"y2":40.0}
     },
     "buildingsRequired":{3:["academy"]},
-    "proficiencyRestrictions":["mage"],
+    "proficiencyRestrictions":["mage","wizard"],
     "functions":{
       "distance":{"x1":1,"y1":16.0,"x2":3,"y2":32.0},
       "speed":{"x1":1,"y1":1.25,"x2":3,"y2":2.0},
@@ -337,7 +334,7 @@
       "willpower":{"x1":1,"y1":20.0,"x2":3,"y2":50.0}
     },
     "buildingsRequired":{3:["academy"]},
-    "proficiencyRestrictions":["mage"],
+    "proficiencyRestrictions":["mage","wizard"],
     "functions":{
       "damage":{"x1":1,"y1":6.0,"x2":3,"y2":15.0},
       "damage range":{"x1":1,"y1":2.5,"x2":3,"y2":3.5},
@@ -347,7 +344,6 @@
     "description":"calls a lightning bolt",
     "usage":"rclick w/ redstone"
   }
-  
 ]
 
 }

@@ -35,7 +35,7 @@
 
 
 "buildingDefinitions":[
-
+  
   {
     "name":"lumber camp",
     "buildingClass":"org.saga.buildings.SimpleBuilding",
@@ -63,7 +63,7 @@
     "description":"spawns logs",
     "effect":"#craft_daytime: #craft_amount x logs"
   },
-
+  
   {
     "name":"farm",
     "buildingClass":"org.saga.buildings.Farm",
@@ -150,7 +150,7 @@
     "description":"creates wood from logs",
     "effect":"#craft_daytime: #craft_amount x logs to wood"
   },
-
+  
   {
     "name":"inn",
     "buildingClass":"org.saga.buildings.SimpleBuilding",
@@ -208,7 +208,7 @@
     "description":"refines ores",
     "effect":"#craft_daytime: #craft_amount x ore refined"
   },
-
+  
   {
     "name":"brickworks",
     "buildingClass":"org.saga.buildings.SimpleBuilding",
@@ -261,8 +261,8 @@
     "effect":"#craft_daytime: #craft_amount x gems"
   },
   
-
-
+  
+  
   {
     "name":"armoury",
     "buildingClass":"org.saga.buildings.SimpleBuilding",
@@ -281,11 +281,11 @@
     "maxScore":1,
     "upgradeCost":{"x1":1,"y1":15000,"x2":2,"y2":60000},
     "roles":{},
-    "ranks":{"warrior":5},
-    "description":"gives firm armour ability",
-    "effect":"armour damages weapons"
+    "ranks":{"warrior":5,"knight":1},
+    "description":"gives warrior related skills",
+    "effect":"warrior skills"
   },
-
+  
   {
     "name":"bowyer",
     "buildingClass":"org.saga.buildings.SimpleBuilding",
@@ -304,11 +304,11 @@
     "maxScore":1,
     "upgradeCost":{"x1":1,"y1":15000,"x2":2,"y2":60000},
     "roles":{},
-    "ranks":{"archer":5},
-    "description":"gives force bow ability",
-    "effect":"bow causes knockback"
+    "ranks":{"archer":5,"marksman":1},
+    "description":"gives archer related skills",
+    "effect":"archer skills"
   },
-
+  
   {
     "name":"academy",
     "buildingClass":"org.saga.buildings.Academy",
@@ -327,13 +327,13 @@
     "maxScore":1,
     "upgradeCost":{"x1":1,"y1":15000,"x2":2,"y2":60000},
     "roles":{},
-    "ranks":{"mage":5},
-    "description":"gives ignite ability",
-    "effect":"fireball ignites targets"
+    "ranks":{"mage":5.0,"wizard":1},
+    "description":"gives mage related skills",
+    "effect":"mage skills"
   },
-
-
-
+  
+  
+  
   {
     "name":"town square",
     "buildingClass":"org.saga.buildings.TownSquare",
@@ -356,7 +356,7 @@
     "description":"enables spawn command",
     "effect":"command: /sspawn"
   },
-
+  
   {
     "name":"watchtower",
     "buildingClass":"org.saga.buildings.Watchtower",
@@ -425,7 +425,7 @@
     "description":"buy items",
     "effect":"#perform_daytime: new goods"
   },
-
+  
   {
     "name":"home",
     "buildingClass":"org.saga.buildings.Home",
