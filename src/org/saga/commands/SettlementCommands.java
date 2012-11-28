@@ -388,7 +388,7 @@ public class SettlementCommands {
 			}
 			
 			// Set role:
-			if(selSettlement.isRoleAvailable(role.getHierarchy())) selSettlement.setRole(selPlayer, role);
+			if(selSettlement.isRoleAvailable(role.getName())) selSettlement.setRole(selPlayer, role);
 			
 		}
 
@@ -1006,7 +1006,7 @@ public class SettlementCommands {
 		}
 		
 		// Role available:
-		if(!selSettlement.isRoleAvailable(role.getHierarchy())){
+		if(!selSettlement.isRoleAvailable(role.getName())){
 			sagaPlayer.message(SettlementMessages.roleNotAvailable(roleName));
 			return;
 		}

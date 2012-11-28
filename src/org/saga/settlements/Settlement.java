@@ -12,9 +12,11 @@ import org.saga.Clock;
 import org.saga.Clock.MinuteTicker;
 import org.saga.Saga;
 import org.saga.SagaLogger;
+import org.saga.buildings.Building;
 import org.saga.buildings.BuildingDefinition;
 import org.saga.chunks.Bundle;
 import org.saga.chunks.BundleToggleable;
+import org.saga.config.FactionConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
 import org.saga.config.SettlementConfiguration;
@@ -22,6 +24,7 @@ import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.messages.SettlementMessages;
 import org.saga.player.Proficiency;
+import org.saga.player.ProficiencyDefinition;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
 
@@ -391,10 +394,10 @@ public class Settlement extends Bundle implements MinuteTicker{
 	/**
 	 * Gets the amount of roles used.
 	 * 
-	 * @param hierarchy role hierarchy level
+	 * @param roleName role name
 	 * @return amount of roles used
 	 */
-	public Integer getUsedRoles(Integer hierarchy) {
+	public Integer getUsedRoles(String roleName) {
 		
 		Integer total = 0;
 		
@@ -402,7 +405,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 		
 		for (Proficiency role : roles) {
 			
-			if(role.getHierarchy() == hierarchy) total++;
+			if(role.getName().equals(roleName)) total++;
 
 		}
 		
@@ -413,24 +416,33 @@ public class Settlement extends Bundle implements MinuteTicker{
 	/**
 	 * Gets the amount of roles available.
 	 * 
-	 * @param hierarchy role hierarchy level
-	 * @return
+	 * @param roleName role name
+	 * @return amount of roles available
 	 */
-	public Integer getAvailableRoles(Integer hierarchy) {
+	public Integer getAvailableRoles(String roleName) {
 
-		return getDefinition().getAvailableRoles(getLevel(), hierarchy);
+		Double count = 0.0;
+		
+		ArrayList<Building> buildings = getBuildings();
+		for (Building building : buildings) {
+			
+			count+= building.getDefinition().getRoles(roleName);
+			
+		}
+		
+		return count.intValue();
 		
 	}
 	
 	/**
 	 * Gets the amount of roles remaining.
 	 * 
-	 * @param hierarchy role hierarchy level
+	 * @param roleName role name
 	 * @return amount of roles remaining
 	 */
-	public Integer getRemainingRoles(Integer hierarchy) {
+	public Integer getRemainingRoles(String roleName) {
 		
-		return getAvailableRoles(hierarchy) - getUsedRoles(hierarchy);
+		return getAvailableRoles(roleName) - getUsedRoles(roleName);
 		
 	}
 
@@ -440,11 +452,14 @@ public class Settlement extends Bundle implements MinuteTicker{
 	 * @param hierarchy role hierarchy level
 	 * @return true if available
 	 */
-	public boolean isRoleAvailable(Integer hierarchy) {
+	public boolean isRoleAvailable(String roleName) {
+
+		ProficiencyDefinition role = ProficiencyConfiguration.config().getDefinition(roleName);
+		if(role == null) return false;
 		
-		if(hierarchy == getDefinition().getHierarchyMin()) return true;
+		if(role.getHierarchyLevel() == FactionConfiguration.config().getHierarchyMin()) return true;
 		
-		return getRemainingRoles(hierarchy) > 0;
+		return getRemainingRoles(roleName) > 0;
 		
 	}
 	

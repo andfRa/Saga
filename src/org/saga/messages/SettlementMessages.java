@@ -13,6 +13,7 @@ import org.saga.chunks.Bundle;
 import org.saga.chunks.BundleToggleable;
 import org.saga.chunks.SagaChunk;
 import org.saga.chunks.SagaMap;
+import org.saga.config.FactionConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.factions.Faction;
@@ -626,37 +627,17 @@ public class SettlementMessages {
 			if(groupName.length() == 0) groupName = "-";
 			result.append(GeneralMessages.tableTitle(general + groupName));
 			
-			// Role amounts:
-			if(hierarchy != settlement.getDefinition().getHierarchyMin()){
-				
-				String amounts = settlement.getUsedRoles(hierarchy) + "/" + settlement.getAvailableRoles(hierarchy);
-				
-				if(settlement.isRoleAvailable(hierarchy)){
-					amounts = positive + amounts;
-				}else{
-					amounts = negative + amounts;
-				}
-				
-				result.append(" " + amounts);
-				
-			}else{
-				
-				String amounts = settlement.getUsedRoles(hierarchy) + "/-";
-				result.append(" " + amounts);
-				
-			}
-			
 			// All roles:
 			StringBuffer resultRoles = new StringBuffer();
 			
 			ArrayList<ProficiencyDefinition> roles = ProficiencyConfiguration.config().getDefinitions(ProficiencyType.ROLE, hierarchy);
 			
-			for (ProficiencyDefinition definition : roles) {
-				
+			for (ProficiencyDefinition roleDefinition : roles) {
+
 				// Members:
 				if(resultRoles.length() > 0) resultRoles.append("\n");
 				
-				String roleName = definition.getName();
+				String roleName = roleDefinition.getName();
 				ArrayList<String> members = settlement.getMembersForRoles(roleName);
 				
 				// Colour members:
@@ -664,8 +645,17 @@ public class SettlementMessages {
 				
 				// Add members:
 				resultRoles.append(normal);
+				resultRoles.append(roleName);
 				
-				resultRoles.append(roleName + ": ");
+				// Amounts:
+				Integer usedRoles = settlement.getUsedRoles(roleName);
+				Integer availRoles = settlement.getAvailableRoles(roleName);
+				
+				if(roleDefinition.getHierarchyLevel() > FactionConfiguration.config().getHierarchyMin()){
+					resultRoles.append(" " + usedRoles + "/" + availRoles.intValue());
+				}
+				
+				resultRoles.append(": ");
 				
 				if(members.size() != 0){
 					resultRoles.append(TextUtil.flatten(members));
