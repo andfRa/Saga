@@ -41,9 +41,10 @@ public class Settlement extends Bundle implements MinuteTicker{
 	private Integer level;
 
 	/**
-	 * Experience.
+	 * Claims.
 	 */
-	private Double exp;
+	private Double claims;
+	
 	
 	/**
 	 * Player roles.
@@ -78,7 +79,8 @@ public class Settlement extends Bundle implements MinuteTicker{
 		
 		super(name);
 		level = 0;
-		exp = 0.0;
+		claims = SettlementConfiguration.config().getInitialClaims().doubleValue();
+		
 		playerRoles = new Hashtable<String, Proficiency>();
 		lastSeen = new Hashtable<String, Date>();
 		definition = SettlementConfiguration.config().getSettlementDefinition();
@@ -101,9 +103,16 @@ public class Settlement extends Bundle implements MinuteTicker{
 			level = 0;
 		}
 		
-		if(exp == null){
-			SagaLogger.nullField(this, "exp "+ this +" levelProgress");
-			exp = 0.0;
+		if(claims == null){
+			
+			int maxLevel = SettlementConfiguration.config().getSettlementDefinition().getMaxLevel();
+			if(maxLevel != 0){
+				claims = SettlementConfiguration.config().getMaxClaims().doubleValue() * level.doubleValue() / maxLevel;
+			}else{
+				claims = 0.0;
+			}
+			SagaLogger.nullField(this, "claims");
+			
 		}
 		
 		if(lastSeen == null){
@@ -302,34 +311,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 	public void levelUp() {
 		setLevel(getLevel() + 1);
 	}
-	
-	/**
-	 * Gets experience.
-	 * 
-	 * @return experience
-	 */
-	public Double getExp() {
-		return exp;
-	}
 
-	/**
-	 * Gets remaining experience.
-	 * 
-	 * @return remaining experience
-	 */
-	public Double getRemainingExp() {
-		return getDefinition().getLevelUpExp(getLevel()) - exp;
-	}
-
-	/**
-	 * Gets experience gain speed.
-	 * 
-	 * @return experience speed
-	 */
-	public Double getExpSpeed() {
-		return getDefinition().getExpSpeed(countActiveMembers());
-	}
-	
 	
 	
 	// Roles:
@@ -520,7 +502,8 @@ public class Settlement extends Bundle implements MinuteTicker{
 	 * @return total claims.
 	 */
 	public Integer getTotalClaims() {
-		return getDefinition().getClaims(getLevel());
+		if(claims > SettlementConfiguration.config().getMaxClaims()) return SettlementConfiguration.config().getMaxClaims();
+		return claims.intValue();
 	}
 	
 	/**
@@ -539,6 +522,15 @@ public class Settlement extends Bundle implements MinuteTicker{
 	 */
 	public boolean isClaimsAvailable() {
 		return getAvailableClaims() > 0 || isOptionEnabled(BundleToggleable.UNLIMITED_CLAIMS);
+	}
+	
+	/**
+	 * Gets the claim progress.
+	 * 
+	 * @return claim progress, values 0.0 - 1.0
+	 */
+	public Double getClaimProgress() {
+		return claims - claims.intValue();
 	}
 	
 	
@@ -763,23 +755,17 @@ public class Settlement extends Bundle implements MinuteTicker{
 		
 		if(!isEnabled()) return false;
 
-		// Statistics:
-		StatisticsManager.manager().addManminutes(this);
+		int online = getOnlineMembers().size();
 		
-		// Level progress:
-		if(level < getDefinition().getMaxLevel() && checkActiveMembers()){
-			
-			exp += getExpSpeed();
+		// Statistics:
+		StatisticsManager.manager().addManminutes(this, online);
 
+		// Increase claims:
+		if(claims < SettlementConfiguration.config().getMaxClaims() && checkActiveMembers()){
+			claims+= SettlementConfiguration.config().getClaimsPerMinute(online);
+			
 			// Statistics:
-			StatisticsManager.manager().addManminutesExp(this, getExpSpeed());
-			
-			if(getRemainingExp() > 0) return true;
-			
-			levelUp();
-
-			// Inform:
-			information(SettlementMessages.levelUp(this));
+			StatisticsManager.manager().addSettlementClaims(this, SettlementConfiguration.config().getClaimsPerMinute(online));
 			
 		}
 		

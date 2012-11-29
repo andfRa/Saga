@@ -434,9 +434,6 @@ public class SettlementMessages {
 		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
 		StringTable table = new StringTable(colours);
 		
-		// Claims:
-		table.addLine("claims", settlement.getUsedClaimed() + "/" + settlement.getTotalClaims(), 0);
-		
 		// Building points:
 		table.addLine("build points", settlement.getUsedBuildPoints() + "/" + settlement.getAvailableBuildPoints(), 0);
 		
@@ -446,16 +443,15 @@ public class SettlementMessages {
 		}else{
 			table.addLine("owner", veryNegative + "none", 0);
 		}
-		
-		// Level:
-		table.addLine("level", settlement.getLevel() + "/" + settlement.getDefinition().getMaxLevel(), 2);
 
-		// Next exp:
-		table.addLine("next EXP", settlement.getRemainingExp().intValue() + "", 2);
+		double progress = settlement.getClaimProgress();
 
-		// Exp per minute:
-		table.addLine("EXP/minute", settlement.getExpSpeed().toString(), 2);
-		
+		// Claims:
+		table.addLine("claims", settlement.getUsedClaimed() + "/" + settlement.getTotalClaims(), 2);
+
+		// Next claim:
+		table.addLine("next claim", (int)(progress*100) + "%", 2);
+
 		table.collapse();
 		
 		return table;

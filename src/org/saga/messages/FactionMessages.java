@@ -345,7 +345,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		// Claimed:
 		table.addLine("claimed", claimed + "/" + availClaims, 2);
 
-		// Next exp:
+		// Next claim:
 		table.addLine("next claim", (int)(progress*100) + "%", 2);
 
 		table.collapse();

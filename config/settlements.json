@@ -28,9 +28,6 @@
 
 },
 
-
-"noDeleteLevel":5,
-
 "inactiveSetDays":7,
 
 
@@ -473,6 +470,11 @@
   }
 
 ],
+
+"noDeleteLevel":5,
+"claimsPerMinute":{"x1":0,"y1":0.0,"x2":10,"y2":0.01},
+"initClaims":4;
+"maxClaims":250;
 
 "enabledSignColor":"DARK_GREEN",
 "disabledSignColor":"DARK_GRAY",

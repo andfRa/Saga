@@ -15,6 +15,7 @@ import org.saga.exceptions.InvalidBuildingException;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.settlements.SettlementDefinition;
+import org.saga.utility.TwoPointFunction;
 
 public class SettlementConfiguration {
 
@@ -52,6 +53,23 @@ public class SettlementConfiguration {
 	 * Level when automatic delete is disabled.
 	 */
 	public Integer noDeleteLevel;
+	
+	
+	// Claims:
+	/**
+	 * Claims gained per minute.
+	 */
+	private TwoPointFunction claimsPerMinute;
+
+	/**
+	 * Maximum number of claims when a faction is formed.
+	 */
+	private Integer initClaims;
+
+	/**
+	 * Maximum number of claims a faction can have.
+	 */
+	private Integer maxClaims;
 	
 
 	// Time:
@@ -122,6 +140,22 @@ public class SettlementConfiguration {
 		if(noDeleteLevel == null){
 			SagaLogger.nullField(getClass(), "noDeleteLevel");
 			noDeleteLevel = 5;
+		}
+		
+		if(claimsPerMinute == null){
+			SagaLogger.nullField(getClass(), "claimsPerMinute");
+			claimsPerMinute = new TwoPointFunction(0.0);
+		}
+		claimsPerMinute.complete();
+		
+		if(initClaims == null){
+			SagaLogger.nullField(getClass(), "initClaims");
+			initClaims = 1;
+		}
+
+		if(maxClaims == null){
+			SagaLogger.nullField(getClass(), "maxClaims");
+			maxClaims = 2;
 		}
 		
 		if(inactiveSetDays == null){
@@ -331,6 +365,37 @@ public class SettlementConfiguration {
 		
 	}
 	
+	
+	
+	// Claims:
+	/**
+	 * Gets claims per minute.
+	 * 
+	 * @param onlinePlayers players online
+	 * @return amount of claim points per minute
+	 */
+	public Double getClaimsPerMinute(Integer onlinePlayers) {
+		return claimsPerMinute.value(onlinePlayers);
+	}
+	
+	/**
+	 * Gets the initial amount of claims the faction can have.
+	 * 
+	 * @return initial claims
+	 */
+	public Integer getInitialClaims() {
+		return initClaims;
+	}
+	
+	/**
+	 * Gets the maximum amount of claims the faction can have.
+	 * 
+	 * @return max claims
+	 */
+	public Integer getMaxClaims() {
+		return maxClaims;
+	}
+
 	
 	
 	// Loading and unloading:
