@@ -5,7 +5,6 @@
 
 package org.saga.saveload;
 
-import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
 import org.bukkit.craftbukkit.libs.com.google.gson.JsonDeserializationContext;
@@ -47,12 +46,12 @@ public class SagaCustomSerializer implements JsonSerializer<SagaCustomSerializat
 		// Get object:
 		SagaCustomSerialization object = jdc.deserialize(je, type);
 		
-		// Run complete:
-		try {
-			Method complete = object.getClass().getMethod("complete");
-			complete.invoke(object);
-		}
-		catch (Exception e) {}
+//		// Run complete:
+//		try {
+//			Method complete = object.getClass().getMethod("complete");
+//			complete.invoke(object);
+//		}
+//		catch (Exception e) {}
 
 		return object;
 
