@@ -15,7 +15,7 @@
 "minNameLength":3,
 "maxNameLength":6,
 
-"claimsPerMinute":{"x1":0,"y1":0.0,"x2":20,"y2":0.0015},
+"claimsPerMinute":{"x1":0,"y1":0.0,"x2":10,"y2":0.0015},
 "initClaims":1,
 "maxClaims":15,
 "claimSpeed":{"x1":0,"y1":0.2,"x2":50,"y2":0.0166},
