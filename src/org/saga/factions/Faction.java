@@ -1429,7 +1429,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 * 
 	 * @param event event
 	 */
-	public void onAttack(SagaEntityDamageEvent event){
+	public void onPvPAttack(SagaEntityDamageEvent event){
 		
 		
 		// Same faction:
@@ -1454,7 +1454,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 * 
 	 * @param event event
 	 */
-	public void onDefend(SagaEntityDamageEvent event){
+	public void onPvPDefend(SagaEntityDamageEvent event){
 		
 
 		// Ally:

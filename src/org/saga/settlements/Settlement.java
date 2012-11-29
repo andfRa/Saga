@@ -819,6 +819,9 @@ public class Settlement extends Bundle implements MinuteTicker{
 		MEMBER_COMMAND,
 		SPAWN,
 		
+		// Farm:
+		HURT_FARM_ANIMALS,
+		
 		// Home:
 		REMOVE_RESIDENT,
 		ADD_RESIDENT,

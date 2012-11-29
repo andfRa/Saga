@@ -7,8 +7,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.chunks.Bundle;
 import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.messages.BuildingMessages;
+import org.saga.messages.GeneralMessages;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.Settlement.SettlementPermission;
 
 
 public class Farm extends Building{
@@ -42,8 +43,8 @@ public class Farm extends Building{
 			if(bundle == null) return;
 			
 			// Permissions:
-			if(!bundle.isMember(damager.getName())){
-				damager.message(BuildingMessages.farmAnimalsDamageDeny());
+			if(!bundle.hasPermission(damager, SettlementPermission.HURT_FARM_ANIMALS)){
+				damager.message(GeneralMessages.noPermission(this));
 				event.cancel();
 			}
 			
