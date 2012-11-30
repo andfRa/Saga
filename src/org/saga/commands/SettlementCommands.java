@@ -276,7 +276,7 @@ public class SettlementCommands {
 		SettlementEffectHandler.playAbandon(sagaPlayer, selChunk);
 		
 		// Delete if none left:
-		if( selBundle.getSize() == 0 ){
+		if(selBundle.checkDelete()){
 			selBundle.delete();
 			sagaPlayer.message(SettlementMessages.dissolved(selBundle));
 		}
@@ -419,14 +419,14 @@ public class SettlementCommands {
 	   		return;
 	   	}
 
-	   	// Level too high:
+	   	// Claimed too much:
 	   	if(selBundle instanceof Settlement){
 		   		
-	   		Settlement selectedSettlement = (Settlement) selBundle;
+	   		Settlement selSettlement = (Settlement) selBundle;
 		   		
-	   		if(selectedSettlement.getSize() >= SettlementConfiguration.config().getNoDeleteSize()){
+	   		if(selSettlement.checkToBigToDetele()){
 
-	   			sagaPlayer.message(SettlementMessages.informDissolveLevel());
+	   			sagaPlayer.message(SettlementMessages.informTooBigDissolve());
 				return;
 				
 	   		}
@@ -729,21 +729,21 @@ public class SettlementCommands {
 		// Delete:
 		if(selBundle instanceof Settlement){
 			
-			Settlement selsettlement = (Settlement) selBundle;
+			Settlement selSettlement = (Settlement) selBundle;
 			
 			if(selBundle.getMemberCount() == 0){
 
-				if(selsettlement.getSize() < SettlementConfiguration.config().getNoDeleteSize()){
+				if(!selSettlement.checkToBigToDetele()){
 
 					// Delete:
-					selsettlement.delete();
+					selSettlement.delete();
 						
 					// Inform:
-					sagaPlayer.message(SettlementMessages.dissolved(selsettlement));
+					sagaPlayer.message(SettlementMessages.dissolved(selSettlement));
 					
 				}else{
 					
-					sagaPlayer.message(SettlementMessages.informDissolveLevel());
+					sagaPlayer.message(SettlementMessages.informTooBigDissolve());
 					
 				}
 				
@@ -871,7 +871,7 @@ public class SettlementCommands {
 			
 			if(selBundle.getMemberCount() == 0){
 
-				if(selsettlement.getSize() < SettlementConfiguration.config().getNoDeleteSize()){
+				if(!selsettlement.checkToBigToDetele()){
 
 					// Delete:
 					selsettlement.delete();
@@ -881,7 +881,7 @@ public class SettlementCommands {
 					
 				}else{
 					
-					sagaPlayer.message(SettlementMessages.informDissolveLevel());
+					sagaPlayer.message(SettlementMessages.informTooBigDissolve());
 					
 				}
 				

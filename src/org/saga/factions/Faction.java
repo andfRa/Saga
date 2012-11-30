@@ -744,12 +744,12 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 
 
 		Settlement[] claimedSettles = FactionClaimManager.manager().findSettlements(getId());
-		Integer[] claimedLevels = FactionClaimManager.getLevels(claimedSettles);
+		Integer[] claimedSizes = FactionClaimManager.getSizes(claimedSettles);
 		
 		Double claimPts = 0.0;
-		for (int i = 0; i < claimedLevels.length; i++) {
+		for (int i = 0; i < claimedSizes.length; i++) {
 			
-			claimPts+= FactionConfiguration.config().getClaimPoints(claimedLevels[i]); 
+			claimPts+= FactionConfiguration.config().getClaimPoints(claimedSizes[i]); 
 			
 		}
 		

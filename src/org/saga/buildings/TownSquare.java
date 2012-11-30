@@ -131,9 +131,9 @@ public class TownSquare extends Building implements SecondTicker{
 			if(!FactionClaimManager.manager().checkClaimer(bundleId, sagaPlayers)) return true;
 
 			// Claim speed:
-			Integer level = 0;
-			if(bundle instanceof Settlement) level = ((Settlement) bundle).getLevel();
-			Double claimed = FactionConfiguration.config().getClaimSpeed(level) / 60;
+			Integer size = 0;
+			if(bundle instanceof Settlement) size = ((Settlement) bundle).getSize();
+			Double claimed = FactionConfiguration.config().getClaimSpeed(size) / 60;
 			claimed*= FactionConfiguration.config().getMemberMultiplier(countMembers(sagaPlayers, claimerFaction));
 
 			// Claim:

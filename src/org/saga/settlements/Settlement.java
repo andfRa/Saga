@@ -154,7 +154,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 		}
 		
 		//Statistics:
-		StatisticsManager.manager().setLevel(this);
+		StatisticsManager.manager().setClaims(this);
 		
 		
 	}
@@ -263,40 +263,6 @@ public class Settlement extends Bundle implements MinuteTicker{
 		lastSeen.remove(sagaPlayer.getName());
 		
 		
-	}
-
-	
-	
-	// Leveling:
-	/**
-	 * Gets settlement level.
-	 * 
-	 */
-	public Integer getLevel() {
-		return level;
-	}
-	
-	/**
-	 * Sets the level of the settlement.
-	 * 
-	 * @param level level
-	 */
-	public void setLevel(Integer level) {
-		
-		// Set related fields:
-		this.level = level;
-
-		//Statistics:
-		StatisticsManager.manager().setLevel(this);
-		
-	}
-	
-	/**
-	 * Levels up the settlement.
-	 * 
-	 */
-	public void levelUp() {
-		setLevel(getLevel() + 1);
 	}
 
 	
@@ -469,7 +435,25 @@ public class Settlement extends Bundle implements MinuteTicker{
 
 	
 	
-	// Claiming:
+	// Claims:
+	/**
+	 * Gets the amount of claims.
+	 * 
+	 * @return amount of claims
+	 */
+	public Double getClaims() {
+		return claims;
+	}
+	
+	/**
+	 * Sets the amount of claims.
+	 * 
+	 * @param claims amount of claims
+	 */
+	public void setClaims(Double claims) {
+		this.claims = claims;
+	}
+	
 	/**
 	 * Gets used claims.
 	 * 
@@ -532,7 +516,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 		
 		if(definition == null) return 0;
 		
-		return definition.getAvailableAmount(getLevel());
+		return definition.getAvailableAmount(getSize());
 		
 		
 	}

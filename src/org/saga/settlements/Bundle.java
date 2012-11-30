@@ -517,6 +517,24 @@ public class Bundle extends SagaCustomSerialization{
 		return groupChunks.size();
 	}
 
+	/**
+	 * Checks if the bundle should be deleted.
+	 * 
+	 * @return true if should be deleted
+	 */
+	public boolean checkDelete() {
+		return groupChunks.size() > 0;
+	}
+	
+	/**
+	 * Checks if the bundle should is to big to be deleted.
+	 * 
+	 * @return true if too big to be deleted
+	 */
+	public boolean checkToBigToDetele() {
+		return groupChunks.size() >= SettlementConfiguration.config().getNoDeleteSize();
+	}
+
 	
 	
 	// Buildings:

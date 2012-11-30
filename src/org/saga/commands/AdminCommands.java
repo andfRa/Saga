@@ -465,7 +465,7 @@ public class AdminCommands {
 	public static void setSettlementLevel(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
-		Integer level = null;
+		Double claims = null;
 		Bundle selBundle = null;
 
 		// Arguments:
@@ -480,7 +480,7 @@ public class AdminCommands {
 			}
 
 			try {
-				level = Integer.parseInt(args.getString(1));
+				claims = Double.parseDouble(args.getString(1));
 			} catch (NumberFormatException e) {
 				sagaPlayer.message(GeneralMessages.mustBeNumber(args.getString(1)));
 				return;
@@ -496,7 +496,7 @@ public class AdminCommands {
 			}
 
 			try {
-				level = Integer.parseInt(args.getString(0));
+				claims = Double.parseDouble(args.getString(0));
 			} catch (NumberFormatException e) {
 				sagaPlayer.message(GeneralMessages.mustBeNumber(args.getString(0)));
 				return;
@@ -512,15 +512,15 @@ public class AdminCommands {
 		Settlement selectedSettlement = (Settlement) selBundle;
 
 		// Invalid level:
-		if(level < 0 || level > SettlementConfiguration.config().getMaxClaims()){
+		if(claims < 0.0 || claims > SettlementConfiguration.config().getMaxClaims()){
 			
-			sagaPlayer.message(AdminMessages.settleClaimsOutOfRange(level + ""));
+			sagaPlayer.message(AdminMessages.settleClaimsOutOfRange(claims + ""));
 			return;
 			
 		}
 		
-		// Set level:
-		selectedSettlement.setLevel(level);
+		// Set claims:
+		selectedSettlement.setClaims(claims);
 		
 		// Inform:
 		sagaPlayer.message(AdminMessages.setClaims(selectedSettlement));

@@ -536,21 +536,21 @@ public class FactionClaimManager implements SecondTicker{
 	}
 	
 	/**
-	 * Gets levels for given settlements.
+	 * Gets sizes for given settlements.
 	 * 
 	 * @param settlements settlements
-	 * @return levels for settlements
+	 * @return sizes for settlements
 	 */
-	public static Integer[] getLevels(Settlement[] settlements) {
+	public static Integer[] getSizes(Settlement[] settlements) {
 
 		
-		Integer[] levels = new Integer[settlements.length];
+		Integer[] sizes = new Integer[settlements.length];
 		
-		for (int i = 0; i < levels.length; i++) {
-			levels[i] = settlements[i].getLevel();
+		for (int i = 0; i < sizes.length; i++) {
+			sizes[i] = settlements[i].getSize();
 		}
 		
-		return levels;
+		return sizes;
 		
 		
 	}
@@ -646,10 +646,10 @@ public class FactionClaimManager implements SecondTicker{
 			}
 			
 			// Decrease claimed:
-			Integer level = 0;
-			if(bundle instanceof Settlement) level = ((Settlement) bundle).getLevel();
+			Integer size = 0;
+			if(bundle instanceof Settlement) size = ((Settlement) bundle).getSize();
 			
-			Double decrease = FactionConfiguration.config().getUnclaimSpeed(level) / 60;
+			Double decrease = FactionConfiguration.config().getUnclaimSpeed(size) / 60;
 			modifyProgress(bundleId, -decrease);
 			
 			// Inform:

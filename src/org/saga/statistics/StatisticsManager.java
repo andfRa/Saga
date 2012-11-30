@@ -974,9 +974,9 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 	
-	public void setLevel(Settlement settlement) {
+	public void setClaims(Settlement settlement) {
 
-		setValue("settlements.levels" + "." + settlement.getName(), settlement.getLevel());
+		setValue("settlements.claims" + "." + settlement.getName(), settlement.getClaims());
 		
 	}
 	

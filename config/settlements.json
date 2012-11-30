@@ -1,33 +1,6 @@
 {
 
-"definition":{
-
-  "activePlayers":{"x1":0,"y1":0,"x2":49,"y2":25.0},
-
-  "hierarchy":{
-    "1":{"x1":1,"y1":5.0,"x2":50,"y2":50.0},
-    "2":{"x1":1,"y1":3.0,"x2":50,"y2":30.0},
-    "3":{"x1":1,"y1":1.0,"x2":50,"y2":8.0}
-  },
-
-  "hierarchyNames":{
-    "1":"commoners",
-    "2":"craftsmen",
-    "3":"nobility"
-  },
-
-  "levelUpExp":{"x1":0,"y1":30.0,"x2":50,"y2":100000.0},
-  "expSpeed":{"x1":1,"y1":1.0,"x2":10,"y2":5.5},
-
-  "claims":{"x1":0,"y1":4.0,"x2":50,"y2":250.0},
-  
-  "ownerRole":"lord",
-  "defaultRole":"settler"
-
-},
-
 "inactiveSetDays":7,
-
 
 "buildingDefinitions":[
   
@@ -65,7 +38,7 @@
     "attributes":[],
     "buildPoints":2,
     "coinCost":{"x1":0,"y1":0},
-    "available":{"x1":5,"y1":1.0,"x2":50,"y2":6},
+    "available":{"x1":10,"y1":1.0},
     "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
     "storageSize":1,
     "recipes":[
@@ -95,7 +68,7 @@
     "attributes":[],
     "buildPoints":6,
     "coinCost":{"x1":0,"y1":0},
-    "available":{"x1":10,"y1":1.0},
+    "available":{"x1":20,"y1":1.0},
     "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
     "storageSize":18,
     "recipes":[
@@ -124,7 +97,7 @@
     "attributes":[],
     "buildPoints":4,
     "coinCost":{"x1":0,"y1":0},
-    "available":{"x1":17,"y1":1.0},
+    "available":{"x1":30,"y1":1.0},
     "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
     "storageSize":36,
     "recipes":[
@@ -152,7 +125,7 @@
     "attributes":[],
     "buildPoints":4,
     "coinCost":{"x1":0,"y1":0},
-    "available":{"x1":22,"y1":1.0},
+    "available":{"x1":40,"y1":1.0},
     "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
     "storageSize":1,
     "recipes":[
@@ -181,7 +154,7 @@
     "attributes":[],
     "buildPoints":6,
     "coinCost":{"x1":0,"y1":0},
-    "available":{"x1":27,"y1":1.0},
+    "available":{"x1":50,"y1":1.0},
     "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
     "storageSize":1,
     "recipes":[
@@ -210,7 +183,7 @@
     "attributes":[],
     "buildPoints":4,
     "coinCost":{"x1":0,"y1":0},
-    "available":{"x1":32,"y1":1.0},
+    "available":{"x1":45,"y1":1.0},
     "storageAreas":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
     "storageSize":36,
     "recipes":[
@@ -236,7 +209,7 @@
     "attributes":[],
     "buildPoints":6,
     "coinCost":{"x1":0,"y1":0},
-    "available":{"x1":50,"y1":1.0},
+    "available":{"x1":60,"y1":1.0},
     "storageAreas":{"x1":1,"y1":1,"x2":3,"y2":2},
     "storageSize":6,
     "recipes":[
@@ -264,7 +237,7 @@
     "attributes":["strength","toughness"],
     "buildPoints":3,
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":20,"y1":1.0},
+    "available":{"x1":25,"y1":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "storageSize":0,
     "recipes":[],
@@ -287,7 +260,7 @@
     "attributes":["precision","luck"],
     "buildPoints":3,
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":25,"y1":1.0},
+    "available":{"x1":35,"y1":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "storageSize":0,
     "recipes":[],
@@ -310,7 +283,7 @@
     "attributes":["willpower","warding"],
     "buildPoints":3,
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":30,"y1":1.0},
+    "available":{"x1":45,"y1":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "storageSize":0,
     "recipes":[],
@@ -335,7 +308,7 @@
     "attributes":[],
     "buildPoints":3,
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":2,"y1":1.0,"x2":50,"y2":1.0},
+    "available":{"x1":10,"y1":1.0,"x2":50,"y2":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "storageSize":0,
     "recipes":[],
@@ -358,7 +331,7 @@
     "attributes":[],
     "buildPoints":1,
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":7,"y1":1.0,"x2":50,"y2":5.0},
+    "available":{"x1":10,"y1":1.0,"x2":250,"y2":5.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "storageSize":0,
     "recipes":[],
@@ -381,7 +354,7 @@
     "attributes":[],
     "buildPoints":5,
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":12,"y1":1.0},
+    "available":{"x1":35,"y1":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "storageSize":0,
     "recipes":[],
@@ -404,7 +377,7 @@
     "attributes":[],
     "buildPoints":5,
     "coinCost":{"x1":0,"y1":0},
-    "available":{"x1":15,"y1":1.0},
+    "available":{"x1":25,"y1":1.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "storageSize":0,
     "recipes":[],
@@ -427,7 +400,7 @@
     "attributes":[],
     "buildPoints":0,
     "coinCost":{"x1":0,"y1":0,"x2":5,"y2":0},
-    "available":{"x1":0,"y1":1.0,"x2":50,"y2":100.0},
+    "available":{"x1":0,"y1":1.0,"x2":250,"y2":100.0},
     "storageAreas":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "storageSize":0,
     "recipes":[],
@@ -474,7 +447,16 @@
 "maxClaims":250;
 "noDeleteSize":25,
 
-"buildPoints":{"x1":0,"y1":6.0,"x2":50,"y2":250.0},
+"buildPoints":{"x1":0,"y1":6.0,"x2":250,"y2":50.0},
+
+"requiredActiveMembers":{"x1":0,"y1":0,"x2":250,"y2":25.0},
+
+"hierarchyNames":{
+  "1":"commoners",
+  "2":"craftsmen",
+  "3":"nobility"
+},
+"defaultRole":"settler",
 
 "enabledSignColor":"DARK_GREEN",
 "disabledSignColor":"DARK_GRAY",

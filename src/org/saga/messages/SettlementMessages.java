@@ -164,7 +164,7 @@ public class SettlementMessages {
 		return normal1 + "Dissolved " + settlement.getName() + " settlement.";
 	}
 
-	public static String informDissolveLevel() {
+	public static String informTooBigDissolve() {
 		return normal1 + "Settlement larger than " + SettlementConfiguration.config().getNoDeleteSize() + " can't be dissolved.";
 	}
 
@@ -402,7 +402,7 @@ public class SettlementMessages {
 		
 		StringBook book = new StringBook(settlement.getName() + " stats", new ColourLoop().addColor(normal1).addColor(normal2));
 		
-		// Levels, claims and active members:
+		// Claims and active members:
 		book.addTable(main(settlement));
 		book.addLine("");
 		book.addLine(GeneralMessages.tableTitle("required"));
@@ -483,11 +483,11 @@ public class SettlementMessages {
 		// Retrieve buildings:
 		BuildingDefinition[] definitions = SettlementConfiguration.config().getBuildingDefinitions().toArray(new BuildingDefinition[0]);
 		
-		// Sort required by level:
+		// Sort required by size:
 		Comparator<BuildingDefinition> comparator = new Comparator<BuildingDefinition>() {
 			@Override
 			public int compare(BuildingDefinition arg0, BuildingDefinition arg1) {
-				return arg0.getRequiredLevel() - arg1.getRequiredLevel();
+				return arg0.getRequiredSize() - arg1.getRequiredSize();
 			}
 		};
 		Arrays.sort(definitions, comparator);
@@ -570,8 +570,8 @@ public class SettlementMessages {
 		StringBuffer result = new StringBuffer();
 		
 		// Level:
-		Integer reqLevel = definition.getRequiredLevel();
-		if(reqLevel > 0) result.append("lvl " + reqLevel);
+		Integer reqSize = definition.getRequiredSize();
+		if(reqSize > 0) result.append("size " + reqSize);
 		
 		return result.toString();
 		

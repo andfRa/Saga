@@ -270,21 +270,21 @@ public class FactionConfiguration {
 	/**
 	 * Gets claim speed.
 	 * 
-	 * @param bundleLevel chunk bundle level
-	 * @return claim speed
+	 * @param size chunk bundle size
+	 * @return claim per minute
 	 */
-	public Double getClaimSpeed(Integer bundleLevel) {
-		return claimSpeed.value(bundleLevel);
+	public Double getClaimSpeed(Integer size) {
+		return claimSpeed.value(size);
 	}
 
 	/**
 	 * Gets unclaim speed.
 	 * 
-	 * @param bundleLevel chunk bundle level
-	 * @return unclaim speed
+	 * @param size chunk bundle level
+	 * @return unclaim per minute
 	 */
-	public Double getUnclaimSpeed(Integer bundleLevel) {
-		return unclaimSpeed.value(bundleLevel);
+	public Double getUnclaimSpeed(Integer size) {
+		return unclaimSpeed.value(size);
 	}
 	
 
@@ -328,11 +328,11 @@ public class FactionConfiguration {
 	/**
 	 * Gets the amount claim points the settlement is worth.
 	 * 
-	 * @param settleLevel settlement level
+	 * @param size settlement size
 	 * @return claim points
 	 */
-	public Double getClaimPoints(Integer settleLevel) {
-		return claimPoints.value(settleLevel);
+	public Double getClaimPoints(Integer size) {
+		return claimPoints.value(size);
 	}
 	
 	/**

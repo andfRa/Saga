@@ -82,11 +82,6 @@ public class SettlementConfiguration {
 	
 	// Hierarchy:
 	/**
-	 * Hierarchy.
-	 */
-	private Hashtable<Integer, TwoPointFunction> hierarchy;
-
-	/**
 	 * Hierarchy level names.
 	 */
 	private Hashtable<Integer, String> hierarchyNames;
@@ -189,16 +184,7 @@ public class SettlementConfiguration {
 			requiredActiveMembers = new TwoPointFunction(5.0);
 		}
 		
-		
-		if(hierarchy == null){
-			hierarchy = new Hashtable<Integer, TwoPointFunction>();
-			SagaLogger.nullField(this, "hierarchy");
-		}
-		Collection<TwoPointFunction> roleAmounts = hierarchy.values();
-		for (TwoPointFunction function : roleAmounts) {
-			function.complete();
-		}
-		
+
 		if(hierarchyNames == null){
 			hierarchyNames = new Hashtable<Integer, String>();
 			SagaLogger.nullField(this, "hierarchyNames");
@@ -495,7 +481,7 @@ public class SettlementConfiguration {
 	public Integer getHierarchyMax() {
 
 		Integer maxHierarchy = 0;
-		Set<Integer> roleHierarchy = hierarchy.keySet();
+		Set<Integer> roleHierarchy = hierarchyNames.keySet();
 		
 		for (Integer hierarchy : roleHierarchy) {
 			if(hierarchy > maxHierarchy) maxHierarchy = hierarchy;
@@ -513,7 +499,7 @@ public class SettlementConfiguration {
 	public Integer getHierarchyMin() {
 		
 		Integer minHierarchy = -1;
-		Set<Integer> roleHierarchy = hierarchy.keySet();
+		Set<Integer> roleHierarchy = hierarchyNames.keySet();
 		
 		for (Integer hierarchy : roleHierarchy) {
 			if(hierarchy < minHierarchy || minHierarchy == -1) minHierarchy = hierarchy;
