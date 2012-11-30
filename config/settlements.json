@@ -4,8 +4,6 @@
 
   "activePlayers":{"x1":0,"y1":0,"x2":49,"y2":25.0},
 
-  "buildPoints":{"x1":0,"y1":6.0,"x2":50,"y2":50.0},
-
   "hierarchy":{
     "1":{"x1":1,"y1":5.0,"x2":50,"y2":50.0},
     "2":{"x1":1,"y1":3.0,"x2":50,"y2":30.0},
@@ -471,10 +469,12 @@
 
 ],
 
-"noDeleteLevel":5,
 "claimsPerMinute":{"x1":0,"y1":0.0,"x2":10,"y2":0.01},
 "initClaims":4;
 "maxClaims":250;
+"noDeleteSize":25,
+
+"buildPoints":{"x1":0,"y1":6.0,"x2":50,"y2":250.0},
 
 "enabledSignColor":"DARK_GREEN",
 "disabledSignColor":"DARK_GRAY",

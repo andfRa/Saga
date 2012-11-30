@@ -27,15 +27,15 @@ import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
 import org.saga.SagaLogger;
-import org.saga.chunks.Bundle;
-import org.saga.chunks.BundleManager;
-import org.saga.chunks.SagaChunk;
 import org.saga.config.GeneralConfiguration;
 import org.saga.dependencies.ChatDependency;
 import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaEventHandler;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.Bundle;
+import org.saga.settlements.BundleManager;
+import org.saga.settlements.SagaChunk;
 
 public class PlayerListener implements Listener {
 

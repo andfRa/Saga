@@ -1,4 +1,4 @@
-package org.saga.chunks;
+package org.saga.settlements;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

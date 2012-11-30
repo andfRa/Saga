@@ -12,14 +12,14 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.saga.Saga;
-import org.saga.chunks.BundleManager;
-import org.saga.chunks.SagaChunk;
 import org.saga.config.GeneralConfiguration;
 import org.saga.listeners.events.SagaBlockBreakEvent;
 import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaEventHandler;
 import org.saga.metadata.UnnaturalTag;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.BundleManager;
+import org.saga.settlements.SagaChunk;
 import org.saga.statistics.XrayIndicator;
 
 public class BlockListener implements Listener{

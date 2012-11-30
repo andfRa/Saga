@@ -19,12 +19,12 @@ import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
 import org.saga.abilities.AbilityManager;
 import org.saga.attributes.AttributeManager;
-import org.saga.chunks.Bundle;
-import org.saga.chunks.BundleManager;
-import org.saga.chunks.SagaChunk;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
 import org.saga.exceptions.InvalidAbilityException;
+import org.saga.settlements.Bundle;
+import org.saga.settlements.BundleManager;
+import org.saga.settlements.SagaChunk;
 import org.saga.shape.RelativeShape.Orientation;
 
 public class SagaLiving <T extends LivingEntity>{

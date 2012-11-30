@@ -1,4 +1,4 @@
-package org.saga.chunks;
+package org.saga.settlements;
 
 public enum BundleToggleable {
 

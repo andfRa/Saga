@@ -1,4 +1,4 @@
-package org.saga.chunks;
+package org.saga.settlements;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -8,11 +8,11 @@ import java.util.Random;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.saga.SagaLogger;
-import org.saga.chunks.SagaChunk.ChunkSide;
 import org.saga.factions.FactionClaimManager;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
+import org.saga.settlements.SagaChunk.ChunkSide;
 
 public class BundleManager {
 

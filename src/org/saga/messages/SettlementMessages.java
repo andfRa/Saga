@@ -9,10 +9,6 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.saga.buildings.Building;
 import org.saga.buildings.BuildingDefinition;
-import org.saga.chunks.Bundle;
-import org.saga.chunks.BundleToggleable;
-import org.saga.chunks.SagaChunk;
-import org.saga.chunks.SagaMap;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
@@ -24,8 +20,11 @@ import org.saga.player.Proficiency;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.ProficiencyDefinition;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.Bundle;
+import org.saga.settlements.BundleToggleable;
+import org.saga.settlements.SagaChunk;
+import org.saga.settlements.SagaMap;
 import org.saga.settlements.Settlement;
-import org.saga.settlements.SettlementDefinition;
 import org.saga.utility.text.RomanNumeral;
 import org.saga.utility.text.StringBook;
 import org.saga.utility.text.StringFramer;
@@ -166,7 +165,7 @@ public class SettlementMessages {
 	}
 
 	public static String informDissolveLevel() {
-		return normal1 + "Settlement with level " + SettlementConfiguration.config().noDeleteLevel + " and above can only be dissolved by unclaiming everything.";
+		return normal1 + "Settlement larger than " + SettlementConfiguration.config().getNoDeleteSize() + " can't be dissolved.";
 	}
 
 	
@@ -234,10 +233,6 @@ public class SettlementMessages {
 		return negative + "You can only claim chunks adjacent to an existing settlement.";
 	}
 	
-	public static String levelTooHighDelete() {
-		return negative + "Settlements above level " + SettlementConfiguration.config().noDeleteLevel + " can't be deleted.";
-	}
-
 	public static String claimAdjacentDeny() {
 		return negative + "Can't claim land adjacent to other settlements.";
 	}
@@ -459,21 +454,18 @@ public class SettlementMessages {
 		
 	}
 	
-	private static StringTable requirements (Settlement settlement){
+	private static StringTable requirements(Settlement settlement){
 		
 		
 		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
 		StringTable table = new StringTable(colours);
 		
-		SettlementDefinition definition = settlement.getDefinition();
-		Integer level = settlement.getLevel();
-		
 		// Active players:
 		Integer active = settlement.countActiveMembers();
 		if(settlement.checkActiveMembers()){
-			table.addLine(positive + "members", positive + active.toString() + "/" + definition.getActivePlayers(level).toString(), 0);
+			table.addLine(positive + "members", positive + active.toString() + "/" + SettlementConfiguration.config().getRequiredActiveMembers(settlement.getSize()), 0);
 		}else{
-			table.addLine(negative + "members", negative + active.toString() + "/" + definition.getActivePlayers(level).toString(), 0);
+			table.addLine(negative + "members", negative + active.toString() + "/" + SettlementConfiguration.config().getRequiredActiveMembers(settlement.getSize()), 0);
 		}
 		table.collapse();
 		
@@ -607,8 +599,8 @@ public class SettlementMessages {
 		ChatColor general = normal1;
 		ChatColor normal = normal2;
 		
-		int hMin = settlement.getDefinition().getHierarchyMin();
-		int hMax = settlement.getDefinition().getHierarchyMax();
+		int hMin = SettlementConfiguration.config().getHierarchyMin();
+		int hMax = SettlementConfiguration.config().getHierarchyMax();
 		
 		// Hierarchy levels:
 		for (int hierarchy = hMax; hierarchy >= hMin; hierarchy--) {
@@ -619,7 +611,7 @@ public class SettlementMessages {
 			}
 			
 			// Group name:
-			String groupName = settlement.getDefinition().getHierarchyName(hierarchy);
+			String groupName = SettlementConfiguration.config().getHierarchyName(hierarchy);
 			if(groupName.length() == 0) groupName = "-";
 			result.append(GeneralMessages.tableTitle(general + groupName));
 			
@@ -723,11 +715,7 @@ public class SettlementMessages {
 	
 	
 	
-	// Levels and building points:
-	public static String levelUp(Settlement settlement) {
-		return normal2 + "The settlement is now level " + settlement.getLevel() + ".";
-	}
-	
+	// Building points:
 	public static String notEnoughBuildingPoints(Building building) {
 		return negative + "Not enough build points.";
 	}

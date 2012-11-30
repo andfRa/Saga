@@ -13,13 +13,13 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.SagaLogger;
-import org.saga.chunks.SagaChunk;
 import org.saga.config.SettlementConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.messages.BuildingMessages;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.SagaChunk;
 
 
 public class Arena extends Building implements SecondTicker{

@@ -197,7 +197,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		if(claims == null){
 			SagaLogger.nullField(this, "claims");
 			double maxLevel = 50;
-			if(maxLevel != 0 && level != null){
+			if(level != null){
 				claims = level.doubleValue() / maxLevel * FactionConfiguration.config().getMaxClaims();
 			}else{
 				claims = 0.0;

@@ -5,8 +5,6 @@ import java.util.Collection;
 
 import org.bukkit.ChatColor;
 import org.saga.Saga;
-import org.saga.chunks.Bundle;
-import org.saga.chunks.BundleManager;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.ProficiencyConfiguration;
@@ -26,6 +24,8 @@ import org.saga.messages.SettlementMessages;
 import org.saga.player.Proficiency;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.Bundle;
+import org.saga.settlements.BundleManager;
 import org.saga.utility.SagaLocation;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;

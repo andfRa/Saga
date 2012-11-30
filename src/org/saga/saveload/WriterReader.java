@@ -22,7 +22,7 @@ import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
 import org.saga.buildings.Building;
 import org.saga.buildings.signs.BuildingSign;
-import org.saga.chunks.Bundle;
+import org.saga.settlements.Bundle;
 
 public class WriterReader {
 

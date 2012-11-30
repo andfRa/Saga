@@ -11,13 +11,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
-import org.saga.chunks.SagaChunk;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.messages.GeneralMessages;
 import org.saga.metadata.UnnaturalTag;
 import org.saga.player.SagaLiving;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.SagaChunk;
 import org.saga.statistics.StatisticsManager;
 import org.saga.utility.TwoPointFunction;
 

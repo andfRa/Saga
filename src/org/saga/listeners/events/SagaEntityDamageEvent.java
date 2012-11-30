@@ -15,11 +15,11 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
 import org.saga.attributes.DamageType;
-import org.saga.chunks.BundleManager;
-import org.saga.chunks.SagaChunk;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.VanillaConfiguration;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.BundleManager;
+import org.saga.settlements.SagaChunk;
 import org.saga.utility.TwoPointFunction;
 
 public class SagaEntityDamageEvent {

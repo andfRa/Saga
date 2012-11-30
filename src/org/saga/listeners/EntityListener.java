@@ -20,8 +20,6 @@ import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.saga.Saga;
-import org.saga.chunks.BundleManager;
-import org.saga.chunks.SagaChunk;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.VanillaConfiguration;
 import org.saga.factions.Faction;
@@ -31,6 +29,8 @@ import org.saga.listeners.events.SagaEventHandler;
 import org.saga.metadata.SpawnerTag;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.BundleManager;
+import org.saga.settlements.SagaChunk;
 
 public class EntityListener implements Listener{
 

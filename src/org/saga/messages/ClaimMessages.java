@@ -1,8 +1,8 @@
 package org.saga.messages;
 
 import org.bukkit.ChatColor;
-import org.saga.chunks.Bundle;
 import org.saga.factions.Faction;
+import org.saga.settlements.Bundle;
 import org.saga.utility.text.TextUtil;
 
 public class ClaimMessages {

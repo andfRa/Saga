@@ -6,9 +6,6 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.saga.Saga;
 import org.saga.SagaLogger;
-import org.saga.chunks.Bundle;
-import org.saga.chunks.BundleManager;
-import org.saga.chunks.SagaChunk;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
@@ -25,6 +22,9 @@ import org.saga.messages.effects.SettlementEffectHandler;
 import org.saga.player.Proficiency;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.Bundle;
+import org.saga.settlements.BundleManager;
+import org.saga.settlements.SagaChunk;
 import org.saga.settlements.Settlement;
 import org.saga.settlements.Settlement.SettlementPermission;
 import org.saga.statistics.StatisticsManager;
@@ -371,27 +371,6 @@ public class SettlementCommands {
 		// Set owner:
 		selBundle.setOwner(targetName);
 		
-		// Set owner role:
-		if(selBundle instanceof Settlement){
-
-			Settlement selSettlement = (Settlement) selBundle;
-			String roleName = selSettlement.getDefinition().ownerRole;
-			
-			
-			// Get role:
-			Proficiency role;
-			try {
-				role = ProficiencyConfiguration.config().createProficiency(roleName);
-			} catch (InvalidProficiencyException e) {
-				sagaPlayer.message(SettlementMessages.invalidRole(roleName));
-				return;
-			}
-			
-			// Set role:
-			if(selSettlement.isRoleAvailable(role.getName())) selSettlement.setRole(selPlayer, role);
-			
-		}
-
 		// Inform:
 		selBundle.information(SettlementMessages.newOwner(targetName));
 		
@@ -445,7 +424,7 @@ public class SettlementCommands {
 		   		
 	   		Settlement selectedSettlement = (Settlement) selBundle;
 		   		
-	   		if(selectedSettlement.getLevel() >= SettlementConfiguration.config().noDeleteLevel){
+	   		if(selectedSettlement.getSize() >= SettlementConfiguration.config().getNoDeleteSize()){
 
 	   			sagaPlayer.message(SettlementMessages.informDissolveLevel());
 				return;
@@ -754,7 +733,7 @@ public class SettlementCommands {
 			
 			if(selBundle.getMemberCount() == 0){
 
-				if(selsettlement.getLevel() < SettlementConfiguration.config().noDeleteLevel){
+				if(selsettlement.getSize() < SettlementConfiguration.config().getNoDeleteSize()){
 
 					// Delete:
 					selsettlement.delete();
@@ -892,7 +871,7 @@ public class SettlementCommands {
 			
 			if(selBundle.getMemberCount() == 0){
 
-				if(selsettlement.getLevel() < SettlementConfiguration.config().noDeleteLevel){
+				if(selsettlement.getSize() < SettlementConfiguration.config().getNoDeleteSize()){
 
 					// Delete:
 					selsettlement.delete();

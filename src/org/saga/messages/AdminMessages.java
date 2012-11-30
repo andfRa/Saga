@@ -65,15 +65,15 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 	
 	
 	// Settlement and faction levels:
-	public static String settleLevelOutOfRange(String level){
-		return negative + "Level " + level + " is out of range. Allowed range: 0 - " + SettlementConfiguration.config().getSettlementDefinition().getMaxLevel() + ".";
+	public static String settleClaimsOutOfRange(String level){
+		return negative + "Claims " + level + " is out of range. Allowed range: 0 - " + SettlementConfiguration.config().getMaxClaims() + ".";
 	}
 	
 	public static String factionClaimsOutOfRange(String claims){
 		return negative + "Claims " + claims + " is out of range. Allowed range: 0 - " + FactionConfiguration.config().getMaxClaims() + ".";
 	}
 
-	public static String setLevel(Settlement settlement){
+	public static String setClaims(Settlement settlement){
 		
 		return positive + "Settlement " + settlement.getName() + " claims set to " + settlement.getAvailableClaims() + ".";
 		

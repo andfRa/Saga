@@ -8,8 +8,8 @@ import org.bukkit.entity.Monster;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.saga.Clock.DaytimeTicker;
-import org.saga.chunks.SagaChunk;
 import org.saga.exceptions.InvalidBuildingException;
+import org.saga.settlements.SagaChunk;
 
 public class Watchtower extends Building implements DaytimeTicker{
 

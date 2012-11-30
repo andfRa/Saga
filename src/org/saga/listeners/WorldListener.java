@@ -5,9 +5,9 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
-import org.saga.chunks.BundleManager;
-import org.saga.chunks.SagaChunk;
 import org.saga.config.GeneralConfiguration;
+import org.saga.settlements.BundleManager;
+import org.saga.settlements.SagaChunk;
 
 public class WorldListener implements Listener{
 

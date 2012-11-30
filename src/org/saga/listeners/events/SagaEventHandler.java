@@ -1,6 +1,5 @@
 package org.saga.listeners.events;
 
-import org.saga.chunks.SagaChunk;
 import org.saga.config.FactionConfiguration;
 import org.saga.dependencies.PermissionsDependency;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
@@ -8,6 +7,7 @@ import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.SettlementMessages;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.SagaChunk;
 
 public class SagaEventHandler {
 

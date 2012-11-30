@@ -15,8 +15,8 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.saga.SagaLogger;
-import org.saga.chunks.SagaMap;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.SagaMap;
 import org.saga.utility.text.StringFramer;
 
 public class VanillaConfiguration {

@@ -5,6 +5,8 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
@@ -14,7 +16,6 @@ import org.saga.buildings.BuildingDefinition;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
-import org.saga.settlements.SettlementDefinition;
 import org.saga.utility.TwoPointFunction;
 
 public class SettlementConfiguration {
@@ -38,22 +39,10 @@ public class SettlementConfiguration {
 	
 	// Definitions:
 	/**
-	 * Settlement definition.
-	 */
-	private SettlementDefinition definition;
-	
-	/**
 	 * Building definitions.
 	 */
 	private ArrayList<BuildingDefinition> buildingDefinitions;
-	
-	
-	// Levels:
-	/**
-	 * Level when automatic delete is disabled.
-	 */
-	public Integer noDeleteLevel;
-	
+
 	
 	// Claims:
 	/**
@@ -62,16 +51,52 @@ public class SettlementConfiguration {
 	private TwoPointFunction claimsPerMinute;
 
 	/**
-	 * Maximum number of claims when a faction is formed.
+	 * Maximum number of claims when a settlement is formed.
 	 */
 	private Integer initClaims;
 
 	/**
-	 * Maximum number of claims a faction can have.
+	 * Maximum number of claims a settlement can have.
 	 */
 	private Integer maxClaims;
 	
+	/**
+	 * No delete claims.
+	 */
+	private Integer noDeleteSize;
+	
 
+	// Claim improvements:
+	/**
+	 * The amount of building points for settlement size.
+	 */
+	private TwoPointFunction buildPoints;
+
+	
+	// Requirements:
+	/**
+	 * Active players.
+	 */
+	private TwoPointFunction requiredActiveMembers;
+
+	
+	// Hierarchy:
+	/**
+	 * Hierarchy.
+	 */
+	private Hashtable<Integer, TwoPointFunction> hierarchy;
+
+	/**
+	 * Hierarchy level names.
+	 */
+	private Hashtable<Integer, String> hierarchyNames;
+
+	/**
+	 * Role assigned to joined members.
+	 */
+	private String defaultRole;
+	
+	
 	// Time:
 	/**
 	 * Time in days when the player is set inactive.
@@ -130,17 +155,6 @@ public class SettlementConfiguration {
 	 */
 	public void complete() {
 		
-
-		if(definition == null){
-			SagaLogger.nullField(getClass(), "definition");
-			definition = SettlementDefinition.defaultDefinition();
-		}
-		definition.complete();
-		
-		if(noDeleteLevel == null){
-			SagaLogger.nullField(getClass(), "noDeleteLevel");
-			noDeleteLevel = 5;
-		}
 		
 		if(claimsPerMinute == null){
 			SagaLogger.nullField(getClass(), "claimsPerMinute");
@@ -157,6 +171,44 @@ public class SettlementConfiguration {
 			SagaLogger.nullField(getClass(), "maxClaims");
 			maxClaims = 2;
 		}
+		
+		if(noDeleteSize == null){
+			SagaLogger.nullField(getClass(), "noDeleteLevel");
+			noDeleteSize = 25;
+		}
+		
+
+		if(buildPoints == null){
+			SagaLogger.nullField(this, "buildPoints");
+			buildPoints = new TwoPointFunction(0.0);
+		}
+		
+		
+		if(requiredActiveMembers == null){
+			SagaLogger.nullField(this, "requiredActiveMembers");
+			requiredActiveMembers = new TwoPointFunction(5.0);
+		}
+		
+		
+		if(hierarchy == null){
+			hierarchy = new Hashtable<Integer, TwoPointFunction>();
+			SagaLogger.nullField(this, "hierarchy");
+		}
+		Collection<TwoPointFunction> roleAmounts = hierarchy.values();
+		for (TwoPointFunction function : roleAmounts) {
+			function.complete();
+		}
+		
+		if(hierarchyNames == null){
+			hierarchyNames = new Hashtable<Integer, String>();
+			SagaLogger.nullField(this, "hierarchyNames");
+		}
+		
+		if(defaultRole == null){
+			SagaLogger.nullField(this,"defaultRole");
+			defaultRole = "";
+		}
+		
 		
 		if(inactiveSetDays == null){
 			SagaLogger.nullField(getClass(), "inactiveSetDays");
@@ -209,20 +261,6 @@ public class SettlementConfiguration {
 			SagaLogger.nullField(getClass(), "memberOnlyCommands");
 		}
 		
-		
-	}
-
-	
-	
-	// Settlement:
-	/**
-	 * Gets level definition for the given settlement.
-	 * 
-	 * @return definition, zero definition if not found
-	 */
-	public SettlementDefinition getSettlementDefinition() {
-
-		return definition;
 		
 	}
 
@@ -396,6 +434,104 @@ public class SettlementConfiguration {
 		return maxClaims;
 	}
 
+	/**
+	 * Gets the settlement size for which the settlement can't be deleted.
+	 * 
+	 * @return no delete size
+	 */
+	public Integer getNoDeleteSize() {
+		return noDeleteSize;
+	}
+	
+	
+	
+	// Claim improvements:
+	/**
+	 * Get building points.
+	 * 
+	 * @param level level
+	 * @return building points
+	 */
+	public Integer getBuildPoints(Integer level) {
+		return buildPoints.value(level).intValue();
+	}
+	
+	
+	
+	// Requirements:
+	/**
+	 * Gets the amount of active 
+	 * 
+	 * @param size settlement size
+	 * @return active members required
+	 */
+	public Integer getRequiredActiveMembers(Integer size) {
+		return requiredActiveMembers.intValue(size);
+	}
+	
+	
+	
+	// Roles:
+	/**
+	 * Gets hierarchy level name.
+	 * 
+	 * @param hierarchy hierarchy level
+	 * @return hierarchy level name, null if none
+	 */
+	public String getHierarchyName(Integer hierarchy) {
+		
+		String roleName = hierarchyNames.get(hierarchy);
+		if(roleName == null) return null;
+		
+		return roleName;
+		
+	}
+	
+	/**
+	 * Gets max hierarchy level.
+	 * 
+	 * @return max hierarchy level
+	 */
+	public Integer getHierarchyMax() {
+
+		Integer maxHierarchy = 0;
+		Set<Integer> roleHierarchy = hierarchy.keySet();
+		
+		for (Integer hierarchy : roleHierarchy) {
+			if(hierarchy > maxHierarchy) maxHierarchy = hierarchy;
+		}
+		
+		return maxHierarchy;
+		
+	}
+
+	/**
+	 * Gets min hierarchy level.
+	 * 
+	 * @return min hierarchy level
+	 */
+	public Integer getHierarchyMin() {
+		
+		Integer minHierarchy = -1;
+		Set<Integer> roleHierarchy = hierarchy.keySet();
+		
+		for (Integer hierarchy : roleHierarchy) {
+			if(hierarchy < minHierarchy || minHierarchy == -1) minHierarchy = hierarchy;
+		}
+		
+		return minHierarchy;
+		
+	}
+	
+	/**
+	 * Gets the default role.
+	 * 
+	 * @return default role
+	 */
+	public String getDefaultRole() {
+		return defaultRole;
+	}
+	
 	
 	
 	// Loading and unloading:

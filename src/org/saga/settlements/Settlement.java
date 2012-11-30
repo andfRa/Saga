@@ -14,8 +14,6 @@ import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.Building;
 import org.saga.buildings.BuildingDefinition;
-import org.saga.chunks.Bundle;
-import org.saga.chunks.BundleToggleable;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
@@ -26,6 +24,8 @@ import org.saga.messages.SettlementMessages;
 import org.saga.player.Proficiency;
 import org.saga.player.ProficiencyDefinition;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.Bundle;
+import org.saga.settlements.BundleToggleable;
 import org.saga.statistics.StatisticsManager;
 
 /**
@@ -62,11 +62,6 @@ public class Settlement extends Bundle implements MinuteTicker{
 	 */
 	transient boolean isTicking = false;
 	
-	/**
-	 * Settlement definition.
-	 */
-	transient private SettlementDefinition definition;
-
 
 	
 	// Initialisation:
@@ -83,7 +78,6 @@ public class Settlement extends Bundle implements MinuteTicker{
 		
 		playerRoles = new Hashtable<String, Proficiency>();
 		lastSeen = new Hashtable<String, Date>();
-		definition = SettlementConfiguration.config().getSettlementDefinition();
 		
 	}
 
@@ -104,15 +98,13 @@ public class Settlement extends Bundle implements MinuteTicker{
 		}
 		
 		if(claims == null){
-			
-			int maxLevel = SettlementConfiguration.config().getSettlementDefinition().getMaxLevel();
-			if(maxLevel != 0){
+			if(level != null){
+				int maxLevel = 50;
 				claims = SettlementConfiguration.config().getMaxClaims().doubleValue() * level.doubleValue() / maxLevel;
 			}else{
 				claims = 0.0;
 			}
 			SagaLogger.nullField(this, "claims");
-			
 		}
 		
 		if(lastSeen == null){
@@ -143,9 +135,6 @@ public class Settlement extends Bundle implements MinuteTicker{
 			}
 		}
 		
-		// Definition:
-		definition = SettlementConfiguration.config().getSettlementDefinition();
-		
 
 		// Fix roles:
 		try {
@@ -156,12 +145,12 @@ public class Settlement extends Bundle implements MinuteTicker{
 				
 				if(getRole(member) != null) continue;
 				
-				Proficiency role = ProficiencyConfiguration.config().createProficiency(getDefinition().defaultRole);
+				Proficiency role = ProficiencyConfiguration.config().createProficiency(SettlementConfiguration.config().getDefaultRole());
 				playerRoles.put(member, role);
 			}
 			
 		} catch (InvalidProficiencyException e) {
-			SagaLogger.severe(this, "failed to set " + getDefinition().defaultRole + " role, because the role name is invalid");
+			SagaLogger.severe(this, "failed to set " + SettlementConfiguration.config().getDefaultRole() + " role, because the role name is invalid");
 		}
 		
 		//Statistics:
@@ -214,18 +203,16 @@ public class Settlement extends Bundle implements MinuteTicker{
 	 */
 	public static void create(Settlement settlement, SagaPlayer owner){
 
-		
 		// Forward:
 		Bundle.create(settlement, owner);
 
-		// Set owners role:
-		try {
-			Proficiency role = ProficiencyConfiguration.config().createProficiency(settlement.getDefinition().ownerRole);
-			settlement.setRole(owner, role);
-		} catch (InvalidProficiencyException e) {
-			SagaLogger.severe(settlement, "failed to set " + settlement.getDefinition().ownerRole + " role, because the role name is invalid");
-		}
-		
+//		// Set owners role:
+//		try {
+//			Proficiency role = ProficiencyConfiguration.config().createProficiency(settlement.getDefinition().ownerRole);
+//			settlement.setRole(owner, role);
+//		} catch (InvalidProficiencyException e) {
+//			SagaLogger.severe(settlement, "failed to set " + settlement.getDefinition().ownerRole + " role, because the role name is invalid");
+//		}
 		
 	}
 	
@@ -245,10 +232,10 @@ public class Settlement extends Bundle implements MinuteTicker{
 
 		// Set default role:
 		try {
-			Proficiency role = ProficiencyConfiguration.config().createProficiency(getDefinition().defaultRole);
+			Proficiency role = ProficiencyConfiguration.config().createProficiency(SettlementConfiguration.config().getDefaultRole());
 			setRole(sagaPlayer, role);
 		} catch (InvalidProficiencyException e) {
-			SagaLogger.severe(this, "failed to set " + getDefinition().defaultRole + " role, because the role name is invalid");
+			SagaLogger.severe(this, "failed to set " + SettlementConfiguration.config().getDefaultRole() + " role, because the role name is invalid");
 		}
 		
 		// Last seen:
@@ -477,11 +464,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 	 * @return amount building points available
 	 */
 	public Integer getAvailableBuildPoints() {
-		
-		
-		return getDefinition().getBuildPoints(getLevel());
-		
-		
+		return SettlementConfiguration.config().getBuildPoints(getSize());
 	}
 
 	
@@ -602,17 +585,6 @@ public class Settlement extends Bundle implements MinuteTicker{
 	}
 	
 	
-	// Information:
-	/**
-	 * Gets the definition for the settlement.
-	 * 
-	 * @return definition
-	 */
-	public SettlementDefinition getDefinition() {
-		return definition;
-	}
-
-	
 	
 	// Active members:
 	/**
@@ -710,7 +682,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 	 * @return true if enough active members
 	 */
 	public boolean checkActiveMembers() {
-		return countActiveMembers() >= getDefinition().getActivePlayers(getLevel());
+		return countActiveMembers() >= SettlementConfiguration.config().getRequiredActiveMembers(getSize());
 	}
 	
 	

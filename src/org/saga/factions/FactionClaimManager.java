@@ -15,13 +15,13 @@ import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.Building;
 import org.saga.buildings.TownSquare;
-import org.saga.chunks.Bundle;
-import org.saga.chunks.BundleManager;
 import org.saga.config.FactionConfiguration;
 import org.saga.messages.ClaimMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
+import org.saga.settlements.Bundle;
+import org.saga.settlements.BundleManager;
 import org.saga.settlements.Settlement;
 import org.saga.statistics.StatisticsManager;
 

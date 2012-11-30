@@ -515,16 +515,16 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		// Wages table:
 		StringTable wagesTable = new StringTable(colours);
 		
-		Integer maxLevel = SettlementConfiguration.config().getSettlementDefinition().getMaxLevel();
-		Integer halfLevel = maxLevel / 2;
-		Integer minLevel = 0;
+		Integer maxSize = SettlementConfiguration.config().getMaxClaims();
+		Integer halfSize = maxSize / 2;
+		Integer minSize = 0;
 		
-		Double maxClaims = FactionConfiguration.config().getClaimPoints(maxLevel);
-		Double halfClaims = FactionConfiguration.config().getClaimPoints(halfLevel);
-		Double minClaims = FactionConfiguration.config().getClaimPoints(minLevel);
+		Double maxClaims = FactionConfiguration.config().getClaimPoints(maxSize);
+		Double halfClaims = FactionConfiguration.config().getClaimPoints(halfSize);
+		Double minClaims = FactionConfiguration.config().getClaimPoints(minSize);
 		
 		// Titles:
-		wagesTable.addLine(new String[]{GeneralMessages.columnTitle("rank"), GeneralMessages.columnTitle("lvl 0"), GeneralMessages.columnTitle("lvl " + halfLevel), GeneralMessages.columnTitle("lvl " + maxLevel)});
+		wagesTable.addLine(new String[]{GeneralMessages.columnTitle("rank"), GeneralMessages.columnTitle("size 0"), GeneralMessages.columnTitle("size " + halfSize), GeneralMessages.columnTitle("size " + maxSize)});
 
 		Hashtable<Integer, Double> lvl0Wages = EconomyConfiguration.config().calcHierarchyWages(EconomyConfiguration.config().calcWage(minClaims));
 		Hashtable<Integer, Double> lvlHalfWages = EconomyConfiguration.config().calcHierarchyWages(EconomyConfiguration.config().calcWage(halfClaims));

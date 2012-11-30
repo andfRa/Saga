@@ -17,9 +17,6 @@ import org.saga.Clock;
 import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.Saga;
 import org.saga.SagaLogger;
-import org.saga.chunks.Bundle;
-import org.saga.chunks.BundleManager;
-import org.saga.chunks.BundleToggleable;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.FactionConfiguration;
@@ -41,6 +38,9 @@ import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
+import org.saga.settlements.Bundle;
+import org.saga.settlements.BundleManager;
+import org.saga.settlements.BundleToggleable;
 import org.saga.settlements.Settlement;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
@@ -454,14 +454,14 @@ public class AdminCommands {
 	
 	// Buildings general:
 	@Command(
-		aliases = {"assetlevel"},
-		usage = "[settlement_name] <level>",
+		aliases = {"assetclaims"},
+		usage = "[settlement_name] <claims>",
 		flags = "",
-		desc = "Set settlement level.",
+		desc = "Set settlement claims.",
 		min = 1,
 		max = 2
 	)
-	@CommandPermissions({"saga.admin.settlement.setlevel"})
+	@CommandPermissions({"saga.admin.settlement.setclaims"})
 	public static void setSettlementLevel(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
@@ -512,9 +512,9 @@ public class AdminCommands {
 		Settlement selectedSettlement = (Settlement) selBundle;
 
 		// Invalid level:
-		if(level < 0 || level > SettlementConfiguration.config().getSettlementDefinition().getMaxLevel()){
+		if(level < 0 || level > SettlementConfiguration.config().getMaxClaims()){
 			
-			sagaPlayer.message(AdminMessages.settleLevelOutOfRange(level + ""));
+			sagaPlayer.message(AdminMessages.settleClaimsOutOfRange(level + ""));
 			return;
 			
 		}
@@ -523,10 +523,7 @@ public class AdminCommands {
 		selectedSettlement.setLevel(level);
 		
 		// Inform:
-		selBundle.information(SettlementMessages.levelUp(selectedSettlement));
-		if(selBundle != sagaPlayer.getBundle()){
-			sagaPlayer.message(AdminMessages.setLevel(selectedSettlement));
-		}
+		sagaPlayer.message(AdminMessages.setClaims(selectedSettlement));
 		
 		
 	}

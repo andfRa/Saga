@@ -9,9 +9,6 @@ import org.bukkit.util.Vector;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.SagaLogger;
-import org.saga.chunks.Bundle;
-import org.saga.chunks.BundleToggleable;
-import org.saga.chunks.SagaChunk;
 import org.saga.config.FactionConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.factions.Faction;
@@ -20,6 +17,9 @@ import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.messages.ClaimMessages;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.Bundle;
+import org.saga.settlements.BundleToggleable;
+import org.saga.settlements.SagaChunk;
 import org.saga.settlements.Settlement;
 
 public class TownSquare extends Building implements SecondTicker{

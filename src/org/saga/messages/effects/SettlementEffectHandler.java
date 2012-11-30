@@ -8,8 +8,8 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.saga.buildings.Building;
 import org.saga.buildings.storage.StorageArea;
-import org.saga.chunks.SagaChunk;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.SagaChunk;
 
 public class SettlementEffectHandler {
 

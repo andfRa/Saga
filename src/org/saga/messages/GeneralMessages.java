@@ -3,8 +3,8 @@ package org.saga.messages;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.saga.buildings.Building;
-import org.saga.chunks.Bundle;
 import org.saga.factions.Faction;
+import org.saga.settlements.Bundle;
 import org.saga.settlements.Settlement;
 import org.saga.utility.text.TextUtil;
 
