@@ -523,7 +523,7 @@ public class Bundle extends SagaCustomSerialization{
 	 * @return true if should be deleted
 	 */
 	public boolean checkDelete() {
-		return groupChunks.size() > 0;
+		return groupChunks.size() == 0;
 	}
 	
 	/**
