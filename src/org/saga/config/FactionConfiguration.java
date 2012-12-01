@@ -190,7 +190,7 @@ public class FactionConfiguration {
 
 		if(maxClaims == null){
 			SagaLogger.nullField(getClass(), "maxClaims");
-			maxClaims = 2;
+			maxClaims = 250;
 		}
 		
 		if(claimPoints == null){

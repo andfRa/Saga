@@ -164,7 +164,7 @@ public class SettlementConfiguration {
 
 		if(maxClaims == null){
 			SagaLogger.nullField(getClass(), "maxClaims");
-			maxClaims = 2;
+			maxClaims = 15;
 		}
 		
 		if(noDeleteSize == null){
