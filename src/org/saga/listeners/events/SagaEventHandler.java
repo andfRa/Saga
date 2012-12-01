@@ -59,14 +59,6 @@ public class SagaEventHandler {
 			if(event.attackerPlayer.getFaction() != null) event.attackerPlayer.getFaction().onPvPAttack(event);
 			if(event.defenderPlayer.getFaction() != null) event.defenderPlayer.getFaction().onPvPDefend(event);
 			
-			if(!event.getOverride().isAllow()){
-				
-				event.attackerPlayer.message(PlayerMessages.pvpOverride(event));
-				event.cancel();
-				return;
-				
-			}
-			
 		}
 
 		// Forward to Saga chunks:
@@ -74,6 +66,13 @@ public class SagaEventHandler {
 		SagaChunk defenderChunk = event.defenderChunk;
 		if(attackerChunk != null) attackerChunk.onEntityDamage(event);
 		if(defenderChunk != null && attackerChunk != defenderChunk) defenderChunk.onEntityDamage(event);
+		
+		// PvP override:
+		if(!event.getOverride().isAllow()){
+			event.attackerPlayer.message(PlayerMessages.pvpOverride(event));
+			event.cancel();
+			return;
+		}
 		
 
 	}
