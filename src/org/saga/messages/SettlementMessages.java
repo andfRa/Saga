@@ -493,7 +493,7 @@ public class SettlementMessages {
 		Arrays.sort(definitions, comparator);
 		
 		// Column names:
-		table.addLine(new String[]{GeneralMessages.columnTitle("building"), GeneralMessages.columnTitle("effect")});
+		table.addLine(new String[]{GeneralMessages.columnTitle("building"), GeneralMessages.columnTitle("pts."), GeneralMessages.columnTitle("effect")});
 		
 		// Column values:
 		if(definitions.length != 0){
@@ -502,7 +502,8 @@ public class SettlementMessages {
 				
 				// Values:
 				String name = definitions[j].getName();
-				String status = "";
+				String points = definitions[j].getBuildPoints() + "";
+				String effect = "";
 				
 				Integer score = settlement.getBuildingLevel(name);
 				
@@ -522,12 +523,12 @@ public class SettlementMessages {
 					if(usedBuildings > 0){
 						
 						// Status:
-						status = definitions[j].getEffect(score);
-						if(status.length() == 0) status = "set";
+						effect = definitions[j].getEffect(score);
+						if(effect.length() == 0) effect = "set";
 						
 						// Colours:
 						name = positive + name;
-						status = positive + status;
+						effect = positive + effect;
 						
 						if(totalBuildings != 1){
 							name = name + " " + usedBuildings + "/" + totalBuildings;
@@ -537,7 +538,7 @@ public class SettlementMessages {
 					
 					// Available:
 					else{
-						status = "not set";
+						effect = "not set";
 					}
 					
 					
@@ -546,15 +547,15 @@ public class SettlementMessages {
 				// Requirements not met:
 				else{
 					name = unavailable + name;
-					status = unavailable + "(" + requirements(definitions[j], 1) + ")";
+					effect = unavailable + "(" + requirements(definitions[j], 1) + ")";
 				}
 					
-				table.addLine(new String[]{name, status});
+				table.addLine(new String[]{name, points, effect});
 			
 			}
 			
 		}else{
-			table.addLine(new String[]{"-", "-"});
+			table.addLine(new String[]{"-", "-", "-"});
 		}
 		
 		table.collapse();

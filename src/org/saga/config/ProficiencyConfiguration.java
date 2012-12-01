@@ -28,16 +28,6 @@ public class ProficiencyConfiguration {
 		return instance;
 	}
 	
-	/**
-	 * If true, initial profession will be set on join.
-	 */
-	public Boolean initialProfession;
-	
-	/**
-	 * If true, initial profession will be set on join.
-	 */
-	public Boolean initialClass;
-	
 	
 	
 	// Proficiencies.
@@ -68,18 +58,6 @@ public class ProficiencyConfiguration {
 		
 		boolean integrity=true;
 
-		if(initialProfession == null){
-			initialProfession = false;
-			SagaLogger.severe(getClass(), "initialProfession field failed to initalize");
-			integrity=false;
-		}
-		
-		if(initialClass == null){
-			initialClass = false;
-			SagaLogger.severe(getClass(), "initialClass field failed to initalize");
-			integrity=false;
-		}
-		
 		if(definitions == null){
 			definitions = new ArrayList<ProficiencyDefinition>();
 			SagaLogger.severe(getClass(), "profiecncyDefinitions field failed to initalize");

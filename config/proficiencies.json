@@ -1,14 +1,11 @@
 {
 
-"initialProfession":"true",
-"initialClass":"true",
-
 "definitions":[
   
   {"name":"lord",
     "type":"ROLE",
     "hierarchyLevel":"3",
-    "attributeBonuses":{"luck":10},
+    "attributeBonuses":{"luck":10,"toughness":5},
     "settlementPermissions":["BUILD","BUILD_BUILDING","CLAIM","INVITE","ABANDON","KICK","SET_BUILDING","REMOVE_BUILDING","RENAME","SPAWN","MEMBER_COMMAND","ADD_RESIDENT","REMOVE_RESIDENT","MANAGE_PRICES","MANAGE_DEALS","ACCESS_WAREHOUSE","ACCESS_STORAGE","HURT_FARM_ANIMALS"],
     "factionPermissions":[]
   },

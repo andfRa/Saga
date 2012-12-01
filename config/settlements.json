@@ -319,7 +319,7 @@
     "functions":{},
     "maxScore":1,
     "upgradeCost":{"x1":1,"y1":35000,"x2":2,"y2":140000},
-    "roles":{},
+    "roles":{"lord:":2},
     "ranks":{},
     "description":"enables spawn command",
     "effect":"command: /sspawn"
@@ -388,7 +388,7 @@
     "functions":{"buy limit":{"x1":1,"y1":7000,"x2":3,"y2":20000}},
     "maxScore":3,
     "upgradeCost":{"x1":1,"y1":12000,"x2":2,"y2":48000},
-    "roles":{},
+    "roles":{"lord:":1},
     "ranks":{},
     "description":"buy items",
     "effect":"#perform_daytime: new goods"
