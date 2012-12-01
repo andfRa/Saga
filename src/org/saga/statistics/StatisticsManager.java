@@ -980,6 +980,12 @@ public class StatisticsManager implements HourTicker{
 		
 	}
 	
+	public void setSize(Settlement settlement) {
+
+		setValue("settlements.size" + "." + settlement.getName(), settlement.getSize());
+		
+	}
+	
 
 	public void setWallet(SagaPlayer sagaPlayer) {
 

@@ -376,7 +376,7 @@ public class StatisticsCommands {
     	Integer[] data = StatisticsManager.manager().getSpentAttributes();
     	
 	    // Inform:
-    	sagaPlayer.message(StatisticsMessages.histogram("spent attribute histogram", data, 10, 0));
+    	sagaPlayer.message(StatisticsMessages.histogram("spent attribute points histogram", data, 10, 0));
 	    
     	sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
 	    
@@ -384,22 +384,45 @@ public class StatisticsCommands {
 	}
 	
 	@Command(
-			aliases = {"stslevelshist"},
+			aliases = {"stsclaimshist"},
 			usage = "",
 			flags = "",
-			desc = "Show settlement level distribution histogram.",
+			desc = "Show settlement claims distribution histogram.",
 			min = 0,
 			max = 0
 	)
-	@CommandPermissions({"saga.statistics.histogram.settlementlevels"})
+	@CommandPermissions({"saga.statistics.histogram.settlementclaims"})
 	public static void slevelsHistogram(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
     	// Data:
-    	Double[] data = StatisticsManager.manager().createHistogramData("settlements.levels");
+    	Double[] data = StatisticsManager.manager().createHistogramData("settlements.claims");
     	
 	    // Inform:
-    	sagaPlayer.message(StatisticsMessages.histogram("settlement level histogram", data, 10, 0));
+    	sagaPlayer.message(StatisticsMessages.histogram("settlement claims histogram", data, 10, 0));
+	    
+    	sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+	    
+	    
+	}
+	
+	@Command(
+			aliases = {"stssizehist"},
+			usage = "",
+			flags = "",
+			desc = "Show settlement size distribution histogram.",
+			min = 0,
+			max = 0
+	)
+	@CommandPermissions({"saga.statistics.histogram.settlementsize"})
+	public static void sSizeHistogram(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		
+    	// Data:
+    	Double[] data = StatisticsManager.manager().createHistogramData("settlements.size");
+    	
+	    // Inform:
+    	sagaPlayer.message(StatisticsMessages.histogram("settlement size histogram", data, 10, 0));
 	    
     	sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
 	    
@@ -410,7 +433,7 @@ public class StatisticsCommands {
 			aliases = {"stfclaimshist"},
 			usage = "",
 			flags = "",
-			desc = "Show faction available claims distribution histogram.",
+			desc = "Show faction claims distribution histogram.",
 			min = 0,
 			max = 0
 	)
@@ -422,7 +445,7 @@ public class StatisticsCommands {
     	Double[] data = StatisticsManager.manager().createHistogramData("factions.claims");
     	
 	    // Inform:
-    	sagaPlayer.message(StatisticsMessages.histogram("faction available claims histogram", data, 10, 0));
+    	sagaPlayer.message(StatisticsMessages.histogram("faction claims histogram", data, 10, 0));
 	    
     	sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
 	    

@@ -155,6 +155,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 		
 		//Statistics:
 		StatisticsManager.manager().setClaims(this);
+		StatisticsManager.manager().setSize(this);
 		
 		
 	}
