@@ -38,7 +38,7 @@
   },
 
   {"name":"blacksmith",
-    "type":"ROLE",
+    "type":"INVALID",
     "hierarchyLevel":"2",
     "attributeBonuses":{"willpower":6,"toughness":4},
     "settlementPermissions":["BUILD","BUILD_BUILDING","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE","HURT_FARM_ANIMALS"],
@@ -66,7 +66,7 @@
   {"name":"knight",
     "type":"RANK",
     "hierarchyLevel":"3",
-    "attributeBonuses":{"strength":10,toughness":5},
+    "attributeBonuses":{"strength":10,"toughness":5},
     "settlementPermissions":[],
     "factionPermissions":["INVITE","KICK","SET_COLOR","RENAME","SET_RANK","SPAWN"]
   },
@@ -74,7 +74,7 @@
   {"name":"marksman",
     "type":"RANK",
     "hierarchyLevel":"3",
-    "attributeBonuses":{"precision":10,toughness":5},
+    "attributeBonuses":{"precision":10,"toughness":5},
     "settlementPermissions":[],
     "factionPermissions":["INVITE","KICK","SET_COLOR","RENAME","SET_RANK","SPAWN"]
   },
@@ -82,7 +82,7 @@
   {"name":"wizard",
     "type":"RANK",
     "hierarchyLevel":"3",
-    "attributeBonuses":{"willpower":10,toughness":5},
+    "attributeBonuses":{"willpower":10,"toughness":5},
     "settlementPermissions":[],
     "factionPermissions":["INVITE","KICK","SET_COLOR","RENAME","SET_RANK","SPAWN"]
   },

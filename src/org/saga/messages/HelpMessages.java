@@ -221,21 +221,20 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		book.addLine("A settlement will protect your land. " +
 			"Use " + GeneralMessages.command("/ssettle") + " and " + GeneralMessages.command("/sclaim") + " to create the settlement and claim more land. " +
 			"Land is claimed in 16x16 chunks. " +
-			"More claim points become available when the settlements level up. " +
 			"Use " + GeneralMessages.command("/sunclaim") + " to abandon land. " +
 			"Use " + GeneralMessages.command("/map") + " to see what chunks have already been claimed." 
 		);
 		
 		// Levels:
-		book.addLine("Levels are gained over time. " +
-			"The speed at which they are gained is determined by the number of members. " +
-			"A certain amount of members is required for the settlement to gain levels. " +
-			"Use " + GeneralMessages.command("/sstats") + " to see settlement level, requirements and other stats."
+		book.addLine("Available claims are gained over time. " +
+			"The speed at which they are gained is determined by the number of online members. " +
+			"A certain amount of members is required for the settlement to gain more claims. " +
+			"Use " + GeneralMessages.command("/sstats") + " to see settlement claims, requirements and other stats."
 		);
 		
 		// Invite:
 		book.addLine("Use " + GeneralMessages.command("/sinvite") + " to invite another player to the settlement. " +
-			"Settlement invitations can be accepted with " + GeneralMessages.command("/saccept") + " and declined with " + GeneralMessages.command("/sdeclineall") + ". " +
+			"Settlement invitations can be accepted with " + GeneralMessages.command("/saccept") + " and declined with " + GeneralMessages.command("/sdecline") + ". " +
 			"A player can only be in a single settlement. " +
 			"Use " + GeneralMessages.command("/settlementquit") + " to leave a settlement. " +
 			"Troublemakers can be kicked by using " + GeneralMessages.command("/skick") + ". "
@@ -247,7 +246,8 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		book.addLine("Use " + GeneralMessages.command("/ssetrole") + " to assign a role to a member. " +
 			"Each role gives certain attribute bonuses. " +
 			"The amount of available roles increases when certain buildings are set. " +
-			"Roles also determine which actions and commands are permitted."
+			"Roles also determine which actions and commands are permitted. " +
+			"Some abilities are only available for certain roles."
 		);
 		
 		book.addLine("");
@@ -285,8 +285,8 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		
 		// Buildings:
 		book.addLine("Use " + GeneralMessages.command("/bset") + " to set a building on the chunk and " + GeneralMessages.command("/bremove") + " to remove it. " +
-				"Each building requires a certain amount of build points. " +
-				"Build points and new buildings become available when the settlement gains levels. "
+			"Each building requires a certain amount of build points. " +
+			"Build points and new buildings become available when more land is claimed. "
 		);
 		
 		book.addLine("");
@@ -404,9 +404,10 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		// Claiming:
 		String townSquare = townSquare();
 		book.addLine("Every settlement that has a " + townSquare + " can be claimed by a faction. " +
-			"To claim a settlement, faction members must hold the " + townSquare + " for a certain amount of time. " +
-			"The amount of settlement claimed increases over time. " +
-			"To abandon a settlement use " + GeneralMessages.command("/funclaim") + ". "
+			"To claim a settlement faction members must hold the " + townSquare + " for a certain amount of time. " +
+			"When no members remain, claim progress will decrease over time. " +
+			"To abandon a settlement use " + GeneralMessages.command("/funclaim") + ". " +
+			"The total number of available claims increases with time."
 		);
 		
 		// Pvp:
@@ -425,7 +426,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		book.addLine(pvp +
 			"To create a faction use " + GeneralMessages.command("/fcreate") + ". " +
 			"New members can be invited with " + GeneralMessages.command("/finvite") + ". " +
-			"Use " + GeneralMessages.command("/faccept") + " and " + GeneralMessages.command("/fdeclineall") + " to accept or decline faction invitations. " +
+			"Use " + GeneralMessages.command("/faccept") + " and " + GeneralMessages.command("/fdecline") + " to accept or decline faction invitations. " +
 			"To leave the faction use " + GeneralMessages.command("/factionquit") + ". " +
 			"Troublemakers can be kicked by using " + GeneralMessages.command("/fkick") + ". " +
 			formation
@@ -436,8 +437,9 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		// Ranks:
 		book.addLine("Use " + GeneralMessages.command("/fsetrank") + " to assign a rank to a member. " +
 			"Each rank gives certain attribute bonuses. " +
-			"The amount of available ranks increases when the faction claims settlements with certain buildings. " +
-			"Ranks also determine which commands are permitted."
+			"The amount of available ranks increases when the faction claims settlements that have certain buildings. " +
+			"Ranks also determine which commands are permitted. " +
+			"Some abilities are only available to certain ranks."
 		);
 		
 		book.addLine("");

@@ -343,7 +343,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		double progress = faction.getClaimProgress();
 		
 		// Claimed:
-		table.addLine("claimed", claimed + "/" + totalClaims, 2);
+		table.addLine("settlements", claimed + "/" + totalClaims, 2);
 
 		// Next claim:
 		table.addLine("next claim", (int)(progress*100) + "%", 2);

@@ -442,7 +442,7 @@ public class SettlementMessages {
 		double progress = settlement.getClaimProgress();
 
 		// Claims:
-		table.addLine("claims", settlement.getUsedClaimed() + "/" + settlement.getTotalClaims(), 2);
+		table.addLine("size", settlement.getUsedClaimed() + "/" + settlement.getTotalClaims(), 2);
 
 		// Next claim:
 		table.addLine("next claim", (int)(progress*100) + "%", 2);
