@@ -24,6 +24,8 @@
     "usage":"rclick tree w/ axe"
   },
   
+  
+  
   {"className":"org.saga.abilities.Harvest",
     "name":"harvest",
     "itemRestrictions":["DIAMOND_HOE","GOLD_HOE","IRON_HOE","STONE_HOE"],
@@ -43,6 +45,31 @@
     "description":"cuts wheat and reeds",
     "usage":"rclick w/ hoe"
   },
+  
+  {"className":"org.saga.abilities.Dig",
+    "name":"dig",
+    "itemRestrictions":["DIAMOND_SPADE","GOLD_SPADE","IRON_SPADE","STONE_SPADE"],
+    "activationAction":"RIGHT_CLICK",
+    "usedItem":"AIR",
+    "usedAmount":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
+    "cooldown":{"x1":1,"y1":20.0,"x2":3,"y2":10.0},
+    "active":{"x1":1,"y1":0.0},
+    "attributeRequirements":{
+      "strength":{"x1":1,"y1":10.0,"x2":3,"y2":25.0},
+      "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":25.0}
+    },
+    "buildingsRequired":{},
+    "proficiencyRestrictions":[],
+    "functions":{
+      "radius":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
+      "random block":{"x1":1,"y1":8.0,"x2":3,"y2":17.0}
+    },
+    "colour":4841998,
+    "description":"digs dirt/sand",
+    "usage":"rclick w/ spade"
+  },
+  
+  
   
   {"className":"org.saga.abilities.HeavySwing",
     "name":"heavy swing",

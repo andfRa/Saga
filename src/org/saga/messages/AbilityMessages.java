@@ -79,6 +79,15 @@ public class AbilityMessages {
 	
 	
 	
+	// Dig:
+	public static String targetDirtSand(Ability ability) {
+	
+		return negative + TextUtil.capitalize(ability.getName()) + " can only be used on dirt or sand.";
+	
+	}
+	
+	
+	
 	// General usage:
 	public static String targetTooFar(Ability ability) {
 		
