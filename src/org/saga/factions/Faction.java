@@ -276,9 +276,6 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 			integrity = false;
 		}
 
-		//Statistics:
-		StatisticsManager.manager().setClaims(this);
-		
 		return integrity;
 		
 		
@@ -1339,7 +1336,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	
 	
 	
-	// Load save
+	// Load save:
 	/**
 	 * Loads and a faction from disc.
 	 * 

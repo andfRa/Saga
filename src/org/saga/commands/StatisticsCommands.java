@@ -495,6 +495,46 @@ public class StatisticsCommands {
 	}
 
 	
+
+	@Command(
+		aliases = {"stroles"},
+		usage = "",
+		flags = "a",
+		desc = "Show role statistics. The -a flag shows individual settlements.",
+		min = 0,
+		max = 0
+		)
+	@CommandPermissions({"saga.statistics.roles"})
+	public static void roles(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	
+		// Inform:
+		sagaPlayer.message(StatisticsMessages.values("roles", "settlements.roles.used", "used", "available", "role", "used", "available", !args.hasFlag('a'), 0, 0));
+		
+		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+	            	
+	}
+	
+	@Command(
+		aliases = {"stranks"},
+		usage = "",
+		flags = "a",
+		desc = "Show rank statistics. The -a flag shows individual settlements.",
+		min = 0,
+		max = 0
+		)
+	@CommandPermissions({"saga.statistics.ranks"})
+	public static void ranks(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	
+		// Inform:
+		sagaPlayer.message(StatisticsMessages.values("ranks", "factions.ranks.used", "used", "available", "rank", "used", "available", !args.hasFlag('a'), 0, 0));
+		
+		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+	            	
+	}
+	
+	
+
+	
 	
 	@Command(
 			aliases = {"stupdateplayers"},

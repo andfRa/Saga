@@ -95,7 +95,9 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		// Messages:
 		SagaLogger.info("Disabling Saga.");
 
-		// NOTE: All registered events are automatically unregistered when a plugin is disabled
+		// Statistics:
+		BundleManager.manager().updateStatistics();
+		FactionManager.manager().updateStatistics();
 
 		// Unload all saga players:
 		unloadAllSagaPlayers();

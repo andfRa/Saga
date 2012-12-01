@@ -11,6 +11,7 @@ import org.saga.SagaLogger;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
+import org.saga.statistics.StatisticsManager;
 
 
 public class FactionManager {
@@ -258,9 +259,25 @@ public class FactionManager {
 		
 	}
 
+	/**
+	 * Updates faction statistics.
+	 * 
+	 */
+	public void updateStatistics() {
+
+
+		Collection<Faction> factions = this.factions.values();
+		for (Faction faction : factions) {
+			StatisticsManager.manager().setClaims(faction);
+			StatisticsManager.manager().setRanks(faction);
+		}
+		
+		
+	}
 	
 	
-	// Loading unloading:
+	
+	// Load unload:
 	/**
 	 * Loads faction manager and loads factions.
 	 * 

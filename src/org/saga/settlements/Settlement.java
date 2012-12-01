@@ -153,10 +153,6 @@ public class Settlement extends Bundle implements MinuteTicker{
 			SagaLogger.severe(this, "failed to set " + SettlementConfiguration.config().getDefaultRole() + " role, because the role name is invalid");
 		}
 		
-		//Statistics:
-		StatisticsManager.manager().setClaims(this);
-		StatisticsManager.manager().setSize(this);
-		
 		
 	}
 	

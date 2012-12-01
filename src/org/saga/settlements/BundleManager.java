@@ -13,6 +13,7 @@ import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.settlements.SagaChunk.ChunkSide;
+import org.saga.statistics.StatisticsManager;
 
 public class BundleManager {
 
@@ -158,6 +159,7 @@ public class BundleManager {
     	
 	}
 	
+    
 	
 	// Saga chunks:
 	/**
@@ -394,6 +396,28 @@ public class BundleManager {
 
         
     }
+	
+	
+	
+	// Other:
+	/**
+	 * Updates settlement statistics.
+	 * 
+	 */
+	public void updateStatistics() {
+
+		Collection<Bundle> bundles = this.registeredGroups.values();
+		for (Bundle bundle : bundles) {
+			
+			if(bundle instanceof Settlement){
+				StatisticsManager.manager().setClaims((Settlement)bundle);
+				StatisticsManager.manager().setSize((Settlement)bundle);
+				StatisticsManager.manager().setRoles((Settlement)bundle);
+			}
+			
+		}
+		
+	}
 	
 	
 	

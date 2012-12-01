@@ -20,12 +20,15 @@ import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.GeneralConfiguration;
+import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.factions.Faction;
 import org.saga.factions.FactionClaimManager;
 import org.saga.messages.GeneralMessages;
 import org.saga.player.Proficiency;
+import org.saga.player.Proficiency.ProficiencyType;
+import org.saga.player.ProficiencyDefinition;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
@@ -990,6 +993,47 @@ public class StatisticsManager implements HourTicker{
 	public void setWallet(SagaPlayer sagaPlayer) {
 
 		setValue("wallet" + "." + sagaPlayer.getName(), EconomyDependency.getCoins(sagaPlayer));
+		
+	}
+	
+	
+	public void setRoles(Settlement settlement) {
+
+		
+		ArrayList<ProficiencyDefinition> proficiencies = ProficiencyConfiguration.config().getDefinitions(ProficiencyType.ROLE);
+		for (ProficiencyDefinition proficiency : proficiencies) {
+			
+			String name = proficiency.getName();
+			Integer used = settlement.getUsedRoles(name);
+			Integer available = settlement.getAvailableRoles(name);
+			
+			if(used == 0 && available == 0) continue;
+			
+			setValue("settlements.roles.available" + "." + name + "." + settlement.getName(), available);
+			setValue("settlements.roles.used" + "." + name + "." + settlement.getName(), used);
+			
+		}
+		
+		
+	}
+	
+	public void setRanks(Faction faction) {
+
+		
+		ArrayList<ProficiencyDefinition> proficiencies = ProficiencyConfiguration.config().getDefinitions(ProficiencyType.RANK);
+		for (ProficiencyDefinition proficiency : proficiencies) {
+			
+			String name = proficiency.getName();
+			Integer used = faction.getUsedRanks(name);
+			Integer available = faction.getAvailableRanks(name);
+			
+			if(used == 0 && available == 0) continue;
+			
+			setValue("factions.ranks.available" + "." + name + "." + faction.getName(), available);
+			setValue("factions.ranks.used" + "." + name + "." + faction.getName(), used);
+			
+		}
+		
 		
 	}
 	
