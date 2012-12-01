@@ -462,7 +462,7 @@ public class AdminCommands {
 		max = 2
 	)
 	@CommandPermissions({"saga.admin.settlement.setclaims"})
-	public static void setSettlementLevel(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	public static void setSettlementClaims(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
 		Double claims = null;

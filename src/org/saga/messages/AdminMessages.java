@@ -75,13 +75,13 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 
 	public static String setClaims(Settlement settlement){
 		
-		return positive + "Settlement " + settlement.getName() + " claims set to " + settlement.getAvailableClaims() + ".";
+		return positive + "Settlement " + settlement.getName() + " claims set to " + settlement.getTotalClaims() + ".";
 		
 	}
 	
 	public static String setClaims(Faction faction){
 		
-		return positive + "Faction " + faction.getName() + " claims set to " +faction.getAvailableClaims() + ".";
+		return positive + "Faction " + faction.getName() + " claims set to " +faction.getTotalClaims() + ".";
 		
 	}
 	

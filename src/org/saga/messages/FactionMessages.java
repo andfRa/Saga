@@ -339,11 +339,11 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 		
 		
 		int claimed = FactionClaimManager.manager().findSettlementsIds(faction.getId()).length;
-		int availClaims = faction.getAvailableClaims();
+		int totalClaims = faction.getTotalClaims();
 		double progress = faction.getClaimProgress();
 		
 		// Claimed:
-		table.addLine("claimed", claimed + "/" + availClaims, 2);
+		table.addLine("claimed", claimed + "/" + totalClaims, 2);
 
 		// Next claim:
 		table.addLine("next claim", (int)(progress*100) + "%", 2);

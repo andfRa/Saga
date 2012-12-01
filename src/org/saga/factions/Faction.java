@@ -705,11 +705,11 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	}
 	
 	/**
-	 * Gets the amount of available claims.
+	 * Gets the total amount of claims.
 	 * 
-	 * @return amount of available claims
+	 * @return total amount of claims
 	 */
-	public Integer getAvailableClaims() {
+	public Integer getTotalClaims() {
 		return claims.intValue();
 	}
 	
