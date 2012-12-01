@@ -17,7 +17,7 @@
       "precision":{"x1":1,"y1":3.0,"x2":3,"y2":25.0}
     },
     "buildingsRequired":{},
-    "proficiencyRestrictions":[],
+    "proficiencyRestrictions":["woodcutter"],
     "functions":{"tree size":{"x1":1,"y1":10.0,"x2":3,"y2":50.0}},
     "colour":6304529,
     "description":"chops down a tree",
@@ -39,7 +39,7 @@
       "willpower":{"x1":1,"y1":3.0,"x2":3,"y2":25.0}
     },
     "buildingsRequired":{},
-    "proficiencyRestrictions":[],
+    "proficiencyRestrictions":["farmer"],
     "functions":{"range":{"x1":1,"y1":20.0,"x2":3,"y2":60.0}},
     "colour":4841998,
     "description":"cuts wheat and reeds",
@@ -59,7 +59,7 @@
       "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":25.0}
     },
     "buildingsRequired":{},
-    "proficiencyRestrictions":[],
+    "proficiencyRestrictions":["farmer"],
     "functions":{
       "radius":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
       "random block":{"x1":1,"y1":8.0,"x2":3,"y2":17.0}
@@ -84,7 +84,7 @@
       "willpower":{"x1":1,"y1":3.0,"x2":3,"y2":25.0}
     },
     "buildingsRequired":{},
-    "proficiencyRestrictions":[],
+    "proficiencyRestrictions":["miner"],
     "functions":{
       "size":{"x1":0,"y1":1.0,"x2":3,"y2":60.0},
       "crumble":{"x1":0,"y1":5.0,"x2":50,"y2":10.0}
