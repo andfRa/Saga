@@ -38,7 +38,7 @@ public enum AttributeParameter {
 	// Passive:
 	@Deprecated
 	DROP_MODIFIER,
-	EXTRA_DROP_CHANCE,
+	EXTRA_DROP_CHANCE_MODIFIER,
 	HEALTH_MODIFIER;
 	
 	
