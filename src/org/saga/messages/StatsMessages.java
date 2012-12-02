@@ -214,7 +214,10 @@ public class StatsMessages {
     				required = "-";
     			}
     			
-    			if(ability.getCooldown() <= 0){
+    			if(ability.getScore() == 0){
+    				status+= "-";
+    			}
+    			else if(ability.getCooldown() <= 0){
 					status+= "ready";
 				}else{
 					status = ability.getCooldown() + "s";
@@ -271,15 +274,13 @@ public class StatsMessages {
 	
 	public static String restrictions(AbilityDefinition definition) {
 
-
 		StringBuffer result = new StringBuffer();
 		
 		// Proficiencies:
 		HashSet<String> proficiencies = definition.getProfRestr();
 		if(proficiencies.size() > 0) result.append(TextUtil.flatten(proficiencies));
 		
-		return result.toString();
-		
+		return result.toString().replace(", ", "/");
 		
 	}
 	
