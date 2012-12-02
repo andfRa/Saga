@@ -32,6 +32,17 @@ public class Dig extends Ability{
 	
 	
 	// Initialisation:
+	/**
+	 * Initialises using definition.
+	 * 
+	 * @param definition ability definition
+	 */
+	public Dig(AbilityDefinition definition) {
+		
+        super(definition);
+	
+	}
+
 	/* 
 	 * Trigger indication.
 	 * 
