@@ -1140,17 +1140,27 @@ public class AdminCommands {
 	@Command(
 			aliases = {"awriteattributes"},
 			usage = "",
-			flags = "",
-			desc = "Write all attributes in MediaWiki format.",
+			flags = "c",
+			desc = "Write all attributes in MediaWiki format. The c flag changes the format to WikiCreole.",
 			min = 0
 	)
 	@CommandPermissions({"saga.admin.wiki.writeattributes"})
 	public static void writeAttributes(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
+		String wikiText = "";
+		
 		ArrayList<Method> commandMethods = new ArrayList<Method>(PermissionsDependency.getCommandMap().getCommandMethods());
-			
-		String wikiText = AdminMessages.wikiAttributes(commandMethods);
+		
+		// WikiCreole:
+		if(args.hasFlag('c')){
+			wikiText = AdminMessages.wikiAttributesCreole(commandMethods);
+		}
+		
+		// MediaWiki:
+		else{
+			wikiText = AdminMessages.wikiAttributes(commandMethods);
+		}
 			
 		Directory dir = Directory.WIKI;
 		String name = "attributes";

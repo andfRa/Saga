@@ -480,7 +480,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 		
 		for (Attribute attribute : attributes) {
 			
-			ArrayList<Entry<AttributeParameter, TwoPointFunction>> parameters = attribute.getAllEntries();
+			ArrayList<Entry<AttributeParameter, TwoPointFunction>> parameters = attribute.getAllParameterEntries();
 			
 			result.append("\n");
 			result.append("|-");
@@ -525,110 +525,106 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 		
 	}
 	
+	public static String wikiAttributesCreole(ArrayList<Method> commandMethods) {
+		
+		
+		int step = 5;
+		int init = 5;
+		
+		StringBuffer result = new StringBuffer();
+		ArrayList<Attribute> attributes = AttributeConfiguration.config().getAttributes();
+		int max = AttributeConfiguration.config().maxAttributeScore;
+		
+		// Title:
+		result.append("==Attributes");
+		
+		for (Attribute attribute : attributes) {
+			
+			result.append("\n");
+			
+			// Empty line:
+			result.append("| |");
+			for (int k = 0; k <= max; k+=step) {
+				result.append(" ");
+				result.append("|");
+			}
+			
+			result.append("\n");
+			
+			// Attribute name:
+			result.append("|="+attribute.getName()+"|");
+			
+			// Scores:
+			for (int j = init; j <= max; j+=step) {
+				result.append(" " + j + " ");
+				result.append("|");
+			}
+			
+			ArrayList<Entry<AttributeParameter, TwoPointFunction>> parameters = attribute.getAllParameterEntries();
+			for (int i = 0; i < parameters.size(); i++) {
+			
+				Entry<AttributeParameter, TwoPointFunction> parameter = parameters.get(i);
+				
+				result.append("\n");
+				
+				result.append("|");
+				
+				// Parameter:
+				result.append(parameterKey(parameter.getKey()));
+				
+				result.append("|");
+				
+				// Values:
+				for (int j = init; j <= max; j+=step) {
+					
+					result.append(parameterValue(parameter.getKey(), parameter.getValue().value(j)));
+					
+					result.append("|");
+					
+				}
+				
+			}
+			
+		}
+		
+		return result.toString();
+		
+		
+	}
+		
+	
 	private static String parameterKey(AttributeParameter parameter) {
 
-		
-		String key = parameter.name().toLowerCase().replace("_", " ");
-		
-		// Damage modifiers:
-		if(parameter == AttributeParameter.MELEE_MODIFIER || parameter == AttributeParameter.RANGED_MODIFIER || parameter == AttributeParameter.MAGIC_MODIFIER){
-			
-			return key.replace(" modifier", " damage");
-				
-		}
-		
-		// Damage multipliers:
-		if(parameter == AttributeParameter.MELEE_MULTIPLIER || parameter == AttributeParameter.RANGED_MULTIPLIER || parameter == AttributeParameter.MAGIC_MULTIPLIER){
-			
-			return key.replace(" multiplier", " damage");
-				
-		}
-		
-		// Hit chance:
-		if(parameter == AttributeParameter.MELEE_HIT_CHANCE || parameter == AttributeParameter.RANGED_HIT_CHANCE || parameter == AttributeParameter.MAGIC_HIT_CHANCE){
-			
-			return key.replace(" hit chance", " dodge");
-				
-		}
-
-		// Amour penetration:
-		if(parameter == AttributeParameter.MELEE_ARMOUR_PENETRATION || parameter == AttributeParameter.RANGED_ARMOUR_PENETRATION || parameter == AttributeParameter.MAGIC_ARMOUR_PENETRATION){
-			
-			return key.replace(" armour penetration", " penetration");
-				
-		}
-		
-		// Burn resist:
-		if(parameter == AttributeParameter.BURN_RESIST){
-			
-			return key.replace(" resist chance", " resist");
-			
-		}
-
-		// Drops:
-		if(parameter == AttributeParameter.DROP_MODIFIER){
-			
-			return key.replace("drop modifier", "bonus drop chance");
-			
-		}
-		
-		return key;
-		
+		return parameter.toString().toLowerCase().replace("_", " ").replace(" modifier", "").replace(" multiplier", "").replace("penetration", "pen");
 				
 	}
 	
 	private static String parameterValue(AttributeParameter parameter, Double value) {
 
 		
-		// Damage modifiers:
-		if(parameter == AttributeParameter.MELEE_MODIFIER || parameter == AttributeParameter.RANGED_MODIFIER || parameter == AttributeParameter.MAGIC_MODIFIER){
-			
-			if(value < 0) return "" + TextUtil.round(value, 1);
-			return "+" + TextUtil.round(value, 1);
-				
+		int prec = 1;
+		
+		if(parameter.toString().toLowerCase().endsWith("chance_modifier")){
+			if(value < 0) return "" + TextUtil.round(value*100, prec) + "%";
+			return "+" + TextUtil.round(value*100, prec) + "%";
 		}
 		
-		// Damage multipliers:
-		if(parameter == AttributeParameter.MELEE_MULTIPLIER || parameter == AttributeParameter.RANGED_MULTIPLIER || parameter == AttributeParameter.MAGIC_MULTIPLIER){
-			
-			if(value < 1) return "-" + TextUtil.round((1-value)*100, 0) + "%";
-			return "+" + TextUtil.round((value-1)*100, 0) + "%";
-				
+		if(parameter.toString().toLowerCase().endsWith("multiplier")){
+			return TextUtil.round(100*value, prec) + "%";
 		}
 		
-		// Hit chance:
-		if(parameter == AttributeParameter.MELEE_HIT_CHANCE || parameter == AttributeParameter.RANGED_HIT_CHANCE || parameter == AttributeParameter.MAGIC_HIT_CHANCE){
-			
-			value*= -1;
-			
-			if(value < 0) return "" + TextUtil.round(value*100, 0) + "%";
-			return "" + TextUtil.round((value)*100, 0) + "%";
-				
-		}
-
-		// Amour penetration:
-		if(parameter == AttributeParameter.MELEE_ARMOUR_PENETRATION || parameter == AttributeParameter.RANGED_ARMOUR_PENETRATION || parameter == AttributeParameter.MAGIC_ARMOUR_PENETRATION){
-			
-			if(value < 0) return TextUtil.round(value*100, 0) + "%";
-			return TextUtil.round(value*100, 0) + "%";
-				
+		if(parameter.toString().toLowerCase().endsWith("modifier")){
+			if(value < 0) return "" + TextUtil.round(value, prec);
+			return "+" + TextUtil.round(value, prec);
 		}
 		
-		// Burn resist:
-		if(parameter == AttributeParameter.BURN_RESIST){
-			
-			return TextUtil.round(value*100, 0) + "%";
-			
+		if(parameter.toString().toLowerCase().endsWith("penetration")){
+			if(value < 0) return "" + TextUtil.round(value, prec);
+			return "+" + TextUtil.round(value*100, prec-2) + "%";
 		}
 		
-		// Drops:
-		if(parameter == AttributeParameter.DROP_MODIFIER){
-			
-			return TextUtil.round(value*100, 0) + "%";
-			
-		}
 		
-		return "";
+		return TextUtil.round(value, prec);
 		
 				
 	}
