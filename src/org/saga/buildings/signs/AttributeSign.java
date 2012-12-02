@@ -2,7 +2,6 @@ package org.saga.buildings.signs;
 
 import org.bukkit.block.Sign;
 import org.saga.buildings.Building;
-import org.saga.buildings.TrainingCamp;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.messages.BuildingMessages;
@@ -22,7 +21,7 @@ public class AttributeSign extends BuildingSign{
 	
 	// Initialisation:
 	/**
-	 * Creates a stone 
+	 * Creates the attribute sign.
 	 * 
 	 * @param type transaction type
 	 * @param sign sign
@@ -34,12 +33,12 @@ public class AttributeSign extends BuildingSign{
 	 */
 	private AttributeSign(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building){
 	
-		super(sign, SIGN_NAME, secondLine, thirdLine, fourthLine, building);
+		super(sign, SIGN_NAME, secondLine.toLowerCase(), thirdLine, fourthLine, building);
 		
 	}
 	
 	/**
-	 * Creates the training 
+	 * Creates the attribute sign.
 	 * 
 	 * @param sign bukkit sign
 	 * @param firstLine first line
@@ -73,9 +72,8 @@ public class AttributeSign extends BuildingSign{
 	
 		
 		String attribute = getFirstParameter();
-		Integer trainLimit = getTrainLimit();
 		
-		if(!getBuilding().getDefinition().hasAttribute(attribute) || trainLimit <= 0) return SignStatus.INVALIDATED;
+		if(!AttributeConfiguration.config().getAttributeNames().contains(attribute)) return SignStatus.INVALIDATED;
 
 		return SignStatus.ENABLED;
 		
@@ -91,20 +89,16 @@ public class AttributeSign extends BuildingSign{
 	public String getLine(int index, SignStatus status) {
 	
 		
-		Integer trainLimit = getTrainLimit();
-		
 		switch (status) {
 			
 			case ENABLED:
 
 				if(index == 1) return getFirstParameter();
-				if(index == 3 && trainLimit > 0 && trainLimit < AttributeConfiguration.config().maxAttributeScore) return "limit: " + trainLimit;
 				break;
 				
 			case DISABLED:
 
 				if(index == 1) return getFirstParameter();
-				if(index == 3 && trainLimit > 0 && trainLimit < AttributeConfiguration.config().maxAttributeScore) return "limit: " + trainLimit;
 				break;
 			
 			case INVALIDATED:
@@ -115,7 +109,6 @@ public class AttributeSign extends BuildingSign{
 			default:
 				
 				if(index == 1) return "-";
-				if(index == 3 && trainLimit > 0 && trainLimit < AttributeConfiguration.config().maxAttributeScore) return "limit: " + "-";
 				break;
 
 		}
@@ -125,26 +118,7 @@ public class AttributeSign extends BuildingSign{
 		
 	}
 	
-	/**
-	 * Gets the training limit for attributes.
-	 * 
-	 * @return training limit for attributes
-	 */
-	private Integer getTrainLimit() {
-		
-		
-		Integer trainLimit = AttributeConfiguration.config().maxAttributeScore;
-		
-		if(getBuilding() instanceof TrainingCamp){
-			trainLimit = ((TrainingCamp) getBuilding()).getTrainLimit();
-		}
-		
-		return trainLimit;
-		
-		
-	}
-	
-	
+
 	
 	// Events:
 	/* 
@@ -167,12 +141,6 @@ public class AttributeSign extends BuildingSign{
 		// Available points:
 		if(sagaPlayer.getRemainingAttributePoints() < 1){
 			sagaPlayer.message(BuildingMessages.attributePointsRequired(attribute));
-			return;
-		}
-		
-		// Train limit:
-		if(attributeScore > getTrainLimit()){
-			sagaPlayer.message(BuildingMessages.trainLimitReached(attribute));
 			return;
 		}
 		

@@ -188,7 +188,7 @@ public class TradingPost extends Building implements DaytimeTicker{
 	 */
 	public Double getBuyLimit() {
 
-		return getDefinition().getFunction(BUY_LIMIT).value(getScore());
+		return getDefinition().getFunction(BUY_LIMIT).value(1);
 		
 	}
 	

@@ -2,16 +2,12 @@ package org.saga.buildings;
 
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
+import org.saga.buildings.signs.AttributeSign;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.ResetSign;
 
 public class TrainingCamp extends Building{
 
-	/**
-	 * Train limit.
-	 */
-	private static String TRAIN_LIMIT = "train limit";
-	
 	
 	
 	// Initialisation:
@@ -21,9 +17,7 @@ public class TrainingCamp extends Building{
 	 * @param definition building definition
 	 */
 	public TrainingCamp(BuildingDefinition definition) {
-		
 		super(definition);
-		
 	}
 	
 	
@@ -32,6 +26,7 @@ public class TrainingCamp extends Building{
 	@Override
 	protected boolean isBuildingSign(String firstLine) {
 	
+		if(firstLine.equalsIgnoreCase(AttributeSign.SIGN_NAME)) return true;
 		if(firstLine.equalsIgnoreCase(ResetSign.SIGN_NAME)) return true;
 		
 		return super.isBuildingSign(firstLine);
@@ -47,28 +42,20 @@ public class TrainingCamp extends Building{
 	protected BuildingSign createBuildingSign(Sign sign, SignChangeEvent event) {
 	
 
-		// Respec sign:
-		if(event.getLine(0).equalsIgnoreCase(ResetSign.SIGN_NAME)){
-			
-			return ResetSign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
-			
+		// Attribute sign:
+		if(event.getLine(0).equalsIgnoreCase(AttributeSign.SIGN_NAME)){
+			return AttributeSign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
 		}
 		
+		// Reset sign:
+		if(event.getLine(0).equalsIgnoreCase(ResetSign.SIGN_NAME)){
+			return ResetSign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
+		}
 		
 		return super.createBuildingSign(sign, event);
 		
 	
 	}
-	
-	/**
-	 * Gets the train limit.
-	 * 
-	 * @return train limit
-	 */
-	public Integer getTrainLimit() {
 
-		return getDefinition().getFunction(TRAIN_LIMIT).intValue(getScore());
-		
-	}
 	
 }

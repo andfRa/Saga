@@ -25,7 +25,6 @@ import org.saga.settlements.BundleToggleable;
 import org.saga.settlements.SagaChunk;
 import org.saga.settlements.SagaMap;
 import org.saga.settlements.Settlement;
-import org.saga.utility.text.RomanNumeral;
 import org.saga.utility.text.StringBook;
 import org.saga.utility.text.StringFramer;
 import org.saga.utility.text.StringTable;
@@ -505,8 +504,6 @@ public class SettlementMessages {
 				String points = definitions[j].getBuildPoints() + "";
 				String effect = "";
 				
-				Integer score = settlement.getBuildingLevel(name);
-				
 				// Requirements met:
 				if(definitions[j].checkRequirements(settlement, 1)){
 					
@@ -514,16 +511,11 @@ public class SettlementMessages {
 					Integer totalBuildings = settlement.getAvailableBuildings(name);
 					Integer usedBuildings = settlement.getTotalBuildings(name);
 					
-					// Upgrades:
-					if(definitions[j].getMaxScore() > 1){
-						 name+= " " + RomanNumeral.binaryToRoman(score);
-					}
-					
 					// Set:
 					if(usedBuildings > 0){
 						
 						// Status:
-						effect = definitions[j].getEffect(score);
+						effect = definitions[j].getEffect();
 						if(effect.length() == 0) effect = "set";
 						
 						// Colours:

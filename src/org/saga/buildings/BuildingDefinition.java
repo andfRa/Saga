@@ -43,23 +43,12 @@ public class BuildingDefinition {
 	private String buildingClass;
 
 
-	// Proficiencies:
-	/**
-	 * Attributes.
-	 */
-	private HashSet<String> attributes;
-	
 	
 	// Availability:
 	/**
 	 * Building points.
 	 */
 	private Integer buildPoints;
-	
-	/**
-	 * Coin cost.
-	 */
-	private TwoPointFunction coinCost;
 	
 	/**
 	 * Number of buildings available.
@@ -71,7 +60,7 @@ public class BuildingDefinition {
 	/**
 	 * Number of storage areas available.
 	 */
-	private TwoPointFunction storageAreas;
+	private Integer storages;
 	
 	/**
 	 * Storage area size.
@@ -86,7 +75,7 @@ public class BuildingDefinition {
 	/**
 	 * Amount of resources crafted.
 	 */
-	private TwoPointFunction craftAmount;
+	private Integer crafted;
 
 	/**
 	 * Related buildings.
@@ -113,17 +102,6 @@ public class BuildingDefinition {
 	private Hashtable<String, TwoPointFunction> functions;
 	
 	
-	// Upgrading:
-	/**
-	 * Building max score.
-	 */
-	private Integer maxScore;
-	
-	/**
-	 * Upgrade cost.
-	 */
-	private TwoPointFunction upgradeCost;
-
 	
 	// Proficiencies:
 	/**
@@ -179,25 +157,10 @@ public class BuildingDefinition {
 			buildingClass = "invalid";
 		}
 		
-		if(attributes == null){
-			attributes = new HashSet<String>();
-			SagaLogger.nullField(BuildingDefinition.class, "attributes");
-		}
-		
-		if(attributes.remove(null)){
-			SagaLogger.nullField(BuildingDefinition.class, "attributes element");
-		}
-		
 		if(buildPoints == null){
 			buildPoints = 1;
 			SagaLogger.nullField(BuildingDefinition.class, "buildPoints");
 		}
-		
-		if(coinCost == null){
-			coinCost = new TwoPointFunction(10000.0);
-			SagaLogger.nullField(BuildingDefinition.class, "coinCost");
-		}
-		coinCost.complete();
 		
 		if(available == null){
 			available = new TwoPointFunction(0.0);
@@ -206,11 +169,10 @@ public class BuildingDefinition {
 		available.complete();
 		
 		
-		if(storageAreas == null){
-			storageAreas = new TwoPointFunction(0.0);
-			SagaLogger.nullField(BuildingDefinition.class, "storageAreas");
+		if(storages == null){
+			storages = 0;
+			SagaLogger.nullField(BuildingDefinition.class, "storages");
 		}
-		storageAreas.complete();
 		
 		if(storageSize == null){
 			storageSize = 1;
@@ -225,11 +187,10 @@ public class BuildingDefinition {
 			recipe.complete();
 		}
 		
-		if(craftAmount == null){
-			craftAmount = new TwoPointFunction(0.0);
-			SagaLogger.nullField(BuildingDefinition.class, "craftAmount");
+		if(crafted == null){
+			crafted = 0;
+			SagaLogger.nullField(BuildingDefinition.class, "crafted");
 		}
-		craftAmount.complete();
 		
 		if(relatedBuildings == null){
 			relatedBuildings = new ArrayList<String>();
@@ -254,17 +215,6 @@ public class BuildingDefinition {
 		for (TwoPointFunction function : functionsElements) {
 			function.complete();
 		}
-		
-		if(maxScore == null){
-			maxScore = 0;
-			SagaLogger.nullField(BuildingDefinition.class, "maxScore");
-		}
-		
-		if(upgradeCost == null){
-			upgradeCost = new TwoPointFunction(Double.MAX_VALUE);
-			SagaLogger.nullField(BuildingDefinition.class, "upgradeCost");
-		}
-		upgradeCost.complete();
 		
 		if(roles == null){
 			roles = new Hashtable<String, Double>();
@@ -308,28 +258,6 @@ public class BuildingDefinition {
 	 */
 	public String getBuildingClass() {
 		return buildingClass;
-	}
-
-	
-	
-	// Attributes:
-	/**
-	 * Check if the building allows the attribute.
-	 * 
-	 * @param name attributes name
-	 * @return true if has a attributes
-	 */
-	public boolean hasAttribute(String name) {
-		return attributes.contains(name);
-	}
-	
-	/**
-	 * Gets the attributes.
-	 * 
-	 * @return the attributes
-	 */
-	public HashSet<String> getAttributes() {
-		return new HashSet<String>(attributes);
 	}
 	
 	
@@ -389,11 +317,10 @@ public class BuildingDefinition {
 	/**
 	 * Gets the amount of storage areas available.
 	 * 
-	 * @param buildingLevel building level
 	 * @return storage areas available
 	 */
-	public Integer getAvailableStorages(Integer buildingLevel) {
-		return storageAreas.intValue(buildingLevel);
+	public Integer getStorages() {
+		return storages;
 	}
 	
 	/**
@@ -417,11 +344,10 @@ public class BuildingDefinition {
 	/**
 	 * Gets the amount of crafted resources.
 	 * 
-	 * @param level building level
 	 * @return amount of crafted resources
 	 */
-	public Integer getCraftAmount(Integer level) {
-		return craftAmount.intValue(level);
+	public Integer getCraftAmount() {
+		return crafted;
 	}
 	
 	/**
@@ -473,28 +399,6 @@ public class BuildingDefinition {
 		
 		return function;
 
-	}
-	
-	
-	
-	// Upgrading:
-	/**
-	 * Get buildings max score.
-	 * 
-	 * @return max score
-	 */
-	public Integer getMaxScore() {
-		return maxScore;
-	}
-	
-	/**
-	 * Gets building upgrade cost.
-	 * 
-	 * @param score building score
-	 * @return upgrade cost
-	 */
-	public Double getUpgradeCost(Integer score) {
-		return upgradeCost.value(score);
 	}
 	
 	
@@ -557,12 +461,11 @@ public class BuildingDefinition {
 	/**
 	 * Gets the building effect.
 	 * 
-	 * @return building effect
 	 */
-	public String getEffect(Integer bldgScore) {
+	public String getEffect() {
 		
 		return effect
-			.replaceAll(CRAFT_AMOUNT_REPLACE, getCraftAmount(bldgScore).toString())
+			.replaceAll(CRAFT_AMOUNT_REPLACE, getCraftAmount().toString())
 			.replaceAll(CRAFT_DAYTIME_REPLACE, getCraftTime().toString())
 			.replaceAll(PERFORM_DAYTIME_REPLACE, getPerformTime().toString())
 		;

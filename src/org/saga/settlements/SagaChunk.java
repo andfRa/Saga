@@ -370,7 +370,6 @@ public class SagaChunk {
 		
 		this.bld = building;
 		this.bld.setSagaChunk(this);
-		getChunkBundle().setBuildingScore(building.getName(), 1);
 		this.bld.enable();
 		
 	}

@@ -62,7 +62,7 @@ public class ResetSign extends BuildingSign{
 	 * @return training sign
 	 */
 	public static ResetSign create(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building) {
-		return new ResetSign(sign, secondLine, thirdLine, fourthLine, building);
+		return new ResetSign(sign, secondLine.toLowerCase(), thirdLine, fourthLine, building);
 	}
 
 	/* 

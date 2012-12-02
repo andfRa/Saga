@@ -11,13 +11,11 @@ import org.saga.buildings.Home;
 import org.saga.buildings.TownSquare;
 import org.saga.buildings.storage.StorageArea;
 import org.saga.config.SettlementConfiguration;
-import org.saga.dependencies.EconomyDependency;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.factions.Faction;
 import org.saga.factions.FactionClaimManager;
 import org.saga.messages.BuildingMessages;
 import org.saga.messages.ClaimMessages;
-import org.saga.messages.EconomyMessages;
 import org.saga.messages.GeneralMessages;
 import org.saga.messages.SettlementMessages;
 import org.saga.messages.effects.SettlementEffectHandler;
@@ -189,69 +187,8 @@ public class BuildingCommands {
 			
 	}
 	
-	@Command(
-			aliases = {"bupgrade"},
-			usage = "",
-			flags = "",
-			desc = "Upgrade the building.",
-			min = 0,
-			max = 0
-		)
-	@CommandPermissions({"saga.user.building.upgrade"})
-	public static void upgrade(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 	
-		// Retrieve building:
-		SagaChunk selChunk = sagaPlayer.getSagaChunk();
-		if(selChunk == null){
-			sagaPlayer.message(BuildingMessages.noBuilding());
-			return;
-		}
-		
-		Building selBuilding = selChunk.getBuilding();
-		if(selBuilding == null){
-			sagaPlayer.message(BuildingMessages.noBuilding());
-			return;
-		}
-		Bundle selChunkBundle = selBuilding.getChunkBundle();
-
-		Integer bldgScore = selBuilding.getScore();
-		
-		// Permission:
-		if(!selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.BUILDING_UPGRADE)){
-			sagaPlayer.message(GeneralMessages.noPermission());
-			return;
-		}
-		
-		// Limit:
-		if(bldgScore >= selBuilding.getDefinition().getMaxScore()){
-			sagaPlayer.message(BuildingMessages.upgradeLimit(selBuilding));
-			return;
-		}
-
-		// Enough coins:
-		Double cost = selBuilding.getDefinition().getUpgradeCost(bldgScore);
-		if(EconomyDependency.getCoins(sagaPlayer) < cost){
-			sagaPlayer.message(EconomyMessages.notEnoughCoins());
-			return;
-		}
-
-		// Take coins:
-		EconomyDependency.removeCoins(sagaPlayer, cost);
-		sagaPlayer.message(EconomyMessages.coinsSpent(cost));
-		
-		// Upgrade:
-		selChunkBundle.setBuildingScore(selBuilding.getName(), bldgScore + 1);
-		
-		// Inform:
-		sagaPlayer.message(BuildingMessages.upgraded(selBuilding));
-	
-		// Play effect:
-		SettlementEffectHandler.playBuildingUpgrade(sagaPlayer, selBuilding);
-		
-		
-	}	
-		
 	// General building storage:
 	@Command(
 			aliases = {"baddstorage","baddstore"},

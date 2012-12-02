@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.Hashtable;
 
 import org.bukkit.Chunk;
 import org.bukkit.Material;
@@ -66,11 +65,7 @@ public class Bundle extends SagaCustomSerialization{
 	 */
 	private ArrayList<SagaChunk> groupChunks;
 
-	/**
-	 * Building scores.
-	 */
-	private Hashtable<String, Integer> buildingScores;
-	
+
 	/**
 	 * Chunk group owners.
 	 */
@@ -125,7 +120,6 @@ public class Bundle extends SagaCustomSerialization{
 		this.id = BundleManager.manager().getUnusedId();
 		this.players = new ArrayList<String>();
 		this.groupChunks = new ArrayList<SagaChunk>();
-		this.buildingScores = new Hashtable<String, Integer>();
 		this.isSavingEnabled = true;
 		this.owner = "";
 		this.fireSpread = false;
@@ -162,16 +156,6 @@ public class Bundle extends SagaCustomSerialization{
 			}
 		}
 
-		if(buildingScores == null){
-			SagaLogger.nullField(this, "buildingScores");
-			buildingScores = new Hashtable<String, Integer>();
-		}
-		ArrayList<Building> builings = getBuildings();
-		for (Building building : builings) {
-			if(buildingScores.containsValue(building.getName())) continue;
-			buildingScores.put(building.getName(), 1);
-		}
-		
 		if(owner == null){
 			SagaLogger.nullField(this, "owners");
 			owner = "";
@@ -703,84 +687,6 @@ public class Bundle extends SagaCustomSerialization{
 		return null;
 		
 	}
-	
-	
-	/**
-	 * Gets the building level.
-	 * 
-	 * @param buildingName building name
-	 * @return building level
-	 */
-	public Integer getBuildingLevel(String buildingName) {
-
-		for (SagaChunk sagaChunk : groupChunks) {
-			
-			Building building = sagaChunk.getBuilding();
-			if(building == null) continue;
-			
-			if(building.getName().equals(buildingName)) return building.getScore();
-			
-		}
-		
-		return 0;
-		
-	}
-	
-	
-	
-	// Building scores:
-	/**
-	 * Gets the building score.
-	 * 
-	 * @param bldgName building name
-	 * @return building score
-	 */
-	public Integer getBuildingScore(String bldgName) {
-		
-		Integer score = buildingScores.get(bldgName);
-		if(score == null) return 0;
-		
-		return score;
-		
-	}
-	
-	/**
-	 * Sets building score.
-	 * 
-	 * @param bldgName building name
-	 * @param score building score
-	 */
-	public void setBuildingScore(String bldgName, Integer score) {
-		
-		buildingScores.put(bldgName, score);
-		
-		// Update players:
-		Collection<SagaPlayer> members = getOnlineMembers();
-		
-		for (SagaPlayer sagaPlayer : members) {
-			sagaPlayer.update();
-		}
-		
-	}
-	
-	/**
-	 * Removes building score.
-	 * 
-	 * @param bldgName building name
-	 */
-	public void removeBuildingScore(String bldgName) {
-		
-		buildingScores.remove(bldgName);
-
-		// Update players:
-		Collection<SagaPlayer> members = getOnlineMembers();
-
-		for (SagaPlayer sagaPlayer : members) {
-			sagaPlayer.update();
-		}
-		
-	}
-	
 	
 	
 

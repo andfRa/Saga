@@ -354,27 +354,6 @@ public class SettlementConfiguration {
 	}
 	
 	
-	/**
-	 * Gets building max score.
-	 * 
-	 * @return building max score
-	 */
-	public Integer getMaxBldgScore() {
-
-		int maxScore = 0;
-		
-		for (BuildingDefinition bldgDef : buildingDefinitions) {
-			
-			if(bldgDef.getMaxScore() > maxScore) maxScore = bldgDef.getMaxScore();
-			
-		}
-		
-		return maxScore;
-		
-		
-	}
-	
-	
 	
 	// Commands:
 	/**

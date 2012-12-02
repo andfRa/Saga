@@ -18,8 +18,6 @@ import org.saga.Clock;
 import org.saga.Clock.DaytimeTicker;
 import org.saga.Saga;
 import org.saga.SagaLogger;
-import org.saga.buildings.signs.AbilitySign;
-import org.saga.buildings.signs.AttributeSign;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.BuildingSign.SignException;
 import org.saga.buildings.storage.StorageArea;
@@ -277,15 +275,6 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	}
 	
 	/**
-	 * Gets the building score.
-	 * 
-	 * @return building score
-	 */
-	public Integer getScore() {
-		return getChunkBundle().getBuildingScore(name);
-	}
-	
-	/**
 	 * Gets building definition.
 	 * 
 	 * @return building definition
@@ -376,15 +365,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 * @return true if a building sign
 	 */
 	protected boolean isBuildingSign(String firstLine) {
-		
-
-		if( firstLine.equalsIgnoreCase(AttributeSign.SIGN_NAME) ||
-			firstLine.equalsIgnoreCase(AbilitySign.SIGN_NAME)
-		) return true;
-		
 		return false;
-		
-		
 	}
 	
 	/**
@@ -395,27 +376,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 * @return building sign, null if none
 	 */
 	protected BuildingSign createBuildingSign(Sign sign, SignChangeEvent event) {
-
-		
-		BuildingSign buildingSign = null;
-		
-		// Attribute sign:
-		if(event.getLine(0).equalsIgnoreCase(AttributeSign.SIGN_NAME)){
-			
-			buildingSign = AttributeSign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
-			
-		}
-
-		// Attribute sign:
-		else if(event.getLine(0).equalsIgnoreCase(AbilitySign.SIGN_NAME)){
-			
-			buildingSign = AbilitySign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
-			
-		}
-
-		return buildingSign;
-		
-		
+		return null;
 	}
 
 	
@@ -651,7 +612,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 * @return amount of storage areas available
 	 */
 	public Integer getAvailableStorageAreas() {
-		return getDefinition().getAvailableStorages(getScore());
+		return getDefinition().getStorages();
 	}
 	
 	/**
@@ -1013,7 +974,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		RandomRecipe recipes = new RandomRecipe(getDefinition().getRecipes());
 		
 		// Craft:
-		Integer toCraft = getDefinition().getCraftAmount(getScore());
+		Integer toCraft = getDefinition().getCraftAmount();
 		
 		while(recipes.size() > 0 && toCraft > 0){
 			
