@@ -1,9 +1,6 @@
 package org.saga.config;
 
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
@@ -11,9 +8,6 @@ import java.util.Set;
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.saga.SagaLogger;
-import org.saga.buildings.Building;
-import org.saga.buildings.BuildingDefinition;
-import org.saga.exceptions.InvalidBuildingException;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.utility.TwoPointFunction;
@@ -35,13 +29,6 @@ public class SettlementConfiguration {
 		return instance;
 	}
 	
-
-	
-	// Definitions:
-	/**
-	 * Building definitions.
-	 */
-	private ArrayList<BuildingDefinition> buildingDefinitions;
 
 	
 	// Claims:
@@ -201,14 +188,6 @@ public class SettlementConfiguration {
 			inactiveSetDays = 1;
 		}
 		
-		if(buildingDefinitions == null){
-			SagaLogger.nullField(getClass(), "buildingDefinitions");
-			buildingDefinitions = new ArrayList<BuildingDefinition>();
-		}
-		for (BuildingDefinition definition : buildingDefinitions) {
-			definition.complete();
-		}
-
 		if(enabledSignColor == null){
 			SagaLogger.nullField(getClass(), "enabledSignColor");
 			enabledSignColor = ChatColor.DARK_GREEN;
@@ -269,88 +248,6 @@ public class SettlementConfiguration {
 	 */
 	public Integer getMaxNameLength() {
 		return maxNameLength;
-	}
-	
-	
-	
-	// Buildings:
-	/**
-	 * Gets a new building with the given name.
-	 * 
-	 * @param name building name
-	 * @return building with the given name
-	 * @throws InvalidBuildingException if building definition is missing
-	 */
-	public Building createBuilding(String name) throws InvalidBuildingException {
-
-		
-		BuildingDefinition definition = SettlementConfiguration.config().getBuildingDefinition(name);
-		
-		if(definition == null){
-			
-			throw new InvalidBuildingException(name, "missing definition");
-			
-		}
-		
-		try {
-			
-			Class<?> cl = Class.forName(definition.getBuildingClass());
-			Class<? extends Building> clca = cl.asSubclass(Building.class);
-			Constructor<? extends Building> co = clca.getConstructor(BuildingDefinition.class);
-			return co.newInstance(definition);
-			
-		} catch (Throwable e) {
-			
-			throw new InvalidBuildingException(name, e.getClass().getSimpleName() + ":" + e.getMessage());
-
-		}
-		
-		
-	}
-	
-	/**
-	 * Gets definition for the given building.
-	 * 
-	 * @param name building name
-	 * @return building definition, null if not found
-	 */
-	public BuildingDefinition getBuildingDefinition(String name) {
-
-		for (BuildingDefinition definition : buildingDefinitions) {
-			if(definition.getName().equals(name)) return definition;
-		}
-		
-		return null;
-		
-	}
-	
-	/**
-	 * Gets definition for the given building.
-	 * 
-	 * @return building definitions
-	 */
-	public ArrayList<BuildingDefinition> getBuildingDefinitions() {
-
-		return new ArrayList<BuildingDefinition>(buildingDefinitions);
-		
-	}
-	
-	
-	/**
-	 * Gets all building names.
-	 * 
-	 * @return buildings names
-	 */
-	public Collection<String> getBuildingNames() {
-		
-		HashSet<String> names = new HashSet<String>();
-		
-		for (BuildingDefinition definition : buildingDefinitions) {
-			names.add(definition.getName());
-		}
-		
-		return names;
-		
 	}
 	
 	

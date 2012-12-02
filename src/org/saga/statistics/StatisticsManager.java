@@ -19,6 +19,7 @@ import org.saga.Clock.HourTicker;
 import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
 import org.saga.config.AttributeConfiguration;
+import org.saga.config.BuildingConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
@@ -914,7 +915,7 @@ public class StatisticsManager implements HourTicker{
 	public void setBuildings(Bundle bundle) {
 
 		
-		Collection<String> bldgNames = SettlementConfiguration.config().getBuildingNames();
+		Collection<String> bldgNames = BuildingConfiguration.config().getBuildingNames();
 		
 		
 		for (String bldgName : bldgNames) {

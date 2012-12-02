@@ -21,8 +21,8 @@ import org.saga.SagaLogger;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.BuildingSign.SignException;
 import org.saga.buildings.storage.StorageArea;
+import org.saga.config.BuildingConfiguration;
 import org.saga.config.FactionConfiguration;
-import org.saga.config.SettlementConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.exceptions.InvalidLocationException;
 import org.saga.factions.FactionClaimManager;
@@ -118,7 +118,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 			integrity = false;
 		}
 		
-		definition = SettlementConfiguration.config().getBuildingDefinition(name);
+		definition = BuildingConfiguration.config().getBuildingDefinition(name);
 		if(definition == null){
 			SagaLogger.severe(this, "missing definition");
 			integrity = false;

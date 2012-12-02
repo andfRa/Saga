@@ -10,7 +10,7 @@ import org.saga.buildings.Building;
 import org.saga.buildings.Home;
 import org.saga.buildings.TownSquare;
 import org.saga.buildings.storage.StorageArea;
-import org.saga.config.SettlementConfiguration;
+import org.saga.config.BuildingConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.factions.Faction;
 import org.saga.factions.FactionClaimManager;
@@ -63,7 +63,7 @@ public class BuildingCommands {
 		selBundle = selChunk.getChunkBundle();
 
 		// Valid building:
-		if(SettlementConfiguration.config().getBuildingDefinition(buildingName) == null){
+		if(BuildingConfiguration.config().getBuildingDefinition(buildingName) == null){
 			sagaPlayer.message(BuildingMessages.invalidBuilding(buildingName));
 			return;
 		}
@@ -71,7 +71,7 @@ public class BuildingCommands {
 		// Building:
 		Building selBuilding;
 		try {
-			selBuilding = SettlementConfiguration.config().createBuilding(buildingName);
+			selBuilding = BuildingConfiguration.config().createBuilding(buildingName);
 		} catch (InvalidBuildingException e) {
 			SagaLogger.severe(SettlementCommands.class, sagaPlayer + " tried to set a building with missing definition");
 			sagaPlayer.error("definition missing for " + buildingName + " building");

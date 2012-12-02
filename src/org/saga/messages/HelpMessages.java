@@ -14,6 +14,7 @@ import org.saga.buildings.signs.BuySign;
 import org.saga.buildings.signs.GuardianRuneSign;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
+import org.saga.config.BuildingConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.ProficiencyConfiguration;
@@ -293,7 +294,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 
 		// Buildings table:
 		StringTable bldgsTable = new StringTable(colours);
-		ArrayList<BuildingDefinition> bldgsDefinitions = SettlementConfiguration.config().getBuildingDefinitions();
+		ArrayList<BuildingDefinition> bldgsDefinitions = BuildingConfiguration.config().getBuildingDefinitions();
 			
 		// Titles:
 		bldgsTable.addLine(new String[]{GeneralMessages.columnTitle("building"), GeneralMessages.columnTitle("pts."), GeneralMessages.columnTitle("description")});
@@ -561,7 +562,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 	public static String townSquare(){
 		
 		
-		ArrayList<BuildingDefinition> buildings = SettlementConfiguration.config().getBuildingDefinitions();
+		ArrayList<BuildingDefinition> buildings = BuildingConfiguration.config().getBuildingDefinitions();
 		
 		for (BuildingDefinition building : buildings) {
 			if(building.getBuildingClass().equals(TownSquare.class.getName())) return building.getName();
@@ -575,7 +576,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 	public static String tradingPost(){
 	
 	
-		ArrayList<BuildingDefinition> buildings = SettlementConfiguration.config().getBuildingDefinitions();
+		ArrayList<BuildingDefinition> buildings = BuildingConfiguration.config().getBuildingDefinitions();
 		
 		for (BuildingDefinition building : buildings) {
 			if(building.getBuildingClass().equals(TradingPost.class.getName())) return building.getName();

@@ -9,6 +9,7 @@ import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.saga.buildings.Building;
 import org.saga.buildings.BuildingDefinition;
+import org.saga.config.BuildingConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
@@ -480,7 +481,7 @@ public class SettlementMessages {
 		StringTable table = new StringTable(colours);
 		
 		// Retrieve buildings:
-		BuildingDefinition[] definitions = SettlementConfiguration.config().getBuildingDefinitions().toArray(new BuildingDefinition[0]);
+		BuildingDefinition[] definitions = BuildingConfiguration.config().getBuildingDefinitions().toArray(new BuildingDefinition[0]);
 		
 		// Sort required by size:
 		Comparator<BuildingDefinition> comparator = new Comparator<BuildingDefinition>() {

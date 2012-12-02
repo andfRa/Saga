@@ -21,6 +21,7 @@ import org.saga.commands.SettlementCommands;
 import org.saga.commands.StatisticsCommands;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
+import org.saga.config.BuildingConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.FactionConfiguration;
@@ -123,6 +124,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		AbilityConfiguration.unload();
 		GeneralConfiguration.unload();
 		SettlementConfiguration.unload();
+		BuildingConfiguration.unload();
 		EconomyConfiguration.unload();
 		VanillaConfiguration.unload();
 		FactionConfiguration.unload();
@@ -175,6 +177,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		AbilityConfiguration.load();
 		AttributeConfiguration.load();
 		ProficiencyConfiguration.load(); // Needs access to experience info.
+		BuildingConfiguration.load();
 		SettlementConfiguration.load();
 		EconomyConfiguration.load();
 		FactionConfiguration.load();

@@ -14,6 +14,7 @@ import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.Building;
 import org.saga.buildings.BuildingDefinition;
+import org.saga.config.BuildingConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
@@ -508,13 +509,11 @@ public class Settlement extends Bundle implements MinuteTicker{
 	@Override
 	public Integer getAvailableBuildings(String buildingName) {
 
-
-		BuildingDefinition definition = SettlementConfiguration.config().getBuildingDefinition(buildingName);
+		BuildingDefinition definition = BuildingConfiguration.config().getBuildingDefinition(buildingName);
 		
 		if(definition == null) return 0;
 		
 		return definition.getAvailableAmount(getSize());
-		
 		
 	}
 	

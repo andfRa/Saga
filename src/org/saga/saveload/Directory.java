@@ -15,6 +15,7 @@ public enum Directory {
 	EXPERIENCE_CONFIG("plugins/Saga/config/", "experience.json"),
 	PROFICIENCY_CONFIG("plugins/Saga/config/", "proficiencies.json"),
 	FACTION_CONFIG("plugins/Saga/config/", "factions.json"),
+	BUILDING_CONFIG("plugins/Saga/config/", "buildings.json"),
 	
 	FACTION_CLAIMS("plugins/Saga/claims/", "faction claims.json"),
 	
