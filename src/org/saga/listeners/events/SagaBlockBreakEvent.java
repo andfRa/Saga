@@ -57,9 +57,9 @@ public class SagaBlockBreakEvent {
 	private BlockBreakEvent event;
 	
 	/**
-	 * Drop modifier.
+	 * Extra drop chance.
 	 */
-	private Double modifier = 0.0;
+	private Double extra = 0.0;
 
 	/**
 	 * Tool sloppiness multiplier.
@@ -111,12 +111,12 @@ public class SagaBlockBreakEvent {
 	
 	// Modify:
 	/**
-	 * Modifies drops.
+	 * Modifies extra drop chance.
 	 * 
 	 * @param amount amount to add
 	 */
-	public void modifyDrops(Double amount) {
-		modifier += amount;
+	public void modifyExtraDrop(Double amount) {
+		extra += amount;
 	}
 
 	/**
@@ -159,9 +159,9 @@ public class SagaBlockBreakEvent {
 			}
 			
 			// Select and drop:
-			ArrayList<ItemStack> selectedDrops = selectDrops(drops);
-			Location location = block.getLocation();
-			for (ItemStack drop : selectedDrops) {
+			if(RANDOM.nextDouble() < extra && drops.size() > 0){
+				Location location = block.getLocation();
+				ItemStack drop = drops.get(RANDOM.nextInt(drops.size()));
 				location.getWorld().dropItemNaturally(location, drop);
 			}
 			
@@ -188,35 +188,6 @@ public class SagaBlockBreakEvent {
 		
 		
 		
-	}
-	
-	/**
-	 * Selects random drops from given drops
-	 * 
-	 * @param drops drops
-	 * @return selected drops
-	 */
-	private ArrayList<ItemStack> selectDrops(ArrayList<ItemStack> drops) {
-
-
-		Integer newDrops = TwoPointFunction.randomRound(modifier);
-		ArrayList<ItemStack> selectedDrops = new ArrayList<ItemStack>();
-		
-		if(drops.size() > 0){
-			
-			for (int i = 0; i < newDrops; i++) {
-			
-				ItemStack newDrop = drops.get(RANDOM.nextInt(drops.size()));
-				selectedDrops.add(newDrop.clone());
-				
-				newDrops--;
-			
-			}
-		}
-		
-		return selectedDrops;
-		
-
 	}
 
 	/**

@@ -206,17 +206,32 @@ public class Attribute {
 	}
 
 	/**
-	 * Gets attack entry set.
+	 * Gets parameter entry set.
 	 * 
-	 * @return attack entry set
+	 * @return parameter entry set
 	 */
-	public ArrayList<Entry<AttributeParameter, TwoPointFunction>> getAllEntries() {
+	public ArrayList<Entry<AttributeParameter, TwoPointFunction>> getAllParameterEntries() {
 		
 		ArrayList<Entry<AttributeParameter, TwoPointFunction>> entries = new ArrayList<Entry<AttributeParameter,TwoPointFunction>>();
 		
 		entries.addAll(attack.entrySet());
 		entries.addAll(defend.entrySet());
 		entries.addAll(passive.entrySet());
+		
+		return entries;
+		
+	}
+	
+	/**
+	 * Gets handling entry set.
+	 * 
+	 * @return handling entry set
+	 */
+	public ArrayList<Entry<Material, TwoPointFunction>> getAllHandlingEntries() {
+		
+		ArrayList<Entry<Material, TwoPointFunction>> entries = new ArrayList<Entry<Material,TwoPointFunction>>();
+		
+		entries.addAll(handling.entrySet());
 		
 		return entries;
 		

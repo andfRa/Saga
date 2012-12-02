@@ -69,7 +69,7 @@
     "attack":{},
     "defend":{},
     "passive":{
-      "DROP_MODIFIER":{"x1":0,"y1":0,"x2":100,"y2":0.60}
+      "EXTRA_DROP_CHANCE":{"x1":0,"y1":0,"x2":100,"y2":0.60}
     },
     "handling":{},
     "description":"Additional drops from blocks."

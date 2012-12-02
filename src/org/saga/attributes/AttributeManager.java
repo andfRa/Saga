@@ -236,7 +236,7 @@ public class AttributeManager {
 		if(manager == null) return;
 
 		// Drops:
-		event.modifyDrops(manager.getPassiveModifier(AttributeParameter.DROP_MODIFIER));
+		event.modifyExtraDrop(manager.getPassiveModifier(AttributeParameter.EXTRA_DROP_CHANCE));
 
 		// Tool:
 		event.modifyToolHandling(getToolHandlingModifier(event.tool));
