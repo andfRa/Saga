@@ -91,8 +91,6 @@ public class Stoneskin extends Ability{
 		// Melee, ranged and magic:
 		if(event.type != DamageType.MELEE && event.type != DamageType.RANGED && event.type != DamageType.MAGIC) return false;
 		
-		System.out.println("");
-		
 		// Regenerate:
 		long passed = System.currentTimeMillis() - time;
 		time = System.currentTimeMillis();
@@ -107,7 +105,6 @@ public class Stoneskin extends Ability{
 			}
 			
 		}
-		
 		
 		if(hits <= 0) return false;
 		
