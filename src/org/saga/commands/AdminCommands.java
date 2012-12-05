@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
@@ -17,6 +18,7 @@ import org.saga.Clock;
 import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.Saga;
 import org.saga.SagaLogger;
+import org.saga.buildings.Building;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.FactionConfiguration;
@@ -34,6 +36,7 @@ import org.saga.messages.GeneralMessages;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.SettlementMessages;
 import org.saga.messages.StatsMessages;
+import org.saga.messages.effects.SettlementEffectHandler;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
@@ -892,6 +895,17 @@ public class AdminCommands {
 	)
 	@CommandPermissions({"saga.debug.admin.dinfo"})
 	public static void debugInfo(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+		Building bld = sagaPlayer.getSagaChunk().getBuilding();
+		HashSet<Building> adjacent = new HashSet<Building>();
+		
+		bld.collectAdjacentBuildings(bld, adjacent);
+		
+		for (Building building2 : adjacent) {
+			SettlementEffectHandler.playBuildingUpgrade(sagaPlayer, building2);
+		}
+		
+		System.out.println(adjacent);
 		
 		sagaPlayer.message("debug info command");
 		

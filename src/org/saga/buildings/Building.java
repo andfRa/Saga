@@ -1,6 +1,7 @@
 package org.saga.buildings;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -36,6 +37,7 @@ import org.saga.saveload.SagaCustomSerialization;
 import org.saga.settlements.Bundle;
 import org.saga.settlements.BundleToggleable;
 import org.saga.settlements.SagaChunk;
+import org.saga.settlements.SagaChunk.ChunkSide;
 import org.saga.settlements.Settlement.SettlementPermission;
 import org.saga.utility.items.RandomRecipe;
 import org.saga.utility.items.RecepieBlueprint;
@@ -213,7 +215,8 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	}
 	
 	
-	// Saga chunk:
+	
+	// Chunks:
 	/**
 	 * Sets origin chunk.
 	 * 
@@ -250,6 +253,66 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 			return null;
 		}
 		return sagaChunk.getChunkBundle();
+		
+	}
+	
+	/**
+	 * Collects all similar buildings.
+	 * 
+	 * @param anchor anchor
+	 * @param buildings buildings array
+	 */
+	public <T extends Building> void collectAdjacentBuildings(T anchor, HashSet<T> buildings) {
+
+		
+		// Already on the list:
+		if(!buildings.add(anchor)) return;
+		
+		SagaChunk sagaChunk = null;
+		Building building = null;
+		@SuppressWarnings("unchecked")
+		Class<T> anchorClass = (Class<T>) anchor.getClass();
+
+		// Front:
+		sagaChunk = anchor.getSagaChunk().getAdjacent(ChunkSide.FRONT);
+		if(sagaChunk != null) building = sagaChunk.getBuilding();
+		else building = null;
+		
+		if(building != null && building.getClass().isAssignableFrom(anchorClass)){
+			T adjBuilding = anchorClass.cast(building);
+			collectAdjacentBuildings(adjBuilding, buildings);
+		}
+
+		// Right:
+		sagaChunk = anchor.getSagaChunk().getAdjacent(ChunkSide.RIGHT);
+		if(sagaChunk != null) building = sagaChunk.getBuilding();
+		else building = null;
+		
+		if(building != null && building.getClass().isAssignableFrom(anchorClass)){
+			T adjBuilding = anchorClass.cast(building);
+			collectAdjacentBuildings(adjBuilding, buildings);
+		}
+
+		// Back:
+		sagaChunk = anchor.getSagaChunk().getAdjacent(ChunkSide.BACK);
+		if(sagaChunk != null) building = sagaChunk.getBuilding();
+		else building = null;
+		
+		if(building != null && building.getClass().isAssignableFrom(anchorClass)){
+			T adjBuilding = anchorClass.cast(building);
+			collectAdjacentBuildings(adjBuilding, buildings);
+		}
+		
+		// Left:
+		sagaChunk = anchor.getSagaChunk().getAdjacent(ChunkSide.LEFT);
+		if(sagaChunk != null) building = sagaChunk.getBuilding();
+		else building = null;
+		
+		if(building != null && building.getClass().isAssignableFrom(anchorClass)){
+			T adjBuilding = anchorClass.cast(building);
+			collectAdjacentBuildings(adjBuilding, buildings);
+		}
+		
 		
 	}
 	

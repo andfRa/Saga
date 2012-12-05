@@ -157,9 +157,9 @@ public class BuildingMessages {
 		if(count == 0){
 			return SettlementMessages.positive + "Fight!";
 		}else if((count%2)==0){
-			return SettlementMessages.normal1 + "" + count + ".";
+			return SettlementMessages.normal1 + "" + count;
 		}else{
-			return SettlementMessages.normal2 + "" + count + ".";
+			return SettlementMessages.normal2 + "" + count;
 		}
 		
 	}

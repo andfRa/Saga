@@ -2,6 +2,7 @@ package org.saga.buildings;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 
 import org.bukkit.ChatColor;
 import org.bukkit.block.Block;
@@ -65,10 +66,12 @@ public class Arena extends Building implements SecondTicker{
 	 */
 	public Arena(BuildingDefinition definition) {
 		
-		
 		super(definition);
 
 		arenaPlayers = new ArrayList<Arena.ArenaPlayer>();
+		
+		// Transient:
+		count = 0;
 		
 	}
 
@@ -247,27 +250,6 @@ public class Arena extends Building implements SecondTicker{
 	
 	
 	
-	
-	// Count down:
-	/**
-	 * Initiates or refreshes count down.
-	 * 
-	 * @param count count
-	 */
-	private void intiateCountdown(int count) {
-
-		// Enable clock if not enabled:
-		if(this.count <= 0){
-			Clock.clock().enableSecondTick(this);
-		}
-		
-		this.count = count;
-		
-	}
-	
-	
-	
-	
 	// Time:
 	/* 
 	 * (non-Javadoc)
@@ -280,12 +262,12 @@ public class Arena extends Building implements SecondTicker{
 
 		if(!isEnabled()) return false;
 		
-		// Disable clock:
-		if(count <= 0) return false;
-		
 		// Inform:
 		SagaChunk sagaChunk = getSagaChunk();
 		if(sagaChunk != null) sagaChunk.broadcast(BuildingMessages.countdown(count));
+
+		// Disable clock:
+		if(count <= 0) return false;
 		
 		count--;
 		
@@ -294,6 +276,21 @@ public class Arena extends Building implements SecondTicker{
 		
 	}
 
+	/**
+	 * Initiates or refreshes count down.
+	 * 
+	 * @param count count
+	 */
+	private void intiateCountdown(int count) {
+
+		// Enable clock if not enabled:
+		if(this.count <= 0 && count > 0){
+			Clock.clock().enableSecondTick(this);
+		}
+		
+		this.count = count;
+		
+	}
 	
 	
 	
@@ -307,7 +304,7 @@ public class Arena extends Building implements SecondTicker{
 	public void onPlayerInteract(PlayerInteractEvent event, SagaPlayer sagaPlayer) {
 		
 
-		// Canceled:
+		// Cancelled:
 		if(event.isCancelled()){
 			return;
 		}
@@ -360,6 +357,9 @@ public class Arena extends Building implements SecondTicker{
 			// Take control:
 			event.setUseInteractedBlock(Result.DENY);
 			event.setUseItemInHand(Result.DENY);
+			
+			// Synchronise adjacent:
+			synchArenas();
 			
 		}
 		
@@ -430,17 +430,44 @@ public class Arena extends Building implements SecondTicker{
 	@Override
 	public void onPvPKill(SagaPlayer attacker, SagaPlayer defender) {
 
-		
 		// Add kills:
 		addKill(attacker.getName());
 		addDeath(defender.getName());
-		
+			
 		// Points:
 		addPoints(attacker.getName(), defender.getUsedAttributePoints().doubleValue() * ATTRIBUTE_MULTIPLIER);
+
+		// Synchronise adjacent:
+		synchArenas();
 		
 	
 	}
 	
+	/**
+	 * Synchronises all arenas.
+	 * 
+	 */
+	private void synchArenas() {
+
+
+		// Find all adjacent arenas:
+		HashSet<Arena> arenas = new HashSet<Arena>();
+		collectAdjacentBuildings(this, arenas);
+		
+		// Set scores:
+		for (Arena arena : arenas) {
+			if(arena != this) arena.arenaPlayers = new ArrayList<Arena.ArenaPlayer>(this.arenaPlayers);
+		}
+		
+		// Enable clocks:
+		if(this.count > 0){
+			for (Arena arena : arenas) {
+				if(arena != this) arena.intiateCountdown(this.count);
+			}
+		}
+		
+		
+	}
 	
 	
 	
