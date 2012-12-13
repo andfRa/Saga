@@ -448,7 +448,7 @@ public class SettlementCommands {
 	}
 
 	@Command(
-		aliases = {"sborder","cborder","schunk","flash"},
+		aliases = {"sborder","cborder","schunk","sflash"},
 		usage = "[times]",
 		flags = "",
 		desc = "Show the outline of the chunk. Repeat and wilderness only in admin mode.",
