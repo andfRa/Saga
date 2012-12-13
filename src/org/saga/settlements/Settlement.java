@@ -761,6 +761,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 		ABANDON,
 		DECLARE_OWNER,
 		DISSOLVE,
+		FLASH_CHUNK,
 		INVITE,
 		KICK,
 		SET_ROLE,

@@ -2,6 +2,7 @@ package org.saga.messages.effects;
 
 import java.util.ArrayList;
 
+import org.bukkit.Chunk;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -228,7 +229,35 @@ public class SettlementEffectHandler {
 		playStoreAreaCreate(sagaPlayer, storeArea);
 		
 	}
+
+	public static void playFlash(SagaPlayer sagaPlayer, Chunk chunk) {
+
 		
+		int xmin = chunk.getX() * 16;
+		int zmin = chunk.getZ() * 16;
+		
+		int xmax = xmin + 15;
+		int zmax = zmin + 15;
+		
+		World world = chunk.getWorld();
+		
+		for (int x = xmin; x <= xmax; x++) {
+			
+			for (int z = zmin; z <= zmax; z++) {
+				
+				Location location = new Location(world, x + 0.5, world.getHighestBlockYAt(x, z) + 0.5, z + 0.5);
+				
+				if(x != xmin && x != xmax && z != zmin && z != zmax) continue;
+				
+				sagaPlayer.playGlobalEffect(Effect.SMOKE, 4, location);
+				
+			}
+			
+		}
+		
+		
+	}
+	
 
 	
 	

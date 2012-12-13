@@ -2,6 +2,7 @@ package org.saga.commands;
 
 import java.util.ArrayList;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.saga.Saga;
@@ -12,6 +13,7 @@ import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
 import org.saga.config.SettlementConfiguration;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.exceptions.NonExistantSagaPlayerException;
+import org.saga.messages.AdminMessages;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.FactionMessages;
 import org.saga.messages.GeneralMessages;
@@ -442,6 +444,99 @@ public class SettlementCommands {
 		// Statistics:
 		StatisticsManager.manager().setBuildings(selBundle);
 		
+		
+	}
+
+	@Command(
+		aliases = {"sborder","cborder","schunk","flash"},
+		usage = "[times]",
+		flags = "",
+		desc = "Show the outline of the chunk. Repeat and wilderness only in admin mode.",
+		min = 0,
+		max = 1
+	)
+	@CommandPermissions({"saga.user.settlement.chunkborder"})
+	public static void border(CommandContext args, Saga plugin, final SagaPlayer sagaPlayer) {
+
+		
+		int maxRepeat = 60;
+		long period = 20;
+		
+		String argsAmount;
+		Integer repeat = null;
+
+		// Arguments:
+		switch (args.argsLength()) {
+			
+			case 1:
+				
+				// Repeat:
+				argsAmount = args.getString(0);
+				try {
+					repeat = Integer.parseInt(argsAmount) - 1;
+				}
+				catch (NumberFormatException e) {
+					sagaPlayer.message(GeneralMessages.mustBeNumber(argsAmount));
+					return;
+				}
+				break;
+
+			default:
+
+				repeat = 0;
+				
+				break;
+				
+		}
+		
+		final Chunk chunk = sagaPlayer.getLocation().getChunk();
+		SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(chunk);
+		
+		// Permission:
+		if(sagaChunk != null){
+			Bundle selBundle = sagaChunk.getChunkBundle();
+			if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.FLASH_CHUNK) ){
+				sagaPlayer.message(GeneralMessages.noPermission(selBundle));
+				return;
+			}
+		}
+		
+		// Admin mode only:
+		if(!sagaPlayer.isAdminMode()){
+			
+			// Wilderness:
+			if(sagaChunk == null){
+				sagaPlayer.message(AdminMessages.borderWildernessAdminModeOnly());
+				return;
+			}
+			
+			// Repeat:
+			if(repeat > 0){
+				sagaPlayer.message(AdminMessages.borderRepeatAdminModeOnly());
+				repeat = 0;
+			}
+			
+		}
+
+		// Trim:
+		if(repeat > maxRepeat) repeat = maxRepeat;
+		if(repeat < 0) repeat = 0;
+		
+		// First flash:
+		SettlementEffectHandler.playFlash(sagaPlayer, chunk);
+		
+		// Repeat flash:
+		Runnable task = new Runnable() {
+			@Override
+			public void run() {
+				SettlementEffectHandler.playFlash(sagaPlayer, chunk);
+			}
+		};
+		
+		for (int i = 1; i <= repeat; i++) {
+			Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, task, period*i);
+		}
+
 		
 	}
 	
@@ -1293,12 +1388,6 @@ public class SettlementCommands {
 	
 	
 	// Utility:
-	/**
-	 * Validates building name.
-	 * 
-	 * @param name building name
-	 * @return true if valid
-	 */
 	public static boolean validateName(String name) {
 
 		

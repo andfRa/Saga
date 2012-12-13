@@ -204,6 +204,17 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 
 	
 	
+	// Border command:
+	public static String borderRepeatAdminModeOnly() {
+		return negative + "Repeat function is only available in admin mode.";
+	}
+	
+	public static String borderWildernessAdminModeOnly() {
+		return negative + "Admin mode required to use border command in the wilderness.";
+	}
+	
+	
+	
 	// Wiki:
 	public static String wikiCommands(ArrayList<Method> commandMethods) {
 		

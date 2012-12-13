@@ -6,7 +6,7 @@
     "type":"ROLE",
     "hierarchyLevel":"3",
     "attributeBonuses":{"luck":10,"toughness":5},
-    "settlementPermissions":["BUILD","BUILD_BUILDING","CLAIM","INVITE","ABANDON","KICK","SET_BUILDING","REMOVE_BUILDING","RENAME","SPAWN","MEMBER_COMMAND","ADD_RESIDENT","REMOVE_RESIDENT","MANAGE_PRICES","MANAGE_DEALS","ACCESS_WAREHOUSE","ACCESS_STORAGE","HURT_FARM_ANIMALS"],
+    "settlementPermissions":["BUILD","BUILD_BUILDING","CLAIM","INVITE","ABANDON","KICK","SET_BUILDING","REMOVE_BUILDING","RENAME","SPAWN","MEMBER_COMMAND","ADD_RESIDENT","REMOVE_RESIDENT","MANAGE_PRICES","MANAGE_DEALS","ACCESS_WAREHOUSE","ACCESS_STORAGE","HURT_FARM_ANIMALS","FLASH_CHUNK"],
     "factionPermissions":[]
   },
 
@@ -14,7 +14,7 @@
     "type":"ROLE",
     "hierarchyLevel":"2",
     "attributeBonuses":{"toughness":6,"strength":4},
-    "settlementPermissions":["BUILD","BUILD_BUILDING","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE","HURT_FARM_ANIMALS"],
+    "settlementPermissions":["BUILD","BUILD_BUILDING","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE","HURT_FARM_ANIMALS","FLASH_CHUNK"],
     "factionPermissions":[]
   },
 
@@ -22,7 +22,7 @@
     "type":"ROLE",
     "hierarchyLevel":"2",
     "attributeBonuses":{"strength":6,"precision":4},
-    "settlementPermissions":["BUILD","BUILD_BUILDING","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE","HURT_FARM_ANIMALS"],
+    "settlementPermissions":["BUILD","BUILD_BUILDING","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE","HURT_FARM_ANIMALS","FLASH_CHUNK"],
     "factionPermissions":[]
   },
 
@@ -30,7 +30,7 @@
     "type":"ROLE",
     "hierarchyLevel":"2",
     "attributeBonuses":{"precision":6,"willpower":4},
-    "settlementPermissions":["BUILD","BUILD_BUILDING","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE","HURT_FARM_ANIMALS"],
+    "settlementPermissions":["BUILD","BUILD_BUILDING","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE","HURT_FARM_ANIMALS","FLASH_CHUNK"],
     "factionPermissions":[]
   },
 
@@ -38,7 +38,7 @@
     "type":"INVALID",
     "hierarchyLevel":"2",
     "attributeBonuses":{"willpower":6,"toughness":4},
-    "settlementPermissions":["BUILD","BUILD_BUILDING","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE","HURT_FARM_ANIMALS"],
+    "settlementPermissions":["BUILD","BUILD_BUILDING","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE","HURT_FARM_ANIMALS","FLASH_CHUNK"],
     "factionPermissions":[]
   },
 
