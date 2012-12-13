@@ -771,6 +771,9 @@ public class Settlement extends Bundle implements MinuteTicker{
 		RESIGN,
 		MEMBER_COMMAND,
 		SPAWN,
+		STORAGE_AREA_ADD,
+		STORAGE_AREA_REMOVE,
+		STORAGE_AREA_FLASH,
 		
 		// Farm:
 		HURT_FARM_ANIMALS,

@@ -523,13 +523,13 @@ public class SettlementCommands {
 		if(repeat < 0) repeat = 0;
 		
 		// First flash:
-		SettlementEffectHandler.playFlash(sagaPlayer, chunk);
+		SettlementEffectHandler.playFlashBorder(sagaPlayer, chunk);
 		
 		// Repeat flash:
 		Runnable task = new Runnable() {
 			@Override
 			public void run() {
-				SettlementEffectHandler.playFlash(sagaPlayer, chunk);
+				SettlementEffectHandler.playFlashBorder(sagaPlayer, chunk);
 			}
 		};
 		

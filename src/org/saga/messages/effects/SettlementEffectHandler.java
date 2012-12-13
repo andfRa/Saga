@@ -211,26 +211,24 @@ public class SettlementEffectHandler {
 	
 	public static void playStoreAreaCreate(SagaPlayer sagaPlayer, StorageArea storeArea) {
 		
-		
 		ArrayList<Block> blocks = storeArea.getAllStorage();
 		
 		for (Block block : blocks) {
-			
 			Location location = new Location(block.getWorld(), block.getX() + 0.5, block.getY() + 0.5, block.getZ() + 0.5);
-			
-			sagaPlayer.playGlobalEffect(Effect.MOBSPAWNER_FLAMES, 0, location);
-			
+			sagaPlayer.playGlobalEffect(Effect.SMOKE, 4, location);
 		}
 		
 	}
 	
 	public static void playStoreAreaRemove(SagaPlayer sagaPlayer, StorageArea storeArea) {
-		
 		playStoreAreaCreate(sagaPlayer, storeArea);
-		
+	}
+	
+	public static void playStoreAreaFashBorder(SagaPlayer sagaPlayer, StorageArea storeArea) {
+		playStoreAreaCreate(sagaPlayer, storeArea);
 	}
 
-	public static void playFlash(SagaPlayer sagaPlayer, Chunk chunk) {
+	public static void playFlashBorder(SagaPlayer sagaPlayer, Chunk chunk) {
 
 		
 		int xmin = chunk.getX() * 16;

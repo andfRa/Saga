@@ -215,6 +215,13 @@ public class BuildingCommands {
 			sagaPlayer.message(BuildingMessages.noBuilding());
 			return;
 		}
+
+		// Permission:
+		Bundle selBundle = selBuilding.getChunkBundle();
+		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.STORAGE_AREA_ADD)){
+			sagaPlayer.message(GeneralMessages.noPermission(selBundle));
+			return;
+		}
 	
 		// Remaining storage areas:
 		if(selBuilding.getRemainingStorageAreas() < 1){
@@ -275,6 +282,13 @@ public class BuildingCommands {
 			sagaPlayer.message(BuildingMessages.noBuilding());
 			return;
 		}
+
+		// Permission:
+		Bundle selBundle = selBuilding.getChunkBundle();
+		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.STORAGE_AREA_REMOVE)){
+			sagaPlayer.message(GeneralMessages.noPermission(selBundle));
+			return;
+		}
 	
 		// Retrieve storage:
 		StorageArea storageArea = selBuilding.getStorageArea(sagaPlayer.getLocation());
@@ -293,6 +307,50 @@ public class BuildingCommands {
 		
 		// Effect:
 		SettlementEffectHandler.playStoreAreaRemove(sagaPlayer, storageArea);
+		
+		
+	}
+	
+	@Command(
+			aliases = {"bstorageborder","bflash","sorageflash","bstflash"},
+			usage = "",
+			flags = "",
+			desc = "Show storage area border outline.",
+			min = 0,
+			max = 0
+	)
+	@CommandPermissions({"saga.user.building.storage.border"})
+	public static void storageBorder(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	
+
+		// Retrieve Saga chunk:
+		SagaChunk selChunk = sagaPlayer.getSagaChunk();
+		if(selChunk == null){
+			sagaPlayer.message(SettlementMessages.chunkNotClaimed());
+			return;
+		}
+		
+		// Retrieve building:
+		Building selBuilding = selChunk.getBuilding();
+		if(selBuilding == null){
+			sagaPlayer.message(BuildingMessages.noBuilding());
+			return;
+		}
+
+		// Permission:
+		Bundle selBundle = selBuilding.getChunkBundle();
+		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.STORAGE_AREA_FLASH)){
+			sagaPlayer.message(GeneralMessages.noPermission(selBundle));
+			return;
+		}
+	
+		// Retrieve storages:
+		ArrayList<StorageArea> storages = selBuilding.getStorageAreas();
+
+		// Effect:
+		for (StorageArea storageArea : storages) {
+			SettlementEffectHandler.playStoreAreaFashBorder(sagaPlayer, storageArea);
+		}
 		
 		
 	}
