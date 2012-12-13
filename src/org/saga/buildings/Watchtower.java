@@ -150,6 +150,9 @@ public class Watchtower extends Building implements DaytimeTicker{
 		// Only naturals:
 		if(event.getSpawnReason() != SpawnReason.NATURAL) return;
 		
+		// Only above sea level:
+		if(event.getLocation().getY() < event.getLocation().getWorld().getSeaLevel()) return;
+		  
 		// Check if the chunk is under protection:
 		if(!protectedChunks.contains(locationChunk)) return;
 		
