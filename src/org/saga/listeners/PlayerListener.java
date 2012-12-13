@@ -161,7 +161,7 @@ public class PlayerListener implements Listener {
     @EventHandler(priority = EventPriority.NORMAL)
     public void onPlayerMove(PlayerMoveEvent event) {
 
-    	if(event.getFrom().getChunk() != event.getTo().getChunk()) return;
+    	if(event.getFrom().getChunk() == event.getTo().getChunk()) return;
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
 		
     	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
