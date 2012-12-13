@@ -312,14 +312,14 @@ public class BuildingCommands {
 	}
 	
 	@Command(
-			aliases = {"bstorageborder","bflash","sorageflash","bstflash"},
+			aliases = {"bborder","bflash"},
 			usage = "",
 			flags = "",
 			desc = "Show storage area border outline.",
 			min = 0,
 			max = 0
 	)
-	@CommandPermissions({"saga.user.building.storage.border"})
+	@CommandPermissions({"saga.user.building.storage.showborder"})
 	public static void storageBorder(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 	
 

@@ -448,14 +448,14 @@ public class SettlementCommands {
 	}
 
 	@Command(
-		aliases = {"sborder","cborder","schunk","sflash"},
-		usage = "[times]",
+		aliases = {"sborder","cborder","sflash"},
+		usage = "[repeat times]",
 		flags = "",
 		desc = "Show the outline of the chunk. Repeat and wilderness only in admin mode.",
 		min = 0,
 		max = 1
 	)
-	@CommandPermissions({"saga.user.settlement.chunkborder"})
+	@CommandPermissions({"saga.user.settlement.showchunkborder"})
 	public static void border(CommandContext args, Saga plugin, final SagaPlayer sagaPlayer) {
 
 		
