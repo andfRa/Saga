@@ -87,17 +87,12 @@ public class Clock implements Runnable{
 	synchronized public void run() {
 		
 		
-//		String time = Saga.plugin().getServer().getWorld("world").getTime() +"";
-//		System.out.println("time=" + time);
-		
 		// Seconds:
 		secondsCycle ++;
 		
 		ArrayList<SecondTicker> second = new ArrayList<Clock.SecondTicker>(this.seconds);
 		for (SecondTicker ticker : second) {
-			
 			if(!ticker.clockSecondTick()) this.seconds.remove(ticker);
-			
 		}
 		
 		// Minutes:
@@ -108,9 +103,7 @@ public class Clock implements Runnable{
 			
 			ArrayList<MinuteTicker> minute = new ArrayList<Clock.MinuteTicker>(this.minutes);
 			for (MinuteTicker ticker : minute) {
-				
 				if(!ticker.clockMinuteTick()) this.minutes.remove(ticker);
-				
 			}
 			
 		}
@@ -122,12 +115,10 @@ public class Clock implements Runnable{
 			hoursCycle ++;
 
 			ArrayList<HourTicker> hour = new ArrayList<HourTicker>(this.hours);
-//			SagaLogger.info("Hour tick for " + hour.size() + " registered instances.");
 			for (HourTicker ticker : hour) {
-				
 				if(!ticker.clockHourTick()) this.hours.remove(ticker);
-				
 			}
+			
 		}
 		
 		if(hoursCycle > 23){
@@ -321,7 +312,7 @@ public class Clock implements Runnable{
 		
 		// Initialisation:
 		Clock clock = new Clock();
-		Saga.plugin().getServer().getScheduler().scheduleAsyncRepeatingTask(Saga.plugin(),clock , 200L, 20L);
+		Saga.plugin().getServer().getScheduler().scheduleSyncRepeatingTask(Saga.plugin(),clock , 200L, 20L);
 		instance = clock;
 		
 		// Initial daytimes:
@@ -340,6 +331,7 @@ public class Clock implements Runnable{
 	public static void unload() {
 
 		
+		Saga.plugin().getServer().getScheduler().cancelTasks(Saga.plugin());
 		instance.seconds = null;
 		instance.minutes = null;
 		instance.hours = null;
