@@ -886,7 +886,7 @@ public class AdminCommands {
 	
 	// Debug:
 	@Command(
-		aliases = {"debuginfo", "di"},
+		aliases = {"debuginfo", "adc"},
 		usage = "",
 		flags = "",
 		desc = "Debug assist command.",
@@ -912,7 +912,7 @@ public class AdminCommands {
 	}
 	
 	@Command(
-		aliases = {"debugcommand","dc"},
+		aliases = {"debugcommand","ada"},
 		usage = "",
 		flags = "",
 		desc = "Debug assist command.",
