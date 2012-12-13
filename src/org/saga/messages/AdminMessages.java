@@ -536,74 +536,6 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 		
 	}
 	
-	public static String wikiAttributesCreole(ArrayList<Method> commandMethods) {
-		
-		
-		int step = 5;
-		int init = 5;
-		
-		StringBuffer result = new StringBuffer();
-		ArrayList<Attribute> attributes = AttributeConfiguration.config().getAttributes();
-		int max = AttributeConfiguration.config().maxAttributeScore;
-		
-		// Title:
-		result.append("==Attributes");
-		
-		for (Attribute attribute : attributes) {
-			
-			result.append("\n");
-			
-			// Empty line:
-			result.append("| |");
-			for (int k = 0; k <= max; k+=step) {
-				result.append(" ");
-				result.append("|");
-			}
-			
-			result.append("\n");
-			
-			// Attribute name:
-			result.append("|="+attribute.getName()+"|");
-			
-			// Scores:
-			for (int j = init; j <= max; j+=step) {
-				result.append(" " + j + " ");
-				result.append("|");
-			}
-			
-			ArrayList<Entry<AttributeParameter, TwoPointFunction>> parameters = attribute.getAllParameterEntries();
-			for (int i = 0; i < parameters.size(); i++) {
-			
-				Entry<AttributeParameter, TwoPointFunction> parameter = parameters.get(i);
-				
-				result.append("\n");
-				
-				result.append("|");
-				
-				// Parameter:
-				result.append(parameterKey(parameter.getKey()));
-				
-				result.append("|");
-				
-				// Values:
-				for (int j = init; j <= max; j+=step) {
-					
-					result.append(parameterValue(parameter.getKey(), parameter.getValue().value(j)));
-					
-					result.append("|");
-					
-				}
-				
-			}
-			
-		}
-		
-		return result.toString();
-		
-		
-	}
-		
-	
 	private static String parameterKey(AttributeParameter parameter) {
 
 		return parameter.toString().toLowerCase().replace("_", " ").replace(" modifier", "").replace(" multiplier", "").replace("penetration", "pen");
@@ -639,10 +571,14 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 		
 				
 	}
+
+	public static String writeDone(Directory dir, String name) {
+		return positive + "Write complete: " + dir.getDirectory() + dir.getFilename().replace(WriterReader.NAME_SUBS, name) + ".";
+	}
 	
 	
 
-	// Wiki:
+	// Wiki Creole:
 	public static String wikiCommandsCreole(ArrayList<Method> commandMethods) {
 		
 		
@@ -831,9 +767,72 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 		
 		
 	}
-	
-	public static String writeDone(Directory dir, String name) {
-		return positive + "Write complete: " + dir.getDirectory() + dir.getFilename().replace(WriterReader.NAME_SUBS, name) + ".";
+
+	public static String wikiAttributesCreole(ArrayList<Method> commandMethods) {
+		
+		
+		int step = 5;
+		int init = 5;
+		
+		StringBuffer result = new StringBuffer();
+		ArrayList<Attribute> attributes = AttributeConfiguration.config().getAttributes();
+		int max = AttributeConfiguration.config().maxAttributeScore;
+		
+		// Title:
+		result.append("==Attributes");
+		
+		for (Attribute attribute : attributes) {
+			
+			result.append("\n");
+			
+			// Empty line:
+			result.append("| |");
+			for (int k = 0; k <= max; k+=step) {
+				result.append(" ");
+				result.append("|");
+			}
+			
+			result.append("\n");
+			
+			// Attribute name:
+			result.append("|="+attribute.getName()+"|");
+			
+			// Scores:
+			for (int j = init; j <= max; j+=step) {
+				result.append(" " + j + " ");
+				result.append("|");
+			}
+			
+			ArrayList<Entry<AttributeParameter, TwoPointFunction>> parameters = attribute.getAllParameterEntries();
+			for (int i = 0; i < parameters.size(); i++) {
+			
+				Entry<AttributeParameter, TwoPointFunction> parameter = parameters.get(i);
+				
+				result.append("\n");
+				
+				result.append("|");
+				
+				// Parameter:
+				result.append(parameterKey(parameter.getKey()));
+				
+				result.append("|");
+				
+				// Values:
+				for (int j = init; j <= max; j+=step) {
+					
+					result.append(parameterValue(parameter.getKey(), parameter.getValue().value(j)));
+					
+					result.append("|");
+					
+				}
+				
+			}
+			
+		}
+		
+		return result.toString();
+		
+		
 	}
 	
 	
