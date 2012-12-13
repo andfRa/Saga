@@ -32,6 +32,12 @@ public class Clock implements Runnable{
 		return instance;
 	}
 	
+
+	/**
+	 * Clock task ID.
+	 */
+	private int taskId = -1;
+	
 	
 	/**
 	 * Seconds cycle.
@@ -309,18 +315,15 @@ public class Clock implements Runnable{
 	 */
 	public static void load() {
 
-		
-		// Initialisation:
 		Clock clock = new Clock();
-		Saga.plugin().getServer().getScheduler().scheduleSyncRepeatingTask(Saga.plugin(),clock , 200L, 20L);
+		clock.taskId = Saga.plugin().getServer().getScheduler().scheduleSyncRepeatingTask(Saga.plugin(),clock , 200L, 20L);
 		instance = clock;
 		
-		// Initial daytimes:
+		// Current daytimes:
 		List<World> worlds = Saga.plugin().getServer().getWorlds();
 		for (World world : worlds) {
 			clock.prevDaytimes.put(world.getName(), Daytime.getDaytime(world.getTime()));
 		}
-		
 		
 	}
 	
@@ -330,15 +333,13 @@ public class Clock implements Runnable{
 	 */
 	public static void unload() {
 
-		
-		Saga.plugin().getServer().getScheduler().cancelTasks(Saga.plugin());
+		Saga.plugin().getServer().getScheduler().cancelTask(clock().taskId);
 		instance.seconds = null;
 		instance.minutes = null;
 		instance.hours = null;
 		instance.daytimes = null;
 		instance.prevDaytimes = null;
 		instance = null;
-		
 		
 	}
 	
