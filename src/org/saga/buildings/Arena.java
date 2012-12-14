@@ -329,8 +329,18 @@ public class Arena extends Building implements SecondTicker{
 
 		// Top sign:
 		if(ChatColor.stripColor(sign.getLine(0)).equals(TOP_SIGN)){
+
+			Integer display = 10;
+			if(sign.getLine(1).length() > 0){
+				try {
+					display = Integer.parseInt(sign.getLine(1));
+				}
+				catch (NumberFormatException e) {}
+			}
+			if(display < 1) display = 1;
+			if(display > 100) display = 100;
 			
-			sagaPlayer.message(BuildingMessages.arenaTop(this, 10));
+			sagaPlayer.message(BuildingMessages.arenaTop(this, display));
 			
 			// Take control:
 			event.setUseInteractedBlock(Result.DENY);
