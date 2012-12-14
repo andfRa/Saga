@@ -166,6 +166,8 @@ public class SagaBuildEvent {
 		ADMIN_ALLOW(true),
 		ADMIN_DENY(false),
 		
+		CRUMBLE_ARENA_DENY(false),
+		
 		OPEN_CLAIMED_STORAGE_AREA_ALLOW(true),
 		OPEN_STORAGE_AREA_ALLOW(true),
 		STORAGE_AREA_DENY(false),

@@ -25,6 +25,8 @@ import org.saga.SagaLogger;
 import org.saga.config.SettlementConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.exceptions.InvalidLocationException;
+import org.saga.listeners.events.SagaBuildEvent;
+import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.messages.BuildingMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.SagaLocation;
@@ -971,6 +973,21 @@ public class CrumbleArena extends Building implements SecondTicker{
 			
 		}
 		
+		
+	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.buildings.Building#onBuild(org.saga.listeners.events.SagaBuildEvent)
+	 */
+	@Override
+	public void onBuild(SagaBuildEvent event) {
+		
+		// No building in arena:
+		if(event.getBlock() != null && event.getBlock().getY() == y && !event.getSagaPlayer().isAdminMode()){
+			event.addBuildOverride(BuildOverride.CRUMBLE_ARENA_DENY);
+		}
 		
 	}
 	

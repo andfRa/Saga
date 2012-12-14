@@ -145,6 +145,10 @@ public class SettlementMessages {
 				
 				return negative + "Can't build in the wilderness.";
 
+			case CRUMBLE_ARENA_DENY:
+				
+				return negative + "Can't build on the arena.";
+
 			default:
 				return negative + "Can't build here.";
 				
