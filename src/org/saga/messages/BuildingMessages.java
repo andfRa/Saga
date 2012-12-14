@@ -6,7 +6,9 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.saga.buildings.Arena;
 import org.saga.buildings.Arena.ArenaPlayer;
+import org.saga.buildings.CrumbleArena.CrumblePlayer;
 import org.saga.buildings.Building;
+import org.saga.buildings.CrumbleArena;
 import org.saga.buildings.TownSquare;
 import org.saga.config.AttributeConfiguration;
 import org.saga.messages.PlayerMessages.ColourLoop;
@@ -151,21 +153,6 @@ public class BuildingMessages {
 	
 	
 	
-	// Arena:
-	public static String countdown(int count) {
-		
-		if(count == 0){
-			return SettlementMessages.positive + "Fight!";
-		}else if((count%2)==0){
-			return SettlementMessages.normal1 + "" + count;
-		}else{
-			return SettlementMessages.normal2 + "" + count;
-		}
-		
-	}
-
-	
-	
 	// Town square:
 	public static String noTownSquare(Bundle bundle){
 		
@@ -232,6 +219,128 @@ public class BuildingMessages {
 		
 	}
 	
+	public static String countdown(int count) {
+		
+		if(count == 0){
+			return SettlementMessages.positive + "FIGHT!";
+		}else if((count%2)==0){
+			return SettlementMessages.normal1 + "" + count;
+		}else{
+			return SettlementMessages.normal2 + "" + count;
+		}
+		
+	}
+
+	
+	
+	// Crumble arena:
+	public static String crumbleGameRunning() {
+		return negative + "Crumble game already in progress.";
+	}
+	
+	public static String crumbleCantEnterGame() {
+		return negative + "Can't enter while the game is in progress.";
+	}
+
+	public static String crumbleHeightSet(CrumbleArena arena) {
+		return positive + "Arena height set.";
+	}
+
+	public static String crumbleHeightNotSet(CrumbleArena arena) {
+		return negative + "Arena height not set.";
+	}
+	
+	public static String CrumbleCantSetHeightDuringGame(CrumbleArena arena) {
+		return negative + "Arena height can't be set during a game.";
+	}
+	
+	public static String crumbleHeightNotSetInfo(CrumbleArena arena) {
+		return negative + "Use /bsetheight to set arena height.";
+	}
+	
+	public static String crumbleKickLocationSet(CrumbleArena arena) {
+		return positive + "Arena kick location set.";
+	}
+
+	public static String crumbleKickMustBeOutside(CrumbleArena arena) {
+		return negative + "Kick location can't be on the same chunk as the " + arena.getName() + ".";
+	}
+	
+	public static String crumbleLost(CrumbleArena arena) {
+		return veryNegative + "Lost " + arena.getName() + " game.";
+	}
+	
+	public static String crumbleSurvived(CrumbleArena arena) {
+		return veryPositive + "Survived " + arena.getName() + " game!";
+	}
+	
+	public static String arenaTop(CrumbleArena arena, Integer count) {
+		
+		
+		ArrayList<CrumblePlayer> topPlayers = arena.getTop(count);
+		ColourLoop messageColor = new ColourLoop().addColor(normal1).addColor(normal2);
+		
+		StringTable table = new StringTable(messageColor);
+		
+		
+		Integer listLen = count;
+		
+		// Fix count:
+		if(listLen > topPlayers.size()) listLen = topPlayers.size();
+		
+		// Names:
+		table.addLine(new String[]{GeneralMessages.tableTitle("name"),GeneralMessages.tableTitle("wins"),GeneralMessages.tableTitle("losses"),GeneralMessages.tableTitle("WLR")});
+		
+		// Nobody:
+		if(topPlayers.size() == 0){
+			
+			table.addLine(new String[]{"-","-","-","-"});
+			
+		}
+		
+		// Crumble players:
+		for (CrumblePlayer arenaPlayer : topPlayers) {
+
+			listLen --;
+			if(listLen < 0) break;
+			
+			String wlr = "";
+			if(arenaPlayer.getLosses() == 0){
+				wlr = "-";
+			}else{
+				wlr = TextUtil.displayDouble(arenaPlayer.getWins().doubleValue() / arenaPlayer.getLosses().doubleValue());
+			}
+			
+			table.addLine(
+				new String[]{
+					arenaPlayer.getName(),
+					arenaPlayer.getWins().toString(),
+					arenaPlayer.getLosses().toString(),
+					wlr
+				});
+			
+			
+		}
+		
+		table.collapse();
+		
+		return StringFramer.frame("top " + count, table.createTable(), messageColor.nextColour());
+		
+		
+	}
+
+	public static String countdown(CrumbleArena arena, int count) {
+		
+		if(count == 0){
+			return SettlementMessages.positive + "WATCH YOUR STEP!";
+		}else if((count%2)==0){
+			return SettlementMessages.normal1 + "" + count;
+		}else{
+			return SettlementMessages.normal2 + "" + count;
+		}
+		
+	}
+
 	
 	
 	// Farm:

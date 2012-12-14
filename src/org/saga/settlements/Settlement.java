@@ -758,6 +758,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 		BUILDING_UPGRADE,
 		CLAIM,
 		CLAIM_SETTLEMENT,
+		CRUMBLE_ARENA_SETUP,
 		ABANDON,
 		DECLARE_OWNER,
 		DISSOLVE,

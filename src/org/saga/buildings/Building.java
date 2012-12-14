@@ -189,10 +189,8 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 * 
 	 */
 	public void enable() {
-		
 		Clock.clock().enableDaytimeTicking(this);
 		enabled = true;
-		
 	}
 	
 	/**
@@ -200,10 +198,17 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 * 
 	 */
 	public void disable() {
-		
 		enabled = false;
-		
 	}
+
+	/**
+	 * Removes the building.
+	 * 
+	 */
+	public void remove() {
+	}
+	
+	
 
 	/**
 	 * Checks if the building is enabled.

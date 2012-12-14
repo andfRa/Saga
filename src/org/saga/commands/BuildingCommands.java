@@ -3,10 +3,14 @@ package org.saga.commands;
 import java.util.ArrayList;
 
 import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.Arena;
 import org.saga.buildings.Building;
+import org.saga.buildings.CrumbleArena;
 import org.saga.buildings.Home;
 import org.saga.buildings.TownSquare;
 import org.saga.buildings.storage.StorageArea;
@@ -25,6 +29,7 @@ import org.saga.settlements.BundleManager;
 import org.saga.settlements.SagaChunk;
 import org.saga.settlements.Settlement.SettlementPermission;
 import org.saga.statistics.StatisticsManager;
+import org.saga.utility.SagaLocation;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
 import org.sk89q.CommandPermissions;
@@ -179,6 +184,7 @@ public class BuildingCommands {
 		SettlementEffectHandler.playBuildingRemove(sagaPlayer, selBuilding);
 		
 		// Remove building:
+		selBuilding.remove();
 		selChunk.removeBuilding();
 
 		// Statistics:
@@ -359,15 +365,15 @@ public class BuildingCommands {
 	
 	// Arena:
 	@Command(
-			aliases = {"barenatop","btop"},
-			usage = "<display_amount>",
+			aliases = {"bpvptop"},
+			usage = "[to_display]",
 			flags = "",
-			desc = "Show arena top fighters.",
+			desc = "Show pvp arena top players.",
 			min = 0,
 			max = 1
 	)
 	@CommandPermissions({"saga.user.building.arena.top"})
-	public static void top(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	public static void pvpTop(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
 		Integer count = null;
@@ -376,6 +382,142 @@ public class BuildingCommands {
 		Arena selBuilding = null;
 		try {
 			selBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, Arena.class);
+		} catch (Throwable e) {
+			sagaPlayer.message(e.getMessage());
+			return;
+		}
+	
+		// Arguments:
+		if (args.argsLength() == 1) {
+		
+			try {
+				count = Integer.parseInt(args.getString(0));
+			} catch (NumberFormatException e) {
+				sagaPlayer.message(GeneralMessages.mustBeNumber(args.getString(0)));
+				return;
+			}
+			
+		}else{
+			
+			count = 10;
+			
+		}
+		
+		// Inform:
+		sagaPlayer.message(BuildingMessages.arenaTop(selBuilding, count));
+		
+	
+	}
+
+	
+
+	// Crumble arena:
+	@Command(
+			aliases = {"bsetheight","bsety"},
+			usage = "<display_amount>",
+			flags = "",
+			desc = "Set arena height.",
+			min = 0,
+			max = 0
+	)
+	@CommandPermissions({"saga.user.building.crumblearena.heighy"})
+	public static void setHeight(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+		
+		// Retrieve building:
+		CrumbleArena selBuilding = null;
+		try {
+			selBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, CrumbleArena.class);
+		} catch (Throwable e) {
+			sagaPlayer.message(e.getMessage());
+			return;
+		}
+	
+		// Permission:
+		Bundle selBundle = selBuilding.getChunkBundle();
+		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.CRUMBLE_ARENA_SETUP)){
+			sagaPlayer.message(GeneralMessages.noPermission(selBundle));
+			return;
+		}
+		
+		// Set y:
+		Integer y = (int)sagaPlayer.getLocation().getY();
+		selBuilding.setY(y);
+		
+		// Inform:
+		sagaPlayer.message(BuildingMessages.crumbleHeightSet(selBuilding));
+		
+	
+	}
+
+	@Command(
+			aliases = {"bsetkickloc","bsetkick"},
+			usage = "<display_amount>",
+			flags = "",
+			desc = "Set crumble arena kick location.",
+			min = 0,
+			max = 0
+	)
+	@CommandPermissions({"saga.user.building.crumblearena.kick"})
+	public static void setKickLocation(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+		
+		// Retrieve building:
+		CrumbleArena selBuilding = null;
+		try {
+			selBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, CrumbleArena.class);
+		} catch (Throwable e) {
+			sagaPlayer.message(e.getMessage());
+			return;
+		}
+	
+		// Permission:
+		Bundle selBundle = selBuilding.getChunkBundle();
+		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.CRUMBLE_ARENA_SETUP)){
+			sagaPlayer.message(GeneralMessages.noPermission(selBundle));
+			return;
+		}
+		
+		Block target = sagaPlayer.getPlayer().getTargetBlock(null, 16);
+		
+		// Move up if not air:
+		if(target.getType() != Material.AIR && target.getRelative(BlockFace.UP).getType() == Material.AIR) target = target.getRelative(BlockFace.UP);
+		
+		// Location on chunk:
+		if(BundleManager.manager().getSagaChunk(target.getChunk()) == selBuilding.getSagaChunk()){
+			sagaPlayer.message(BuildingMessages.crumbleKickMustBeOutside(selBuilding));
+			return;
+		}
+		
+		// Set kick location:
+		selBuilding.setKickLocation(new SagaLocation(target.getLocation().add(0.5, 0, 0.5)));
+		
+		// Inform:
+		sagaPlayer.message(BuildingMessages.crumbleKickLocationSet(selBuilding));
+		
+	
+	}
+
+
+	// Arena:
+	@Command(
+			aliases = {"bcrumbletop"},
+			usage = "[to_display]",
+			flags = "",
+			desc = "Show crumble arena top players.",
+			min = 0,
+			max = 1
+	)
+	@CommandPermissions({"saga.user.building.crumblearena.top"})
+	public static void top(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+		
+		Integer count = null;
+		
+		// Retrieve building:
+		CrumbleArena selBuilding = null;
+		try {
+			selBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, CrumbleArena.class);
 		} catch (Throwable e) {
 			sagaPlayer.message(e.getMessage());
 			return;

@@ -314,6 +314,29 @@
   },
   
   {
+    "name":"crumble arena",
+    "buildingClass":"org.saga.buildings.CrumbleArena",
+    "buildPoints":4,
+    "available":{"x1":35,"y1":1.0},
+    "storages":0,
+    "storageSize":0,
+    "recipes":[],
+    "crafted":0,
+    "relatedBuildings":[],
+    "performTime":"NONE",
+    "craftTime":"NONE",
+    "functions":{
+      "hotspots per round":{"x1":0,"y1":2,"x2":15,"y2":3},
+      "damaged per round":{"x1":0,"y1":12,"x2":15,"y2":18},
+      "round duration":{"x1":0,"y1":4,"x2":15,"y2":2}
+    },
+    "roles":{},
+    "ranks":{},
+    "description":"crumble game",
+    "effect":"keeps score"
+  },
+  
+  {
     "name":"trading post",
     "buildingClass":"org.saga.buildings.TradingPost",
     "buildPoints":5,
