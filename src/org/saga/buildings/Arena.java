@@ -422,9 +422,9 @@ public class Arena extends Building implements SecondTicker{
 		// Attack from outside of the arena:
 		SagaChunk attackerChunk = event.attackerChunk;
 		SagaChunk defenderChunk = event.defenderChunk;
-		if(attackerChunk == null || defenderChunk == null || attackerChunk != getSagaChunk() || defenderChunk != getSagaChunk()){
-			return;
-		}
+		if(attackerChunk == null || defenderChunk == null) return;
+		if(attackerChunk.getBuilding() == null || !(attackerChunk.getBuilding() instanceof Arena)) return;
+		if(defenderChunk.getBuilding() == null || !(defenderChunk.getBuilding() instanceof Arena)) return;
 		
 		// Allow pvp:
 		event.addPvpOverride(PvPOverride.ARENA_ALLOW);
