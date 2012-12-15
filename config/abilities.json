@@ -203,8 +203,8 @@
     "cooldown":{"x1":0,"y1":0.0,"x2":3,"y2":0.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
     "attributeRequirements":{
-      "strength":{ "x1":1,"y1":10.0,"x2":3,"y2":10.0},
-      "precision":{ "x1":1,"y1":10.0,"x2":3,"y2":40.0}
+      "strength":{ "x1":1,"y1":10.0,"x2":3,"y2":25.0},
+      "precision":{ "x1":1,"y1":10.0,"x2":3,"y2":25.0}
     },
     "buildingsRequired":{3:["armoury"]},
     "proficiencyRestrictions":["warrior","knight"],
@@ -227,8 +227,8 @@
     "cooldown":{"x1":1,"y1":7.0,"x2":3,"y2":3.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
     "attributeRequirements":{
-      "strength":{ "x1":1,"y1":10.0,"x2":3,"y2":10.0},
-      "willpower":{ "x1":1,"y1":10.0,"x2":3,"y2":40.0}
+      "strength":{ "x1":1,"y1":10.0,"x2":3,"y2":25.0},
+      "willpower":{ "x1":1,"y1":10.0,"x2":3,"y2":25.0}
     },
     "buildingsRequired":{3:["armoury"]},
     "proficiencyRestrictions":["warrior","knight"],
@@ -248,8 +248,8 @@
     "cooldown":{"x1":1,"y1":5.0,"x2":3,"y2":2.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
     "attributeRequirements":{
-      "precision":{"x1":1,"y1":10.0,"x2":3,"y2":10.0},
-      "strength":{"x1":1,"y1":10.0,"x2":3,"y2":40.0}
+      "precision":{"x1":1,"y1":10.0,"x2":3,"y2":25.0},
+      "strength":{"x1":1,"y1":10.0,"x2":3,"y2":25.0}
     },
     "buildingsRequired":{3:["bowyer"]},
     "proficiencyRestrictions":["archer","marksman"],
@@ -290,8 +290,8 @@
     "cooldown":{"x1":0,"y1":0.0,"x2":3,"y2":0.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
     "attributeRequirements":{
-      "precision":{"x1":1,"y1":10.0,"x2":3,"y2":10.0},
-      "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":40.0}
+      "precision":{"x1":1,"y1":10.0,"x2":3,"y2":25.0},
+      "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":25.0}
     },
     "buildingsRequired":{3:["bowyer"]},
     "proficiencyRestrictions":["archer","marksman"],
@@ -311,8 +311,8 @@
     "cooldown":{"x1":0,"y1":180.0,"x2":3,"y2":0.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
     "attributeRequirements":{
-      "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":10.0},
-      "strength":{"x1":1,"y1":10.0,"x2":3,"y2":40.0}
+      "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":25.0},
+      "strength":{"x1":1,"y1":10.0,"x2":3,"y2":25.0}
     },
     "buildingsRequired":{3:["academy"]},
     "proficiencyRestrictions":["mage","wizard"],
@@ -334,8 +334,8 @@
     "cooldown":{"x1":0,"y1":20.0,"x2":3,"y2":15.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
     "attributeRequirements":{
-      "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":10.0},
-      "precision":{"x1":1,"y1":10.0,"x2":3,"y2":40.0}
+      "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":25.0},
+      "precision":{"x1":1,"y1":10.0,"x2":3,"y2":25.0}
     },
     "buildingsRequired":{3:["academy"]},
     "proficiencyRestrictions":["mage","wizard"],
