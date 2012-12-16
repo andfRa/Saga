@@ -32,7 +32,6 @@ import org.saga.config.VanillaConfiguration;
 import org.saga.dependencies.ChatDependency;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.dependencies.PermissionsDependency;
-import org.saga.dependencies.spout.ClientManager;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;
 import org.saga.factions.FactionClaimManager;
@@ -130,9 +129,6 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		FactionConfiguration.unload();
 		Clock.unload(); // Needs access to Saga.pluging().
 
-		// Disable client manager:
-		ClientManager.disable();
-
 		Saga.plugin = null;
 
 		SagaLogger.info("Saga disabled.");
@@ -166,9 +162,6 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 
 		// Players:
 		loadedPlayers = new Hashtable<String, SagaPlayer>();
-
-		// Enable client manager:
-		ClientManager.enable();
 
 		// Configuration:
 		Clock.load(); // Needs access to Saga.pluging().
