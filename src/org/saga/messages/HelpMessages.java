@@ -9,6 +9,7 @@ import org.saga.attributes.Attribute;
 import org.saga.buildings.BuildingDefinition;
 import org.saga.buildings.TownSquare;
 import org.saga.buildings.TradingPost;
+import org.saga.buildings.TrainingCamp;
 import org.saga.buildings.signs.AttributeSign;
 import org.saga.buildings.signs.BuySign;
 import org.saga.buildings.signs.GuardianRuneSign;
@@ -83,11 +84,13 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		StringBook book = new StringBook("player help", messageColor);
 
 		// Attributes:
+		String trainingCamp = trainingCamp();
 		book.addLine( 
 			"Players gain attribute points from killing creatures, getting crafting materials and pvp. " +
 			"Attribute points can be used to increase attribute scores. " +
 			"Higher attribute scores make you stronger and unlock new abilities. " +
 			"Attributes can be increased by interacting with " + AttributeSign.SIGN_NAME + " signs. " +
+			"Training signs can only be set at a " + trainingCamp + " building. " +
 			"Use " + GeneralMessages.command("/stats") + " to see your attributes."
 		);
 		
@@ -568,7 +571,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 			if(building.getBuildingClass().equals(TownSquare.class.getName())) return building.getName();
 		}
 		
-		return "main building";
+		return "<missing>";
 		
 		
 	}
@@ -582,10 +585,24 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 			if(building.getBuildingClass().equals(TradingPost.class.getName())) return building.getName();
 		}
 	
-	return "main building";
+		return "<missing>";
 	
 	
-}
+	}
+	
+	public static String trainingCamp(){
+		
+		
+		ArrayList<BuildingDefinition> buildings = BuildingConfiguration.config().getBuildingDefinitions();
+		
+		for (BuildingDefinition building : buildings) {
+			if(building.getBuildingClass().equals(TrainingCamp.class.getName())) return building.getName();
+		}
+	
+		return "<missing>";
+	
+	
+	}
 
 	
 }
