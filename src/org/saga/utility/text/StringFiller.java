@@ -64,13 +64,17 @@ public class StringFiller {
 			put('!', 0.5);
 			put(':', 0.5);
 			put('l', 3.0 / 4.0);
-			put(' ', 1.0);
 			put('.', 1.0 / 2.0);
 			put('\'', 3.0 / 4.0);
 			put(' ', 1.0 / 1.0);
 			put('\"', 5.0 / 4.0);
 			put('`', 0.5);
 			put('\0', 0.0);
+
+			put('\u278A', 0.5);
+			put('\u278B', 3.0/4.0);
+			put(' ', 1.0);
+			put('\u278C', 5.0/4.0);
 			
 			put('\u2500', 5.0/4.0);
 			put('\u2502', 1.0/4.0);
@@ -100,19 +104,13 @@ public class StringFiller {
 	 * Gap fill chars.
 	 */
 	private final static HashSet<Character> FILL_CHARS = new HashSet<Character>(){
-		
-		/**
-		 * Serial version UID.
-		 */
 		private static final long serialVersionUID = 1L;
-		
 		{
-			add('`');
-			add('\'');
+			add('\u278A');
+			add('\u278B');
 			add(' ');
-			add('\"');
+			add('\u278C');
 		}
-		
 	};
 
 	
@@ -251,12 +249,13 @@ public class StringFiller {
 	 */
 	public static String adjustFillers(String str) {
 
-		str = str.replace("`", ChatColor.DARK_GRAY + "`");
-		str = str.replace("\'", ChatColor.DARK_GRAY + "\'");
-		str = str.replace("\"", ChatColor.DARK_GRAY + "\"");
+//		str = str.replace("\u278A", ChatColor.DARK_GRAY + "`");
+//		str = str.replace("\u278B", ChatColor.DARK_GRAY + "\'");
+//		str = str.replace("\u278C", ChatColor.DARK_GRAY + "\"");
 		
-		str = str.replace("\"", ChatColor.BOLD + " " + CustomColour.RESET_FORMAT);
-		str = str.replace("\'", ChatColor.BOLD + "`" + CustomColour.RESET_FORMAT);
+		str = str.replace("\u278A", ChatColor.DARK_GRAY + "`");
+		str = str.replace("\u278B", ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "`" + CustomColour.RESET_FORMAT);
+		str = str.replace("\u278C", ChatColor.DARK_GRAY + "" + ChatColor.BOLD + " " + CustomColour.RESET_FORMAT);
 		
 		return CustomColour.process(str);
 		
