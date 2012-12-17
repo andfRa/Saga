@@ -67,6 +67,12 @@ public class GeneralMessages {
 		return title.toUpperCase();
 	}
 
+	public static String page(Integer page, Integer lastPage){
+		
+		return "page " + (page+1) + " of " + (lastPage+1);
+		
+	}
+
 	
 	
 	// Permissions:
