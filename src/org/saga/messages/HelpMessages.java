@@ -6,6 +6,7 @@ import java.util.Hashtable;
 import org.bukkit.ChatColor;
 import org.saga.abilities.AbilityDefinition;
 import org.saga.attributes.Attribute;
+import org.saga.buildings.Academy;
 import org.saga.buildings.BuildingDefinition;
 import org.saga.buildings.TownSquare;
 import org.saga.buildings.TradingPost;
@@ -26,7 +27,6 @@ import org.saga.player.ProficiencyDefinition;
 import org.saga.utility.text.RomanNumeral;
 import org.saga.utility.text.StringBook;
 import org.saga.utility.text.StringTable;
-import org.saga.utility.text.TextUtil;
 
 public class HelpMessages {
 
@@ -88,7 +88,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		book.addLine( 
 			"Players gain attribute points from killing creatures, getting crafting materials and pvp. " +
 			"Attribute points can be used to increase attribute scores. " +
-			"Higher attribute scores make you stronger and unlock new abilities. " +
+			"Higher attribute scores make you stronger." +
 			"Attributes can be increased by interacting with " + AttributeSign.SIGN_NAME + " signs. " +
 			"Training signs can only be set at a " + trainingCamp + " building. " +
 			"Use " + GeneralMessages.command("/stats") + " to see your attributes."
@@ -114,98 +114,66 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		
 		book.nextPage();
 		
-		// Abilities:
+		// Ability descriptions:
+		book.addLine("Higher attribute scores unlock and upgrade abilities. " +
+			"Upgraded abilities are more efficient and have lower cooldown times. " +
+			"Some abilities require certain buildings and some are only available for certain roles/ranks. " +
+			"Use " + GeneralMessages.command("/pabilityreq") + " to see ability attribute requirements."
+		);
+		
+		book.addLine("");
+		
+		// Ability description table:
+		StringTable abilityDescTable = new StringTable(messageColor);
+		abilityDescTable.addLine(new String[]{GeneralMessages.columnTitle("ability"), GeneralMessages.columnTitle("description")});
+		ArrayList<AbilityDefinition> abilities = AbilityConfiguration.config().getDefinitions();
+		if(abilities.size() > 0){
+			
+			for (AbilityDefinition ability : abilities) {
+				abilityDescTable.addLine(new String[]{ability.getName(), ability.getDescription()});
+			}
+			
+		}else{
+			abilityDescTable.addLine(new String[]{"-", "-"});
+		}
+		abilityDescTable.collapse();
+		book.addTable(abilityDescTable);
+		
+		book.nextPage();
+		
+		// Ability activation:
 		book.addLine("There are active and passive abilities. " +
 			"Active abilities can be activated by clicking with a certain item. " +
-			"Passive abilities are always active. "
+			"Passive abilities are always active and are triggered by a certain action."
 		);
 		
 		book.addLine("");
 		
 		// Ability table:
-		StringTable abilityTable = new StringTable(messageColor);
-		abilityTable.addLine(new String[]{GeneralMessages.columnTitle("ability"), GeneralMessages.columnTitle("description"), GeneralMessages.columnTitle("usage")});
-		ArrayList<AbilityDefinition> abilities = AbilityConfiguration.config().getDefinitions();
+		StringTable abilityUsageTable = new StringTable(messageColor);
+		abilityUsageTable.addLine(new String[]{GeneralMessages.columnTitle("ability"), GeneralMessages.columnTitle("usage")});
 		if(abilities.size() > 0){
 			
 			for (AbilityDefinition ability : abilities) {
-				abilityTable.addLine(new String[]{ability.getName(), ability.getDescription(), ability.getUsage()});
+				abilityUsageTable.addLine(new String[]{ability.getName(), ability.getUsage()});
 			}
 			
 		}else{
-			abilityTable.addLine(new String[]{"-", "-", "-"});
+			abilityUsageTable.addLine(new String[]{"-", "-"});
 		}
-		abilityTable.collapse();
-		book.addTable(abilityTable);
-		
-		book.nextPage();
-		
-		// Ability upgrades:
-		book.addLine(
-			"Abilities can be upgraded by increasing attributes. " +
-			"Upgraded abilities are more efficient and have lower cooldown times. " +
-			"Some abilities require certain buildings and some are only available for certain roles/ranks."
-		);
-		
-		book.addLine("");
-		
-		// Ability restriction table:
-		StringTable restrTable = new StringTable(messageColor);
-		restrTable.addLine(new String[]{
-			GeneralMessages.columnTitle("role/rank"),
-			GeneralMessages.columnTitle("available abilities")
-		});
-		ArrayList<ProficiencyDefinition> proficiencies = ProficiencyConfiguration.config().getDefinitions();
-		for (ProficiencyDefinition proficiency : proficiencies) {
-			
-			ArrayList<String> restrAbilities = getRestrictedAbilities(proficiency.getName());
-			if(restrAbilities.size() == 0) continue;
-			
-			restrTable.addLine(proficiency.getName(), TextUtil.flatten(restrAbilities), 0);
-			
-		}
-		restrTable.collapse();
-		book.addTable(restrTable);
-		
-		book.addLine("");
-		
-		// Ability upgrade table:
-		StringTable upgrTable = new StringTable(messageColor);
-		Integer score1 = 1;
-		Integer score3 = AbilityConfiguration.config().maxAbilityScore;
-		Integer score2 = new Double((score1.doubleValue() + score3.doubleValue())/2.0).intValue();
-		
-		upgrTable.addLine(new String[]{
-				GeneralMessages.columnTitle("ability"),
-				GeneralMessages.columnTitle("score " + RomanNumeral.binaryToRoman(score1)),
-				GeneralMessages.columnTitle("score " + RomanNumeral.binaryToRoman(score2)),
-				GeneralMessages.columnTitle("score " + RomanNumeral.binaryToRoman(score3))
-		});
-		
-		if(abilities.size() > 0){
-			
-			for (AbilityDefinition ability : abilities) {
-				upgrTable.addLine(new String[]{ability.getName(),
-					StatsMessages.requirements(ability, score1),
-					StatsMessages.requirements(ability, score2),
-					StatsMessages.requirements(ability, score3)
-				});
-			}
-			
-		}else{
-			upgrTable.addLine(new String[]{"-", "-", "-", "-"});
-		}
-		upgrTable.collapse();
-		book.addTable(upgrTable);
+		abilityUsageTable.collapse();
+		book.addTable(abilityUsageTable);
 		
 		book.nextPage();
 		
 		// Guardian runes:
 		String rechargeCost = "";
+		String academy = academy();
 		if(EconomyConfiguration.config().guardianRuneRechargeCost > 0) rechargeCost = "Recharge costs " + EconomyMessages.coins(EconomyConfiguration.config().guardianRuneRechargeCost) + ". ";
 		book.addLine("The guardian rune will restore all carried items after death. " +
 			"The rune needs to be recharged after every use. " +
 			"Recharging is done by interacting with a " + GuardianRuneSign.SIGN_NAME + " sign. " + 
+			"Recharge signs can only be set at a " + academy + " building. " +
 			rechargeCost + 
 			"Enable or disable the rune with " + GeneralMessages.command("/grenable") + " and " + GeneralMessages.command("/grdisable") + ". "
 		);
@@ -523,19 +491,56 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 	}
 
 	
-	private static ArrayList<String> getRestrictedAbilities(String profName) {
+	
+	// Abilities:
+	public static String ability(AbilityDefinition definition) {
 
-		ArrayList<String> abilities = new ArrayList<String>();
 		
-		ArrayList<AbilityDefinition> definitions = AbilityConfiguration.config().getDefinitions();
-		for (AbilityDefinition abilityDefinition : definitions) {
-			if(abilityDefinition.getProfRestr().contains(profName)) abilities.add(abilityDefinition.getName());
+		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
+		StringBook book = new StringBook(definition.getName() + " ability requirements", colours);
+		
+//		// Description:
+//		book.addLine(TextUtil.senctence(definition.getDescription()));
+//		
+//		book.addLine("");
+//		
+//		// Usage:
+//		book.addLine(GeneralMessages.columnTitle("usage:") + " " + definition.getUsage());
+//		
+//		book.addLine("");
+
+		// Ability upgrade table:
+		StringTable upgrTable = new StringTable(colours);
+		Integer minScore = 1;
+		Integer maxScore = AbilityConfiguration.config().maxAbilityScore;
+		
+		upgrTable.addLine(new String[]{GeneralMessages.columnTitle("score"), GeneralMessages.columnTitle("requirements")});
+		
+		if(maxScore >= minScore){
+			
+			for (int score = minScore; score <= maxScore; score++) {
+				
+				String req = StatsMessages.requirements(definition, score);
+				String restr = StatsMessages.restrictions(definition);
+				if(req.length() > 0 && restr.length() > 0) restr = ", " + restr;
+				
+				upgrTable.addLine(new String[]{definition.getName() + " " + RomanNumeral.binaryToRoman(score), req + restr});
+				
+			}
+			
+		}else{
+			upgrTable.addLine(new String[]{"-","-"});
 		}
 		
-		return abilities;
+		upgrTable.collapse();
+		book.addTable(upgrTable);
+		
+		return book.framedPage(0);
+		
 		
 	}
 
+	
 	
 	// Utility:
 	public static String bonuses(ProficiencyDefinition definition) {
@@ -562,8 +567,20 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 	
 	}
 	
-	public static String townSquare(){
+
+	public static String academy(){
 		
+		ArrayList<BuildingDefinition> buildings = BuildingConfiguration.config().getBuildingDefinitions();
+		
+		for (BuildingDefinition building : buildings) {
+			if(building.getBuildingClass().equals(Academy.class.getName())) return building.getName();
+		}
+	
+		return "<missing>";
+	
+	}
+	
+	public static String townSquare(){
 		
 		ArrayList<BuildingDefinition> buildings = BuildingConfiguration.config().getBuildingDefinitions();
 		
@@ -573,11 +590,9 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		
 		return "<missing>";
 		
-		
 	}
 
 	public static String tradingPost(){
-	
 	
 		ArrayList<BuildingDefinition> buildings = BuildingConfiguration.config().getBuildingDefinitions();
 		
@@ -587,11 +602,9 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 	
 		return "<missing>";
 	
-	
 	}
 	
 	public static String trainingCamp(){
-		
 		
 		ArrayList<BuildingDefinition> buildings = BuildingConfiguration.config().getBuildingDefinitions();
 		
@@ -600,7 +613,6 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		}
 	
 		return "<missing>";
-	
 	
 	}
 

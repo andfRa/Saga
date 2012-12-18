@@ -26,22 +26,35 @@ public class AbilityMessages {
 	
 	
 	
-	
+	// Activation:
 	public static String insufficientItems(Ability ability, Material material, Integer amount) {
 		return negative + TextUtil.capitalize(ability.getName()) + " requires " + amount + " " + GeneralMessages.material(material) + ".";
 	}
 	
-	
 	public static String onCooldown(Ability ability) {
-		
 		return negative + TextUtil.capitalize(ability.getName()) + " is on cooldown for " + ability.getCooldown() + "s.";
-		
 	}
 	
 	public static String cooldownEnd(Ability ability) {
-		
 		return positive + TextUtil.capitalize(ability.getName()) + " ready.";
-		
+	}
+	
+	
+
+	// General usage:
+	public static String targetTooFar(Ability ability) {
+		return negative + "Target block too far.";
+	}
+	
+	public static String cantUseUnderground(Ability ability) {
+		return negative + TextUtil.capitalize(ability.getName()) + " can't be used below ground.";
+	}
+
+
+	
+	// Retrieval:
+	public static String invalidAbility(String name) {
+		return negative + "Ability " + name + " is not valid.";
 	}
 	
 	
@@ -86,20 +99,6 @@ public class AbilityMessages {
 	
 	}
 	
-	
-	
-	// General usage:
-	public static String targetTooFar(Ability ability) {
-		
-		return negative + "Target block too far.";
-	
-	}
-	
-	public static String cantUseUnderground(Ability ability) {
-		
-		return negative + TextUtil.capitalize(ability.getName()) + " can't be used below ground.";
-	
-	}
 
 	
 }

@@ -21,7 +21,7 @@
     "functions":{"tree size":{"x1":1,"y1":10.0,"x2":3,"y2":50.0}},
     "colour":6304529,
     "description":"chops down a tree",
-    "usage":"rclick tree w/ axe"
+    "usage":"rclick a tree with an axe"
   },
   
   
@@ -43,7 +43,7 @@
     "functions":{"range":{"x1":1,"y1":20.0,"x2":3,"y2":60.0}},
     "colour":4841998,
     "description":"cuts wheat and reeds",
-    "usage":"rclick w/ hoe"
+    "usage":"rclick with a hoe"
   },
   
   {"className":"org.saga.abilities.Dig",
@@ -66,7 +66,7 @@
     },
     "colour":4841998,
     "description":"digs dirt/sand",
-    "usage":"rclick w/ spade"
+    "usage":"rclick with a spade"
   },
   
   
@@ -91,7 +91,7 @@
     },
     "colour":7566195,
     "description":"breaks stone",
-    "usage":"rclick stone w/ pickaxe"
+    "usage":"rclick stone with a pickaxe"
   },
   
   
@@ -113,7 +113,7 @@
     },
     "colour":3599321,
     "description":"shifts targets weapon",
-    "usage":"random chance"
+    "usage":"random chance when the target player gets hit"
   },
   
   {"className":"org.saga.abilities.Ricochet",
@@ -130,7 +130,7 @@
     "functions":{"range":{"x1":1,"y1":5.0,"x2":3,"y2":8.0}},
     "colour":8873510,
     "description":"arrows ricochet",
-    "usage":"miss target"
+    "usage":"miss target with an arrow"
   },
   
   {"className":"org.saga.abilities.Fireball",
@@ -147,7 +147,7 @@
     "functions":{"speed":{"x1":1,"y1":0.70,"x2":3,"y2":2.0}},
     "colour":12724739,
     "description":"shoots a fireball",
-    "usage":"rclick w/ coal"
+    "usage":"rclick with coal"
   },
   
   {"className":"org.saga.abilities.Force",
@@ -166,8 +166,8 @@
       "power":{"x1":1,"y1":1.2,"x2":3,"y2":2.0}
     },
     "colour":16777215,
-    "description":"pushes back",
-    "usage":"rclick w/ book"
+    "description":"pushes nearby targets away",
+    "usage":"rclick with a book"
   },
   
   
@@ -190,8 +190,8 @@
       "max hits":{"x1":1,"y1":2.5,"x2":3,"y2":7.5}
     },
     "colour":13434880,
-    "description":"combat increases melee",
-    "usage":"block w/ sword"
+    "description":"combat increases melee damage",
+    "usage":"block with a sword"
   },
   
   {"className":"org.saga.abilities.Parry",
@@ -214,8 +214,8 @@
       "hit chance":{"x1":1,"y1":-0.5,"x2":3,"y2":-0.90}
     },
     "colour":3599321,
-    "description":"lower hit chance",
-    "usage":"block w/ sword"
+    "description":"lower hit chance and short immunity after hit",
+    "usage":"block with a sword"
   },
   
   {"className":"org.saga.abilities.Counterattack",
@@ -235,7 +235,7 @@
     "functions":{},
     "colour":3599322,
     "description":"redirects melee damage",
-    "usage":"block w/ sword"
+    "usage":"block with a sword"
   },
   
   
@@ -256,7 +256,7 @@
     "functions":{"speed":{"x1":1,"y1":2.0,"x2":3,"y2":4.0}},
     "colour":8873510,
     "description":"shoots an arrow",
-    "usage":"rclick w/ arrow"
+    "usage":"rclick with an arrow"
   },
   
   {"className":"org.saga.abilities.Backstab",
@@ -277,7 +277,7 @@
       "enchant penetration":{"x1":1,"y1":0.5,"x2":3,"y2":0.5}
     },
     "colour":13434880,
-    "description":"increased damage",
+    "description":"increased damage and armour penetration",
     "usage":"hit from behind"
   },
   
@@ -297,8 +297,8 @@
     "proficiencyRestrictions":["archer","marksman"],
     "functions":{"speed":{"x1":1,"y1":1.5,"x2":3,"y2":3.0}},
     "colour":16777215,
-    "description":"bow pushes back",
-    "usage":"on arrow hit"
+    "description":"target gets pushed back by arrows",
+    "usage":"when arrow hits the target"
   },
   
   
@@ -321,8 +321,8 @@
       "hits per second":{"x1":1,"y1":0.6,"x2":3,"y2":1.4}
     },
     "colour":16777215,
-    "description":"absorbs damage",
-    "usage":"cobble in inventory"
+    "description":"absorbs hits, regenerates out of combat",
+    "usage":"must have cobblestone in inventory"
   },
   
   {"className":"org.saga.abilities.Meteors",
@@ -345,8 +345,8 @@
       "bonus fireballs":{"x1":1,"y1":2.0,"x2":3,"y2":6.0}
     },
     "colour":12724739,
-    "description":"calls meteors",
-    "usage":"rclick w/ ghast tear"
+    "description":"calls meteors from the sky",
+    "usage":"rclick with a ghast tear"
   },
   
   {"className":"org.saga.abilities.Lightning",
@@ -369,7 +369,7 @@
     },
     "colour":16777215,
     "description":"calls a lightning bolt",
-    "usage":"rclick w/ redstone"
+    "usage":"rclick with redstone"
   }
 ]
 

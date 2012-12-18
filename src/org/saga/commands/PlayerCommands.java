@@ -4,7 +4,10 @@ import java.util.Collection;
 
 import org.saga.Saga;
 import org.saga.SagaLogger;
+import org.saga.abilities.AbilityDefinition;
+import org.saga.config.AbilityConfiguration;
 import org.saga.dependencies.PermissionsDependency;
+import org.saga.messages.AbilityMessages;
 import org.saga.messages.GeneralMessages;
 import org.saga.messages.HelpMessages;
 import org.saga.messages.PlayerMessages;
@@ -191,6 +194,36 @@ public class PlayerCommands {
 
 		
 	}
+	
+	@Command(
+			aliases = {"pabilityreq"},
+			usage = "<ability_name>",
+			flags = "",
+			desc = "Display ability requirements.",
+			min = 1
+	)
+	@CommandPermissions({"saga.user.help.player.ability"})
+	public static void ability(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		
+		AbilityDefinition definition = null;
+
+		String abilityName = null;
+		
+		// Arguments:
+		abilityName = GeneralMessages.nameFromArg(args.getJoinedStrings(0));
+		definition = AbilityConfiguration.config().getDefinition(abilityName);
+		if(definition == null){
+			sagaPlayer.message(AbilityMessages.invalidAbility(abilityName));
+			return;
+		}
+		
+		// Inform:
+		sagaPlayer.message(HelpMessages.ability(definition));
+
+		
+	}
+	
 	
 	
 	

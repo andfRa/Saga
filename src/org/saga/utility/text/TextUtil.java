@@ -61,6 +61,13 @@ public class TextUtil {
 		}
 		
 	}
+	
+	public static String senctence(String string) {
+
+		if(!string.endsWith(".")) string+= ".";
+		return capitalize(string);
+		
+	}
 
 	public static String firstString(String string, int chars) {
 
