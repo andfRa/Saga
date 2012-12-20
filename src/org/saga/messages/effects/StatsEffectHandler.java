@@ -1,20 +1,16 @@
 package org.saga.messages.effects;
 
-import net.minecraft.server.DataWatcher;
-import net.minecraft.server.EntityLiving;
-import net.minecraft.server.Packet18ArmAnimation;
+import net.minecraft.server.v1_4_6.Packet18ArmAnimation;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.CraftServer;
-import org.bukkit.craftbukkit.CraftWorld;
-import org.bukkit.craftbukkit.entity.CraftLivingEntity;
-import org.bukkit.craftbukkit.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_4_6.CraftServer;
+import org.bukkit.craftbukkit.v1_4_6.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_6.entity.CraftPlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
-import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
 import org.saga.player.SagaLiving;
@@ -26,9 +22,10 @@ public class StatsEffectHandler {
 	public static void playAnimateArm(SagaPlayer sagaPlayer) {
 
 		Player player = sagaPlayer.getPlayer();
+		
 		Location loc = player.getLocation();
 		
-		((CraftServer)Bukkit.getServer()).getServer().getServerConfigurationManager().sendPacketNearby(loc.getX(),loc.getY(),loc.getZ(),64,((CraftWorld)loc.getWorld()).getHandle().dimension, new Packet18ArmAnimation(((CraftPlayer)player).getHandle(), 1));
+		((CraftServer)Bukkit.getServer()).getServer().getPlayerList().sendPacketNearby(loc.getX(),loc.getY(),loc.getZ(),64,((CraftWorld)loc.getWorld()).getHandle().dimension, new Packet18ArmAnimation(((CraftPlayer)player).getHandle(), 1));
 		
 	}
 	
@@ -98,24 +95,26 @@ public class StatsEffectHandler {
 	public static void addPotionGraphicalEffect(LivingEntity entity, int color, int duration) {
 		
 		
-		final EntityLiving el = ((CraftLivingEntity)entity).getHandle();
-		final DataWatcher dw = el.getDataWatcher();
-		
-		dw.watch(8, Integer.valueOf(color));
-		 
-		Bukkit.getScheduler().scheduleSyncDelayedTask(Saga.plugin(), new Runnable() {
-		
-			public void run() {
-			
-				int c = 0;
-				if (!el.effects.isEmpty()) {
-					c = net.minecraft.server.PotionBrewer.a(el.effects.values());
-				}
-				dw.watch(8, Integer.valueOf(c));
-				
-			}
-			
-		}, duration);
+//		final EntityLiving el = ((CraftLivingEntity)entity).getHandle();
+//		final DataWatcher dw = el.getDataWatcher();
+//		
+//		dw.watch(8, Integer.valueOf(color));
+//		 
+//		// TODO: Bring back potion effects or remove them entirely
+//		
+//		Bukkit.getScheduler().scheduleSyncDelayedTask(Saga.plugin(), new Runnable() {
+//		
+//			public void run() {
+//			
+//				int c = 0;
+//				if (!el.effects.isEmpty()) {
+//					c = net.minecraft.server.PotionBrewer.a(el.effects.values());
+//				}
+//				dw.watch(8, Integer.valueOf(c));
+//				
+//			}
+//			
+//		}, duration);
 		
 		
 	}

@@ -25,8 +25,6 @@ import org.saga.messages.SettlementMessages;
 import org.saga.player.Proficiency;
 import org.saga.player.ProficiencyDefinition;
 import org.saga.player.SagaPlayer;
-import org.saga.settlements.Bundle;
-import org.saga.settlements.BundleToggleable;
 import org.saga.statistics.StatisticsManager;
 
 /**

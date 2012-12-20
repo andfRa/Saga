@@ -5,9 +5,9 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.bukkit.ChatColor;
-import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.libs.jline.Terminal;
 import org.bukkit.craftbukkit.libs.jline.console.ConsoleReader;
+import org.bukkit.craftbukkit.v1_4_6.CraftServer;
 import org.fusesource.jansi.Ansi;
 import org.fusesource.jansi.Ansi.Attribute;
 
