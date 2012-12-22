@@ -11,6 +11,7 @@ import org.saga.abilities.AbilityDefinition;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
+import org.saga.config.GeneralConfiguration;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.factions.Faction;
 import org.saga.factions.FactionManager;
@@ -122,18 +123,20 @@ public class StatsMessages {
 		table.addLine("Wallet", EconomyMessages.coins(EconomyDependency.getCoins(sagaPlayer)), 2);
 		
 		// Guard rune:
-		GuardianRune guardRune = sagaPlayer.getGuardRune();
-		String rune = "";
-		if(!guardRune.isEnabled()){
-			rune = "disabled";
-		}else{
-			if(guardRune.isCharged()){
-				rune= "charged";
+		if(GeneralConfiguration.config().isRuneEnabled()){
+			GuardianRune guardRune = sagaPlayer.getGuardRune();
+			String rune = "";
+			if(!guardRune.isEnabled()){
+				rune = "disabled";
 			}else{
-				rune= "discharged";
+				if(guardRune.isCharged()){
+					rune= "charged";
+				}else{
+					rune= "discharged";
+				}
 			}
+			table.addLine("Guard rune", rune, 2);
 		}
-		table.addLine("Guard rune", rune, 2);
 		
 		table.collapse();
 		

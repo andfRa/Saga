@@ -4,7 +4,7 @@ import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.GuardianRuneSign;
-import org.saga.exceptions.InvalidBuildingException;
+import org.saga.config.GeneralConfiguration;
 
 
 public class Academy extends Building{
@@ -17,27 +17,7 @@ public class Academy extends Building{
 	 * @param definition building definition
 	 */
 	public Academy(BuildingDefinition definition) {
-		
-		
 		super(definition);
-
-		
-	}
-	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#completeExtended()
-	 */
-	@Override
-	public boolean complete() throws InvalidBuildingException {
-		
-
-		boolean integrity = super.complete();
-		
-		return integrity;
-		
-		
 	}
 
 	
@@ -51,7 +31,7 @@ public class Academy extends Building{
 	@Override
 	public boolean isBuildingSign(String firstLine) {
 		
-		if(firstLine.equalsIgnoreCase(GuardianRuneSign.SIGN_NAME)) return true;
+		if(GeneralConfiguration.config().isRuneEnabled() && firstLine.equalsIgnoreCase(GuardianRuneSign.SIGN_NAME)) return true;
 		
 		return super.isBuildingSign(firstLine);
 		
@@ -65,8 +45,7 @@ public class Academy extends Building{
 	@Override
 	protected BuildingSign createBuildingSign(Sign sign, SignChangeEvent event) {
 		
-		
-		// Stone fix sign:
+		// Rune recharge sign:
 		if(event.getLine(0).equalsIgnoreCase(GuardianRuneSign.SIGN_NAME)){
 			
 			return GuardianRuneSign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
@@ -76,7 +55,6 @@ public class Academy extends Building{
 		}
 		
 		return super.createBuildingSign(sign, event);
-		
 		
 	}
 	

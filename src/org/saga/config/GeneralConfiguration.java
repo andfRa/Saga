@@ -11,7 +11,6 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.saga.SagaLogger;
-import org.saga.player.GuardianRune;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.statistics.StatisticsManager;
@@ -314,11 +313,10 @@ public class GeneralConfiguration {
 	/**
 	 * Checks if the rune is enabled in the given world
 	 * 
-	 * @param rune rune
 	 * @param world world
 	 * @return true if enabled
 	 */
-	public boolean isRuneEnabled(GuardianRune rune, World world) {
+	public boolean isRuneEnabled(World world) {
 
 		return !guardRuneDisableWorlds.contains(world.getName());
 

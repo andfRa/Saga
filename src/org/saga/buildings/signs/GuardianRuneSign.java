@@ -3,6 +3,7 @@ package org.saga.buildings.signs;
 import org.bukkit.block.Sign;
 import org.saga.buildings.Building;
 import org.saga.config.EconomyConfiguration;
+import org.saga.config.GeneralConfiguration;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.PlayerMessages;
@@ -21,7 +22,7 @@ public class GuardianRuneSign extends BuildingSign{
 	public static String SIGN_NAME = "=[RECHARGE]=";
 	
 	/**
-	 * Parameter for the 
+	 * Rune type.
 	 */
 	public static String RUNE_TYPE = "guardian rune";
 	
@@ -39,9 +40,7 @@ public class GuardianRuneSign extends BuildingSign{
 	 * @param building building
 	 */
 	private GuardianRuneSign(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building){
-	
 		super(sign, SIGN_NAME, secondLine, thirdLine, fourthLine, building);
-		
 	}
 	
 	/**
@@ -151,6 +150,9 @@ public class GuardianRuneSign extends BuildingSign{
 
 		
 		GuardianRune rune = sagaPlayer.getGuardRune();
+		
+		// Check if enabled:
+		if(!GeneralConfiguration.config().isRuneEnabled()) return;
 		
 		// Already charged:
 		if(rune.isCharged()){

@@ -332,7 +332,7 @@ public class GuardianRune {
 			if(!GeneralConfiguration.config().isRuneEnabled()) return;
 			
 			// Rune disabled in the world:
-			if(!GeneralConfiguration.config().isRuneEnabled(rune, sagaPlayer.getLocation().getWorld())) return;
+			if(!GeneralConfiguration.config().isRuneEnabled(sagaPlayer.getLocation().getWorld())) return;
 			
 			if(rune.isEmpty()) return;
 
@@ -373,7 +373,7 @@ public class GuardianRune {
 		if(!GeneralConfiguration.config().isRuneEnabled()) return false;
 		
 		// Rune disabled in the world:
-		if(!GeneralConfiguration.config().isRuneEnabled(rune, player.getLocation().getWorld())) return false;
+		if(!GeneralConfiguration.config().isRuneEnabled(player.getLocation().getWorld())) return false;
 		
 		// Nothing to absorb:
 		if(countItems(player.getInventory().getContents()) <= 0 && countItems(player.getInventory().getArmorContents()) <= 0 && player.getLevel() <= 0 && player.getExp() <= 0){

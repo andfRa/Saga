@@ -19,6 +19,7 @@ import org.saga.config.AttributeConfiguration;
 import org.saga.config.BuildingConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.FactionConfiguration;
+import org.saga.config.GeneralConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.messages.PlayerMessages.ColourLoop;
@@ -164,19 +165,23 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		abilityUsageTable.collapse();
 		book.addTable(abilityUsageTable);
 		
-		book.nextPage();
-		
-		// Guardian runes:
-		String rechargeCost = "";
-		String academy = academy();
-		if(EconomyConfiguration.config().guardianRuneRechargeCost > 0) rechargeCost = "Recharge costs " + EconomyMessages.coins(EconomyConfiguration.config().guardianRuneRechargeCost) + ". ";
-		book.addLine("The guardian rune will restore all carried items after death. " +
-			"The rune needs to be recharged after every use. " +
-			"Recharging is done by interacting with a " + GuardianRuneSign.SIGN_NAME + " sign. " + 
-			"Recharge signs can only be set at a " + academy + " building. " +
-			rechargeCost + 
-			"Enable or disable the rune with " + GeneralMessages.command("/grenable") + " and " + GeneralMessages.command("/grdisable") + ". "
-		);
+		if(GeneralConfiguration.config().isRuneEnabled()){
+			
+			book.nextPage();
+			
+			// Guardian runes:
+			String rechargeCost = "";
+			String academy = academy();
+			if(EconomyConfiguration.config().guardianRuneRechargeCost > 0) rechargeCost = "Recharge costs " + EconomyMessages.coins(EconomyConfiguration.config().guardianRuneRechargeCost) + ". ";
+			book.addLine("The guardian rune will restore all carried items after death. " +
+				"The rune needs to be recharged after every use. " +
+				"Recharging is done by interacting with a " + GuardianRuneSign.SIGN_NAME + " sign. " + 
+				"Recharge signs can only be set at a " + academy + " building. " +
+				rechargeCost + 
+				"Enable or disable the rune with " + GeneralMessages.command("/grenable") + " and " + GeneralMessages.command("/grdisable") + ". "
+			);
+			
+		}
 		
 		return book.framedPage(page);
 		
