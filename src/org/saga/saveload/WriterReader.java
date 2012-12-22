@@ -11,13 +11,11 @@ import java.io.FilenameFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URISyntaxException;
 import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
 
 import org.bukkit.craftbukkit.libs.com.google.gson.Gson;
 import org.bukkit.craftbukkit.libs.com.google.gson.GsonBuilder;
-import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
 import org.saga.buildings.Building;
@@ -46,9 +44,7 @@ public class WriterReader {
 		
 		// Gson:
 		GsonBuilder gsonBuilder= new GsonBuilder();
-		
 		Gson gson = gsonBuilder.create();
-		
 		String objStr = gson.toJson(obj);
 		
 		if(objStr == null || objStr.equals("null")){
@@ -96,11 +92,9 @@ public class WriterReader {
 		gsonBuilder.registerTypeAdapter(Bundle.class, new SagaCustomSerializer());
 		gsonBuilder.registerTypeAdapter(Building.class, new SagaCustomSerializer());
 		gsonBuilder.registerTypeAdapter(BuildingSign.class, new SagaCustomSerializer());
-		
 		gsonBuilder.registerTypeAdapter(Ability.class, new SagaCustomSerializer());
 		
 		Gson gson = gsonBuilder.create();
-	    
 
 		// Directory:
 		File directory = new File(dir.getDirectory());
@@ -146,9 +140,7 @@ public class WriterReader {
 	 * @throws IOException when write fails
 	 */
 	public static void write(Directory dir, Object obj) throws IOException {
-		
 		write(dir, "", obj);
-         
 	}
 
 	/**
@@ -160,9 +152,7 @@ public class WriterReader {
 	 * @throws IOException when read fails
 	 */
 	public static <T> T read(Directory dir, Class<T> type) throws IOException {
-		
         return read(dir, "", type);
-         
 	}
 	
 
@@ -176,9 +166,7 @@ public class WriterReader {
 	 * @return true if exists
 	 */
 	public static boolean checkExists(Directory dir, String name){
-		
 		return new File(dir.getDirectory() + dir.getFilename().replace(NAME_SUBS, name)).exists();
-		
 	}
 	
 	/**
@@ -188,9 +176,7 @@ public class WriterReader {
 	 * @return true if exists
 	 */
 	public static boolean checkExists(Directory dir){
-		
 		return new File(dir.getDirectory() + dir.getFilename()).exists();
-		
 	}
 
 	
@@ -298,16 +284,20 @@ public class WriterReader {
 	 * @throws IOException when unpacking fails
 	 */
 	public static void unpackConfig(Directory configDir) throws IOException {
+		
 
-
+//		// Saga.jar:
+//		File home;
+//		try {
+//			home = new File(Saga.class.getProtectionDomain().getCodeSource().getLocation().toURI());
+//		}
+//		catch (URISyntaxException e) {
+//			throw new IOException("Invalid URI for Saga: " + Saga.class.getProtectionDomain().getCodeSource().getLocation());
+//		}
+		
 		// Saga.jar:
-		File home;
-		try {
-			home = new File(Saga.class.getProtectionDomain().getCodeSource().getLocation().toURI());
-		}
-		catch (URISyntaxException e) {
-			throw new IOException("Invalid URI for Saga: " + Saga.class.getProtectionDomain().getCodeSource().getLocation());
-		}
+		Directory dir = Directory.SAGA_JAR;
+		File home = new File(System.getProperty("user.dir") + File.separator + dir.getDirectory() + dir.getFilename());
 		JarFile jar = new JarFile(home);
 	
 		// Config file:
@@ -363,7 +353,6 @@ public class WriterReader {
 	 */
 	public static String[] getFileNames(Directory dir) {
 		
-		
 		// Create folders:
 		File directory = new File(dir.getDirectory());
 
@@ -371,7 +360,6 @@ public class WriterReader {
 		if(subDirs == null) return new String[0];
 		
 		return subDirs;
-		
 
 	}
 	
@@ -406,5 +394,6 @@ public class WriterReader {
 
          
 	}
+	
 	
 }

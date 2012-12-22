@@ -6,6 +6,7 @@ public enum Directory {
 
 	
 	CONFIG_DEFAULTS("config/", ""),
+	SAGA_JAR("plugins/", "Saga.jar"),
 	
 	ABILITY_CONFIG("plugins/Saga/config/", "abilities.json"),
 	ATTRIBUTE_CONFIG("plugins/Saga/config/", "attributes.json"),
