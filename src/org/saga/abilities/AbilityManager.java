@@ -5,6 +5,7 @@ import java.util.HashSet;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.saga.abilities.AbilityDefinition.ActivationAction;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.player.SagaLiving;
@@ -21,6 +22,7 @@ public class AbilityManager {
 	 * Saga living entity.
 	 */
 	private SagaLiving<?> sagaLiving;
+	
 	
 	
 	// Initialisation:
@@ -162,6 +164,25 @@ public class AbilityManager {
 
 	}
 	
+	/**
+	 * Called when the player shears an entity.
+	 * 
+	 * @param event event
+	 */
+	public void onShear(PlayerShearEntityEvent event) {
+
+		for (Ability ability : abilities) {
+			
+			if(!ability.hasProjectileHitPreTrigger() || ability.handlePreTrigger()){
+				
+				if(ability.triggerShear(event)) ability.handleAfterTrigger();
+				
+			}
+			
+		}
+
+	}
+	
 	
 	
 	// Getters:
@@ -173,5 +194,6 @@ public class AbilityManager {
 	public HashSet<Ability> getAbilities() {
 		return new HashSet<Ability>(abilities);
 	}
+	
 	
 }

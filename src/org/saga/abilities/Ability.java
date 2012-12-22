@@ -3,6 +3,7 @@ package org.saga.abilities;
 import org.bukkit.Material;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.saga.Clock;
@@ -540,11 +541,22 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 * Triggers projectile hit.
 	 * 
 	 * @param event event
-	 * @return projectile hit.
+	 * @return true if triggered
 	 */
 	public boolean triggerProjectileHit(ProjectileHitEvent event) {
 		return false;
 	}
+
+	/**
+	 * Triggers shear.
+	 * 
+	 * @param event event
+	 * @return true if triggered
+	 */
+	public boolean triggerShear(PlayerShearEntityEvent event) {
+		return false;
+	}
+
 
 	
 	
