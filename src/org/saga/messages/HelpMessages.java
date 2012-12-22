@@ -194,15 +194,22 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
 		StringBook book = new StringBook("settlement help", colours);
 
-		// Land:
+		// Cost:
+		String cost = "";
+		if(EconomyConfiguration.config().isEnabled() && EconomyConfiguration.config().getSettlementCreateCost() > 0){
+			cost = " Creating a settlement costs " + EconomyMessages.coins(EconomyConfiguration.config().getSettlementCreateCost()) + ".";
+		}
+		
+		// Creation and claiming:
 		book.addLine("A settlement will protect your land. " +
 			"Use " + GeneralMessages.command("/ssettle") + " and " + GeneralMessages.command("/sclaim") + " to create the settlement and claim more land. " +
 			"Land is claimed in 16x16 chunks. " +
 			"Use " + GeneralMessages.command("/sunclaim") + " to abandon land. " +
-			"Use " + GeneralMessages.command("/map") + " to see what chunks have already been claimed." 
+			"Use " + GeneralMessages.command("/map") + " to see what chunks have already been claimed." +
+			cost
 		);
 		
-		// Levels:
+		// Claims:
 		book.addLine("Available claims are gained over time. " +
 			"The speed at which they are gained is determined by the number of online members. " +
 			"A certain amount of members is required for the settlement to gain more claims. " +
@@ -327,13 +334,20 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
 		StringBook book = new StringBook("faction help", colours);
 
+		// Cost:
+		String cost = "";
+		if(EconomyConfiguration.config().isEnabled() && EconomyConfiguration.config().getFactionCreateCost() > 0){
+			cost = " Creating a faction costs " + EconomyMessages.coins(EconomyConfiguration.config().getFactionCreateCost()) + ".";
+		}
+		
 		// Claiming:
 		String townSquare = townSquare();
 		book.addLine("Every settlement that has a " + townSquare + " can be claimed by a faction. " +
 			"To claim a settlement faction members must hold the " + townSquare + " for a certain amount of time. " +
 			"When no members remain, claim progress will decrease over time. " +
 			"To abandon a settlement use " + GeneralMessages.command("/funclaim") + ". " +
-			"The total number of available claims increases with time."
+			"The total number of available claims increases with time." +
+			cost
 		);
 		
 		// Pvp:
