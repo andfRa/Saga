@@ -61,31 +61,49 @@ public class FactionCommands {
 		while(name.contains("  ")){
 			name = name.replaceAll("  ", " ");
 		}
-		
-	    	// Already in faction:
-	    	if(sagaPlayer.getFaction() != null){
-	    		sagaPlayer.message(FactionMessages.alreadyInFaction());
-	    		return;
-	    	}
 
-	    	// Validate name:
-	    	if(!validateName(name)){
-	    		sagaPlayer.message(FactionMessages.invalidName());
-	    		return;
-	    	}
-	    	
-	    	// Check name:
-	    	if( FactionManager.manager().getFaction(name) != null){
-	    		sagaPlayer.message(FactionMessages.inUse(name));
-	    		return;
-	    	}
-	    	
-	    	// Create faction:
-	    	Faction faction = Faction.create(name, sagaPlayer);
-	    	
-	    	// Broadcast:
-	    	sagaPlayer.message(FactionMessages.created(faction));
-	    	
+    	// Already in faction:
+    	if(sagaPlayer.getFaction() != null){
+    		sagaPlayer.message(FactionMessages.alreadyInFaction());
+    		return;
+    	}
+
+    	// Validate name:
+    	if(!validateName(name)){
+    		sagaPlayer.message(FactionMessages.invalidName());
+    		return;
+    	}
+    	
+    	// Check name:
+    	if( FactionManager.manager().getFaction(name) != null){
+    		sagaPlayer.message(FactionMessages.inUse(name));
+    		return;
+    	}
+    
+    	// Cost:
+	    Double cost = EconomyConfiguration.config().getFactionCreateCost();
+	    if(cost > 0 && EconomyConfiguration.config().isEnabled()){
+
+		    // Check coins:
+		    if(EconomyDependency.getCoins(sagaPlayer) < cost){
+		    	sagaPlayer.message(EconomyMessages.insuficcientCoins(cost));
+		    	return;
+		    }
+		    
+	    	// Take coins:
+		    EconomyDependency.removeCoins(sagaPlayer, cost);
+		    
+		    // Inform:
+		    sagaPlayer.message(EconomyMessages.spent(cost));
+		    
+	    }
+    	
+    	// Create faction:
+    	Faction faction = Faction.create(name, sagaPlayer);
+    	
+    	// Broadcast:
+    	sagaPlayer.message(FactionMessages.created(faction));
+    	
 	    	
 	}
 
@@ -1728,8 +1746,8 @@ public class FactionCommands {
 	    	return;
 	    }
 	    
-	    Double cost = EconomyConfiguration.config().factionRenameCost;
-	    if(selFaction.isFormed() && cost > 0){
+	    Double cost = EconomyConfiguration.config().getFactionRenameCost();
+	    if(selFaction.isFormed() && cost > 0 && EconomyConfiguration.config().isEnabled()){
 
 		    // Check coins:
 		    if(EconomyDependency.getCoins(sagaPlayer) < cost){

@@ -103,7 +103,25 @@ public class SettlementCommands {
 			sagaPlayer.message(SettlementMessages.inUse(settlementName));
 			return;
 		}
-		
+
+    	// Cost:
+	    Double cost = EconomyConfiguration.config().getSettlementCreateCost();
+	    if(cost > 0 && EconomyConfiguration.config().isEnabled()){
+
+		    // Check coins:
+		    if(EconomyDependency.getCoins(sagaPlayer) < cost){
+		    	sagaPlayer.message(EconomyMessages.insuficcientCoins(cost));
+		    	return;
+		    }
+		    
+	    	// Take coins:
+		    EconomyDependency.removeCoins(sagaPlayer, cost);
+		    
+		    // Inform:
+		    sagaPlayer.message(EconomyMessages.spent(cost));
+		    
+	    }
+    	
 		// Settle:
 		Settlement settlement = new Settlement(settlementName);
 		settlement.complete();
@@ -1344,8 +1362,8 @@ public class SettlementCommands {
 	    	return;
 	    }
 	    
-	    Double cost = EconomyConfiguration.config().chunkGroupRenameCost;
-		if(cost > 0){
+	    Double cost = EconomyConfiguration.config().getSettlementRenameCost();
+		if(cost > 0 && EconomyConfiguration.config().isEnabled()){
 
 		    // Check coins:
 		    if(EconomyDependency.getCoins(sagaPlayer) < cost){

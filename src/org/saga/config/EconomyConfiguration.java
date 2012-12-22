@@ -36,7 +36,14 @@ public class EconomyConfiguration {
 	 * Random generator.
 	 */
 	private static Random random = new Random();
+
 	
+
+	/**
+	 * True if economy is enabled.
+	 */
+	public Boolean enabled;
+
 	
 	/**
 	 * Player initial coins.
@@ -66,16 +73,26 @@ public class EconomyConfiguration {
 	 */
 	private Double attributeResetCost;
 
+
+	/**
+	 * Faction create cost.
+	 */
+	private Double factionCreateCost;
+	
+	/**
+	 * Settlement create cost.
+	 */
+	private Double settlementCreateCost;
 	
 	/**
 	 * Faction rename cost.
 	 */
-	public Double factionRenameCost;
+	private Double factionRenameCost;
 	
 	/**
-	 * Chunk group rename cost.
+	 * Settlement rename cost.
 	 */
-	public Double chunkGroupRenameCost;
+	private Double settlementRenameCost;
 
 	
 	/**
@@ -142,6 +159,11 @@ public class EconomyConfiguration {
 			playerCoins = 0.0;
 		}
 		
+		if(enabled == null){
+			SagaLogger.nullField(getClass(), "enabled");
+			enabled = true;
+		}
+		
 		if(coinName == null){
 			SagaLogger.nullField(getClass(), "coinName");
 			coinName = "coins";
@@ -162,9 +184,19 @@ public class EconomyConfiguration {
 			attributeResetCost= Double.MAX_VALUE;
 		}
 		
-		if(chunkGroupRenameCost == null){
-			SagaLogger.nullField(getClass(), "chunkGroupRenameCost");
-			chunkGroupRenameCost= 1000.0;
+		if(settlementCreateCost == null){
+			SagaLogger.nullField(getClass(), "settlementCreateCost");
+			settlementCreateCost = 1000.0;
+		}
+		
+		if(factionCreateCost == null){
+			SagaLogger.nullField(getClass(), "factionCreateCost");
+			factionCreateCost= 1000.0;
+		}
+		
+		if(settlementRenameCost == null){
+			SagaLogger.nullField(getClass(), "settlementRenameCost");
+			settlementRenameCost = 1000.0;
 		}
 		
 		if(factionRenameCost == null){
@@ -224,6 +256,18 @@ public class EconomyConfiguration {
 
 	
 	
+	// Status:
+	/**
+	 * Checks if the economy is enabled
+	 * 
+	 * @return true if enabled
+	 */
+	public Boolean isEnabled() {
+		return enabled;
+	}
+	
+	
+	
 	// Prices:
 	/**
 	 * Gets the price for the given material
@@ -270,6 +314,45 @@ public class EconomyConfiguration {
 	}
 	
 	
+	
+	// Rename and create:
+	/**
+	 * Gets the factionCreateCost.
+	 * 
+	 * @return the factionCreateCost
+	 */
+	public Double getFactionCreateCost() {
+		return factionCreateCost;
+	}
+
+	/**
+	 * Gets the settlementCreateCost.
+	 * 
+	 * @return the settlementCreateCost
+	 */
+	public Double getSettlementCreateCost() {
+		return settlementCreateCost;
+	}
+
+	/**
+	 * Gets the factionRenameCost.
+	 * 
+	 * @return the factionRenameCost
+	 */
+	public Double getFactionRenameCost() {
+		return factionRenameCost;
+	}
+
+	/**
+	 * Gets the settlementRenameCost.
+	 * 
+	 * @return the settlementRenameCost
+	 */
+	public Double getSettlementRenameCost() {
+		return settlementRenameCost;
+	}
+	
+	
 
 	// Util:
 	/**
@@ -292,7 +375,8 @@ public class EconomyConfiguration {
 		
 		
 	}
-	
+
+
 	/**
 	 * Returns a random normal distributed value.
 	 * 

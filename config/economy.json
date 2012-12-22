@@ -1,4 +1,7 @@
 {
+
+"enabled":true,
+
 "playerCoins":2000.0,
 "coinName":"()",
 "exchangeDistance":10,
@@ -7,8 +10,11 @@
 
 "attributeResetCost":250,
 
-"chunkGroupRenameCost":0,
-"factionRenameCost":0,
+"settlementCreateCost":0,
+"factionCreateCost":0,
+"settlementRenameCost":0,
+"factionRenameCost":0,
+
 "prices":{
   "DIRT":1.25,
   "COBBLESTONE":1.5,

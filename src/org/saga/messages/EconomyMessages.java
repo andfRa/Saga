@@ -121,7 +121,7 @@ public class EconomyMessages {
 	
 	
 	
-	// General:
+	// Coins management:
 	public static String spent(Double coins) {
 		
 		return positive + "Spent " + coins(coins) + ".";

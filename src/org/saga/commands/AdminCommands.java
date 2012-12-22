@@ -370,15 +370,15 @@ public class AdminCommands {
 	
 	// Economy:
 	@Command(
-			aliases = {"amodifywallet"},
+			aliases = {"amodwallet","amodifywallet"},
 			usage = "[player_name] <amount>",
 			flags = "",
-			desc = "Modifies players balance.",
+			desc = "Modifies players balance. Negative values to subtract.",
 			min = 1,
 			max = 2
 	)
 	@CommandPermissions({"saga.admin.player.modifywallet"})
-	public static void setWallet(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	public static void modWallet(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
 		SagaPlayer selPlayer = null;

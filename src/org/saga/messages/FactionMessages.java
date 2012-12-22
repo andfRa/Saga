@@ -116,7 +116,7 @@ public static ChatColor positiveHighlightColor = ChatColor.GREEN;
 	// Create delete:
 	public static String created(Faction faction) {
 
-		return faction.getColour2() + "Created " + faction(faction, faction.getColour2()) + " faction.";
+		return normal1 + "Created " + faction(faction, faction.getColour2()) + " faction.";
 		
 	}
 	
