@@ -1,8 +1,13 @@
 package org.saga.config;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
@@ -10,6 +15,7 @@ import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.saga.SagaLogger;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
+import org.saga.settlements.Settlement;
 import org.saga.utility.TwoPointFunction;
 
 public class SettlementConfiguration {
@@ -65,6 +71,11 @@ public class SettlementConfiguration {
 	 * Active players.
 	 */
 	private TwoPointFunction requiredActiveMembers;
+
+	/**
+	 * Required buildings.
+	 */
+	private Hashtable<String, Integer> requiredBuildings;
 
 	
 	// Hierarchy:
@@ -165,10 +176,14 @@ public class SettlementConfiguration {
 			buildPoints = new TwoPointFunction(0.0);
 		}
 		
-		
 		if(requiredActiveMembers == null){
 			SagaLogger.nullField(this, "requiredActiveMembers");
 			requiredActiveMembers = new TwoPointFunction(5.0);
+		}
+
+		if(requiredBuildings == null){
+			SagaLogger.nullField(this, "requiredBuildings");
+			requiredBuildings = new Hashtable<String, Integer>();
 		}
 		
 
@@ -330,6 +345,86 @@ public class SettlementConfiguration {
 	public Integer getRequiredActiveMembers(Integer size) {
 		return requiredActiveMembers.intValue(size);
 	}
+	
+	/**
+	 * Gets building requirements.
+	 * 
+	 * @return building requirements
+	 */
+	public Set<Entry<String, Integer>> getBuildingRequirements() {
+		return requiredBuildings.entrySet();
+	}
+	
+	/**
+	 * Gets sorted requirements.
+	 * 
+	 * @return building requirements
+	 */
+	public List<Entry<String, Integer>> getSortedBuildingRequirements() {
+		
+		List<Entry<String, Integer>> bldgReq = new ArrayList<Entry<String,Integer>>(requiredBuildings.entrySet());
+
+		// Sort by claims:
+		Comparator<Entry<String, Integer>> comp = new Comparator<Entry<String,Integer>>() {
+			@Override
+			public int compare(Entry<String, Integer> o1, Entry<String, Integer> o2) {
+				return o1.getValue() - o2.getValue();
+			}
+		};
+		Collections.sort(bldgReq, comp);
+		
+		return bldgReq;
+		
+	}
+	
+
+	
+	/**
+	 * Check if the building requirements are met.
+	 * 
+	 * @param settlement settlement
+	 * @return true if building requirements are met
+	 */
+	public boolean checkBuildingRequirements(Settlement settlement) {
+
+		int totalClaims = settlement.getTotalClaims();
+		Set<Entry<String, Integer>> requirments = requiredBuildings.entrySet();
+		
+		for (Entry<String, Integer> requirement : requirments) {
+			
+			String bldgName = requirement.getKey();
+			Integer bldgClaims = requirement.getValue();
+			
+			if(totalClaims >= bldgClaims && settlement.getFirstBuilding(bldgName) == null) return false;
+			
+		}
+		
+		return true;
+		
+	}
+
+	/**
+	 * Gets building requirements.
+	 * 
+	 * @param settlement settlement
+	 * @return required buildings
+	 */
+	public ArrayList<String> getSortedRequiredBuildings(Settlement settlement) {
+		
+		Integer totalClaims = settlement.getTotalClaims();
+		List<Entry<String, Integer>> requirements = getSortedBuildingRequirements();
+		ArrayList<String> required = new ArrayList<String>();
+		
+		for (Entry<String, Integer> requirement : requirements) {
+			if(totalClaims >= requirement.getValue()){
+				required.add(requirement.getKey());
+			}
+		}
+		
+		return required;
+		
+	}
+	
 	
 	
 	

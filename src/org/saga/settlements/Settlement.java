@@ -701,7 +701,6 @@ public class Settlement extends Bundle implements MinuteTicker{
 	 */
 	@Override
 	public boolean clockMinuteTick() {
-
 		
 		if(!isEnabled()) return false;
 
@@ -711,7 +710,8 @@ public class Settlement extends Bundle implements MinuteTicker{
 		StatisticsManager.manager().addManminutes(this, online);
 
 		// Increase claims:
-		if(claims < SettlementConfiguration.config().getMaxClaims() && checkActiveMembers()){
+		if(claims < SettlementConfiguration.config().getMaxClaims() && checkActiveMembers() && SettlementConfiguration.config().checkBuildingRequirements(this)){
+		
 			claims+= SettlementConfiguration.config().getClaimsPerMinute(online);
 			
 			// Statistics:
@@ -720,7 +720,6 @@ public class Settlement extends Bundle implements MinuteTicker{
 		}
 		
 		return true;
-		
 		
 	}
 

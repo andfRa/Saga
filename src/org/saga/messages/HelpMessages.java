@@ -2,6 +2,8 @@ package org.saga.messages;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map.Entry;
 
 import org.bukkit.ChatColor;
 import org.saga.abilities.AbilityDefinition;
@@ -223,6 +225,25 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 			"Use " + GeneralMessages.command("/settlementquit") + " to leave a settlement. " +
 			"Troublemakers can be kicked by using " + GeneralMessages.command("/skick") + ". "
 		);
+
+		List<Entry<String, Integer>> bldgReq = SettlementConfiguration.config().getSortedBuildingRequirements();
+		if(bldgReq.size() > 0){
+			
+			// Building requirements:
+			book.addLine("At some point, certain building will be required for the settlement to gain more claims.");
+			
+			book.addLine("");
+			
+			// Requirements table:
+			StringTable bldgsReqTable = new StringTable(colours);
+			bldgsReqTable.addLine(new String[]{GeneralMessages.columnTitle("required"), GeneralMessages.columnTitle("total claims")});
+			for (Entry<String, Integer> req : bldgReq) {
+				bldgsReqTable.addLine(new String[]{req.getKey(), req.getValue().toString()});
+			}
+			bldgsReqTable.collapse();
+			book.addTable(bldgsReqTable);
+			
+		}
 		
 		book.nextPage();
 		

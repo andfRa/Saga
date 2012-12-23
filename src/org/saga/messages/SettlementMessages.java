@@ -471,6 +471,17 @@ public class SettlementMessages {
 		}else{
 			table.addLine(negative + "members", negative + active.toString() + "/" + SettlementConfiguration.config().getRequiredActiveMembers(settlement.getSize()), 0);
 		}
+		
+		// Buildings:
+		ArrayList<String> required = SettlementConfiguration.config().getSortedRequiredBuildings(settlement);
+		for (String reqBldgName : required) {
+			if(settlement.getFirstBuilding(reqBldgName) != null){
+				table.addLine(reqBldgName);
+			}else{
+				table.addLine(negative + reqBldgName);
+			}
+		}
+		
 		table.collapse();
 		
 		return table;
