@@ -934,6 +934,8 @@ public class AdminCommands {
 			
 		}
 		
+		sagaPlayer.getPlayer().setFoodLevel(1);
+		
 		sagaPlayer.message("numb=" + numb);
 		
 	}

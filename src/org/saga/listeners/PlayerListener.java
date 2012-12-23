@@ -14,6 +14,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
@@ -273,7 +274,7 @@ public class PlayerListener implements Listener {
 	}
 	
 	@EventHandler(priority = EventPriority.HIGH)
-	private void onPlayerShearEntity(PlayerShearEntityEvent event) {
+	public void onPlayerShearEntity(PlayerShearEntityEvent event) {
 
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
 		
@@ -283,6 +284,25 @@ public class PlayerListener implements Listener {
 		// Forward to managers:
 		sagaPlayer.getAbilityManager().onShear(event);
 
+		
+	}
+	
+	@EventHandler(priority = EventPriority.HIGH)
+	public void onFoodLevelChange(FoodLevelChangeEvent event) {
+
+		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
+		
+		
+		if(event.getEntity() instanceof Player){
+
+			SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(((Player)event.getEntity()).getName());
+			if(sagaPlayer == null) return;
+			
+			// Forward to managers:
+			sagaPlayer.getAbilityManager().onFoodLevelChange(event);
+
+		}
+		
 		
 	}
 	

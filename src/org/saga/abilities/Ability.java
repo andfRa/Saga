@@ -1,6 +1,7 @@
 package org.saga.abilities;
 
 import org.bukkit.Material;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
@@ -557,8 +558,17 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		return false;
 	}
 
+	/**
+	 * Triggers food level change.
+	 * 
+	 * @param event event
+	 * @return true if triggered
+	 */
+	public boolean triggerFoodLevelChange(FoodLevelChangeEvent event) {
+		return false;
+	}
 
-	
+
 	
 	// Other:
 	/* 

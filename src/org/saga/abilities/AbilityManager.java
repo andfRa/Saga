@@ -3,6 +3,7 @@ package org.saga.abilities;
 import java.util.HashSet;
 
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
@@ -176,6 +177,25 @@ public class AbilityManager {
 			if(!ability.hasProjectileHitPreTrigger() || ability.handlePreTrigger()){
 				
 				if(ability.triggerShear(event)) ability.handleAfterTrigger();
+				
+			}
+			
+		}
+
+	}
+
+	/**
+	 * Called when the hunger level changes.
+	 * 
+	 * @param event event
+	 */
+	public void onFoodLevelChange(FoodLevelChangeEvent event) {
+
+		for (Ability ability : abilities) {
+			
+			if(!ability.hasProjectileHitPreTrigger() || ability.handlePreTrigger()){
+				
+				if(ability.triggerFoodLevelChange(event)) ability.handleAfterTrigger();
 				
 			}
 			
