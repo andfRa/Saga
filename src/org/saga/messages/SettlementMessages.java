@@ -476,7 +476,7 @@ public class SettlementMessages {
 		ArrayList<String> required = SettlementConfiguration.config().getSortedRequiredBuildings(settlement);
 		for (String reqBldgName : required) {
 			if(settlement.getFirstBuilding(reqBldgName) != null){
-				table.addLine(reqBldgName);
+				table.addLine(positive + reqBldgName);
 			}else{
 				table.addLine(negative + reqBldgName);
 			}
