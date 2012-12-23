@@ -702,13 +702,41 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	}
 	
 	/**
-	 * Gets the total amount of claims.
+	 * Gets the total claim amount.
 	 * 
-	 * @return total amount of claims
+	 * @return total claim amount
 	 */
 	public Integer getTotalClaims() {
 		return claims.intValue();
 	}
+	
+	/**
+	 * Gets the used claim amount.
+	 * 
+	 * @return used claim amount
+	 */
+	public Integer getUsedClaims() {
+		return FactionClaimManager.manager().findSettlementsIds(getId()).length;
+	}
+
+	/**
+	 * Gets the available claims amount.
+	 * 
+	 * @return available claims amount
+	 */
+	public Integer getAvailableClaims() {
+		return getTotalClaims() - getUsedClaims();
+	}
+
+	/**
+	 * Checks if the faction has claims available.
+	 * 
+	 * @return true if available
+	 */
+	public boolean areClaimsAvailable() {
+		return getAvailableClaims() >= 1;
+	}
+	
 	
 	/**
 	 * Gets the claim progress.

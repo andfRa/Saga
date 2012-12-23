@@ -716,16 +716,6 @@ public class FactionClaimManager implements SecondTicker{
 		
 	}
 
-	/**
-	 * Checks if the faction has not reached its claim limit.
-	 * 
-	 * @param faction faction
-	 * @return true if the faction can claim
-	 */
-	public boolean checkClaimLimit(Faction faction) {
-		return findSettlementsIds(faction.getId()).length < FactionConfiguration.config().getMaxClaims();
-	}
-	
 	
 	
 	// Ranks:

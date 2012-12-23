@@ -188,7 +188,7 @@ public class TownSquare extends Building implements SecondTicker{
 			if(initFaction == null) return true;
 			
 			// Claim limit:
-			if(!FactionClaimManager.manager().checkClaimLimit(initFaction)) return true;
+			if(!initFaction.areClaimsAvailable()) return true;
 			
 			// Initiate:
 			FactionClaimManager.manager().initiate(bundle, initFaction);
