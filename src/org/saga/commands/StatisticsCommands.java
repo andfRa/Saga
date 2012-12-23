@@ -415,7 +415,7 @@ public class StatisticsCommands {
 			max = 0
 	)
 	@CommandPermissions({"saga.statistics.histogram.settlementsize"})
-	public static void sSizeHistogram(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	public static void sizeHistogram(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
     	// Data:
@@ -484,11 +484,11 @@ public class StatisticsCommands {
 		min = 0,
 		max = 0
 		)
-	@CommandPermissions({"saga.statistics.claimed"})
+	@CommandPermissions({"saga.statistics.online"})
 	public static void online(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 	
 		// Inform:
-		sagaPlayer.message(StatisticsMessages.values("online exp", "online", "online", "exp", "group", "minutes", "exp", !args.hasFlag('a'), 0, 0));
+		sagaPlayer.message(StatisticsMessages.values("online claims", "online", "online", "claims", "group", "minutes", "claims", !args.hasFlag('a'), 0, 0));
 		
 		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
 	            	
