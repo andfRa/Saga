@@ -25,16 +25,6 @@ public class ForceBow extends Ability{
 	
 	}
 	
-	/* 
-	 * Trigger indication.
-	 * 
-	 * @see org.saga.abilities.Ability#hasAttackPreTrigger()
-	 */
-	@Override
-	public boolean hasAttackPreTrigger() {
-		return true;
-	}
-	
 
 	
 	// Ability usage:

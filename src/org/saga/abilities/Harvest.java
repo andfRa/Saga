@@ -42,16 +42,6 @@ public class Harvest extends Ability{
         super(definition);
 	
 	}
-
-	/* 
-	 * Trigger indication.
-	 * 
-	 * @see org.saga.abilities.Ability#hasAttackPreTrigger()
-	 */
-	@Override
-	public boolean hasInteractPreTrigger() {
-		return true;
-	}
 	
 	
 	

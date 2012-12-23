@@ -426,7 +426,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		if(isCooldown()){
 			
 			// Prevent cooldown spam:
-			if(getCooldown() != lastCooldown && getDefinition().getActivationAction() != ActivationAction.NONE){
+			if(getCooldown() != lastCooldown && getDefinition().getActivationAction() != ActivationAction.NONE && !useSilentPreTrigger()){
 				getSagaLiving().message(AbilityMessages.onCooldown(this));
 			}
 			lastCooldown = getCooldown();
@@ -438,8 +438,11 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		if(getScore() < 1) return false;
 		
 		if(!checkCost()){
-			sagaLiving.message(AbilityMessages.insufficientItems(this, definition.getUsedItem(), definition.getUsedAmount(getScore())));
+			
+			// Prevent cost spam:
+			if(!useSilentPreTrigger()) sagaLiving.message(AbilityMessages.insufficientItems(this, definition.getUsedItem(), definition.getUsedAmount(getScore())));
 			return false;
+			
 		}
 
 		return true;
@@ -468,40 +471,12 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		
 	}
 
-
 	/**
-	 * True if interact pre-trigger should not be ignored.
+	 * Specifies if messages should be ignore in the pre-trigger.
 	 * 
-	 * @return true if the trigger should not be ignored
+	 * @return true if ignore
 	 */
-	public boolean hasInteractPreTrigger(){
-		return false;
-	}
-
-	/**
-	 * True if attack pre-trigger should not be ignored.
-	 * 
-	 * @return true if the trigger should not be ignored
-	 */
-	public boolean hasAttackPreTrigger(){
-		return false;
-	}
-	
-	/**
-	 * True if defend pre-trigger should not be ignored.
-	 * 
-	 * @return true if the trigger should not be ignored
-	 */
-	public boolean hasDefendPreTrigger(){
-		return false;
-	}
-	
-	/**
-	 * True if projectile hit pre-trigger should not be ignored.
-	 * 
-	 * @return true if the trigger should not be ignored
-	 */
-	public boolean hasProjectileHitPreTrigger(){
+	public boolean useSilentPreTrigger(){
 		return false;
 	}
 

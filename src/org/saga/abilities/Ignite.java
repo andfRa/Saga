@@ -25,16 +25,6 @@ public class Ignite extends Ability{
         super(definition);
 	
 	}
-
-	/* 
-	 * Trigger indication.
-	 * 
-	 * @see org.saga.abilities.Ability#hasAttackPreTrigger()
-	 */
-	@Override
-	public boolean hasAttackPreTrigger() {
-		return true;
-	}
 	
 	
 	

@@ -38,6 +38,16 @@ public class Backstab extends Ability{
         super(definition);
 	}
 	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.abilities.Ability#useSilentPreTrigger()
+	 */
+	@Override
+	public boolean useSilentPreTrigger() {
+		return true;
+	}
+	
 
 	
 	// Ability usage:

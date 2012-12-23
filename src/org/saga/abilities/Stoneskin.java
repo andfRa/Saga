@@ -76,6 +76,26 @@ public class Stoneskin extends Ability{
 		
 	}
 
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.abilities.Ability#useSilentPreTrigger()
+	 */
+	@Override
+	public boolean useSilentPreTrigger() {
+		return true;
+	}
+	
+	/* 
+	 * Custom item usage.
+	 * 
+	 * @see org.saga.abilities.Ability#handlePreTrigger()
+	 */
+	@Override
+	public boolean handlePreTrigger() {
+		return true;
+	}
+	
 	
 	
 	// Ability usage:

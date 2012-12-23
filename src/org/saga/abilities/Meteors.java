@@ -85,21 +85,6 @@ public class Meteors extends Ability{
         super(definition);
 	}
 
-	/* 
-	 * Trigger indication.
-	 * 
-	 * @see org.saga.abilities.Ability#hasAttackPreTrigger()
-	 */
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.abilities.Ability#hasInteractPreTrigger()
-	 */
-	@Override
-	public boolean hasInteractPreTrigger() {
-		return true;
-	}
-	
 	
 	
 	// Usage:

@@ -46,16 +46,6 @@ public class ChopDown extends Ability{
 	
 	}
 
-	/* 
-	 * Trigger indication.
-	 * 
-	 * @see org.saga.abilities.Ability#hasAttackPreTrigger()
-	 */
-	@Override
-	public boolean hasInteractPreTrigger() {
-		return true;
-	}
-	
 
 	
 	// Usage:

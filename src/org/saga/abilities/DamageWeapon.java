@@ -15,6 +15,8 @@ public class DamageWeapon extends Ability{
 	 */
 	private static String WEAPON_DAMAGE_KEY = "weapon damage";
 	
+	
+	
 	/**
 	 * Initialises using definition.
 	 * 
@@ -26,6 +28,16 @@ public class DamageWeapon extends Ability{
 	
 	}
 
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.abilities.Ability#useSilentPreTrigger()
+	 */
+	@Override
+	public boolean useSilentPreTrigger() {
+		return true;
+	}
+	
 
 	
 	// Ability usage:

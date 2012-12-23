@@ -33,16 +33,6 @@ public class Counterattack extends Ability{
 	
 	}
 	
-	/* 
-	 * Trigger indication.
-	 * 
-	 * @see org.saga.abilities.Ability#hasAttackPreTrigger()
-	 */
-	@Override
-	public boolean hasDefendPreTrigger() {
-		return true;
-	}
-	
 	
 	
 	// Ability usage:

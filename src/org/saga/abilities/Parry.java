@@ -68,6 +68,16 @@ public class Parry extends Ability{
 		return true;
 		
 	}
+
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.abilities.Ability#useSilentPreTrigger()
+	 */
+	@Override
+	public boolean useSilentPreTrigger() {
+		return true;
+	}
 	
 
 	

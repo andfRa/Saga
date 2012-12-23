@@ -43,16 +43,6 @@ public class Dig extends Ability{
 	
 	}
 
-	/* 
-	 * Trigger indication.
-	 * 
-	 * @see org.saga.abilities.Ability#hasAttackPreTrigger()
-	 */
-	@Override
-	public boolean hasInteractPreTrigger() {
-		return true;
-	}
-	
 	
 	
 	// Ability usage:
