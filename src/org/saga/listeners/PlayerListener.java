@@ -194,16 +194,17 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 
+		
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
 		
 		SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
 		if(sagaPlayer == null) return;
 		
-		
-		// Bukkit bug workaround: 
-		if(event.getAction().equals(Action.LEFT_CLICK_AIR) || event.getAction().equals(Action.RIGHT_CLICK_AIR)){
+		// Uncancel:
+		boolean recancel = false;
+		if(event.isCancelled()){
 			event.setCancelled(false);
-			// TODO: Check if bug still exists.
+			recancel = true;
 		}
 
 		// Get Saga chunk:
@@ -231,6 +232,9 @@ public class PlayerListener implements Listener {
 		
 		// Forward to managers:
 		sagaPlayer.getAbilityManager().onInteract(event);
+		
+		// Recancel:
+		if(recancel) event.setCancelled(false);
 		
 		
 	}

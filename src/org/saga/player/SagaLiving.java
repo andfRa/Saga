@@ -531,37 +531,37 @@ public class SagaLiving <T extends LivingEntity>{
 	/**
 	 * Gets entity orientation.
 	 * 
-	 * @return orientation, {@link Orientation#NORTH} if not online
+	 * @return orientation, {@link Orientation#WEST} if not online
 	 */
 	public Orientation getOrientation(){
 		
 		
-		if(livingEntity == null) return Orientation.NORTH;
+		if(livingEntity == null) return Orientation.WEST;
 		
 		Location entityLocation = livingEntity.getEyeLocation();
 		double yaw = entityLocation.getYaw();
 		
 		if( (yaw >= 315.0 && yaw <= 360) || (yaw >= 0 && yaw <= 45.0) || (yaw <= 0 && yaw >= -45.0) || (yaw <= -315 && yaw >= -360.0) ){
 			
-			return Orientation.WEST;
+			return Orientation.SOUTH;
 			
 		}
 		if( (yaw >= 45.0 && yaw <= 135.0) || (yaw >= -315.0 && yaw <= -225.0) ){
 			
-			return Orientation.NORTH;
+			return Orientation.WEST;
 			
 		}
 		if( (yaw >= 135.0 && yaw <= 225.0) || (yaw >= -225.0 && yaw <= -135.0) ){
 			
-			return Orientation.EAST;
+			return Orientation.NORTH;
 			
 		}if( (yaw >= 225.0 && yaw <= 315.0) || (yaw >= -135.0 && yaw <= -45.0) ){
 			
-			return Orientation.SOUTH;
+			return Orientation.EAST;
 			
 		}
 		
-		return Orientation.NORTH;
+		return Orientation.WEST;
 
 		
 	}	

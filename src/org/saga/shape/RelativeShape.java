@@ -182,15 +182,15 @@ public class RelativeShape {
 	public final int getXOffset(Orientation orientation, int index) throws IndexOutOfBoundsException{
 		
 		
-		if(orientation == Orientation.NORTH){
+		if(orientation == Orientation.WEST){
 			
 			return xoffsets.get(index);
 			
-		}else if(orientation == Orientation.EAST){
+		}else if(orientation == Orientation.NORTH){
 			
 			return -zoffsets.get(index);
 			
-		}else if(orientation == Orientation.SOUTH){
+		}else if(orientation == Orientation.EAST){
 			
 			return -xoffsets.get(index);
 			
@@ -228,15 +228,15 @@ public class RelativeShape {
 	public final int getZOffset(Orientation orientation, int index) throws IndexOutOfBoundsException{
 		
 		
-		if(orientation == Orientation.NORTH){
+		if(orientation == Orientation.WEST){
 			
 			return zoffsets.get(index);
 			
-		}else if(orientation == Orientation.EAST){
+		}else if(orientation == Orientation.NORTH){
 			
 			return xoffsets.get(index);
 			
-		}else if(orientation == Orientation.SOUTH){
+		}else if(orientation == Orientation.EAST){
 			
 			return -zoffsets.get(index);
 			
@@ -258,10 +258,10 @@ public class RelativeShape {
 	 */
 	public enum Orientation{
 		
+		WEST,
 		NORTH,
 		EAST,
-		SOUTH,
-		WEST;
+		SOUTH;
 		
 	}
 	

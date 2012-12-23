@@ -94,7 +94,7 @@ public class StorageArea {
 		
 		if(orientation == null){
 			SagaLogger.nullField(this, "anchor");
-			orientation = Orientation.NORTH;
+			orientation = Orientation.WEST;
 		}
 		
 		size = 1;
