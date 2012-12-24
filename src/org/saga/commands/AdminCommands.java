@@ -476,7 +476,7 @@ public class AdminCommands {
 			
 			// Chunk group:
 			String bundleName = GeneralMessages.nameFromArg(args.getString(0));
-			selBundle = BundleManager.manager().getBundle(bundleName);
+			selBundle = BundleManager.manager().matchBundle(bundleName);
 			if(selBundle == null){
 				sagaPlayer.message(SettlementMessages.invalidBundle(bundleName));
 				return;
@@ -551,7 +551,7 @@ public class AdminCommands {
 			
 			// Faction:
 			String factionName = GeneralMessages.nameFromArg(args.getString(0));
-			selFaction = FactionManager.manager().getFaction(factionName);
+			selFaction = FactionManager.manager().matchFaction(factionName);
 			if(selFaction == null){
 				sagaPlayer.message(FactionMessages.invalidFaction(factionName));
 				return;
@@ -620,7 +620,7 @@ public class AdminCommands {
 				
 				// Chunk bundle:
 				String bundleName = GeneralMessages.nameFromArg(args.getString(0));
-				selChunkBundle = BundleManager.manager().getBundle(bundleName);
+				selChunkBundle = BundleManager.manager().matchBundle(bundleName);
 				if(selChunkBundle == null){
 					sagaPlayer.message( SettlementMessages.invalidBundle(bundleName));
 					return;
@@ -697,7 +697,7 @@ public class AdminCommands {
 				
 				// Chunk bundle:
 				String bundleName = GeneralMessages.nameFromArg(args.getString(0));
-				selChunkBundle = BundleManager.manager().getBundle(bundleName);
+				selChunkBundle = BundleManager.manager().matchBundle(bundleName);
 				if(selChunkBundle == null){
 					sagaPlayer.message( SettlementMessages.invalidBundle(bundleName));
 					return;

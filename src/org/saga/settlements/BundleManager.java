@@ -24,7 +24,7 @@ public class BundleManager {
 	private static BundleManager instance;
 	
 	/**
-	 * Gets manager.
+	 * Gets the manager instance.
 	 * 
 	 * @return manager
 	 */
@@ -34,9 +34,9 @@ public class BundleManager {
 	
 	
 	/**
-	 * Registered groups.
+	 * Registered bundles.
 	 */
-	transient  Hashtable<Integer, Bundle> registeredGroups = new Hashtable<Integer, Bundle>();
+	transient  Hashtable<Integer, Bundle> registeredBundles = new Hashtable<Integer, Bundle>();
 	
 	/**
 	 * All saga chunks.
@@ -58,7 +58,7 @@ public class BundleManager {
 		if(bundleId == -1) return;
 
 		// No longer exists:
-		Bundle bundle = registeredGroups.get(bundleId);
+		Bundle bundle = registeredBundles.get(bundleId);
 		if(bundle == null){
 			SagaLogger.severe(getClass(), "bundle " + bundleId + "doesn't exist for player " + sagaPlayer.getName());
 			sagaPlayer.removeBundleId();
@@ -86,7 +86,7 @@ public class BundleManager {
 	 */
 	public Bundle getBundle(Integer bundleId) {
 		
-		return registeredGroups.get(bundleId);
+		return registeredBundles.get(bundleId);
 		
 	}
 
@@ -120,19 +120,15 @@ public class BundleManager {
 	 * @return bundle, null if not found
 	 */
 	public Bundle getBundle(String name) {
-
 		
-		Collection<Bundle> bundles = registeredGroups.values();
-
+		Collection<Bundle> bundles = registeredBundles.values();
 		for (Bundle bundle : bundles) {
-			if(bundle.getName().equalsIgnoreCase(name)) return bundle;
+			if(bundle.getName().toLowerCase().equalsIgnoreCase(name)) return bundle;
 		}
 
         return null;
         
-        
     }
-
 	
 	/**
      * Matches a bundle with the given name.
@@ -142,20 +138,15 @@ public class BundleManager {
      */
     public Bundle matchBundle(String name) {
 
-    	
-    	// Try complete match:
     	Bundle bundle = getBundle(name);
     	if(bundle != null) return bundle;
     	
-    	Collection<Bundle> factions = this.registeredGroups.values();
+    	Collection<Bundle> factions = this.registeredBundles.values();
     	for (Bundle matchBundle : factions) {
-			
     		if(matchBundle.getName().toLowerCase().startsWith(name.toLowerCase())) return matchBundle;
-    		
 		}
     	
     	return null;
-    	
     	
 	}
 	
@@ -343,12 +334,12 @@ public class BundleManager {
 	void removeBundle(Bundle bundle) {
 
 		
-		if(!registeredGroups.containsKey(bundle.getId())){
+		if(!registeredBundles.containsKey(bundle.getId())){
 			SagaLogger.severe(getClass(), "tried to remove a non-existing " + bundle + " chunk group");
 			return;
 		}
 		
-		registeredGroups.remove(bundle.getId());
+		registeredBundles.remove(bundle.getId());
 		
 		// Remove from claim manager:
 		FactionClaimManager.manager().removeBundle(bundle.getId());
@@ -364,12 +355,12 @@ public class BundleManager {
 	void addBundle(Bundle bundle) {
 
 		
-		if(registeredGroups.containsKey(bundle.getId())){
+		if(registeredBundles.containsKey(bundle.getId())){
 			SagaLogger.severe(getClass(), "tried to add an already existing " + bundle + " chunk group");
 			return;
 		}
 		
-		registeredGroups.put(bundle.getId(), bundle);
+		registeredBundles.put(bundle.getId(), bundle);
 		
 		
 	}
@@ -386,7 +377,7 @@ public class BundleManager {
 
         int newId = random.nextInt(Integer.MAX_VALUE);
 
-        while ( newId == 0 || registeredGroups.get(new Integer(newId)) != null ) {
+        while ( newId == 0 || registeredBundles.get(new Integer(newId)) != null ) {
             //Get another random id until we find one that isn't used
             // We also skip 0 because that is a special value that means no faction
             newId = random.nextInt();
@@ -406,7 +397,7 @@ public class BundleManager {
 	 */
 	public void updateStatistics() {
 
-		Collection<Bundle> bundles = this.registeredGroups.values();
+		Collection<Bundle> bundles = this.registeredBundles.values();
 		for (Bundle bundle : bundles) {
 			
 			if(bundle instanceof Settlement){
@@ -465,7 +456,7 @@ public class BundleManager {
 		SagaLogger.info("Saving chunk groups.");
 
 		// Save:
-		Collection<Bundle> elements = manager().registeredGroups.values();
+		Collection<Bundle> elements = manager().registeredBundles.values();
 		for (Bundle element : elements) {
 			element.save();
 		}

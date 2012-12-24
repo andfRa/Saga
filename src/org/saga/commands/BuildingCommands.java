@@ -672,7 +672,7 @@ public class BuildingCommands {
 			
 			// Chunk group:
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
-			selChunkBundle = BundleManager.manager().getBundle(groupName);
+			selChunkBundle = BundleManager.manager().matchBundle(groupName);
 			if(selChunkBundle == null){
 				sagaPlayer.message(SettlementMessages.invalidBundle(groupName));
 				return;

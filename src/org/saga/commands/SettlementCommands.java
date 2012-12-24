@@ -157,7 +157,7 @@ public class SettlementCommands {
 			
 			// Chunk bundle:
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
-			selBundle = BundleManager.manager().getBundle(groupName);
+			selBundle = BundleManager.manager().matchBundle(groupName);
 			if(selBundle == null){
 				sagaPlayer.message(SettlementMessages.invalidBundle(groupName));
 				return;
@@ -330,7 +330,7 @@ public class SettlementCommands {
 				
 				// Chunk bundle:
 				String groupName = GeneralMessages.nameFromArg(args.getString(0));
-				selBundle = BundleManager.manager().getBundle(groupName);
+				selBundle = BundleManager.manager().matchBundle(groupName);
 				if(selBundle == null){
 					sagaPlayer.message(SettlementMessages.invalidBundle(groupName));
 					return;
@@ -581,7 +581,7 @@ public class SettlementCommands {
 			
 			// Chunk bundle:
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
-			selBundle = BundleManager.manager().getBundle(groupName);
+			selBundle = BundleManager.manager().matchBundle(groupName);
 			if(selBundle == null){
 				sagaPlayer.message(SettlementMessages.invalidBundle(groupName));
 				return;
@@ -893,7 +893,7 @@ public class SettlementCommands {
 
 				// Chunk bundle:
 				String groupName = GeneralMessages.nameFromArg(args.getString(0));
-				selBundle = BundleManager.manager().getBundle(groupName);
+				selBundle = BundleManager.manager().matchBundle(groupName);
 				if(selBundle == null){
 					sagaPlayer.message(SettlementMessages.invalidBundle(groupName));
 					return;
@@ -1029,7 +1029,7 @@ public class SettlementCommands {
 			
 			// Chunk bundle:
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
-			selBundle = BundleManager.manager().getBundle(groupName);
+			selBundle = BundleManager.manager().matchBundle(groupName);
 			if(selBundle == null){
 				sagaPlayer.message(SettlementMessages.invalidBundle(groupName));
 				return;
@@ -1144,7 +1144,7 @@ public class SettlementCommands {
 				
 				// Chunk bundle:
 				groupName = GeneralMessages.nameFromArg(args.getString(0));
-				selBundle = BundleManager.manager().getBundle(groupName);
+				selBundle = BundleManager.manager().matchBundle(groupName);
 				if(selBundle == null){
 					sagaPlayer.message(SettlementMessages.invalidBundle(groupName));
 					return;
@@ -1230,7 +1230,7 @@ public class SettlementCommands {
 			
 			// Chunk bundle:
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
-			selBundle = BundleManager.manager().getBundle(groupName);
+			selBundle = BundleManager.manager().matchBundle(groupName);
 			if(selBundle == null){
 				sagaPlayer.message(SettlementMessages.invalidBundle(groupName));
 				return;
@@ -1318,7 +1318,7 @@ public class SettlementCommands {
 			
 			// Chunk bundle:
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
-			selBundle = BundleManager.manager().getBundle(groupName);
+			selBundle = BundleManager.manager().matchBundle(groupName);
 			if(selBundle == null){
 				sagaPlayer.message(SettlementMessages.invalidBundle(groupName));
 				return;

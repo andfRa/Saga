@@ -3,7 +3,6 @@ package org.saga.factions;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
-import java.util.Iterator;
 import java.util.Random;
 import java.util.Set;
 
@@ -23,7 +22,7 @@ public class FactionManager {
 	private static FactionManager instance;
 	
 	/**
-	 * Gets manager.
+	 * Gets the manager instance.
 	 * 
 	 * @return manager
 	 */
@@ -35,7 +34,7 @@ public class FactionManager {
 	/**
 	 * Factions.
 	 */
-	private Hashtable<Integer, Faction> factions = new Hashtable<Integer, Faction>();
+	private Hashtable<Integer, Faction> loadedFactions = new Hashtable<Integer, Faction>();
 	
 	
 
@@ -53,7 +52,7 @@ public class FactionManager {
 		if(factionId == -1) return;
 
 		// No longer exists:
-		Faction faction = factions.get(factionId);
+		Faction faction = loadedFactions.get(factionId);
 		if(faction == null){
 			SagaLogger.severe(getClass(), "faction " + factionId + "doesn't exist for player " + sagaPlayer.getName());
 			sagaPlayer.removeFactionId();
@@ -81,7 +80,7 @@ public class FactionManager {
 	 */
 	public Faction getFaction(Integer factionId) {
 
-		return factions.get(factionId);
+		return loadedFactions.get(factionId);
 		
 	}
 	
@@ -127,23 +126,12 @@ public class FactionManager {
      */
     public Faction getFaction(String name) {
 
+    	Collection<Faction> allFactions = loadedFactions.values();
+    	for (Faction faction : allFactions) {
+    		if(faction.getName().toLowerCase().equalsIgnoreCase(name)) return faction;
+		}
     	
-        Iterator<Integer> ids = factions.keySet().iterator();
-
-        while( ids.hasNext() ) {
-
-            Integer id = ids.next();
-
-            Faction faction = factions.get(id);
-
-            if ( faction.getName().equals(name) ) {
-                return faction;
-            }
-
-        }
-
         return null;
-
         
     }
     
@@ -155,12 +143,10 @@ public class FactionManager {
      */
     public Faction matchFaction(String name) {
 
-    	
-    	// Try complete match:
     	Faction faction = getFaction(name);
     	if(faction != null) return faction;
     	
-    	Collection<Faction> factions = this.factions.values();
+    	Collection<Faction> factions = this.loadedFactions.values();
     	for (Faction matchFaction : factions) {
 			
     		if(matchFaction.getName().toLowerCase().startsWith(name.toLowerCase())) return matchFaction;
@@ -168,7 +154,6 @@ public class FactionManager {
 		}
     	
     	return null;
-    	
     	
 	}
 	
@@ -184,7 +169,7 @@ public class FactionManager {
 	
 		
 		// Add:
-		Faction oldFaction = factions.put(faction.getId(), faction);
+		Faction oldFaction = loadedFactions.put(faction.getId(), faction);
 		if(oldFaction != null){
 			SagaLogger.severe(getClass(), "added an already existing faction " + oldFaction + " to the faction list");
 		}
@@ -201,7 +186,7 @@ public class FactionManager {
 		
 		
 		// Remove:
-		if(factions.remove(faction.getId()) == null){
+		if(loadedFactions.remove(faction.getId()) == null){
 			SagaLogger.severe(getClass(), "tried to remove a non-existing " + faction + " faction from the list");
 			return;
 		}
@@ -223,7 +208,7 @@ public class FactionManager {
 
         int newId = random.nextInt(Integer.MAX_VALUE);
 
-        while ( newId == 0 || factions.get(new Integer(newId)) != null ) {
+        while ( newId == 0 || loadedFactions.get(new Integer(newId)) != null ) {
             //Get another random id until we find one that isn't used
             // We also skip 0 because that is a special value that means no faction
             newId = random.nextInt();
@@ -266,7 +251,7 @@ public class FactionManager {
 	public void updateStatistics() {
 
 
-		Collection<Faction> factions = this.factions.values();
+		Collection<Faction> factions = this.loadedFactions.values();
 		for (Faction faction : factions) {
 			StatisticsManager.manager().setClaims(faction);
 			StatisticsManager.manager().setRanks(faction);
@@ -319,7 +304,7 @@ public class FactionManager {
 		SagaLogger.info("Saving factions.");
 
 		// Save factions:
-		Collection<Faction> factions = manager().factions.values();
+		Collection<Faction> factions = manager().loadedFactions.values();
 		for (Faction faction : factions) {
 			faction.save();
 		}

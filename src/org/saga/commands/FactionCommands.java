@@ -75,7 +75,7 @@ public class FactionCommands {
     	}
     	
     	// Check name:
-    	if( FactionManager.manager().getFaction(name) != null){
+    	if(FactionManager.manager().getFaction(name) != null){
     		sagaPlayer.message(FactionMessages.inUse(name));
     		return;
     	}
@@ -126,7 +126,7 @@ public class FactionCommands {
 		if(args.argsLength() == 2){
 			
 			String factionName = GeneralMessages.nameFromArg(args.getString(0));
-			selFaction = FactionManager.manager().getFaction(factionName);
+			selFaction = FactionManager.manager().matchFaction(factionName);
 			
 			if(selFaction == null){
 				sagaPlayer.message(FactionMessages.invalidFaction(factionName));
@@ -345,7 +345,7 @@ public class FactionCommands {
 		if(args.argsLength() == 2){
 			
 			String factionName = GeneralMessages.nameFromArg(args.getString(0));
-			selFaction = FactionManager.manager().getFaction(factionName);
+			selFaction = FactionManager.manager().matchFaction(factionName);
 			
 			if(selFaction == null){
 				sagaPlayer.message(FactionMessages.invalidFaction(factionName));
@@ -521,7 +521,7 @@ public class FactionCommands {
 				
 				// Faction:
 				factionName = GeneralMessages.nameFromArg(args.getString(0));
-				selFaction = FactionManager.manager().getFaction(factionName);
+				selFaction = FactionManager.manager().matchFaction(factionName);
 				if(selFaction == null){
 					sagaPlayer.message(FactionMessages.invalidFaction(factionName));
 					return;
@@ -635,7 +635,7 @@ public class FactionCommands {
 		 if(args.argsLength() == 3){
 			
 			String factionName = GeneralMessages.nameFromArg(args.getString(0));
-			selFaction = FactionManager.manager().getFaction(factionName);
+			selFaction = FactionManager.manager().matchFaction(factionName);
 			
 			if(selFaction == null){
 				sagaPlayer.message(FactionMessages.invalidFaction(factionName));
@@ -790,7 +790,7 @@ public class FactionCommands {
 				
 				// Faction:
 				factionName = GeneralMessages.nameFromArg(args.getString(0));
-				selFaction = FactionManager.manager().getFaction(factionName);
+				selFaction = FactionManager.manager().matchFaction(factionName);
 				if(selFaction == null){
 					sagaPlayer.message(FactionMessages.noFaction(factionName));
 					return;
@@ -868,7 +868,7 @@ public class FactionCommands {
 	if(args.argsLength() == 1){
 		
 		String factionName = GeneralMessages.nameFromArg(args.getString(0));
-		selFaction = FactionManager.manager().getFaction(factionName);
+		selFaction = FactionManager.manager().matchFaction(factionName);
 		
 		if(selFaction == null){
 			sagaPlayer.message(FactionMessages.invalidFaction(factionName));
@@ -914,7 +914,7 @@ public class FactionCommands {
 		if(args.argsLength() == 2){
 			
 			String selName = GeneralMessages.nameFromArg(args.getString(0));
-			selFaction = FactionManager.manager().getFaction(selName);
+			selFaction = FactionManager.manager().matchFaction(selName);
 			
 			if(selFaction == null){
 				sagaPlayer.message(FactionMessages.invalidFaction(selName));
@@ -922,7 +922,7 @@ public class FactionCommands {
 			}
 			
 			String targetName = GeneralMessages.nameFromArg(args.getString(1));
-			targetFaction = FactionManager.manager().getFaction(targetName);
+			targetFaction = FactionManager.manager().matchFaction(targetName);
 			
 			if(targetFaction == null){
 				sagaPlayer.message(FactionMessages.invalidFaction(targetName));
@@ -939,7 +939,7 @@ public class FactionCommands {
 			}
 			
 			String targetName = GeneralMessages.nameFromArg(args.getString(0));
-			targetFaction = FactionManager.manager().getFaction(targetName);
+			targetFaction = FactionManager.manager().matchFaction(targetName);
 			
 			if(targetFaction == null){
 				sagaPlayer.message(FactionMessages.invalidFaction(targetName));
@@ -1002,7 +1002,7 @@ public class FactionCommands {
 		if(args.argsLength() == 2){
 			
 			String selName = GeneralMessages.nameFromArg(args.getString(0));
-			selFaction = FactionManager.manager().getFaction(selName);
+			selFaction = FactionManager.manager().matchFaction(selName);
 			
 			if(selFaction == null){
 				sagaPlayer.message(FactionMessages.invalidFaction(selName));
@@ -1123,7 +1123,7 @@ public class FactionCommands {
 		if(args.argsLength() == 2){
 			
 			String selName = GeneralMessages.nameFromArg(args.getString(0));
-			selFaction = FactionManager.manager().getFaction(selName);
+			selFaction = FactionManager.manager().matchFaction(selName);
 			
 			if(selFaction == null){
 				sagaPlayer.message(FactionMessages.invalidFaction(selName));
@@ -1231,7 +1231,7 @@ public class FactionCommands {
 		if(args.argsLength() == 2){
 			
 			String selName = GeneralMessages.nameFromArg(args.getString(0));
-			selFaction = FactionManager.manager().getFaction(selName);
+			selFaction = FactionManager.manager().matchFaction(selName);
 			
 			if(selFaction == null){
 				sagaPlayer.message(FactionMessages.invalidFaction(selName));
@@ -1239,7 +1239,7 @@ public class FactionCommands {
 			}
 			
 			String targetName = GeneralMessages.nameFromArg(args.getString(1));
-			targetFaction = FactionManager.manager().getFaction(targetName);
+			targetFaction = FactionManager.manager().matchFaction(targetName);
 			
 			if(targetFaction == null){
 				sagaPlayer.message(FactionMessages.invalidFaction(targetName));
@@ -1256,7 +1256,7 @@ public class FactionCommands {
 			}
 			
 			String targetName = GeneralMessages.nameFromArg(args.getString(0));
-			targetFaction = FactionManager.manager().getFaction(targetName);
+			targetFaction = FactionManager.manager().matchFaction(targetName);
 			
 			if(targetFaction == null){
 				sagaPlayer.message(FactionMessages.invalidFaction(targetName));
@@ -1313,7 +1313,7 @@ public class FactionCommands {
 		// Arguments:
 		 if(args.argsLength() == 1){
 			
-			selFaction = FactionManager.manager().getFaction(args.getString(0));
+			selFaction = FactionManager.manager().matchFaction(args.getString(0));
 			
 			if(selFaction == null){
 				sagaPlayer.message(FactionMessages.invalidFaction(args.getString(0)));
@@ -1373,7 +1373,7 @@ public class FactionCommands {
 		// Arguments:
 		 if(args.argsLength() == 1){
 			
-			selFaction = FactionManager.manager().getFaction(args.getString(0));
+			selFaction = FactionManager.manager().matchFaction(args.getString(0));
 			
 			if(selFaction == null){
 				sagaPlayer.message(FactionMessages.invalidFaction(args.getString(0)));
@@ -1435,7 +1435,7 @@ public class FactionCommands {
 				
 				// Faction:
 				String factionName = GeneralMessages.nameFromArg(args.getString(0));
-				selFaction = FactionManager.manager().getFaction(factionName);
+				selFaction = FactionManager.manager().matchFaction(factionName);
 				
 				if(selFaction == null){
 					sagaPlayer.message(FactionMessages.invalidFaction(factionName));
@@ -1444,7 +1444,7 @@ public class FactionCommands {
 
 				// Bundle:
 				bundleName = GeneralMessages.nameFromArg(args.getString(1));
-				selBundle = BundleManager.manager().getBundle(bundleName);
+				selBundle = BundleManager.manager().matchBundle(bundleName);
 				
 				if(selBundle == null){
 					sagaPlayer.message(SettlementMessages.invalidBundle(bundleName));
@@ -1465,7 +1465,7 @@ public class FactionCommands {
 
 				// Bundle:
 				bundleName = GeneralMessages.nameFromArg(args.getString(0));
-				selBundle = BundleManager.manager().getBundle(bundleName);
+				selBundle = BundleManager.manager().matchBundle(bundleName);
 				
 				if(selBundle == null){
 					sagaPlayer.message(SettlementMessages.invalidBundle(bundleName));
@@ -1700,7 +1700,7 @@ public class FactionCommands {
 		if(args.argsLength() == 2){
 			
 			String factionName = GeneralMessages.nameFromArg(args.getString(0));
-			selFaction = FactionManager.manager().getFaction(factionName);
+			selFaction = FactionManager.manager().matchFaction(factionName);
 			
 			if(selFaction == null){
 				sagaPlayer.message(FactionMessages.invalidFaction(factionName));
@@ -1741,7 +1741,7 @@ public class FactionCommands {
 	    }
 	    	
 	    // Check name:
-	    if(!newName.equals(selFaction.getName()) && FactionManager.manager().getFaction(newName) != null){
+	    if(!newName.equals(selFaction.getName()) && FactionManager.manager().matchFaction(newName) != null){
 	    	sagaPlayer.message(FactionMessages.inUse(newName));
 	    	return;
 	    }
