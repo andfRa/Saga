@@ -56,7 +56,12 @@ public class ChopDown extends Ability{
 	 */
 	@Override
 	public boolean handleInteractPreTrigger(PlayerInteractEvent event) {
+
+		Block clickedBlock = event.getClickedBlock();
+		if(clickedBlock == null || !clickedBlock.getType().equals(Material.LOG)) return false;
+		
 		return handlePreTrigger();
+		
 	}
 	
 	/* 
@@ -68,17 +73,12 @@ public class ChopDown extends Ability{
 	public boolean triggerInteract(PlayerInteractEvent event) {
 
 		
+		Block clickedBlock = event.getClickedBlock();
 		ItemStack itemHand = event.getItem();
 		Player player = event.getPlayer();
 		
 		// Drops:
 		boolean triggered = false;
-		
-		// Pointing a log:
-		Block clickedBlock = event.getClickedBlock();
-		if(clickedBlock == null || !clickedBlock.getType().equals(Material.LOG)){
-			return false;
-		}
 		
 		// Get the tree:
 		ArrayList<Block> blocks = new ArrayList<Block>();

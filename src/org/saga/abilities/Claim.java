@@ -17,9 +17,7 @@ public class Claim extends Ability{
 	 * @param definition ability definition
 	 */
 	public Claim(AbilityDefinition definition) {
-		
         super(definition);
-	
 	}
 
 

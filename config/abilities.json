@@ -454,6 +454,28 @@
     "colour":16777215,
     "description":"calls a lightning bolt",
     "usage":"rclick with redstone"
+  },
+  
+  
+  
+  
+  {"className":"org.saga.abilities.Claim",
+    "name":"claim chunk",
+    "itemRestrictions":["FEATHER"],
+    "activationAction":"RIGHT_CLICK",
+    "usedItem":"AIR",
+    "usedAmount":{"x1":1,"y1":0.0},
+    "cooldown":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
+    "active":{"x1":1,"y1":0.0},
+    "attributeRequirements":{
+      "luck":{"x1":1,"y1":0.0,"x2":3,"y2":30.0}
+    },
+    "buildingsRequired":{3:["town square"]},
+    "proficiencyRestrictions":["lord"],
+    "functions":{},
+    "colour":16777215,
+    "description":"claims a chunk",
+    "usage":"rclick with feather"
   }
 ]
 

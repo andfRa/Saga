@@ -62,7 +62,11 @@ public class HeavySwing extends Ability{
 	 */
 	@Override
 	public boolean handleInteractPreTrigger(PlayerInteractEvent event) {
+		
+		if(event.getClickedBlock() == null) return false;
+		
 		return handlePreTrigger();
+		
 	}
 	
 	/* 
@@ -80,12 +84,6 @@ public class HeavySwing extends Ability{
 
 		// Drops:
 		boolean triggered = false;
-		
-		// Check blocks:
-		if(event.getClickedBlock() == null){
-			getSagaLiving().message(AbilityMessages.targetStone(this));
-			return false;
-		}
 		
 		// Target stone:
 		Location targetLocation = event.getPlayer().getLocation();
