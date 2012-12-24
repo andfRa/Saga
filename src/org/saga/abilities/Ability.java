@@ -428,7 +428,6 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 			// Prevent cooldown spam:
 			if(getCooldown() != lastCooldown && getDefinition().getActivationAction() != ActivationAction.NONE && !useSilentPreTrigger()){
 				getSagaLiving().message(AbilityMessages.onCooldown(this));
-				Thread.dumpStack();
 			}
 			lastCooldown = getCooldown();
 			
