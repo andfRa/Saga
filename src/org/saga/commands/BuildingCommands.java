@@ -40,14 +40,13 @@ public class BuildingCommands {
 	
 	// Buildings general:
 	@Command(
-			aliases = {"bset"},
-			usage = "<building_name>",
-			flags = "",
-			desc = "Set a building on the chunk of land.",
-			min = 1,
-			max = 1
-			)
-		@CommandPermissions({"saga.user.building.set"})
+		aliases = {"bset"},
+		usage = "<building name>",
+		flags = "",
+		desc = "Set a building on the chunk of land.",
+		min = 1
+	)
+	@CommandPermissions({"saga.user.building.set"})
 	public static void set(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
@@ -55,7 +54,7 @@ public class BuildingCommands {
 		Bundle selBundle = null;
 
 		// Arguments:
-		buildingName = GeneralMessages.nameFromArg(args.getString(0));
+		buildingName = GeneralMessages.nameFromArg(args.getJoinedStrings(0));
 			
 		// Selected chunk:
 		SagaChunk selChunk = sagaPlayer.getSagaChunk();
