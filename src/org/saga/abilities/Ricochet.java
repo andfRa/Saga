@@ -113,7 +113,17 @@ public class Ricochet extends Ability{
 	
 	
 	
-	// Ability usage:
+	// Usage:
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.abilities.Ability#handleProjectileHitPreTrigger(org.bukkit.event.entity.ProjectileHitEvent)
+	 */
+	@Override
+	public boolean handleProjectileHitPreTrigger(ProjectileHitEvent event) {
+		return handlePreTrigger();
+	}
+	
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -179,6 +189,11 @@ public class Ricochet extends Ability{
 		
 	}
 	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.abilities.Ability#triggerAttack(org.saga.listeners.events.SagaEntityDamageEvent)
+	 */
 	@Override
 	public boolean triggerAttack(SagaEntityDamageEvent event) {
 		

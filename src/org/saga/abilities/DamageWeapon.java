@@ -40,7 +40,17 @@ public class DamageWeapon extends Ability{
 	
 
 	
-	// Ability usage:
+	// Usage:
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.abilities.Ability#handleDefendPreTrigger(org.saga.listeners.events.SagaEntityDamageEvent)
+	 */
+	@Override
+	public boolean handleDefendPreTrigger(SagaEntityDamageEvent event) {
+		return handlePreTrigger();
+	}
+	
 	/* 
 	 * (non-Javadoc)
 	 * 

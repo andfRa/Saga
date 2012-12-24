@@ -48,6 +48,16 @@ public class Force extends Ability{
 	/* 
 	 * (non-Javadoc)
 	 * 
+	 * @see org.saga.abilities.Ability#handleInteractPreTrigger(org.bukkit.event.player.PlayerInteractEvent)
+	 */
+	@Override
+	public boolean handleInteractPreTrigger(PlayerInteractEvent event) {
+		return handlePreTrigger();
+	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * 
 	 * @see org.saga.abilities.Ability#trigger()
 	 */
 	@Override

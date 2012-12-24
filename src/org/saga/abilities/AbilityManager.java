@@ -91,7 +91,7 @@ public class AbilityManager {
 			
 			if(ability.getDefinition().getActivationAction() != action) continue;
 			
-			if(ability.handlePreTrigger(event)){
+			if(ability.handleInteractPreTrigger(event)){
 				
 				if(ability.triggerInteract(event)) ability.handleAfterTrigger();
 				
@@ -112,7 +112,7 @@ public class AbilityManager {
 		
 		for (Ability ability : abilities) {
 			
-			if(ability.handlePreTrigger()){
+			if(ability.handleAttackPreTrigger(event)){
 				
 				if(ability.triggerAttack(event)) ability.handleAfterTrigger();
 				
@@ -133,7 +133,7 @@ public class AbilityManager {
 		
 		for (Ability ability : abilities) {
 			
-			if(ability.handlePreTrigger()){
+			if(ability.handleDefendPreTrigger(event)){
 				
 				if(ability.triggerDefend(event)) ability.handleAfterTrigger();
 				
@@ -154,7 +154,7 @@ public class AbilityManager {
 		
 		for (Ability ability : abilities) {
 			
-			if(ability.handlePreTrigger()){
+			if(ability.handleProjectileHitPreTrigger(event)){
 				
 				if(ability.triggerProjectileHit(event)) ability.handleAfterTrigger();
 				
@@ -174,7 +174,7 @@ public class AbilityManager {
 
 		for (Ability ability : abilities) {
 			
-			if(ability.handlePreTrigger()){
+			if(ability.handleShearPreTrigger(event)){
 				
 				if(ability.triggerShear(event)) ability.handleAfterTrigger();
 				
@@ -193,7 +193,7 @@ public class AbilityManager {
 
 		for (Ability ability : abilities) {
 			
-			if(ability.handlePreTrigger()){
+			if(ability.handleFoodLevelChangePreTrigger(event)){
 				
 				if(ability.triggerFoodLevelChange(event)) ability.handleAfterTrigger();
 				

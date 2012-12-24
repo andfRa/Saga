@@ -43,14 +43,15 @@ public class TakeLadder extends Ability{
 	
 	// Usage:
 	@Override
-	public boolean handlePreTrigger(PlayerInteractEvent event) {
+	public boolean handleInteractPreTrigger(PlayerInteractEvent event) {
 
+		if(event.isCancelled()) return false;
+		
 		// Check placement:
 		Block targetBlock = event.getPlayer().getTargetBlock(null, MAX_DISTANCE);
 		if(targetBlock == null || targetBlock.getType() != Material.LADDER) return false;
 		
-		// Normal trigger:
-		return super.handlePreTrigger(event);
+		return handlePreTrigger();
 		
 	}
 	
@@ -64,7 +65,6 @@ public class TakeLadder extends Ability{
 	public boolean triggerInteract(PlayerInteractEvent event) {
 		
 		
-		if(event.isCancelled()) return false;
 		boolean triggered = false;
 		
 		// Check placement:

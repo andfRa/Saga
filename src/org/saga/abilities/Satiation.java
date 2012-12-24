@@ -41,6 +41,11 @@ public class Satiation extends Ability{
 	
 	
 	// Usage:
+	@Override
+	public boolean handleFoodLevelChangePreTrigger(FoodLevelChangeEvent event) {
+		return handlePreTrigger();
+	}
+	
 	/* 
 	 * (non-Javadoc)
 	 * 

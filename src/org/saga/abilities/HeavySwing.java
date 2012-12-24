@@ -54,7 +54,17 @@ public class HeavySwing extends Ability{
 	
 	
 	
-	// Ability usage:
+	// Usage:
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.abilities.Ability#handleInteractPreTrigger(org.bukkit.event.player.PlayerInteractEvent)
+	 */
+	@Override
+	public boolean handleInteractPreTrigger(PlayerInteractEvent event) {
+		return handlePreTrigger();
+	}
+	
 	/* 
 	 * (non-Javadoc)
 	 * 

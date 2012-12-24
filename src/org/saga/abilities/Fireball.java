@@ -31,6 +31,16 @@ public class Fireball extends Ability{
 	
 	
 	// Usage:
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.abilities.Ability#handleInteractPreTrigger(org.bukkit.event.player.PlayerInteractEvent)
+	 */
+	@Override
+	public boolean handleInteractPreTrigger(PlayerInteractEvent event) {
+		return handlePreTrigger();
+	}
+	
 	@Override
 	public boolean triggerInteract(PlayerInteractEvent event) {
 		

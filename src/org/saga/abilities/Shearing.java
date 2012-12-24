@@ -47,6 +47,16 @@ public class Shearing extends Ability{
 	/* 
 	 * (non-Javadoc)
 	 * 
+	 * @see org.saga.abilities.Ability#handleShearPreTrigger(org.bukkit.event.player.PlayerShearEntityEvent)
+	 */
+	@Override
+	public boolean handleShearPreTrigger(PlayerShearEntityEvent event) {
+		return handlePreTrigger();
+	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * 
 	 * @see org.saga.abilities.Ability#onPlayerInteractPlayer(org.bukkit.event.player.PlayerInteractEntityEvent, org.saga.player.SagaPlayer)
 	 */
 	@Override

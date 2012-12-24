@@ -39,6 +39,16 @@ public class Counterattack extends Ability{
 	/* 
 	 * (non-Javadoc)
 	 * 
+	 * @see org.saga.abilities.Ability#handleDefendPreTrigger(org.saga.listeners.events.SagaEntityDamageEvent)
+	 */
+	@Override
+	public boolean handleDefendPreTrigger(SagaEntityDamageEvent event) {
+		return handlePreTrigger();
+	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * 
 	 * @see org.saga.abilities.Ability#onPlayerInteractPlayer(org.bukkit.event.player.PlayerInteractEntityEvent, org.saga.player.SagaPlayer)
 	 */
 	@Override

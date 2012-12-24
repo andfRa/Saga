@@ -418,7 +418,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 * 
 	 * @return true if can be triggered
 	 */
-	public boolean handlePreTrigger() {
+	public final boolean handlePreTrigger() {
 		
 		
 		if(!checkActivation()) return false;
@@ -487,8 +487,58 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 * @param event event
 	 * @return true if can be triggered
 	 */
-	public boolean handlePreTrigger(PlayerInteractEvent event) {
-		return handlePreTrigger();
+	public boolean handleInteractPreTrigger(PlayerInteractEvent event) {
+		return false;
+	}
+
+	/**
+	 * Called before the ability is triggered.
+	 * 
+	 * @param event event
+	 * @return true if can be triggered
+	 */
+	public boolean handleAttackPreTrigger(SagaEntityDamageEvent event) {
+		return false;
+	}
+
+	/**
+	 * Called before the ability is triggered.
+	 * 
+	 * @param event event
+	 * @return true if can be triggered
+	 */
+	public boolean handleDefendPreTrigger(SagaEntityDamageEvent event) {
+		return false;
+	}
+	
+	/**
+	 * Called before the ability is triggered.
+	 * 
+	 * @param event event
+	 * @return true if can be triggered
+	 */
+	public boolean handleProjectileHitPreTrigger(ProjectileHitEvent event) {
+		return false;
+	}
+	
+	/**
+	 * Called before the ability is triggered.
+	 * 
+	 * @param event event
+	 * @return true if can be triggered
+	 */
+	public boolean handleShearPreTrigger(PlayerShearEntityEvent event) {
+		return false;
+	}
+	
+	/**
+	 * Called before the ability is triggered.
+	 * 
+	 * @param event event
+	 * @return true if can be triggered
+	 */
+	public boolean handleFoodLevelChangePreTrigger(FoodLevelChangeEvent event) {
+		return false;
 	}
 	
 	

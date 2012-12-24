@@ -2,6 +2,7 @@ package org.saga.abilities;
 
 import org.bukkit.Effect;
 import org.bukkit.Material;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.SagaLogger;
 import org.saga.attributes.DamageType;
 import org.saga.exceptions.InvalidAbilityException;
@@ -86,19 +87,19 @@ public class Stoneskin extends Ability{
 		return true;
 	}
 	
+	
+	
+	// Usage:
 	/* 
 	 * Custom item usage.
 	 * 
-	 * @see org.saga.abilities.Ability#handlePreTrigger()
+	 * @see org.saga.abilities.Ability#handleInteractPreTrigger(org.bukkit.event.player.PlayerInteractEvent)
 	 */
 	@Override
-	public boolean handlePreTrigger() {
+	public boolean handleInteractPreTrigger(PlayerInteractEvent event) {
 		return true;
 	}
 	
-	
-	
-	// Ability usage:
 	/* 
 	 * (non-Javadoc)
 	 * 

@@ -87,6 +87,21 @@ public class Berserk extends Ability{
 		
 	}
 
+	
+	
+
+	
+	// Usage:
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.abilities.Ability#handleAttackPreTrigger(org.saga.listeners.events.SagaEntityDamageEvent)
+	 */
+	@Override
+	public boolean handleAttackPreTrigger(SagaEntityDamageEvent event) {
+		return handlePreTrigger();
+	}
+	
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -97,9 +112,6 @@ public class Berserk extends Ability{
 		return true;
 	}
 	
-
-	
-	// Ability usage:
 	/* 
 	 * (non-Javadoc)
 	 * 

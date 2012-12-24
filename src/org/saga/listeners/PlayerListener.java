@@ -194,7 +194,6 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 
-		System.out.println(event.getAction() + ":" + event.getClickedBlock());
 		
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
 		

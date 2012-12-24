@@ -32,6 +32,16 @@ public class Ignite extends Ability{
 	/* 
 	 * (non-Javadoc)
 	 * 
+	 * @see org.saga.abilities.Ability#handleInteractPreTrigger(org.bukkit.event.player.PlayerInteractEvent)
+	 */
+	@Override
+	public boolean handleAttackPreTrigger(SagaEntityDamageEvent event) {
+		return handlePreTrigger();
+	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * 
 	 * @see org.saga.abilities.Ability#onPlayerInteractPlayer(org.bukkit.event.player.PlayerInteractEntityEvent, org.saga.player.SagaPlayer)
 	 */
 	@Override
@@ -73,5 +83,6 @@ public class Ignite extends Ability{
 		
 		
 	}
+	
 	
 }

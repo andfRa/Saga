@@ -27,7 +27,17 @@ public class ForceBow extends Ability{
 	
 
 	
-	// Ability usage:
+	// Usage:
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.abilities.Ability#handleAttackPreTrigger(org.saga.listeners.events.SagaEntityDamageEvent)
+	 */
+	@Override
+	public boolean handleAttackPreTrigger(SagaEntityDamageEvent event) {
+		return handlePreTrigger();
+	}
+	
 	/* 
 	 * (non-Javadoc)
 	 * 

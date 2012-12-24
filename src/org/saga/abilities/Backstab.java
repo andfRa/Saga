@@ -51,6 +51,21 @@ public class Backstab extends Ability{
 
 	
 	// Ability usage:
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.abilities.Ability#handleAttackPreTrigger(org.saga.listeners.events.SagaEntityDamageEvent)
+	 */
+	@Override
+	public boolean handleAttackPreTrigger(SagaEntityDamageEvent event) {
+		return handlePreTrigger();
+	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.abilities.Ability#triggerAttack(org.saga.listeners.events.SagaEntityDamageEvent)
+	 */
 	public boolean triggerAttack(SagaEntityDamageEvent event) {
 		
 		

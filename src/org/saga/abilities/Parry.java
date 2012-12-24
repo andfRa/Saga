@@ -69,6 +69,19 @@ public class Parry extends Ability{
 		
 	}
 
+	
+	
+	// Usage:
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.abilities.Ability#handleInteractPreTrigger(org.bukkit.event.player.PlayerInteractEvent)
+	 */
+	@Override
+	public boolean handleDefendPreTrigger(SagaEntityDamageEvent event) {
+		return handlePreTrigger();
+	}
+
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -79,9 +92,6 @@ public class Parry extends Ability{
 		return true;
 	}
 	
-
-	
-	// Ability usage:
 	/* 
 	 * (non-Javadoc)
 	 * 

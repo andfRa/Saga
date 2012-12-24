@@ -36,9 +36,16 @@ public class PlaceLadder extends Ability{
 	
 	
 	// Usage:
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.abilities.Ability#handleInteractPreTrigger(org.bukkit.event.player.PlayerInteractEvent)
+	 */
 	@Override
-	public boolean handlePreTrigger(PlayerInteractEvent event) {
-
+	public boolean handleInteractPreTrigger(PlayerInteractEvent event) {
+		
+		if(event.isCancelled()) return false;
+		
 		// Check placement:
 		Block clickedBlock = event.getClickedBlock();
 		if(clickedBlock == null || event.getBlockFace() != BlockFace.UP) return false;
@@ -46,7 +53,7 @@ public class PlaceLadder extends Ability{
 		if(!canSupport(clickedBlock.getRelative(BlockFace.UP), data)) return false;
 		
 		// Normal trigger:
-		return super.handlePreTrigger(event);
+		return handlePreTrigger();
 		
 	}
 	
@@ -59,8 +66,7 @@ public class PlaceLadder extends Ability{
 	@Override
 	public boolean triggerInteract(PlayerInteractEvent event) {
 		
-			
-		if(event.isCancelled()) return false;
+		
 		boolean triggered = false;
 		
 		Block clickedBlock = event.getClickedBlock();
