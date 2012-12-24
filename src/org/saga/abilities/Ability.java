@@ -428,6 +428,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 			// Prevent cooldown spam:
 			if(getCooldown() != lastCooldown && getDefinition().getActivationAction() != ActivationAction.NONE && !useSilentPreTrigger()){
 				getSagaLiving().message(AbilityMessages.onCooldown(this));
+				Thread.dumpStack();
 			}
 			lastCooldown = getCooldown();
 			
@@ -480,6 +481,17 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		return false;
 	}
 
+	
+	/**
+	 * Called before the ability is triggered.
+	 * 
+	 * @param event event
+	 * @return true if can be triggered
+	 */
+	public boolean handlePreTrigger(PlayerInteractEvent event) {
+		return handlePreTrigger();
+	}
+	
 	
 	
 	// Triggering:

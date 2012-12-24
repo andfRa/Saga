@@ -91,7 +91,7 @@ public class AbilityManager {
 			
 			if(ability.getDefinition().getActivationAction() != action) continue;
 			
-			if(ability.handlePreTrigger()){
+			if(ability.handlePreTrigger(event)){
 				
 				if(ability.triggerInteract(event)) ability.handleAfterTrigger();
 				

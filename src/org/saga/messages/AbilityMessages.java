@@ -99,6 +99,13 @@ public class AbilityMessages {
 	
 	}
 	
-
+	
+	
+	// Remove Ladder:
+	public static String ladderTooLong(Ability ability) {
+		return negative + "Not strong enough to pick up the ladder.";
+	}
+	
+	
 	
 }

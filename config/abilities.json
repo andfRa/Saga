@@ -136,13 +136,13 @@
     "usage":"automatic"
   },
   
-  {"className":"org.saga.abilities.Ladder",
-    "name":"ladder",
-    "itemRestrictions":[],
+  {"className":"org.saga.abilities.PlaceLadder",
+    "name":"place ladder",
+    "itemRestrictions":["LADDER"],
     "activationAction":"RIGHT_CLICK",
     "usedItem":"AIR",
     "usedAmount":{"x1":1,"y1":0.0},
-    "cooldown":{"x1":1,"y1":0.0},
+    "cooldown":{"x1":1,"y1":30.0,"x2":3,"y2":15.0},
     "active":{"x1":1,"y1":0.0},
     "attributeRequirements":{
       "precision":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
@@ -150,11 +150,32 @@
     "buildingsRequired":{},
     "proficiencyRestrictions":["miner"],
     "functions":{
-      "ladder height":{"x1":0,"y1":3.0,"x2":3,"y2":10.0}
+      "ladder height":{"x1":1,"y1":3.0,"x2":3,"y2":7.0}
     },
     "colour":7566195,
-    "description":"creates or removes a ladder",
+    "description":"places a ladder",
     "usage":"rclick block top"
+  },
+  
+  {"className":"org.saga.abilities.TakeLadder",
+    "name":"take ladder",
+    "itemRestrictions":[],
+    "activationAction":"RIGHT_CLICK",
+    "usedItem":"AIR",
+    "usedAmount":{"x1":1,"y1":0.0},
+    "cooldown":{"x1":1,"y1":30.0,"x2":3,"y2":15.0},
+    "active":{"x1":1,"y1":0.0},
+    "attributeRequirements":{
+      "precision":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
+    },
+    "buildingsRequired":{},
+    "proficiencyRestrictions":["miner"],
+    "functions":{
+      "ladder height":{"x1":1,"y1":3.0,"x2":3,"y2":7.0}
+    },
+    "colour":7566195,
+    "description":"takes a ladder",
+    "usage":"rclick upper or lower block top"
   },
   
   
