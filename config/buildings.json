@@ -276,6 +276,25 @@
   },
   
   {
+    "name":"warehouse",
+    "buildingClass":"org.saga.buildings.Warehouse",
+    "buildPoints":2,
+    "available":{"x1":10,"y1":1.0,"x2":250,"y2":4.0},
+    "storages":0,
+    "storageSize":0,
+    "recipes":[],
+    "crafted":0,
+    "relatedBuildings":[],
+    "performTime":"NONE",
+    "craftTime":"NONE",
+    "functions":{},
+    "roles":{"lord":1},
+    "ranks":{},
+    "description":"protects containers from outsiders",
+    "effect":"container protection"
+  },
+  
+  {
     "name":"watchtower",
     "buildingClass":"org.saga.buildings.Watchtower",
     "buildPoints":1,
