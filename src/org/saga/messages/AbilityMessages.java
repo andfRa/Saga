@@ -108,4 +108,10 @@ public class AbilityMessages {
 	
 	
 	
+	// Trim:
+	public static String trimNotStroungEnough(Ability ability, int maximum) {
+		return PlayerMessages.negative + "Not strong enough to trim more than " + maximum + " blocks.";
+	}
+	
+	
 }
