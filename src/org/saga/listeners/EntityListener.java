@@ -18,6 +18,7 @@ import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.saga.Saga;
 import org.saga.config.GeneralConfiguration;
@@ -255,6 +256,29 @@ public class EntityListener implements Listener{
 		
 		
 	}
+
+	@EventHandler(priority = EventPriority.NORMAL)
+	public void onEntityTarget(EntityTargetEvent event) {
+
+		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
+    	
+		
+		// Target Player:
+		if(event.getTarget() instanceof Player){
+
+			// Get player:
+			Player player = (Player) event.getTarget();
+	    	SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(player.getName());
+	    	if(sagaPlayer == null) return;
+
+	    	// Forward to managers:
+	    	sagaPlayer.getAbilityManager().onTargeted(event);
+	    	
+		}
+		
+		
+	}
+	
 	
 
 }

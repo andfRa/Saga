@@ -3,6 +3,7 @@ package org.saga.abilities;
 import java.util.HashSet;
 
 import org.bukkit.event.block.Action;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -184,6 +185,25 @@ public class AbilityManager {
 
 	}
 
+	/**
+	 * Called when the player gets targeted.
+	 * 
+	 * @param event event
+	 */
+	public void onTargeted(EntityTargetEvent event) {
+
+		for (Ability ability : abilities) {
+			
+			if(ability.handleTargetedPreTrigger(event)){
+				
+				if(ability.triggerTargeted(event)) ability.handleAfterTrigger();
+				
+			}
+			
+		}
+
+	}
+	
 	/**
 	 * Called when the hunger level changes.
 	 * 

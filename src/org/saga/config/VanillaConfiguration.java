@@ -6,7 +6,9 @@ import java.util.Random;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Fireball;
+import org.bukkit.entity.Ghast;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
@@ -331,6 +333,18 @@ public class VanillaConfiguration {
 			
 		}
 		
+	}
+	
+
+	/**
+	 * Gets target distance.
+	 * 
+	 * @param entity entity
+	 * @return target distance
+	 */
+	public static Double getTargetDistance(Entity entity) {
+		if(entity instanceof Ghast) return 100.0;
+		return 16.0;
 	}
 	
 	

@@ -1,6 +1,7 @@
 package org.saga.abilities;
 
 import org.bukkit.Material;
+import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -540,6 +541,16 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	public boolean handleFoodLevelChangePreTrigger(FoodLevelChangeEvent event) {
 		return false;
 	}
+
+	/**
+	 * Called before the ability is triggered.
+	 * 
+	 * @param event event
+	 * @return true if can be triggered
+	 */
+	public boolean handleTargetedPreTrigger(EntityTargetEvent event) {
+		return false;
+	}
 	
 	
 	
@@ -604,6 +615,16 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		return false;
 	}
 
+	/**
+	 * Triggers getting targeted.
+	 * 
+	 * @param event event
+	 * @return true if triggered
+	 */
+	public boolean triggerTargeted(EntityTargetEvent event) {
+		return false;
+	}
+
 
 	
 	// Other:
@@ -621,5 +642,6 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		return false;
 		
 	}
+
 	
 }

@@ -13,8 +13,7 @@
     "cooldown":{"x1":1,"y1":30.0,"x2":3,"y2":15.0},
     "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
     "attributeRequirements":{
-      "strength":{"x1":1,"y1":5.0,"x2":3,"y2":45.0},
-      "precision":{"x1":1,"y1":3.0,"x2":3,"y2":25.0}
+      "strength":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
     },
     "buildingsRequired":{},
     "proficiencyRestrictions":["woodcutter"],
@@ -22,6 +21,25 @@
     "colour":6304529,
     "description":"chops down a tree",
     "usage":"rclick a tree with an axe"
+  },
+  
+  {"className":"org.saga.abilities.Silent",
+    "name":"silent",
+    "itemRestrictions":[],
+    "activationAction":"NONE",
+    "usedItem":"AIR",
+    "usedAmount":{"x1":1,"y1":0.0},
+    "cooldown":{"x1":1,"y1":0.0},
+    "active":{"x1":1,"y1":0.0},
+    "attributeRequirements":{
+      "willpower":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
+    },
+    "buildingsRequired":{},
+    "proficiencyRestrictions":["woodcutter"],
+    "functions":{"distance multiplier":{"x1":1,"y1":0.90,"x2":3,"y2":0.60}},
+    "colour":6304529,
+    "description":"decreases mob aggro range",
+    "usage":"automatic"
   },
   
   
