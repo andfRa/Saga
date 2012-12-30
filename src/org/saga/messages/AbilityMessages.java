@@ -39,7 +39,6 @@ public class AbilityMessages {
 		return positive + TextUtil.capitalize(ability.getName()) + " ready.";
 	}
 	
-	
 
 	// General usage:
 	public static String targetTooFar(Ability ability) {
@@ -50,13 +49,11 @@ public class AbilityMessages {
 		return negative + TextUtil.capitalize(ability.getName()) + " can't be used below ground.";
 	}
 
-
 	
 	// Retrieval:
 	public static String invalidAbility(String name) {
 		return negative + "Ability " + name + " is not valid.";
 	}
-	
 	
 	
 	// Repair:
@@ -80,7 +77,6 @@ public class AbilityMessages {
 		return negative + levels.toString() + " enchant levels required.";
 		
 	}
-
 	
 	
 	// Heavy swing:
@@ -91,7 +87,6 @@ public class AbilityMessages {
 	}
 	
 	
-	
 	// Dig:
 	public static String targetDirtSand(Ability ability) {
 	
@@ -100,17 +95,25 @@ public class AbilityMessages {
 	}
 	
 	
-	
 	// Remove Ladder:
 	public static String ladderTooLong(Ability ability) {
 		return negative + "Not strong enough to pick up the ladder.";
 	}
 	
 	
-	
 	// Trim:
 	public static String trimNotStroungEnough(Ability ability, int maximum) {
 		return PlayerMessages.negative + "Not strong enough to trim more than " + maximum + " blocks.";
+	}
+	
+	
+	// Chop down:
+	public static String chopDownNotTree(Ability ability) {
+		return PlayerMessages.negative + TextUtil.capitalize(ability.getName()) + " ability can only be used on trees.";
+	}
+	
+	public static String chopDownNotStroungEnough(Ability ability, int maximum) {
+		return PlayerMessages.negative + "Not strong enough to chop a tree larger than " + maximum + " blocks.";
 	}
 	
 	

@@ -11,10 +11,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
-import org.saga.messages.PlayerMessages;
+import org.saga.messages.AbilityMessages;
 import org.saga.messages.effects.StatsEffectHandler;
 import org.saga.player.SagaPlayer;
-import org.saga.utility.text.TextUtil;
 
 public class ChopDown extends Ability{
 
@@ -92,7 +91,7 @@ public class ChopDown extends Ability{
 		
 		if(ratio < MINIMUM_LEAVES_LOGS_RATIO){
 			
-			getSagaLiving().message(notTree());
+			getSagaLiving().message(AbilityMessages.chopDownNotTree(this));
 			return false;
 			
 		}
@@ -101,7 +100,7 @@ public class ChopDown extends Ability{
 		Integer treeSize = getDefinition().getFunction(TREE_SIZE_KEY).value(getScore()).intValue();
 		if(treeSize < blocks.size()){
 			
-			getSagaLiving().message(notStroungEnough(blocks.size(), treeSize));
+			getSagaLiving().message(AbilityMessages.chopDownNotStroungEnough(this, treeSize));
 			return false;
 			
 		}
@@ -320,16 +319,6 @@ public class ChopDown extends Ability{
 		}
 		
 		
-	}
-	
-	
-	// Messages:
-	public String notTree() {
-		return PlayerMessages.negative + TextUtil.capitalize(getName()) + " ability can only be used on trees.";
-	}
-	
-	public String notStroungEnough(int blocks, int maximum) {
-		return PlayerMessages.negative + "Not strong enough to " + getName() + " a tree larger than " + maximum + " blocks.";
 	}
 	
 	
