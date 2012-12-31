@@ -18,8 +18,8 @@ import org.saga.messages.EconomyMessages;
 import org.saga.messages.FactionMessages;
 import org.saga.messages.GeneralMessages;
 import org.saga.messages.HelpMessages;
-import org.saga.messages.PlayerMessages;
 import org.saga.messages.SettlementMessages;
+import org.saga.messages.StatsMessages;
 import org.saga.messages.effects.SettlementEffectHandler;
 import org.saga.player.Proficiency;
 import org.saga.player.Proficiency.ProficiencyType;
@@ -66,7 +66,7 @@ public class SettlementCommands {
 		
 		// Already claimed:
 		if(selChunk != null){
-			sagaPlayer.message(SettlementMessages.chunkClaimed());
+			sagaPlayer.message(SettlementMessages.chunkAlreadyClaimed());
 			return;
 		}
 
@@ -81,9 +81,9 @@ public class SettlementCommands {
 			
 		}
 		
-		// Settles:
+		// Already in a settlement:
 		if(sagaPlayer.getBundle() != null){
-			sagaPlayer.message(SettlementMessages.oneChunkGroupAllowed());
+			sagaPlayer.message(SettlementMessages.alreadyInSettlement());
 			return;
 		}
 		
@@ -110,7 +110,7 @@ public class SettlementCommands {
 
 		    // Check coins:
 		    if(EconomyDependency.getCoins(sagaPlayer) < cost){
-		    	sagaPlayer.message(EconomyMessages.insuficcientCoins(cost));
+		    	sagaPlayer.message(EconomyMessages.insufficient(cost));
 		    	return;
 		    }
 		    
@@ -159,7 +159,7 @@ public class SettlementCommands {
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
 			selBundle = BundleManager.manager().matchBundle(groupName);
 			if(selBundle == null){
-				sagaPlayer.message(SettlementMessages.invalidBundle(groupName));
+				sagaPlayer.message(GeneralMessages.invalidSettlement(groupName));
 				return;
 			}
 			
@@ -186,7 +186,7 @@ public class SettlementCommands {
 	  
 	   	// Already claimed:
 	   	if(locationChunk != null){
-			sagaPlayer.message(SettlementMessages.chunkClaimed());
+			sagaPlayer.message(SettlementMessages.chunkAlreadyClaimed());
 			return;
 		}
 	   	
@@ -332,7 +332,7 @@ public class SettlementCommands {
 				String groupName = GeneralMessages.nameFromArg(args.getString(0));
 				selBundle = BundleManager.manager().matchBundle(groupName);
 				if(selBundle == null){
-					sagaPlayer.message(SettlementMessages.invalidBundle(groupName));
+					sagaPlayer.message(GeneralMessages.invalidSettlement(groupName));
 					return;
 				}
 				
@@ -366,7 +366,7 @@ public class SettlementCommands {
 		try {
 			selPlayer = Saga.plugin().forceSagaPlayer(targetName);
 		} catch (NonExistantSagaPlayerException e) {
-			sagaPlayer.message(PlayerMessages.invalidPlayer(targetName));
+			sagaPlayer.message(GeneralMessages.invalidPlayer(targetName));
 			return;
 		}
 		
@@ -418,7 +418,7 @@ public class SettlementCommands {
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
 			selBundle = BundleManager.manager().getBundle(groupName);
 			if(selBundle == null){
-				sagaPlayer.message(SettlementMessages.invalidBundle(groupName));
+				sagaPlayer.message(GeneralMessages.invalidSettlement(groupName));
 				return;
 			}
 			
@@ -494,7 +494,7 @@ public class SettlementCommands {
 					repeat = Integer.parseInt(argsAmount) - 1;
 				}
 				catch (NumberFormatException e) {
-					sagaPlayer.message(GeneralMessages.mustBeNumber(argsAmount));
+					sagaPlayer.message(GeneralMessages.notNumber(argsAmount));
 					return;
 				}
 				break;
@@ -583,7 +583,7 @@ public class SettlementCommands {
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
 			selBundle = BundleManager.manager().matchBundle(groupName);
 			if(selBundle == null){
-				sagaPlayer.message(SettlementMessages.invalidBundle(groupName));
+				sagaPlayer.message(GeneralMessages.invalidSettlement(groupName));
 				return;
 			}
 			
@@ -591,7 +591,7 @@ public class SettlementCommands {
 				// Force:
 				selPlayer = Saga.plugin().forceSagaPlayer(args.getString(1));
 			} catch (NonExistantSagaPlayerException e) {
-				sagaPlayer.message(SettlementMessages.nonExistantPlayer(args.getString(1)));
+				sagaPlayer.message(GeneralMessages.invalidPlayer(args.getString(1)));
 				return;
 			}
 			
@@ -608,12 +608,11 @@ public class SettlementCommands {
 				// Force:
 				selPlayer = Saga.plugin().forceSagaPlayer(args.getString(0));
 			} catch (NonExistantSagaPlayerException e) {
-				sagaPlayer.message(SettlementMessages.nonExistantPlayer(args.getString(0)));
+				sagaPlayer.message(GeneralMessages.invalidPlayer(args.getString(0)));
 				return;
 			}
 			
 		}
-		
 		
 		// Permission:
 		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.INVITE) ){
@@ -623,19 +622,15 @@ public class SettlementCommands {
 		}
 		
 		// Already a member:
-		if(selBundle.isMember( selPlayer.getName()) ){
-		
-			sagaPlayer.message( SettlementMessages.alreadyInTheChunkBundle(selPlayer, selBundle));
+		if(selBundle.isMember(selPlayer.getName())){
+			sagaPlayer.message(SettlementMessages.alreadyInSettlement(selPlayer));
 			return;
-			
 		}
 		
 		// Already invited:
 		if(selPlayer.hasBundleInvite(selBundle.getId())){
-			
 			sagaPlayer.message( SettlementMessages.alreadyInvited(selPlayer, selBundle) );
 			return;
-			
 		}
 		
 		// Add invite:
@@ -670,7 +665,7 @@ public class SettlementCommands {
 		
 		// Bundle member:
 		if(sagaPlayer.getBundle() != null){
-			sagaPlayer.message(SettlementMessages.alreadyInBundle());
+			sagaPlayer.message(SettlementMessages.alreadyInSettlement());
 			return;
 		}
     	
@@ -689,7 +684,7 @@ public class SettlementCommands {
 				selBundle = BundleManager.manager().matchBundle(argsBundle);
 				
 				if(selBundle == null){
-					sagaPlayer.message(SettlementMessages.invalidBundle(argsBundle));
+					sagaPlayer.message(GeneralMessages.invalidSettlement(argsBundle));
 					return;
 				}
 				
@@ -747,7 +742,7 @@ public class SettlementCommands {
 		
 		// Bundle member:
 		if(sagaPlayer.getBundle() != null){
-			sagaPlayer.message(SettlementMessages.alreadyInBundle());
+			sagaPlayer.message(SettlementMessages.notMember());
 			return;
 		}
     	
@@ -766,7 +761,7 @@ public class SettlementCommands {
 				selBundle = BundleManager.manager().matchBundle(argsBundle);
 				
 				if(selBundle == null){
-					sagaPlayer.message(SettlementMessages.invalidBundle(argsBundle));
+					sagaPlayer.message(GeneralMessages.invalidSettlement(argsBundle));
 					return;
 				}
 				
@@ -895,7 +890,7 @@ public class SettlementCommands {
 				String groupName = GeneralMessages.nameFromArg(args.getString(0));
 				selBundle = BundleManager.manager().matchBundle(groupName);
 				if(selBundle == null){
-					sagaPlayer.message(SettlementMessages.invalidBundle(groupName));
+					sagaPlayer.message(GeneralMessages.invalidSettlement(groupName));
 					return;
 				}
 
@@ -934,7 +929,7 @@ public class SettlementCommands {
 		try {
 			selPlayer = Saga.plugin().forceSagaPlayer(targetName);
 		} catch (NonExistantSagaPlayerException e) {
-			sagaPlayer.message(PlayerMessages.invalidPlayer(targetName));
+			sagaPlayer.message(GeneralMessages.invalidPlayer(targetName));
 			return;
 		}
 		
@@ -1031,7 +1026,7 @@ public class SettlementCommands {
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
 			selBundle = BundleManager.manager().matchBundle(groupName);
 			if(selBundle == null){
-				sagaPlayer.message(SettlementMessages.invalidBundle(groupName));
+				sagaPlayer.message(GeneralMessages.invalidSettlement(groupName));
 				return;
 			}
 			
@@ -1056,7 +1051,7 @@ public class SettlementCommands {
 		
 		// Is a settlement:
 		if(!(selBundle instanceof Settlement)){
-			sagaPlayer.message(SettlementMessages.notSettlement(selBundle));
+			sagaPlayer.message(GeneralMessages.notSettlement(selBundle));
 			return;
 		}
 		Settlement selSettlement = (Settlement) selBundle;
@@ -1072,7 +1067,7 @@ public class SettlementCommands {
 		try {
 			selPlayer = Saga.plugin().forceSagaPlayer(targetName);
 		} catch (NonExistantSagaPlayerException e) {
-			sagaPlayer.message(PlayerMessages.invalidPlayer(targetName));
+			sagaPlayer.message(GeneralMessages.invalidPlayer(targetName));
 			return;
 		}
 
@@ -1146,7 +1141,7 @@ public class SettlementCommands {
 				groupName = GeneralMessages.nameFromArg(args.getString(0));
 				selBundle = BundleManager.manager().matchBundle(groupName);
 				if(selBundle == null){
-					sagaPlayer.message(SettlementMessages.invalidBundle(groupName));
+					sagaPlayer.message(GeneralMessages.invalidSettlement(groupName));
 					return;
 				}
 				
@@ -1156,7 +1151,7 @@ public class SettlementCommands {
 					page = Integer.parseInt(argsPage);
 				}
 				catch (NumberFormatException e) {
-					sagaPlayer.message(GeneralMessages.mustBeNumber(argsPage));
+					sagaPlayer.message(GeneralMessages.notNumber(argsPage));
 					return;
 				}
 				break;
@@ -1176,7 +1171,7 @@ public class SettlementCommands {
 					page = Integer.parseInt(argsPage);
 				}
 				catch (NumberFormatException e) {
-					sagaPlayer.message(GeneralMessages.mustBeNumber(argsPage));
+					sagaPlayer.message(GeneralMessages.notNumber(argsPage));
 					return;
 				}
 				
@@ -1200,13 +1195,13 @@ public class SettlementCommands {
 		
 		// Is a settlement:
 		if(! (selBundle instanceof Settlement) ){
-			sagaPlayer.message(SettlementMessages.notSettlement(selBundle));
+			sagaPlayer.message(GeneralMessages.notSettlement(selBundle));
 			return;
 		}
 		selSettlement = (Settlement) selBundle;
 		
 		// Inform:
-		sagaPlayer.message(SettlementMessages.stats(sagaPlayer, selSettlement, page -1));
+		sagaPlayer.message(StatsMessages.stats(sagaPlayer, selSettlement, page -1));
 		
 		
 	}
@@ -1232,7 +1227,7 @@ public class SettlementCommands {
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
 			selBundle = BundleManager.manager().matchBundle(groupName);
 			if(selBundle == null){
-				sagaPlayer.message(SettlementMessages.invalidBundle(groupName));
+				sagaPlayer.message(GeneralMessages.invalidSettlement(groupName));
 				return;
 			}
 			
@@ -1249,13 +1244,13 @@ public class SettlementCommands {
 		
 		// Is a settlement:
 		if(! (selBundle instanceof Settlement) ){
-			sagaPlayer.message(SettlementMessages.notSettlement(selBundle));
+			sagaPlayer.message(GeneralMessages.notSettlement(selBundle));
 			return;
 		}
 		Settlement selSettlement = (Settlement) selBundle;
 		
 		// Inform:
-		sagaPlayer.message(SettlementMessages.list(sagaPlayer, selSettlement));
+		sagaPlayer.message(StatsMessages.list(sagaPlayer, selSettlement));
 		
 		
 	}
@@ -1282,7 +1277,7 @@ public class SettlementCommands {
 			try {
 				page = Integer.parseInt(args.getString(0));
 			} catch (NumberFormatException e) {
-				sagaPlayer.message(SettlementMessages.invalidPage(args.getString(0)));
+				sagaPlayer.message(GeneralMessages.notNumber(args.getString(0)));
 				return;
 			}
 		}else{
@@ -1320,7 +1315,7 @@ public class SettlementCommands {
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
 			selBundle = BundleManager.manager().matchBundle(groupName);
 			if(selBundle == null){
-				sagaPlayer.message(SettlementMessages.invalidBundle(groupName));
+				sagaPlayer.message(GeneralMessages.invalidSettlement(groupName));
 				return;
 			}
 			
@@ -1367,7 +1362,7 @@ public class SettlementCommands {
 
 		    // Check coins:
 		    if(EconomyDependency.getCoins(sagaPlayer) < cost){
-		    	sagaPlayer.message(EconomyMessages.insuficcientCoins(cost));
+		    	sagaPlayer.message(EconomyMessages.insufficient(cost));
 		    	return;
 		    }
 		    

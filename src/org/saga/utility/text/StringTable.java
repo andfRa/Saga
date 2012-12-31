@@ -3,7 +3,7 @@ package org.saga.utility.text;
 import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
-import org.saga.messages.PlayerMessages.ColourLoop;
+import org.saga.messages.colours.ColourLoop;
 
 public class StringTable {
 

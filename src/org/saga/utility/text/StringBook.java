@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
 import org.saga.messages.GeneralMessages;
-import org.saga.messages.PlayerMessages;
-import org.saga.messages.PlayerMessages.ColourLoop;
+import org.saga.messages.colours.Colour;
+import org.saga.messages.colours.ColourLoop;
 
 public class StringBook {
 
@@ -237,7 +237,7 @@ public class StringBook {
 		int lastPage = getLastPage();
 		if(lastPage != 0) title+= ", " + GeneralMessages.page(page, lastPage);
 		
-		return StringFramer.frame(title, content, PlayerMessages.normal1, width);
+		return StringFramer.frame(title, content, Colour.frame, width);
 		
 	}
 

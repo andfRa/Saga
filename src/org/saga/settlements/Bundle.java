@@ -35,6 +35,7 @@ import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.messages.GeneralMessages;
 import org.saga.messages.SettlementMessages;
+import org.saga.messages.colours.Colour;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.SagaCustomSerialization;
@@ -1030,7 +1031,7 @@ public class Bundle extends SagaCustomSerialization{
 	 */
 	public void chat(SagaPlayer sagaPlayer, String message){
 		
-		message = SettlementMessages.normal2 + "[" + SettlementMessages.normal1 + sagaPlayer.getName() + "] ";
+		message = Colour.normal2 + "[" + Colour.normal1 + sagaPlayer.getName() + "] ";
 		
 		Collection<SagaPlayer> onlineMembers = getOnlineMembers();
 		
@@ -1063,7 +1064,7 @@ public class Bundle extends SagaCustomSerialization{
 	 */
 	public void information(String message, SagaPlayer member) {
 		
-		message = SettlementMessages.normal2 + "(" + SettlementMessages.normal1 + "info" + SettlementMessages.normal2 + ") " + message;
+		message = Colour.normal2 + "(" + Colour.normal1 + "info" + Colour.normal2 + ") " + message;
 
 		member.message(message);
 		

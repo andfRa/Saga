@@ -98,7 +98,7 @@ public class HeavySwing extends Ability{
 		
 		// Check if target block is included:
 		if(!blocks.contains(event.getClickedBlock())){
-			getSagaLiving().message(AbilityMessages.targetStone(this));
+			getSagaLiving().message(AbilityMessages.hevySwingTargetStone(this));
 			return false;
 		}
 		

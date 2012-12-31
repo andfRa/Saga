@@ -9,6 +9,7 @@ import org.saga.config.EconomyConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.messages.EconomyMessages;
+import org.saga.messages.GeneralMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
 
@@ -192,7 +193,7 @@ public class BuySign extends BuildingSign {
 			case ENABLED:
 				
 				
-				if(index == 1) return amount + AMOUNT_DIV_DISPLAY + EconomyMessages.materialShort(material);
+				if(index == 1) return amount + AMOUNT_DIV_DISPLAY + GeneralMessages.materialAbrev(material);
 				if(index == 2) return "price: " + EconomyMessages.coins(price);
 				
 				Double perc = 1.0;
@@ -209,7 +210,7 @@ public class BuySign extends BuildingSign {
 				
 			case DISABLED:
 				
-				if(index == 1) return amount + AMOUNT_DIV_DISPLAY + EconomyMessages.materialShort(material);
+				if(index == 1) return amount + AMOUNT_DIV_DISPLAY + GeneralMessages.materialAbrev(material);
 				if(index == 2) return "price: " + EconomyMessages.coins(price);
 				if(index == 3) return "come back later";
 				break;

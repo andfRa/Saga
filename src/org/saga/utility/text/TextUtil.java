@@ -7,7 +7,7 @@ import java.util.Collection;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.saga.messages.PlayerMessages.ColourLoop;
+import org.saga.messages.colours.ColourLoop;
 import org.saga.utility.ArrayUtil;
 
 public class TextUtil {

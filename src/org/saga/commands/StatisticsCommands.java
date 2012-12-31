@@ -13,8 +13,6 @@ import org.saga.config.GeneralConfiguration;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.GeneralMessages;
-import org.saga.messages.PlayerMessages;
-import org.saga.messages.SettlementMessages;
 import org.saga.messages.StatisticsMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
@@ -121,7 +119,7 @@ public class StatisticsCommands {
 		
 		// Invalid player:
 		if(!Saga.plugin().isSagaPlayerExistant(playerName)){
-			sagaPlayer.message(PlayerMessages.invalidPlayer(playerName));
+			sagaPlayer.message(GeneralMessages.invalidPlayer(playerName));
 			return;
 		}
 		
@@ -155,7 +153,7 @@ public class StatisticsCommands {
         	try {
     			page = Integer.parseInt(args.getString(0));
     		} catch (NumberFormatException e) {
-    			sagaPlayer.message(SettlementMessages.invalidPage(args.getString(0)));
+    			sagaPlayer.message(GeneralMessages.notNumber(args.getString(0)));
     			return;
     		}
     		
@@ -211,7 +209,7 @@ public class StatisticsCommands {
         	try {
     			page = Integer.parseInt(args.getString(0));
     		} catch (NumberFormatException e) {
-    			sagaPlayer.message(SettlementMessages.invalidPage(args.getString(0)));
+    			sagaPlayer.message(GeneralMessages.notNumber(args.getString(0)));
     			return;
     		}
     		

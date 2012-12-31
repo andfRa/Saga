@@ -23,6 +23,7 @@ import org.saga.factions.FactionManager;
 import org.saga.messages.GeneralMessages.CustomColour;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.StatsMessages;
+import org.saga.messages.colours.Colour;
 import org.saga.messages.effects.StatsEffectHandler;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
@@ -1256,13 +1257,13 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	// Debuging:
 	public void info(String message) {
     	
-        if (livingEntity != null) livingEntity.sendMessage(PlayerMessages.normal1 + message);
+        if (livingEntity != null) livingEntity.sendMessage(Colour.normal1 + message);
         
     }
 
     public void warning(String message) {
 
-        if (livingEntity != null)  this.livingEntity.sendMessage(PlayerMessages.negative + message);
+        if (livingEntity != null)  this.livingEntity.sendMessage(Colour.negative + message);
 
     }
 

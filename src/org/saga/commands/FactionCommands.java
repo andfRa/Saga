@@ -19,8 +19,8 @@ import org.saga.messages.EconomyMessages;
 import org.saga.messages.FactionMessages;
 import org.saga.messages.GeneralMessages;
 import org.saga.messages.HelpMessages;
-import org.saga.messages.PlayerMessages;
 import org.saga.messages.SettlementMessages;
+import org.saga.messages.StatsMessages;
 import org.saga.player.Proficiency;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.SagaPlayer;
@@ -86,7 +86,7 @@ public class FactionCommands {
 
 		    // Check coins:
 		    if(EconomyDependency.getCoins(sagaPlayer) < cost){
-		    	sagaPlayer.message(EconomyMessages.insuficcientCoins(cost));
+		    	sagaPlayer.message(EconomyMessages.insufficient(cost));
 		    	return;
 		    }
 		    
@@ -129,7 +129,7 @@ public class FactionCommands {
 			selFaction = FactionManager.manager().matchFaction(factionName);
 			
 			if(selFaction == null){
-				sagaPlayer.message(FactionMessages.invalidFaction(factionName));
+				sagaPlayer.message(GeneralMessages.invalidFaction(factionName));
 				return;
 			}
 			
@@ -160,7 +160,7 @@ public class FactionCommands {
 		try {
 			selPlayer = Saga.plugin().forceSagaPlayer(playerName);
 		} catch (NonExistantSagaPlayerException e) {
-			sagaPlayer.message(PlayerMessages.invalidPlayer(playerName));
+			sagaPlayer.message(GeneralMessages.invalidPlayer(playerName));
 			return;
 		}
 		
@@ -176,7 +176,7 @@ public class FactionCommands {
 		// Inform:
 		selFaction.information(FactionMessages.invited(selPlayer, selFaction));
 		selPlayer.message(FactionMessages.wasInvited(selPlayer, selFaction));
-		selPlayer.message(FactionMessages.informAccept());
+		selPlayer.message(FactionMessages.informInvited());
 		
 		// Release:
 		selPlayer.indicateRelease();
@@ -220,12 +220,12 @@ public class FactionCommands {
 				selFaction = FactionManager.manager().matchFaction(argsFaction);
 				
 				if(selFaction == null){
-					sagaPlayer.message(FactionMessages.invalidFaction(argsFaction));
+					sagaPlayer.message(GeneralMessages.invalidFaction(argsFaction));
 					return;
 				}
 				
 				if(!inviteFactions.contains(selFaction)){
-					sagaPlayer.message(FactionMessages.noInvites(argsFaction));
+					sagaPlayer.message(FactionMessages.noInvite(argsFaction));
 					return;
 				}
 				
@@ -298,12 +298,12 @@ public class FactionCommands {
 				selFaction = FactionManager.manager().matchFaction(argsFaction);
 				
 				if(selFaction == null){
-					sagaPlayer.message(FactionMessages.invalidFaction(argsFaction));
+					sagaPlayer.message(GeneralMessages.invalidFaction(argsFaction));
 					return;
 				}
 				
 				if(!inviteFactions.contains(selFaction)){
-					sagaPlayer.message(FactionMessages.noInvites(argsFaction));
+					sagaPlayer.message(FactionMessages.noInvite(argsFaction));
 					return;
 				}
 				
@@ -348,7 +348,7 @@ public class FactionCommands {
 			selFaction = FactionManager.manager().matchFaction(factionName);
 			
 			if(selFaction == null){
-				sagaPlayer.message(FactionMessages.invalidFaction(factionName));
+				sagaPlayer.message(GeneralMessages.invalidFaction(factionName));
 				return;
 			}
 			
@@ -379,7 +379,7 @@ public class FactionCommands {
 		try {
 			selPlayer = Saga.plugin().forceSagaPlayer(playerName);
 		} catch (NonExistantSagaPlayerException e) {
-			sagaPlayer.message(PlayerMessages.invalidPlayer(playerName));
+			sagaPlayer.message(GeneralMessages.invalidPlayer(playerName));
 			return;
 		}
 		
@@ -391,7 +391,7 @@ public class FactionCommands {
 		
 		// Not faction member:
 		if(!selFaction.equals(selPlayer.getFaction()) ){
-			sagaPlayer.message(FactionMessages.notFactionMember(selPlayer, selFaction));
+			sagaPlayer.message(FactionMessages.notMember(selPlayer));
 			return;
 		}
 		
@@ -523,7 +523,7 @@ public class FactionCommands {
 				factionName = GeneralMessages.nameFromArg(args.getString(0));
 				selFaction = FactionManager.manager().matchFaction(factionName);
 				if(selFaction == null){
-					sagaPlayer.message(FactionMessages.invalidFaction(factionName));
+					sagaPlayer.message(GeneralMessages.invalidFaction(factionName));
 					return;
 				}
 				
@@ -557,7 +557,7 @@ public class FactionCommands {
 		try {
 			selPlayer = Saga.plugin().forceSagaPlayer(targetName);
 		} catch (NonExistantSagaPlayerException e) {
-			sagaPlayer.message(PlayerMessages.invalidPlayer(targetName));
+			sagaPlayer.message(GeneralMessages.invalidPlayer(targetName));
 			return;
 		}
 		
@@ -638,7 +638,7 @@ public class FactionCommands {
 			selFaction = FactionManager.manager().matchFaction(factionName);
 			
 			if(selFaction == null){
-				sagaPlayer.message(FactionMessages.invalidFaction(factionName));
+				sagaPlayer.message(GeneralMessages.invalidFaction(factionName));
 				return;
 			}
 			
@@ -664,13 +664,13 @@ public class FactionCommands {
 		try {
 			selPlayer = Saga.plugin().forceSagaPlayer(targetName);
 		} catch (NonExistantSagaPlayerException e) {
-			sagaPlayer.message(PlayerMessages.invalidPlayer(targetName));
+			sagaPlayer.message(GeneralMessages.invalidPlayer(targetName));
 			return;
 		}
 
 		// Not faction member:
 		if( !selFaction.equals(selPlayer.getFaction()) ){
-			sagaPlayer.message(FactionMessages.notFactionMember(selPlayer, selFaction));
+			sagaPlayer.message(FactionMessages.notMember(selPlayer));
 			return;
 		}
 
@@ -728,7 +728,7 @@ public class FactionCommands {
 			selFaction = FactionManager.manager().getFaction(args.getString(0));
 			
 			if(selFaction == null){
-				sagaPlayer.message(FactionMessages.invalidFaction(args.getString(0)));
+				sagaPlayer.message(GeneralMessages.invalidFaction(args.getString(0)));
 				return;
 			}
 			
@@ -792,7 +792,7 @@ public class FactionCommands {
 				factionName = GeneralMessages.nameFromArg(args.getString(0));
 				selFaction = FactionManager.manager().matchFaction(factionName);
 				if(selFaction == null){
-					sagaPlayer.message(FactionMessages.noFaction(factionName));
+					sagaPlayer.message(GeneralMessages.invalidFaction(factionName));
 					return;
 				}
 				
@@ -802,7 +802,7 @@ public class FactionCommands {
 					page = Integer.parseInt(argsPage);
 				}
 				catch (NumberFormatException e) {
-					sagaPlayer.message(GeneralMessages.mustBeNumber(argsPage));
+					sagaPlayer.message(GeneralMessages.notNumber(argsPage));
 					return;
 				}
 				break;
@@ -822,7 +822,7 @@ public class FactionCommands {
 					page = Integer.parseInt(argsPage);
 				}
 				catch (NumberFormatException e) {
-					sagaPlayer.message(GeneralMessages.mustBeNumber(argsPage));
+					sagaPlayer.message(GeneralMessages.notNumber(argsPage));
 					return;
 				}
 				
@@ -845,7 +845,7 @@ public class FactionCommands {
 		}
 		
 		// Inform:
-		sagaPlayer.message(FactionMessages.stats(selFaction, page -1));
+		sagaPlayer.message(StatsMessages.stats(selFaction, page -1));
 		
 		
 	}
@@ -871,7 +871,7 @@ public class FactionCommands {
 		selFaction = FactionManager.manager().matchFaction(factionName);
 		
 		if(selFaction == null){
-			sagaPlayer.message(FactionMessages.invalidFaction(factionName));
+			sagaPlayer.message(GeneralMessages.invalidFaction(factionName));
 			return;
 		}
 		
@@ -887,7 +887,7 @@ public class FactionCommands {
 	}
 	
 	// Inform:
-	sagaPlayer.message(FactionMessages.list(selFaction));
+	sagaPlayer.message(StatsMessages.list(selFaction));
 	
 
 }
@@ -917,7 +917,7 @@ public class FactionCommands {
 			selFaction = FactionManager.manager().matchFaction(selName);
 			
 			if(selFaction == null){
-				sagaPlayer.message(FactionMessages.invalidFaction(selName));
+				sagaPlayer.message(GeneralMessages.invalidFaction(selName));
 				return;
 			}
 			
@@ -925,7 +925,7 @@ public class FactionCommands {
 			targetFaction = FactionManager.manager().matchFaction(targetName);
 			
 			if(targetFaction == null){
-				sagaPlayer.message(FactionMessages.invalidFaction(targetName));
+				sagaPlayer.message(GeneralMessages.invalidFaction(targetName));
 				return;
 			}
 			
@@ -942,7 +942,7 @@ public class FactionCommands {
 			targetFaction = FactionManager.manager().matchFaction(targetName);
 			
 			if(targetFaction == null){
-				sagaPlayer.message(FactionMessages.invalidFaction(targetName));
+				sagaPlayer.message(GeneralMessages.invalidFaction(targetName));
 				return;
 			}
 			
@@ -1005,7 +1005,7 @@ public class FactionCommands {
 			selFaction = FactionManager.manager().matchFaction(selName);
 			
 			if(selFaction == null){
-				sagaPlayer.message(FactionMessages.invalidFaction(selName));
+				sagaPlayer.message(GeneralMessages.invalidFaction(selName));
 				return;
 			}
 			
@@ -1126,7 +1126,7 @@ public class FactionCommands {
 			selFaction = FactionManager.manager().matchFaction(selName);
 			
 			if(selFaction == null){
-				sagaPlayer.message(FactionMessages.invalidFaction(selName));
+				sagaPlayer.message(GeneralMessages.invalidFaction(selName));
 				return;
 			}
 			
@@ -1234,7 +1234,7 @@ public class FactionCommands {
 			selFaction = FactionManager.manager().matchFaction(selName);
 			
 			if(selFaction == null){
-				sagaPlayer.message(FactionMessages.invalidFaction(selName));
+				sagaPlayer.message(GeneralMessages.invalidFaction(selName));
 				return;
 			}
 			
@@ -1242,7 +1242,7 @@ public class FactionCommands {
 			targetFaction = FactionManager.manager().matchFaction(targetName);
 			
 			if(targetFaction == null){
-				sagaPlayer.message(FactionMessages.invalidFaction(targetName));
+				sagaPlayer.message(GeneralMessages.invalidFaction(targetName));
 				return;
 			}
 			
@@ -1259,7 +1259,7 @@ public class FactionCommands {
 			targetFaction = FactionManager.manager().matchFaction(targetName);
 			
 			if(targetFaction == null){
-				sagaPlayer.message(FactionMessages.invalidFaction(targetName));
+				sagaPlayer.message(GeneralMessages.invalidFaction(targetName));
 				return;
 			}
 			
@@ -1316,7 +1316,7 @@ public class FactionCommands {
 			selFaction = FactionManager.manager().matchFaction(args.getString(0));
 			
 			if(selFaction == null){
-				sagaPlayer.message(FactionMessages.invalidFaction(args.getString(0)));
+				sagaPlayer.message(GeneralMessages.invalidFaction(args.getString(0)));
 				return;
 			}
 			
@@ -1376,7 +1376,7 @@ public class FactionCommands {
 			selFaction = FactionManager.manager().matchFaction(args.getString(0));
 			
 			if(selFaction == null){
-				sagaPlayer.message(FactionMessages.invalidFaction(args.getString(0)));
+				sagaPlayer.message(GeneralMessages.invalidFaction(args.getString(0)));
 				return;
 			}
 			
@@ -1438,7 +1438,7 @@ public class FactionCommands {
 				selFaction = FactionManager.manager().matchFaction(factionName);
 				
 				if(selFaction == null){
-					sagaPlayer.message(FactionMessages.invalidFaction(factionName));
+					sagaPlayer.message(GeneralMessages.invalidFaction(factionName));
 					return;
 				}
 
@@ -1447,7 +1447,7 @@ public class FactionCommands {
 				selBundle = BundleManager.manager().matchBundle(bundleName);
 				
 				if(selBundle == null){
-					sagaPlayer.message(SettlementMessages.invalidBundle(bundleName));
+					sagaPlayer.message(GeneralMessages.invalidSettlement(bundleName));
 					return;
 				}
 				
@@ -1468,7 +1468,7 @@ public class FactionCommands {
 				selBundle = BundleManager.manager().matchBundle(bundleName);
 				
 				if(selBundle == null){
-					sagaPlayer.message(SettlementMessages.invalidBundle(bundleName));
+					sagaPlayer.message(GeneralMessages.invalidSettlement(bundleName));
 					return;
 				}
 				
@@ -1703,7 +1703,7 @@ public class FactionCommands {
 			selFaction = FactionManager.manager().matchFaction(factionName);
 			
 			if(selFaction == null){
-				sagaPlayer.message(FactionMessages.invalidFaction(factionName));
+				sagaPlayer.message(GeneralMessages.invalidFaction(factionName));
 				return;
 			}
 			
@@ -1751,7 +1751,7 @@ public class FactionCommands {
 
 		    // Check coins:
 		    if(EconomyDependency.getCoins(sagaPlayer) < cost){
-		    	sagaPlayer.message(EconomyMessages.insuficcientCoins(cost));
+		    	sagaPlayer.message(EconomyMessages.insufficient(cost));
 		    	return;
 		    }
 		    
@@ -1793,7 +1793,7 @@ public class FactionCommands {
 			try {
 				page = Integer.parseInt(args.getString(0));
 			} catch (NumberFormatException e) {
-				sagaPlayer.message(SettlementMessages.invalidPage(args.getString(0)));
+				sagaPlayer.message(GeneralMessages.notNumber(args.getString(0)));
 				return;
 			}
 		}else{

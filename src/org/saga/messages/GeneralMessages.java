@@ -4,29 +4,13 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.saga.buildings.Building;
 import org.saga.factions.Faction;
+import org.saga.messages.colours.Colour;
 import org.saga.settlements.Bundle;
 import org.saga.settlements.Settlement;
 import org.saga.utility.text.TextUtil;
 
 public class GeneralMessages {
 
-	
-	public static ChatColor veryPositive = ChatColor.DARK_GREEN;
-	
-	public static ChatColor positive = ChatColor.GREEN;
-	
-	public static ChatColor negative = ChatColor.RED;
-	
-	public static ChatColor veryNegative = ChatColor.DARK_RED;
-	
-	public static ChatColor unavailable = ChatColor.DARK_GRAY;
-	
-	public static ChatColor announce = ChatColor.AQUA;
-	
-	public static ChatColor normal1 = ChatColor.GOLD;
-	
-	public static ChatColor normal2 = ChatColor.YELLOW;
-	
 	
 	/**
 	 * Represents space.
@@ -38,6 +22,72 @@ public class GeneralMessages {
 	 */
 	public static String TAB = "   ";
 
+	
+	
+	// Command arguments:
+	public static String notNumber(String number) {
+		return Colour.negative + number + " is not a number.";
+	}
+	
+	public static String notOnline(String name) {
+		return Colour.negative + "Player " + name + " isn't online.";
+	}
+	
+	public static String invalidPlayer(String playerName){
+		return Colour.negative + "Player " + playerName +" doesn't exist.";
+	}
+
+	public static String nameFromArg(String name) {
+		return name.replaceAll(SPACE_SYMBOL, " ");
+	}
+	
+	
+	public static String invalidSettlement(String name){
+		return Colour.negative + "Settlement " + name + " doesn't exist.";
+	}
+	
+	public static String notSettlement(Bundle bundle){
+		return Colour.negative + "Chunk bundle " + bundle.getName() + " isn't a settlement.";
+	}
+	
+	public static String invalidFaction(String factionName) {
+		return Colour.negative + "Faction " + factionName + " doesn't exist.";
+	}
+	
+
+	
+	// Material:
+	public static String material(Material material){
+		return material.toString().toLowerCase().replace("_", " ");
+	}
+	
+	public static String materialAbrev(Material material){
+		
+		String result = material(material);
+		
+		if(result.startsWith("wood ")){
+			result = result.replace("wood ", "wd. ");
+		}
+		else if(result.startsWith("stone ")){
+			result = result.replace("stone ", "st. ");
+		}
+		else if(result.startsWith("iron ")){
+			result = result.replace("iron ", "ir. ");
+		}
+		else if(result.startsWith("gold ")){
+			result = result.replace("gold ", "gl. ");
+		}
+		else if(result.startsWith("diamond ")){
+			result = result.replace("diamond ", "di. ");
+		}
+		else if(result.startsWith("cobblestone ")){
+			result = result.replace("cobblestone ", "cb.");
+		}
+		
+		return result;
+		
+	}
+	
 	
 	
 	// Text elements:
@@ -77,57 +127,29 @@ public class GeneralMessages {
 	
 	// Permissions:
 	public static String noPermission(){
-		return negative + "You don't have permission to do that.";
+		return Colour.negative + "You don't have permission to do that.";
 	}
 	
 	public static String noPermission(Bundle bundle){
-		return negative + "You don't have permission to do that (" + bundle.getName() + " settlement).";
+		return Colour.negative + "You don't have permission to do that (" + bundle.getName() + " settlement).";
 	}
 	
 	public static String noPermission(Building building){
-		return negative + "You don't have permission to do that (" + building.getName() + " building).";
+		return Colour.negative + "You don't have permission to do that (" + building.getName() + " building).";
 	}
 	
 	public static String noPermission(Settlement settlement){
-		return negative + "You don't have permission to do that (" + settlement.getName() + " settlement).";
-	}
-	
-	public static String noCommandPermission(Bundle bundle, String command){
-		return negative + "You don't have permission use " + command + " command (" + bundle.getName() + " settlement).";
-	}
-	
-	public static String noPermission(Faction faction){
-		return negative + "You don't have permission to do that (" + faction.getColour1() + faction.getName() + negative + " faction).";
-	}
-	
-	
-	
-	// Command arguments:
-	public static String nameFromArg(String name) {
-		return name.replaceAll(SPACE_SYMBOL, " ");
-	}
-	
-	public static String mustBeNumber(String number) {
-		return negative + "Argument " + number + " must be a number.";
-	}
-	
-	
-	
-	// Material:
-	/**
-	 * Gets material name.
-	 * 
-	 * @param material material
-	 * @return material name
-	 */
-	public static String material(Material material){
-		
-		String result = material.toString().toLowerCase().replace("_", " ");
-		
-		return result;
-		
+		return Colour.negative + "You don't have permission to do that (" + settlement.getName() + " settlement).";
 	}
 
+	public static String noPermission(Faction faction){
+		return Colour.negative + "You don't have permission to do that (" + faction.getColour1() + faction.getName() + Colour.negative + " faction).";
+	}
+
+	public static String noCommandPermission(Bundle bundle, String command){
+		return Colour.negative + "You don't have permission use " + command + " command (" + bundle.getName() + " settlement).";
+	}
+	
 	
 	
 	// Other:

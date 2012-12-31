@@ -18,6 +18,7 @@ import org.saga.config.GeneralConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.dependencies.PermissionsDependency;
 import org.saga.factions.Faction;
+import org.saga.messages.colours.Colour;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
@@ -31,151 +32,103 @@ import org.sk89q.CommandPermissions;
 public class AdminMessages {
 
 	
-public static ChatColor veryPositive = ChatColor.DARK_GREEN;
-	
-
-	public static ChatColor positive = ChatColor.GREEN;
-	
-	public static ChatColor negative = ChatColor.RED;
-	
-	public static ChatColor veryNegative = ChatColor.DARK_RED;
-	
-	public static ChatColor unavailable = ChatColor.DARK_GRAY;
-	
-	public static ChatColor announce = ChatColor.AQUA;
-	
-	public static ChatColor normal1 = ChatColor.GOLD;
-	
-	public static ChatColor normal2 = ChatColor.YELLOW;
-
-	
 
 	// Player levels:
 	public static String playerExpSet(Integer exp, SagaPlayer sagaPlayer){
-		return positive + "Player " + sagaPlayer.getName() + " exp set to " + exp + ".";
+		return Colour.positive + "Player " + sagaPlayer.getName() + " exp set to " + exp + ".";
 	}
 	
 	public static String playerExpSet(Integer exp){
-		return positive + "Exp was set to " + exp + ".";
+		return Colour.positive + "Exp was set to " + exp + ".";
 	}
 
 	public static String playerExpOutOfRange(String exp){
-		return negative + "Exp " + exp + " is out of range. Allowed range: 0 - " + ExperienceConfiguration.config().getMaxExp() + ".";
+		return Colour.negative + "Exp " + exp + " is out of range. Allowed range: 0 - " + ExperienceConfiguration.config().getMaxExp() + ".";
 	}
 	
 	
-	// Settlement and faction levels:
-	public static String settleClaimsOutOfRange(String level){
-		return negative + "Claims " + level + " is out of range. Allowed range: 0 - " + SettlementConfiguration.config().getMaxClaims() + ".";
+	
+	// Settlement and faction claims:
+	public static String settleClaimsOutOfRange(String claims){
+		return Colour.negative + "Claims " + claims + " is out of range. Allowed range: 0 - " + SettlementConfiguration.config().getMaxClaims() + ".";
 	}
 	
 	public static String factionClaimsOutOfRange(String claims){
-		return negative + "Claims " + claims + " is out of range. Allowed range: 0 - " + FactionConfiguration.config().getMaxClaims() + ".";
+		return Colour.negative + "Claims " + claims + " is out of range. Allowed range: 0 - " + FactionConfiguration.config().getMaxClaims() + ".";
 	}
 
 	public static String setClaims(Settlement settlement){
-		
-		return positive + "Settlement " + settlement.getName() + " claims set to " + settlement.getTotalClaims() + ".";
-		
+		return Colour.positive + "Settlement " + settlement.getName() + " claims set to " + settlement.getTotalClaims() + ".";
 	}
 	
 	public static String setClaims(Faction faction){
-		
-		return positive + "Faction " + faction.getName() + " claims set to " +faction.getTotalClaims() + ".";
-		
+		return Colour.positive + "Faction " + faction.getName() + " claims set to " +faction.getTotalClaims() + ".";
 	}
+	
 	
 	
 	// Healing:
 	public static String healed(){
-		return positive + "You got healed" + ".";
+		return Colour.positive + "You were healed.";
 	}
 	
 	public static String healed(SagaPlayer selPlayer){
-		return positive + "Healed " + selPlayer.getName() + ".";
+		return Colour.positive + "Healed " + selPlayer.getName() + ".";
 	}
 	
 	
 	
 	// Attributes:
 	public static String attributeSet(String attribute, Integer score){
-		return positive + TextUtil.capitalize(attribute) + " was set to " + score + ".";
+		return Colour.positive + TextUtil.capitalize(attribute) + " was set to " + score + ".";
 	}
 	
-	public static String attributeSet(String attribute, Integer score, SagaPlayer sagaPlayer){
-		return positive + "Players " + sagaPlayer.getName() + " " + attribute + " was set to " + score + ".";
+	public static String attributeSet(String attribute, Integer score, SagaPlayer selPlayer){
+		return Colour.positive + "Players " + selPlayer.getName() + " " + attribute + " was set to " + score + ".";
 	}
 	
-	public static String attributeInvalid(String attribute, SagaPlayer sagaPlayer){
-		return negative + TextUtil.capitalize(attribute) + " isn't a valid attribute.";
+	public static String attributeInvalid(String attribute){
+		return Colour.negative + TextUtil.capitalize(attribute) + " isn't a valid attribute.";
 	}
 	
-	public static String attributeOutOfRange(String score){
-		return negative + "Ability score " + score + " is out of range. Allowed range: 0 - " + AttributeConfiguration.config().maxAttributeScore + ".";
+	public static String attributeScoreOutOfRange(String score){
+		return Colour.negative + "Attribute score " + score + " is out of range. Allowed range: 0 - " + AttributeConfiguration.config().maxAttributeScore + ".";
 	}
 	
 	
 	
 	// Administrator mode:
-	public static String adminMode(SagaPlayer sagaPlayer) {
-		
+	public static String adminModeChanged(SagaPlayer sagaPlayer) {
 		
 		if(sagaPlayer.isAdminMode()){
-			return positive + "Admin mode enabled.";
+			return Colour.positive + "Admin mode enabled.";
 		}else{
-			return positive + "Admin mode disabled.";
+			return Colour.positive + "Admin mode disabled.";
 		}
-		
 		
 	}
 	
 	public static String adminModeAlreadyEnabled() {
-		
-		return negative + "Admin mode already enabled.";
-		
+		return Colour.negative + "Admin mode already enabled.";
 	}
 	
 	public static String adminModeAlreadyDisabled() {
-		
-		return negative + "Admin mode already disabled.";
-		
+		return Colour.negative + "Admin mode already disabled.";
 	}
 
-	
-	
-	// Additional info:
-	public static String statsTargetName(SagaPlayer sagaPlayer) {
-		return positive + "Stats for " + sagaPlayer.getName() + ".";
-	}
-	
 	
 	
 	// Guardian rune:
-	public static String recharged(GuardianRune rune, SagaPlayer sagaPlayer) {
-		
-		return positive + "Recharged players " + sagaPlayer.getName() + " guardian rune recharged.";
-		
+	public static String runeRecharged(GuardianRune rune, SagaPlayer sagaPlayer) {
+		return Colour.positive + "Recharged players " + sagaPlayer.getName() + " guardian rune recharged.";
 	}
 	
-	public static String recharged(GuardianRune rune) {
-		
-		return positive + "Recharged guardian rune.";
-		
+	public static String runeRecharged(GuardianRune rune) {
+		return Colour.positive + "Recharged guardian rune.";
 	}
 	
 	
 
-	// Saving loading:
-	public static String saving() {
-		return veryPositive + "Saving Saga information.";
-	}
-	
-	public static String saved() {
-		return veryPositive + "Saving complete.";
-	}
-	
-	
-	
 	// Messages:
 	public static String chatMessage(String name, String message) {
 
@@ -195,26 +148,17 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 
 	
 	
-	// Time:
-	public static String nextDaytime(World world, Daytime daytime) {
-
-		return positive + "Daytime set to " + daytime + " for world " + world.getName() + ".";
-		
-	}
-
-	
-	
 	// Border command:
 	public static String borderRepeatAdminModeOnly() {
-		return negative + "Repeat function is only available in admin mode.";
+		return Colour.negative + "Repeat function is only available in admin mode.";
 	}
 	
 	public static String borderWildernessAdminModeOnly() {
-		return negative + "Admin mode required to use border command in the wilderness.";
+		return Colour.negative + "Admin mode required to use border command in the wilderness.";
 	}
 	
 	
-	
+
 	// Wiki:
 	public static String wikiCommands(ArrayList<Method> commandMethods) {
 		
@@ -573,7 +517,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 	}
 
 	public static String writeDone(Directory dir, String name) {
-		return positive + "Write complete: " + dir.getDirectory() + dir.getFilename().replace(WriterReader.NAME_SUBS, name) + ".";
+		return Colour.positive + "Write complete: " + dir.getDirectory() + dir.getFilename().replace(WriterReader.NAME_SUBS, name) + ".";
 	}
 	
 	
@@ -661,7 +605,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 		
 		
 	}
-	
+
 	public static String wikiPermissionsCreole(ArrayList<Method> commandMethods) {
 		
 		
@@ -836,4 +780,30 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN;
 	}
 	
 	
+
+	// Saving loading:
+	public static String saving() {
+		return Colour.veryPositive + "Saving Saga information.";
+	}
+	
+	public static String saved() {
+		return Colour.veryPositive + "Saving complete.";
+	}
+
+	
+
+	// Additional info:
+	public static String statsTargetName(SagaPlayer sagaPlayer) {
+		return Colour.positive + "Stats for " + sagaPlayer.getName() + ".";
+	}
+
+	
+	// Time:
+	public static String nextDaytime(World world, Daytime daytime) {
+
+		return Colour.positive + "Daytime set to " + daytime + " for world " + world.getName() + ".";
+		
+	}
+
+
 }

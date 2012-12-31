@@ -101,13 +101,13 @@ public class Repair extends Ability{
 		
 		// Already repaired:
 		if(item.getDurability() <= 0){
-			sagaPlayer.message(AbilityMessages.alreadyRepaired(item.getType()));
+			sagaPlayer.message(AbilityMessages.repairAlreadyRepaired(item.getType()));
 			return false;
 		}
 
 		// Can't be repaired:
 		if(repair == 0 || usedMaterial == Material.AIR){
-			sagaPlayer.message(AbilityMessages.cantRepair(item.getType()));
+			sagaPlayer.message(AbilityMessages.repairCantRepair(item.getType()));
 			return false;
 		}
 

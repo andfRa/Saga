@@ -11,7 +11,6 @@ import org.saga.messages.AbilityMessages;
 import org.saga.messages.GeneralMessages;
 import org.saga.messages.HelpMessages;
 import org.saga.messages.PlayerMessages;
-import org.saga.messages.SettlementMessages;
 import org.saga.messages.StatsMessages;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
@@ -46,7 +45,7 @@ public class PlayerCommands {
 				page = Integer.parseInt(argsPage);
 			}
 			catch (NumberFormatException e) {
-				sagaPlayer.message(GeneralMessages.mustBeNumber(argsPage));
+				sagaPlayer.message(GeneralMessages.notNumber(argsPage));
 				return;
 			}
 			
@@ -182,7 +181,7 @@ public class PlayerCommands {
 			try {
 				page = Integer.parseInt(args.getString(0));
 			} catch (NumberFormatException e) {
-				sagaPlayer.message(SettlementMessages.invalidPage(args.getString(0)));
+				sagaPlayer.message(GeneralMessages.notNumber(args.getString(0)));
 				return;
 			}
 		}else{

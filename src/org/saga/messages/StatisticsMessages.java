@@ -8,7 +8,8 @@ import java.util.Comparator;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.saga.config.GeneralConfiguration;
-import org.saga.messages.PlayerMessages.ColourLoop;
+import org.saga.messages.colours.Colour;
+import org.saga.messages.colours.ColourLoop;
 import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
 import org.saga.utility.ArrayUtil;
@@ -25,32 +26,11 @@ import org.saga.utility.text.TextUtil;
 public class StatisticsMessages {
 	
 
-	// Colours:
-	public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
-	
-	public static ChatColor positive = ChatColor.GREEN;
-	
-	public static ChatColor negative = ChatColor.RED;
-	
-	public static ChatColor veryNegative = ChatColor.DARK_RED; // DO NOT OVERUSE.
-	
-	public static ChatColor unavailable = ChatColor.DARK_GRAY;
-	
-	public static ChatColor announce = ChatColor.AQUA;
-	
-	public static ChatColor normal1 = ChatColor.GOLD;
-	
-	public static ChatColor normal2 = ChatColor.YELLOW;
-	
-	public static ChatColor frame = ChatColor.DARK_GREEN;
-	
-	
-
 	// Statistics:
 	public static String general() {
 	
 		
-		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
+		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
 		StringTable table = new StringTable(colours);
 
 		// Add headings:
@@ -78,7 +58,7 @@ public class StatisticsMessages {
 		int hours   = (int) ((milliseconds / (1000*60*60)) % 24);
 		int days    = (int) ((milliseconds / (1000*60*60*24)));
 		
-		return positive + "Statistics age " + days + "d " + hours + "h " + minutes + "m " + seconds + "s.";
+		return Colour.positive + "Statistics age " + days + "d " + hours + "h " + minutes + "m " + seconds + "s.";
 		
 		
 	}
@@ -86,7 +66,7 @@ public class StatisticsMessages {
 	public static String exp(int page) {
 	
 		
-		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
+		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
 		StringTable table = new StringTable(colours);
 
 		// Add headings:
@@ -131,8 +111,8 @@ public class StatisticsMessages {
 	public static String balance(int page) {
 
 		
-		StringBook book = new StringBook("economy statistics", new ColourLoop().addColor(normal1).addColor(normal2));
-		StringTable table = new StringTable(new ColourLoop().addColor(normal1).addColor(normal2));
+		StringBook book = new StringBook("economy statistics", new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
+		StringTable table = new StringTable(new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
 		final StatisticsManager manager = StatisticsManager.manager();
 		
 		ArrayList<Material> materials = StatisticsManager.manager().getAllEcoMaterials();
@@ -168,7 +148,7 @@ public class StatisticsMessages {
 				String sellAmount = "-";
 				if(manager.getSellAmount(material) != null) sellAmount = manager.getSellAmount(material).toString();
 				
-				table.addLine(new String[]{EconomyMessages.materialShort(material),buyTotal,buyAmount,sellTotal,sellAmount});
+				table.addLine(new String[]{GeneralMessages.materialAbrev(material),buyTotal,buyAmount,sellTotal,sellAmount});
 				
 			}
 			
@@ -187,7 +167,7 @@ public class StatisticsMessages {
 	public static String values(String title, String category, String column1, String column2, boolean ignoreBottom, int decimals, int page) {
 
 		
-		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
+		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
 		StringBook book = new StringBook(title, colours);
 		StringTable table = new StringTable(colours);
 		
@@ -224,7 +204,7 @@ public class StatisticsMessages {
 	public static String values(String title, String category, String varCategMain, String varCateg1, String column1, String column2, String column3, boolean ignoreBottom, int decimals, int page) {
 
 		
-		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
+		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
 		StringBook book = new StringBook(title, colours);
 		StringTable table = new StringTable(colours);
 		
@@ -267,7 +247,7 @@ public class StatisticsMessages {
 	public static String histogram(String title, Double[] data, Integer width, Integer decimals, MetricPrefix metPref) {
 
 		
-		ColourLoop colours = new ColourLoop().addColor(normal2).addColor(normal1);
+		ColourLoop colours = new ColourLoop().addColor(Colour.normal2).addColor(Colour.normal1);
 		
 		ColourLoop hcolours = new ColourLoop()
 			.addColor(ChatColor.LIGHT_PURPLE)
@@ -343,7 +323,7 @@ public class StatisticsMessages {
 	public static String xrayIndication(String[] suspects, Double[] ratios, Integer[] veins) {
 
 		
-		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
+		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
 		StringTable table = new StringTable(colours);
 		StringBook book = new StringBook("x-ray indications", colours);
 		
@@ -373,9 +353,9 @@ public class StatisticsMessages {
 				
 				// Confirmed:
 				if(StatisticsManager.manager().isXrayConfirmed(name, Material.DIAMOND_ORE)){
-					name = unavailable.toString() + ChatColor.STRIKETHROUGH + name;
-					ratioComb = unavailable.toString() + ChatColor.STRIKETHROUGH + ratioComb;
-					vein = unavailable.toString() + ChatColor.STRIKETHROUGH + vein;
+					name = Colour.unavailable.toString() + ChatColor.STRIKETHROUGH + name;
+					ratioComb = Colour.unavailable.toString() + ChatColor.STRIKETHROUGH + ratioComb;
+					vein = Colour.unavailable.toString() + ChatColor.STRIKETHROUGH + vein;
 				}
 				
 				table.addLine(new String[]{name, ratioComb, vein.toString()});
@@ -449,7 +429,7 @@ public class StatisticsMessages {
 
 	public static String xrayConfirmed(String name) {
 
-		return positive + "X-ray mod confirmed for " + name + ".";
+		return Colour.positive + "X-ray mod confirmed for " + name + ".";
 		
 	}
 
@@ -458,13 +438,13 @@ public class StatisticsMessages {
 	// Updating:
 	public static String updating() {
 
-		return positive + "Updating statistics.";
+		return Colour.positive + "Updating statistics.";
 		
 	}
 	
 	public static String updated() {
 
-		return positive + "Statistics updated.";
+		return Colour.positive + "Statistics updated.";
 		
 	}
 	
@@ -473,7 +453,7 @@ public class StatisticsMessages {
 	// Resetting:
 	public static String reset() {
 	
-		return positive + "Statistics reset.";
+		return Colour.positive + "Statistics reset.";
 		
 	}
 

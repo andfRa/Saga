@@ -74,7 +74,7 @@ public class Dig extends Ability{
 
 		// Check blocks:
 		if(event.getClickedBlock() == null || !checkBlock(event.getClickedBlock())){
-			getSagaLiving().message(AbilityMessages.targetDirtSand(this));
+			getSagaLiving().message(AbilityMessages.digTargetDirtSand(this));
 			return false;
 		}
 		

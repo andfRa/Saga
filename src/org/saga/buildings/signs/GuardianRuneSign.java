@@ -163,7 +163,7 @@ public class GuardianRuneSign extends BuildingSign{
 		// Enough coins:
 		Double price = EconomyConfiguration.config().guardianRuneRechargeCost;
 		if(EconomyDependency.getCoins(sagaPlayer) < price){
-			sagaPlayer.message(EconomyMessages.notEnoughCoins());
+			sagaPlayer.message(EconomyMessages.insufficient());
 			return;
 		}
 

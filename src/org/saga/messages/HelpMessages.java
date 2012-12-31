@@ -5,7 +5,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.bukkit.ChatColor;
 import org.saga.abilities.AbilityDefinition;
 import org.saga.attributes.Attribute;
 import org.saga.buildings.Academy;
@@ -24,7 +23,8 @@ import org.saga.config.FactionConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
-import org.saga.messages.PlayerMessages.ColourLoop;
+import org.saga.messages.colours.Colour;
+import org.saga.messages.colours.ColourLoop;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.ProficiencyDefinition;
 import org.saga.utility.text.RomanNumeral;
@@ -33,33 +33,12 @@ import org.saga.utility.text.StringTable;
 
 public class HelpMessages {
 
-public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
-	
-
-
-
-	public static ChatColor positive = ChatColor.GREEN;
-	
-	public static ChatColor negative = ChatColor.RED;
-	
-	public static ChatColor veryNegative = ChatColor.DARK_RED; // DO NOT OVERUSE.
-	
-	public static ChatColor unavailable = ChatColor.DARK_GRAY;
-	
-	public static ChatColor announce = ChatColor.AQUA;
-	
-	public static ChatColor normal1 = ChatColor.GOLD;
-	
-	public static ChatColor normal2 = ChatColor.YELLOW;
-	
-	public static ChatColor frame = ChatColor.DARK_GREEN;
-	
 	
 	// Help:
 	public static String ehelp(int page) {
 
 		
-		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
+		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
 		StringBook book = new StringBook("economy help", colours);
 		
 		// General:
@@ -83,7 +62,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 	public static String phelp(int page) {
 		
 		
-		ColourLoop messageColor = new ColourLoop().addColor(normal1).addColor(normal2);
+		ColourLoop messageColor = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
 		StringBook book = new StringBook("player help", messageColor);
 
 		// Attributes:
@@ -193,7 +172,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 	public static String shelp(int page) {
 		
 		
-		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
+		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
 		StringBook book = new StringBook("settlement help", colours);
 
 		// Cost:
@@ -352,7 +331,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 	public static String fhelp(int page) {
 
 		
-		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
+		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
 		StringBook book = new StringBook("faction help", colours);
 
 		// Cost:
@@ -532,82 +511,7 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 
 	
 	
-	// Abilities:
-	public static String ability(AbilityDefinition definition) {
-
-		
-		ColourLoop colours = new ColourLoop().addColor(normal1).addColor(normal2);
-		StringBook book = new StringBook(definition.getName() + " ability requirements", colours);
-		
-//		// Description:
-//		book.addLine(TextUtil.senctence(definition.getDescription()));
-//		
-//		book.addLine("");
-//		
-//		// Usage:
-//		book.addLine(GeneralMessages.columnTitle("usage:") + " " + definition.getUsage());
-//		
-//		book.addLine("");
-
-		// Ability upgrade table:
-		StringTable upgrTable = new StringTable(colours);
-		Integer minScore = 1;
-		Integer maxScore = AbilityConfiguration.config().maxAbilityScore;
-		
-		upgrTable.addLine(new String[]{GeneralMessages.columnTitle("score"), GeneralMessages.columnTitle("requirements")});
-		
-		if(maxScore >= minScore){
-			
-			for (int score = minScore; score <= maxScore; score++) {
-				
-				String req = StatsMessages.requirements(definition, score);
-				String restr = StatsMessages.restrictions(definition);
-				if(req.length() > 0 && restr.length() > 0) restr = ", " + restr;
-				
-				upgrTable.addLine(new String[]{definition.getName() + " " + RomanNumeral.binaryToRoman(score), req + restr});
-				
-			}
-			
-		}else{
-			upgrTable.addLine(new String[]{"-","-"});
-		}
-		
-		upgrTable.collapse();
-		book.addTable(upgrTable);
-		
-		return book.framedPage(0);
-		
-		
-	}
-
-	
-	
-	// Utility:
-	public static String bonuses(ProficiencyDefinition definition) {
-
-		
-		StringBuffer result = new StringBuffer();
-		
-		// Attributes:
-		ArrayList<String> attributeNames = AttributeConfiguration.config().getAttributeNames();
-		
-		for (String attribute : attributeNames) {
-			
-			Integer bonus = definition.getAttributeBonus(attribute);
-			if(bonus <= 0) continue;
-			
-			if(result.length() > 0) result.append(", ");
-			
-			result.append("+" + bonus + " " + GeneralMessages.attrAbrev(attribute));
-			
-		}
-
-		return result.toString();
-		
-	
-	}
-	
-
+	// Buildings:
 	public static String academy(){
 		
 		ArrayList<BuildingDefinition> buildings = BuildingConfiguration.config().getBuildingDefinitions();
@@ -656,5 +560,81 @@ public static ChatColor veryPositive = ChatColor.DARK_GREEN; // DO NOT OVERUSE.
 	
 	}
 
+	
+	
+	// Abilities:
+	public static String ability(AbilityDefinition definition) {
+
+		
+		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
+		StringBook book = new StringBook(definition.getName() + " ability requirements", colours);
+		
+//		// Description:
+//		book.addLine(TextUtil.senctence(definition.getDescription()));
+//		
+//		book.addLine("");
+//		
+//		// Usage:
+//		book.addLine(GeneralMessages.columnTitle("usage:") + " " + definition.getUsage());
+//		
+//		book.addLine("");
+
+		// Ability upgrade table:
+		StringTable upgrTable = new StringTable(colours);
+		Integer minScore = 1;
+		Integer maxScore = AbilityConfiguration.config().maxAbilityScore;
+		
+		upgrTable.addLine(new String[]{GeneralMessages.columnTitle("score"), GeneralMessages.columnTitle("requirements")});
+		
+		if(maxScore >= minScore){
+			
+			for (int score = minScore; score <= maxScore; score++) {
+				
+				String req = StatsMessages.requirements(definition, score);
+				String restr = StatsMessages.restrictions(definition);
+				if(req.length() > 0 && restr.length() > 0) restr = ", " + restr;
+				
+				upgrTable.addLine(new String[]{definition.getName() + " " + RomanNumeral.binaryToRoman(score), req + restr});
+				
+			}
+			
+		}else{
+			upgrTable.addLine(new String[]{"-","-"});
+		}
+		
+		upgrTable.collapse();
+		book.addTable(upgrTable);
+		
+		return book.framedPage(0);
+		
+		
+	}
+	
+	
+	// Utility:
+	public static String bonuses(ProficiencyDefinition definition) {
+
+		
+		StringBuffer result = new StringBuffer();
+		
+		// Attributes:
+		ArrayList<String> attributeNames = AttributeConfiguration.config().getAttributeNames();
+		
+		for (String attribute : attributeNames) {
+			
+			Integer bonus = definition.getAttributeBonus(attribute);
+			if(bonus <= 0) continue;
+			
+			if(result.length() > 0) result.append(", ");
+			
+			result.append("+" + bonus + " " + GeneralMessages.attrAbrev(attribute));
+			
+		}
+
+		return result.toString();
+		
+	
+	}
+	
 	
 }

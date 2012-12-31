@@ -82,7 +82,7 @@ public class AdminCommands {
 				page = Integer.parseInt(argsPage);
 			}
 			catch (NumberFormatException e) {
-				sagaPlayer.message(GeneralMessages.mustBeNumber(argsPage));
+				sagaPlayer.message(GeneralMessages.notNumber(argsPage));
 				return;
 			}
 			
@@ -101,7 +101,7 @@ public class AdminCommands {
 				selPlayer = Saga.plugin().forceSagaPlayer(name);
 			}
 			catch (NonExistantSagaPlayerException e) {
-				sagaPlayer.message(PlayerMessages.invalidPlayer(name));
+				sagaPlayer.message(GeneralMessages.invalidPlayer(name));
 				return;
 			}
 			
@@ -113,7 +113,7 @@ public class AdminCommands {
 			try {
 				selPlayer = Saga.plugin().matchPlayer(name);
 			} catch (SagaPlayerNotLoadedException e) {
-				sagaPlayer.message(PlayerMessages.notOnline(name));
+				sagaPlayer.message(GeneralMessages.notOnline(name));
 				return;
 			}
 			
@@ -157,7 +157,7 @@ public class AdminCommands {
 				try {
 					exp = Integer.parseInt(argsLevel);
 				} catch (NumberFormatException e) {
-					sagaPlayer.message(GeneralMessages.mustBeNumber(argsLevel));
+					sagaPlayer.message(GeneralMessages.notNumber(argsLevel));
 				}
 				
 				break;
@@ -170,7 +170,7 @@ public class AdminCommands {
 				try {
 					exp = Integer.parseInt(argsLevel);
 				} catch (NumberFormatException e) {
-					sagaPlayer.message(GeneralMessages.mustBeNumber(argsLevel));
+					sagaPlayer.message(GeneralMessages.notNumber(argsLevel));
 				}
 				
 				break;
@@ -184,7 +184,7 @@ public class AdminCommands {
 			
 		} catch (NonExistantSagaPlayerException e) {
 			
-			sagaPlayer.message(SettlementMessages.nonExistantPlayer(playerName));
+			sagaPlayer.message(GeneralMessages.invalidPlayer(playerName));
 			return;
 			
 		}
@@ -240,7 +240,7 @@ public class AdminCommands {
 				try {
 					score = Integer.parseInt(args.getString(1));
 				} catch (NumberFormatException e) {
-					sagaPlayer.message(GeneralMessages.mustBeNumber(args.getString(1)));
+					sagaPlayer.message(GeneralMessages.notNumber(args.getString(1)));
 				}
 				
 				break;
@@ -254,7 +254,7 @@ public class AdminCommands {
 				try {
 					score = Integer.parseInt(args.getString(2));
 				} catch (NumberFormatException e) {
-					sagaPlayer.message(GeneralMessages.mustBeNumber(args.getString(1)));
+					sagaPlayer.message(GeneralMessages.notNumber(args.getString(1)));
 				}
 				
 				break;
@@ -268,21 +268,21 @@ public class AdminCommands {
 			
 		} catch (NonExistantSagaPlayerException e) {
 			
-			sagaPlayer.message(SettlementMessages.nonExistantPlayer(playerName));
+			sagaPlayer.message(GeneralMessages.invalidPlayer(playerName));
 			return;
 			
 		}
 
 		// Invalid attribute:
 		if(!AttributeConfiguration.config().getAttributeNames().contains(attrName)){
-			sagaPlayer.message(AdminMessages.attributeInvalid(attrName, sagaPlayer));
+			sagaPlayer.message(AdminMessages.attributeInvalid(attrName));
 			return;
 		}
 		
 		// Invalid score:
 		if(score < 0 || score > AttributeConfiguration.config().maxAttributeScore){
 			
-			sagaPlayer.message(AdminMessages.attributeOutOfRange(score + ""));
+			sagaPlayer.message(AdminMessages.attributeScoreOutOfRange(score + ""));
 			return;
 			
 		}
@@ -343,7 +343,7 @@ public class AdminCommands {
 			
 		} catch (NonExistantSagaPlayerException e) {
 			
-			sagaPlayer.message(SettlementMessages.nonExistantPlayer(playerName));
+			sagaPlayer.message(GeneralMessages.invalidPlayer(playerName));
 			return;
 			
 		}
@@ -396,7 +396,7 @@ public class AdminCommands {
 				try {
 					selPlayer = Saga.plugin().forceSagaPlayer(argsName);
 				} catch (NonExistantSagaPlayerException e) {
-					sagaPlayer.message(PlayerMessages.invalidPlayer(argsName));
+					sagaPlayer.message(GeneralMessages.invalidPlayer(argsName));
 					return;
 				}
 				
@@ -404,7 +404,7 @@ public class AdminCommands {
 				try {
 					amount = Double.parseDouble(argsAmount);
 				} catch (NumberFormatException e) {
-					sagaPlayer.message(EconomyMessages.notNumber(argsAmount));
+					sagaPlayer.message(GeneralMessages.notNumber(argsAmount));
 					return;
 				}
 				
@@ -418,7 +418,7 @@ public class AdminCommands {
 				try {
 					amount = Double.parseDouble(argsAmount);
 				} catch (NumberFormatException e) {
-					sagaPlayer.message(EconomyMessages.notNumber(argsAmount));
+					sagaPlayer.message(GeneralMessages.notNumber(argsAmount));
 					return;
 				}
 				
@@ -478,14 +478,14 @@ public class AdminCommands {
 			String bundleName = GeneralMessages.nameFromArg(args.getString(0));
 			selBundle = BundleManager.manager().matchBundle(bundleName);
 			if(selBundle == null){
-				sagaPlayer.message(SettlementMessages.invalidBundle(bundleName));
+				sagaPlayer.message(GeneralMessages.invalidSettlement(bundleName));
 				return;
 			}
 
 			try {
 				claims = Double.parseDouble(args.getString(1));
 			} catch (NumberFormatException e) {
-				sagaPlayer.message(GeneralMessages.mustBeNumber(args.getString(1)));
+				sagaPlayer.message(GeneralMessages.notNumber(args.getString(1)));
 				return;
 			}
 			
@@ -501,7 +501,7 @@ public class AdminCommands {
 			try {
 				claims = Double.parseDouble(args.getString(0));
 			} catch (NumberFormatException e) {
-				sagaPlayer.message(GeneralMessages.mustBeNumber(args.getString(0)));
+				sagaPlayer.message(GeneralMessages.notNumber(args.getString(0)));
 				return;
 			}
 			
@@ -509,7 +509,7 @@ public class AdminCommands {
 		
 		// Is a settlement:
 		if(!(selBundle instanceof Settlement)){
-			sagaPlayer.message(SettlementMessages.notSettlement(selBundle));
+			sagaPlayer.message(GeneralMessages.notSettlement(selBundle));
 			return;
 		}
 		Settlement selectedSettlement = (Settlement) selBundle;
@@ -553,14 +553,14 @@ public class AdminCommands {
 			String factionName = GeneralMessages.nameFromArg(args.getString(0));
 			selFaction = FactionManager.manager().matchFaction(factionName);
 			if(selFaction == null){
-				sagaPlayer.message(FactionMessages.invalidFaction(factionName));
+				sagaPlayer.message(GeneralMessages.invalidFaction(factionName));
 				return;
 			}
 
 			try {
 				claims = Double.parseDouble(args.getString(1));
 			} catch (NumberFormatException e) {
-				sagaPlayer.message(GeneralMessages.mustBeNumber(args.getString(1)));
+				sagaPlayer.message(GeneralMessages.notNumber(args.getString(1)));
 				return;
 			}
 			
@@ -576,7 +576,7 @@ public class AdminCommands {
 			try {
 				claims = Double.parseDouble(args.getString(0));
 			} catch (NumberFormatException e) {
-				sagaPlayer.message(GeneralMessages.mustBeNumber(args.getString(0)));
+				sagaPlayer.message(GeneralMessages.notNumber(args.getString(0)));
 				return;
 			}
 			
@@ -622,7 +622,7 @@ public class AdminCommands {
 				String bundleName = GeneralMessages.nameFromArg(args.getString(0));
 				selChunkBundle = BundleManager.manager().matchBundle(bundleName);
 				if(selChunkBundle == null){
-					sagaPlayer.message( SettlementMessages.invalidBundle(bundleName));
+					sagaPlayer.message(GeneralMessages.invalidSettlement(bundleName));
 					return;
 				}
 				
@@ -699,7 +699,7 @@ public class AdminCommands {
 				String bundleName = GeneralMessages.nameFromArg(args.getString(0));
 				selChunkBundle = BundleManager.manager().matchBundle(bundleName);
 				if(selChunkBundle == null){
-					sagaPlayer.message( SettlementMessages.invalidBundle(bundleName));
+					sagaPlayer.message(GeneralMessages.invalidSettlement(bundleName));
 					return;
 				}
 				
@@ -794,7 +794,7 @@ public class AdminCommands {
 			
 		} catch (NonExistantSagaPlayerException e) {
 			
-			sagaPlayer.message(SettlementMessages.nonExistantPlayer(playerName));
+			sagaPlayer.message(GeneralMessages.invalidPlayer(playerName));
 			return;
 			
 		}
@@ -811,10 +811,10 @@ public class AdminCommands {
 		
 		// Inform:
 		if(selPlayer != sagaPlayer){
-			selPlayer.message(AdminMessages.recharged(rune,sagaPlayer));
-			sagaPlayer.message(AdminMessages.recharged(rune));
+			selPlayer.message(AdminMessages.runeRecharged(rune,sagaPlayer));
+			sagaPlayer.message(AdminMessages.runeRecharged(rune));
 		}else{
-			sagaPlayer.message(AdminMessages.recharged(rune));
+			sagaPlayer.message(AdminMessages.runeRecharged(rune));
 		}
 
 		// Release:
@@ -1008,7 +1008,7 @@ public class AdminCommands {
 		sagaPlayer.enableAdminMode();
 		
 		// Inform:
-		sagaPlayer.message(AdminMessages.adminMode(sagaPlayer));
+		sagaPlayer.message(AdminMessages.adminModeChanged(sagaPlayer));
 		
 		
 	}
@@ -1034,7 +1034,7 @@ public class AdminCommands {
 		sagaPlayer.disableAdminMode();
 		
 		// Inform:
-		sagaPlayer.message(AdminMessages.adminMode(sagaPlayer));
+		sagaPlayer.message(AdminMessages.adminModeChanged(sagaPlayer));
 		
 		
 	}

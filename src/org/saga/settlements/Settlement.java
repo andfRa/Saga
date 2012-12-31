@@ -22,6 +22,7 @@ import org.saga.config.SettlementConfiguration;
 import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.messages.SettlementMessages;
+import org.saga.messages.colours.Colour;
 import org.saga.player.Proficiency;
 import org.saga.player.ProficiencyDefinition;
 import org.saga.player.SagaPlayer;
@@ -552,7 +553,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 	@Override
 	public void chat(SagaPlayer sagaPlayer, String message) {
 		
-		message = SettlementMessages.normal2 + "[" + SettlementMessages.normal1 + SettlementMessages.roledPlayer(this, sagaPlayer) + SettlementMessages.normal2 + "] " + message;
+		message = Colour.normal2 + "[" + Colour.normal1 + SettlementMessages.roledPlayer(this, sagaPlayer) + Colour.normal2 + "] " + message;
 		
 		Collection<SagaPlayer> onlineMembers = getOnlineMembers();
 		

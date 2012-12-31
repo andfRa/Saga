@@ -217,7 +217,7 @@ public class BuildingCommands {
 		// Retrieve building:
 		Building selBuilding = selChunk.getBuilding();
 		if(selBuilding == null){
-			sagaPlayer.message(BuildingMessages.noBuilding());
+			sagaPlayer.message(BuildingMessages.noBuildingSet());
 			return;
 		}
 
@@ -284,7 +284,7 @@ public class BuildingCommands {
 		// Retrieve building:
 		Building selBuilding = selChunk.getBuilding();
 		if(selBuilding == null){
-			sagaPlayer.message(BuildingMessages.noBuilding());
+			sagaPlayer.message(BuildingMessages.noBuildingSet());
 			return;
 		}
 
@@ -338,7 +338,7 @@ public class BuildingCommands {
 		// Retrieve building:
 		Building selBuilding = selChunk.getBuilding();
 		if(selBuilding == null){
-			sagaPlayer.message(BuildingMessages.noBuilding());
+			sagaPlayer.message(BuildingMessages.noBuildingSet());
 			return;
 		}
 
@@ -392,7 +392,7 @@ public class BuildingCommands {
 			try {
 				count = Integer.parseInt(args.getString(0));
 			} catch (NumberFormatException e) {
-				sagaPlayer.message(GeneralMessages.mustBeNumber(args.getString(0)));
+				sagaPlayer.message(GeneralMessages.notNumber(args.getString(0)));
 				return;
 			}
 			
@@ -528,7 +528,7 @@ public class BuildingCommands {
 			try {
 				count = Integer.parseInt(args.getString(0));
 			} catch (NumberFormatException e) {
-				sagaPlayer.message(GeneralMessages.mustBeNumber(args.getString(0)));
+				sagaPlayer.message(GeneralMessages.notNumber(args.getString(0)));
 				return;
 			}
 			
@@ -583,7 +583,7 @@ public class BuildingCommands {
 		// Member:
 		
 		if(!SagaPlayer.checkExists(targetName)){
-			sagaPlayer.message(SettlementMessages.nonExistantPlayer(targetName));
+			sagaPlayer.message(GeneralMessages.invalidPlayer(targetName));
 			return;
 		}
 		
@@ -673,7 +673,7 @@ public class BuildingCommands {
 			String groupName = GeneralMessages.nameFromArg(args.getString(0));
 			selChunkBundle = BundleManager.manager().matchBundle(groupName);
 			if(selChunkBundle == null){
-				sagaPlayer.message(SettlementMessages.invalidBundle(groupName));
+				sagaPlayer.message(GeneralMessages.invalidSettlement(groupName));
 				return;
 			}
 			
@@ -682,7 +682,7 @@ public class BuildingCommands {
 			// Chunk group:
 			selChunkBundle = sagaPlayer.getBundle();
 			if(selChunkBundle == null){
-				sagaPlayer.message( SettlementMessages.notMember() );
+				sagaPlayer.message(SettlementMessages.notMember());
 				return;
 			}
 			

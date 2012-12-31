@@ -226,13 +226,13 @@ public class ResetSign extends BuildingSign{
 		// Enough coins:
 		Double cost = getResetCost(amount);
 		if(EconomyDependency.getCoins(sagaPlayer) < cost){
-			sagaPlayer.message(EconomyMessages.notEnoughCoins());
+			sagaPlayer.message(EconomyMessages.insufficient());
 			return;
 		}
 
 		// Take coins:
 		EconomyDependency.removeCoins(sagaPlayer, cost);
-		sagaPlayer.message(EconomyMessages.coinsSpent(cost));
+		sagaPlayer.message(EconomyMessages.spent(cost));
 		
 		// Reset:
 		sagaPlayer.setAttributeScore(attribute, attributeScore - amount);

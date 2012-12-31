@@ -5,8 +5,8 @@ import org.saga.Saga;
 import org.saga.config.EconomyConfiguration;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.messages.EconomyMessages;
+import org.saga.messages.GeneralMessages;
 import org.saga.messages.HelpMessages;
-import org.saga.messages.SettlementMessages;
 import org.saga.player.SagaPlayer;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
@@ -32,7 +32,7 @@ public class EconomyCommands {
 		// Arguments:
 		SagaPlayer selPlayer = Saga.plugin().getLoadedPlayer(args.getString(0));
 		if(selPlayer == null){
-			sagaPlayer.message(EconomyMessages.notOnline(args.getString(0)));
+			sagaPlayer.message(GeneralMessages.notOnline(args.getString(0)));
 			return;
 		}
 		
@@ -40,7 +40,7 @@ public class EconomyCommands {
 		try {
 			amount = Double.parseDouble(args.getString(1));
 		} catch (NumberFormatException e) {
-			sagaPlayer.message(EconomyMessages.notNumber(args.getString(1)));
+			sagaPlayer.message(GeneralMessages.notNumber(args.getString(1)));
 			return;
 		}
 		
@@ -50,7 +50,7 @@ public class EconomyCommands {
 		
 		// Enough currency:
 		if(EconomyDependency.getCoins(sagaPlayer) < amount){
-			sagaPlayer.message(EconomyMessages.notEnoughCoins());
+			sagaPlayer.message(EconomyMessages.insufficient());
 			return;
 		}
 		
@@ -122,7 +122,7 @@ public class EconomyCommands {
 			try {
 				page = Integer.parseInt(args.getString(0));
 			} catch (NumberFormatException e) {
-				sagaPlayer.message(SettlementMessages.invalidPage(args.getString(0)));
+				sagaPlayer.message(GeneralMessages.notNumber(args.getString(0)));
 				return;
 			}
 		}else{
