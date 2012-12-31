@@ -1811,7 +1811,7 @@ public class FactionCommands {
 	// Utility:
 	public static boolean validateName(String str) {
 
-         if(org.saga.utility.text.TextUtil.getComparisonString(str).length() < FactionConfiguration.config().getMinNameLength()) {
+         if(org.saga.utility.chat.ChatUtil.getComparisonString(str).length() < FactionConfiguration.config().getMinNameLength()) {
         	 return false;
          }
 
@@ -1820,7 +1820,7 @@ public class FactionCommands {
          }
 
          for (char c : str.toCharArray()) {
-                 if ( ! org.saga.utility.text.TextUtil.substanceChars.contains(String.valueOf(c))) {
+                 if ( ! org.saga.utility.chat.ChatUtil.SUBSTANCE_CHARS.contains(String.valueOf(c))) {
                 	 return false;
                  }
          }

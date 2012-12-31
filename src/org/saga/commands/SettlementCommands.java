@@ -30,7 +30,7 @@ import org.saga.settlements.SagaChunk;
 import org.saga.settlements.Settlement;
 import org.saga.settlements.Settlement.SettlementPermission;
 import org.saga.statistics.StatisticsManager;
-import org.saga.utility.text.TextUtil;
+import org.saga.utility.chat.ChatUtil;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
 import org.sk89q.CommandPermissions;
@@ -1404,7 +1404,7 @@ public class SettlementCommands {
 	public static boolean validateName(String name) {
 
 		
-		if(TextUtil.getComparisonString(name).length() < SettlementConfiguration.config().getMinNameLength()) {
+		if(ChatUtil.getComparisonString(name).length() < SettlementConfiguration.config().getMinNameLength()) {
 			return false;
 		}
 
@@ -1414,7 +1414,7 @@ public class SettlementCommands {
 
 		for (char c : name.toCharArray()) {
 			
-			if ( ! org.saga.utility.text.TextUtil.substanceChars.contains(String.valueOf(c))) {
+			if ( ! org.saga.utility.chat.ChatUtil.SUBSTANCE_CHARS.contains(String.valueOf(c))) {
 				return false;
 			}
 			

@@ -35,8 +35,8 @@ import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.settlements.Bundle;
 import org.saga.settlements.Settlement;
-import org.saga.utility.text.RomanNumeral;
-import org.saga.utility.text.TextUtil;
+import org.saga.utility.chat.ChatUtil;
+import org.saga.utility.chat.RomanNumeral;
 
 public class StatisticsManager implements HourTicker{
 
@@ -791,7 +791,7 @@ public class StatisticsManager implements HourTicker{
 		
 		String[] subCategs = category.split("\\.");
 		
-		return TextUtil.repeat(GeneralMessages.TAB, calcCategDepth(category)) + subCategs[subCategs.length - 1];
+		return ChatUtil.repeat(GeneralMessages.TAB, calcCategDepth(category)) + subCategs[subCategs.length - 1];
 		
 		
 	}

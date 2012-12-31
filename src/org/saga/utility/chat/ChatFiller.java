@@ -1,4 +1,4 @@
-package org.saga.utility.text;
+package org.saga.utility.chat;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,7 +7,7 @@ import java.util.Set;
 import org.bukkit.ChatColor;
 import org.saga.messages.GeneralMessages.CustomColour;
 
-public class StringFiller {
+public class ChatFiller {
 
 	
 	/**

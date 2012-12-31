@@ -3,22 +3,22 @@ package org.saga.messages;
 import org.bukkit.Material;
 import org.saga.abilities.Ability;
 import org.saga.messages.colours.Colour;
-import org.saga.utility.text.TextUtil;
+import org.saga.utility.chat.ChatUtil;
 
 public class AbilityMessages {
 
 	
 	// Usage:
 	public static String insufficientItems(Ability ability, Material material, Integer amount) {
-		return Colour.negative + TextUtil.capitalize(ability.getName()) + " requires " + amount + " " + GeneralMessages.material(material) + ".";
+		return Colour.negative + ChatUtil.capitalize(ability.getName()) + " requires " + amount + " " + GeneralMessages.material(material) + ".";
 	}
 	
 	public static String onCooldown(Ability ability) {
-		return Colour.negative + TextUtil.capitalize(ability.getName()) + " is on cooldown for " + ability.getCooldown() + "s.";
+		return Colour.negative + ChatUtil.capitalize(ability.getName()) + " is on cooldown for " + ability.getCooldown() + "s.";
 	}
 	
 	public static String cooldownEnd(Ability ability) {
-		return Colour.positive + TextUtil.capitalize(ability.getName()) + " ready.";
+		return Colour.positive + ChatUtil.capitalize(ability.getName()) + " ready.";
 	}
 	
 
@@ -27,7 +27,7 @@ public class AbilityMessages {
 	}
 	
 	public static String cantUseUnderground(Ability ability) {
-		return Colour.negative + TextUtil.capitalize(ability.getName()) + " can't be used below ground.";
+		return Colour.negative + ChatUtil.capitalize(ability.getName()) + " can't be used below ground.";
 	}
 
 	public static String invalidAbility(String name) {
@@ -38,13 +38,13 @@ public class AbilityMessages {
 	// Repair (not used):
 	public static String repairAlreadyRepaired(Material material) {
 		
-		return Colour.negative + TextUtil.capitalize(GeneralMessages.material(material)) + " is already repaired.";
+		return Colour.negative + ChatUtil.capitalize(GeneralMessages.material(material)) + " is already repaired.";
 		
 	}
 	
 	public static String repairCantRepair(Material material) {
 		
-		return Colour.negative + TextUtil.capitalize(GeneralMessages.material(material)) + " can't be repaired.";
+		return Colour.negative + ChatUtil.capitalize(GeneralMessages.material(material)) + " can't be repaired.";
 		
 	}
 	
@@ -61,7 +61,7 @@ public class AbilityMessages {
 	// Heavy swing:
 	public static String hevySwingTargetStone(Ability ability) {
 	
-		return Colour.negative + TextUtil.capitalize(ability.getName()) + " can only be used on stone.";
+		return Colour.negative + ChatUtil.capitalize(ability.getName()) + " can only be used on stone.";
 	
 	}
 	
@@ -69,7 +69,7 @@ public class AbilityMessages {
 	// Dig:
 	public static String digTargetDirtSand(Ability ability) {
 	
-		return Colour.negative + TextUtil.capitalize(ability.getName()) + " can only be used on dirt or sand.";
+		return Colour.negative + ChatUtil.capitalize(ability.getName()) + " can only be used on dirt or sand.";
 	
 	}
 	
@@ -88,7 +88,7 @@ public class AbilityMessages {
 	
 	// Chop down:
 	public static String chopDownNotTree(Ability ability) {
-		return Colour.negative + TextUtil.capitalize(ability.getName()) + " ability can only be used on trees.";
+		return Colour.negative + ChatUtil.capitalize(ability.getName()) + " ability can only be used on trees.";
 	}
 	
 	public static String chopDownNotStroungEnough(Ability ability, int maximum) {

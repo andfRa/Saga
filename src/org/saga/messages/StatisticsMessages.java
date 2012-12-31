@@ -15,10 +15,10 @@ import org.saga.statistics.StatisticsManager;
 import org.saga.utility.ArrayUtil;
 import org.saga.utility.Histogram;
 import org.saga.utility.MetricPrefix;
-import org.saga.utility.text.StringBook;
-import org.saga.utility.text.StringFramer;
-import org.saga.utility.text.StringTable;
-import org.saga.utility.text.TextUtil;
+import org.saga.utility.chat.ChatBook;
+import org.saga.utility.chat.ChatFramer;
+import org.saga.utility.chat.ChatTable;
+import org.saga.utility.chat.ChatUtil;
 
 
 
@@ -31,7 +31,7 @@ public class StatisticsMessages {
 	
 		
 		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
-		StringTable table = new StringTable(colours);
+		ChatTable table = new ChatTable(colours);
 
 		// Add headings:
 		table.addLine(new String[]{"STATISTIC","VALUE"});
@@ -41,7 +41,7 @@ public class StatisticsMessages {
 		
 		table.collapse();
 		
-		StringBook book = new StringBook("general statistics", colours);
+		ChatBook book = new ChatBook("general statistics", colours);
 		
 		book.addTable(table);
 		
@@ -67,7 +67,7 @@ public class StatisticsMessages {
 	
 		
 		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
-		StringTable table = new StringTable(colours);
+		ChatTable table = new ChatTable(colours);
 
 		// Add headings:
 		table.addLine(new String[]{GeneralMessages.columnTitle("category"), GeneralMessages.columnTitle("exp")});
@@ -99,7 +99,7 @@ public class StatisticsMessages {
 		
 		table.collapse();
 		
-		StringBook book = new StringBook("experience statistics", colours);
+		ChatBook book = new ChatBook("experience statistics", colours);
 		
 		book.addTable(table);
 		
@@ -111,8 +111,8 @@ public class StatisticsMessages {
 	public static String balance(int page) {
 
 		
-		StringBook book = new StringBook("economy statistics", new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
-		StringTable table = new StringTable(new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
+		ChatBook book = new ChatBook("economy statistics", new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
+		ChatTable table = new ChatTable(new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
 		final StatisticsManager manager = StatisticsManager.manager();
 		
 		ArrayList<Material> materials = StatisticsManager.manager().getAllEcoMaterials();
@@ -168,8 +168,8 @@ public class StatisticsMessages {
 
 		
 		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
-		StringBook book = new StringBook(title, colours);
-		StringTable table = new StringTable(colours);
+		ChatBook book = new ChatBook(title, colours);
+		ChatTable table = new ChatTable(colours);
 		
 		Collection<String> subCategs = StatisticsManager.manager().getSubCategs(category, ignoreBottom);
 		
@@ -181,7 +181,7 @@ public class StatisticsMessages {
 			for (String subCateg : subCategs) {
 				
 				String name = StatisticsManager.formatCategName(subCateg);
-				String value = TextUtil.round(StatisticsManager.manager().getSumValue(category + "." + subCateg, ignoreBottom), decimals);
+				String value = ChatUtil.round(StatisticsManager.manager().getSumValue(category + "." + subCateg, ignoreBottom), decimals);
 				
 				table.addLine(name, value, 0);
 				
@@ -205,8 +205,8 @@ public class StatisticsMessages {
 
 		
 		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
-		StringBook book = new StringBook(title, colours);
-		StringTable table = new StringTable(colours);
+		ChatBook book = new ChatBook(title, colours);
+		ChatTable table = new ChatTable(colours);
 		
 		Collection<String> subCategs = StatisticsManager.manager().getSubCategs(category, ignoreBottom);
 		
@@ -220,8 +220,8 @@ public class StatisticsMessages {
 				String name = StatisticsManager.formatCategName(subCateg);
 				String sumCategory = category + "." + subCateg;
 				String sumCategory2 = sumCategory.replace(varCategMain, varCateg1);
-				String value1 = TextUtil.round(StatisticsManager.manager().getSumValue(sumCategory, ignoreBottom), decimals);
-				String value2 = TextUtil.round(StatisticsManager.manager().getSumValue(sumCategory2, ignoreBottom), decimals);
+				String value1 = ChatUtil.round(StatisticsManager.manager().getSumValue(sumCategory, ignoreBottom), decimals);
+				String value2 = ChatUtil.round(StatisticsManager.manager().getSumValue(sumCategory2, ignoreBottom), decimals);
 				
 				table.addLine(new String[]{name, value1, value2});
 				
@@ -259,7 +259,7 @@ public class StatisticsMessages {
 		ChatColor axisColour = ChatColor.DARK_GRAY;
 		ChatColor valsColour = ChatColor.YELLOW;
 		
-		StringTable table = new StringTable(colours);
+		ChatTable table = new ChatTable(colours);
 		
 		// Units:
 		ArrayUtil.multiply(data, (1/metPref.getValue()));
@@ -272,24 +272,24 @@ public class StatisticsMessages {
 		String[] values = histogram.createValues(width, decimals);
 		
 		// Title and first value:
-		table.addLine(new String[]{"", TextUtil.repeat(" ", 50), ""});
+		table.addLine(new String[]{"", ChatUtil.repeat(" ", 50), ""});
 		
 		for (int i = 0; i < ocurrances.length; i++) {
 			
 			table.addLine(new String[]{
 				valsColour + values[i] + metPref.getName(),
 				axisColour + "_/ " + hcolours.nextColour() +
-				TextUtil.repeat("|", bars[i] + 1),
+				ChatUtil.repeat("|", bars[i] + 1),
 				axisColour + "- " + valsColour + ocurrances[i].toString()
 			});
 			
 		}
 		
-		table.addLine(new String[]{valsColour + values[ocurrances.length] + metPref.getName(), axisColour + "_/ " + hcolours.nextColour() + TextUtil.repeat(" ", 50), ""});
+		table.addLine(new String[]{valsColour + values[ocurrances.length] + metPref.getName(), axisColour + "_/ " + hcolours.nextColour() + ChatUtil.repeat(" ", 50), ""});
 		
 		table.collapse();
 		
-		return StringFramer.frame(title, table.createTable(), colours.nextColour());
+		return ChatFramer.frame(title, table.createTable(), colours.nextColour());
 		
 		
 	}
@@ -324,8 +324,8 @@ public class StatisticsMessages {
 
 		
 		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
-		StringTable table = new StringTable(colours);
-		StringBook book = new StringBook("x-ray indications", colours);
+		ChatTable table = new ChatTable(colours);
+		ChatBook book = new ChatBook("x-ray indications", colours);
 		
 		// Notes:
 		book.addLine("NOTE: xray indication still needs calibrating. Don't ban without investigating!");
@@ -348,7 +348,7 @@ public class StatisticsMessages {
 			for (int i = 0; i < suspects.length; i++) {
 				
 				String name = suspects[i];
-				String ratioComb = TextUtil.round((ratios[i] / GeneralConfiguration.config().getXrayDiamondRatio()), 4);
+				String ratioComb = ChatUtil.round((ratios[i] / GeneralConfiguration.config().getXrayDiamondRatio()), 4);
 				String vein = "" + veins[i];
 				
 				// Confirmed:

@@ -39,9 +39,9 @@ import org.saga.settlements.BundleToggleable;
 import org.saga.settlements.SagaChunk;
 import org.saga.settlements.SagaChunk.ChunkSide;
 import org.saga.settlements.Settlement.SettlementPermission;
+import org.saga.utility.chat.ChatUtil;
 import org.saga.utility.items.RandomRecipe;
 import org.saga.utility.items.RecepieBlueprint;
-import org.saga.utility.text.TextUtil;
 import org.sk89q.CommandContext;
 
 /**
@@ -115,7 +115,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		boolean integrity = true;
 		
 		if(name == null){
-			name = TextUtil.className(getClass());
+			name = ChatUtil.className(getClass());
 			SagaLogger.nullField(this, "name");
 			integrity = false;
 		}
@@ -1317,7 +1317,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 			building = sagaChunk.getBuilding();
 		}
 		if(building == null){
-			throw new Throwable(BuildingMessages.buildingCommandRestrict(TextUtil.className(buildingClass), args.getCommand()));
+			throw new Throwable(BuildingMessages.buildingCommandRestrict(ChatUtil.className(buildingClass), args.getCommand()));
 		}
 		
 		// Correct building:
@@ -1325,7 +1325,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		try {
 			selectedBuilding = buildingClass.cast(building);
 		} catch (ClassCastException e) {
-			throw new Throwable(BuildingMessages.buildingCommandRestrict(TextUtil.className(buildingClass), args.getCommand()));
+			throw new Throwable(BuildingMessages.buildingCommandRestrict(ChatUtil.className(buildingClass), args.getCommand()));
 		} 
 		
 		return selectedBuilding;

@@ -1,4 +1,4 @@
-package org.saga.utility.text;
+package org.saga.utility.chat;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -10,7 +10,15 @@ import org.bukkit.Material;
 import org.saga.messages.colours.ColourLoop;
 import org.saga.utility.ArrayUtil;
 
-public class TextUtil {
+public class ChatUtil {
+	
+	
+	public static final ArrayList<String> SUBSTANCE_CHARS = new ArrayList<String>(Arrays.asList(new String []{
+		"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", 
+		"I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", 
+		"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", 
+		"s", "t", "u", "v", "w", "x", "y", "z", " "
+	}));
 	
 	
 	public static String repeat(String s, int times) {
@@ -33,18 +41,11 @@ public class TextUtil {
 		
 	}
 
-	public  static ArrayList<String> substanceChars = new ArrayList<String>(Arrays.asList(new String []{
-			"0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "A", "B", "C", "D", "E", "F", "G", "H", 
-			"I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", 
-			"a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", 
-			"s", "t", "u", "v", "w", "x", "y", "z", " "
-			}));
-			
 	public static String getComparisonString(String str) {
 		String ret = "";
 		
 		for (char c : str.toCharArray()) {
-			if (substanceChars.contains(String.valueOf(c))) {
+			if (SUBSTANCE_CHARS.contains(String.valueOf(c))) {
 				ret += c;
 			}
 		}
@@ -69,7 +70,7 @@ public class TextUtil {
 		
 	}
 
-	public static String firstString(String string, int chars) {
+	public static String firstChars(String string, int chars) {
 
 		if(string.length()>=chars){
 			return string.substring(0, chars);
@@ -215,6 +216,7 @@ public class TextUtil {
 		
 		
 	}
+	
 	
 }
 

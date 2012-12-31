@@ -18,8 +18,8 @@ import org.saga.settlements.BundleToggleable;
 import org.saga.settlements.SagaChunk;
 import org.saga.settlements.SagaMap;
 import org.saga.settlements.Settlement;
-import org.saga.utility.text.StringFramer;
-import org.saga.utility.text.TextUtil;
+import org.saga.utility.chat.ChatFramer;
+import org.saga.utility.chat.ChatUtil;
 
 
 public class SettlementMessages {
@@ -325,7 +325,7 @@ public class SettlementMessages {
 			
 		}
 		
-		return Colour.normal1 + "Valid options: " + TextUtil.flatten(validOptions) + ".";
+		return Colour.normal1 + "Valid options: " + ChatUtil.flatten(validOptions) + ".";
 
 		
 	}
@@ -383,7 +383,7 @@ public class SettlementMessages {
 		Chunk locationChunk = location.getWorld().getChunkAt(location);
 		String title = locationChunk.getWorld().getName() + " map " + "(" + locationChunk.getX() + ", " + locationChunk.getZ() + ")";
 		
-		return StringFramer.frame(title, result.toString(), ChatColor.GOLD, 0.75);
+		return ChatFramer.frame(title, result.toString(), ChatColor.GOLD, 0.75);
 		//TODO: Remove frame size limitation for special map characters when chat handles them correctly.
 		
 	}

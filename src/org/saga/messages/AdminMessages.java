@@ -25,7 +25,7 @@ import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.settlements.Settlement;
 import org.saga.utility.TwoPointFunction;
-import org.saga.utility.text.TextUtil;
+import org.saga.utility.chat.ChatUtil;
 import org.sk89q.Command;
 import org.sk89q.CommandPermissions;
 
@@ -80,7 +80,7 @@ public class AdminMessages {
 	
 	// Attributes:
 	public static String attributeSet(String attribute, Integer score){
-		return Colour.positive + TextUtil.capitalize(attribute) + " was set to " + score + ".";
+		return Colour.positive + ChatUtil.capitalize(attribute) + " was set to " + score + ".";
 	}
 	
 	public static String attributeSet(String attribute, Integer score, SagaPlayer selPlayer){
@@ -88,7 +88,7 @@ public class AdminMessages {
 	}
 	
 	public static String attributeInvalid(String attribute){
-		return Colour.negative + TextUtil.capitalize(attribute) + " isn't a valid attribute.";
+		return Colour.negative + ChatUtil.capitalize(attribute) + " isn't a valid attribute.";
 	}
 	
 	public static String attributeScoreOutOfRange(String score){
@@ -205,7 +205,7 @@ public class AdminMessages {
 			if(result.length() > 0) result.append("\n\n");
 			
 			// Begin:
-			result.append("==" + TextUtil.capitalize(getCategoryName(category)) + " commands" + "==" + "\n");
+			result.append("==" + ChatUtil.capitalize(getCategoryName(category)) + " commands" + "==" + "\n");
 			result.append("{| width=\"90%\" class=\"wikitable\"\n");
 			result.append("|-");
 			result.append("\n");
@@ -440,7 +440,7 @@ public class AdminMessages {
 			result.append("\n");
 			result.append("|-");
 			result.append("\n");
-			result.append("! rowspan=\"" + parameters.size() + "\" | " + TextUtil.capitalize(attribute.getName()));
+			result.append("! rowspan=\"" + parameters.size() + "\" | " + ChatUtil.capitalize(attribute.getName()));
 			
 			boolean first = true;
 			for (Entry<AttributeParameter, TwoPointFunction> entry : parameters) {
@@ -492,26 +492,26 @@ public class AdminMessages {
 		int prec = 1;
 		
 		if(parameter.toString().toLowerCase().endsWith("chance_modifier")){
-			if(value < 0) return "" + TextUtil.round(value*100, prec) + "%";
-			return "+" + TextUtil.round(value*100, prec) + "%";
+			if(value < 0) return "" + ChatUtil.round(value*100, prec) + "%";
+			return "+" + ChatUtil.round(value*100, prec) + "%";
 		}
 		
 		if(parameter.toString().toLowerCase().endsWith("multiplier")){
-			return TextUtil.round(100*value, prec) + "%";
+			return ChatUtil.round(100*value, prec) + "%";
 		}
 		
 		if(parameter.toString().toLowerCase().endsWith("modifier")){
-			if(value < 0) return "" + TextUtil.round(value, prec);
-			return "+" + TextUtil.round(value, prec);
+			if(value < 0) return "" + ChatUtil.round(value, prec);
+			return "+" + ChatUtil.round(value, prec);
 		}
 		
 		if(parameter.toString().toLowerCase().endsWith("penetration")){
-			if(value < 0) return "" + TextUtil.round(value, prec);
-			return "+" + TextUtil.round(value*100, prec-2) + "%";
+			if(value < 0) return "" + ChatUtil.round(value, prec);
+			return "+" + ChatUtil.round(value*100, prec-2) + "%";
 		}
 		
 		
-		return TextUtil.round(value, prec);
+		return ChatUtil.round(value, prec);
 		
 				
 	}
@@ -568,7 +568,7 @@ public class AdminMessages {
 			if(result.length() > 0) result.append("\n\n");
 			
 			// Begin:
-			result.append("==" + TextUtil.capitalize(getCategoryName(category)) + " commands" + "" + "\n");
+			result.append("==" + ChatUtil.capitalize(getCategoryName(category)) + " commands" + "" + "\n");
 			result.append("|=Command|=Parameters|=Description");
 			
 			// Commands:

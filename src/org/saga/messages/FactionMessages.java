@@ -7,7 +7,7 @@ import org.saga.messages.colours.Colour;
 import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Bundle;
-import org.saga.utility.text.TextUtil;
+import org.saga.utility.chat.ChatUtil;
 
 
 public class FactionMessages {
@@ -181,13 +181,13 @@ public class FactionMessages {
 	// Colours:
 	public static String colour1Set(Faction faction) {
 
-		return faction.getColour2() + "Factions colour I set to " + faction.getColour1() + TextUtil.colour(faction.getColour1()) + faction.getColour2() + ".";
+		return faction.getColour2() + "Factions colour I set to " + faction.getColour1() + ChatUtil.colour(faction.getColour1()) + faction.getColour2() + ".";
 		
 	}
 	
 	public static String colour2Set(Faction faction) {
 
-		return faction.getColour2() + "Factions colour II set to " + faction.getColour2() + TextUtil.colour(faction.getColour2()) + faction.getColour2() + ".";
+		return faction.getColour2() + "Factions colour II set to " + faction.getColour2() + ChatUtil.colour(faction.getColour2()) + faction.getColour2() + ".";
 		
 	}
 	

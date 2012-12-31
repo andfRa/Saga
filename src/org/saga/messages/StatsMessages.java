@@ -35,11 +35,11 @@ import org.saga.player.SagaPlayer;
 import org.saga.settlements.Bundle;
 import org.saga.settlements.BundleManager;
 import org.saga.settlements.Settlement;
-import org.saga.utility.text.RomanNumeral;
-import org.saga.utility.text.StringBook;
-import org.saga.utility.text.StringFramer;
-import org.saga.utility.text.StringTable;
-import org.saga.utility.text.TextUtil;
+import org.saga.utility.chat.ChatBook;
+import org.saga.utility.chat.ChatFramer;
+import org.saga.utility.chat.ChatTable;
+import org.saga.utility.chat.ChatUtil;
+import org.saga.utility.chat.RomanNumeral;
 
 public class StatsMessages {
 
@@ -48,7 +48,7 @@ public class StatsMessages {
 	public static String stats(SagaPlayer sagaPlayer, Integer page) {
 
 		
-		StringBook book = new StringBook("stats", new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
+		ChatBook book = new ChatBook("stats", new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
 		
 		// Attributes and levels:
 		book.addTable(info(sagaPlayer));
@@ -71,10 +71,10 @@ public class StatsMessages {
 	}
 	
 	
-	private static StringTable info(SagaPlayer sagaPlayer) {
+	private static ChatTable info(SagaPlayer sagaPlayer) {
 
 		
-		StringTable table = new StringTable(new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
+		ChatTable table = new ChatTable(new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
 		DecimalFormat format = new DecimalFormat("00");
 		
 		// Attributes:
@@ -102,7 +102,7 @@ public class StatsMessages {
 		}
 		
 		// Health:
-		table.addLine("Health", TextUtil.round((double)sagaPlayer.getHealth(), 0) + "/" + TextUtil.round((double)sagaPlayer.getTotalHealth(), 0), 2);
+		table.addLine("Health", ChatUtil.round((double)sagaPlayer.getHealth(), 0) + "/" + ChatUtil.round((double)sagaPlayer.getTotalHealth(), 0), 2);
 		
 		String attrPoints = sagaPlayer.getUsedAttributePoints() + "/" + sagaPlayer.getAvailableAttributePoints();
 		if(sagaPlayer.getRemainingAttributePoints() < 0){
@@ -142,10 +142,10 @@ public class StatsMessages {
 
 	}
 	
-	private static StringTable factionSettlement(SagaPlayer sagaPlayer) {
+	private static ChatTable factionSettlement(SagaPlayer sagaPlayer) {
 
 		
-		StringTable table = new StringTable(new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
+		ChatTable table = new ChatTable(new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
 
 		
 		// Faction and settlement:
@@ -176,10 +176,10 @@ public class StatsMessages {
 
 	}
 	
-	private static StringTable abilities(SagaPlayer sagaPlayer) {
+	private static ChatTable abilities(SagaPlayer sagaPlayer) {
 
 		
-		StringTable table = new StringTable(new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
+		ChatTable table = new ChatTable(new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
 		HashSet<Ability> allAbilities = sagaPlayer.getAbilities();
 		
     	// Add abilities:
@@ -241,10 +241,10 @@ public class StatsMessages {
 		
 	}
 
-	private static StringTable invites(SagaPlayer sagaPlayer) {
+	private static ChatTable invites(SagaPlayer sagaPlayer) {
 
 		
-		StringTable table = new StringTable(new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
+		ChatTable table = new ChatTable(new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
 		
 		// Table size:
     	ArrayList<Double> widths = new ArrayList<Double>();
@@ -357,7 +357,7 @@ public class StatsMessages {
 		List<String> buildings = definition.getBldgReq(score);
 		if(buildings.size() > 0){
 			if(result.length() > 0) result.append(", ");
-			result.append(TextUtil.flatten(buildings));
+			result.append(ChatUtil.flatten(buildings));
 		}
 		
 		return result.toString();
@@ -371,7 +371,7 @@ public class StatsMessages {
 		
 		// Proficiencies:
 		HashSet<String> proficiencies = definition.getProfRestr();
-		if(proficiencies.size() > 0) result.append(TextUtil.flatten(proficiencies));
+		if(proficiencies.size() > 0) result.append(ChatUtil.flatten(proficiencies));
 		
 		return result.toString().replace(", ", "/");
 		
@@ -383,7 +383,7 @@ public class StatsMessages {
 	public static String stats(SagaPlayer sagaPlayer, Settlement settlement, Integer page) {
 		
 		
-		StringBook book = new StringBook(settlement.getName() + " stats", new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
+		ChatBook book = new ChatBook(settlement.getName() + " stats", new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
 		
 		// Claims and active members:
 		book.addTable(info(settlement));
@@ -414,17 +414,17 @@ public class StatsMessages {
 		
 		result.append(listMembers(settlement));
 		
-		return StringFramer.frame(settlement.getName() + " members", result.toString(), colours.nextColour());
+		return ChatFramer.frame(settlement.getName() + " members", result.toString(), colours.nextColour());
 		
 		
 	}
 	
 	
-	private static StringTable info(Settlement settlement){
+	private static ChatTable info(Settlement settlement){
 		
 		
 		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
-		StringTable table = new StringTable(colours);
+		ChatTable table = new ChatTable(colours);
 		
 		// Building points:
 		table.addLine("build points", settlement.getUsedBuildPoints() + "/" + settlement.getAvailableBuildPoints(), 0);
@@ -451,11 +451,11 @@ public class StatsMessages {
 		
 	}
 	
-	private static StringTable requirements(Settlement settlement){
+	private static ChatTable requirements(Settlement settlement){
 		
 		
 		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
-		StringTable table = new StringTable(colours);
+		ChatTable table = new ChatTable(colours);
 		
 		// Active players:
 		Integer active = settlement.countActiveMembers();
@@ -482,11 +482,11 @@ public class StatsMessages {
 		
 	}
 	
-	private static StringTable buildings(Settlement settlement){
+	private static ChatTable buildings(Settlement settlement){
 		
 		
 		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
-		StringTable table = new StringTable(colours);
+		ChatTable table = new ChatTable(colours);
 		
 		// Retrieve buildings:
 		BuildingDefinition[] definitions = BuildingConfiguration.config().getBuildingDefinitions().toArray(new BuildingDefinition[0]);
@@ -635,7 +635,7 @@ public class StatsMessages {
 				resultRoles.append(": ");
 				
 				if(members.size() != 0){
-					resultRoles.append(TextUtil.flatten(members));
+					resultRoles.append(ChatUtil.flatten(members));
 				}else{
 					resultRoles.append("none");
 				}
@@ -690,7 +690,7 @@ public class StatsMessages {
 	public static String stats(Faction faction, Integer page) {
 
 		
-		StringBook book = new StringBook(faction.getName() + " stats", new ColourLoop().addColor(faction.getColour2()));
+		ChatBook book = new ChatBook(faction.getName() + " stats", new ColourLoop().addColor(faction.getColour2()));
 		
 		// Levels, claims and allies:
 		book.addTable(info(faction));
@@ -720,22 +720,22 @@ public class StatsMessages {
 		
 		result.append(listMembers(faction));
 		
-		return StringFramer.frame(faction.getName() + " members", result.toString(), Colour.normal1);
+		return ChatFramer.frame(faction.getName() + " members", result.toString(), Colour.normal1);
 		
 	}
 	
 	
-	private static StringTable info(Faction faction){
+	private static ChatTable info(Faction faction){
 		
 		
 		ColourLoop colours = new ColourLoop().addColor(faction.getColour2());
-		StringTable table = new StringTable(colours);
+		ChatTable table = new ChatTable(colours);
 		
 		// Colours:
-		table.addLine("colour I", faction.getColour1() + TextUtil.colour(faction.getColour1()), 0);
+		table.addLine("colour I", faction.getColour1() + ChatUtil.colour(faction.getColour1()), 0);
 		
 		// Building points:
-		table.addLine("colour II", faction.getColour2() + TextUtil.colour(faction.getColour2()), 0);
+		table.addLine("colour II", faction.getColour2() + ChatUtil.colour(faction.getColour2()), 0);
 		
 		// Owner:
 		if(faction.hasOwner()){
@@ -762,11 +762,11 @@ public class StatsMessages {
 		
 	}
 	
-	private static StringTable claims(Faction faction){
+	private static ChatTable claims(Faction faction){
 		
 		
 		ColourLoop colours = new ColourLoop().addColor(faction.getColour2());
-		StringTable table = new StringTable(colours);
+		ChatTable table = new ChatTable(colours);
 
 		// Wages:
 		table.addLine(GeneralMessages.tableTitle("wages"), "", 0);
@@ -811,7 +811,7 @@ public class StatsMessages {
 		// Allies:
 		result.append("allies: ");
 		if(allies.size() > 0){
-			result.append(TextUtil.flatten(allies));
+			result.append(ChatUtil.flatten(allies));
 		}else{
 			result.append("none");
 		}
@@ -820,7 +820,7 @@ public class StatsMessages {
 		if(allyInvites.size() > 0){
 			
 			result.append("\n");
-			result.append("ally invites: " + TextUtil.flatten(allyInvites));
+			result.append("ally invites: " + ChatUtil.flatten(allyInvites));
 			
 		}
 		
@@ -886,7 +886,7 @@ public class StatsMessages {
 				resultRanks.append(": ");
 				
 				if(members.size() != 0){
-					resultRanks.append(TextUtil.flatten(members));
+					resultRanks.append(ChatUtil.flatten(members));
 				}else{
 					resultRanks.append("none");
 				}
@@ -905,13 +905,13 @@ public class StatsMessages {
 		
 	}
 
-	private static StringTable claimed(Faction faction){
+	private static ChatTable claimed(Faction faction){
 		
 		
 		Settlement[] settlements = FactionClaimManager.manager().findSettlements(faction.getId());
 		
 		ColourLoop colours = new ColourLoop().addColor(faction.getColour2());
-		StringTable table = new StringTable(colours);
+		ChatTable table = new ChatTable(colours);
 
 		
 		// Titles:

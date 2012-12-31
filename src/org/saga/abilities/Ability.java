@@ -22,7 +22,7 @@ import org.saga.player.SagaLiving;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.SagaCustomSerialization;
 import org.saga.statistics.StatisticsManager;
-import org.saga.utility.text.TextUtil;
+import org.saga.utility.chat.ChatUtil;
 
 public abstract class Ability extends SagaCustomSerialization implements SecondTicker{
 
@@ -101,7 +101,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		
 		if (name == null) {
 			SagaLogger.severe(this, "name");
-			name = TextUtil.className(getClass());
+			name = ChatUtil.className(getClass());
 			integrity = false;
 		}
 		

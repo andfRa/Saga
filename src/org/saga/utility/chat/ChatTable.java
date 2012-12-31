@@ -1,11 +1,11 @@
-package org.saga.utility.text;
+package org.saga.utility.chat;
 
 import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
 import org.saga.messages.colours.ColourLoop;
 
-public class StringTable {
+public class ChatTable {
 
 	
 	/**
@@ -35,7 +35,7 @@ public class StringTable {
 	 * Sets message colour and lines.
 	 * 
 	 */
-	public StringTable(ColourLoop colours) {
+	public ChatTable(ColourLoop colours) {
 
 		this.colours = colours;
 		
@@ -55,7 +55,7 @@ public class StringTable {
 	 */
 	private Double getColumnWidth(int i) {
 
-		if(customWidths == null || i >= customWidths.size() || i < 0) return StringFiller.CHAT_WIDTH / table.size();
+		if(customWidths == null || i >= customWidths.size() || i < 0) return ChatFiller.CHAT_WIDTH / table.size();
 		
 		return customWidths.get(i);
 		
@@ -135,7 +135,7 @@ public class StringTable {
 			
 			for (String cell : column) {
 				
-				Double width = StringFiller.calcLength(cell);
+				Double width = ChatFiller.calcLength(cell);
 
 				if(width > maxWidth) maxWidth = width;
 				
@@ -257,11 +257,11 @@ public class StringTable {
 				
 				if(rowind < column.size()){
 					
-					row += StringFiller.fillString(column.get(rowind), widths[colind]);
+					row += ChatFiller.fillString(column.get(rowind), widths[colind]);
 					
 				}else{
 					
-					row += StringFiller.fillString("", widths[colind]);
+					row += ChatFiller.fillString("", widths[colind]);
 					
 				}
 				
@@ -300,9 +300,9 @@ public class StringTable {
 			for (int row = 0; row < rows; row++) {
 				
 				if(row < table.get(col).size()){
-					result[row][col] = StringFiller.fillString(table.get(col).get(row), width);
+					result[row][col] = ChatFiller.fillString(table.get(col).get(row), width);
 				}else{
-					result[row][col] = StringFiller.fillString("", width);
+					result[row][col] = ChatFiller.fillString("", width);
 				}
 				
 			}
@@ -349,11 +349,11 @@ public class StringTable {
 				if(row < column.size()){
 					
 					result.append(elementColor);
-					result.append(StringFiller.fillString(column.get(row), widths[colInd]));
+					result.append(ChatFiller.fillString(column.get(row), widths[colInd]));
 					
 				}else{
 					
-					result.append(StringFiller.fillString("", widths[colInd]));
+					result.append(ChatFiller.fillString("", widths[colInd]));
 					
 				}
 				

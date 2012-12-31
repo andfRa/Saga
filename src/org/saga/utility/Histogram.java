@@ -1,6 +1,6 @@
 package org.saga.utility;
 
-import org.saga.utility.text.TextUtil;
+import org.saga.utility.chat.ChatUtil;
 
 public class Histogram {
 
@@ -91,7 +91,7 @@ public class Histogram {
 		String[] strVals = new String[values.length];
 		
 		for (int i = 0; i < values.length; i++) {
-			strVals[i] = TextUtil.round(values[i], decimals);
+			strVals[i] = ChatUtil.round(values[i], decimals);
 		}
 		
 		return strVals;

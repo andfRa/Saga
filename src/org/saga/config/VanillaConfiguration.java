@@ -17,7 +17,7 @@ import org.bukkit.inventory.PlayerInventory;
 import org.saga.SagaLogger;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.SagaMap;
-import org.saga.utility.text.StringFramer;
+import org.saga.utility.chat.ChatFramer;
 
 public class VanillaConfiguration {
 
@@ -406,7 +406,7 @@ public class VanillaConfiguration {
 		instance.bonusCharacters = true;
 
 		// Enable all bonus characters:
-		StringFramer.enableBonusCharacters();
+		ChatFramer.enableBonusCharacters();
 		SagaMap.enableBonusCharacters();
 		
 		

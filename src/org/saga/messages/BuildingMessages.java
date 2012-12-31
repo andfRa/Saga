@@ -14,9 +14,9 @@ import org.saga.config.AttributeConfiguration;
 import org.saga.messages.colours.Colour;
 import org.saga.messages.colours.ColourLoop;
 import org.saga.settlements.Bundle;
-import org.saga.utility.text.StringFramer;
-import org.saga.utility.text.StringTable;
-import org.saga.utility.text.TextUtil;
+import org.saga.utility.chat.ChatFramer;
+import org.saga.utility.chat.ChatTable;
+import org.saga.utility.chat.ChatUtil;
 
 public class BuildingMessages {
 
@@ -45,7 +45,7 @@ public class BuildingMessages {
 
 	public static String unavailable(Building building){
 		
-		return Colour.negative + TextUtil.capitalize(building.getDisplayName()) + " isn't available.";
+		return Colour.negative + ChatUtil.capitalize(building.getDisplayName()) + " isn't available.";
 		
 	}
 
@@ -116,7 +116,7 @@ public class BuildingMessages {
 		ArrayList<ArenaPlayer> topPlayers = arena.getTop(count);
 		ColourLoop messageColor = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
 		
-		StringTable table = new StringTable(messageColor);
+		ChatTable table = new ChatTable(messageColor);
 		
 		
 		Integer listLen = count;
@@ -144,7 +144,7 @@ public class BuildingMessages {
 			if(arenaPlayer.getDeaths() == 0){
 				kdr = "-";
 			}else{
-				kdr = TextUtil.displayDouble(arenaPlayer.getKills().doubleValue() / arenaPlayer.getDeaths().doubleValue());
+				kdr = ChatUtil.displayDouble(arenaPlayer.getKills().doubleValue() / arenaPlayer.getDeaths().doubleValue());
 			}
 			
 			table.addLine(
@@ -161,7 +161,7 @@ public class BuildingMessages {
 		
 		table.collapse();
 		
-		return StringFramer.frame("top " + count, table.createTable(), messageColor.nextColour());
+		return ChatFramer.frame("top " + count, table.createTable(), messageColor.nextColour());
 		
 		
 	}
@@ -227,7 +227,7 @@ public class BuildingMessages {
 		ArrayList<CrumblePlayer> topPlayers = arena.getTop(count);
 		ColourLoop messageColor = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
 		
-		StringTable table = new StringTable(messageColor);
+		ChatTable table = new ChatTable(messageColor);
 		
 		
 		Integer listLen = count;
@@ -255,7 +255,7 @@ public class BuildingMessages {
 			if(arenaPlayer.getLosses() == 0){
 				wlr = "-";
 			}else{
-				wlr = TextUtil.displayDouble(arenaPlayer.getWins().doubleValue() / arenaPlayer.getLosses().doubleValue());
+				wlr = ChatUtil.displayDouble(arenaPlayer.getWins().doubleValue() / arenaPlayer.getLosses().doubleValue());
 			}
 			
 			table.addLine(
@@ -271,7 +271,7 @@ public class BuildingMessages {
 		
 		table.collapse();
 		
-		return StringFramer.frame("top " + count, table.createTable(), messageColor.nextColour());
+		return ChatFramer.frame("top " + count, table.createTable(), messageColor.nextColour());
 		
 		
 	}
@@ -319,7 +319,7 @@ public class BuildingMessages {
 	}
 
 	public static String attributeIncreased(String attribute, Integer score) {
-		return Colour.positive + TextUtil.capitalize(attribute) + " increased to " + score + ".";
+		return Colour.positive + ChatUtil.capitalize(attribute) + " increased to " + score + ".";
 	}
 
 	public static String attributePointsRequired(String attribute) {
@@ -330,21 +330,21 @@ public class BuildingMessages {
 	
 	// Reset sign:
 	public static String resetAttr(String attribute, Integer score) {
-		return Colour.normal1 + TextUtil.capitalize(attribute) + " score reset to " + score + ".";
+		return Colour.normal1 + ChatUtil.capitalize(attribute) + " score reset to " + score + ".";
 	}
 	
 	public static String attrAlreadyReset(String attribute) {
-		return Colour.negative + TextUtil.capitalize(attribute) + " score is already 0.";
+		return Colour.negative + ChatUtil.capitalize(attribute) + " score is already 0.";
 	}
 	
 	public static String trainLimitReached(String attribute) {
-		return Colour.negative + TextUtil.capitalize(attribute) + " can't be trained any further.";
+		return Colour.negative + ChatUtil.capitalize(attribute) + " can't be trained any further.";
 	}
 	
 	
 	// Upgrading:
 	public static String upgraded(Building building) {
-		return Colour.positive + TextUtil.capitalize(building.getName()) + " upgraded.";
+		return Colour.positive + ChatUtil.capitalize(building.getName()) + " upgraded.";
 	}
 	
 	public static String upgradeLimit(Building building) {
@@ -355,7 +355,7 @@ public class BuildingMessages {
 
 	// Town square:
 	public static String noTownSquare(Bundle bundle){
-		return Colour.negative + "" + bundle.getName() + " doesn't have a " + TextUtil.className(TownSquare.class) + ".";
+		return Colour.negative + "" + bundle.getName() + " doesn't have a " + ChatUtil.className(TownSquare.class) + ".";
 	}
 	
 	

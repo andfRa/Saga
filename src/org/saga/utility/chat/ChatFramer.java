@@ -1,8 +1,8 @@
-package org.saga.utility.text;
+package org.saga.utility.chat;
 
 import org.bukkit.ChatColor;
 
-public class StringFramer {
+public class ChatFramer {
 
 	
 	/**
@@ -48,7 +48,7 @@ public class StringFramer {
 	/**
 	 * Maximum width of contents.
 	 */
-	public final static Double MAX_CONTENTS_WIDTH = StringFiller.CHAT_WIDTH - StringFiller.calcLength(" " + " " + FRAME_VERTICAL + FRAME_VERTICAL);
+	public final static Double MAX_CONTENTS_WIDTH = ChatFiller.CHAT_WIDTH - ChatFiller.calcLength(" " + " " + FRAME_VERTICAL + FRAME_VERTICAL);
 
 	/**
 	 * Fix in content length to account for centring.
@@ -64,13 +64,13 @@ public class StringFramer {
 		if(width > 1.0) width = 1.0;
 		if(width < 0.0) width = 0.0;
 		
-		double length = (StringFiller.CHAT_WIDTH - StringFiller.calcLength(FRAME_VERTICAL + " " + " " + FRAME_VERTICAL)) * width;
+		double length = (ChatFiller.CHAT_WIDTH - ChatFiller.calcLength(FRAME_VERTICAL + " " + " " + FRAME_VERTICAL)) * width;
 
 		StringBuffer result = new StringBuffer();
 		
 		// Frame bottom:
 		StringBuffer frameBottom = new StringBuffer();
-		while(StringFiller.calcLength(frameBottom.toString() + FRAME_HORIZONTAL) <= length){
+		while(ChatFiller.calcLength(frameBottom.toString() + FRAME_HORIZONTAL) <= length){
 			frameBottom.append(FRAME_HORIZONTAL);
 		}
 		frameBottom.insert(0, FRAME_BOTTOM_LEFT);
@@ -79,7 +79,7 @@ public class StringFramer {
 		
 		// Frame upper:
 		StringBuffer frameUp = new StringBuffer();
-		while(StringFiller.calcLength(frameUp.toString() + FRAME_HORIZONTAL) <= length){
+		while(ChatFiller.calcLength(frameUp.toString() + FRAME_HORIZONTAL) <= length){
 			frameUp.append(FRAME_HORIZONTAL);
 		}
 		frameUp.insert(0, FRAME_TOP_LEFT);
@@ -89,7 +89,7 @@ public class StringFramer {
 
 		// Label upper:
 		StringBuffer labelUp = new StringBuffer();
-		while(StringFiller.calcLength(labelUp.toString() + FRAME_HORIZONTAL) <= length){
+		while(ChatFiller.calcLength(labelUp.toString() + FRAME_HORIZONTAL) <= length){
 			labelUp.append(FRAME_HORIZONTAL);
 		}
 		labelUp.insert(0, TITLE_TOP_LEFT);
@@ -98,19 +98,19 @@ public class StringFramer {
 		labelUp.append("\n");
 		
 		// Adjust width:
-		length = StringFiller.calcLength(frameBottom.toString()) - StringFiller.calcLength(" " + " " + FRAME_VERTICAL + FRAME_VERTICAL) + CONTENT_CENTRING_FIX;
+		length = ChatFiller.calcLength(frameBottom.toString()) - ChatFiller.calcLength(" " + " " + FRAME_VERTICAL + FRAME_VERTICAL) + CONTENT_CENTRING_FIX;
 		
 		// Label:
 		title = title.toUpperCase();
 		StringBuffer label = new StringBuffer();
-		int labelShift = (int)(length/2.0 - StringFiller.calcLength(title)/2.0);
-		label.append(FRAME_VERTICAL + " " + StringFiller.fillString(StringFiller.fillString("", (double)labelShift) + title, length) + " " + colour + FRAME_VERTICAL + "\n");
+		int labelShift = (int)(length/2.0 - ChatFiller.calcLength(title)/2.0);
+		label.append(FRAME_VERTICAL + " " + ChatFiller.fillString(ChatFiller.fillString("", (double)labelShift) + title, length) + " " + colour + FRAME_VERTICAL + "\n");
 		label.insert(0, colour);
 		
 		// Content:
 		String[] lines = message.split("\n");
 		for (int i = 0; i < lines.length; i++) {
-			result.append(colour.toString() + FRAME_VERTICAL + " " + StringFiller.fillString(lines[i], length) + " " + colour + FRAME_VERTICAL + "\n");
+			result.append(colour.toString() + FRAME_VERTICAL + " " + ChatFiller.fillString(lines[i], length) + " " + colour + FRAME_VERTICAL + "\n");
 		}
 		
 		// Add up and down:
@@ -119,7 +119,7 @@ public class StringFramer {
 		result.insert(0, labelUp);
 		result.append(frameBottom);
 		
-		return StringFiller.adjustFillers(result.toString());
+		return ChatFiller.adjustFillers(result.toString());
 		
 		
 	}

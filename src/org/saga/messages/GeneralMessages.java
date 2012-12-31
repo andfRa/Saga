@@ -7,7 +7,7 @@ import org.saga.factions.Faction;
 import org.saga.messages.colours.Colour;
 import org.saga.settlements.Bundle;
 import org.saga.settlements.Settlement;
-import org.saga.utility.text.TextUtil;
+import org.saga.utility.chat.ChatUtil;
 
 public class GeneralMessages {
 
@@ -105,7 +105,7 @@ public class GeneralMessages {
 	
 	public static String attrAbrev(String attribute) {
 
-		return TextUtil.firstString(attribute, 2).toUpperCase();
+		return ChatUtil.firstChars(attribute, 2).toUpperCase();
 
 	}
 	

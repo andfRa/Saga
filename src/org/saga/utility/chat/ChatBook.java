@@ -1,4 +1,4 @@
-package org.saga.utility.text;
+package org.saga.utility.chat;
 
 import java.util.ArrayList;
 
@@ -7,7 +7,7 @@ import org.saga.messages.GeneralMessages;
 import org.saga.messages.colours.Colour;
 import org.saga.messages.colours.ColourLoop;
 
-public class StringBook {
+public class ChatBook {
 
 	
 	/**
@@ -46,7 +46,7 @@ public class StringBook {
 	 * @param width book width of total chat width
 	 * @param colours book line colours
 	 */
-	public StringBook(String title, Double width, ColourLoop colours) {
+	public ChatBook(String title, Double width, ColourLoop colours) {
 		
 		this.title = title;
 		this.width = width;
@@ -60,7 +60,7 @@ public class StringBook {
 	 * @param title book title
 	 * @param colours book line colours
 	 */
-	public StringBook(String title, ColourLoop colours) {
+	public ChatBook(String title, ColourLoop colours) {
 		this(title, 1.0, colours);
 	}
 	
@@ -89,7 +89,7 @@ public class StringBook {
 		}
 		
 		// Long line:
-		if(allowBreak && StringFiller.MAX_LENGTH * line.length() > StringFramer.MAX_CONTENTS_WIDTH){
+		if(allowBreak && ChatFiller.MAX_LENGTH * line.length() > ChatFramer.MAX_CONTENTS_WIDTH){
 			
 			String[] words = line.split(" ");
 			StringBuffer text = new StringBuffer();
@@ -97,11 +97,11 @@ public class StringBook {
 			
 			for (int i = 0; i < words.length; i++) {
 				
-				double wordLength = StringFiller.calcLength(words[i]);
+				double wordLength = ChatFiller.calcLength(words[i]);
 				if(i != 0) wordLength+= 1.0;
 				
 				// Flush:
-				if(length + wordLength > StringFramer.MAX_CONTENTS_WIDTH){
+				if(length + wordLength > ChatFramer.MAX_CONTENTS_WIDTH){
 					
 					lines.add(colours.nextColour() + text.toString());
 					
@@ -145,7 +145,7 @@ public class StringBook {
 	 * 
 	 * @param table table
 	 */
-	public void addTable(StringTable table) {
+	public void addTable(ChatTable table) {
 
 		String[][] contents = table.getTable();
 		
@@ -237,7 +237,7 @@ public class StringBook {
 		int lastPage = getLastPage();
 		if(lastPage != 0) title+= ", " + GeneralMessages.page(page, lastPage);
 		
-		return StringFramer.frame(title, content, Colour.frame, width);
+		return ChatFramer.frame(title, content, Colour.frame, width);
 		
 	}
 

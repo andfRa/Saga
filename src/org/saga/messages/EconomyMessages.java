@@ -7,7 +7,7 @@ import org.saga.dependencies.Trader;
 import org.saga.factions.Faction;
 import org.saga.messages.colours.Colour;
 import org.saga.player.SagaPlayer;
-import org.saga.utility.text.TextUtil;
+import org.saga.utility.chat.ChatUtil;
 
 
 public class EconomyMessages {
@@ -91,7 +91,7 @@ public class EconomyMessages {
 	
 	public static String insufItems(Trader trader, Material items) {
 		
-		return Colour.negative + TextUtil.capitalize(trader.getName()) + " doesn't have enough " + GeneralMessages.material(items) + ".";
+		return Colour.negative + ChatUtil.capitalize(trader.getName()) + " doesn't have enough " + GeneralMessages.material(items) + ".";
 		
 	}
 	
@@ -103,7 +103,7 @@ public class EconomyMessages {
 	
 	public static String insufCoins(Trader trader) {
 		
-		return Colour.negative + TextUtil.capitalize(trader.getName()) + " doesn't have enough " + coins() + ".";
+		return Colour.negative + ChatUtil.capitalize(trader.getName()) + " doesn't have enough " + coins() + ".";
 		
 	}
 	
@@ -136,7 +136,7 @@ public class EconomyMessages {
 	
 	// Naming:
 	public static String coins(Double amount) {
-		return TextUtil.displayDouble(amount) + "" + coins();
+		return ChatUtil.displayDouble(amount) + "" + coins();
 	}
 	
 	public static String coins(){

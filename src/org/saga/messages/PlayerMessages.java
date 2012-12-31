@@ -7,7 +7,7 @@ import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.messages.colours.Colour;
 import org.saga.player.GuardianRune;
 import org.saga.player.Proficiency.ProficiencyType;
-import org.saga.utility.text.TextUtil;
+import org.saga.utility.chat.ChatUtil;
 
 
 public class PlayerMessages {
@@ -49,7 +49,7 @@ public class PlayerMessages {
 			rString.append(" reset.");
 		}
 		
-		return Colour.positive + TextUtil.capitalize(rString.toString());
+		return Colour.positive + ChatUtil.capitalize(rString.toString());
 		
 		
 	}

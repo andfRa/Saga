@@ -27,9 +27,9 @@ import org.saga.messages.colours.Colour;
 import org.saga.messages.colours.ColourLoop;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.ProficiencyDefinition;
-import org.saga.utility.text.RomanNumeral;
-import org.saga.utility.text.StringBook;
-import org.saga.utility.text.StringTable;
+import org.saga.utility.chat.ChatBook;
+import org.saga.utility.chat.ChatTable;
+import org.saga.utility.chat.RomanNumeral;
 
 public class HelpMessages {
 
@@ -39,7 +39,7 @@ public class HelpMessages {
 
 		
 		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
-		StringBook book = new StringBook("economy help", colours);
+		ChatBook book = new ChatBook("economy help", colours);
 		
 		// General:
 		book.addLine("Faction members receive wages each " + EconomyConfiguration.config().getFactionWagesTime() + ". " +
@@ -63,7 +63,7 @@ public class HelpMessages {
 		
 		
 		ColourLoop messageColor = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
-		StringBook book = new StringBook("player help", messageColor);
+		ChatBook book = new ChatBook("player help", messageColor);
 
 		// Attributes:
 		String trainingCamp = trainingCamp();
@@ -79,7 +79,7 @@ public class HelpMessages {
 		book.addLine("");
 		
 		// Attribute table:
-		StringTable attrTable = new StringTable(messageColor);
+		ChatTable attrTable = new ChatTable(messageColor);
 		attrTable.addLine(GeneralMessages.columnTitle("attribute"), GeneralMessages.columnTitle("description"), 0);
 		ArrayList<Attribute> attributes = AttributeConfiguration.config().getAttributes();
 		if(attributes.size() > 0){
@@ -106,7 +106,7 @@ public class HelpMessages {
 		book.addLine("");
 		
 		// Ability description table:
-		StringTable abilityDescTable = new StringTable(messageColor);
+		ChatTable abilityDescTable = new ChatTable(messageColor);
 		abilityDescTable.addLine(new String[]{GeneralMessages.columnTitle("ability"), GeneralMessages.columnTitle("description")});
 		ArrayList<AbilityDefinition> abilities = AbilityConfiguration.config().getDefinitions();
 		if(abilities.size() > 0){
@@ -132,7 +132,7 @@ public class HelpMessages {
 		book.addLine("");
 		
 		// Ability table:
-		StringTable abilityUsageTable = new StringTable(messageColor);
+		ChatTable abilityUsageTable = new ChatTable(messageColor);
 		abilityUsageTable.addLine(new String[]{GeneralMessages.columnTitle("ability"), GeneralMessages.columnTitle("usage")});
 		if(abilities.size() > 0){
 			
@@ -173,7 +173,7 @@ public class HelpMessages {
 		
 		
 		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
-		StringBook book = new StringBook("settlement help", colours);
+		ChatBook book = new ChatBook("settlement help", colours);
 
 		// Cost:
 		String cost = "";
@@ -214,7 +214,7 @@ public class HelpMessages {
 			book.addLine("");
 			
 			// Requirements table:
-			StringTable bldgsReqTable = new StringTable(colours);
+			ChatTable bldgsReqTable = new ChatTable(colours);
 			bldgsReqTable.addLine(new String[]{GeneralMessages.columnTitle("required"), GeneralMessages.columnTitle("total claims")});
 			for (Entry<String, Integer> req : bldgReq) {
 				bldgsReqTable.addLine(new String[]{req.getKey(), req.getValue().toString()});
@@ -237,7 +237,7 @@ public class HelpMessages {
 		book.addLine("");
 
 		// Role table:
-		StringTable rolesTable = new StringTable(colours);
+		ChatTable rolesTable = new ChatTable(colours);
 		ArrayList<ProficiencyDefinition> roles = ProficiencyConfiguration.config().getDefinitions(ProficiencyType.ROLE);
 			
 		// Titles:
@@ -276,7 +276,7 @@ public class HelpMessages {
 		book.addLine("");
 
 		// Buildings table:
-		StringTable bldgsTable = new StringTable(colours);
+		ChatTable bldgsTable = new ChatTable(colours);
 		ArrayList<BuildingDefinition> bldgsDefinitions = BuildingConfiguration.config().getBuildingDefinitions();
 			
 		// Titles:
@@ -332,7 +332,7 @@ public class HelpMessages {
 
 		
 		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
-		StringBook book = new StringBook("faction help", colours);
+		ChatBook book = new ChatBook("faction help", colours);
 
 		// Cost:
 		String cost = "";
@@ -385,7 +385,7 @@ public class HelpMessages {
 		book.addLine("");
 
 		// Rank table:
-		StringTable rolesTable = new StringTable(colours);
+		ChatTable rolesTable = new ChatTable(colours);
 		ArrayList<ProficiencyDefinition> roles = ProficiencyConfiguration.config().getDefinitions(ProficiencyType.RANK);
 			
 		// Titles:
@@ -455,7 +455,7 @@ public class HelpMessages {
 		book.addLine("");
 
 		// Wages table:
-		StringTable wagesTable = new StringTable(colours);
+		ChatTable wagesTable = new ChatTable(colours);
 		
 		Integer maxSize = SettlementConfiguration.config().getMaxClaims();
 		Integer halfSize = maxSize / 2;
@@ -567,7 +567,7 @@ public class HelpMessages {
 
 		
 		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
-		StringBook book = new StringBook(definition.getName() + " ability requirements", colours);
+		ChatBook book = new ChatBook(definition.getName() + " ability requirements", colours);
 		
 //		// Description:
 //		book.addLine(TextUtil.senctence(definition.getDescription()));
@@ -580,7 +580,7 @@ public class HelpMessages {
 //		book.addLine("");
 
 		// Ability upgrade table:
-		StringTable upgrTable = new StringTable(colours);
+		ChatTable upgrTable = new ChatTable(colours);
 		Integer minScore = 1;
 		Integer maxScore = AbilityConfiguration.config().maxAbilityScore;
 		
