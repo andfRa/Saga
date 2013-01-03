@@ -25,7 +25,7 @@ import org.saga.statistics.XrayIndicator;
 public class BlockListener implements Listener{
 	
 	
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockBreak(BlockBreakEvent event) {
 
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getLocation().getWorld())) return;
@@ -65,7 +65,7 @@ public class BlockListener implements Listener{
     	
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onBlockPlace(BlockPlaceEvent event) {
 		
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getLocation().getWorld())) return;
@@ -102,7 +102,7 @@ public class BlockListener implements Listener{
 	
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onSignChange(SignChangeEvent event) {
 
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getLocation().getWorld())) return;
