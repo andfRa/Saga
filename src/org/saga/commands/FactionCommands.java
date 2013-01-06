@@ -1417,10 +1417,10 @@ public class FactionCommands {
             usage = "[faction_name] <settlement_name>",
             flags = "",
             desc = "Unclaims a claimed settlement.",
-            min = 0,
-            max = 1
+            min = 1,
+            max = 2
 		)
-	@CommandPermissions({"saga.user.faction.spawn.set"})
+	@CommandPermissions({"saga.user.faction.unclaim"})
 	public static void unclaim(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
