@@ -135,16 +135,6 @@ public class PermissionsDependency {
 			return;
 			
 		}
-		
-		// PermissionsEx:
-		plugin = pluginManager.getPlugin("PermissionsEx");
-		if (plugin != null && plugin.isEnabled()) {
-			
-			manager.permissionsEx = (PermissionsEx)plugin;
-			SagaLogger.info("Using PermissionsEx permissions.");
-			return;
-			
-		}
 
 		// Vault:
 		try {
@@ -163,6 +153,16 @@ public class PermissionsDependency {
 		}
 		catch (ClassNotFoundException e) {}
 		
+		// PermissionsEx:
+		plugin = pluginManager.getPlugin("PermissionsEx");
+		if (plugin != null && plugin.isEnabled()) {
+			
+			manager.permissionsEx = (PermissionsEx)plugin;
+			SagaLogger.info("Using PermissionsEx permissions.");
+			return;
+			
+		}
+		
 		SagaLogger.info("Using default permissions.");
 		
 
@@ -177,8 +177,8 @@ public class PermissionsDependency {
 		
 		manager.commandMap = null;
 		manager.groupManager = null;
-		manager.permissionsEx = null;
 		manager.vaultPermissions = null;
+		manager.permissionsEx = null;
 		
 		manager = null;
 		
@@ -205,20 +205,20 @@ public class PermissionsDependency {
 			return handler.has(player, permission);
 			
 		}
-		
-		// PermissionsEx:
-		if(manager.permissionsEx != null){
-			
-			String world = player.getLocation().getWorld().getName();
-			return manager.permissionsEx.has(player, permission, world);
-			
-		}
-		
+
 		// Vault:
 		if(manager.vaultPermissions != null){
 			
 			String world = player.getLocation().getWorld().getName();
 			return manager.vaultPermissions.has(world, player.getName(), permission);
+			
+		}
+
+		// PermissionsEx:
+		if(manager.permissionsEx != null){
+			
+			String world = player.getLocation().getWorld().getName();
+			return manager.permissionsEx.has(player, permission, world);
 			
 		}
 		
