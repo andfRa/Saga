@@ -164,7 +164,7 @@ public class SettlementMessages {
 	}
 
 	public static String alreadyInvited(SagaPlayer sagaPlayer, Bundle group) {
-		return Colour.negative + sagaPlayer.getName() + " is already a invited to the settlement.";
+		return Colour.negative + sagaPlayer.getName() + " is already invited to the settlement.";
 	}
 	
 	public static String notMember(SagaPlayer sagaPlayer, Bundle bundle) {
