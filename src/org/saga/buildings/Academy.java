@@ -2,12 +2,13 @@ package org.saga.buildings;
 
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
+import org.saga.buildings.production.ProductionBuilding;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.GuardianRuneSign;
 import org.saga.config.GeneralConfiguration;
 
 
-public class Academy extends Building{
+public class Academy extends ProductionBuilding {
 
 	
 	// Initialisation:

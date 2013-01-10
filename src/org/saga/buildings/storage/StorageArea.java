@@ -41,6 +41,11 @@ public class StorageArea {
 	 * Filter for chests.
 	 */
 	private final static BlockFilter CHEST_FILTER = createChestFilter();
+
+	/**
+	 * Storage are height.
+	 */
+	public final static int HEIGHT = 3;
 	
 	
 	/**
@@ -195,11 +200,63 @@ public class StorageArea {
 	/**
 	 * Gets all blocks for the storage area.
 	 * 
-	 * @return all storage area block
+	 * @return all storage area blocks
 	 */
 	public ArrayList<Block> getAllStorage() {
 
 		return SHAPE.getBlocks(anchor.getLocation(), orientation, size);
+		
+	}
+	
+	/**
+	 * Gets lowest empty blocks for the storage area.
+	 * 
+	 * @return lowest empty storage area blocks
+	 */
+	public ArrayList<Block> getLowestEmpty() {
+
+		ArrayList<Block> allBlocks = SHAPE.getBlocks(anchor.getLocation(), orientation, size);
+		ArrayList<Block> blocks = new ArrayList<Block>();
+		
+		int ymin = allBlocks.get(0).getY();
+		for (int level = ymin; level <= ymin + HEIGHT; level++) {
+			for (Block block : allBlocks) {
+				
+				if(block.getY() != level) continue;
+				if(!block.isEmpty()) continue;
+				blocks.add(block);
+				
+			}
+			if(blocks.size() > 0) break;
+		}
+		
+		return blocks;
+		
+	}
+
+	/**
+	 * Gets highest full blocks for the storage area.
+	 * 
+	 * @return highest full storage area blocks
+	 */
+	public ArrayList<Block> getHighestFull() {
+
+		ArrayList<Block> allBlocks = SHAPE.getBlocks(anchor.getLocation(), orientation, size);
+		ArrayList<Block> blocks = new ArrayList<Block>();
+		
+		int ymin = allBlocks.get(0).getY();
+		for (int level = ymin + HEIGHT; level >= ymin; level--) {
+			for (Block block : allBlocks) {
+				
+				if(block.getY() != level) continue;
+				if(block.isEmpty()) continue;
+				blocks.add(block);
+				
+			}
+			if(blocks.size() > 0) break;
+		}
+		
+		return blocks;
 		
 	}
 	

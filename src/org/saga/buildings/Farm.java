@@ -5,6 +5,7 @@ import org.bukkit.entity.Animals;
 import org.bukkit.entity.Creature;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.saga.buildings.production.ProductionBuilding;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.messages.GeneralMessages;
 import org.saga.player.SagaPlayer;
@@ -12,7 +13,7 @@ import org.saga.settlements.Bundle;
 import org.saga.settlements.Settlement.SettlementPermission;
 
 
-public class Farm extends Building{
+public class Farm extends ProductionBuilding {
 
 
 	// Initialisation:

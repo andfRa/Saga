@@ -5,13 +5,14 @@ import org.bukkit.block.Block;
 import org.bukkit.event.Event.Result;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.saga.buildings.production.ProductionBuilding;
 import org.saga.messages.GeneralMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Bundle;
 import org.saga.settlements.Settlement.SettlementPermission;
 
 
-public class Warehouse extends Building{
+public class Warehouse extends ProductionBuilding {
 
 
 	// Initialisation:

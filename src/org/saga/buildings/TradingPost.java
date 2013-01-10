@@ -4,12 +4,13 @@ import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
 import org.saga.Clock.DaytimeTicker;
 import org.saga.SagaLogger;
+import org.saga.buildings.production.ProductionBuilding;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.BuySign;
 import org.saga.exceptions.InvalidBuildingException;
 
 
-public class TradingPost extends Building implements DaytimeTicker{
+public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 	
 	
 	/**

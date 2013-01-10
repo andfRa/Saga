@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.SagaLogger;
+import org.saga.buildings.production.SagaRecipe;
 import org.saga.settlements.Settlement;
 import org.saga.utility.TwoPointFunction;
 import org.saga.utility.items.RecepieBlueprint;
@@ -81,6 +82,18 @@ public class BuildingDefinition {
 	 * Related buildings.
 	 */
 	private ArrayList<String> relatedBuildings;
+	
+	
+	// Production:
+	/**
+	 * Production recipes for the building.
+	 */
+	private ArrayList<SagaRecipe> production;
+	
+	/**
+	 * Buildings to which the resources will be offered to.
+	 */
+	private ArrayList<String> offerBuildings;
 	
 	
 	// Timings:
@@ -196,6 +209,20 @@ public class BuildingDefinition {
 			relatedBuildings = new ArrayList<String>();
 			SagaLogger.nullField(BuildingDefinition.class, "relatedBuildings");
 		}
+		
+		if(production == null){
+			production = new ArrayList<SagaRecipe>();
+			SagaLogger.nullField(BuildingDefinition.class, "production");
+		}
+		for (SagaRecipe recipie : production) {
+			recipie.complete();
+		}
+		
+		if(offerBuildings == null){
+			offerBuildings = new ArrayList<String>();
+			SagaLogger.nullField(BuildingDefinition.class, "offerBuildings");
+		}
+		
 		
 		if(performTime == null){
 			performTime = Daytime.NONE;
@@ -358,6 +385,28 @@ public class BuildingDefinition {
 	public ArrayList<String> getRelatedBuildings() {
 		return new ArrayList<String>(relatedBuildings);
 	}
+	
+	
+	
+	// Production:
+	/**
+	 * Gets all production recipes.
+	 * 
+	 * @return production recipes
+	 */
+	public ArrayList<SagaRecipe> getProductionRecipes() {
+		return production;
+	}
+	
+	/**
+	 * Gets buildings the resources will be offered to.
+	 * 
+	 * @return offer buildings
+	 */
+	public ArrayList<String> getOfferBuildings() {
+		return new ArrayList<String>(offerBuildings);
+	}
+	
 	
 	
 	// Timings:

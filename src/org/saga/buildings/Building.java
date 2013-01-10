@@ -778,8 +778,6 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 			
 		}
 		
-		
-		
 		return toStore;
 		
 
@@ -1032,7 +1030,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 * Performs crafting based on recipes.
 	 * 
 	 */
-	private void produce() {
+	public void produce() {
 
 		
 		// Only loaded:

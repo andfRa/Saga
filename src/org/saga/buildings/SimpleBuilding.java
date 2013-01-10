@@ -1,6 +1,8 @@
 package org.saga.buildings;
 
-public class SimpleBuilding extends Building {
+import org.saga.buildings.production.ProductionBuilding;
+
+public class SimpleBuilding extends ProductionBuilding {
 
 	
 	/**

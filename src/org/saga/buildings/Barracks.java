@@ -1,7 +1,9 @@
 package org.saga.buildings;
 
+import org.saga.buildings.production.ProductionBuilding;
 
-public class Barracks extends Building{
+
+public class Barracks extends ProductionBuilding {
 
 
 	// Initialisation:

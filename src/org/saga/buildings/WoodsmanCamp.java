@@ -1,7 +1,9 @@
 package org.saga.buildings;
 
+import org.saga.buildings.production.ProductionBuilding;
 
-public class WoodsmanCamp extends Building{
+
+public class WoodsmanCamp extends ProductionBuilding {
 
 
 	// Initialisation:

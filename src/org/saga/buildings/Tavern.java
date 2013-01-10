@@ -1,7 +1,9 @@
 package org.saga.buildings;
 
+import org.saga.buildings.production.ProductionBuilding;
 
-public class Tavern extends Building{
+
+public class Tavern extends ProductionBuilding {
 
 
 	// Initialisation:

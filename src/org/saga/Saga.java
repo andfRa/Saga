@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Random;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -60,14 +61,25 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 	private static Saga plugin;
 
 	/**
-	 * Gets Saga plugin.
+	 * Gets Saga plugin instance.
 	 * 
-	 * @return Saga plugin
+	 * @return Saga plugin instance, null if not initialised
 	 */
 	public static Saga plugin() {
 		return plugin;
 	}
+	
+	private Random random = new Random();
 
+	/**
+	 * Gets the random number generator.
+	 * 
+	 * @return random number generator
+	 */
+	public static Random getRandom() {
+		return Saga.plugin().random;
+	}
+	
 	
 	/**
 	 * All saga players.
