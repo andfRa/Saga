@@ -24,8 +24,8 @@
     "functions":{},
     "roles":{"woodcutter":5.0},
     "ranks":{},
-    "description":"spawns logs",
-    "effect":"#craft_daytime: #craft_amount x logs"
+    "description":"produces logs",
+    "effect":"logs"
   },
   
   {
@@ -36,11 +36,10 @@
     "storages":1,
     "storageSize":1,
     "production":[
-      {"type":WHEAT,"amount":3,"data":0,        "recipe":[ {"amount":1.0} ]},
-      {"type":SUGAR_CANE,"amount":2,"data":0,   "recipe":[ {"amount":1.0} ]},
-      {"type":PORK,"amount":1,"data":0,         "recipe":[ {"amount":5.0} ]},
-      {"type":RAW_BEEF,"amount":1,"data":0,     "recipe":[ {"amount":5.0} ]},
-      {"type":RAW_CHICKEN,"amount":1,"data":0,  "recipe":[ {"amount":5.0} ]}
+      {"type":WHEAT,"amount":3,"data":0,        "recipe":[ {"amount":1} ]},
+      {"type":PORK,"amount":1,"data":0,         "recipe":[ {"amount":5} ]},
+      {"type":RAW_BEEF,"amount":1,"data":0,     "recipe":[ {"amount":5} ]},
+      {"type":RAW_CHICKEN,"amount":1,"data":0,  "recipe":[ {"amount":5} ]}
     ],
     "offerBuildings":["inn"],
     "recipes":[],
@@ -51,8 +50,8 @@
     "functions":{},
     "roles":{"farmer":5.0},
     "ranks":{},
-    "description":"spawns crops and meat",
-    "effect":"#craft_daytime: #craft_amount x crops/raw meat"
+    "description":"produces wheat and raw meat",
+    "effect":"wheat and raw meat"
   },
   
   {
@@ -61,16 +60,16 @@
     "buildPoints":6,
     "available":{"x1":20,"y1":1.0,"x2":250,"y2":3.0},
     "storages":1,
-    "storageSize":18,
-    "production":[],
-    "offerBuildings":["refinery"],
-    "recipes":[
-      {"to":[{"mat":"COAL_ORE","amount":1,"data":0}], "weight":0.45},
-      {"to":[{"mat":"IRON_ORE","amount":1,"data":0}], "weight":0.35},
-      {"to":[{"mat":"GOLD_ORE","amount":1,"data":0}], "weight":0.10},
-      {"to":[{"mat":"LAPIS_ORE","amount":1,"data":0}], "weight":0.06},
-      {"to":[{"mat":"DIAMOND_ORE","amount":1,"data":0}], "weight":0.04}
+    "storageSize":24,
+    "production":[
+      {"type":COAL_ORE,"amount":1,"data":0,     "recipe":[ {"amount":1} ]},
+      {"type":IRON_ORE,"amount":1,"data":0,     "recipe":[ {"amount":1} ]},
+      {"type":GOLD_ORE,"amount":1,"data":0,     "recipe":[ {"amount":3} ]},
+      {"type":LAPIS_ORE,"amount":1,"data":0,    "recipe":[ {"amount":5} ]},
+      {"type":DIAMOND_ORE,"amount":1,"data":0,  "recipe":[ {"amount":8} ]}
     ],
+    "offerBuildings":["refinery"],
+    "recipes":[],
     "crafted":3,
     "relatedBuildings":[],
     "performTime":"NONE",
@@ -78,8 +77,8 @@
     "functions":{},
     "roles":{"miner":5.0},
     "ranks":{},
-    "description":"spawns ores",
-    "effect":"#craft_daytime: #craft_amount x ore"
+    "description":"produces ores",
+    "effect":"ores"
   },
   
   {
@@ -90,10 +89,10 @@
     "storages":1,
     "storageSize":36,
     "production":[
-      {"type":WOOD,"amount":1,"data":0,  "recipe":[ {"type":LOG,"amount":1.0,"data":0} ]},
-      {"type":WOOD,"amount":1,"data":1,  "recipe":[ {"type":LOG,"amount":1.0,"data":1} ]},
-      {"type":WOOD,"amount":1,"data":2,  "recipe":[ {"type":LOG,"amount":1.0,"data":2} ]},
-      {"type":WOOD,"amount":1,"data":3,  "recipe":[ {"type":LOG,"amount":1.0,"data":3} ]}
+      {"type":WOOD,"amount":1,"data":0,  "recipe":[ {"type":LOG,"amount":1,"data":0} ]},
+      {"type":WOOD,"amount":1,"data":1,  "recipe":[ {"type":LOG,"amount":1,"data":1} ]},
+      {"type":WOOD,"amount":1,"data":2,  "recipe":[ {"type":LOG,"amount":1,"data":2} ]},
+      {"type":WOOD,"amount":1,"data":3,  "recipe":[ {"type":LOG,"amount":1,"data":3} ]}
     ],
     "offerBuildings":[],
     "recipes":[],
@@ -104,8 +103,8 @@
     "functions":{},
     "roles":{"woodcutter":5.0},
     "ranks":{},
-    "description":"creates wood from logs",
-    "effect":"#craft_daytime: #craft_amount x logs to wood"
+    "description":"produces wood from logs",
+    "effect":"wood from logs"
   },
   
   {
@@ -116,19 +115,13 @@
     "storages":1,
     "storageSize":1,
     "production":[
-      {"type":BREAD,"amount":1,"data":0,           "recipe":[ {"type":WHEAT,"amount":3.0,"data":0} ]},
-      {"type":GRILLED_PORK,"amount":1,"data":0,    "recipe":[ {"type":PORK,"amount":1.0,"data":0} ]},
-      {"type":COOKED_BEEF,"amount":1,"data":0,     "recipe":[ {"type":RAW_BEEF,"amount":1.0,"data":0} ]},
-      {"type":COOKED_CHICKEN,"amount":1,"data":0,  "recipe":[ {"type":RAW_CHICKEN,"amount":1.0,"data":0} ]}
+      {"type":BREAD,"amount":1,"data":0,           "recipe":[ {"type":WHEAT,"amount":3,"data":0} ]},
+      {"type":GRILLED_PORK,"amount":1,"data":0,    "recipe":[ {"type":PORK,"amount":1,"data":0} ]},
+      {"type":COOKED_BEEF,"amount":1,"data":0,     "recipe":[ {"type":RAW_BEEF,"amount":1,"data":0} ]},
+      {"type":COOKED_CHICKEN,"amount":1,"data":0,  "recipe":[ {"type":RAW_CHICKEN,"amount":1,"data":0} ]}
     ],
     "offerBuildings":[],
-    "recipes":[
-      {"from":[{"mat":"WHEAT","amount":3,"data":0}],"to":[{"mat":"BREAD","amount":2,"data":0}], "weight":0.30},
-      {"from":[{"mat":"WHEAT","amount":3,"data":0}],"to":[{"mat":"COOKIE","amount":2,"data":0}], "weight":0.10},
-      {"from":[{"mat":"PORK","amount":1,"data":0}],"to":[{"mat":"GRILLED_PORK","amount":1,"data":0}], "weight":0.20},
-      {"from":[{"mat":"RAW_BEEF","amount":1,"data":0}],"to":[{"mat":"COOKED_BEEF","amount":1,"data":0}], "weight":0.20},
-      {"from":[{"mat":"RAW_CHICKEN","amount":1,"data":0}],"to":[{"mat":"COOKED_CHICKEN","amount":1,"data":0}], "weight":0.20}
-    ],
+    "recipes":[],
     "crafted":6,
     "relatedBuildings":["farm"],
     "performTime":"NONE",
@@ -137,7 +130,7 @@
     "roles":{"farmer":5.0},
     "ranks":{},
     "description":"cooks food from farm products",
-    "effect":"#craft_daytime: #craft_amount x wheat/meat to food"
+    "effect":"food cooking"
   },
   
   {
@@ -147,15 +140,15 @@
     "available":{"x1":50,"y1":1.0,"x2":250,"y2":1.0},
     "storages":1,
     "storageSize":1,
-    "production":[],
-    "offerBuildings":[],
-    "recipes":[
-      {"from":[{"mat":"COAL_ORE","amount":2,"data":0}],"to":[{"mat":"COAL","amount":3,"data":0}], "weight":0.35},
-      {"from":[{"mat":"IRON_ORE","amount":2,"data":0}],"to":[{"mat":"IRON_INGOT","amount":3,"data":0}], "weight":0.25},
-      {"from":[{"mat":"GOLD_ORE","amount":2,"data":0}],"to":[{"mat":"GOLD_INGOT","amount":3,"data":0}], "weight":0.20},
-      {"from":[{"mat":"LAPIS_ORE","amount":1,"data":0}],"to":[{"mat":"INK_SACK","amount":8,"data":4}], "weight":0.12},
-      {"from":[{"mat":"DIAMOND_ORE","amount":2,"data":0}],"to":[{"mat":"DIAMOND","amount":3,"data":0}], "weight":0.8}
+    "production":[
+      {"type":COAL,"amount":2,"data":0,        "recipe":[ {"type":COAL_ORE,"amount":1} ]},
+      {"type":IRON_INGOT,"amount":1,"data":0,  "recipe":[ {"type":IRON_ORE,"amount":1} ]},
+      {"type":GOLD_INGOT,"amount":1,"data":0,  "recipe":[ {"type":GOLD_ORE,"amount":1} ]},
+      {"type":INK_SACK,"amount":8,"data":4,    "recipe":[ {"type":LAPIS_ORE,"amount":1} ]},
+      {"type":DIAMOND,"amount":1,"data":0,     "recipe":[ {"type":DIAMOND_ORE,"amount":1} ]}
     ],
+    "offerBuildings":[],
+    "recipes":[],
     "crafted":3,
     "relatedBuildings":["mine"],
     "performTime":"NONE",
@@ -164,7 +157,7 @@
     "roles":{"miner":5.0},
     "ranks":{},
     "description":"refines ores",
-    "effect":"#craft_daytime: #craft_amount x ore refined"
+    "effect":"ore refinement"
   },
   
   {
@@ -174,21 +167,21 @@
     "available":{"x1":50,"y1":1.0,"x2":250,"y2":3.0},
     "storages":1,
     "storageSize":36,
-    "production":[],
-    "offerBuildings":[],
-    "recipes":[
-      {"to":[{"mat":"BRICK","amount":1,"data":0}], "weight":0.50},
-      {"to":[{"mat":"SMOOTH_BRICK","amount":1,"data":0}], "weight":0.50}
+    "production":[
+      {"type":BRICK,"amount":2,"data":0,         "recipe":[ {"amount":1} ]},
+      {"type":SMOOTH_BRICK,"amount":2,"data":0,  "recipe":[ {"amount":1} ]}
     ],
+    "offerBuildings":[],
+    "recipes":[],
     "crafted":4,
     "relatedBuildings":[],
     "performTime":"NONE",
-    "craftTime":"SUNSET",
+    "craftTime":"MIDDAY",
     "functions":{},
     "roles":{},
     "ranks":{},
-    "description":"creates bricks",
-    "effect":"#craft_daytime: #craft_amount x bricks"
+    "description":"produces bricks",
+    "effect":"bricks"
   },
   
   {
@@ -197,22 +190,22 @@
     "buildPoints":6,
     "available":{"x1":60,"y1":1.0,"x2":250,"y2":1.0},
     "storages":1,
-    "storageSize":6,
-    "production":[],
-    "offerBuildings":[],
-    "recipes":[
-      {"to":[{"mat":"DIAMOND_ORE","amount":1,"data":0}], "weight":0.5},
-      {"to":[{"mat":"EMERALD_ORE","amount":1,"data":0}], "weight":0.5}
+    "storageSize":12,
+    "production":[
+      {"type":DIAMOND_ORE,"amount":1,"data":0,  "recipe":[ {"amount":2} ]},
+      {"type":EMERALD_ORE,"amount":1,"data":0,  "recipe":[ {"amount":2} ]}
     ],
+    "offerBuildings":[],
+    "recipes":[],
     "crafted":1,
     "relatedBuildings":[],
     "performTime":"NONE",
-    "craftTime":"MIDNIGHT",
+    "craftTime":"MIDDAY",
     "functions":{},
     "roles":{},
     "ranks":{},
-    "description":"spawns gems",
-    "effect":"#craft_daytime: #craft_amount x gems"
+    "description":"produces gems",
+    "effect":"gems"
   },
   
   
@@ -300,7 +293,7 @@
     "roles":{"lord":2},
     "ranks":{},
     "description":"enables spawn command",
-    "effect":"command: /sspawn"
+    "effect":"/sspawn command"
   },
   
   {
@@ -321,7 +314,7 @@
     "roles":{"lord":1},
     "ranks":{},
     "description":"protects containers from outsiders",
-    "effect":"container protection"
+    "effect":"chest protection"
   },
   
   {
@@ -342,7 +335,7 @@
     "roles":{},
     "ranks":{},
     "description":"prevents hostile mob spawning",
-    "effect":""
+    "effect":"no hostiles"
   },
   
   {
@@ -363,7 +356,7 @@
     "roles":{},
     "ranks":{},
     "description":"a place to fight",
-    "effect":"keeps score"
+    "effect":"score keeping"
   },
   
   {
@@ -388,7 +381,7 @@
     "roles":{},
     "ranks":{},
     "description":"crumble game",
-    "effect":"keeps score"
+    "effect":"score keeping"
   },
   
   {
@@ -409,7 +402,7 @@
     "roles":{"lord:":1},
     "ranks":{},
     "description":"buy items",
-    "effect":"#perform_daytime: new goods"
+    "effect":"place to buy"
   },
   
   {
@@ -429,8 +422,8 @@
     "functions":{},
     "roles":{"lord":0.2},
     "ranks":{},
-    "description":"build and chest protection from members",
-    "effect":""
+    "description":"protects blocks and chests",
+    "effect":"chest and build protect"
   },
   
   {
