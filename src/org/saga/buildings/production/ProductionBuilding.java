@@ -212,8 +212,6 @@ public class ProductionBuilding extends Building{
 				double weight = weights[i][j];
 				ProductionBuilding prBuilding = buildings.get(j);
 				
-				System.out.println("weight=" + weight);
-				
 				SagaItem offerItem = new SagaItem(offerItems[i]);
 				offerItem.setAmount(offerItem.getAmount() * weight);
 				
@@ -248,9 +246,6 @@ public class ProductionBuilding extends Building{
 	 * @param item item to offer
 	 */
 	public void offer(SagaItem item) {
-		
-		System.out.println("GOT OFFERED(" + getName() + "):" + item);
-		
 		for (SagaResource resource : resources) resource.offer(item);
 	}
 	
@@ -385,8 +380,6 @@ public class ProductionBuilding extends Building{
 	 */
 	public void storeItem(SagaItem sagaItem) {
 
-		System.out.println("STORING(" + getName() + "): " + sagaItem);
-		
 		ArrayList<Chest> possibleStorage = findChests();
 		
 		while(possibleStorage.size() > 0 && sagaItem.getAmount() >= 1.0){
@@ -397,20 +390,14 @@ public class ProductionBuilding extends Building{
 			Inventory inventory = chest.getInventory();
 
 			ItemStack item = sagaItem.createItem();
-			if(item.getAmount() == 0){
-				System.out.println("BELOWONE(" + getName() + ")");
-				break;
-			}
+			if(item.getAmount() == 0) break;
 			sagaItem.modifyAmount(-item.getAmount());
 			
 			inventory.addItem(item);
 			
-			System.out.println("STORED(" + getName() + "): " + sagaItem);
-			
 			chest.update();
 			
 		}
-		
 		
 	}
 	
