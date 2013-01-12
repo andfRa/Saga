@@ -72,7 +72,7 @@ public class Shearing extends Ability{
 			if(bonus < 1) return true;
 			
 			for (int i = 0; i < bonus; i++) {
-				location.getWorld().dropItemNaturally(location, new ItemStack(Material.WOOL, 1, sheep.getColor().getData()));
+				location.getWorld().dropItemNaturally(location, new ItemStack(Material.WOOL, 1, sheep.getColor().getDyeData()));
 			}
 			
 		}
