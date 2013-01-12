@@ -667,6 +667,34 @@ public class Bundle extends SagaCustomSerialization{
 		
 		
 	}
+
+	/**
+	 * Gets all buildings instance of the given class and name.
+	 * 
+	 * @param bldClass class
+	 * @param bldgName building name
+	 * @return buildings that are instances of the given class
+	 */
+	public <T extends Building> ArrayList<T> getBuildings(Class<T> bldClass, String bldgName){
+		
+		ArrayList<Building> buildings = getBuildings();
+		ArrayList<T> filteredBuildings = new ArrayList<T>();
+		
+		for (Building building : buildings) {
+			
+			if(bldClass.isInstance(building) && building.getName().equalsIgnoreCase(bldgName)){
+				try {
+					filteredBuildings.add(bldClass.cast(building));
+				} catch (Exception e) {
+				}
+			}
+			
+		}
+		
+		return filteredBuildings;
+		
+	}
+	
 	
 	/**
 	 * Gets the first building with the given name.
@@ -1040,6 +1068,21 @@ public class Bundle extends SagaCustomSerialization{
 		}
 		
 	}
+
+	
+	/**
+	 * Sends an information message to a member.
+	 * 
+	 * @param message message
+	 * @param member faction member
+	 */
+	public void information(String message, SagaPlayer member) {
+		
+		message = Colour.normal2 + "(" + Colour.normal1 + "info" + Colour.normal2 + ") " + message;
+
+		member.message(message);
+		
+	}
 	
 	/**
 	 * Sends a information message.
@@ -1055,16 +1098,34 @@ public class Bundle extends SagaCustomSerialization{
 		}
 		
 	}
+
 	
+	/**
+	 * Sends a information message.
+	 * 
+	 * @param building building
+	 * @param message message
+	 */
+	public void information(Building building, String message) {
+
+		Collection<SagaPlayer> onlineMembers = getOnlineMembers();
+		
+		for (SagaPlayer onlineMember : onlineMembers) {
+			information(building, message, onlineMember);
+		}
+		
+	}
+
 	/**
 	 * Sends an information message to a member.
 	 * 
+	 * @param building building
 	 * @param message message
 	 * @param member faction member
 	 */
-	public void information(String message, SagaPlayer member) {
+	public void information(Building building, String message, SagaPlayer member) {
 		
-		message = Colour.normal2 + "(" + Colour.normal1 + "info" + Colour.normal2 + ") " + message;
+		message = Colour.normal2 + "(" + Colour.normal1 + building.getName() + Colour.normal2 + ") " + message;
 
 		member.message(message);
 		

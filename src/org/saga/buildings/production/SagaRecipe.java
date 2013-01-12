@@ -17,7 +17,7 @@ public class SagaRecipe extends SagaItem{
 	 * @param item craft item
 	 * @param recipe recipe
 	 */
-	public SagaRecipe(SagaItem item, WeightedSagaItem[] recipe){
+	public SagaRecipe(SagaItem item, SagaItem[] recipe){
 		super(item);
 		this.recipe = recipe.clone();
 	}
@@ -41,7 +41,7 @@ public class SagaRecipe extends SagaItem{
 		super.complete();
 		
 		if(recipe == null){
-			recipe = new WeightedSagaItem[0];
+			recipe = new SagaItem[0];
 		}
 		
 		for (int i = 0; i < recipe.length; i++) {
@@ -63,6 +63,17 @@ public class SagaRecipe extends SagaItem{
 	 */
 	public boolean checkAccept(SagaItem item, int index) throws IndexOutOfBoundsException{
 		return item.equalsItem(recipe[index]);
+	}
+	
+	/**
+	 * Gets a recipe component.
+	 * 
+	 * @param index element index
+	 * @return recipe component
+	 * @throws IndexOutOfBoundsException when index is out of bounds
+	 */
+	public SagaItem getComponent(int index) throws IndexOutOfBoundsException {
+		return recipe[index];
 	}
 	
 	/**

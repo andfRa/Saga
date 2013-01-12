@@ -79,7 +79,8 @@ public class SagaResource extends SagaRecipe {
 	public void offerFree() {
 		
 		for (int i = 0; i < recipe.length; i++) {
-			if(recipe[i].getType() == Material.AIR) collected[i]+= 1.0;
+			if(recipe[i].getType() == Material.AIR ) collected[i]+= 1.0;
+			if(collected[i] > recipe[i].amount) collected[i] = recipe[i].amount;
 		}
 		
 	}
@@ -92,7 +93,7 @@ public class SagaResource extends SagaRecipe {
 	@Override
 	public boolean checkAccept(SagaItem item, int index) throws IndexOutOfBoundsException{
 		
-		if(collected[index] >= recipe[index].amount) return false;
+		if(collected[index] >= recipe[index].getAmount()) return false;
 		
 		return recipe[index].checkRepresents(item);
 		
@@ -108,11 +109,11 @@ public class SagaResource extends SagaRecipe {
 	 */
 	private void progress(SagaItem item, int index) throws IndexOutOfBoundsException{
 		
-		double mod = item.amount;
-		if(mod + collected[index] > recipe[index].amount) mod = recipe[index].amount - collected[index];
+		double mod = item.getAmount();
+		if(mod + collected[index] > recipe[index].getAmount()) mod = recipe[index].getAmount() - collected[index];
 		
 		collected[index] = collected[index] + mod;
-		item.amount-= mod;
+		item.modifyAmount(-mod);
 		
 	}
 	
@@ -121,15 +122,37 @@ public class SagaResource extends SagaRecipe {
 	 * 
 	 * @param item item to count with
 	 */
-	private void countAccept(SagaItem item) {
+	public void countAccept(SagaItem item) {
 
 		for (int index = 0; index < recipe.length; index++) {
 			
 			if(!recipe[index].checkRepresents(item)) continue;
 			
-			item.amount+= recipe[index].amount - collected[index];
+			item.modifyAmount((recipe[index].getAmount() - collected[index]));
 			
 		}
+		
+	}
+	
+	/**
+	 * Counts how many items will are required.
+	 * 
+	 * @param item item to count for
+	 * @return amount required
+	 */
+	public double countRequired(SagaItem item) {
+
+		double count = 0.0;
+		
+		for (int index = 0; index < recipe.length; index++) {
+			
+			if(!recipe[index].checkRepresents(item)) continue;
+			
+			count+= (recipe[index].getAmount() - collected[index]);
+			
+		}
+		
+		return count;
 		
 	}
 	
@@ -144,13 +167,38 @@ public class SagaResource extends SagaRecipe {
 		for (SagaItem sagaItem : countItems) {
 			for (int r = 0; r < resources.size(); r++) {
 				resources.get(r).countAccept(sagaItem);
-				sagaItem.amount = Math.ceil(sagaItem.amount);
 			}
 			
 		}
 		
 	}
 	
+	
+	
+	// Collected:
+	/**
+	 * Gets collected items.
+	 * 
+	 * @param index index
+	 * @return amount collected
+	 * @throws IndexOutOfBoundsException when index is out of bounds
+	 */
+	public double getCollected(int index) throws IndexOutOfBoundsException {
+		return collected[index];
+	}
+	
+	/**
+	 * Gets the percentage.
+	 * 
+	 * @param index index
+	 * @return percent collected
+	 * @throws IndexOutOfBoundsException when index is out of bounds
+	 */
+	public double getPercentage(int index) throws IndexOutOfBoundsException {
+		return collected[index] / recipe[index].getAmount();
+	}
+	
+
 	
 	// Creation:
 	/**
@@ -162,7 +210,7 @@ public class SagaResource extends SagaRecipe {
 		
 		// Create item:
 		double percent = findProducePercentage();
-		int amount = (int)(getAmount()*percent);
+		double amount = (int)(getAmount()*percent);
 		if(amount < 1) return null;
 		
 		SagaItem item = new SagaItem(this);
@@ -170,7 +218,7 @@ public class SagaResource extends SagaRecipe {
 		
 		// Reset progress:
 		for (int i = 0; i < collected.length; i++) {
-			collected[i] = collected[i] - percent * recipe[i].amount;
+			collected[i] = collected[i] - percent * recipe[i].getAmount();
 		}
 		
 		return item;
@@ -188,10 +236,10 @@ public class SagaResource extends SagaRecipe {
 		if(collected.length == 0) return 0;
 		
 		// Find highest amount possible:
-		double percent = collected[0] / recipe[0].amount;
+		double percent = collected[0] / recipe[0].getAmount();
 		
 		for (int i = 0; i < collected.length; i++) {
-			if(collected[i]/recipe[i].amount < percent) percent = collected[i]/recipe[i].amount;
+			if(collected[i]/recipe[i].getAmount() < percent) percent = collected[i]/recipe[i].getAmount();
 		}
 		
 		return (int)(percent);
@@ -216,7 +264,7 @@ public class SagaResource extends SagaRecipe {
 		
 		result.append("{");
 		for (int i = 0; i < collected.length; i++) {
-			result.append(recipe[i].getType() + " " + collected[i] + "/" + recipe[i].amount);
+			result.append(recipe[i].getType() + " " + collected[i] + "/" + recipe[i].getAmount());
 		}
 		result.append("}");
 		

@@ -36,8 +36,8 @@
     "storages":1,
     "storageSize":1,
     "production":[
-      {"type":WHEAT,"amount":1,"data":0,        "recipe":[ {"amount":0.33} ]},
-      {"type":SUGAR_CANE,"amount":1,"data":0,   "recipe":[ {"amount":0.5} ]},
+      {"type":WHEAT,"amount":3,"data":0,        "recipe":[ {"amount":1.0} ]},
+      {"type":SUGAR_CANE,"amount":2,"data":0,   "recipe":[ {"amount":1.0} ]},
       {"type":PORK,"amount":1,"data":0,         "recipe":[ {"amount":5.0} ]},
       {"type":RAW_BEEF,"amount":1,"data":0,     "recipe":[ {"amount":5.0} ]},
       {"type":RAW_CHICKEN,"amount":1,"data":0,  "recipe":[ {"amount":5.0} ]}
@@ -90,10 +90,10 @@
     "storages":1,
     "storageSize":36,
     "production":[
-      {"type":WOOD,"amount":1,"data":0,  "recipe":[ {"type":LOG,"amount":0.8,"data":0} ]},
-      {"type":WOOD,"amount":1,"data":1,  "recipe":[ {"type":LOG,"amount":0.8,"data":1} ]},
-      {"type":WOOD,"amount":1,"data":2,  "recipe":[ {"type":LOG,"amount":0.8,"data":2} ]},
-      {"type":WOOD,"amount":1,"data":3,  "recipe":[ {"type":LOG,"amount":0.8,"data":3} ]}
+      {"type":WOOD,"amount":1,"data":0,  "recipe":[ {"type":LOG,"amount":1.0,"data":0} ]},
+      {"type":WOOD,"amount":1,"data":1,  "recipe":[ {"type":LOG,"amount":1.0,"data":1} ]},
+      {"type":WOOD,"amount":1,"data":2,  "recipe":[ {"type":LOG,"amount":1.0,"data":2} ]},
+      {"type":WOOD,"amount":1,"data":3,  "recipe":[ {"type":LOG,"amount":1.0,"data":3} ]}
     ],
     "offerBuildings":[],
     "recipes":[],
@@ -116,10 +116,10 @@
     "storages":1,
     "storageSize":1,
     "production":[
-      {"type":BREAD,"amount":1,"data":0,           "recipe":[ {"type":WHEAT,"amount":2.0,"data":0} ]},
-      {"type":GRILLED_PORK,"amount":1,"data":0,    "recipe":[ {"type":PORK,"amount":0.8,"data":0} ]},
-      {"type":COOKED_BEEF,"amount":1,"data":0,     "recipe":[ {"type":RAW_BEEF,"amount":0.8,"data":0} ]},
-      {"type":COOKED_CHICKEN,"amount":1,"data":0,  "recipe":[ {"type":RAW_CHICKEN,"amount":0.8,"data":0} ]}
+      {"type":BREAD,"amount":1,"data":0,           "recipe":[ {"type":WHEAT,"amount":3.0,"data":0} ]},
+      {"type":GRILLED_PORK,"amount":1,"data":0,    "recipe":[ {"type":PORK,"amount":1.0,"data":0} ]},
+      {"type":COOKED_BEEF,"amount":1,"data":0,     "recipe":[ {"type":RAW_BEEF,"amount":1.0,"data":0} ]},
+      {"type":COOKED_CHICKEN,"amount":1,"data":0,  "recipe":[ {"type":RAW_CHICKEN,"amount":1.0,"data":0} ]}
     ],
     "offerBuildings":[],
     "recipes":[

@@ -1,9 +1,7 @@
 package org.saga.buildings.production;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -16,6 +14,7 @@ import org.saga.buildings.Building;
 import org.saga.buildings.BuildingDefinition;
 import org.saga.buildings.storage.StorageArea;
 import org.saga.exceptions.InvalidBuildingException;
+import org.saga.messages.BuildingMessages;
 
 public class ProductionBuilding extends Building{
 
@@ -114,95 +113,131 @@ public class ProductionBuilding extends Building{
 	@Override
 	public void produce() {
 		
-		
-		ArrayList<SagaItem> allItems = new ArrayList<SagaItem>();
-		
+
 		// Offer free:
 		for (SagaResource resource : resources) {
 			resource.offerFree();
 		}
 		
-		// All recipes:
-		for (SagaResource resource : resources) {
+		// Buildings:
+		List<String> buildingNames = getDefinition().getOfferBuildings();
+		ArrayList<ProductionBuilding> buildings = new ArrayList<ProductionBuilding>();
+		
+		for (String buildingName : buildingNames) {
 			
-			// Produce:
-			SagaItem sagaItem = resource.produceItem();
-			if(sagaItem == null) continue;
-			
-			allItems.add(sagaItem);
+			ArrayList<ProductionBuilding> offerBuildings = getChunkBundle().getBuildings(ProductionBuilding.class, buildingName);
+			buildings.addAll(offerBuildings);
 			
 		}
 		
-		// Buildings:
-		if(allItems.size() > 0){
+		// Produce:
+		SagaItem[] allItems = new SagaItem[resources.size()];
+		for (int i = 0; i < allItems.length; i++) {
 			
-			List<String> buildingNames = getDefinition().getOfferBuildings();
+			SagaItem sagaItem = resources.get(i).produceItem();
+			if(sagaItem == null){
+				sagaItem = new SagaItem(resources.get(i));
+				sagaItem.setAmount(0.0);
+			}
+			allItems[i] = sagaItem;
 			
-			// Different building types:
-			for (String buildingName : buildingNames) {
-				
-				ArrayList<Building> offerBuildings = getChunkBundle().getBuildings(buildingName);
-				
-				// Different buildings:
-				for (Building building : offerBuildings) {
-					
-					if(!(building instanceof ProductionBuilding)) continue;
-					ProductionBuilding prBuilding = ((ProductionBuilding) building);
-					
-					// Offer:
-					prBuilding.offer(allItems);
-					
-					// Only if loaded:
-					if(getSagaChunk().isChunkLoaded()){
+		}
+		
+		// Requests:
+		double[][] requests = findRequests(resources, buildings);
+		double[] reqTotal = findTotals(requests);
+		
+		// Take offers from produced items:
+		SagaItem[] offerItems = new SagaItem[resources.size()];
+		for (int i = 0; i < resources.size(); i++) {
+			
+			SagaItem offer = new SagaItem(resources.get(i));
+			offer.setAmount(0.0);
+			SagaItem item = allItems[i];
+			offerItems[i] = offer;
+			
+			double reqAmount = reqTotal[i];
+			if(reqAmount > item.getAmount()) reqAmount = item.getAmount();
+			offer.modifyAmount(reqAmount);
+			item.modifyAmount(-reqAmount);
 
-						// Count accepted:
-						ArrayList<SagaItem> countItems = new ArrayList<SagaItem>();
-						for (SagaItem sagaItem : resources) {
-							SagaItem newItem = new SagaItem(sagaItem);
-							newItem.setAmount(0);
-							countItems.add(newItem);
-						}
-						prBuilding.countAccepted(countItems);
-						
-						// Withdraw:
-						ArrayList<SagaItem> withdraw = new ArrayList<SagaItem>();
-						withdraw.addAll(withdraw(countItems));
-						
-						// Offer:
-						prBuilding.offer(withdraw);
-						
-					}
-					
-				}
+		}
+		
+		// Only when loaded:
+		if(getSagaChunk().isChunkLoaded()){
+			
+			// Inform store:
+			ArrayList<SagaItem> storeable = filterStoreable(allItems);
+			if(storeable.size() != 0) getChunkBundle().information(this, BuildingMessages.produced(storeable));
+			
+			// Store remaining:
+			store(allItems);
+			
+			// Prepare missing items:
+			SagaItem[] missingItems = new SagaItem[resources.size()];
+			for (int i = 0; i < resources.size(); i++) {
 				
+				double reqAmount = reqTotal[i];
+				
+				SagaItem newItem = new SagaItem(resources.get(i));
+				newItem.setAmount(reqAmount - offerItems[i].getAmount());
+				missingItems[i] = newItem;
+				
+			}
+			
+			// Withdraw missing:
+			SagaItem[] withdrawItems = withdraw(missingItems);
+			for (int i = 0; i < resources.size(); i++) {
+				offerItems[i].modifyAmount(withdrawItems[i].getAmount());
+			}
+			
+		}
+		
+		// Find weights:
+		double[][] weights = new double[resources.size()][buildings.size()];
+		for (int i = 0; i < resources.size(); i++) {
+			
+			for (int j = 0; j < buildings.size(); j++) {
+				if(reqTotal[i] == 0) weights[i][j] = 0.0;
+				else weights[i][j] = requests[i][j] / reqTotal[i];
+			}
+			
+		}
+		
+		// Offer items:
+		for (int i = 0; i < offerItems.length; i++) {
+			
+			for (int j = 0; j < buildings.size(); j++) {
+				
+				double weight = weights[i][j];
+				ProductionBuilding prBuilding = buildings.get(j);
+				
+				System.out.println("weight=" + weight);
+				
+				SagaItem offerItem = new SagaItem(offerItems[i]);
+				offerItem.setAmount(offerItem.getAmount() * weight);
+				
+				prBuilding.offer(offerItem);
 				
 			}
 			
 		}
 		
-		// Store remaining:
-		if(getSagaChunk().isChunkLoaded()){
-			store(allItems);
-		}
-		
 		
 	}
 	
+	
+	
+	// Offer:
 	/**
 	 * Offers items for production.
 	 * 
 	 * @param items items to offer
 	 */
-	public void offer(List<SagaItem> items) {
+	public void offer(SagaItem[] items) {
 
-		Iterator<SagaItem> it = items.iterator();
-		while (it.hasNext()) {
-			
-			SagaItem item = it.next();
-			offer(item);
-			
-			if(item.amount <= 0) it.remove();
-			
+		for (int i = 0; i < items.length; i++) {
+			offer(items[i]);
 		}
 		
 	}
@@ -213,108 +248,168 @@ public class ProductionBuilding extends Building{
 	 * @param item item to offer
 	 */
 	public void offer(SagaItem item) {
+		
+		System.out.println("GOT OFFERED(" + getName() + "):" + item);
+		
 		for (SagaResource resource : resources) resource.offer(item);
 	}
 	
 	/**
-	 * Counts how many items will be accepted.
+	 * Finds the amount of items requested.
 	 * 
-	 * @param items items to count with
+	 * @param items items
+	 * @return requested amount
 	 */
-	private void countAccepted(ArrayList<SagaItem> countItems) {
-		SagaResource.countAccept(countItems, resources);
-	}
-	
-	
-	// Store:
-	/**
-	 * Stores items
-	 * 
-	 * @param blocksItems items or block to store
-	 */
-	public void store(ArrayList<SagaItem> blocksItems) {
+	private double[] findRequests(ArrayList<SagaResource> items) {
 
+		double[] requests = new double[items.size()];
 		
-		ArrayList<SagaItem> blocks = new ArrayList<SagaItem>();
-		ArrayList<SagaItem> items = new ArrayList<SagaItem>();
-		
-		for (SagaItem sagaItem : blocksItems) {
-			if(sagaItem.getType().isBlock()) blocks.add(sagaItem);
-			else items.add(sagaItem);
-		}
-		
-		// Store:
-		storeBlocks(blocks);
-		storeItems(items);
-		
-		
-	}
-	
-	/**
-	 * Stores blocks.
-	 * 
-	 * @param items saga block item
-	 */
-	public void storeBlocks(ArrayList<SagaItem> items) {
-
-		
-		ArrayList<Block> possibleStorage = findLowestEmpty();
-		
-		for (SagaItem sagaItem : items) {
+		for (int i = 0; i < items.size(); i++) {
 			
-			while(sagaItem.getAmount() > 0 && possibleStorage.size() > 0){
-				
-				// Remove block:
-				int index = Saga.getRandom().nextInt(possibleStorage.size());
-				Block block = possibleStorage.get(index);
-				block.setTypeIdAndData(sagaItem.getType().getId(), sagaItem.getData().byteValue(), false);
-				sagaItem.modifyAmount(-1);
-				possibleStorage.remove(index);
-				
-				// Refresh possible storage:
-				if(possibleStorage.size() == 0) possibleStorage = findLowestEmpty();
-				
+			SagaItem item = items.get(i);
+			
+			for (SagaResource resource : this.resources) {
+				requests[i] = requests[i] + resource.countRequired(item);
 			}
 			
 		}
 		
+		return requests;
+		
+	}
+
+	/**
+	 * Finds the amount of items requested.
+	 * 
+	 * @param items items
+	 * @param buildings buildings
+	 * @return requested amount
+	 */
+	private static double[][] findRequests(ArrayList<SagaResource> items, ArrayList<ProductionBuilding> buildings) {
+
+		double[][] requests = new double[items.size()][buildings.size()];
+		
+		for (int b = 0; b < buildings.size(); b++) {
+
+			double[] bldgRequested = buildings.get(b).findRequests(items);
+			
+			for (int i = 0; i < bldgRequested.length; i++) {
+				requests[i][b] = bldgRequested[i];
+			}
+			
+		}
+		
+		return requests;
+		
+	}
+
+	/**
+	 * Finds the total amount of items requested.
+	 * 
+	 * @param items items
+	 * @param buildings buildings
+	 * @return requested amount
+	 */
+	private static double[] findTotals(double[][] requests) {
+
+		double[] totals = new double[requests.length];
+		
+		for (int i = 0; i < requests.length; i++) {
+
+			for (int b = 0; b < requests[i].length; b++) {
+				totals[i] = totals[i] + requests[i][b];
+			}
+			
+		}
+		
+		return totals;
+		
+	}
+	
+	
+	
+	// Store:
+	/**
+	 * Stores items and blocks.
+	 * 
+	 * @param blocksItems items or blocks to store
+	 */
+	public void store(SagaItem[] blocksItems) {
+		
+		for (int i = 0; i < blocksItems.length; i++) {
+			
+			SagaItem sagaItem = blocksItems[i];
+			
+			if(sagaItem.getType().isBlock()){
+				storeBlock(sagaItem);
+			}else{
+				storeItem(sagaItem);
+			}
+			
+		}
 		
 	}
 	
 	/**
 	 * Stores blocks.
 	 * 
-	 * @param items saga block item
+	 * @param items saga block to store
 	 */
-	public void storeItems(ArrayList<SagaItem> items) {
+	public void storeBlock(SagaItem sagaItem) {
 
+		
+		ArrayList<Block> possibleStorage = findLowestEmpty();
+		
+		while(sagaItem.getAmount() > 0 && possibleStorage.size() > 0){
+			
+			// Remove block:
+			int index = Saga.getRandom().nextInt(possibleStorage.size());
+			Block block = possibleStorage.get(index);
+			block.setTypeIdAndData(sagaItem.getType().getId(), sagaItem.getData().byteValue(), false);
+			sagaItem.modifyAmount(-1);
+			possibleStorage.remove(index);
+			
+			// Refresh possible storage:
+			if(possibleStorage.size() == 0) possibleStorage = findLowestEmpty();
+			
+		}
+		
+		
+		
+	}
+	
+	/**
+	 * Stores items.
+	 * 
+	 * @param items saga item to store
+	 */
+	public void storeItem(SagaItem sagaItem) {
+
+		System.out.println("STORING(" + getName() + "): " + sagaItem);
 		
 		ArrayList<Chest> possibleStorage = findChests();
 		
-		while(possibleStorage.size() > 0){
+		while(possibleStorage.size() > 0 && sagaItem.getAmount() >= 1.0){
 			
 			// Inventory:
 			int index = Saga.getRandom().nextInt(possibleStorage.size());
 			Chest chest = possibleStorage.get(index);
 			Inventory inventory = chest.getInventory();
-			possibleStorage.remove(index);
-			
-			// Add all items:
-			for (SagaItem sagaItem : items) {
-				
-				ItemStack item = sagaItem.createItem();
-				if(item.getAmount() == 0) continue;
-				
-				inventory.addItem(item).get(0);
-				
+
+			ItemStack item = sagaItem.createItem();
+			if(item.getAmount() == 0){
+				System.out.println("BELOWONE(" + getName() + ")");
+				break;
 			}
+			sagaItem.modifyAmount(-item.getAmount());
+			
+			inventory.addItem(item);
+			
+			System.out.println("STORED(" + getName() + "): " + sagaItem);
 			
 			chest.update();
 			
-			
 		}
-		
-		
 		
 		
 	}
@@ -328,137 +423,101 @@ public class ProductionBuilding extends Building{
 	 * @param items saga block item types to withdraw
 	 * @return items that were withdrawn
 	 */
-	public ArrayList<SagaItem> withdraw(ArrayList<SagaItem> resources) {
+	public SagaItem[] withdraw(SagaItem[] requested) {
 
 		
-		ArrayList<SagaItem> blocks = new ArrayList<SagaItem>();
-		ArrayList<SagaItem> items = new ArrayList<SagaItem>();
-
-		ArrayList<SagaItem> witdraw = new ArrayList<SagaItem>();
+		SagaItem[] withdraw = new SagaItem[requested.length];
 		
 		// Clone resources:
-		for (SagaItem sagaItem : resources) {
-			if(sagaItem.getType().isBlock()) blocks.add(sagaItem);
-			else items.add(sagaItem);
-		}
-		
-		// Witdraw:
-		witdraw.addAll(withdrawBlocks(blocks));
-		witdraw.addAll(withdrawItems(items));
-		
-		return witdraw;
-		
-		
-	}
-
-	
-	/**
-	 * Withdraw blocks.
-	 * 
-	 * @param items saga block item types to withdraw
-	 * @return block that were removed
-	 */
-	public ArrayList<SagaItem> withdrawBlocks(ArrayList<SagaItem> resources) {
-
-		
-		ArrayList<Block> possibleStorage = findHighestFull();
-
-		// Clone resources:
-		ArrayList<SagaItem> withdraw = new ArrayList<SagaItem>();
-		for (SagaItem sagaItem : resources) {
-			SagaItem newItem = new SagaItem(sagaItem);
-			newItem.setAmount(0);
-			withdraw.add(newItem);
-		}
-		
-		// Withdraw: 
-		for (Block block : possibleStorage) {
+		for (int i = 0; i < requested.length; i++) {
 			
-			for (int j = 0; j < withdraw.size(); j++) {
-				
-				SagaItem sagaItem = withdraw.get(j);
-				SagaItem resource = resources.get(j);
-				
-				if(!sagaItem.checkRepresents(block)) continue;
-				if(sagaItem.getAmount() >= resource.getAmount()) continue;
-				
-				sagaItem.modifyAmount(1);
-				block.setType(Material.AIR);
-				
-				if(possibleStorage.size() == 0) possibleStorage = findHighestFull();
-				
-				break;
-				
+			SagaItem requestedItem = requested[i];
+			
+			if(requestedItem.getType().isBlock()){
+				withdraw[i] = withdrawBlock(requested[i]);
+			}else{
+				withdraw[i] = withdrawItem(requested[i]);
 			}
 			
-		}
-
-		// Filter 0 amount:
-		ListIterator<SagaItem> it = withdraw.listIterator();
-		while (it.hasNext()) {
-			SagaItem item = it.next();
-			if(item.getAmount() == 0) it.remove();
 		}
 		
 		return withdraw;
 		
+	}
+	
+	/**
+	 * Withdraw blocks.
+	 * 
+	 * @param requestedItem requested blocks
+	 * @return retrieved blocks
+	 */
+	public SagaItem withdrawBlock(SagaItem requestedItem) {
+
+		
+		ArrayList<Block> possibleStorage = findAllStorage();
+		SagaItem removedItem = new SagaItem(requestedItem);
+		removedItem.setAmount(0.0);
+		
+		// Don't remove less than one item:
+		if(requestedItem.getAmount() < 1.0) return removedItem;
+		
+		// Withdraw: 
+		for (Block block : possibleStorage) {
+			
+				if(!requestedItem.checkRepresents(block)) continue;
+				if(removedItem.getAmount() >= requestedItem.getAmount()){
+					return removedItem;
+				}
+				
+				removedItem.modifyAmount(1.0);
+				block.setType(Material.AIR);
+				
+		}
+		
+		return removedItem;
+		
 		
 	}
 
 	/**
 	 * Withdraw blocks.
 	 * 
-	 * @param items saga block item types to withdraw
-	 * @param resources items that were removed
+	 * @param requestedItem requested items
+	 * @return retrieved items
 	 */
-	public ArrayList<SagaItem> withdrawItems(ArrayList<SagaItem> resources) {
-
+	public SagaItem withdrawItem(SagaItem requestedItem) {
 		
 		ArrayList<Chest> possibleStorage = findChests();
+		SagaItem removedItem = new SagaItem(requestedItem);
+		removedItem.setAmount(0.0);
+
+		// Don't remove less than one item:
+		if(removedItem.getAmount() < 1.0) return removedItem;
 		
-		// Clone resources:
-		ArrayList<SagaItem> withdraw = new ArrayList<SagaItem>();
-		for (SagaItem sagaItem : resources) {
-			SagaItem newItem = new SagaItem(sagaItem);
-			newItem.setAmount(0);
-			withdraw.add(newItem);
-		}
 		
 		// Withdraw: 
 		for (Chest chest : possibleStorage) {
 			
-			for (int j = 0; j < withdraw.size(); j++) {
-				
-				ItemStack removeItem = resources.get(j).createItem();
-				if(removeItem.getAmount() == 0) continue;
-				
-				Inventory inventory = chest.getInventory();
-				ItemStack remaining = inventory.removeItem(removeItem).get(0);
-				
-				int mod = resources.get(j).getAmount();
-				if(remaining != null) mod-= remaining.getAmount();
-				
-				withdraw.get(j).modifyAmount(mod);
-				
-			}
+			Inventory inventory = chest.getInventory();
+			ItemStack removeStack = removedItem.createItem();
+			ItemStack remaining = inventory.removeItem(removeStack).get(0);
+			
+			int mod = removeStack.getAmount();
+			if(remaining != null) mod-= remaining.getAmount();
+			
+			removedItem.modifyAmount(mod);
 			
 			chest.update();
 			
 		}
 		
-		// Filter 0 amount:
-		ListIterator<SagaItem> it = withdraw.listIterator();
-		while (it.hasNext()) {
-			SagaItem item = it.next();
-			if(item.getAmount() == 0) it.remove();
-		}
-		
-		return withdraw;
-		
+		return removedItem;
 		
 	}
 	
 	
+	
+	// Storage blocks:
 	/**
 	 * Gets all lowest empty storage blocks.
 	 * 
@@ -478,23 +537,23 @@ public class ProductionBuilding extends Building{
 	}
 
 	/**
-	 * Gets all lowest empty storage blocks.
+	 * Gets all storage blocks.
 	 * 
-	 * @return lowest empty storage blocks
+	 * @return all storage blocks
 	 */
-	private ArrayList<Block> findHighestFull() {
+	private ArrayList<Block> findAllStorage() {
 
 		ArrayList<Block> blocks = new ArrayList<Block>();
 		ArrayList<StorageArea> storages = getStorageAreas();
 		
 		for (StorageArea storageArea : storages) {
-			blocks.addAll(storageArea.getHighestFull());
+			blocks.addAll(storageArea.getAllStorage());
 		}
 		
 		return blocks;
 		
 	}
-	
+
 	/**
 	 * Filters out chests that can used for storage.
 	 * 
@@ -518,6 +577,36 @@ public class ProductionBuilding extends Building{
 		}
 
 		return possible;
+		
+	}
+	
+	
+	
+	// Resources:
+	/**
+	 * Gets all resources.
+	 * 
+	 * @return resources
+	 */
+	public ArrayList<SagaResource> getResources() {
+		return resources;
+	}
+	
+	/**
+	 * Filters items that can be stored.
+	 * 
+	 * @param items items
+	 * @return items that can be stored
+	 */
+	private ArrayList<SagaItem> filterStoreable(SagaItem[] items) {
+
+		ArrayList<SagaItem> results = new ArrayList<SagaItem>();
+		
+		for (int i = 0; i < items.length; i++) {
+			if(items[i].getAmount() >= 1) results.add(items[i]);
+		}
+
+		return results;
 		
 	}
 	

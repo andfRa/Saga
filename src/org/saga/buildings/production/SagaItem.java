@@ -49,19 +49,6 @@ public class SagaItem {
 	 * Creates the Saga item.
 	 * 
 	 * @param type item type
-	 * @param amount item amount
-	 * @param data data
-	 */
-	public SagaItem(Material type, Integer amount, Short data) {
-		this.type = type;
-		this.amount = amount.doubleValue();
-		this.data = data;
-	}
-	
-	/**
-	 * Creates the Saga item.
-	 * 
-	 * @param type item type
 	 */
 	public SagaItem(Material type) {
 		this.type = type;
@@ -144,8 +131,8 @@ public class SagaItem {
 	 * 
 	 * @return the amount
 	 */
-	public Integer getAmount() {
-		return amount.intValue();
+	public Double getAmount() {
+		return amount;
 	}
 
 	/**
@@ -163,7 +150,7 @@ public class SagaItem {
 	 * 
 	 * @param mod modify amount.
 	 */
-	public void modifyAmount(int mod) {
+	public void modifyAmount(double mod) {
 		this.amount+= mod;
 	}
 	
@@ -172,8 +159,8 @@ public class SagaItem {
 	 * 
 	 * @param amount amount
 	 */
-	public void setAmount(Integer amount) {
-		this.amount = amount.doubleValue();
+	public void setAmount(Double amount) {
+		this.amount = amount;
 	}
 	
 	

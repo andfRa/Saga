@@ -9,11 +9,15 @@ import org.saga.buildings.Arena.ArenaPlayer;
 import org.saga.buildings.Building;
 import org.saga.buildings.CrumbleArena;
 import org.saga.buildings.CrumbleArena.CrumblePlayer;
+import org.saga.buildings.production.ProductionBuilding;
+import org.saga.buildings.production.SagaItem;
+import org.saga.buildings.production.SagaResource;
 import org.saga.buildings.TownSquare;
 import org.saga.config.AttributeConfiguration;
 import org.saga.messages.colours.Colour;
 import org.saga.messages.colours.ColourLoop;
 import org.saga.settlements.Bundle;
+import org.saga.utility.chat.ChatBook;
 import org.saga.utility.chat.ChatFramer;
 import org.saga.utility.chat.ChatTable;
 import org.saga.utility.chat.ChatUtil;
@@ -49,6 +53,133 @@ public class BuildingMessages {
 		
 	}
 
+
+	
+	// Info:
+	public static String status(Building building) {
+		
+		ChatBook book = new ChatBook(building.getName() + " status", new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
+		
+		if(building instanceof ProductionBuilding){
+			
+			ProductionBuilding prBuilding = (ProductionBuilding) building;
+			
+			book.addLine(resourceProgress(prBuilding));
+			
+			return book.framedPage(0);
+			
+		}
+		
+		return Colour.negative + " Status not available.";
+		
+	}
+	
+	public static String resourceProgress(ProductionBuilding building) {
+		
+		
+		ArrayList<SagaResource> resources = building.getResources();
+		
+		if(resources.size() != 0){
+			
+			StringBuffer recipeStr = new StringBuffer();
+			
+			// Recipes:
+			for (int r = 0; r < resources.size(); r++) {
+				
+				SagaResource recipe = resources.get(r);
+				
+				// Duplicates:
+				boolean duplic = false;
+				if(r != 0 && resources.get(r-1).getType() == recipe.getType()) duplic = true; 
+				if(r != resources.size() - 1 && resources.get(r+1).getType() == recipe.getType()) duplic = true; 
+				
+				if(recipeStr.length() > 0) recipeStr.append("\n");
+				
+				// Recipe:
+				if(recipe.getAmount() > 1) recipeStr.append(recipe.getAmount().intValue() + " ");
+				recipeStr.append(GeneralMessages.columnTitle(GeneralMessages.material(recipe.getType())));
+				if(duplic) recipeStr.append(":" + recipe.getData());
+				recipeStr.append(" - ");
+				
+				StringBuffer recipeCompStr = new StringBuffer();
+				
+				// Recipe components:
+				if(recipe.recipeLength() != 0){
+					
+					for (int i = 0; i < recipe.recipeLength(); i++) {
+						
+						// Recipe component:
+						SagaItem recipeComp = recipe.getComponent(i);
+						if(recipeCompStr.length() > 0) recipeCompStr.append(", ");
+						if(recipeComp.getType() != Material.AIR){
+							recipeCompStr.append(GeneralMessages.material(recipeComp.getType()));
+							if(duplic) recipeCompStr.append(":" + recipeComp.getData());
+							recipeCompStr.append(" " + (int)(recipe.getPercentage(i)*100) + "%");
+						}else{
+							recipeCompStr.append(" " + (int)(recipe.getPercentage(i)*100) + "%");
+						}
+						
+					}
+					
+				}else{
+					recipeCompStr.append("-");
+				}
+				
+				recipeStr.append(recipeCompStr);
+				
+			}
+			
+			return recipeStr.toString();
+			
+		}else{
+			return "-";
+		}
+		
+		
+	}
+	
+	public static String produced(ArrayList<SagaItem> items) {
+		
+		
+		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
+		ChatColor first = colours.nextColour();
+		ChatColor second = colours.nextColour();
+		
+		StringBuffer result = new StringBuffer();
+		if(items.size() != 0){
+			
+			for (int i = 0; i < items.size(); i++) {
+				
+				SagaItem item = items.get(i);
+				if(item.getAmount() < 1) continue;
+				
+				// Duplicate:
+				boolean duplic = false;
+				if(i != 0 && items.get(i-1).getType() == item.getType()) duplic = true; 
+				if(i != items.size() - 1 && items.get(i+1).getType() == item.getType()) duplic = true; 
+				
+				if(result.length() > 0) result.append(", ");
+				
+				// Item:
+				result.append(second);
+				if(item.getAmount() > 1) result.append(item.getAmount().intValue() + " ");
+				result.append(GeneralMessages.material(item.getType()));
+				if(duplic) result.append(":" + item.getData());
+				result.append(first);
+				
+			}
+			
+		}else{
+			result.append("nothing");
+		}
+		
+		result.insert(0, first + "Produced: ");
+		result.append(".");
+		
+		return result.toString();
+		
+	}
+	
 	
 
 	// Movement:
@@ -363,6 +494,6 @@ public class BuildingMessages {
 	public static String farmAnimalsDamageDeny() {
 		return Colour.negative + "Can't harm animals on this farms.";
 	}
-	
-	
+
+
 }

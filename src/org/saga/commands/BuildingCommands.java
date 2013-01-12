@@ -192,6 +192,55 @@ public class BuildingCommands {
 			
 	}
 	
+	@Command(
+		aliases = {"bstatus"},
+		usage = "",
+		flags = "",
+		desc = "Show building status.",
+		min = 0,
+		max = 0
+	)
+	@CommandPermissions({"saga.user.building.status"})
+	public static void info(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		
+		SagaChunk sagaChunk = sagaPlayer.getSagaChunk();
+		
+		// Bundle:
+		Bundle selBundle = null;
+		if(sagaChunk != null) selBundle = sagaChunk.getChunkBundle();
+		
+		if(selBundle == null){
+			sagaPlayer.message(SettlementMessages.notMember());
+			return;
+		}
+		
+		// Selected chunk:
+		SagaChunk selChunk = sagaPlayer.getSagaChunk();
+	   	if(selChunk == null){
+			sagaPlayer.message(BuildingMessages.buildingsOnClaimed(selBundle));
+			return;
+		}
+		
+		// Existing building:
+		Building selBuilding = selChunk.getBuilding();
+		if(selBuilding == null){
+			sagaPlayer.message(SettlementMessages.noBuilding());
+			return;
+		}
+		
+		// Permission:
+		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.REMOVE_BUILDING)){
+			sagaPlayer.message(GeneralMessages.noPermission(selBundle));
+			return;
+		}
+
+		// Inform:
+		sagaPlayer.message(BuildingMessages.status(selBuilding));
+		
+			
+	}
+	
 
 	
 	// General building storage:
