@@ -33,7 +33,7 @@
     "storages":1,
     "storageSize":1,
     "production":[
-      {"type":WHEAT,"amount":9,"data":0,        "recipe":[ {"amount":1} ]},
+      {"type":WHEAT,"amount":18,"data":0,       "recipe":[ {"amount":1} ]},
       {"type":PORK,"amount":1,"data":0,         "recipe":[ {"amount":5} ]},
       {"type":RAW_BEEF,"amount":1,"data":0,     "recipe":[ {"amount":5} ]},
       {"type":RAW_CHICKEN,"amount":1,"data":0,  "recipe":[ {"amount":5} ]}
@@ -80,10 +80,10 @@
     "storages":1,
     "storageSize":36,
     "production":[
-      {"type":WOOD,"amount":1,"data":0,  "recipe":[ {"type":LOG,"amount":1,"data":0} ]},
-      {"type":WOOD,"amount":1,"data":1,  "recipe":[ {"type":LOG,"amount":1,"data":1} ]},
-      {"type":WOOD,"amount":1,"data":2,  "recipe":[ {"type":LOG,"amount":1,"data":2} ]},
-      {"type":WOOD,"amount":1,"data":3,  "recipe":[ {"type":LOG,"amount":1,"data":3} ]}
+      {"type":WOOD,"amount":4,"data":0,  "recipe":[ {"type":LOG,"amount":1,"data":0} ]},
+      {"type":WOOD,"amount":4,"data":1,  "recipe":[ {"type":LOG,"amount":1,"data":1} ]},
+      {"type":WOOD,"amount":4,"data":2,  "recipe":[ {"type":LOG,"amount":1,"data":2} ]},
+      {"type":WOOD,"amount":4,"data":3,  "recipe":[ {"type":LOG,"amount":1,"data":3} ]}
     ],
     "offerBuildings":[],
     "performTime":"NONE",
@@ -103,7 +103,7 @@
     "storages":1,
     "storageSize":1,
     "production":[
-      {"type":BREAD,"amount":3,"data":0,           "recipe":[ {"type":WHEAT,"amount":9,"data":0} ]},
+      {"type":BREAD,"amount":6,"data":0,           "recipe":[ {"type":WHEAT,"amount":18,"data":0} ]},
       {"type":GRILLED_PORK,"amount":1,"data":0,    "recipe":[ {"type":PORK,"amount":1,"data":0} ]},
       {"type":COOKED_BEEF,"amount":1,"data":0,     "recipe":[ {"type":RAW_BEEF,"amount":1,"data":0} ]},
       {"type":COOKED_CHICKEN,"amount":1,"data":0,  "recipe":[ {"type":RAW_CHICKEN,"amount":1,"data":0} ]}
