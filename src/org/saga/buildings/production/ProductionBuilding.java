@@ -73,14 +73,14 @@ public class ProductionBuilding extends Building{
 		ArrayList<SagaRecipe> recipes = getDefinition().getProductionRecipes();
 		
 		if(recipes.size() != resources.size()){
-			SagaLogger.info(this, "resetting resources");
+			SagaLogger.warning(this, "resetting resources");
 			resetResources();
 			return;
 		}
 		
 		for (int i = 0; i < resources.size(); i++) {
 			if(!resources.get(i).equalsRecipe(recipes.get(i))){
-				SagaLogger.info(this, "resetting resources");
+				SagaLogger.warning(this, "resetting resources");
 				resetResources();
 				return;
 			}

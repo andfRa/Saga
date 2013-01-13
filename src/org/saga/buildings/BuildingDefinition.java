@@ -2,7 +2,6 @@ package org.saga.buildings;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Set;
 
@@ -11,27 +10,9 @@ import org.saga.SagaLogger;
 import org.saga.buildings.production.SagaRecipe;
 import org.saga.settlements.Settlement;
 import org.saga.utility.TwoPointFunction;
-import org.saga.utility.items.RecepieBlueprint;
 
 public class BuildingDefinition {
 
-	
-	/**
-	 * Replace string for craft amount.
-	 */
-	public final static String CRAFT_AMOUNT_REPLACE = "#craft_amount";
-	
-	/**
-	 * Replace string for craft daytime.
-	 */
-	public final static String CRAFT_DAYTIME_REPLACE = "#craft_daytime";
-	
-	/**
-	 * Replace string for perform daytime.
-	 */
-	public final static String PERFORM_DAYTIME_REPLACE = "#perform_daytime";
-	
-	
 	
 	/**
 	 * Building name.
@@ -67,21 +48,6 @@ public class BuildingDefinition {
 	 * Storage area size.
 	 */
 	private Integer storageSize;
-	
-	/**
-	 * Recipes for the building.
-	 */
-	private HashSet<RecepieBlueprint> recipes;
-	
-	/**
-	 * Amount of resources crafted.
-	 */
-	private Integer crafted;
-
-	/**
-	 * Related buildings.
-	 */
-	private ArrayList<String> relatedBuildings;
 	
 	
 	// Production:
@@ -190,24 +156,6 @@ public class BuildingDefinition {
 		if(storageSize == null){
 			storageSize = 1;
 			SagaLogger.nullField(BuildingDefinition.class, "storageSize");
-		}
-		
-		if(recipes == null){
-			recipes = new HashSet<RecepieBlueprint>();
-			SagaLogger.nullField(BuildingDefinition.class, "recipes");
-		}
-		for (RecepieBlueprint recipe : recipes) {
-			recipe.complete();
-		}
-		
-		if(crafted == null){
-			crafted = 0;
-			SagaLogger.nullField(BuildingDefinition.class, "crafted");
-		}
-		
-		if(relatedBuildings == null){
-			relatedBuildings = new ArrayList<String>();
-			SagaLogger.nullField(BuildingDefinition.class, "relatedBuildings");
 		}
 		
 		if(production == null){
@@ -359,33 +307,6 @@ public class BuildingDefinition {
 		return storageSize;
 	}
 	
-	/**
-	 * Gets building recipes.
-	 * 
-	 * @return building recipes
-	 */
-	public HashSet<RecepieBlueprint> getRecipes() {
-		return new HashSet<RecepieBlueprint>(recipes);
-	}
-	
-	/**
-	 * Gets the amount of crafted resources.
-	 * 
-	 * @return amount of crafted resources
-	 */
-	public Integer getCraftAmount() {
-		return crafted;
-	}
-	
-	/**
-	 * Gets all related buildings.
-	 * 
-	 * @return related buildings
-	 */
-	public ArrayList<String> getRelatedBuildings() {
-		return new ArrayList<String>(relatedBuildings);
-	}
-	
 	
 	
 	// Production:
@@ -512,13 +433,7 @@ public class BuildingDefinition {
 	 * 
 	 */
 	public String getEffect() {
-		
-		return effect
-			.replaceAll(CRAFT_AMOUNT_REPLACE, getCraftAmount().toString())
-			.replaceAll(CRAFT_DAYTIME_REPLACE, getCraftTime().toString())
-			.replaceAll(PERFORM_DAYTIME_REPLACE, getPerformTime().toString())
-		;
-		
+		return effect;
 	}
 	
 

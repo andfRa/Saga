@@ -14,7 +14,6 @@ import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.inventory.ItemStack;
 import org.saga.Clock;
 import org.saga.Clock.DaytimeTicker;
 import org.saga.Saga;
@@ -40,8 +39,6 @@ import org.saga.settlements.SagaChunk;
 import org.saga.settlements.SagaChunk.ChunkSide;
 import org.saga.settlements.Settlement.SettlementPermission;
 import org.saga.utility.chat.ChatUtil;
-import org.saga.utility.items.RandomRecipe;
-import org.saga.utility.items.RecepieBlueprint;
 import org.sk89q.CommandContext;
 
 /**
@@ -737,196 +734,34 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		
 	}
 
+
 	
+	// Storing withdrawing:
 	/**
-	 * Adds blocks to storage.
+	 * Handles item storage open
 	 * 
-	 * @param blocks to add
-	 * @return blocks to add
+	 * @param event event
+	 * @param sagaPlayer saga player
 	 */
-	public ItemStack store(ItemStack toStore) {
-
+	public void handleItemStorageOpen(PlayerInteractEvent event, SagaPlayer sagaPlayer) {
 		
-		// Load chunk if needed:
-		if(!getSagaChunk().isChunkLoaded()) getSagaChunk().loadChunk();
 		
-		ArrayList<StorageArea> allSorage = getStorageAreas();
-
-		// Blocks:
-		if(toStore.getType().isBlock()){
+		// Permission:
+		if(!getChunkBundle().hasPermission(sagaPlayer, SettlementPermission.ACCESS_STORAGE) && !getChunkBundle().isOptionEnabled(BundleToggleable.OPEN_STORAGE_AREAS)){
 			
-			for (StorageArea storageArea : allSorage) {
-				
-				if(toStore.getAmount() == 0) return toStore;
-				
-				storageArea.storeBlock(toStore);
-				
-			}
+			sagaPlayer.message(GeneralMessages.noPermission(this));
+			event.setCancelled(true);
+			event.setUseInteractedBlock(Result.DENY);
+			event.setUseItemInHand(Result.DENY);
+			return;
 			
-		}
+		}		
 		
-		// Items:
-		else{
-			
-			for (StorageArea storageArea : allSorage) {
-				
-				if(toStore.getAmount() == 0) return toStore;
-				
-				storageArea.storeItem(toStore);
-				
-			}
-			
-		}
-		
-		return toStore;
-		
-
-	}
-	
-	/**
-	 * Withdraws blocks from the storage.
-	 * 
-	 * @param fromStore withdrawn blocks
-	 * @param amount requested amount
-	 * @return withdrawn blocks
-	 */
-	public ItemStack withdraw(ItemStack fromStore, int amount) {
-
-
-		// Load chunk if needed:
-		if(!getSagaChunk().isChunkLoaded()) getSagaChunk().loadChunk();
-		
-		ArrayList<StorageArea> allSorage = getStorageAreas();
-
-		// Blocks:
-		if(fromStore.getType().isBlock()){
-			
-			for (StorageArea storageArea : allSorage) {
-				
-				if(fromStore.getAmount() >= amount) return fromStore;
-				
-				storageArea.withdrawBlock(fromStore, amount);
-				
-			}
-			
-		}
-		
-		// Items:
-		else{
-
-			for (StorageArea storageArea : allSorage) {
-				
-				if(fromStore.getAmount() >= amount) return fromStore;
-				
-				storageArea.withdrawItem(fromStore, amount);
-				
-			}
-			
-		}
-		
-		return fromStore;
-		
-
-	}
-
-
-	/**
-	 * Counts the amount of items available.
-	 * 
-	 * @param item item
-	 * @return amount
-	 */
-	public Integer countStored(ItemStack item) {
-
-		
-		int amount = 0;
-		
-		ArrayList<StorageArea> allSorage = getStorageAreas();
-
-		// Blocks:
-		for (StorageArea storageArea : allSorage) {
-				
-			amount+= storageArea.countStored(item);
-				
-		}
-		
-		return amount;
+		// Inform:
+		sagaPlayer.message(BuildingMessages.openedItemStore());
 		
 		
 	}
-	
-	
-
-	/**
-	 * Withdraws blocks from the storage. Also looks in related buildings.
-	 * 
-	 * @param fromStore withdrawn blocks
-	 * @param amount requested amount
-	 * @return withdrawn blocks
-	 */
-	public ItemStack withdrawRelat(ItemStack fromStore, int amount) {
-
-
-		// Buildings:
-		ArrayList<Building> buildings = new ArrayList<Building>();
-		ArrayList<String> bldgNames = getDefinition().getRelatedBuildings();
-		
-		for (String bldgName : bldgNames) {
-			buildings.addAll(getChunkBundle().getBuildings(bldgName));
-		}
-		
-		// Withdraw from this building:
-		withdraw(fromStore, amount);
-		
-		// Withdraw from related buildings:
-		for (Building building : buildings) {
-
-			if(fromStore.getAmount() >= amount) return fromStore;
-				
-			building.withdraw(fromStore, amount);
-				
-		}
-		
-		return fromStore;
-		
-		
-	}
-
-
-	/**
-	 * Counts the amount of items available. Also looks in related buildings.
-	 * 
-	 * @param item item
-	 * @return amount
-	 */
-	public Integer countStoredRelat(ItemStack item) {
-
-		
-		int amount = 0;
-		
-		// Buildings:
-		ArrayList<Building> buildings = new ArrayList<Building>();
-		ArrayList<String> bldgNames = getDefinition().getRelatedBuildings();
-		
-		for (String bldgName : bldgNames) {
-			buildings.addAll(getChunkBundle().getBuildings(bldgName));
-		}
-		
-		// Count for this building:
-		amount+= countStored(item);
-		
-		// Count for related buildings:
-		for (Building building : buildings) {
-
-			amount+= building.countStored(item);
-			
-		}
-		
-		return amount;
-		
-		
-	}
-	
 	
 	/**
 	 * Handles block withdraw.
@@ -956,32 +791,6 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		sagaPlayer.message(BuildingMessages.withdrew(event.getBlock().getType(), this));
 		
 
-	}
-	
-	/**
-	 * Handles item storage open
-	 * 
-	 * @param event event
-	 * @param sagaPlayer saga player
-	 */
-	public void handleItemStorageOpen(PlayerInteractEvent event, SagaPlayer sagaPlayer) {
-		
-		
-		// Permission:
-		if(!getChunkBundle().hasPermission(sagaPlayer, SettlementPermission.ACCESS_STORAGE) && !getChunkBundle().isOptionEnabled(BundleToggleable.OPEN_STORAGE_AREAS)){
-			
-			sagaPlayer.message(GeneralMessages.noPermission(this));
-			event.setCancelled(true);
-			event.setUseInteractedBlock(Result.DENY);
-			event.setUseItemInHand(Result.DENY);
-			return;
-			
-		}		
-		
-		// Inform:
-		sagaPlayer.message(BuildingMessages.openedItemStore());
-		
-		
 	}
 	
 	
@@ -1031,63 +840,6 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 * 
 	 */
 	public void produce() {
-
-		
-		// Only loaded:
-		if(!getSagaChunk().isChunkLoaded()) return;
-		
-		// Recipes:
-		RandomRecipe recipes = new RandomRecipe(getDefinition().getRecipes());
-		
-		// Craft:
-		Integer toCraft = getDefinition().getCraftAmount();
-		
-		while(recipes.size() > 0 && toCraft > 0){
-			
-			// Next recipe:
-			RecepieBlueprint recipe = recipes.nextRecipe();
-			
-			// Check amounts:
-			ArrayList<ItemStack> from = recipe.createFrom();
-			
-			boolean req = true;
-			for (ItemStack fromStack : from) {
-				
-				if(countStoredRelat(fromStack) < fromStack.getAmount()){
-					req = false;
-					break;
-				}
-				
-			}
-			
-			// Requirements not met:
-			if(!req){
-				recipes.remove(recipe);
-				continue;
-			}
-			
-			ArrayList<ItemStack> to = recipe.createTo();
-			
-			// Take:
-			for (ItemStack fromStack : from) {
-				
-				int amount = fromStack.getAmount();
-				fromStack.setAmount(0);
-				withdrawRelat(fromStack, amount);
-				
-				if(fromStack.getAmount() != amount) SagaLogger.severe(this, "requested and retrieved amounts dont match for " + fromStack.getType());
-				
-			}
-			
-			// Craft:
-			for (ItemStack toStack : to) {
-				store(toStack);
-			}
-			
-			toCraft--;
-			
-		}
-		
 		
 	}
 	

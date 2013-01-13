@@ -7,7 +7,7 @@
 "maxClaims":250,
 "noDeleteSize":25,
 
-"buildPoints":{"x1":0,"y1":6.0,"x2":250,"y2":100.0},
+"buildPoints":{"x1":0,"y1":6.0,"x2":250,"y2":135.0},
 
 "requiredActiveMembers":{"x1":0,"y1":0,"x2":250,"y2":25.0},
 "requiredBuildings":{
