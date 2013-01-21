@@ -4,6 +4,8 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Random;
 
+import net.minecraft.server.v1_4_R1.SharedConstants;
+
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
@@ -383,7 +385,7 @@ public class VanillaConfiguration {
 	 */
 	public static void enableBonusCharacters() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException{
 		
-		Field field = net.minecraft.server.v1_4_6.SharedConstants.class.getDeclaredField("allowedCharacters");
+		Field field = SharedConstants.class.getDeclaredField("allowedCharacters");
 		field.setAccessible(true);
 		
 		Field modifiersField = Field.class.getDeclaredField("modifiers");

@@ -1,14 +1,14 @@
 package org.saga.messages.effects;
 
-import net.minecraft.server.v1_4_6.Packet18ArmAnimation;
+import net.minecraft.server.v1_4_R1.Packet18ArmAnimation;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
 import org.bukkit.Sound;
-import org.bukkit.craftbukkit.v1_4_6.CraftServer;
-import org.bukkit.craftbukkit.v1_4_6.CraftWorld;
-import org.bukkit.craftbukkit.v1_4_6.entity.CraftPlayer;
+import org.bukkit.craftbukkit.v1_4_R1.CraftServer;
+import org.bukkit.craftbukkit.v1_4_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_4_R1.entity.CraftPlayer;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.saga.SagaLogger;
