@@ -14,7 +14,7 @@ public class SagaRecipe extends SagaItem{
 	/**
 	 * Creates a recipe.
 	 * 
-	 * @param item craft item
+	 * @param item saga item
 	 * @param recipe recipe
 	 */
 	public SagaRecipe(SagaItem item, SagaItem[] recipe){

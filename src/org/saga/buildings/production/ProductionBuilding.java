@@ -22,8 +22,12 @@ public class ProductionBuilding extends Building{
 	/**
 	 * Resources.
 	 */
-	private ArrayList<SagaResource> resources;
+	private SagaResource[] resources;
 	
+	/**
+	 * Storage buffers.
+	 */
+	private double[] buffers;
 	
 	
 	/**
@@ -50,12 +54,17 @@ public class ProductionBuilding extends Building{
 		super.complete();
 		
 		if(resources == null){
-			resources = new ArrayList<SagaResource>();
+			resources = new SagaResource[0];
 			SagaLogger.nullField(this, "resources");
 		}
 		
 		for (SagaResource recource : resources) {
 			recource.complete();
+		}
+		
+		if(buffers == null){
+			buffers = new double[resources.length];
+			SagaLogger.nullField(this, "buffers");
 		}
 		
 		synchResources();
@@ -70,16 +79,16 @@ public class ProductionBuilding extends Building{
 	 */
 	private void synchResources() {
 
-		ArrayList<SagaRecipe> recipes = getDefinition().getProductionRecipes();
+		SagaRecipe[] recipes = getDefinition().getProductionRecipes();
 		
-		if(recipes.size() != resources.size()){
+		if(recipes.length != resources.length || recipes.length != buffers.length){
 			SagaLogger.warning(this, "resetting resources");
 			resetResources();
 			return;
 		}
 		
-		for (int i = 0; i < resources.size(); i++) {
-			if(!resources.get(i).equalsRecipe(recipes.get(i))){
+		for (int i = 0; i < resources.length; i++) {
+			if(!resources[i].equalsRecipe(recipes[i])){
 				SagaLogger.warning(this, "resetting resources");
 				resetResources();
 				return;
@@ -94,11 +103,14 @@ public class ProductionBuilding extends Building{
 	 */
 	private void resetResources() {
 		
-		resources = new ArrayList<SagaResource>();
-		ArrayList<SagaRecipe> recipes = getDefinition().getProductionRecipes();
-		for (SagaRecipe sagaRecipe : recipes) {
-			resources.add(new SagaResource(sagaRecipe));
+		SagaRecipe[] recipes = getDefinition().getProductionRecipes();
+		resources = new SagaResource[recipes.length];
+
+		for (int i = 0; i < recipes.length; i++) {
+			resources[i] = new SagaResource(recipes[i]);
 		}
+		
+		buffers = new double[resources.length];
 		
 	}
 	
@@ -131,15 +143,15 @@ public class ProductionBuilding extends Building{
 		}
 		
 		// Produce:
-		SagaItem[] allItems = new SagaItem[resources.size()];
-		for (int i = 0; i < allItems.length; i++) {
+		SagaItem[] produced = new SagaItem[resources.length];
+		for (int i = 0; i < produced.length; i++) {
 			
-			SagaItem sagaItem = resources.get(i).produceItem();
+			SagaItem sagaItem = resources[i].produceItem();
 			if(sagaItem == null){
-				sagaItem = new SagaItem(resources.get(i));
+				sagaItem = new SagaItem(resources[i]);
 				sagaItem.setAmount(0.0);
 			}
-			allItems[i] = sagaItem;
+			produced[i] = sagaItem;
 			
 		}
 		
@@ -148,12 +160,12 @@ public class ProductionBuilding extends Building{
 		double[] reqTotal = findTotals(requests);
 		
 		// Take offers from produced items:
-		SagaItem[] offerItems = new SagaItem[resources.size()];
-		for (int i = 0; i < resources.size(); i++) {
+		SagaItem[] offerItems = new SagaItem[resources.length];
+		for (int i = 0; i < resources.length; i++) {
 			
-			SagaItem offer = new SagaItem(resources.get(i));
+			SagaItem offer = new SagaItem(resources[i]);
 			offer.setAmount(0.0);
-			SagaItem item = allItems[i];
+			SagaItem item = produced[i];
 			offerItems[i] = offer;
 			
 			double reqAmount = reqTotal[i];
@@ -167,35 +179,36 @@ public class ProductionBuilding extends Building{
 		if(getSagaChunk().isChunkLoaded()){
 			
 			// Inform store:
-			ArrayList<SagaItem> storeable = filterStoreable(allItems);
+			ArrayList<SagaItem> storeable = filterStoreable(produced);
 			if(storeable.size() != 0) getChunkBundle().information(this, BuildingMessages.produced(storeable));
 			
 			// Store remaining:
-			store(allItems);
+			store(produced);
 			
 			// Prepare missing items:
-			SagaItem[] missingItems = new SagaItem[resources.size()];
-			for (int i = 0; i < resources.size(); i++) {
+			SagaItem[] missingItems = new SagaItem[resources.length];
+			for (int i = 0; i < resources.length; i++) {
 				
 				double reqAmount = reqTotal[i];
+				double offerAmunt = offerItems[i].getAmount();
 				
-				SagaItem newItem = new SagaItem(resources.get(i));
-				newItem.setAmount(reqAmount - offerItems[i].getAmount());
+				SagaItem newItem = new SagaItem(resources[i]);
+				newItem.setAmount(reqAmount - offerAmunt);
 				missingItems[i] = newItem;
 				
 			}
 			
 			// Withdraw missing:
 			SagaItem[] withdrawItems = withdraw(missingItems);
-			for (int i = 0; i < resources.size(); i++) {
+			for (int i = 0; i < resources.length; i++) {
 				offerItems[i].modifyAmount(withdrawItems[i].getAmount());
 			}
 			
 		}
 		
 		// Find weights:
-		double[][] weights = new double[resources.size()][buildings.size()];
-		for (int i = 0; i < resources.size(); i++) {
+		double[][] weights = new double[resources.length][buildings.size()];
+		for (int i = 0; i < resources.length; i++) {
 			
 			for (int j = 0; j < buildings.size(); j++) {
 				if(reqTotal[i] == 0) weights[i][j] = 0.0;
@@ -255,15 +268,15 @@ public class ProductionBuilding extends Building{
 	 * @param items items
 	 * @return requested amount
 	 */
-	private double[] findRequests(ArrayList<SagaResource> items) {
+	protected double[] findRequests(SagaResource[] items) {
 
-		double[] requests = new double[items.size()];
+		double[] requests = new double[items.length];
 		
-		for (int i = 0; i < items.size(); i++) {
+		for (int i = 0; i < items.length; i++) {
 			
-			SagaItem item = items.get(i);
+			SagaItem item = items[i];
 			
-			for (SagaResource resource : this.resources) {
+			for (SagaResource resource : resources) {
 				requests[i] = requests[i] + resource.countRequired(item);
 			}
 			
@@ -280,9 +293,9 @@ public class ProductionBuilding extends Building{
 	 * @param buildings buildings
 	 * @return requested amount
 	 */
-	private static double[][] findRequests(ArrayList<SagaResource> items, ArrayList<ProductionBuilding> buildings) {
+	private static double[][] findRequests(SagaResource[] items, ArrayList<ProductionBuilding> buildings) {
 
-		double[][] requests = new double[items.size()][buildings.size()];
+		double[][] requests = new double[items.length][buildings.size()];
 		
 		for (int b = 0; b < buildings.size(); b++) {
 
@@ -325,21 +338,29 @@ public class ProductionBuilding extends Building{
 	
 	// Store:
 	/**
-	 * Stores items and blocks.
+	 * Stores item and block resources.
 	 * 
 	 * @param blocksItems items or blocks to store
 	 */
-	public void store(SagaItem[] blocksItems) {
+	private void store(SagaItem[] blocksItems) {
 		
 		for (int i = 0; i < blocksItems.length; i++) {
 			
 			SagaItem sagaItem = blocksItems[i];
 			
+			// Empty buffer:
+			sagaItem.modifyAmount(buffers[i]);
+			
+			// Store:
 			if(sagaItem.getType().isBlock()){
 				storeBlock(sagaItem);
 			}else{
 				storeItem(sagaItem);
 			}
+			
+			// Fill buffer:
+			buffers[i] = sagaItem.getAmount();
+			sagaItem.setAmount(0.0);
 			
 		}
 		
@@ -405,12 +426,12 @@ public class ProductionBuilding extends Building{
 
 	// Withdraw:
 	/**
-	 * Withdraw blocks.
+	 * Withdraw block and item resources.
 	 * 
 	 * @param items saga block item types to withdraw
 	 * @return items that were withdrawn
 	 */
-	public SagaItem[] withdraw(SagaItem[] requested) {
+	private SagaItem[] withdraw(SagaItem[] requested) {
 
 		
 		SagaItem[] withdraw = new SagaItem[requested.length];
@@ -418,6 +439,7 @@ public class ProductionBuilding extends Building{
 		// Clone resources:
 		for (int i = 0; i < requested.length; i++) {
 			
+			// Withdraw:
 			SagaItem requestedItem = requested[i];
 			
 			if(requestedItem.getType().isBlock()){
@@ -425,6 +447,14 @@ public class ProductionBuilding extends Building{
 			}else{
 				withdraw[i] = withdrawItem(requested[i]);
 			}
+
+			// Take from buffer:
+			double buffer = buffers[i];
+			if(buffer > requested[i].getAmount() - withdraw[i].getAmount()){
+				buffer = requested[i].getAmount() - withdraw[i].getAmount();
+			}
+			requested[i].modifyAmount(buffer);
+			buffers[i]-= buffer;
 			
 		}
 		
@@ -575,7 +605,7 @@ public class ProductionBuilding extends Building{
 	 * 
 	 * @return resources
 	 */
-	public ArrayList<SagaResource> getResources() {
+	public SagaResource[] getResources() {
 		return resources;
 	}
 	

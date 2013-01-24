@@ -77,21 +77,21 @@ public class BuildingMessages {
 	public static String resourceProgress(ProductionBuilding building) {
 		
 		
-		ArrayList<SagaResource> resources = building.getResources();
+		SagaResource[] resources = building.getResources();
 		
-		if(resources.size() != 0){
+		if(resources.length != 0){
 			
 			StringBuffer recipeStr = new StringBuffer();
 			
 			// Recipes:
-			for (int r = 0; r < resources.size(); r++) {
+			for (int r = 0; r < resources.length; r++) {
 				
-				SagaResource recipe = resources.get(r);
+				SagaResource recipe = resources[r];
 				
 				// Duplicates:
 				boolean duplic = false;
-				if(r != 0 && resources.get(r-1).getType() == recipe.getType()) duplic = true; 
-				if(r != resources.size() - 1 && resources.get(r+1).getType() == recipe.getType()) duplic = true; 
+				if(r != 0 && resources[r-1].getType() == recipe.getType()) duplic = true; 
+				if(r != resources.length - 1 && resources[r+1].getType() == recipe.getType()) duplic = true; 
 				
 				if(recipeStr.length() > 0) recipeStr.append("\n");
 				

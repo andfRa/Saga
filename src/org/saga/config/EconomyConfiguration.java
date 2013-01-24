@@ -8,6 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.SagaLogger;
+import org.saga.buildings.production.SagaPricedItem;
 import org.saga.factions.Faction;
 import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
@@ -96,21 +97,13 @@ public class EconomyConfiguration {
 
 	
 	/**
-	 * Material prices.
+	 * Imports.
 	 */
-	public Hashtable<Material, Double> prices;
+	public Hashtable<Material, Double> imports;
 
-	/**
-	 * Sell multiplier.
-	 */
-	public Double sellMult;
-
-	/**
-	 * Buy multiplier.
-	 */
-	public Double buyMult;
 	
 	
+	// Faction wages:
 	/**
 	 * The amount of wage for claim points.
 	 */
@@ -132,6 +125,16 @@ public class EconomyConfiguration {
 	private TwoPointFunction factionKillReward;
 	
 	
+
+	// Trading post:
+	/**
+	 * Trading post automatic exports.
+	 */
+	private SagaPricedItem[] tPostExports;
+
+	
+	
+	// Options:
 	/**
 	 * True to enable hooking with other economy plugins.
 	 */
@@ -204,20 +207,11 @@ public class EconomyConfiguration {
 			factionRenameCost= 1000.0;
 		}
 		
-		if(prices == null){
-			SagaLogger.nullField(getClass(), "prices");
-			prices = new Hashtable<Material, Double>();
+		if(imports == null){
+			SagaLogger.nullField(getClass(), "imports");
+			imports = new Hashtable<Material, Double>();
 		}
 		
-		if(buyMult == null){
-			SagaLogger.nullField(getClass(), "buyMult");
-			buyMult = 1.0;
-		}
-
-		if(sellMult == null){
-			SagaLogger.nullField(getClass(), "sellMult");
-			sellMult = 1.0;
-		}
 
 		if(factionClaimsPointsWage == null){
 			SagaLogger.nullField(getClass(), "factionClaimsPointsWage");
@@ -237,15 +231,25 @@ public class EconomyConfiguration {
 		
 		if(factionKillReward == null){
 			SagaLogger.nullField(getClass(), "factionKillReward");
-			factionKillReward= new TwoPointFunction(0.0);
+			factionKillReward = new TwoPointFunction(0.0);
 		}
-		factionWageHierarchyMultiplier.complete();
-
+		factionKillReward.complete();
+		
 		if(factionWagesTime == null){
 			SagaLogger.nullField(getClass(), "factionWagesTime");
 			factionWagesTime= Daytime.NONE;
 		}
 
+		
+		if(tPostExports == null){
+			SagaLogger.nullField(getClass(), "tPostExports");
+			tPostExports = new SagaPricedItem[0];
+		}
+		for (SagaPricedItem item : tPostExports) {
+			item.complete();
+		}
+
+		
 		if(enableHooking == null){
 			SagaLogger.nullField(getClass(), "enableHooking");
 			enableHooking= true;
@@ -270,35 +274,13 @@ public class EconomyConfiguration {
 	
 	// Prices:
 	/**
-	 * Gets the price for the given material
+	 * Gets the import price for the given material.
 	 * 
 	 * @param material material
-	 * @return price, null if none
+	 * @return import price, null if none
 	 */
-	public Double getPrice(Material material) {
-		
-		Double price = prices.get(material);
-		
-		return price;
-	
-	}
-	
-	/**
-	 * Gets the sell multiplier.
-	 * 
-	 * @return sell multiplier
-	 */
-	public Double getSellMult() {
-		return sellMult;
-	}
-	
-	/**
-	 * Gets the buy multiplier.
-	 * 
-	 * @return buy multiplier
-	 */
-	public Double getBuyMult() {
-		return buyMult;
+	public Double getImport(Material material) {
+		return imports.get(material);
 	}
 	
 	
@@ -392,7 +374,7 @@ public class EconomyConfiguration {
 	
 	
 	
-	// Wages:
+	// Faction wages:
 	/**
 	 * Calculates wage for settlement.
 	 * 
@@ -456,6 +438,18 @@ public class EconomyConfiguration {
 	
 		return factionKillReward.value(0);
 		
+	}
+	
+	
+	
+	// Trading post:
+	/**
+	 * Gets trading post exports.
+	 * 
+	 * @return trading post exports
+	 */
+	public SagaPricedItem[] getTradingPostExports() {
+		return tPostExports;
 	}
 	
 	

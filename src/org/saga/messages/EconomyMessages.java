@@ -1,6 +1,10 @@
 package org.saga.messages;
 
+import java.util.ArrayList;
+
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.saga.buildings.production.SagaItem;
 import org.saga.config.EconomyConfiguration;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.dependencies.Trader;
@@ -130,6 +134,44 @@ public class EconomyMessages {
 	
 	public static String gotKillReward(SagaPlayer attakerPlayer, SagaPlayer defenderPlayer, Faction faction, Double amount) {
 		return faction.getColour2() + attakerPlayer.getName() + " received " + coins(amount) + " for killing " + defenderPlayer.getName() + ".";
+	}
+	
+	
+	
+	// Trading post:
+	public static String exported(ArrayList<SagaItem> exports, Double coins) {
+		
+		StringBuffer result = new StringBuffer();
+		ChatColor primCol = Colour.normal2;
+		ChatColor secCol = Colour.normal1;
+		
+		if(exports.size() == 0) return primCol + "Exported: -.";
+		
+		result.append(primCol + "Exported: ");
+		
+		for (int i = 0; i < exports.size(); i++) {
+			
+			SagaItem item = exports.get(i);
+			
+			// Duplicate:
+			boolean duplic = false;
+			if(i != 0 && exports.get(i-1).getType() == item.getType()) duplic = true; 
+			if(i != exports.size() - 1 && exports.get(i+1).getType() == item.getType()) duplic = true; 
+
+			if(i != 0) result.append(primCol + ", ");
+			result.append(secCol);
+			
+			// Item:
+			if(item.getAmount() > 1) result.append(item.getAmount().intValue() + " ");
+			result.append(GeneralMessages.material(item.getType()));
+			if(duplic) result.append(":" + item.getData());
+			
+		}
+		
+		result.append(primCol + " for " + EconomyMessages.coins(coins) + ".");
+		
+		return result.toString();
+		
 	}
 	
 	

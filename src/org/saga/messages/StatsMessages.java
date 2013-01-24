@@ -17,6 +17,7 @@ import org.saga.buildings.TownSquare;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.BuildingConfiguration;
+import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.GeneralConfiguration;
@@ -436,9 +437,13 @@ public class StatsMessages {
 			table.addLine("owner", Colour.veryNegative + "none", 0);
 		}
 
-		double progress = settlement.getClaimProgress();
-
+		// Banked:
+		if(EconomyConfiguration.config().isEnabled()){
+			table.addLine("banked", EconomyMessages.coins(settlement.getCoins()), 0);
+		}
+		
 		// Claims:
+		double progress = settlement.getClaimProgress();
 		table.addLine("size", settlement.getUsedClaimed() + "/" + settlement.getTotalClaims(), 2);
 
 		// Next claim:
@@ -743,7 +748,6 @@ public class StatsMessages {
 		}else{
 			table.addLine("owner", Colour.veryNegative + "none", 0);
 		}
-		
 		
 		int claimed = FactionClaimManager.manager().findSettlementsIds(faction.getId()).length;
 		int totalClaims = faction.getTotalClaims();

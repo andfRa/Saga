@@ -135,7 +135,7 @@ public class SagaResource extends SagaRecipe {
 	}
 	
 	/**
-	 * Counts how many items will are required.
+	 * Counts how many items are required.
 	 * 
 	 * @param item item to count for
 	 * @return amount required

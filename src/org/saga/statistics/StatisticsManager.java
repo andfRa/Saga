@@ -1055,7 +1055,11 @@ public class StatisticsManager implements HourTicker{
 	public void addFactionClaims(Faction faction, Double amount) {
 		modifyValue("claims.factions." + faction.getName(), amount);
 	}
+
 	
+	public void addBuy(SagaPlayer sagaPlayer, Material material, Integer amount, Double price) {
+		modifyValue("eco.buy." + material + "." + sagaPlayer.getName(), amount*price);
+	}
 	
 	
 	// Load unload:

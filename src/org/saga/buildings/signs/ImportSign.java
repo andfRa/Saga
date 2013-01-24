@@ -1,0 +1,326 @@
+package org.saga.buildings.signs;
+
+import org.bukkit.Material;
+import org.bukkit.block.Sign;
+import org.bukkit.inventory.ItemStack;
+import org.saga.buildings.Building;
+import org.saga.buildings.TradingPost;
+import org.saga.config.EconomyConfiguration;
+import org.saga.config.SettlementConfiguration;
+import org.saga.dependencies.EconomyDependency;
+import org.saga.messages.EconomyMessages;
+import org.saga.messages.GeneralMessages;
+import org.saga.player.SagaPlayer;
+import org.saga.statistics.StatisticsManager;
+
+
+public class ImportSign extends BuildingSign {
+
+
+	/**
+	 * Name for the sign.
+	 */
+	public static String SIGN_NAME = "=[IMPORT]=";
+
+	/**
+	 * Amount division string.
+	 */
+	public static String DATA_DIV = ":";
+	
+	/**
+	 * Amount division string.
+	 */
+	public static String AMOUNT_DIV = "\\*";
+	
+	/**
+	 * Displayed amount division string.
+	 */
+	public static String AMOUNT_DIV_DISPLAY = "*";
+	
+	
+	/**
+	 * Material.
+	 */
+	transient private Material material = null;
+	
+	/**
+	 * Data values.
+	 */
+	transient private Short data = null;
+
+	/**
+	 * Amount.
+	 */
+	transient private Integer amount = null;
+
+
+	
+	// Initialisation:
+	/**
+	 * Creates a import sign. 
+	 * 
+	 * @param sign sign
+	 * @param secondLine second line
+	 * @param thirdLine third line
+	 * @param fourthLine fourth line
+	 * @param event event that created the sign
+	 * @param building building
+	 */
+	protected ImportSign(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building){
+	
+		super(sign, SIGN_NAME, secondLine, thirdLine, fourthLine, building);
+		
+		initialiseFields();
+		
+	}
+	
+	/**
+	 * Creates the training 
+	 * 
+	 * @param sign bukkit sign
+	 * @param firstLine first line
+	 * @param secondLine second line
+	 * @param thirdLine third line
+	 * @param fourthLine fourth line
+	 * @param building building
+	 * @return training sign
+	 */
+	public static ImportSign create(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building) {
+		return new ImportSign(sign, secondLine, thirdLine, fourthLine, building);
+	}
+
+	@Override
+	public boolean complete(Building building) throws SignException {
+		
+		
+		super.complete(building);
+		
+		initialiseFields();
+		
+		return true;
+		
+		
+	}
+	
+	/**
+	 * Initialises fields.
+	 * 
+	 */
+	private void initialiseFields() {
+
+		
+		// First parameter:
+		String[] firstParameter = getFirstParameter().split(AMOUNT_DIV);
+
+		String sMaterial = null;
+		String sData = null;
+		String sAmount = null;
+		
+		// Arguments:
+		if(firstParameter.length == 2){
+			
+			String[] sMatData = firstParameter[1].split(DATA_DIV);
+			
+			// Material:
+			sMaterial = sMatData[0];
+			material = Material.matchMaterial(sMaterial);
+			if(material == null){
+				try {
+					material = Material.getMaterial(Integer.parseInt(sMaterial));
+				} catch (NumberFormatException e) { }
+			}
+			
+			// Data:
+			if(sMatData.length > 1){
+				sData = sMatData[1];
+				try {
+					data = Short.parseShort(sData);
+				} catch (NumberFormatException e) { }
+			}
+			
+			// Amount:
+			sAmount = firstParameter[0];
+			try {
+				amount = Integer.parseInt(sAmount);
+			} catch (NumberFormatException e) {}
+			
+		}else{
+
+			String[] sMatData = firstParameter[0].split(DATA_DIV);
+			
+			// Material:
+			sMaterial = sMatData[0];
+			material = Material.matchMaterial(sMaterial);
+			if(material == null){
+				try {
+					material = Material.getMaterial(Integer.parseInt(sMaterial));
+				} catch (NumberFormatException e) { }
+			}
+			if(material == null) return;
+
+			// Data:
+			if(sMatData.length > 1){
+				sData = sMatData[1];
+				try {
+					data = Short.parseShort(sData);
+				} catch (NumberFormatException e) { }
+			}
+			
+			amount = material.getMaxStackSize();
+			
+		}
+		
+		// Fix amount:
+		if(amount != null && amount < 0) amount = 0;
+		
+		// Fix data:
+		if(data == null) data = 0;
+		
+		
+	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.buildings.signs.BuildingSign#getName()
+	 */
+	@Override
+	public String getName() {
+		return SIGN_NAME;
+	}
+
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.buildings.signs.BuildingSign#getStatus()
+	 */
+	@Override
+	public SignStatus getStatus() {
+		
+
+		if(material == null || amount == null) return SignStatus.INVALIDATED;
+		
+		if(EconomyConfiguration.config().getImport(material) == null) return SignStatus.INVALIDATED;
+		
+		// Buy limit:
+		if(getBuilding() instanceof TradingPost){
+			
+			if(((TradingPost) getBuilding()).checkOverBuyLimit()) return SignStatus.DISABLED;
+
+		}
+		
+		return SignStatus.ENABLED;
+	
+		
+	}
+	
+	@Override
+	public String getLine(int index, SignStatus status) {
+	
+		
+		Double price = null;
+		if(material != null) price = EconomyConfiguration.config().getImport(material);
+		
+		switch (status) {
+			
+				
+			case ENABLED:
+				
+				
+				if(index == 1) return amount + AMOUNT_DIV_DISPLAY + GeneralMessages.materialAbrev(material);
+				if(index == 2) return "price: " + EconomyMessages.coins(price);
+				
+				Double perc = 1.0;
+				if(getBuilding() instanceof TradingPost){
+					
+					TradingPost tpost = (TradingPost) getBuilding();
+					
+					perc = (1 - tpost.getBuyCoins() / tpost.getBuyLimit()) * 100;
+					
+				}
+				if(index == 3) return "goods: " + perc.intValue() + "%";
+				
+				break;
+				
+			case DISABLED:
+				
+				if(index == 1) return amount + AMOUNT_DIV_DISPLAY + GeneralMessages.materialAbrev(material);
+				if(index == 2) return "price: " + EconomyMessages.coins(price);
+				if(index == 3) return "come back later";
+				break;
+			
+			case INVALIDATED:
+				
+				if(index == 1) return SettlementConfiguration.config().invalidSignColor + "amt" + AMOUNT_DIV_DISPLAY + "item/ID";
+			
+			break;
+				
+			default:
+				
+				return "-";
+
+		}
+
+		return "";
+		
+		
+	}
+	
+	
+	
+	// Custom parameters:
+	/**
+	 * Gets the material.
+	 * 
+	 * @return the material, null if none
+	 */
+	public Material getMaterial() {
+		return material;
+	}
+	
+	
+	// Interaction:
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.buildings.signs.BuildingSign#onRightClick(org.saga.player.SagaPlayer)
+	 */
+	@Override
+	protected void onRightClick(SagaPlayer sagaPlayer) {
+
+		
+		Double price = EconomyConfiguration.config().getImport(material);
+		Integer usedAmount = amount;
+		
+		while(EconomyDependency.getCoins(sagaPlayer) < price * usedAmount && usedAmount > 0){
+			usedAmount--; 
+		}
+		
+		if(usedAmount < 1){
+			sagaPlayer.message(EconomyMessages.insufCoins());
+			return;
+		}
+		
+		ItemStack item = new ItemStack(material, usedAmount);
+		
+		// Transaction:
+		EconomyDependency.removeCoins(sagaPlayer, price * usedAmount);
+		sagaPlayer.addItem(item);
+		
+		// Inform:
+		sagaPlayer.message(EconomyMessages.bought(material, usedAmount, price));
+		
+		// Notify transaction:
+		if(getBuilding() instanceof TradingPost){
+			((TradingPost) getBuilding()).notifyBuy(price * usedAmount);
+		}
+		
+		// Statistics:
+		StatisticsManager.manager().addBuy(sagaPlayer, material, usedAmount, price * usedAmount);
+		
+		
+	}
+
+	
+	
+}

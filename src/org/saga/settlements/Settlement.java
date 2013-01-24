@@ -45,6 +45,10 @@ public class Settlement extends Bundle implements MinuteTicker{
 	 */
 	private Double claims;
 	
+	/**
+	 * Coins banked.
+	 */
+	private Double coins;
 	
 	/**
 	 * Player roles.
@@ -105,6 +109,11 @@ public class Settlement extends Bundle implements MinuteTicker{
 				claims = 0.0;
 			}
 			SagaLogger.nullField(this, "claims");
+		}
+		
+		if(coins == null){
+			SagaLogger.nullField(this, "coins");
+			coins = 0.0;
 		}
 		
 		if(lastSeen == null){
@@ -495,6 +504,27 @@ public class Settlement extends Bundle implements MinuteTicker{
 	 */
 	public Double getClaimProgress() {
 		return claims - claims.intValue();
+	}
+	
+	
+	
+	// Wages:
+	/**
+	 * Gets the amount of coins banked.
+	 * 
+	 * @return coins banked
+	 */
+	public Double getCoins() {
+		return coins;
+	}
+	
+	/**
+	 * Adds coins.
+	 * 
+	 * @param amount amount to play
+	 */
+	public void payCoins(Double amount) {
+		coins+= amount;
 	}
 	
 	

@@ -2,16 +2,8 @@ package org.saga.buildings.signs;
 
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
-import org.bukkit.inventory.ItemStack;
 import org.saga.buildings.Building;
-import org.saga.buildings.TradingPost;
-import org.saga.config.EconomyConfiguration;
-import org.saga.config.SettlementConfiguration;
-import org.saga.dependencies.EconomyDependency;
-import org.saga.messages.EconomyMessages;
-import org.saga.messages.GeneralMessages;
 import org.saga.player.SagaPlayer;
-import org.saga.statistics.StatisticsManager;
 
 
 public class BuySign extends BuildingSign {
@@ -163,16 +155,16 @@ public class BuySign extends BuildingSign {
 	public SignStatus getStatus() {
 		
 
-		if(material == null || amount == null) return SignStatus.INVALIDATED;
-		
-		if(EconomyConfiguration.config().getPrice(material) == null) return SignStatus.INVALIDATED;
-		
-		// Buy limit:
-		if(getBuilding() instanceof TradingPost){
-			
-			if(((TradingPost) getBuilding()).checkOverBuyLimit()) return SignStatus.DISABLED;
-
-		}
+//		if(material == null || amount == null) return SignStatus.INVALIDATED;
+//		
+//		if(EconomyConfiguration.config().getImport(material) == null) return SignStatus.INVALIDATED;
+//		
+//		// Buy limit:
+//		if(getBuilding() instanceof TradingPost){
+//			
+//			if(((TradingPost) getBuilding()).checkOverBuyLimit()) return SignStatus.DISABLED;
+//
+//		}
 		
 		return SignStatus.ENABLED;
 	
@@ -183,49 +175,49 @@ public class BuySign extends BuildingSign {
 	public String getLine(int index, SignStatus status) {
 	
 		
-		Double price = null;
-		if(material != null) price = EconomyConfiguration.config().getPrice(material);
-		if(price != null) price*= EconomyConfiguration.config().getBuyMult();
-		
-		switch (status) {
-			
-				
-			case ENABLED:
-				
-				
-				if(index == 1) return amount + AMOUNT_DIV_DISPLAY + GeneralMessages.materialAbrev(material);
-				if(index == 2) return "price: " + EconomyMessages.coins(price);
-				
-				Double perc = 1.0;
-				if(getBuilding() instanceof TradingPost){
-					
-					TradingPost tpost = (TradingPost) getBuilding();
-					
-					perc = (1 - tpost.getBuyCoins() / tpost.getBuyLimit()) * 100;
-					
-				}
-				if(index == 3) return "goods: " + perc.intValue() + "%";
-				
-				break;
-				
-			case DISABLED:
-				
-				if(index == 1) return amount + AMOUNT_DIV_DISPLAY + GeneralMessages.materialAbrev(material);
-				if(index == 2) return "price: " + EconomyMessages.coins(price);
-				if(index == 3) return "come back later";
-				break;
-			
-			case INVALIDATED:
-				
-				if(index == 1) return SettlementConfiguration.config().invalidSignColor + "amt" + AMOUNT_DIV_DISPLAY + "item/ID";
-			
-			break;
-				
-			default:
-				
-				return "-";
-
-		}
+//		Double price = null;
+//		if(material != null) price = EconomyConfiguration.config().getImport(material);
+//		if(price != null) price*= EconomyConfiguration.config().getBuyMult();
+//		
+//		switch (status) {
+//			
+//				
+//			case ENABLED:
+//				
+//				
+//				if(index == 1) return amount + AMOUNT_DIV_DISPLAY + GeneralMessages.materialAbrev(material);
+//				if(index == 2) return "price: " + EconomyMessages.coins(price);
+//				
+//				Double perc = 1.0;
+//				if(getBuilding() instanceof TradingPost){
+//					
+//					TradingPost tpost = (TradingPost) getBuilding();
+//					
+//					perc = (1 - tpost.getBuyCoins() / tpost.getBuyLimit()) * 100;
+//					
+//				}
+//				if(index == 3) return "goods: " + perc.intValue() + "%";
+//				
+//				break;
+//				
+//			case DISABLED:
+//				
+//				if(index == 1) return amount + AMOUNT_DIV_DISPLAY + GeneralMessages.materialAbrev(material);
+//				if(index == 2) return "price: " + EconomyMessages.coins(price);
+//				if(index == 3) return "come back later";
+//				break;
+//			
+//			case INVALIDATED:
+//				
+//				if(index == 1) return SettlementConfiguration.config().invalidSignColor + "amt" + AMOUNT_DIV_DISPLAY + "item/ID";
+//			
+//			break;
+//				
+//			default:
+//				
+//				return "-";
+//
+//		}
 
 		return "";
 		
@@ -255,40 +247,40 @@ public class BuySign extends BuildingSign {
 	protected void onRightClick(SagaPlayer sagaPlayer) {
 
 		
-		// Used amount:
-		Integer usedAmount = amount;
-		
-		// Used coins:
-		Double price = EconomyConfiguration.config().getPrice(material);
-		if(price == null) return;
-		price*= EconomyConfiguration.config().getBuyMult();
-		
-		while(EconomyDependency.getCoins(sagaPlayer) < price * usedAmount && usedAmount > 0){
-			usedAmount--; 
-		}
-		
-		if(usedAmount < 1){
-			sagaPlayer.message(EconomyMessages.insufCoins());
-			return;
-		}
-		
-		ItemStack item = new ItemStack(material, usedAmount);
-		
-		// Transaction:
-		EconomyDependency.removeCoins(sagaPlayer, price * usedAmount);
-		sagaPlayer.addItem(item);
-		
-		// Inform:
-		sagaPlayer.message(EconomyMessages.bought(material, usedAmount, price));
-		
-		// Notify transaction:
-		if(getBuilding() instanceof TradingPost){
-			((TradingPost) getBuilding()).notifyBuy(price * usedAmount);
-		}
-		
-		// Statistics:
-		StatisticsManager.manager().onPlayerBuy(sagaPlayer, material, usedAmount, price * usedAmount);
-		
+//		// Used amount:
+//		Integer usedAmount = amount;
+//		
+//		// Used coins:
+//		Double price = EconomyConfiguration.config().getImport(material);
+//		if(price == null) return;
+//		price*= EconomyConfiguration.config().getBuyMult();
+//		
+//		while(EconomyDependency.getCoins(sagaPlayer) < price * usedAmount && usedAmount > 0){
+//			usedAmount--; 
+//		}
+//		
+//		if(usedAmount < 1){
+//			sagaPlayer.message(EconomyMessages.insufCoins());
+//			return;
+//		}
+//		
+//		ItemStack item = new ItemStack(material, usedAmount);
+//		
+//		// Transaction:
+//		EconomyDependency.removeCoins(sagaPlayer, price * usedAmount);
+//		sagaPlayer.addItem(item);
+//		
+//		// Inform:
+//		sagaPlayer.message(EconomyMessages.bought(material, usedAmount, price));
+//		
+//		// Notify transaction:
+//		if(getBuilding() instanceof TradingPost){
+//			((TradingPost) getBuilding()).notifyBuy(price * usedAmount);
+//		}
+//		
+//		// Statistics:
+//		StatisticsManager.manager().onPlayerBuy(sagaPlayer, material, usedAmount, price * usedAmount);
+//		
 		
 	}
 

@@ -54,7 +54,7 @@ public class BuildingDefinition {
 	/**
 	 * Production recipes for the building.
 	 */
-	private ArrayList<SagaRecipe> production;
+	private SagaRecipe[] production;
 	
 	/**
 	 * Buildings to which the resources will be offered to.
@@ -159,7 +159,7 @@ public class BuildingDefinition {
 		}
 		
 		if(production == null){
-			production = new ArrayList<SagaRecipe>();
+			production = new SagaRecipe[0];
 			SagaLogger.nullField(BuildingDefinition.class, "production");
 		}
 		for (SagaRecipe recipie : production) {
@@ -315,7 +315,7 @@ public class BuildingDefinition {
 	 * 
 	 * @return production recipes
 	 */
-	public ArrayList<SagaRecipe> getProductionRecipes() {
+	public SagaRecipe[] getProductionRecipes() {
 		return production;
 	}
 	
