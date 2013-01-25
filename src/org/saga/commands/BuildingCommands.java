@@ -461,14 +461,14 @@ public class BuildingCommands {
 
 	// Crumble arena:
 	@Command(
-			aliases = {"bsetheight","bsety"},
-			usage = "<display_amount>",
+			aliases = {"bsetarenay","bsetheight","bsety"},
+			usage = "",
 			flags = "",
 			desc = "Set arena height.",
 			min = 0,
 			max = 0
 	)
-	@CommandPermissions({"saga.user.building.crumblearena.heighy"})
+	@CommandPermissions({"saga.user.building.crumblearena.sety"})
 	public static void setHeight(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
@@ -500,13 +500,13 @@ public class BuildingCommands {
 
 	@Command(
 			aliases = {"bsetkickloc","bsetkick"},
-			usage = "<display_amount>",
+			usage = "",
 			flags = "",
 			desc = "Set crumble arena kick location.",
 			min = 0,
 			max = 0
 	)
-	@CommandPermissions({"saga.user.building.crumblearena.kick"})
+	@CommandPermissions({"saga.user.building.crumblearena.setkick"})
 	public static void setKickLocation(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
