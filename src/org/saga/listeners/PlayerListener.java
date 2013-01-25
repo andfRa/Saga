@@ -248,7 +248,7 @@ public class PlayerListener implements Listener {
 		if(sagaPlayer == null) return;
 		
 		
-		event.setFormat(ChatDependency.modifyChatFormat(event.getFormat(), sagaPlayer));
+		event.setFormat(ChatDependency.format(event.getFormat(), sagaPlayer));
 		
 		
 	}
@@ -269,11 +269,6 @@ public class PlayerListener implements Listener {
 
 		SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
 		if(sagaPlayer == null) return;
-		
-		
-		// Update chat prefix:
-		ChatDependency.updatePrefix(sagaPlayer);
-		
 		
 	}
 	

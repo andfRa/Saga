@@ -33,6 +33,12 @@ public class GeneralConfiguration {
 	}
 	
 	
+	/**
+	 * Insert string.
+	 */
+	public final static String INSERT_STRING = "#";
+	
+	
 	// Saving:
 	/**
 	 * Saga save interval.
@@ -61,10 +67,27 @@ public class GeneralConfiguration {
 	 */
 	public ChatColor specialChatMessageColor;
 
+
 	/**
-	 * Prefix separator.
+	 * Settlement format.
 	 */
-	public String prefixSeparator;
+	public String settlementFormat;
+	
+	/**
+	 * Faction format.
+	 */
+	public String factionFormat;
+
+	/**
+	 * Role format.
+	 */
+	public String roleFormat;
+	
+	/**
+	 * Rank format.
+	 */
+	public String rankFormat;
+	
 	
 
 	// Potions:
@@ -180,10 +203,27 @@ public class GeneralConfiguration {
 			specialChatMessageColor = ChatColor.BLUE;
 		}
 		
-		if(prefixSeparator == null){
-			SagaLogger.nullField(getClass(), "prefixSeparator");
-			prefixSeparator = "-";
+		
+		if(settlementFormat == null){
+			SagaLogger.nullField(getClass(), "setlementFormat");
+			settlementFormat = INSERT_STRING;
 		}
+
+		if(factionFormat == null){
+			SagaLogger.nullField(getClass(), "factionFormat");
+			factionFormat = INSERT_STRING;
+		}
+
+		if(roleFormat == null){
+			SagaLogger.nullField(getClass(), "roleFormat");
+			roleFormat = INSERT_STRING;
+		}
+
+		if(rankFormat == null){
+			SagaLogger.nullField(getClass(), "rankFormat");
+			rankFormat = INSERT_STRING;
+		}
+		
 		
 		if(harmfulSplashPotions == null){
 			SagaLogger.nullField(getClass(), "badSplashPotions");

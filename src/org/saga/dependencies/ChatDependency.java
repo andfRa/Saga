@@ -14,7 +14,11 @@ import org.saga.SagaLogger;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.factions.Faction;
+import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.Bundle;
+
+import com.earth2me.essentials.chat.EssentialsChat;
 
 public class ChatDependency {
 
@@ -25,10 +29,45 @@ public class ChatDependency {
 
 
 	/**
+	 * Prefix insert for settlements.
+	 */
+	public static final String SETTLEMENT_INSERT = "[SETTLEMENT]";
+
+	/**
+	 * Prefix insert for factions.
+	 */
+	public static final String FACTION_INSERT = "[FACTION]";
+	
+	/**
+	 * Prefix insert for faction colour 1.
+	 */
+	public static final String FACTION_COLOUR1_INSERT = "[FACTION_COL1]";
+	
+	/**
+	 * Prefix insert for faction colour 2.
+	 */
+	public static final String FACTION_COLOUR2_INSERT = "[FACTION_COL2]";
+
+	/**
+	 * Prefix insert for roles.
+	 */
+	public static final String ROLE_INSERT = "[ROLE]";
+	
+	/**
+	 * Prefix insert for ranks.
+	 */
+	public static final String RANK_INSERT = "[RANK]";
+	
+	
+	/**
 	 * GroupManager chat.
 	 */
 	private GroupManager groupManager = null;
 	
+	/**
+	 * EssentialsChat chat.
+	 */
+	private EssentialsChat essentialsChat = null;
 	
 	/**
 	 * Vault chat.
@@ -37,6 +76,7 @@ public class ChatDependency {
 
 	
 
+	// Initialisation:
 	/**
 	 * Enables the manager.
 	 * 
@@ -50,9 +90,19 @@ public class ChatDependency {
 		if(!EconomyConfiguration.config().canHook()) return;
 
 		final PluginManager pluginManager = Saga.plugin().getServer().getPluginManager();
+
+		// Essentials chat:
+		Plugin plugin = pluginManager.getPlugin("EssentialsChat");
+		if (plugin != null && plugin.isEnabled()) {
+		
+			manager.essentialsChat = (EssentialsChat)plugin;
+			SagaLogger.info("Using EssentialsChat chat.");
+			return;
+			
+		}
 		
 		// Group manager:
-		Plugin plugin = pluginManager.getPlugin("GroupManager");
+		plugin = pluginManager.getPlugin("GroupManager");
 		if (plugin != null && plugin.isEnabled()) {
 		
 			manager.groupManager = (GroupManager)plugin;
@@ -60,7 +110,7 @@ public class ChatDependency {
 			return;
 			
 		}
-		
+
 		// Vault:
 		try {
 			Class.forName("net.milkbowl.vault.chat.Chat");
@@ -89,13 +139,84 @@ public class ChatDependency {
 	public static void disable() {
 
 		manager.groupManager = null;
+		manager.essentialsChat = null;
 		manager.vaultChat = null;
 		
 		manager = null;
 
 	}
 	
+
 	
+	// Operation:
+	/**
+	 * Modifies chat format.
+	 * 
+	 * @param format old format
+	 * @param sagaPlayer saga player
+	 * @return new format
+	 */
+	public static String format(String format, SagaPlayer sagaPlayer) {
+
+		
+		// Faction prefix if no chat managers present:
+		if(manager.essentialsChat == null && manager.vaultChat == null && manager.groupManager == null){
+
+			Faction faction = sagaPlayer.getFaction();
+	    	if(faction == null || !faction.isFormed()) return format;
+	    	
+	    	ChatColor color1 = faction.getColour1();
+	    	ChatColor color2 = faction.getColour2();
+	    	ChatColor reset = ChatColor.RESET;
+			
+			return "<" +color1 + faction.getName() + "-" + color2 + "%1$s" + reset + "> %2$s";
+			
+		}
+		
+    	// Settlement:
+		Bundle bundle = sagaPlayer.getBundle();
+		if(bundle != null){
+			format = format.replace(SETTLEMENT_INSERT, GeneralConfiguration.config().settlementFormat.replace(GeneralConfiguration.INSERT_STRING, bundle.getName()));
+		}else{
+			format = format.replace(SETTLEMENT_INSERT, "");
+		}
+
+    	// Faction:
+		Faction faction = sagaPlayer.getFaction();
+		if(faction != null && faction.isFormed()){
+			format = format.replace(FACTION_INSERT, GeneralConfiguration.config().factionFormat.replace(GeneralConfiguration.INSERT_STRING, faction.getName()));
+			format = format.replace(FACTION_COLOUR1_INSERT, faction.getColour1().toString());
+			format = format.replace(FACTION_COLOUR2_INSERT, faction.getColour2().toString());
+		}else{
+			format = format.replace(FACTION_INSERT, "");
+			format = format.replace(FACTION_COLOUR1_INSERT, "");
+			format = format.replace(FACTION_COLOUR2_INSERT, "");
+		}
+
+		// Role:
+		Proficiency role = sagaPlayer.getRole();
+		if(role != null){
+			format = format.replace(ROLE_INSERT, GeneralConfiguration.config().roleFormat.replace(GeneralConfiguration.INSERT_STRING, role.getName()));
+		}else{
+			format = format.replace(ROLE_INSERT, "");
+		}
+		
+		// Rank:
+		Proficiency rank = sagaPlayer.getRank();
+		if(rank != null){
+			format = format.replace(RANK_INSERT, GeneralConfiguration.config().rankFormat.replace(GeneralConfiguration.INSERT_STRING, rank.getName()));
+		}else{
+			format = format.replace(RANK_INSERT, "");
+		}
+		
+    	return format;
+    	
+		
+	}
+
+	
+
+	// Temporary:
 	/**
 	 * Updates player prefix.
 	 * 
@@ -112,7 +233,6 @@ public class ChatDependency {
 		
 		// Prefix:
 		String prefix = "";
-		if(faction != null && faction.isFormed()) prefix = faction.getColour1() + faction.getName() + GeneralConfiguration.config().prefixSeparator + faction.getColour2();
 		
 		// GroupManager:
 		if(manager.groupManager != null){
@@ -142,66 +262,23 @@ public class ChatDependency {
 	}
 	
 	/**
-	 * Modifies chat format if no chat plugins are detected.
-	 * 
-	 * @param format old format
-	 * @param sagaPlayer saga player
-	 * @return new format
-	 */
-	public static String modifyChatFormat(String format, SagaPlayer sagaPlayer) {
-
-		
-		if(manager.vaultChat != null || manager.groupManager != null) return format;
-
-    	// No faction or not formed yet:
-    	Faction faction = sagaPlayer.getFaction();
-    	if(faction == null || !faction.isFormed()) return format;
-    	
-    	ChatColor color1 = faction.getColour1();
-    	ChatColor color2 = faction.getColour2();
-    	ChatColor reset = ChatColor.RESET;
-    	
-    	return "<" +color1 + faction.getName() + GeneralConfiguration.config().prefixSeparator + color2 + "%1$s" + reset + "> %2$s";
-    	
-		
-	}
-	
-	
-	
-	/**
 	 * Sets GroupManager prefix.
-	 * 
+	 *
 	 * @param player player
 	 * @param prefix prefix
-	 */
+	*/
 	private static void setGroupManagerPrefix(Player player, String prefix) {
-
-		
+	
+	
 		final OverloadedWorldHolder handler = manager.groupManager.getWorldsHolder().getWorldData(player);
 		if (handler == null) {
-			return;
+		return;
 		}
 		
 		handler.getUser(player.getName()).getVariables().addVar("prefix", prefix);
+		
+	
+	}
+	
 
-		
-	}
-	
-	
-	
-	// Types:
-	/**
-	 * Transaction type.
-	 * 
-	 * @author andf
-	 *
-	 */
-	public enum TransactionType{
-		
-		SELL,
-		BUY,
-		INVALID;
-		
-	}
-	
 }
