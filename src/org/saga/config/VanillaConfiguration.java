@@ -34,6 +34,10 @@ public class VanillaConfiguration {
 	 */
 	transient private static VanillaConfiguration instance;
 	
+	/**
+	 * Minutes in a minecraft day.
+	 */
+	public static final Double MINUTES_IN_MC_DAY = 20.0; 
 	
 	
 	/**

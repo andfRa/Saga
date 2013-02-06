@@ -36,6 +36,7 @@ import org.saga.saveload.SagaCustomSerialization;
 import org.saga.settlements.Bundle;
 import org.saga.settlements.BundleToggleable;
 import org.saga.settlements.SagaChunk;
+import org.saga.settlements.Settlement;
 import org.saga.settlements.SagaChunk.ChunkSide;
 import org.saga.settlements.Settlement.SettlementPermission;
 import org.saga.utility.chat.ChatUtil;
@@ -255,6 +256,20 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 			return null;
 		}
 		return sagaChunk.getChunkBundle();
+		
+	}
+	
+	/**
+	 * Gets settlement the Saga chunk belongs to.
+	 * 
+	 * @return settlement teh Saga chunk belongs to
+	 */
+	public Settlement getSettlement() {
+		
+		if(sagaChunk == null || !(sagaChunk.getChunkBundle() instanceof Settlement)){
+			return null;
+		}
+		return (Settlement) sagaChunk.getChunkBundle();
 		
 	}
 	
@@ -835,14 +850,6 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 
 	}
 
-	/**
-	 * Performs crafting based on recipes.
-	 * 
-	 */
-	public void produce() {
-		
-	}
-	
 
 	
 	// Clock:
@@ -859,9 +866,6 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		
 		// Perform:
 		if(daytime == getDefinition().getPerformTime()) perform();
-		
-		// Produce:
-		if(daytime == getDefinition().getCraftTime()) produce();
 		
 		return true;
 		

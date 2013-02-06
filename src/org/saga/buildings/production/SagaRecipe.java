@@ -1,14 +1,20 @@
 package org.saga.buildings.production;
 
+import org.saga.config.VanillaConfiguration;
+
 
 public class SagaRecipe extends SagaItem{
-
+	
 	
 	/**
 	 * Recipe contents.
 	 */
 	protected SagaItem[] recipe;
 	
+	/**
+	 * Required work points.
+	 */
+	private Double reqWork;
 	
 	
 	/**
@@ -16,10 +22,12 @@ public class SagaRecipe extends SagaItem{
 	 * 
 	 * @param item saga item
 	 * @param recipe recipe
+	 * @param reqWork required work
 	 */
-	public SagaRecipe(SagaItem item, SagaItem[] recipe){
+	public SagaRecipe(SagaItem item, SagaItem[] recipe, Double reqWork){
 		super(item);
 		this.recipe = recipe.clone();
+		this.reqWork = reqWork;
 	}
 	
 	/**
@@ -30,6 +38,7 @@ public class SagaRecipe extends SagaItem{
 	protected SagaRecipe(SagaRecipe recipe) {
 		super(recipe);
 		this.recipe = recipe.recipe.clone();
+		this.reqWork = recipe.reqWork;
 	}
 	
 	/**
@@ -42,6 +51,10 @@ public class SagaRecipe extends SagaItem{
 		
 		if(recipe == null){
 			recipe = new SagaItem[0];
+		}
+		
+		if(reqWork == null){
+			reqWork = VanillaConfiguration.MINUTES_IN_MC_DAY;
 		}
 		
 		for (int i = 0; i < recipe.length; i++) {
@@ -85,6 +98,15 @@ public class SagaRecipe extends SagaItem{
 		return recipe.length;
 	}
 	
+	/**
+	 * Gets the amount of work points required.
+	 * 
+	 * @return work points
+	 */
+	public Double getRequiredWork() {
+		return reqWork;
+	}
+	
 	
 	
 	// Other:
@@ -119,6 +141,8 @@ public class SagaRecipe extends SagaItem{
 			for (int i = 0; i < this.recipe.length; i++) {
 				if(!recipe.recipe[i].equalsItem(this.recipe[i])) return false;
 			}
+			
+			if(!recipe.reqWork.equals(this.reqWork)) return false;
 			
 			return true;
 			

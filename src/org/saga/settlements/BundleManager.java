@@ -114,6 +114,17 @@ public class BundleManager {
 	}
 
 	/**
+	 * Gets all chunk bundles.
+	 * 
+	 * @return all bundles
+	 */
+	public Collection<Bundle> getAllBundles() {
+		
+		return new ArrayList<Bundle>(registeredBundles.values());
+		
+	}
+	
+	/**
 	 * Gets the bundle with the given name.
 	 * 
 	 * @param name bundle name

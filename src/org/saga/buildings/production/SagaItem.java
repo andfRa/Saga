@@ -75,6 +75,15 @@ public class SagaItem {
     }
     
 	/**
+	 * Creates the Saga item.
+	 * 
+	 * @param item bukkit item stack
+	 */
+	public SagaItem(ItemStack item) {
+		this(item.getType(), (double)item.getAmount(), item.getDurability());
+	}
+    
+	/**
 	 * Fixes all initialisation problems with the item.
 	 * 
 	 */

@@ -5,7 +5,9 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Set;
 
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.saga.Clock;
@@ -14,6 +16,7 @@ import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.Building;
 import org.saga.buildings.BuildingDefinition;
+import org.saga.buildings.production.ProductionBuilding;
 import org.saga.config.BuildingConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.config.ProficiencyConfiguration;
@@ -60,6 +63,11 @@ public class Settlement extends Bundle implements MinuteTicker{
 	 */
 	private Hashtable<String, Date> lastSeen;
 	
+	/**
+	 * Work points for different roles.
+	 */
+	private HashMap<String, Double> workPoints;
+	
 	
 	/**
 	 * True if the minute tick is registered.
@@ -82,6 +90,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 		
 		playerRoles = new Hashtable<String, Proficiency>();
 		lastSeen = new Hashtable<String, Date>();
+		workPoints = new HashMap<String, Double>();
 		
 	}
 
@@ -124,6 +133,11 @@ public class Settlement extends Bundle implements MinuteTicker{
 		if(playerRoles == null){
 			SagaLogger.nullField(this, "playerRoles");
 			playerRoles = new Hashtable<String, Proficiency>();
+		}
+		
+		if(workPoints == null){
+			SagaLogger.nullField(this, "workPoints");
+			workPoints = new HashMap<String, Double>();
 		}
 		
 		Enumeration<String> playerNames = playerRoles.keys();
@@ -429,6 +443,43 @@ public class Settlement extends Bundle implements MinuteTicker{
 	}
 	
 	
+	
+	// Work points:
+	/** 
+	 * Gets the work points for the given role.
+	 * 
+	 * @param roleName role name
+	 * @return work points
+	 */
+	public Double getWorkPoints(String roleName) {
+	
+		Double points = workPoints.get(roleName);
+		if(points == null) points = 0.0;
+		return points;
+		
+	}
+	
+	/**
+	 * Takes work points.
+	 * 
+	 * @param roleName role name
+	 * @param requested requested amount
+	 * @return work points taken
+	 */
+	public Double takeWorkPoints(String roleName, Double requested) {
+		
+		Double points = getWorkPoints(roleName);
+		
+		if(points - requested < 0) requested = points;
+		
+		if(points - requested != 0) workPoints.put(roleName, points - requested);
+		else workPoints.remove(roleName);
+		
+		return requested;
+		
+	}
+	
+	
 	// Building points:
 	/**
 	 * Gets the amount of building points available.
@@ -724,7 +775,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 
 	
 	
-	// Clock:
+	// Timed:
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -740,6 +791,15 @@ public class Settlement extends Bundle implements MinuteTicker{
 		// Statistics:
 		StatisticsManager.manager().addManminutes(this, online);
 
+		// Work:
+		handleWork();
+		
+		// Collect:
+		handleCollect();
+		
+		// Produce:
+		handleProduction();
+		
 		// Increase claims:
 		if(claims < SettlementConfiguration.config().getMaxClaims() && checkActiveMembers() && SettlementConfiguration.config().checkBuildingRequirements(this)){
 		
@@ -754,6 +814,81 @@ public class Settlement extends Bundle implements MinuteTicker{
 		
 	}
 
+	/**
+	 * Handles work points tick.
+	 * 
+	 */
+	public void handleWork() {
+
+
+		// Increase work points:
+		Hashtable<String, Double> onlineRolesTotals = new Hashtable<String, Double>();
+		Collection<SagaPlayer> members = getOnlineMembers();
+		for (SagaPlayer sagaPlayer : members) {
+			
+			Proficiency role = getRole(sagaPlayer.getName());
+			if(role == null) continue;
+			
+			workPoints.put(role.getName(), getWorkPoints(role.getName()) + 1);
+			
+			Double total = onlineRolesTotals.get(role.getName());
+			if(total == null) total = 0.0;
+			onlineRolesTotals.put(role.getName(), total+1);
+			
+		}
+		
+		// Trim work points:
+		Set<String> onlineRoles = onlineRolesTotals.keySet();
+		for (String role : onlineRoles) {
+			if(workPoints.get(role) > onlineRolesTotals.get(role)) workPoints.put(role, onlineRolesTotals.get(role));
+		}
+		
+		// Distribute points:
+		ArrayList<ProductionBuilding> prBuildings = getBuildings(ProductionBuilding.class);
+		
+		for (ProductionBuilding prBuilding : prBuildings) {
+			
+			prBuilding.work();
+			
+		}
+		
+		
+	}
+	
+
+	/**
+	 * Handles resource collection.
+	 * 
+	 */
+	public void handleCollect() {
+
+		ArrayList<ProductionBuilding> prBuildings = getBuildings(ProductionBuilding.class);
+		
+		for (ProductionBuilding prBuilding : prBuildings) {
+			
+			prBuilding.collect();
+			
+		}
+		
+	}
+	
+	/**
+	 * Handles resource production:
+	 * 
+	 */
+	public void handleProduction() {
+
+		ArrayList<ProductionBuilding> prBuildings = getBuildings(ProductionBuilding.class);
+		
+		for (ProductionBuilding prBuilding : prBuildings) {
+			
+			prBuilding.produce();
+			
+		}
+		
+	}
+	
+	
 	
 	// Other:
 	/* 

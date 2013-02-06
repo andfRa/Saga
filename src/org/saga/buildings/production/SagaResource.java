@@ -14,7 +14,13 @@ public class SagaResource extends SagaRecipe {
 	 */
 	private double[] collected;
 	
+	/**
+	 * Work progress.
+	 */
+	private Double work;
 
+	
+	
 	/**
 	 * Initialises the resource from a recipe.
 	 * 
@@ -22,6 +28,7 @@ public class SagaResource extends SagaRecipe {
 	public SagaResource(SagaRecipe recipe) {
 		super(recipe);
 		collected = new double[recipe.recipe.length];
+		work = 0.0;
 	}
 	
 	/**
@@ -41,6 +48,37 @@ public class SagaResource extends SagaRecipe {
 			collected = new double[recipe.length];
 		}
 		
+		if(work == null){
+			SagaLogger.nullField(this, "progress");
+			work = 0.0;
+		}
+		
+	}
+	
+	
+	
+	// Requests:
+	/**
+	 * Gets the requested item amounts.
+	 * 
+	 * @return requested items
+	 */
+	public ArrayList<SagaItem> getRequests() {
+		
+		ArrayList<SagaItem> requests = new ArrayList<SagaItem>();
+		
+		for (int i = 0; i < this.recipe.length; i++) {
+			
+			double amount = recipe[i].getAmount() - collected[i];
+			if(amount <= 0.0) continue;
+			
+			SagaItem request = new SagaItem(this.recipe[i]);
+			request.setAmount(amount);
+			requests.add(request);
+			
+		}
+		
+		return requests;
 		
 	}
 	
@@ -55,7 +93,7 @@ public class SagaResource extends SagaRecipe {
 	public void offer(SagaItem item) {
 		
 		for (int i = 0; i < recipe.length; i++) {
-			if(checkAccept(item, i)) progress(item, i);
+			if(checkAccept(item, i)) collect(item, i);
 		}
 		
 	}
@@ -98,16 +136,18 @@ public class SagaResource extends SagaRecipe {
 		return recipe[index].checkRepresents(item);
 		
 	}
-	
 
+	
+	
+	// Collecting:
 	/**
-	 * Advances the production progress.
+	 * Advances the production collection progress.
 	 * 
 	 * @param item item to use for progression
 	 * @param index recipe index
 	 * @throws IndexOutOfBoundsException when index is out of bounds
 	 */
-	private void progress(SagaItem item, int index) throws IndexOutOfBoundsException{
+	private void collect(SagaItem item, int index) throws IndexOutOfBoundsException{
 		
 		double mod = item.getAmount();
 		if(mod + collected[index] > recipe[index].getAmount()) mod = recipe[index].getAmount() - collected[index];
@@ -117,65 +157,6 @@ public class SagaResource extends SagaRecipe {
 		
 	}
 	
-	/**
-	 * Counts how many items will be accepted.
-	 * 
-	 * @param item item to count with
-	 */
-	public void countAccept(SagaItem item) {
-
-		for (int index = 0; index < recipe.length; index++) {
-			
-			if(!recipe[index].checkRepresents(item)) continue;
-			
-			item.modifyAmount((recipe[index].getAmount() - collected[index]));
-			
-		}
-		
-	}
-	
-	/**
-	 * Counts how many items are required.
-	 * 
-	 * @param item item to count for
-	 * @return amount required
-	 */
-	public double countRequired(SagaItem item) {
-
-		double count = 0.0;
-		
-		for (int index = 0; index < recipe.length; index++) {
-			
-			if(!recipe[index].checkRepresents(item)) continue;
-			
-			count+= (recipe[index].getAmount() - collected[index]);
-			
-		}
-		
-		return count;
-		
-	}
-	
-	/**
-	 * Counts how many items will be accepted.
-	 * 
-	 * @param countItems item list to count with
-	 * @param resources resources
-	 */
-	public static void countAccept(ArrayList<SagaItem> countItems, ArrayList<SagaResource> resources) {
-
-		for (SagaItem sagaItem : countItems) {
-			for (int r = 0; r < resources.size(); r++) {
-				resources.get(r).countAccept(sagaItem);
-			}
-			
-		}
-		
-	}
-	
-	
-	
-	// Collected:
 	/**
 	 * Gets collected items.
 	 * 
@@ -188,7 +169,7 @@ public class SagaResource extends SagaRecipe {
 	}
 	
 	/**
-	 * Gets the percentage.
+	 * Gets the percentage for the given recipe component.
 	 * 
 	 * @param index index
 	 * @return percent collected
@@ -198,7 +179,56 @@ public class SagaResource extends SagaRecipe {
 		return collected[index] / recipe[index].getAmount();
 	}
 	
+	/**
+	 * Gets the sum percentage.
+	 * 
+	 * @return sum percentage
+	 */
+	public double getSumPercentage() {
 
+		if(recipe.length == 0) return 0.0;
+		
+		double sum = 0;
+		
+		for (int i = 0; i < recipeLength(); i++) {
+			sum+= getPercentage(i);
+		}
+		
+		return sum / recipe.length;
+		
+	}
+	
+	
+	
+	// Work:
+	/**
+	 * Progresses work on the resource.
+	 * 
+	 * @param workPoints work points
+	 */
+	public void work(double workPoints) {
+		work+= workPoints;
+	}
+	
+	/**
+	 * Gets the amount of work points.
+	 * 
+	 * @return work points
+	 */
+	public Double getWork() {
+		return work;
+	}
+	
+	/**
+	 * Gets the amount of working points remaining.
+	 * 
+	 * @return remaining working points
+	 */
+	public double getRemainingWork() {
+		return (getRequiredWork() * getSumPercentage() - work);
+	}
+	
+	
 	
 	// Creation:
 	/**
@@ -208,15 +238,22 @@ public class SagaResource extends SagaRecipe {
 	 */
 	public SagaItem produceItem() {
 		
-		// Create item:
+		// Check work:
+		if(work < getRequiredWork()) return null;
+		
+		// Check amount:
 		double percent = findProducePercentage();
 		double amount = (int)(getAmount()*percent);
 		if(amount < 1) return null;
 		
+		// Create item:
 		SagaItem item = new SagaItem(this);
 		item.setAmount(amount);
 		
-		// Reset progress:
+		// Reset work:
+		work = 0.0;
+		
+		// Reset collected:
 		for (int i = 0; i < collected.length; i++) {
 			collected[i] = collected[i] - percent * recipe[i].getAmount();
 		}
@@ -232,8 +269,8 @@ public class SagaResource extends SagaRecipe {
 	 */
 	public double findProducePercentage() {
 
-		// Items without a recipe will not be produced:
-		if(collected.length == 0) return 0;
+		// Items without a recipe can alwasy be produced:
+		if(collected.length == 0) return 1.0;
 		
 		// Find highest amount possible:
 		double percent = collected[0] / recipe[0].getAmount();
@@ -245,7 +282,6 @@ public class SagaResource extends SagaRecipe {
 		return (int)(percent);
 		
 	}
-	
 	
 	
 	
@@ -271,7 +307,6 @@ public class SagaResource extends SagaRecipe {
 		return result.toString();
 		
 	}
-    
 	
 	
 }

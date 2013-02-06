@@ -158,6 +158,21 @@ public class AdminMessages {
 	}
 	
 	
+	
+	// Production:
+	public static String forcedWork() {
+		return Colour.positive + "Forced work tick.";
+	}
+	
+	public static String forcedCollect() {
+		return Colour.positive + "Forced collect tick.";
+	}
+	
+	public static String forcedProduction() {
+		return Colour.positive + "Forced production tick.";
+	}
+	
+	
 
 	// Wiki:
 	public static String wikiCommands(ArrayList<Method> commandMethods) {

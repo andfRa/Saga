@@ -193,15 +193,15 @@ public class BuildingCommands {
 	}
 	
 	@Command(
-		aliases = {"bstatus"},
+		aliases = {"bstats"},
 		usage = "",
 		flags = "",
-		desc = "Show building status.",
+		desc = "Show building stats.",
 		min = 0,
 		max = 0
 	)
-	@CommandPermissions({"saga.user.building.status"})
-	public static void info(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	@CommandPermissions({"saga.user.building.stats"})
+	public static void stats(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
 		SagaChunk sagaChunk = sagaPlayer.getSagaChunk();
@@ -236,7 +236,7 @@ public class BuildingCommands {
 		}
 
 		// Inform:
-		sagaPlayer.message(BuildingMessages.status(selBuilding));
+		sagaPlayer.message(BuildingMessages.stats(selBuilding));
 		
 			
 	}

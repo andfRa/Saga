@@ -19,6 +19,8 @@ import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.Building;
+import org.saga.buildings.Warehouse;
+import org.saga.buildings.production.SagaItem;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.FactionConfiguration;
@@ -922,21 +924,40 @@ public class AdminCommands {
 	public static void debugCommand(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
-		Integer numb = 0;
+		
+		Integer numb1 = 0;
 		if(args.argsLength() > 0){
-			
 			try {
-				numb = args.getInteger(0);
+				numb1 = args.getInteger(0);
 			}
 			catch (NumberFormatException e) {
 				sagaPlayer.message(ChatColor.RED + args.getString(0) + " must be a number!");
 			}
+		}
+		
+		Integer numb2 = 0;
+		if(args.argsLength() > 0){
+			try {
+				numb2 = args.getInteger(1);
+			}
+			catch (NumberFormatException e) {
+				sagaPlayer.message(ChatColor.RED + args.getString(0) + " must be a number!");
+			}
+		}
+		
+		if(sagaPlayer.getSagaChunk() != null && sagaPlayer.getSagaChunk().getBuilding() instanceof Warehouse){
+			
+			Warehouse wh = (Warehouse) sagaPlayer.getSagaChunk().getBuilding();
+			
+			ItemStack item = new ItemStack(numb1, numb2);
+			System.out.println("ITEM=" + item);
+			SagaItem sagaItem = new SagaItem(item);
+			
+			wh.store(sagaItem);
 			
 		}
 		
-		sagaPlayer.getPlayer().setFoodLevel(1);
-		
-		sagaPlayer.message("numb=" + numb);
+		sagaPlayer.message("numb=" + numb1);
 		
 	}
 	
@@ -961,7 +982,7 @@ public class AdminCommands {
 	
 	
 	
-	// Time of day:
+	// Forcing:
 	@Command(
 		aliases = {"anextdaytime"},
 		usage = "",
@@ -980,6 +1001,113 @@ public class AdminCommands {
 		
 		// Inform:
 		sagaPlayer.message(AdminMessages.nextDaytime(world, daytime));
+		
+		
+	}
+	
+	@Command(
+		aliases = {"aforcework"},
+		usage = "",
+		flags = "",
+		desc = "Force the next work tick for settlements.",
+		min = 0,
+		max = 0
+		)
+	@CommandPermissions({"saga.admin.settlements.forcework"})
+	public static void forceWorkTick(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		
+		// Force tick:
+		Collection<Bundle> bundles = BundleManager.manager().getAllBundles();
+		
+		for (Bundle bundle : bundles) {
+			
+			if(!(bundle instanceof Settlement)) continue;
+			
+			Settlement settlement = (Settlement) bundle;
+			settlement.handleWork();
+			
+		}
+		
+		// Inform:
+		sagaPlayer.message(AdminMessages.forcedWork());
+		
+		
+	}
+
+	@Command(
+		aliases = {"aforcecollect"},
+		usage = "",
+		flags = "",
+		desc = "Force the next collect tick for settlements.",
+		min = 0,
+		max = 0
+		)
+	@CommandPermissions({"saga.admin.settlements.forcecollect"})
+	public static void forceCollectTick(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		
+		// Force tick:
+		Collection<Bundle> bundles = BundleManager.manager().getAllBundles();
+		
+		for (Bundle bundle : bundles) {
+			
+			if(!(bundle instanceof Settlement)) continue;
+			
+			Settlement settlement = (Settlement) bundle;
+			settlement.handleCollect();
+			
+		}
+		
+		// Inform:
+		sagaPlayer.message(AdminMessages.forcedCollect());
+		
+		
+	}
+	
+	@Command(
+		aliases = {"aforceproduce"},
+		usage = "",
+		flags = "wcd",
+		desc = "Force the next production tick for settlements. The -w and -c flags will also force work and collect ticks first. The -d flag forces the amount of tick equivalent of a Minecraft day (20).",
+		min = 0,
+		max = 0
+		)
+	@CommandPermissions({"saga.admin.settlements.forceproduce"})
+	public static void forceProduceTick(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		
+		// Force tick:
+		Collection<Bundle> bundles = BundleManager.manager().getAllBundles();
+		
+		for (Bundle bundle : bundles) {
+			
+			if(!(bundle instanceof Settlement)) continue;
+			
+			Settlement settlement = (Settlement) bundle;
+			
+			if(args.hasFlag('d')){
+				
+				for (int i = 0; i < 20; i++){
+					if(args.hasFlag('w')) settlement.handleWork();
+					if(args.hasFlag('c')) settlement.handleCollect();
+					settlement.handleProduction();
+				}
+				
+			}
+			
+			else{
+				if(args.hasFlag('w')) settlement.handleWork();
+				if(args.hasFlag('c')) settlement.handleCollect();
+				settlement.handleProduction();
+			}
+			
+			
+			
+		}
+		
+		// Inform:
+		sagaPlayer.message(AdminMessages.forcedProduction());
 		
 		
 	}

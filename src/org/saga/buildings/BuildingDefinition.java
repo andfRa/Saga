@@ -1,6 +1,5 @@
 package org.saga.buildings;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Set;
@@ -56,22 +55,12 @@ public class BuildingDefinition {
 	 */
 	private SagaRecipe[] production;
 	
-	/**
-	 * Buildings to which the resources will be offered to.
-	 */
-	private ArrayList<String> offerBuildings;
-	
 	
 	// Timings:
 	/**
 	 * Perform time.
 	 */
 	private Daytime performTime;
-	
-	/**
-	 * Resources craft time.
-	 */
-	private Daytime craftTime;
 	
 	
 	// Functions:
@@ -166,22 +155,13 @@ public class BuildingDefinition {
 			recipie.complete();
 		}
 		
-		if(offerBuildings == null){
-			offerBuildings = new ArrayList<String>();
-			SagaLogger.nullField(BuildingDefinition.class, "offerBuildings");
-		}
-		
 		
 		if(performTime == null){
 			performTime = Daytime.NONE;
 			SagaLogger.nullField(BuildingDefinition.class, "performTime");
 		}
 		
-		if(craftTime == null){
-			craftTime = Daytime.NONE;
-			SagaLogger.nullField(BuildingDefinition.class, "resources");
-		}
-		
+
 		if(functions == null){
 			functions = new Hashtable<String, TwoPointFunction>();
 			SagaLogger.nullField(this, "functions");
@@ -319,15 +299,6 @@ public class BuildingDefinition {
 		return production;
 	}
 	
-	/**
-	 * Gets buildings the resources will be offered to.
-	 * 
-	 * @return offer buildings
-	 */
-	public ArrayList<String> getOfferBuildings() {
-		return new ArrayList<String>(offerBuildings);
-	}
-	
 	
 	
 	// Timings:
@@ -340,15 +311,6 @@ public class BuildingDefinition {
 		return performTime;
 	}
 
-	/**
-	 * Gets the craft time.
-	 * 
-	 * @return craft time
-	 */
-	public Daytime getCraftTime() {
-		return craftTime;
-	}
-	
 	
 	
 	// Functions:

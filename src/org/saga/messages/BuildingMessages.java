@@ -56,15 +56,15 @@ public class BuildingMessages {
 
 	
 	// Info:
-	public static String status(Building building) {
+	public static String stats(Building building) {
 		
-		ChatBook book = new ChatBook(building.getName() + " status", new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
+		ChatBook book = new ChatBook(building.getName() + " stats", new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
 		
 		if(building instanceof ProductionBuilding){
 			
 			ProductionBuilding prBuilding = (ProductionBuilding) building;
 			
-			book.addLine(resourceProgress(prBuilding));
+			book.addTable(resourceProgress(prBuilding));
 			
 			return book.framedPage(0);
 			
@@ -74,66 +74,70 @@ public class BuildingMessages {
 		
 	}
 	
-	public static String resourceProgress(ProductionBuilding building) {
+	public static ChatTable resourceProgress(ProductionBuilding building) {
 		
+		ChatTable table = new ChatTable(new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
 		
 		SagaResource[] resources = building.getResources();
 		
+		// Names:
+		table.addLine(new String[]{GeneralMessages.columnTitle("progress"), GeneralMessages.columnTitle("resource"), GeneralMessages.columnTitle("materials")});
+		
+		// Values:
 		if(resources.length != 0){
-			
-			StringBuffer recipeStr = new StringBuffer();
 			
 			// Recipes:
 			for (int r = 0; r < resources.length; r++) {
 				
-				SagaResource recipe = resources[r];
+				SagaResource resource = resources[r];
 				
 				// Duplicates:
 				boolean duplic = false;
-				if(r != 0 && resources[r-1].getType() == recipe.getType()) duplic = true; 
-				if(r != resources.length - 1 && resources[r+1].getType() == recipe.getType()) duplic = true; 
+				if(r != 0 && resources[r-1].getType() == resource.getType()) duplic = true; 
+				if(r != resources.length - 1 && resources[r+1].getType() == resource.getType()) duplic = true; 
 				
-				if(recipeStr.length() > 0) recipeStr.append("\n");
+				// Progress:
+				String progress = (int)(resource.getWork().doubleValue() / resource.getRequiredWork() * 100) + "%";
+				table.addLine(progress, 0);
 				
-				// Recipe:
-				if(recipe.getAmount() > 1) recipeStr.append(recipe.getAmount().intValue() + " ");
-				recipeStr.append(GeneralMessages.columnTitle(GeneralMessages.material(recipe.getType())));
-				if(duplic) recipeStr.append(":" + recipe.getData());
-				recipeStr.append(" - ");
+				// Name:
+				StringBuffer recipeName = new StringBuffer();
+				if(resource.getAmount() > 1) recipeName.append(resource.getAmount().intValue() + " ");
+				recipeName.append(GeneralMessages.material(resource.getType()));
+				if(duplic) recipeName.append(":" + resource.getData());
+				table.addLine(recipeName.toString(), 1);
 				
-				StringBuffer recipeCompStr = new StringBuffer();
+				StringBuffer requirements = new StringBuffer();
 				
-				// Recipe components:
-				if(recipe.recipeLength() != 0){
+				// Requirements:
+				if(resource.recipeLength() != 0){
 					
-					for (int i = 0; i < recipe.recipeLength(); i++) {
+					for (int i = 0; i < resource.recipeLength(); i++) {
 						
-						// Recipe component:
-						SagaItem recipeComp = recipe.getComponent(i);
-						if(recipeCompStr.length() > 0) recipeCompStr.append(", ");
-						if(recipeComp.getType() != Material.AIR){
-							recipeCompStr.append(GeneralMessages.material(recipeComp.getType()));
-							if(duplic) recipeCompStr.append(":" + recipeComp.getData());
-							recipeCompStr.append(" " + (int)(recipe.getPercentage(i)*100) + "%");
-						}else{
-							recipeCompStr.append(" " + (int)(recipe.getPercentage(i)*100) + "%");
-						}
+						SagaItem component = resource.getComponent(i);
+						if(requirements.length() > 0) requirements.append(", ");
+						requirements.append(GeneralMessages.material(component.getType()));
+						if(duplic) requirements.append(":" + component.getData());
+						
+						requirements.append(" " + (int)resource.getCollected(i) + "/" + component.getAmount().intValue());
 						
 					}
 					
 				}else{
-					recipeCompStr.append("-");
+					requirements.append("-");
 				}
 				
-				recipeStr.append(recipeCompStr);
+				table.addLine(requirements.toString(), 2);
 				
 			}
 			
-			return recipeStr.toString();
-			
 		}else{
-			return "-";
+			table.addLine(new String[]{"-","-","-"});
 		}
+		
+		table.collapse();
+		
+		return table;
 		
 		
 	}

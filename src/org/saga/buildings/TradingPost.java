@@ -9,7 +9,6 @@ import org.saga.SagaLogger;
 import org.saga.buildings.production.ProductionBuilding;
 import org.saga.buildings.production.SagaItem;
 import org.saga.buildings.production.SagaPricedItem;
-import org.saga.buildings.production.SagaResource;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.BuySign;
 import org.saga.buildings.signs.ImportSign;
@@ -141,7 +140,7 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 		
 	}
 	
-
+	
 	
 	// Signs:
 	/* 
@@ -293,40 +292,6 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 			exportAmounts[i] = exportAmounts[i] + amount;
 			
 		}
-		
-	}
-	
-	/* 
-	 * Uses items in economy configuration instead.
-	 * 
-	 * @see org.saga.buildings.production.ProductionBuilding#findRequests(java.util.ArrayList)
-	 */
-	@Override
-	protected double[] findRequests(SagaResource[] items) {
-		
-		if(!EconomyConfiguration.config().isEnabled()){
-			return new double[items.length];
-		}
-		
-		SagaPricedItem[] exports = EconomyConfiguration.config().getTradingPostExports();
-		double[] requests = new double[items.length];
-		
-		for (int i = 0; i < items.length; i++) {
-			
-			SagaItem item = items[i];
-			
-			for (int j = 0; j < exports.length; j++) {
-				
-				if(!exports[j].checkRepresents(item)) continue;
-				requests[i]+= exports[j].getAmount();
-				requests[i]-= exportAmounts[j];
-				if(requests[i] < 0) requests[i] = 0;
-				
-			}
-			
-		}
-		
-		return requests;
 		
 	}
 	
