@@ -1,6 +1,7 @@
 package org.saga.buildings.production;
 
 import org.saga.SagaLogger;
+import org.saga.config.VanillaConfiguration;
 
 
 public class SagaPricedItem extends SagaItem{
@@ -10,6 +11,11 @@ public class SagaPricedItem extends SagaItem{
 	 * Price contents.
 	 */
 	protected Double price;
+
+	/**
+	 * Required work points.
+	 */
+	private Double reqWork;
 	
 	
 
@@ -19,10 +25,12 @@ public class SagaPricedItem extends SagaItem{
 	 * 
 	 * @param item saga item
 	 * @param priced item price
+	 * @param reqWork required work
 	 */
-	public SagaPricedItem(SagaItem item, Double price){
+	public SagaPricedItem(SagaItem item, Double price, Double reqWork){
 		super(item);
 		this.price = price;
+		this.reqWork = reqWork;
 	}
 	
 	/**
@@ -48,6 +56,10 @@ public class SagaPricedItem extends SagaItem{
 			SagaLogger.nullField(this, "price");
 		}
 		
+		if(reqWork == null){
+			reqWork = VanillaConfiguration.MINUTES_IN_MC_DAY;
+		}
+		
 	}
 	
 	
@@ -59,6 +71,15 @@ public class SagaPricedItem extends SagaItem{
 	 */
 	public Double getPrice() {
 		return price;
+	}
+	
+	/**
+	 * Gets the amount of work required.
+	 * 
+	 * @return amount of work required
+	 */
+	public Double getRequiredWork() {
+		return reqWork;
 	}
 	
 	

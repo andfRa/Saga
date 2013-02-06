@@ -34,6 +34,14 @@
     "factionPermissions":[]
   },
 
+  {"name":"merchant",
+    "type":"ROLE",
+    "hierarchyLevel":"2",
+    "attributeBonuses":{"luck":6,"toughness":4},
+    "settlementPermissions":["BUILD","BUILD_BUILDING","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE","HURT_FARM_ANIMALS","FLASH_CHUNK","STORAGE_AREA_ADD","STORAGE_AREA_REMOVE","STORAGE_AREA_FLASH"],
+    "factionPermissions":[]
+  },
+
   {"name":"blacksmith",
     "type":"INVALID",
     "hierarchyLevel":"2",

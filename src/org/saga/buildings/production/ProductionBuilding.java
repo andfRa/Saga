@@ -121,7 +121,9 @@ public class ProductionBuilding extends Building{
 	// Production:
 	public void work() {
 
-		
+
+		if(resources.length == 0) return;
+
 		Settlement settlement = getSettlement();
 		if(settlement == null) return;
 		
@@ -160,6 +162,8 @@ public class ProductionBuilding extends Building{
 	 */
 	public void collect() {
 
+		
+		if(resources.length == 0) return;
 
 		ArrayList<Warehouse> warehouses = getChunkBundle().getBuildings(Warehouse.class);
 		
@@ -197,7 +201,9 @@ public class ProductionBuilding extends Building{
 	 */
 	public void produce() {
 		
-		
+
+		if(resources.length == 0) return;
+
 		// Produce:
 		SagaItem[] produced = new SagaItem[resources.length];
 		for (int i = 0; i < produced.length; i++) {
@@ -407,6 +413,15 @@ public class ProductionBuilding extends Building{
 
 		return results;
 		
+	}
+	
+	/**
+	 * Resources length.
+	 * 
+	 * @return resources length
+	 */
+	public int resourcesLength() {
+		return resources.length;
 	}
 	
 	

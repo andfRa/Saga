@@ -17,7 +17,7 @@
     ],
     "performTime":"NONE",
     "functions":{},
-    "roles":{"woodcutter":5.0},
+    "roles":{"woodcutter":5},
     "ranks":{},
     "description":"produces logs",
     "effect":"logs"
@@ -39,7 +39,7 @@
     ],
     "performTime":"NONE",
     "functions":{},
-    "roles":{"farmer":5.0},
+    "roles":{"farmer":5},
     "ranks":{},
     "description":"produces wheat and raw meat",
     "effect":"wheat and raw meat"
@@ -60,7 +60,7 @@
     ],
     "performTime":"NONE",
     "functions":{},
-    "roles":{"miner":5.0},
+    "roles":{"miner":5},
     "ranks":{},
     "description":"produces ores",
     "effect":"ores"
@@ -81,7 +81,7 @@
     ],
     "performTime":"NONE",
     "functions":{},
-    "roles":{"woodcutter":5.0},
+    "roles":{"woodcutter":5},
     "ranks":{},
     "description":"produces wood from logs",
     "effect":"wood from logs"
@@ -103,7 +103,7 @@
     ],
     "performTime":"NONE",
     "functions":{},
-    "roles":{"farmer":5.0},
+    "roles":{"farmer":5},
     "ranks":{},
     "description":"cooks food from farm products",
     "effect":"food cooking"
@@ -125,7 +125,7 @@
     ],
     "performTime":"NONE",
     "functions":{},
-    "roles":{"miner":5.0},
+    "roles":{"miner":5},
     "ranks":{},
     "description":"refines ores",
     "effect":"ore refinement"
@@ -214,7 +214,7 @@
     "performTime":"NONE",
     "functions":{},
     "roles":{},
-    "ranks":{"mage":5.0,"wizard":1},
+    "ranks":{"mage":5,"wizard":1},
     "description":"gives mage related skills",
     "effect":"mage skills"
   },
@@ -315,7 +315,7 @@
     "production":[],
     "performTime":"MIDDAY",
     "functions":{"buy limit":{"x1":1,"y1":7000,"x2":3,"y2":20000}},
-    "roles":{"lord:":1},
+    "roles":{"merchant":5,"lord:":1},
     "ranks":{},
     "description":"buy items",
     "effect":"place to buy"

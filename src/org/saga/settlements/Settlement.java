@@ -468,11 +468,11 @@ public class Settlement extends Bundle implements MinuteTicker{
 	 */
 	public Double takeWorkPoints(String roleName, Double requested) {
 		
-		Double points = getWorkPoints(roleName);
+		Double available = getWorkPoints(roleName);
 		
-		if(points - requested < 0) requested = points;
+		if(available - requested < 0) requested = available;
 		
-		if(points - requested != 0) workPoints.put(roleName, points - requested);
+		if(available - requested > 0) workPoints.put(roleName, available - requested);
 		else workPoints.remove(roleName);
 		
 		return requested;
@@ -952,7 +952,6 @@ public class Settlement extends Bundle implements MinuteTicker{
 		
 		
 	}
-	
 	
 	
 }

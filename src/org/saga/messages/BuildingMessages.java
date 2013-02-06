@@ -9,11 +9,14 @@ import org.saga.buildings.Arena.ArenaPlayer;
 import org.saga.buildings.Building;
 import org.saga.buildings.CrumbleArena;
 import org.saga.buildings.CrumbleArena.CrumblePlayer;
+import org.saga.buildings.TradingPost;
 import org.saga.buildings.production.ProductionBuilding;
 import org.saga.buildings.production.SagaItem;
+import org.saga.buildings.production.SagaPricedItem;
 import org.saga.buildings.production.SagaResource;
 import org.saga.buildings.TownSquare;
 import org.saga.config.AttributeConfiguration;
+import org.saga.config.EconomyConfiguration;
 import org.saga.messages.colours.Colour;
 import org.saga.messages.colours.ColourLoop;
 import org.saga.settlements.Bundle;
@@ -59,29 +62,48 @@ public class BuildingMessages {
 	public static String stats(Building building) {
 		
 		ChatBook book = new ChatBook(building.getName() + " stats", new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
+		ChatTable table = new ChatTable(new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
 		
 		if(building instanceof ProductionBuilding){
 			
 			ProductionBuilding prBuilding = (ProductionBuilding) building;
 			
-			book.addTable(resourceProgress(prBuilding));
+			// Names:
+			table.addLine(new String[]{GeneralMessages.columnTitle("progress"), GeneralMessages.columnTitle("resource"), GeneralMessages.columnTitle("materials")});
+
+			// Production:
+			if(((ProductionBuilding) building).resourcesLength() > 0){
+				
+				addProgress(table, prBuilding);
+				table.collapse();
+				book.addTable(table);
+				
+			}
+			
+			// Export:
+			if(building instanceof TradingPost){
+				
+				TradingPost tpost = (TradingPost) building;
+				addProgress(table, tpost);
+				table.collapse();
+				book.addTable(table);
+				
+			}
+			
+			if(book.lines() <= 1) table.addLine(new String[]{"-","-","-"});
 			
 			return book.framedPage(0);
 			
 		}
 		
-		return Colour.negative + " Status not available.";
+		else return Colour.negative + " Stats not available.";
 		
 	}
 	
-	public static ChatTable resourceProgress(ProductionBuilding building) {
+	public static ChatTable addProgress(ChatTable table, ProductionBuilding building) {
 		
-		ChatTable table = new ChatTable(new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
 		
 		SagaResource[] resources = building.getResources();
-		
-		// Names:
-		table.addLine(new String[]{GeneralMessages.columnTitle("progress"), GeneralMessages.columnTitle("resource"), GeneralMessages.columnTitle("materials")});
 		
 		// Values:
 		if(resources.length != 0){
@@ -131,8 +153,6 @@ public class BuildingMessages {
 				
 			}
 			
-		}else{
-			table.addLine(new String[]{"-","-","-"});
 		}
 		
 		table.collapse();
@@ -141,6 +161,52 @@ public class BuildingMessages {
 		
 		
 	}
+
+	public static ChatTable addProgress(ChatTable table, TradingPost building) {
+		
+		SagaPricedItem[] exports = EconomyConfiguration.config().getTradingPostExports();
+		
+		// Values:
+		if(exports.length != 0){
+			
+			// Recipes:
+			for (int r = 0; r < exports.length; r++) {
+				
+				SagaPricedItem export = exports[r];
+				
+				// Duplicates:
+				boolean duplic = false;
+				if(r != 0 && exports[r-1].getType() == export.getType()) duplic = true; 
+				if(r != exports.length - 1 && exports[r+1].getType() == export.getType()) duplic = true; 
+				
+				// Progress:
+				String progress = (int)(building.getWork(r) / export.getRequiredWork() * 100) + "%";
+				table.addLine(progress, 0);
+				
+				// Name:
+				table.addLine(EconomyMessages.coins(building.calcCost(r)), 1);
+				
+				StringBuffer requirements = new StringBuffer();
+				
+				// Requirement:
+				requirements.append(GeneralMessages.material(export.getType()));
+				if(duplic) requirements.append(":" + export.getData());
+				requirements.append(" " + (int)building.getForExport()[r] + "/" + export.getAmount().intValue());
+								
+				table.addLine(requirements.toString(), 2);
+				
+			}
+			
+		}else{
+			table.addLine(new String[]{"-","-","-"});
+		}
+		
+		return table;
+		
+		
+	}
+	
+	
 	
 	public static String produced(ArrayList<SagaItem> items) {
 		

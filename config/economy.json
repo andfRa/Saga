@@ -161,16 +161,16 @@
 "factionKillReward":{"x1":0,"y1":50,"x2":3,"y2":500},
 
 "tPostExports":[
-	{"type":"IRON_INGOT","amount":1,"price":55},
-	{"type":"GRILLED_PORK","amount":1,"price":6.6},
-	{"type":"COOKED_BEEF","amount":1,"price":6.6},
-	{"type":"COOKED_CHICKEN","amount":1,"price":5.6},
-	{"type":"BAKED_POTATO","amount":1,"price":5.5},
-	{"type":"WOOD","data":0,"amount":12,"price":1.44375},
-	{"type":"WOOD","data":1,"amount":12,"price":1.44375},
-	{"type":"WOOD","data":2,"amount":12,"price":1.44375},
-	{"type":"WOOD","data":3,"amount":12,"price":1.44375},
-	{"type":"BREAD","amount":6,"price":5.5}
+	{"type":"IRON_INGOT","amount":1,"price":55,           "reqWork":2},
+	{"type":"GRILLED_PORK","amount":1,"price":6.6,        "reqWork":2},
+	{"type":"COOKED_BEEF","amount":1,"price":6.6,         "reqWork":2},
+	{"type":"COOKED_CHICKEN","amount":1,"price":5.6,      "reqWork":2},
+	{"type":"BAKED_POTATO","amount":1,"price":5.5,        "reqWork":2},
+	{"type":"WOOD","data":0,"amount":12,"price":1.44375,  "reqWork":2},
+	{"type":"WOOD","data":1,"amount":12,"price":1.44375,  "reqWork":2},
+	{"type":"WOOD","data":2,"amount":12,"price":1.44375,  "reqWork":2},
+	{"type":"WOOD","data":3,"amount":12,"price":1.44375,  "reqWork":2},
+	{"type":"BREAD","amount":6,"price":5.5,               "reqWork":2}
 
 ],
 

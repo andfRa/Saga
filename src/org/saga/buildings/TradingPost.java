@@ -1,6 +1,7 @@
 package org.saga.buildings;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 import org.bukkit.block.Sign;
 import org.bukkit.event.block.SignChangeEvent;
@@ -40,10 +41,14 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 	
 	
 	/**
-	 * Export amounts.
+	 * Awaiting exports.
 	 */
-	private double[] exportAmounts;
+	private double[] collectedExports;
 	
+	/**
+	 * Work done for exports.
+	 */
+	private double[] exportsWork;
 	
 	
 	// Initialisation:
@@ -58,7 +63,8 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 	
 		buyCoins = 0.0;
 		sellCoins = 0.0;
-		exportAmounts = new double[EconomyConfiguration.config().getTradingPostExports().length];
+		collectedExports = new double[EconomyConfiguration.config().getTradingPostExports().length];
+		exportsWork =  new double[EconomyConfiguration.config().getTradingPostExports().length];
 		
 	}
 
@@ -83,14 +89,24 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 			sellCoins = 0.0;
 		}
 		
-		if(exportAmounts == null){
-			SagaLogger.nullField(this, "exportAmounts");
-			exportAmounts = new double[EconomyConfiguration.config().getTradingPostExports().length];
+		if(collectedExports == null){
+			SagaLogger.nullField(this, "forExport");
+			collectedExports = new double[EconomyConfiguration.config().getTradingPostExports().length];
 		}
 		
-		if(exportAmounts.length != EconomyConfiguration.config().getTradingPostExports().length){
+		if(collectedExports.length != EconomyConfiguration.config().getTradingPostExports().length){
 			SagaLogger.warning(this, "resetting exportAmounts");
-			exportAmounts = new double[EconomyConfiguration.config().getTradingPostExports().length];
+			collectedExports = new double[EconomyConfiguration.config().getTradingPostExports().length];
+		}
+		
+		if(exportsWork == null){
+			SagaLogger.nullField(this, "collectedExports");
+			exportsWork = new double[EconomyConfiguration.config().getTradingPostExports().length];
+		}
+		
+		if(exportsWork.length != EconomyConfiguration.config().getTradingPostExports().length){
+			SagaLogger.warning(this, "resetting exportsWork");
+			exportsWork = new double[EconomyConfiguration.config().getTradingPostExports().length];
 		}
 		
 		return integrity;
@@ -227,6 +243,90 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 	
 	// Production:
 	/* 
+	 * Distributes work among exports.
+	 * 
+	 * @see org.saga.buildings.production.ProductionBuilding#work()
+	 */
+	@Override
+	public void work() {
+
+		
+		super.work();
+
+		Settlement settlement = getSettlement();
+		if(settlement == null) return;
+		
+		SagaPricedItem[] exports = EconomyConfiguration.config().getTradingPostExports();
+		double workAvail = 0;
+		
+		// Find remaining work:
+		double[] workRemain = new double[exportsWork.length];
+		double workTotal = 0;
+		for (int i = 0; i < workRemain.length; i++) {
+			
+			double percent = collectedExports[i] / exports[i].getAmount();
+			
+			workRemain[i] = exports[i].getRequiredWork()*percent - exportsWork[i];
+			if(workRemain[i] < 0.0) workRemain[i] = 0.0;
+			workTotal+= workRemain[i];
+			
+		}
+		
+		// Take required role points:
+		Set<String> roles = getDefinition().getAllRoles();
+		for (String roleName : roles) {
+			
+			double requested = workTotal - workAvail;
+			if(requested >= 0) workAvail+= settlement.takeWorkPoints(roleName, requested);
+			
+		}
+		
+		if(workTotal == 0) return;
+		
+		// Distribute work:
+		for (int i = 0; i < workRemain.length; i++) {
+			exportsWork[i]+= workAvail * workRemain[i]/workTotal;
+		}
+		
+		
+	}
+	
+	/* 
+	 * Collects items to export.
+	 * 
+	 * @see org.saga.buildings.production.ProductionBuilding#collect()
+	 */
+	@Override
+	public void collect() {
+		
+		
+		super.collect();
+		
+		ArrayList<Warehouse> warehouses = getChunkBundle().getBuildings(Warehouse.class);
+		SagaPricedItem[] exports = EconomyConfiguration.config().getTradingPostExports();
+
+		// Handle requests:
+		for (int i = 0; i < exports.length; i++) {
+			
+			SagaItem requestItem = new SagaItem(exports[i]);
+			SagaItem collectedItem = new SagaItem(requestItem);
+			collectedItem.setAmount(0.0);
+			requestItem.modifyAmount(-collectedExports[i]);
+			
+			if(requestItem.getAmount() <= 0.0) continue;
+			
+			for (Warehouse warehouse : warehouses) {
+				warehouse.withdraw(requestItem, collectedItem);
+			}
+			
+			collectedExports[i]+= collectedItem.getAmount();
+			
+		}
+		
+		
+	}
+	
+	/* 
 	 * Sells everything.
 	 * 
 	 * @see org.saga.buildings.production.ProductionBuilding#produce()
@@ -234,6 +334,8 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 	@Override
 	public void produce() {
 		
+		
+		super.produce();
 		
 		SagaPricedItem[] exports = EconomyConfiguration.config().getTradingPostExports();
 		Double coins = 0.0;
@@ -243,16 +345,25 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 		// Export:
 		for (int i = 0; i < exports.length; i++) {
 			
-			Double price = exports[i].getPrice();
-			double amount = exportAmounts[i];
+			// Check work requirement:
+			if(exportsWork[i] < exports[i].getRequiredWork()) continue;
+			
+			// Amounts and cost:
+			Double cost = calcCost(i);
+			double amount = collectedExports[i];
 			if(amount <= 0.0) continue;
 			
+			// Export:
 			SagaItem export = new SagaItem(exports[i]);
-			export.setAmount(exportAmounts[i]);
+			export.setAmount(collectedExports[i]);
 			exported.add(export);
 			
-			coins+= amount * price;
-			exportAmounts[i]-= amount;
+			// Add coins:
+			coins+= cost;
+			
+			// Take:
+			collectedExports[i]-= amount;
+			exportsWork[i] = 0.0;
 			
 		}
 		
@@ -268,6 +379,23 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 		}
 		
 		
+	}
+	
+	/**
+	 * Calculates the export cost for the given index.
+	 * 
+	 * @param index export index
+	 * @return export cost
+	 */
+	public double calcCost(int index) {
+		
+		SagaPricedItem[] exports = EconomyConfiguration.config().getTradingPostExports();
+		
+		Double price = exports[index].getPrice();
+		double amount = collectedExports[index];
+		if(amount < 0.0) return 0.0;
+		
+		return amount * price;
 		
 	}
 	
@@ -286,13 +414,45 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 			if(!exports[i].checkRepresents(item)) continue;
 			
 			double amount = item.getAmount();
-			if(exportAmounts[i] + amount > exports[i].getAmount()) amount = exports[i].getAmount() - exportAmounts[i];
+			if(collectedExports[i] + amount > exports[i].getAmount()) amount = exports[i].getAmount() - collectedExports[i];
 			
 			item.modifyAmount(-amount);
-			exportAmounts[i] = exportAmounts[i] + amount;
+			collectedExports[i] = collectedExports[i] + amount;
 			
 		}
 		
+	}
+	
+	
+	
+	// Exports:
+	/**
+	 * Gets exports amounts.
+	 * 
+	 * @return exports amounts
+	 */
+	public double[] getForExport() {
+		return collectedExports;
+	}
+	
+	/**
+	 * Gets the amount of work for the given index export
+	 * 
+	 * @param index export index
+	 * @return work done
+	 * @throws IndexOutOfBoundsException when the index is out of bounds
+	 */
+	public double getWork(int index) throws IndexOutOfBoundsException{
+		return exportsWork[index];
+	}
+	
+	/**
+	 * Gets the exports length.
+	 * 
+	 * @return exports length
+	 */
+	public int exportsLength() {
+		return exportsWork.length;
 	}
 	
 	
