@@ -269,9 +269,6 @@ public class Warehouse extends Building{
 		SagaItem removedItem = new SagaItem(requestedItem);
 		removedItem.setAmount(0.0);
 
-		// Don't remove less than one item:
-		if(removedItem.getAmount() < 1.0) return removedItem;
-
 		// Buffer:
 		for (int i = 0; i < buffer.size(); i++) {
 			
@@ -290,14 +287,19 @@ public class Warehouse extends Building{
 			
 		}
 		
+		// Don't remove less than one item:
+		if(requestedItem.getAmount() < 1.0) return removedItem;
+		
 		// Withdraw: 
 		for (Chest chest : possibleStorage) {
 			
-			Inventory inventory = chest.getInventory();
-			ItemStack removeStack = removedItem.createItem();
-			ItemStack remaining = inventory.removeItem(removeStack).get(0);
+			int mod = (int)(requestedItem.getAmount() - removedItem.getAmount());
+			ItemStack modStack = requestedItem.createItem();
+			modStack.setAmount(mod);
 			
-			int mod = removeStack.getAmount();
+			Inventory inventory = chest.getInventory();
+			ItemStack remaining = inventory.removeItem(modStack).get(0);
+			
 			if(remaining != null) mod-= remaining.getAmount();
 			
 			removedItem.modifyAmount(mod);
@@ -391,7 +393,7 @@ public class Warehouse extends Building{
 			
 		}
 		
-		// Withdraw:
+		// Chests:
 		for (int i = 0; i < possibleStorage.size(); i++) {
 			
 			ItemStack[] inventory = possibleStorage.get(i).getInventory().getContents();
