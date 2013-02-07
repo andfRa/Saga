@@ -5,6 +5,8 @@ import org.bukkit.block.Sign;
 import org.bukkit.inventory.ItemStack;
 import org.saga.buildings.Building;
 import org.saga.buildings.TradingPost;
+import org.saga.buildings.production.SagaItem;
+import org.saga.buildings.production.SagaPricedItem;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.dependencies.EconomyDependency;
@@ -37,23 +39,12 @@ public class ImportSign extends BuildingSign {
 	 */
 	public static String AMOUNT_DIV_DISPLAY = "*";
 	
+	/**
+	 * Saga item representing the sign.
+	 */
+	transient private SagaItem item = null;
+
 	
-	/**
-	 * Material.
-	 */
-	transient private Material material = null;
-	
-	/**
-	 * Data values.
-	 */
-	transient private Short data = null;
-
-	/**
-	 * Amount.
-	 */
-	transient private Integer amount = null;
-
-
 	
 	// Initialisation:
 	/**
@@ -109,6 +100,10 @@ public class ImportSign extends BuildingSign {
 	private void initialiseFields() {
 
 		
+		Material type = null;
+		Short data = null;
+		Integer amount = null;
+		
 		// First parameter:
 		String[] firstParameter = getFirstParameter().split(AMOUNT_DIV);
 
@@ -116,17 +111,17 @@ public class ImportSign extends BuildingSign {
 		String sData = null;
 		String sAmount = null;
 		
-		// Arguments:
+		// Amount, type and data:
 		if(firstParameter.length == 2){
 			
 			String[] sMatData = firstParameter[1].split(DATA_DIV);
 			
 			// Material:
 			sMaterial = sMatData[0];
-			material = Material.matchMaterial(sMaterial);
-			if(material == null){
+			type = Material.matchMaterial(sMaterial);
+			if(type == null){
 				try {
-					material = Material.getMaterial(Integer.parseInt(sMaterial));
+					type = Material.getMaterial(Integer.parseInt(sMaterial));
 				} catch (NumberFormatException e) { }
 			}
 			
@@ -150,13 +145,13 @@ public class ImportSign extends BuildingSign {
 			
 			// Material:
 			sMaterial = sMatData[0];
-			material = Material.matchMaterial(sMaterial);
-			if(material == null){
+			type = Material.matchMaterial(sMaterial);
+			if(type == null){
 				try {
-					material = Material.getMaterial(Integer.parseInt(sMaterial));
+					type = Material.getMaterial(Integer.parseInt(sMaterial));
 				} catch (NumberFormatException e) { }
 			}
-			if(material == null) return;
+			if(type == null) return;
 
 			// Data:
 			if(sMatData.length > 1){
@@ -166,7 +161,7 @@ public class ImportSign extends BuildingSign {
 				} catch (NumberFormatException e) { }
 			}
 			
-			amount = material.getMaxStackSize();
+			amount = type.getMaxStackSize();
 			
 		}
 		
@@ -175,6 +170,9 @@ public class ImportSign extends BuildingSign {
 		
 		// Fix data:
 		if(data == null) data = 0;
+		
+		// Item:
+		item = new SagaItem(type, amount.doubleValue(), data);
 		
 		
 	}
@@ -198,9 +196,9 @@ public class ImportSign extends BuildingSign {
 	public SignStatus getStatus() {
 		
 
-		if(material == null || amount == null) return SignStatus.INVALIDATED;
+		if(item.getType() == null || item.getType() == Material.AIR || item.getData() == null || item.getAmount() == null) return SignStatus.INVALIDATED;
 		
-		if(EconomyConfiguration.config().getImport(material) == null) return SignStatus.INVALIDATED;
+		if(EconomyConfiguration.config().getImportItem(item) == null) return SignStatus.INVALIDATED;
 		
 		// Buy limit:
 		if(getBuilding() instanceof TradingPost){
@@ -214,20 +212,26 @@ public class ImportSign extends BuildingSign {
 		
 	}
 	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.buildings.signs.BuildingSign#getLine(int, org.saga.buildings.signs.BuildingSign.SignStatus)
+	 */
 	@Override
 	public String getLine(int index, SignStatus status) {
-	
+
 		
+		SagaPricedItem importItem = null;;
 		Double price = null;
-		if(material != null) price = EconomyConfiguration.config().getImport(material);
 		
 		switch (status) {
-			
 				
 			case ENABLED:
 				
+				importItem = EconomyConfiguration.config().getImportItem(item);
+				price = importItem.getPrice();
 				
-				if(index == 1) return amount + AMOUNT_DIV_DISPLAY + GeneralMessages.materialAbrev(material);
+				if(index == 1) return item.getAmount() + AMOUNT_DIV_DISPLAY + GeneralMessages.materialAbrev(item.getType());
 				if(index == 2) return "price: " + EconomyMessages.coins(price);
 				
 				Double perc = 1.0;
@@ -244,8 +248,11 @@ public class ImportSign extends BuildingSign {
 				
 			case DISABLED:
 				
-				if(index == 1) return amount + AMOUNT_DIV_DISPLAY + GeneralMessages.materialAbrev(material);
-				if(index == 2) return "price: " + EconomyMessages.coins(price);
+				importItem = EconomyConfiguration.config().getImportItem(item);
+				price = importItem.getPrice();
+				
+				if(index == 1) return item.getType() + AMOUNT_DIV_DISPLAY + GeneralMessages.materialAbrev(item.getType());
+				if(index == 2) return "price: " + price;
 				if(index == 3) return "come back later";
 				break;
 			
@@ -253,7 +260,7 @@ public class ImportSign extends BuildingSign {
 				
 				if(index == 1) return SettlementConfiguration.config().invalidSignColor + "amt" + AMOUNT_DIV_DISPLAY + "item/ID";
 			
-			break;
+				break;
 				
 			default:
 				
@@ -267,18 +274,7 @@ public class ImportSign extends BuildingSign {
 	}
 	
 	
-	
-	// Custom parameters:
-	/**
-	 * Gets the material.
-	 * 
-	 * @return the material, null if none
-	 */
-	public Material getMaterial() {
-		return material;
-	}
-	
-	
+
 	// Interaction:
 	/* 
 	 * (non-Javadoc)
@@ -289,8 +285,9 @@ public class ImportSign extends BuildingSign {
 	protected void onRightClick(SagaPlayer sagaPlayer) {
 
 		
-		Double price = EconomyConfiguration.config().getImport(material);
-		Integer usedAmount = amount;
+		SagaPricedItem importItem = EconomyConfiguration.config().getImportItem(item);
+		Double price = importItem.getPrice();
+		Integer usedAmount = item.getAmount().intValue();
 		
 		while(EconomyDependency.getCoins(sagaPlayer) < price * usedAmount && usedAmount > 0){
 			usedAmount--; 
@@ -301,14 +298,14 @@ public class ImportSign extends BuildingSign {
 			return;
 		}
 		
-		ItemStack item = new ItemStack(material, usedAmount);
+		ItemStack createdItem = new ItemStack(this.item.getType(), usedAmount);
 		
 		// Transaction:
 		EconomyDependency.removeCoins(sagaPlayer, price * usedAmount);
-		sagaPlayer.addItem(item);
+		sagaPlayer.addItem(createdItem);
 		
 		// Inform:
-		sagaPlayer.message(EconomyMessages.bought(material, usedAmount, price));
+		sagaPlayer.message(EconomyMessages.bought(item.getType(), usedAmount, price));
 		
 		// Notify transaction:
 		if(getBuilding() instanceof TradingPost){
@@ -316,11 +313,10 @@ public class ImportSign extends BuildingSign {
 		}
 		
 		// Statistics:
-		StatisticsManager.manager().addBuy(sagaPlayer, material, usedAmount, price * usedAmount);
+		StatisticsManager.manager().addImport(sagaPlayer, item.getType(), usedAmount, price * usedAmount);
 		
 		
 	}
-
 	
 	
 }

@@ -4,10 +4,10 @@ import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Random;
 
-import org.bukkit.Material;
 import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.SagaLogger;
+import org.saga.buildings.production.SagaItem;
 import org.saga.buildings.production.SagaPricedItem;
 import org.saga.factions.Faction;
 import org.saga.player.Proficiency;
@@ -75,6 +75,7 @@ public class EconomyConfiguration {
 	private Double attributeResetCost;
 
 
+	// Create rename:
 	/**
 	 * Faction create cost.
 	 */
@@ -96,11 +97,17 @@ public class EconomyConfiguration {
 	private Double settlementRenameCost;
 
 	
+	// Upgrade cost:
 	/**
-	 * Imports.
+	 * Claim point cost.
 	 */
-	public Hashtable<Material, Double> imports;
-
+	private Double claimPointCost;
+	
+	/**
+	 * Building point cost.
+	 */
+	private Double buildPointCost;
+	
 	
 	
 	// Faction wages:
@@ -128,9 +135,15 @@ public class EconomyConfiguration {
 
 	// Trading post:
 	/**
+	 * Imports.
+	 */
+	private SagaPricedItem[] imports;
+	
+	
+	/**
 	 * Trading post automatic exports.
 	 */
-	private SagaPricedItem[] tPostExports;
+	private SagaPricedItem[] tradingPostExports;
 
 	
 	
@@ -207,12 +220,18 @@ public class EconomyConfiguration {
 			factionRenameCost= 1000.0;
 		}
 		
-		if(imports == null){
-			SagaLogger.nullField(getClass(), "imports");
-			imports = new Hashtable<Material, Double>();
-		}
 		
+		if(claimPointCost == null){
+			SagaLogger.nullField(getClass(), "claimPointCost");
+			claimPointCost = 0.0;
+		}
 
+		if(buildPointCost == null){
+			SagaLogger.nullField(getClass(), "buildPointCost");
+			buildPointCost = 0.0;
+		}
+
+		
 		if(factionClaimsPointsWage == null){
 			SagaLogger.nullField(getClass(), "factionClaimsPointsWage");
 			factionClaimsPointsWage= new TwoPointFunction(0.0);
@@ -240,12 +259,20 @@ public class EconomyConfiguration {
 			factionWagesTime= Daytime.NONE;
 		}
 
-		
-		if(tPostExports == null){
-			SagaLogger.nullField(getClass(), "tPostExports");
-			tPostExports = new SagaPricedItem[0];
+
+		if(imports == null){
+			SagaLogger.nullField(getClass(), "imports");
+			imports = new SagaPricedItem[0];
 		}
-		for (SagaPricedItem item : tPostExports) {
+		for (SagaPricedItem item : imports) {
+			item.complete();
+		}
+		
+		if(tradingPostExports == null){
+			SagaLogger.nullField(getClass(), "tradingPostExports");
+			tradingPostExports = new SagaPricedItem[0];
+		}
+		for (SagaPricedItem item : tradingPostExports) {
 			item.complete();
 		}
 
@@ -270,20 +297,7 @@ public class EconomyConfiguration {
 		return enabled;
 	}
 	
-	
-	
-	// Prices:
-	/**
-	 * Gets the import price for the given material.
-	 * 
-	 * @param material material
-	 * @return import price, null if none
-	 */
-	public Double getImport(Material material) {
-		return imports.get(material);
-	}
-	
-	
+
 	
 	// Attributes:
 	/**
@@ -335,7 +349,28 @@ public class EconomyConfiguration {
 	}
 	
 	
-
+	
+	// Upgrade costs:
+	/**
+	 * Gets the cost of buying new claim points.
+	 * 
+	 * @return claim points cost.
+	 */
+	public Double getClaimPointCost() {
+		return claimPointCost;
+	}
+	
+	/**
+	 * Gets the building point cost.
+	 * 
+	 * @return building point cost
+	 */
+	public Double getBuildPointCost() {
+		return buildPointCost;
+	}
+	
+	
+	
 	// Util:
 	/**
 	 * Returns a random normal distributed value.
@@ -357,7 +392,6 @@ public class EconomyConfiguration {
 		
 		
 	}
-
 
 	/**
 	 * Returns a random normal distributed value.
@@ -444,12 +478,28 @@ public class EconomyConfiguration {
 	
 	// Trading post:
 	/**
+	 * Gets the import price for the given saga item.
+	 * 
+	 * @param sagaItem saga item
+	 * @return import item, null if none
+	 */
+	public SagaPricedItem getImportItem(SagaItem sagaItem) {
+
+		for (int i = 0; i < imports.length; i++) {
+			if(sagaItem.checkRepresents(imports[i])) return imports[i];
+		}
+		
+		return null;
+		
+	}
+	
+	/**
 	 * Gets trading post exports.
 	 * 
 	 * @return trading post exports
 	 */
 	public SagaPricedItem[] getTradingPostExports() {
-		return tPostExports;
+		return tradingPostExports;
 	}
 	
 	

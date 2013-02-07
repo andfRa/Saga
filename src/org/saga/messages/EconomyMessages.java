@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.saga.buildings.Building;
 import org.saga.buildings.production.SagaItem;
 import org.saga.config.EconomyConfiguration;
 import org.saga.dependencies.EconomyDependency;
@@ -93,9 +94,9 @@ public class EconomyMessages {
 		
 	}
 	
-	public static String insufItems(Trader trader, Material items) {
+	public static String insufItems(Building building, Material items) {
 		
-		return Colour.negative + ChatUtil.capitalize(trader.getName()) + " doesn't have enough " + GeneralMessages.material(items) + ".";
+		return Colour.negative + "The " + building.getName() + " doesn't have enough " + GeneralMessages.material(items) + ".";
 		
 	}
 	

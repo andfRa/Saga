@@ -289,12 +289,17 @@ public abstract class BuildingSign extends SagaCustomSerialization{
 		
 		
 		// Only loaded:
-		if(!location.getChunk().isLoaded()) return null;
+		if(!location.getChunk().isLoaded()){
+			System.out.println("NOT LOADED");
+			return null;
+		}
 		
 		// Get sign:
 		try {
+			System.out.println("STATE="+location.getBlock().getState());
 			return (Sign) location.getBlock().getState();
 		} catch (Exception e) {
+			System.out.println("e:" + e);
 			return null;
 		}
 

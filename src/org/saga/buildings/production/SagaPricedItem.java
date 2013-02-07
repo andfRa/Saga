@@ -48,6 +48,11 @@ public class SagaPricedItem extends SagaItem{
 	 * 
 	 */
 	public void complete(){
+
+		
+		if(type != null && amount == null){
+			amount = (double)type.getMaxStackSize();
+		}
 		
 		super.complete();
 		

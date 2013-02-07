@@ -1,9 +1,21 @@
 package org.saga.buildings.signs;
 
+import java.util.Collection;
+
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
+import org.bukkit.inventory.ItemStack;
+import org.saga.SagaLogger;
 import org.saga.buildings.Building;
+import org.saga.buildings.Warehouse;
+import org.saga.buildings.production.SagaItem;
+import org.saga.config.EconomyConfiguration;
+import org.saga.config.SettlementConfiguration;
+import org.saga.dependencies.EconomyDependency;
+import org.saga.messages.EconomyMessages;
+import org.saga.messages.GeneralMessages;
 import org.saga.player.SagaPlayer;
+import org.saga.statistics.StatisticsManager;
 
 
 public class BuySign extends BuildingSign {
@@ -17,6 +29,11 @@ public class BuySign extends BuildingSign {
 	/**
 	 * Amount division string.
 	 */
+	public static String DATA_DIV = ":";
+	
+	/**
+	 * Amount division string.
+	 */
 	public static String AMOUNT_DIV = "\\*";
 	
 	/**
@@ -24,16 +41,27 @@ public class BuySign extends BuildingSign {
 	 */
 	public static String AMOUNT_DIV_DISPLAY = "*";
 	
+
+	/**
+	 * Amount of items stored.
+	 */
+	private Double stored;
+
+	/**
+	 * Maximum amount of items stored.
+	 */
+	private Double maxStored;
+	
 	
 	/**
-	 * Material.
+	 * Saga item.
 	 */
-	transient private Material material = null;
+	transient SagaItem item = null;
 
 	/**
 	 * Amount.
 	 */
-	transient private Integer amount = null;
+	transient private Double price = null;
 
 
 	
@@ -53,11 +81,12 @@ public class BuySign extends BuildingSign {
 		super(sign, SIGN_NAME, secondLine, thirdLine, fourthLine, building);
 		
 		initialiseFields();
+		stored = 0.0;
 		
 	}
 	
 	/**
-	 * Creates the training 
+	 * Creates the buy sign. 
 	 * 
 	 * @param sign bukkit sign
 	 * @param firstLine first line
@@ -76,6 +105,16 @@ public class BuySign extends BuildingSign {
 		
 		
 		super.complete(building);
+
+		if(stored== null){
+			SagaLogger.nullField(this, "stored");
+			stored = 0.0;
+		}
+		
+		if(maxStored== null){
+			SagaLogger.nullField(this, "maxStored");
+			maxStored = 0.0;
+		}
 		
 		initialiseFields();
 		
@@ -91,48 +130,96 @@ public class BuySign extends BuildingSign {
 	private void initialiseFields() {
 
 		
+		Material type = null;
+		Short data = null;
+		Double amount = null;
+		
 		// First parameter:
 		String[] firstParameter = getFirstParameter().split(AMOUNT_DIV);
 
 		String sAmount = null;
 		String sMaterial = null;
+		String sData = null;
+		String sPrice = null;
+		String sMaxStored = null;
 		
-		// Arguments:
+		// Amount, type and data:
 		if(firstParameter.length == 2){
 			
+			String[] sMatData = firstParameter[1].split(DATA_DIV);
+			
 			// Material:
-			sMaterial = firstParameter[1];
-			material = Material.matchMaterial(sMaterial);
-			if(material == null){
+			sMaterial = sMatData[0];
+			type = Material.matchMaterial(sMaterial);
+			if(type == null){
 				try {
-					material = Material.getMaterial(Integer.parseInt(sMaterial));
+					type = Material.getMaterial(Integer.parseInt(sMaterial));
+				} catch (NumberFormatException e) { }
+			}
+			
+			// Data:
+			if(sMatData.length > 1){
+				sData = sMatData[1];
+				try {
+					data = Short.parseShort(sData);
 				} catch (NumberFormatException e) { }
 			}
 			
 			// Amount:
 			sAmount = firstParameter[0];
 			try {
-				amount = Integer.parseInt(sAmount);
+				amount = Double.parseDouble(sAmount);
 			} catch (NumberFormatException e) {}
 			
 		}else{
 
+			String[] sMatData = firstParameter[0].split(DATA_DIV);
+			
 			// Material:
-			sMaterial = firstParameter[0];
-			material = Material.matchMaterial(sMaterial);
-			if(material == null){
+			sMaterial = sMatData[0];
+			type = Material.matchMaterial(sMaterial);
+			if(type == null){
 				try {
-					material = Material.getMaterial(Integer.parseInt(sMaterial));
+					type = Material.getMaterial(Integer.parseInt(sMaterial));
 				} catch (NumberFormatException e) { }
 			}
-			if(material == null) return;
+			if(type == null) return;
+
+			// Data:
+			if(sMatData.length > 1){
+				sData = sMatData[1];
+				try {
+					data = Short.parseShort(sData);
+				} catch (NumberFormatException e) { }
+			}
 			
-			amount = material.getMaxStackSize();
+			amount = (double)type.getMaxStackSize();
 			
 		}
+
+		// Price:
+		sPrice = getSecondParameter();
+		try {
+			price = Double.parseDouble(sPrice);
+		} catch (NumberFormatException e) {}
+		
+		// Stored:
+		sMaxStored = getThirdParameter();
+		try {
+			maxStored = Double.parseDouble(sMaxStored);
+		} catch (NumberFormatException e) {}
 		
 		// Fix amount:
-		if(amount != null && amount < 0) amount = 0;
+		if(amount != null && amount < 0) amount = 0.0;
+		
+		// Fix data:
+		if(data == null) data = 0;
+		
+		// Fix max stored:
+		if(maxStored == null) maxStored = 64.0;
+		if(maxStored <= 0.0) maxStored = 1.0;
+		
+		this.item = new SagaItem(type, amount.doubleValue(), data);
 		
 	}
 	
@@ -153,21 +240,12 @@ public class BuySign extends BuildingSign {
 	 */
 	@Override
 	public SignStatus getStatus() {
-		
 
-//		if(material == null || amount == null) return SignStatus.INVALIDATED;
-//		
-//		if(EconomyConfiguration.config().getImport(material) == null) return SignStatus.INVALIDATED;
-//		
-//		// Buy limit:
-//		if(getBuilding() instanceof TradingPost){
-//			
-//			if(((TradingPost) getBuilding()).checkOverBuyLimit()) return SignStatus.DISABLED;
-//
-//		}
+		if(maxStored == null || item.getType() == null || item.getType() == Material.AIR || item.getData() == null || item.getAmount() == null || price == null) return SignStatus.INVALIDATED;
+		
+		if(stored <= 0 || !EconomyConfiguration.config().isEnabled()) return SignStatus.DISABLED;
 		
 		return SignStatus.ENABLED;
-	
 		
 	}
 	
@@ -175,49 +253,36 @@ public class BuySign extends BuildingSign {
 	public String getLine(int index, SignStatus status) {
 	
 		
-//		Double price = null;
-//		if(material != null) price = EconomyConfiguration.config().getImport(material);
-//		if(price != null) price*= EconomyConfiguration.config().getBuyMult();
-//		
-//		switch (status) {
-//			
-//				
-//			case ENABLED:
-//				
-//				
-//				if(index == 1) return amount + AMOUNT_DIV_DISPLAY + GeneralMessages.materialAbrev(material);
-//				if(index == 2) return "price: " + EconomyMessages.coins(price);
-//				
-//				Double perc = 1.0;
-//				if(getBuilding() instanceof TradingPost){
-//					
-//					TradingPost tpost = (TradingPost) getBuilding();
-//					
-//					perc = (1 - tpost.getBuyCoins() / tpost.getBuyLimit()) * 100;
-//					
-//				}
-//				if(index == 3) return "goods: " + perc.intValue() + "%";
-//				
-//				break;
-//				
-//			case DISABLED:
-//				
-//				if(index == 1) return amount + AMOUNT_DIV_DISPLAY + GeneralMessages.materialAbrev(material);
-//				if(index == 2) return "price: " + EconomyMessages.coins(price);
-//				if(index == 3) return "come back later";
-//				break;
-//			
-//			case INVALIDATED:
-//				
-//				if(index == 1) return SettlementConfiguration.config().invalidSignColor + "amt" + AMOUNT_DIV_DISPLAY + "item/ID";
-//			
-//			break;
-//				
-//			default:
-//				
-//				return "-";
-//
-//		}
+		switch (status) {
+				
+			case ENABLED:
+				
+				if(index == 1) return item.getAmount().intValue() + AMOUNT_DIV_DISPLAY + GeneralMessages.materialAbrev(item.getType());
+				if(index == 2) return "price: " + EconomyMessages.coins(price);
+				if(index == 3) return stored.intValue() + "/" + maxStored.intValue();
+				
+				break;
+				
+			case DISABLED:
+				
+				if(index == 1) return item.getAmount().intValue() + AMOUNT_DIV_DISPLAY + GeneralMessages.materialAbrev(item.getType());
+				if(index == 2) return "price: " + price;
+				if(index == 3) return "come back later";
+				break;
+			
+			case INVALIDATED:
+				
+				if(index == 1) return SettlementConfiguration.config().invalidSignColor + "amt" + AMOUNT_DIV_DISPLAY + "item/ID";
+				if(index == 2) return SettlementConfiguration.config().invalidSignColor + "price";
+				if(index == 3) return SettlementConfiguration.config().invalidSignColor + "max amount";
+				
+			break;
+				
+			default:
+				
+				return "-";
+
+		}
 
 		return "";
 		
@@ -226,18 +291,7 @@ public class BuySign extends BuildingSign {
 	
 	
 	
-	// Custom parameters:
-	/**
-	 * Gets the material.
-	 * 
-	 * @return the material, null if none
-	 */
-	public Material getMaterial() {
-		return material;
-	}
-	
-	
-	// Interaction:
+	// Operation:
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -247,43 +301,91 @@ public class BuySign extends BuildingSign {
 	protected void onRightClick(SagaPlayer sagaPlayer) {
 
 		
-//		// Used amount:
-//		Integer usedAmount = amount;
-//		
-//		// Used coins:
-//		Double price = EconomyConfiguration.config().getImport(material);
-//		if(price == null) return;
-//		price*= EconomyConfiguration.config().getBuyMult();
-//		
-//		while(EconomyDependency.getCoins(sagaPlayer) < price * usedAmount && usedAmount > 0){
-//			usedAmount--; 
-//		}
-//		
-//		if(usedAmount < 1){
-//			sagaPlayer.message(EconomyMessages.insufCoins());
-//			return;
-//		}
-//		
-//		ItemStack item = new ItemStack(material, usedAmount);
-//		
-//		// Transaction:
-//		EconomyDependency.removeCoins(sagaPlayer, price * usedAmount);
-//		sagaPlayer.addItem(item);
-//		
-//		// Inform:
-//		sagaPlayer.message(EconomyMessages.bought(material, usedAmount, price));
-//		
-//		// Notify transaction:
-//		if(getBuilding() instanceof TradingPost){
-//			((TradingPost) getBuilding()).notifyBuy(price * usedAmount);
-//		}
-//		
-//		// Statistics:
-//		StatisticsManager.manager().onPlayerBuy(sagaPlayer, material, usedAmount, price * usedAmount);
-//		
+		// Used amount:
+		Integer usedAmount = item.getAmount().intValue();
+		
+		// Available coins:
+		if(price == null) return;
+		
+		Double coins = EconomyDependency.getCoins(sagaPlayer);
+		while(coins < price * usedAmount && usedAmount > 0){
+			usedAmount--; 
+		}
+		
+		if(usedAmount < 1){
+			sagaPlayer.message(EconomyMessages.insufCoins());
+			return;
+		}
+		
+		// Available goods:
+		if(usedAmount > stored) usedAmount = stored.intValue();
+		
+		if(usedAmount < 1){
+			sagaPlayer.message(EconomyMessages.insufItems(getBuilding(), item.getType()));
+			return;
+		}
+		
+		// Create item:
+		ItemStack item = this.item.createItem();
+		item.setAmount(usedAmount);
+		
+		// Transaction:
+		Double cost = price * usedAmount;
+		EconomyDependency.removeCoins(sagaPlayer, cost);
+		getBuilding().getSettlement().payCoins(cost);
+		sagaPlayer.addItem(item);
+		stored-= usedAmount;
+		
+		// Inform:
+		sagaPlayer.message(EconomyMessages.bought(item.getType(), usedAmount, price));
+		
+		// Statistics:
+		StatisticsManager.manager().onPlayerBuy(sagaPlayer, item.getType(), usedAmount, price * usedAmount);
+		
+		// Update sign:
+		refresh();
+
 		
 	}
-
 	
+	/**
+	 * Collects all needed resources from warehouses.
+	 * 
+	 * @param warehouses warehouses
+	 */
+	public void collect(Collection<Warehouse> warehouses) {
+
+		double req = maxStored - stored;
+		if(req <= 0) return;
+		
+		SagaItem reqItem = new SagaItem(item);
+		reqItem.setAmount(req);
+		
+		SagaItem colItem = new SagaItem(item);
+		colItem.setAmount(0.0);
+		
+		for (Warehouse warehouse : warehouses) {
+			warehouse.withdraw(reqItem, colItem);
+		}
+		
+		stored+= colItem.getAmount();
+		
+		refresh();
+
+		
+	}
+	
+	
+	// Other:
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "{" + item.getAmount() + "," + item.getType() + ":" + item.getData() + "," + price + "}";
+	}
+
 	
 }

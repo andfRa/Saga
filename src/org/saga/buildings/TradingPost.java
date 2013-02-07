@@ -1,6 +1,7 @@
 package org.saga.buildings;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Set;
 
 import org.bukkit.block.Sign;
@@ -320,6 +321,17 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 			}
 			
 			collectedExports[i]+= collectedItem.getAmount();
+			
+		}
+		
+		// Only loaded:
+		if(getSagaChunk().isChunkLoaded()){
+			
+			// Update buy signs:
+			Collection<BuySign> buySigns = getBuildingSigns(BuySign.class);
+			for (BuySign buySign : buySigns) {
+				buySign.collect(warehouses);
+			}
 			
 		}
 		
