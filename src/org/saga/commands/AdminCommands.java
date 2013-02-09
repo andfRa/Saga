@@ -457,7 +457,7 @@ public class AdminCommands {
 	
 
 	
-	// Buildings general:
+	// Leveling:
 	@Command(
 		aliases = {"assetclaims"},
 		usage = "[settlement_name] <claims>",
@@ -476,7 +476,7 @@ public class AdminCommands {
 		// Arguments:
 		if(args.argsLength() == 2){
 			
-			// Chunk group:
+			// Bundle:
 			String bundleName = GeneralMessages.nameFromArg(args.getString(0));
 			selBundle = BundleManager.manager().matchBundle(bundleName);
 			if(selBundle == null){
@@ -493,7 +493,7 @@ public class AdminCommands {
 			
 		}else{
 			
-			// Chunk group:
+			// Bundle:
 			selBundle = sagaPlayer.getBundle();
 			if(selBundle == null){
 				sagaPlayer.message(SettlementMessages.notMember());
@@ -516,7 +516,7 @@ public class AdminCommands {
 		}
 		Settlement selectedSettlement = (Settlement) selBundle;
 
-		// Invalid level:
+		// Invalid claims:
 		if(claims < 0.0 || claims > SettlementConfiguration.config().getMaxClaims()){
 			
 			sagaPlayer.message(AdminMessages.settleClaimsOutOfRange(claims + ""));
@@ -533,6 +533,82 @@ public class AdminCommands {
 		
 	}
 	
+
+	@Command(
+		aliases = {"assetbuildpoints","assetbuild"},
+		usage = "[settlement_name] <build_points>",
+		flags = "",
+		desc = "Set settlement build points.",
+		min = 1,
+		max = 2
+	)
+	@CommandPermissions({"saga.admin.settlement.setbuildpoints"})
+	public static void setSettlementBuildPoints(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+
+		Double bldPts = null;
+		Bundle selBundle = null;
+
+		// Arguments:
+		if(args.argsLength() == 2){
+			
+			// Bundle:
+			String bundleName = GeneralMessages.nameFromArg(args.getString(0));
+			selBundle = BundleManager.manager().matchBundle(bundleName);
+			if(selBundle == null){
+				sagaPlayer.message(GeneralMessages.invalidSettlement(bundleName));
+				return;
+			}
+
+			try {
+				bldPts = Double.parseDouble(args.getString(1));
+			} catch (NumberFormatException e) {
+				sagaPlayer.message(GeneralMessages.notNumber(args.getString(1)));
+				return;
+			}
+			
+		}else{
+			
+			// Bundle:
+			selBundle = sagaPlayer.getBundle();
+			if(selBundle == null){
+				sagaPlayer.message(SettlementMessages.notMember());
+				return;
+			}
+
+			try {
+				bldPts = Double.parseDouble(args.getString(0));
+			} catch (NumberFormatException e) {
+				sagaPlayer.message(GeneralMessages.notNumber(args.getString(0)));
+				return;
+			}
+			
+		}
+		
+		// Is a settlement:
+		if(!(selBundle instanceof Settlement)){
+			sagaPlayer.message(GeneralMessages.notSettlement(selBundle));
+			return;
+		}
+		Settlement selectedSettlement = (Settlement) selBundle;
+
+		// Invalid build points:
+		if(bldPts < 0.0 || bldPts > SettlementConfiguration.config().getMaxBuildPoints()){
+			
+			sagaPlayer.message(AdminMessages.settleBuildPointsOutOfRange(bldPts + ""));
+			return;
+			
+		}
+		
+		// Set build points:
+		selectedSettlement.setBuildPoints(bldPts);
+		
+		// Inform:
+		sagaPlayer.message(AdminMessages.setBuildPoints(selectedSettlement));
+		
+		
+	}
+	
 	@Command(
 			aliases = {"afsetclaims"},
 			usage = "[faction_name] <level>",
@@ -541,8 +617,8 @@ public class AdminCommands {
 			min = 1,
 			max = 2
 		)
-	@CommandPermissions({"saga.admin.faction.setlevelclaims"})
-	public static void setFactionLevel(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	@CommandPermissions({"saga.admin.faction.setclaims"})
+	public static void setFactionClaims(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
 		Double claims = null;
@@ -953,7 +1029,7 @@ public class AdminCommands {
 			System.out.println("ITEM=" + item);
 			SagaItem sagaItem = new SagaItem(item);
 			
-			wh.store(sagaItem);
+			wh.withdraw(sagaItem);
 			
 		}
 		

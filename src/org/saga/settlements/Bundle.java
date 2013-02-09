@@ -718,65 +718,6 @@ public class Bundle extends SagaCustomSerialization{
 	}
 	
 	
-
-	// Building points:
-	/**
-	 * Gets the amount of building points used.
-	 * 
-	 * @return amount of building points used
-	 */
-	public Integer getUsedBuildPoints() {
-		
-		
-		Integer total = 0;
-		ArrayList<Building> buildings = getBuildings();
-		
-		for (Building building : buildings) {
-			total+= building.getDefinition().getBuildPoints();
-		}
- 		
-		return total;
-		
-		
-	}
-
-	/**
-	 * Gets the amount of building points available.
-	 * 
-	 * @return amount building points available
-	 */
-	public Integer getAvailableBuildPoints() {
-		
-		return 0;
-		
-	}
-	
-	/**
-	 * Gets the amount of building points remaining.
-	 * 
-	 * @return amount of building points remaining
-	 */
-	public Integer getRemainingBuildPoints() {
-		
-		return getAvailableBuildPoints() - getUsedBuildPoints();
-		
-	}
-
-	/**
-	 * Checks if there are building points are available.
-	 * 
-	 * @param building building
-	 * @return true if building points available
-	 */
-	public boolean hasBuildPointsAvailable(Building building) {
-
-		if(isOptionEnabled(BundleToggleable.UNLIMITED_BUILDINGS)) return true;
-		
-		return getRemainingBuildPoints() >= building.getDefinition().getBuildPoints();
-		
-	}
-	
-	
 	
 	// Player and faction management:
 	/**

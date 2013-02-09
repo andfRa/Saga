@@ -37,14 +37,14 @@ public class SettlementConfiguration {
 	
 
 	
-	// Claims:
+	// Claim points:
 	/**
 	 * Claims gained per minute.
 	 */
 	private TwoPointFunction claimsPerMinute;
 
 	/**
-	 * Maximum number of claims when a settlement is formed.
+	 * Number of claims when a settlement is formed.
 	 */
 	private Integer initClaims;
 
@@ -58,13 +58,32 @@ public class SettlementConfiguration {
 	 */
 	private Integer noDeleteSize;
 	
+	
+	// Build points:
+	/**
+	 * Build points gained per minute.
+	 */
+	private TwoPointFunction buildPointsPerMinute;
+
+	/**
+	 * Number of build points when a settlement is formed.
+	 */
+	private Integer initBuildPoints;
+
+	/**
+	 * Maximum number of build points a settlement can have.
+	 */
+	private Integer maxBuildPoints;
+	
+	
 
 	// Claim improvements:
 	/**
 	 * The amount of building points for settlement size.
 	 */
-	private TwoPointFunction buildPoints;
+	private TwoPointFunction buildPoints; // TODO Remove unused build points per claims function.
 
+	
 	
 	// Requirements:
 	/**
@@ -170,7 +189,24 @@ public class SettlementConfiguration {
 			noDeleteSize = 25;
 		}
 		
+		
+		if(buildPointsPerMinute == null){
+			SagaLogger.nullField(getClass(), "buildPointsPerMinute");
+			buildPointsPerMinute = new TwoPointFunction(0.0);
+		}
+		buildPointsPerMinute.complete();
+		
+		if(initBuildPoints == null){
+			SagaLogger.nullField(getClass(), "initBuildPoints");
+			initBuildPoints = 1;
+		}
 
+		if(maxBuildPoints == null){
+			SagaLogger.nullField(getClass(), "maxBuildPoints");
+			maxBuildPoints = 15;
+		}
+
+		
 		if(buildPoints == null){
 			SagaLogger.nullField(this, "buildPoints");
 			buildPoints = new TwoPointFunction(0.0);
@@ -294,7 +330,7 @@ public class SettlementConfiguration {
 	}
 	
 	/**
-	 * Gets the initial amount of claims the faction can have.
+	 * Gets the initial amount of claims the settlement can have.
 	 * 
 	 * @return initial claims
 	 */
@@ -303,7 +339,7 @@ public class SettlementConfiguration {
 	}
 	
 	/**
-	 * Gets the maximum amount of claims the faction can have.
+	 * Gets the maximum amount of claims the settlement can have.
 	 * 
 	 * @return max claims
 	 */
@@ -319,6 +355,38 @@ public class SettlementConfiguration {
 	public Integer getNoDeleteSize() {
 		return noDeleteSize;
 	}
+	
+	
+	
+	// Build points:
+	/**
+	 * Gets build points per minute.
+	 * 
+	 * @param onlinePlayers players online
+	 * @return amount of build points per minute
+	 */
+	public Double getBuildPointsPerMinute(Integer onlinePlayers) {
+		return buildPointsPerMinute.value(onlinePlayers);
+	}
+	
+	/**
+	 * Gets the initial amount of build points the settlement can have.
+	 * 
+	 * @return initial build points
+	 */
+	public Integer getInitialBuildPoints() {
+		return initBuildPoints;
+	}
+	
+	/**
+	 * Gets the maximum amount of build points the settlement can have.
+	 * 
+	 * @return max build points
+	 */
+	public Integer getMaxBuildPoints() {
+		return maxBuildPoints;
+	}
+
 	
 	
 	

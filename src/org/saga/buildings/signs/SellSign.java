@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
-import org.bukkit.inventory.ItemStack;
 import org.saga.SagaLogger;
 import org.saga.buildings.Building;
 import org.saga.buildings.Warehouse;
@@ -15,16 +14,17 @@ import org.saga.dependencies.EconomyDependency;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.GeneralMessages;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.Settlement;
 import org.saga.statistics.StatisticsManager;
 
 
-public class BuySign extends BuildingSign {
+public class SellSign extends BuildingSign {
 
 
 	/**
 	 * Name for the sign.
 	 */
-	public static String SIGN_NAME = "=[BUY]=";
+	public static String SIGN_NAME = "=[SELL]=";
 
 	/**
 	 * Amount division string.
@@ -43,15 +43,20 @@ public class BuySign extends BuildingSign {
 	
 
 	/**
-	 * Amount of items stored.
+	 * Amount of coins stored.
 	 */
-	private Double stored;
+	private Double coins;
 
 	/**
-	 * Maximum amount of items stored.
+	 * Maximum amount of coins stored.
 	 */
-	private Double maxStored;
-	
+	private Double maxCoins;
+
+	/**
+	 * Amount of goods pending.
+	 */
+	private Double pending;
+
 	
 	/**
 	 * Saga item.
@@ -76,12 +81,14 @@ public class BuySign extends BuildingSign {
 	 * @param event event that created the sign
 	 * @param building building
 	 */
-	protected BuySign(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building){
+	protected SellSign(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building){
 	
 		super(sign, SIGN_NAME, secondLine, thirdLine, fourthLine, building);
 		
+		coins = 0.0;
+		pending = 0.0;
+		
 		initialiseFields();
-		stored = 0.0;
 		
 	}
 	
@@ -96,8 +103,8 @@ public class BuySign extends BuildingSign {
 	 * @param building building
 	 * @return training sign
 	 */
-	public static BuySign create(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building) {
-		return new BuySign(sign, secondLine, thirdLine, fourthLine, building);
+	public static SellSign create(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building) {
+		return new SellSign(sign, secondLine, thirdLine, fourthLine, building);
 	}
 
 	@Override
@@ -106,14 +113,19 @@ public class BuySign extends BuildingSign {
 		
 		super.complete(building);
 
-		if(stored== null){
-			SagaLogger.nullField(this, "stored");
-			stored = 0.0;
+		if(coins== null){
+			SagaLogger.nullField(this, "coins");
+			coins = 0.0;
 		}
 		
-		if(maxStored== null){
-			SagaLogger.nullField(this, "maxStored");
-			maxStored = 0.0;
+		if(maxCoins== null){
+			SagaLogger.nullField(this, "maxCoins");
+			maxCoins = 0.0;
+		}
+		
+		if(pending== null){
+			SagaLogger.nullField(this, "pending");
+			pending = 0.0;
 		}
 		
 		initialiseFields();
@@ -141,7 +153,7 @@ public class BuySign extends BuildingSign {
 		String sMaterial = null;
 		String sData = null;
 		String sPrice = null;
-		String sMaxStored = null;
+		String sMaxCoins = null;
 		
 		// Amount, type and data:
 		if(firstParameter.length == 2){
@@ -203,10 +215,10 @@ public class BuySign extends BuildingSign {
 			price = Double.parseDouble(sPrice);
 		} catch (NumberFormatException e) {}
 		
-		// Stored:
-		sMaxStored = getThirdParameter();
+		// Coins:
+		sMaxCoins = getThirdParameter();
 		try {
-			maxStored = Double.parseDouble(sMaxStored);
+			maxCoins = Double.parseDouble(sMaxCoins);
 		} catch (NumberFormatException e) {}
 		
 		// Fix amount:
@@ -215,9 +227,12 @@ public class BuySign extends BuildingSign {
 		// Fix data:
 		if(data == null) data = 0;
 		
-		// Fix max stored:
-		if(maxStored == null) maxStored = 64.0;
-		if(maxStored <= 0.0) maxStored = 1.0;
+		// Fix max coins:
+		if(maxCoins == null) maxCoins = 64.0;
+		if(maxCoins <= 0.0) maxCoins = 1.0;
+		
+		// Round coins:
+		maxCoins = (double)maxCoins.intValue();
 		
 		this.item = new SagaItem(type, amount.doubleValue(), data);
 		
@@ -241,9 +256,9 @@ public class BuySign extends BuildingSign {
 	@Override
 	public SignStatus getStatus() {
 
-		if(maxStored == null || item.getType() == null || item.getType() == Material.AIR || item.getData() == null || item.getAmount() == null || price == null) return SignStatus.INVALIDATED;
+		if(maxCoins == null || item.getType() == null || item.getType() == Material.AIR || item.getData() == null || item.getAmount() == null || price == null) return SignStatus.INVALIDATED;
 		
-		if(stored <= 0 || !EconomyConfiguration.config().isEnabled()) return SignStatus.DISABLED;
+		if(coins <= 0 || !EconomyConfiguration.config().isEnabled()) return SignStatus.DISABLED;
 		
 		return SignStatus.ENABLED;
 		
@@ -264,7 +279,7 @@ public class BuySign extends BuildingSign {
 				
 				if(index == 1) return item.getAmount().intValue() + AMOUNT_DIV_DISPLAY + GeneralMessages.materialAbrev(item.getType());
 				if(index == 2) return "price: " + EconomyMessages.coins(price);
-				if(index == 3) return stored.intValue() + "/" + maxStored.intValue();
+				if(index == 3) return coins.intValue() + "/" + EconomyMessages.coins((double)maxCoins.intValue());
 				
 				break;
 				
@@ -279,7 +294,7 @@ public class BuySign extends BuildingSign {
 				
 				if(index == 1) return SettlementConfiguration.config().invalidSignColor + "amt" + AMOUNT_DIV_DISPLAY + "item/ID";
 				if(index == 2) return SettlementConfiguration.config().invalidSignColor + "price";
-				if(index == 3) return SettlementConfiguration.config().invalidSignColor + "max amount";
+				if(index == 3) return SettlementConfiguration.config().invalidSignColor + "max coins";
 				
 			break;
 				
@@ -306,46 +321,23 @@ public class BuySign extends BuildingSign {
 	protected void onRightClick(SagaPlayer sagaPlayer) {
 
 		
-		// Available amount:
-		Integer availAmount = item.getAmount().intValue();
+		SagaItem request = new SagaItem(item);
 		
 		// Available coins:
-		if(price == null) return;
+		if(price > 0 && request.getAmount()*price > coins) request.setAmount(coins/price);
 		
-		Double coins = EconomyDependency.getCoins(sagaPlayer);
-		while(coins < price * availAmount && availAmount > 0){
-			availAmount--; 
-		}
-		
-		if(availAmount < 1){
-			sagaPlayer.message(EconomyMessages.insufCoins());
-			return;
-		}
-		
-		// Available goods:
-		if(availAmount > stored) availAmount = stored.intValue();
-		
-		if(availAmount < 1){
-			sagaPlayer.message(EconomyMessages.insufItems(getBuilding(), item.getType()));
-			return;
-		}
-		
-		// Create item:
-		ItemStack item = this.item.createItem();
-		item.setAmount(availAmount);
-		
-		// Transaction:
-		Double cost = price * availAmount;
-		EconomyDependency.removeCoins(sagaPlayer, cost);
-		getBuilding().getSettlement().payCoins(cost);
-		sagaPlayer.addItem(item);
-		stored-= availAmount;
+		// Transaction::
+		SagaItem takenItem = sagaPlayer.takeItem(request);
+		pending+= takenItem.getAmount();
+		Double cost = price*takenItem.getAmount();
+		EconomyDependency.addCoins(sagaPlayer, cost);
+		coins-= cost;
 		
 		// Inform:
-		sagaPlayer.message(EconomyMessages.bought(item.getType(), availAmount, price));
+		sagaPlayer.message(EconomyMessages.sold(item.getType(), takenItem.getAmount().intValue(), price));
 		
 		// Statistics:
-		StatisticsManager.manager().addBuy(sagaPlayer, item.getType(), availAmount, price * availAmount);
+		StatisticsManager.manager().addSell(sagaPlayer, item.getType(), takenItem.getAmount().intValue(), cost);
 		
 		// Update sign:
 		refresh();
@@ -354,29 +346,37 @@ public class BuySign extends BuildingSign {
 	}
 	
 	/**
-	 * Collects all needed resources from warehouses.
+	 * Collects coins and puts all collected resources to warehouses.
 	 * 
 	 * @param warehouses warehouses
 	 */
 	public void collect(Collection<Warehouse> warehouses) {
-
-		double req = maxStored - stored;
-		if(req <= 0) return;
 		
-		SagaItem reqItem = new SagaItem(item);
-		reqItem.setAmount(req);
 		
-		SagaItem colItem = new SagaItem(item);
-		colItem.setAmount(0.0);
-		
-		for (Warehouse warehouse : warehouses) {
-			warehouse.withdraw(reqItem, colItem);
+		// Request coins:
+		Settlement settlement = getBuilding().getSettlement();
+		if(settlement != null){
+			double ret = settlement.requestCoins(maxCoins - coins);
+			coins+= ret;
 		}
 		
-		stored+= colItem.getAmount();
-		
-		refresh();
+		// Give to warehouse:
+		if(pending > 0.0){
 
+			SagaItem remaining = new SagaItem(item);
+			remaining.setAmount(pending);
+			
+			for (Warehouse warehouse : warehouses) {
+				warehouse.store(remaining);
+				if(remaining.getAmount() <= 0.0) break;
+			}
+			
+			pending = remaining.getAmount();
+			
+		}
+
+		refresh();
+		
 		
 	}
 	

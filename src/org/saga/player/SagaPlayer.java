@@ -13,6 +13,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
 import org.saga.SagaLogger;
+import org.saga.buildings.production.SagaItem;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.dependencies.ChatDependency;
@@ -1066,6 +1067,49 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	@Override
 	public Double getBuyPrice(Material material) {
 		return 100000.0;
+	}
+
+	/**
+	 * Takes a saga item from the player.
+	 * 
+	 * @param requested requested item
+	 * @return item removed
+	 */
+	@SuppressWarnings("deprecation")
+	public SagaItem takeItem(SagaItem requested) {
+
+		if(livingEntity == null){
+			SagaItem taken = new SagaItem(requested);
+			taken.setAmount(0.0);
+			return taken;
+		}
+		
+		SagaItem taken = InventoryUtil.takeItem(requested, livingEntity.getInventory());
+		
+		livingEntity.updateInventory();
+		
+		return taken;
+		
+	}
+	
+	/**
+	 * Gives a Saga item to the player.
+	 * Drops if inventory full.
+	 * 
+	 * @param sagaItem Saga item to give
+	 */
+	@SuppressWarnings("deprecation")
+	public void giveItem(SagaItem sagaItem) {
+
+		if(livingEntity == null){
+			SagaLogger.warning(this, "can't give a item: no entity wrapped");
+			return;
+		}
+		
+		InventoryUtil.giveItem(sagaItem, livingEntity.getInventory(), livingEntity.getLocation());
+		
+		livingEntity.updateInventory();
+		
 	}
 	
 	

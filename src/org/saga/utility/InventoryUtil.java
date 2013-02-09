@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.saga.SagaLogger;
+import org.saga.buildings.production.SagaItem;
 
 public class InventoryUtil {
 
@@ -120,7 +121,44 @@ public class InventoryUtil {
 	
 		
 	}
+
 	
+	
+	/**
+	 * Takes a Saga item from a players inventory.
+	 * 
+	 * @param requested requested item
+	 * @param inventory inventory
+	 * @return taken item
+	 */
+	public static SagaItem takeItem(SagaItem requested, Inventory inventory) {
+
+		SagaItem taken = new SagaItem(requested);
+		ItemStack item = requested.createItem();
+		
+		ItemStack remaining = inventory.removeItem(item).get(0);
+		if(remaining != null) requested.modifyAmount(-remaining.getAmount());
+		
+		return taken;
+		
+	}
+	
+	/**
+	 * Gives a Saga item to a players inventory.
+	 * Drops the item if full.
+	 * 
+	 * @param sagaItem saga item
+	 * @param inventory inventory to put to
+	 * @param dropLoc drop location if full
+	 */
+	public static void giveItem(SagaItem sagaItem, Inventory inventory, Location dropLoc) {
+
+		ItemStack item = sagaItem.createItem();
+		
+		ItemStack remaining = inventory.addItem(item).get(0);
+		if(remaining != null) dropLoc.getWorld().dropItem(dropLoc, remaining);
+		
+	}
 	
 	
 	

@@ -2,7 +2,6 @@ package org.saga.buildings.signs;
 
 import org.bukkit.Material;
 import org.bukkit.block.Sign;
-import org.bukkit.inventory.ItemStack;
 import org.saga.buildings.Building;
 import org.saga.buildings.TradingPost;
 import org.saga.buildings.production.SagaItem;
@@ -16,13 +15,13 @@ import org.saga.player.SagaPlayer;
 import org.saga.statistics.StatisticsManager;
 
 
-public class ImportSign extends BuildingSign {
+public class ExportSign extends BuildingSign {
 
 
 	/**
 	 * Name for the sign.
 	 */
-	public static String SIGN_NAME = "=[IMPORT]=";
+	public static String SIGN_NAME = "=[EXPORT]=";
 
 	/**
 	 * Amount division string.
@@ -57,7 +56,7 @@ public class ImportSign extends BuildingSign {
 	 * @param event event that created the sign
 	 * @param building building
 	 */
-	protected ImportSign(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building){
+	protected ExportSign(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building){
 	
 		super(sign, SIGN_NAME, secondLine, thirdLine, fourthLine, building);
 		
@@ -76,20 +75,18 @@ public class ImportSign extends BuildingSign {
 	 * @param building building
 	 * @return training sign
 	 */
-	public static ImportSign create(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building) {
-		return new ImportSign(sign, secondLine, thirdLine, fourthLine, building);
+	public static ExportSign create(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building) {
+		return new ExportSign(sign, secondLine, thirdLine, fourthLine, building);
 	}
 
 	@Override
 	public boolean complete(Building building) throws SignException {
-		
 		
 		super.complete(building);
 		
 		initialiseFields();
 		
 		return true;
-		
 		
 	}
 	
@@ -194,19 +191,19 @@ public class ImportSign extends BuildingSign {
 	 */
 	@Override
 	public SignStatus getStatus() {
-		
 
 		if(item.getType() == null || item.getType() == Material.AIR || item.getData() == null || item.getAmount() == null) return SignStatus.INVALIDATED;
 		
 		if(EconomyConfiguration.config().getImportItem(item) == null) return SignStatus.INVALIDATED;
 		
-		// Import limit:
+		// Export limit:
 		if(getBuilding() instanceof TradingPost){
-			if(((TradingPost) getBuilding()).checkOverImportLimit()) return SignStatus.DISABLED;
+			
+			if(((TradingPost) getBuilding()).checkOverExportLimit()) return SignStatus.DISABLED;
+			
 		}
 		
 		return SignStatus.ENABLED;
-	
 		
 	}
 	
@@ -237,7 +234,7 @@ public class ImportSign extends BuildingSign {
 					
 					TradingPost tpost = (TradingPost) getBuilding();
 					
-					perc = (1 - tpost.getImportCoins() / tpost.getImportLimit()) * 100;
+					perc = (1 - tpost.getExportCoins() / tpost.getExportLimit()) * 100;
 					
 				}
 				if(index == 3) return perc.intValue() + "%";
@@ -281,38 +278,32 @@ public class ImportSign extends BuildingSign {
 	 */
 	@Override
 	protected void onRightClick(SagaPlayer sagaPlayer) {
-
 		
-		SagaPricedItem importItem = EconomyConfiguration.config().getImportItem(item);
-		Double price = importItem.getPrice();
-		Integer usedAmount = item.getAmount().intValue();
 		
-		while(EconomyDependency.getCoins(sagaPlayer) < price * usedAmount && usedAmount > 0){
-			usedAmount--; 
-		}
+		SagaPricedItem exportItem = EconomyConfiguration.config().getExportItem(item);
+		Double price = exportItem.getPrice();
 		
-		if(usedAmount < 1){
-			sagaPlayer.message(EconomyMessages.insufCoins());
-			return;
-		}
-		
-		ItemStack createdItem = new ItemStack(this.item.getType(), usedAmount);
+		SagaItem request = new SagaItem(item);
 		
 		// Transaction:
-		EconomyDependency.removeCoins(sagaPlayer, price * usedAmount);
-		sagaPlayer.addItem(createdItem);
+		SagaItem takenItem = sagaPlayer.takeItem(request);
+		Double cost = price*takenItem.getAmount();
+		EconomyDependency.addCoins(sagaPlayer, cost);
 		
 		// Inform:
-		sagaPlayer.message(EconomyMessages.bought(item.getType(), usedAmount, price));
-		
+		sagaPlayer.message(EconomyMessages.sold(item.getType(), takenItem.getAmount().intValue(), price));
+
 		// Notify transaction:
 		if(getBuilding() instanceof TradingPost){
-			((TradingPost) getBuilding()).notifyImport(price * usedAmount);
+			((TradingPost) getBuilding()).notifyExport(price * takenItem.getAmount());
 		}
 		
 		// Statistics:
-		StatisticsManager.manager().addImport(sagaPlayer, item.getType(), usedAmount, price * usedAmount);
+		StatisticsManager.manager().addExport(sagaPlayer, item.getType(), takenItem.getAmount().intValue(), cost);
 		
+		// Update sign:
+		refresh();
+
 		
 	}
 	

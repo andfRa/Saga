@@ -1061,8 +1061,18 @@ public class StatisticsManager implements HourTicker{
 		modifyValue("eco.buy." + material + "." + sagaPlayer.getName(), amount*price);
 	}
 
+
+	public void addSell(SagaPlayer sagaPlayer, Material material, Integer amount, Double price) {
+		modifyValue("eco.sell." + material + "." + sagaPlayer.getName(), amount*price);
+	}
+
+	
 	public void addImport(SagaPlayer sagaPlayer, Material material, Integer amount, Double price) {
 		modifyValue("eco.import." + material + "." + sagaPlayer.getName(), amount*price);
+	}
+	
+	public void addExport(SagaPlayer sagaPlayer, Material material, Integer amount, Double price) {
+		modifyValue("eco.export." + material + "." + sagaPlayer.getName(), amount*price);
 	}
 	
 	

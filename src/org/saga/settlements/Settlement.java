@@ -41,12 +41,17 @@ public class Settlement extends Bundle implements MinuteTicker{
 	/**
 	 * Settlement level.
 	 */
-	private Integer level;
+	private Integer level; // TODO: Remove unused settlement level.
 
 	/**
 	 * Claims.
 	 */
 	private Double claims;
+	
+	/**
+	 * Build points.
+	 */
+	private Double buildPoints;
 	
 	/**
 	 * Coins banked.
@@ -68,12 +73,6 @@ public class Settlement extends Bundle implements MinuteTicker{
 	 */
 	private HashMap<String, Double> workPoints;
 	
-	
-	/**
-	 * True if the minute tick is registered.
-	 */
-	transient boolean isTicking = false;
-	
 
 	
 	// Initialisation:
@@ -87,6 +86,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 		super(name);
 		level = 0;
 		claims = SettlementConfiguration.config().getInitialClaims().doubleValue();
+		buildPoints = SettlementConfiguration.config().getInitialBuildPoints().doubleValue();
 		
 		playerRoles = new Hashtable<String, Proficiency>();
 		lastSeen = new Hashtable<String, Date>();
@@ -110,15 +110,28 @@ public class Settlement extends Bundle implements MinuteTicker{
 			level = 0;
 		}
 		
-		if(claims == null){
-			if(level != null){
-				int maxLevel = 50;
-				claims = SettlementConfiguration.config().getMaxClaims().doubleValue() * level.doubleValue() / maxLevel;
-			}else{
-				claims = 0.0;
-			}
+		// TODO: Remove claims conversion:
+		if(claims == null && level != null){
+			int maxLevel = 50;
+			claims = SettlementConfiguration.config().getMaxClaims().doubleValue() * level.doubleValue() / maxLevel;
 			SagaLogger.nullField(this, "claims");
 		}
+		
+		// TODO: Remove building points conversion:
+		if(buildPoints == null){
+			buildPoints = SettlementConfiguration.config().getBuildPoints(getSize()).doubleValue();
+		}
+		
+		if(claims == null){
+			SagaLogger.nullField(this, "claims");
+			buildPoints = 0.0;
+		}
+		
+		if(buildPoints == null){
+			SagaLogger.nullField(this, "buildPoints");
+			buildPoints = 0.0;
+		}
+		
 		
 		if(coins == null){
 			SagaLogger.nullField(this, "coins");
@@ -208,11 +221,14 @@ public class Settlement extends Bundle implements MinuteTicker{
 		
 	}
 	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.settlements.Bundle#disable()
+	 */
 	@Override
 	public void disable() {
-		
 		super.disable();
-		
 	}
 	
 	/**
@@ -479,18 +495,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 		
 	}
 	
-	
-	// Building points:
-	/**
-	 * Gets the amount of building points available.
-	 * 
-	 * @return amount building points available
-	 */
-	public Integer getAvailableBuildPoints() {
-		return SettlementConfiguration.config().getBuildPoints(getSize());
-	}
 
-	
 	
 	// Claims:
 	/**
@@ -559,6 +564,81 @@ public class Settlement extends Bundle implements MinuteTicker{
 	
 	
 	
+	// Building points:
+	/**
+	 * Gets the amount of buildPoints.
+	 * 
+	 * @return amount of buildPoints
+	 */
+	public Double getBuildPoints() {
+		return buildPoints;
+	}
+	
+	/**
+	 * Sets the amount of buildPoints.
+	 * 
+	 * @param buildPoints amount of buildPoints
+	 */
+	public void setBuildPoints(Double buildPoints) {
+		this.buildPoints = buildPoints;
+	}
+	
+	/**
+	 * Gets the amount of building points available.
+	 * 
+	 * @return amount building points available
+	 */
+	public Integer getAvailableBuildPoints() {
+		return buildPoints.intValue();
+	}
+	
+	/**
+	 * Gets the amount of building points used.
+	 * 
+	 * @return amount of building points used
+	 */
+	public Integer getUsedBuildPoints() {
+		
+		
+		Integer total = 0;
+		ArrayList<Building> buildings = getBuildings();
+		
+		for (Building building : buildings) {
+			total+= building.getDefinition().getBuildPoints();
+		}
+ 		
+		return total;
+		
+		
+	}
+
+	/**
+	 * Gets the amount of building points remaining.
+	 * 
+	 * @return amount of building points remaining
+	 */
+	public Integer getRemainingBuildPoints() {
+		
+		return getAvailableBuildPoints() - getUsedBuildPoints();
+		
+	}
+
+	/**
+	 * Checks if there are building points are available.
+	 * 
+	 * @param building building
+	 * @return true if building points available
+	 */
+	public boolean isBuildPointsAvailable(Building building) {
+
+		if(isOptionEnabled(BundleToggleable.UNLIMITED_BUILDINGS)) return true;
+		
+		return getRemainingBuildPoints() >= building.getDefinition().getBuildPoints();
+		
+	}
+		
+	
+	
 	// Wages:
 	/**
 	 * Gets the amount of coins banked.
@@ -576,6 +656,20 @@ public class Settlement extends Bundle implements MinuteTicker{
 	 */
 	public void payCoins(Double amount) {
 		coins+= amount;
+	}
+	
+	/**
+	 * Requests coins.
+	 * 
+	 * @param request amount request
+	 */
+	public Double requestCoins(Double request) {
+
+		Double given = request;
+		if(given > coins) given = coins;
+		coins-= given;
+		return given;
+		
 	}
 	
 	

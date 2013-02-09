@@ -314,7 +314,10 @@
     "storageSize":0,
     "production":[],
     "performTime":"MIDDAY",
-    "functions":{"buy limit":{"x1":1,"y1":7000,"x2":3,"y2":20000}},
+    "functions":{
+      "import limit":{"x1":1,"y1":7000,"x2":3,"y2":20000},
+      "export limit":{"x1":1,"y1":7000,"x2":3,"y2":20000}
+    },
     "roles":{"merchant":5,"lord:":1},
     "ranks":{},
     "description":"buy items",

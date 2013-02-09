@@ -7,6 +7,10 @@
 "maxClaims":250,
 "noDeleteSize":25,
 
+"buildPointsPerMinute":{"x1":0,"y1":0.0,"x2":10,"y2":0.0054},
+"initBuildPoints":6,
+"maxBuildPoints":135,
+
 "buildPoints":{"x1":0,"y1":6.0,"x2":250,"y2":135.0},
 
 "requiredActiveMembers":{"x1":0,"y1":0,"x2":250,"y2":25.0},

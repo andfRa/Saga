@@ -135,10 +135,14 @@ public class EconomyConfiguration {
 
 	// Trading post:
 	/**
+	 * Exports.
+	 */
+	private SagaPricedItem[] exports;
+	
+	/**
 	 * Imports.
 	 */
 	private SagaPricedItem[] imports;
-	
 	
 	/**
 	 * Trading post automatic exports.
@@ -258,8 +262,16 @@ public class EconomyConfiguration {
 			SagaLogger.nullField(getClass(), "factionWagesTime");
 			factionWagesTime= Daytime.NONE;
 		}
-
-
+		
+		
+		if(exports == null){
+			SagaLogger.nullField(getClass(), "exports");
+			exports = new SagaPricedItem[0];
+		}
+		for (SagaPricedItem item : exports) {
+			item.complete();
+		}
+		
 		if(imports == null){
 			SagaLogger.nullField(getClass(), "imports");
 			imports = new SagaPricedItem[0];
@@ -478,7 +490,23 @@ public class EconomyConfiguration {
 	
 	// Trading post:
 	/**
-	 * Gets the import price for the given saga item.
+	 * Gets the import item for the given saga item.
+	 * 
+	 * @param sagaItem saga item
+	 * @return export item, null if none
+	 */
+	public SagaPricedItem getExportItem(SagaItem sagaItem) {
+
+		for (int i = 0; i < exports.length; i++) {
+			if(sagaItem.checkRepresents(exports[i])) return exports[i];
+		}
+		
+		return null;
+		
+	}
+	
+	/**
+	 * Gets the import item for the given saga item.
 	 * 
 	 * @param sagaItem saga item
 	 * @return import item, null if none

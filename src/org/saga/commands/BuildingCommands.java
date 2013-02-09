@@ -27,6 +27,7 @@ import org.saga.player.SagaPlayer;
 import org.saga.settlements.Bundle;
 import org.saga.settlements.BundleManager;
 import org.saga.settlements.SagaChunk;
+import org.saga.settlements.Settlement;
 import org.saga.settlements.Settlement.SettlementPermission;
 import org.saga.statistics.StatisticsManager;
 import org.saga.utility.SagaLocation;
@@ -92,11 +93,13 @@ public class BuildingCommands {
 			return;
 		}
 		
-		// Building points:
-		if(!selBundle.hasBuildPointsAvailable(selBuilding)){
-			sagaPlayer.message(SettlementMessages.notEnoughBuildingPoints(selBuilding));
+	   	// Build points:
+	   	Settlement selSettlement = null;
+	   	if(selBundle instanceof Settlement) selSettlement = (Settlement) selBundle;
+	   	if(selSettlement == null || !selSettlement.isBuildPointsAvailable(selBuilding)){
+	   		sagaPlayer.message(SettlementMessages.notEnoughBuildingPoints(selBuilding));
 			return;
-		}
+	   	}
 
 		// Existing building:
 		if(selChunk.getBuilding() != null){

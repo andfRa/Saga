@@ -53,6 +53,10 @@ public class AdminMessages {
 		return Colour.negative + "Claims " + claims + " is out of range. Allowed range: 0 - " + SettlementConfiguration.config().getMaxClaims() + ".";
 	}
 	
+	public static String settleBuildPointsOutOfRange(String bldPts){
+		return Colour.negative + "Build points " + bldPts + " is out of range. Allowed range: 0 - " + SettlementConfiguration.config().getMaxBuildPoints() + ".";
+	}
+	
 	public static String factionClaimsOutOfRange(String claims){
 		return Colour.negative + "Claims " + claims + " is out of range. Allowed range: 0 - " + FactionConfiguration.config().getMaxClaims() + ".";
 	}
@@ -65,6 +69,9 @@ public class AdminMessages {
 		return Colour.positive + "Faction " + faction.getName() + " claims set to " +faction.getTotalClaims() + ".";
 	}
 	
+	public static String setBuildPoints(Settlement settlement){
+		return Colour.positive + "Settlement " + settlement.getName() + " build points set to " + settlement.getAvailableBuildPoints() + ".";
+	}
 	
 	
 	// Healing:

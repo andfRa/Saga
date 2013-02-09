@@ -13,7 +13,9 @@ import org.saga.buildings.production.SagaItem;
 import org.saga.buildings.production.SagaPricedItem;
 import org.saga.buildings.signs.BuildingSign;
 import org.saga.buildings.signs.BuySign;
+import org.saga.buildings.signs.ExportSign;
 import org.saga.buildings.signs.ImportSign;
+import org.saga.buildings.signs.SellSign;
 import org.saga.config.EconomyConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.messages.EconomyMessages;
@@ -22,23 +24,28 @@ import org.saga.settlements.Settlement;
 
 public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 	
-	
-	/**
-	 * Buy limit key.
-	 */
-	private static String BUY_LIMIT_KEY = "buy limit";
-
-	
-	
-	/**
-	 * Coins spend for buying.
-	 */
-	private Double buyCoins;
 
 	/**
-	 * Coins spend for selling.
+	 * Import limit key.
 	 */
-	private Double sellCoins;
+	private static String IMPORT_LIMIT_KEY = "import limit";
+
+	/**
+	 * Export limit key.
+	 */
+	private static String EXPORT_LIMIT_KEY = "export limit";
+	
+	
+	
+	/**
+	 * Coins spend for importing.
+	 */
+	private Double importCoins;
+
+	/**
+	 * Coins spend for exporting.
+	 */
+	private Double exportCoins;
 	
 	
 	/**
@@ -62,8 +69,8 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 		
 		super(definition);
 	
-		buyCoins = 0.0;
-		sellCoins = 0.0;
+		importCoins = 0.0;
+		exportCoins = 0.0;
 		collectedExports = new double[EconomyConfiguration.config().getTradingPostExports().length];
 		exportsWork =  new double[EconomyConfiguration.config().getTradingPostExports().length];
 		
@@ -77,17 +84,15 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 	@Override
 	public boolean complete() throws InvalidBuildingException {
 		
-
-		boolean integrity = super.complete();
-
-		if(buyCoins == null){
-			SagaLogger.nullField(this, "buyCoins");
-			buyCoins = 0.0;
+		
+		if(importCoins == null){
+			SagaLogger.nullField(this, "importCoins");
+			importCoins = 0.0;
 		}
 
-		if(sellCoins == null){
-			SagaLogger.nullField(this, "sellCoins");
-			sellCoins = 0.0;
+		if(exportCoins == null){
+			SagaLogger.nullField(this, "exportCoins");
+			exportCoins = 0.0;
 		}
 		
 		if(collectedExports == null){
@@ -110,6 +115,8 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 			exportsWork = new double[EconomyConfiguration.config().getTradingPostExports().length];
 		}
 		
+		boolean integrity = super.complete();
+
 		return integrity;
 		
 		
@@ -147,13 +154,12 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 	@Override
 	public void perform() {
 
-		
 		// Reset coins:
-		buyCoins = 0.0;
+		importCoins = 0.0;
+		exportCoins = 0.0;
 
 		// Refresh signs:
 		refreshSigns();
-		
 		
 	}
 	
@@ -169,7 +175,9 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 	protected boolean isBuildingSign(String firstLine) {
 		
 		if(firstLine.equalsIgnoreCase(BuySign.SIGN_NAME)) return true;
+		if(firstLine.equalsIgnoreCase(SellSign.SIGN_NAME)) return true;
 		if(firstLine.equalsIgnoreCase(ImportSign.SIGN_NAME)) return true;
+		if(firstLine.equalsIgnoreCase(ExportSign.SIGN_NAME)) return true;
 		
 		return super.isBuildingSign(firstLine);
 		
@@ -184,7 +192,9 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 	protected BuildingSign createBuildingSign(Sign sign, SignChangeEvent event) {
 		
 		if(event.getLine(0).equalsIgnoreCase(BuySign.SIGN_NAME)) return BuySign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
+		if(event.getLine(0).equalsIgnoreCase(SellSign.SIGN_NAME)) return SellSign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
 		if(event.getLine(0).equalsIgnoreCase(ImportSign.SIGN_NAME)) return ImportSign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
+		if(event.getLine(0).equalsIgnoreCase(ExportSign.SIGN_NAME)) return ExportSign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
 		
 		return super.createBuildingSign(sign, event);
 		
@@ -194,50 +204,85 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 	
 	// Updating:
 	/**
-	 * Called when something is bought.
+	 * Called when something is imported.
 	 * 
 	 * @param spent amount spent
 	 */
-	public void notifyBuy(Double spent) {
-
+	public void notifyImport(Double spent) {
 		
-		buyCoins+= spent;
+		importCoins+= spent;
 		
 		// Refresh signs:
 		refreshSigns();
 		
-		
 	}
 	
+	/**
+	 * Called when something is exported.
+	 * 
+	 * @param spent amount spent
+	 */
+	public void notifyExport(Double spent) {
+		
+		exportCoins+= spent;
+		
+		// Refresh signs:
+		refreshSigns();
+		
+	}
+
 	/**
 	 * Checks if the buy limit has been reached.
 	 * 
 	 * @return true if buy limit has been reached
 	 */
-	public boolean checkOverBuyLimit() {
+	public boolean checkOverImportLimit() {
+		return importCoins >= getImportLimit();
+	}
 
-		return buyCoins >= getBuyLimit();
-		
+	/**
+	 * Checks if the buy limit has been reached.
+	 * 
+	 * @return true if buy limit has been reached
+	 */
+	public boolean checkOverExportLimit() {
+		return exportCoins >= getExportLimit();
 	}
 	
 	/**
-	 * Get the amount of coins spent in this day.
+	 * Get the amount of coins spent on imports in this day.
 	 * 
-	 * @return amount of coins spent
+	 * @return amount of coins spent on imports
 	 */
-	public Double getBuyCoins() {
-		return buyCoins;
+	public Double getImportCoins() {
+		return importCoins;
 	}
 	
 	/**
-	 * Gets the buy limit.
+	 * Get the amount of coins spent on exports in this day.
 	 * 
-	 * @return buy limit
+	 * @return amount of coins spent on exports
 	 */
-	public Double getBuyLimit() {
+	public Double getExportCoins() {
+		return exportCoins;
+	}
 
-		return getDefinition().getFunction(BUY_LIMIT_KEY).value(1);
-		
+	/**
+	 * Gets the import limit.
+	 * 
+	 * @return import limit
+	 */
+	public Double getImportLimit() {
+		return getDefinition().getFunction(IMPORT_LIMIT_KEY).value(1);
+	}
+
+	/**
+	 * Gets the export limit.
+	 * 
+	 * @return export limit
+	 */
+	public Double getExportLimit() {
+		return getDefinition().getFunction(EXPORT_LIMIT_KEY).value(1);
 	}
 	
 	
@@ -326,7 +371,13 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 		
 		// Only loaded:
 		if(getSagaChunk().isChunkLoaded()){
-			
+
+			// Update sell signs:
+			Collection<SellSign> sellSigns = getBuildingSigns(SellSign.class);
+			for (SellSign sellSign : sellSigns) {
+				sellSign.collect(warehouses);
+			}
+
 			// Update buy signs:
 			Collection<BuySign> buySigns = getBuildingSigns(BuySign.class);
 			for (BuySign buySign : buySigns) {
@@ -345,7 +396,6 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 	 */
 	@Override
 	public void produce() {
-		
 		
 		super.produce();
 		

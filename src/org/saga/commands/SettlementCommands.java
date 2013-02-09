@@ -215,9 +215,7 @@ public class SettlementCommands {
 	   	
 	   	// Claim points:
 	   	Settlement selSettlement = null;
-	   	if(selBundle instanceof Settlement){
-	   		selSettlement = (Settlement) selBundle;
-	   	}
+	   	if(selBundle instanceof Settlement) selSettlement = (Settlement) selBundle;
 	   	if(selSettlement == null || !selSettlement.isClaimsAvailable()){
 	   		sagaPlayer.message(SettlementMessages.notEnoughClaims());
 	   		return;
