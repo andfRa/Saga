@@ -1,7 +1,6 @@
 package org.saga.messages;
 
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map.Entry;
 
@@ -445,64 +444,6 @@ public class HelpMessages {
 		book.addLine("All faction members can use " + GeneralMessages.command("/sspawn settle_name") + " command for claimed settlements. " +
 			"The command is not available when the settlement is being claimed by a rival faction."
 		);
-		
-		// Bonuses:
-		book.addLine("Members get paid daily wages, based on the amount of settlements the faction is holding. " +
-			"High level settlements generate more income. " +
-			"Higher ranks get paid more."
-		);
-		
-		book.addLine("");
-
-		// Wages table:
-		ChatTable wagesTable = new ChatTable(colours);
-		
-		Integer maxSize = SettlementConfiguration.config().getMaxClaims();
-		Integer halfSize = maxSize / 2;
-		Integer minSize = 0;
-		
-		Double maxClaims = FactionConfiguration.config().getClaimPoints(maxSize);
-		Double halfClaims = FactionConfiguration.config().getClaimPoints(halfSize);
-		Double minClaims = FactionConfiguration.config().getClaimPoints(minSize);
-		
-		// Titles:
-		wagesTable.addLine(new String[]{GeneralMessages.columnTitle("rank"), GeneralMessages.columnTitle("size 0"), GeneralMessages.columnTitle("size " + halfSize), GeneralMessages.columnTitle("size " + maxSize)});
-
-		Hashtable<Integer, Double> lvl0Wages = EconomyConfiguration.config().calcHierarchyWages(EconomyConfiguration.config().calcWage(minClaims));
-		Hashtable<Integer, Double> lvlHalfWages = EconomyConfiguration.config().calcHierarchyWages(EconomyConfiguration.config().calcWage(halfClaims));
-		Hashtable<Integer, Double> lvlMaxWages = EconomyConfiguration.config().calcHierarchyWages(EconomyConfiguration.config().calcWage(maxClaims));
-		
-		int min = FactionConfiguration.config().getHierarchyMin();
-		int max = FactionConfiguration.config().getHierarchyMax();
-		
-		if(min != max){
-		
-			for (int hiera = max; hiera >= min; hiera--) {
-				
-				String name = FactionConfiguration.config().getHierarchyName(hiera);
-
-				Double wage0 = lvl0Wages.get(hiera);
-				if(wage0 == null) wage0 = 0.0;
-
-				Double wageHalf = lvlHalfWages.get(hiera);
-				if(wageHalf == null) wageHalf = 0.0;
-				
-				Double wageMax = lvlMaxWages.get(hiera);
-				if(wageMax == null) wageMax = 0.0;
-				
-				wagesTable.addLine(new String[]{name, EconomyMessages.coins(wage0), EconomyMessages.coins(wageHalf), EconomyMessages.coins(wageMax)});
-				
-			}
-			
-		}else{
-			
-			wagesTable.addLine(new String[]{"-", "-", "-", "-"});
-			
-		}
-		
-		wagesTable.collapse();
-		book.addTable(wagesTable);
-		
 		
 		return book.framedPage(page);
 		

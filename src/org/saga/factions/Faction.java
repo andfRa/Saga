@@ -64,12 +64,18 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	/**
 	 * Settlement level.
 	 */
-	private Integer level;
+	private Integer level; // TODO Remove unused faction level.
 
 	/**
 	 * Available claims.
 	 */
 	private Double claims;
+
+	
+	/**
+	 * Coins banked.
+	 */
+	private Double coins;
 	
 	
 	/**
@@ -117,7 +123,12 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 */
 	private HashSet<String> dailyKills;
 
-
+	/**
+	 * Settlement wages.
+	 */
+	private Hashtable<String, Double> wages;
+	
+	
 	
 	// Control:
 	/**
@@ -153,12 +164,14 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		this.name = factionName;
 		members = new HashSet<String>();
 		claims = FactionConfiguration.config().getInitialClaims().doubleValue();
+		coins = 0.0;
 		colour1 = ChatColor.WHITE;
 		colour2 = ChatColor.WHITE;
 		playerRanks = new Hashtable<String, Proficiency>();
 		dailyKills = new HashSet<String>();
 		allies = new HashSet<Integer>();
 		allyRequests = new HashSet<Integer>();
+		wages = new Hashtable<String, Double>();
 		
 		removeOwner();
 		
@@ -203,6 +216,13 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 			}
 			integrity = false;
 		}
+		
+
+		if(coins == null){
+			SagaLogger.nullField(this, "coins");
+			coins = 0.0;
+		}
+		
 		
 		if(colour1 == null){
 			SagaLogger.nullField(this, "colour1");
@@ -275,6 +295,11 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 			integrity = false;
 		}
 
+		if(wages == null){
+			SagaLogger.nullField(this, "wages");
+			wages = new Hashtable<String, Double>();
+		}
+		
 		return integrity;
 		
 		
@@ -769,6 +794,50 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		
 		
 	}
+
+	
+	
+	// Bank:
+	/**
+	 * Gets the amount of coins banked.
+	 * 
+	 * @return coins banked
+	 */
+	public Double getCoins() {
+		return coins;
+	}
+	
+	/**
+	 * Pays coins.
+	 * 
+	 * @param amount amount to pay
+	 */
+	public void payCoins(Double amount) {
+
+		Double factionShare = amount * EconomyConfiguration.config().getFactionPercent();
+		Double membersShare = amount * EconomyConfiguration.config().getFactionMemberPercent();
+		
+		// Members:
+		distribWages(membersShare);
+		
+		// Faction:
+		coins+= factionShare;
+		
+	}
+	
+	/**
+	 * Requests coins.
+	 * 
+	 * @param request amount request
+	 */
+	public Double requestCoins(Double request) {
+
+		Double given = request;
+		if(given > coins) given = coins;
+		coins-= given;
+		return given;
+		
+	}
 	
 	
 	
@@ -1236,25 +1305,69 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 */
 	private void handleWages() {
 
+		if(!EconomyConfiguration.config().isEnabled()) return;
 		
-		Hashtable<Integer, Double> wages = calcWages();
-		Collection<SagaPlayer> onlineMembers = getOnlineMembers();
+		// Pay online members:
+		Collection<SagaPlayer> online = getOnlineMembers();
 		
-		// Play wages:
-		for (SagaPlayer sagaPlayer : onlineMembers) {
+		for (SagaPlayer sagaPlayer : online) {
 			
-			Proficiency rank = getRank(sagaPlayer.getName());
-			if(rank == null) continue;
+			Double wage = getWage(sagaPlayer.getName());
+			if(wage == 0.0) continue; 
 			
-			Double wage = wages.get(rank.getHierarchy());
-			if(wage == null || wage == 0) continue;
-			
+			// Pay:
 			EconomyDependency.addCoins(sagaPlayer, wage);
-			
+
+			// Inform:
 			information(EconomyMessages.gotPaid(this, wage), sagaPlayer);
 			
 			//Statistics:
-			StatisticsManager.manager().addWages(this, rank, wage);
+			StatisticsManager.manager().addWages(this, wage);
+			
+		}
+		
+		// Reset kills:
+		dailyKills = new HashSet<String>();
+		
+	}
+	
+	/**
+	 * Distributes wages.
+	 * 
+	 * @param paid total amount paid 
+	 */
+	public void distribWages(Double paid) {
+
+		
+		if(!EconomyConfiguration.config().isEnabled()) return;
+		
+		Collection<SagaPlayer> online = getOnlineMembers();
+		
+		double[] wageWeigths = new double[online.size()];
+		String[] names = new String[online.size()];
+		double total = 0.0;
+		
+		// Percentages:
+		int i = 0;
+		for (SagaPlayer member : online) {
+			
+			wageWeigths[i] = EconomyConfiguration.config().getWageWeigth(this, member);
+			names[i] = member.getName();
+			total+= wageWeigths[i];
+			i++;
+			
+		}
+		
+		// Add wages:
+		if(total != 0){
+			
+			for (int j = 0; j < names.length; j++) {
+				
+				Double wage = getWage(names[j]);
+				wage+= wageWeigths[j]/total * paid;
+				this.wages.put(names[j], wage);
+				
+			}
 			
 		}
 		
@@ -1262,18 +1375,20 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	}
 	
 	/**
-	 * Gets the wages for hierarchy levels.
+	 * Gets members wage.
 	 * 
-	 * @return wages hierarchy levels
+	 * @param memberName member name
+	 * @return wage
 	 */
-	public Hashtable<Integer, Double> calcWages() {
-
-		Double rawWage = EconomyConfiguration.config().calcWage(calcClaimPoints());
-		return EconomyConfiguration.config().calcHierarchyWages(rawWage);
+	public Double getWage(String memberName) {
+		
+		Double wage = wages.get(memberName);
+		if(wage == null) return 0.0;
+		return wage;
 		
 	}
-	
 
+	
 	
 	// Messages:
 	/**
@@ -1482,13 +1597,12 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		if(attackerFaction == this && defenderFaction != this){
 			
 			if(dailyKills.add(attacker.getName())){
+				
 				Double reward = EconomyConfiguration.config().getFactionKillReward(defender, defenderFaction);
-				EconomyDependency.addCoins(attacker, reward);
-				information(EconomyMessages.gotKillReward(attacker, defender, attackerFaction, reward));
+				payCoins(reward);
 				
 				//Statistics:
-				StatisticsManager.manager().addWages(this, reward);
-				
+				StatisticsManager.manager().addPvPWages(this, reward);
 				
 			}
 		

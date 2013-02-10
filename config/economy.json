@@ -18,9 +18,24 @@
 "claimPointCost":400,
 "buildPointCost":500,
 
-"factionClaimsPointsWage":{"x1":0,"y1":0,"x2":40,"y2":100},
-"factionWageHierarchyMultiplier":{"x1":1,"y1":0.60,"x2":3,"y2":1.0},
+"settlementWageWeights":{
+  "1":0.25,
+  "2":0.33,
+  "3":0.41
+},
+"settlementWagesTime":"SUNRISE",
+"settlementMemberShare":0.70,
+"settlementShare":0.20,
+"settlementFactionShare":0.10,
+
+"factionWageWeights":{
+  "1":0.25,
+  "2":0.33,
+  "3":0.41
+},
 "factionWagesTime":"SUNRISE",
+"factionMemberShare":0.70,
+"factionShare":0.30,
 "factionKillReward":{"x1":0,"y1":50,"x2":3,"y2":500},
 
 "imports":[

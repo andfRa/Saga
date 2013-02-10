@@ -14,6 +14,7 @@ import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
+import org.saga.settlements.Settlement;
 import org.saga.utility.TwoPointFunction;
 
 public class EconomyConfiguration {
@@ -109,23 +110,55 @@ public class EconomyConfiguration {
 	private Double buildPointCost;
 	
 	
+	// Settlement wages:
+	/**
+	 * Settlement wage weights.
+	 */
+	private Hashtable<Integer, Double> settlementWageWeights;
+	
+	/**
+	 * Time when wages are paid.
+	 */
+	private Daytime settlementWagesTime;
+
+	
+	/**
+	 * The percent of coins the member takes.
+	 */
+	private Double settlementMemberShare;
+
+	/**
+	 * The percent of coins the settlement takes.
+	 */
+	private Double settlementShare;
+
+	/**
+	 * The percent of coins the faction takes.
+	 */
+	private Double settlementFactionShare;
+	
 	
 	// Faction wages:
 	/**
-	 * The amount of wage for claim points.
+	 * Settlement wage weights.
 	 */
-	private TwoPointFunction factionClaimsPointsWage;
+	private Hashtable<Integer, Double> factionWageWeights;
 
 	/**
-	 * Wage multiplier for hierarchy levels.
-	 */
-	private TwoPointFunction factionWageHierarchyMultiplier;
-
-	/**
-	 * Time when wages are payed.
+	 * Time when wages are paid.
 	 */
 	private Daytime factionWagesTime;
 	
+	/**
+	 * The percent of coins the member takes.
+	 */
+	private Double factionMemberShare;
+
+	/**
+	 * The percent of coins the faction takes.
+	 */
+	private Double factionShare;
+
 	/**
 	 * Amount rewarded for a kill for a hierarchy level.
 	 */
@@ -234,34 +267,59 @@ public class EconomyConfiguration {
 			SagaLogger.nullField(getClass(), "buildPointCost");
 			buildPointCost = 0.0;
 		}
-
 		
-		if(factionClaimsPointsWage == null){
-			SagaLogger.nullField(getClass(), "factionClaimsPointsWage");
-			factionClaimsPointsWage= new TwoPointFunction(0.0);
-		}
-		factionClaimsPointsWage.complete();
 		
-		if(factionClaimsPointsWage.getXMin() != 0){
-			SagaLogger.warning(getClass(), "factionClaimsPointsWage x1 must be 0 to preserver wages linearity");
+		if(settlementWageWeights == null){
+			SagaLogger.nullField(getClass(), "settlementWageWeights");
+			settlementWageWeights= new Hashtable<Integer, Double>();
 		}
 
-		if(factionWageHierarchyMultiplier == null){
-			SagaLogger.nullField(getClass(), "factionWageHierarchyMultiplier");
-			factionWageHierarchyMultiplier= new TwoPointFunction(0.0);
+		if(settlementWagesTime == null){
+			SagaLogger.nullField(getClass(), "settlementWagesTime");
+			settlementWagesTime= Daytime.NONE;
 		}
-		factionWageHierarchyMultiplier.complete();
+		
+		if(settlementMemberShare == null){
+			SagaLogger.nullField(getClass(), "settlementMemberShare");
+			settlementMemberShare = 0.1;
+		}
+		
+		if(settlementShare == null){
+			SagaLogger.nullField(getClass(), "settlementPercent");
+			settlementShare = 0.1;
+		}
+		
+		if(settlementFactionShare == null){
+			SagaLogger.nullField(getClass(), "factionShare");
+			settlementFactionShare = 0.1;
+		}
+		
+		
+		if(factionWageWeights == null){
+			SagaLogger.nullField(getClass(), "factionWageWeights");
+			factionWageWeights= new Hashtable<Integer, Double>();
+		}
+		
+		if(factionWagesTime == null){
+			SagaLogger.nullField(getClass(), "factionWagesTime");
+			factionWagesTime= Daytime.NONE;
+		}
+		
+		if(factionMemberShare == null){
+			SagaLogger.nullField(getClass(), "factionMemberShare");
+			factionMemberShare = 0.1;
+		}
+		
+		if(factionShare == null){
+			SagaLogger.nullField(getClass(), "factionShare");
+			factionShare = 0.1;
+		}
 		
 		if(factionKillReward == null){
 			SagaLogger.nullField(getClass(), "factionKillReward");
 			factionKillReward = new TwoPointFunction(0.0);
 		}
 		factionKillReward.complete();
-		
-		if(factionWagesTime == null){
-			SagaLogger.nullField(getClass(), "factionWagesTime");
-			factionWagesTime= Daytime.NONE;
-		}
 		
 		
 		if(exports == null){
@@ -420,44 +478,112 @@ public class EconomyConfiguration {
 	
 	
 	
+	// Settlement wages:
+	/**
+	 * Gets settlement wage weight for given player.
+	 * 
+	 * @param settlement settlement
+	 * @param sagaPlayer player
+	 * @return wage
+	 */
+	public Double getWageWeigth(Settlement settlement, SagaPlayer sagaPlayer) {
+
+		Proficiency role = settlement.getRole(sagaPlayer.getName());
+		
+		Double wage = settlementWageWeights.get(role.getHierarchy());
+		if(wage == null) wage = 0.0;
+		
+		return wage;
+		
+	}
+	
+	/**
+	 * Gets the settlement wages time.
+	 * 
+	 * @return settlement wages time
+	 */
+	public Daytime getSettlementWagesTime() {
+		return settlementWagesTime;
+	}
+	
+
+	/**
+	 * Gets the settlement member share percent.
+	 * 
+	 * @return member percent
+	 */
+	public Double getSettlementMemberPercent() {
+		double total = settlementMemberShare + settlementShare + settlementFactionShare;
+		if(total == 0.0) return 0.0;
+		return settlementMemberShare/total;
+	}
+	
+	/**
+	 * Gets the settlement share percent.
+	 * 
+	 * @return settlement percent
+	 */
+	public Double getSettlementPercent() {
+		double total = settlementMemberShare + settlementShare + settlementFactionShare;
+		if(total == 0.0) return 0.0;
+		return settlementShare/total;
+	}
+	
+	/**
+	 * Gets faction share percent.
+	 * 
+	 * @return faction percent
+	 */
+	public Double getSettlementFactionPercent() {
+		double total = settlementMemberShare + settlementShare + settlementFactionShare;
+		if(total == 0.0) return 0.0;
+		return settlementFactionShare/total;
+	}
+	
+	
+	
 	// Faction wages:
 	/**
-	 * Calculates wage for settlement.
+	 * Gets faction wage weight for given player.
 	 * 
-	 * @param claimPoints claim points
-	 * @return wage for a single settlement
+	 * @param faction faction
+	 * @param sagaPlayer player
+	 * @return wage
 	 */
-	public double calcWage(Double claimPoints) {
+	public Double getWageWeigth(Faction faction, SagaPlayer sagaPlayer) {
 
-		return factionClaimsPointsWage.value(claimPoints);
+		Proficiency rank = faction.getRank(sagaPlayer.getName());
 		
+		Double wage = settlementWageWeights.get(rank.getHierarchy());
+		if(wage == null) wage = 0.0;
+		
+		return wage;
+		
+	}
+
+	/**
+	 * Gets the faction member share percent.
+	 * 
+	 * @return member percent
+	 */
+	public Double getFactionMemberPercent() {
+		double total = factionMemberShare + factionShare;
+		if(total == 0.0) return 0.0;
+		return factionMemberShare/total;
 	}
 	
 	/**
-	 * Calculates the wages different hierarchy levels get.
+	 * Gets the faction share percent.
 	 * 
-	 * @param rawWage raw wage
-	 * @return wages for hierarchy levels
+	 * @return faction percent
 	 */
-	public Hashtable<Integer, Double> calcHierarchyWages(Double rawWage) {
-
-		
-		Hashtable<Integer, Double> wages = new Hashtable<Integer, Double>();
-		
-		int min = FactionConfiguration.config().getHierarchyMin();
-		int max = FactionConfiguration.config().getHierarchyMax();
-		
-		for (int hiera = min; hiera <= max; hiera++) {
-			
-			wages.put(hiera, rawWage * factionWageHierarchyMultiplier.value(hiera));
-			
-		}
-		
-		return wages;
-		
-		
+	public Double getFactionPercent() {
+		double total = factionMemberShare + factionShare;
+		if(total == 0.0) return 0.0;
+		return factionShare/total;
 	}
 	
+
 	/**
 	 * Gets the faction wages time.
 	 * 

@@ -5,12 +5,12 @@ import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Set;
 
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.saga.Clock;
+import org.saga.Clock.DaytimeTicker;
 import org.saga.Clock.MinuteTicker;
 import org.saga.Saga;
 import org.saga.SagaLogger;
@@ -18,12 +18,18 @@ import org.saga.buildings.Building;
 import org.saga.buildings.BuildingDefinition;
 import org.saga.buildings.production.ProductionBuilding;
 import org.saga.config.BuildingConfiguration;
+import org.saga.config.EconomyConfiguration;
 import org.saga.config.FactionConfiguration;
+import org.saga.config.GeneralConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
 import org.saga.config.SettlementConfiguration;
+import org.saga.dependencies.EconomyDependency;
+import org.saga.factions.Faction;
+import org.saga.factions.FactionClaimManager;
 import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
+import org.saga.messages.EconomyMessages;
 import org.saga.messages.SettlementMessages;
 import org.saga.messages.colours.Colour;
 import org.saga.player.Proficiency;
@@ -35,7 +41,7 @@ import org.saga.statistics.StatisticsManager;
  * @author andf
  *
  */
-public class Settlement extends Bundle implements MinuteTicker{
+public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 
 	
 	/**
@@ -71,9 +77,14 @@ public class Settlement extends Bundle implements MinuteTicker{
 	/**
 	 * Work points for different roles.
 	 */
-	private HashMap<String, Double> workPoints;
+	private Hashtable<String, Double> workPoints;
 	
+	/**
+	 * Settlement wages.
+	 */
+	private Hashtable<String, Double> wages;
 
+	
 	
 	// Initialisation:
 	/**
@@ -90,7 +101,8 @@ public class Settlement extends Bundle implements MinuteTicker{
 		
 		playerRoles = new Hashtable<String, Proficiency>();
 		lastSeen = new Hashtable<String, Date>();
-		workPoints = new HashMap<String, Double>();
+		workPoints = new Hashtable<String, Double>();
+		wages = new Hashtable<String, Double>();
 		
 	}
 
@@ -138,6 +150,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 			coins = 0.0;
 		}
 		
+		
 		if(lastSeen == null){
 			SagaLogger.nullField(this, "lastSeen");
 			lastSeen = new Hashtable<String, Date>();
@@ -150,8 +163,15 @@ public class Settlement extends Bundle implements MinuteTicker{
 		
 		if(workPoints == null){
 			SagaLogger.nullField(this, "workPoints");
-			workPoints = new HashMap<String, Double>();
+			workPoints = new Hashtable<String, Double>();
 		}
+		
+		
+		if(wages == null){
+			SagaLogger.nullField(this, "wages");
+			wages = new Hashtable<String, Double>();
+		}
+		
 		
 		Enumeration<String> playerNames = playerRoles.keys();
 		while(playerNames.hasMoreElements()){
@@ -218,6 +238,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 		super.enable();
 		
 		Clock.clock().enableMinuteTick(this);
+		Clock.clock().enableDaytimeTicking(this);
 		
 	}
 	
@@ -468,7 +489,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 	 * @return work points
 	 */
 	public Double getWorkPoints(String roleName) {
-	
+		
 		Double points = workPoints.get(roleName);
 		if(points == null) points = 0.0;
 		return points;
@@ -495,7 +516,96 @@ public class Settlement extends Bundle implements MinuteTicker{
 		
 	}
 	
+	
+	
+	// Wages:
+	/**
+	 * Handles wages.
+	 * 
+	 */
+	public void handleWages() {
+		
+		if(!EconomyConfiguration.config().isEnabled()) return;
+		
+		// Pay online members:
+		Collection<SagaPlayer> online = getOnlineMembers();
+		
+		for (SagaPlayer sagaPlayer : online) {
+			
+			Double wage = getWage(sagaPlayer.getName());
+			if(wage == 0.0) continue; 
+			
+			// Pay:
+			EconomyDependency.addCoins(sagaPlayer, wage);
 
+			// Inform:
+			information(EconomyMessages.gotPaid(this, wage), sagaPlayer);
+			
+			//Statistics:
+			StatisticsManager.manager().addWages(this, wage);
+			
+		}
+		
+	}
+	
+	/**
+	 * Distributes wages.
+	 * 
+	 * @param paid total amount paid 
+	 */
+	public void distribWages(Double paid) {
+
+		
+		if(!EconomyConfiguration.config().isEnabled()) return;
+		
+		Collection<SagaPlayer> online = getOnlineMembers();
+		
+		double[] wageWeigths = new double[online.size()];
+		String[] names = new String[online.size()];
+		double total = 0.0;
+		
+		// Percentages:
+		int i = 0;
+		for (SagaPlayer member : online) {
+			
+			wageWeigths[i] = EconomyConfiguration.config().getWageWeigth(this, member);
+			names[i] = member.getName();
+			total+= wageWeigths[i];
+			i++;
+			
+		}
+		
+		// Add wages:
+		if(total != 0){
+			
+			for (int j = 0; j < names.length; j++) {
+				
+				Double wage = getWage(names[j]);
+				wage+= wageWeigths[j]/total * paid;
+				this.wages.put(names[j], wage);
+				
+			}
+			
+		}
+		
+		
+	}
+	
+	/**
+	 * Gets members wage.
+	 * 
+	 * @param memberName member name
+	 * @return wage
+	 */
+	public Double getWage(String memberName) {
+		
+		Double wage = wages.get(memberName);
+		if(wage == null) return 0.0;
+		return wage;
+		
+	}
+
+	
 	
 	// Claims:
 	/**
@@ -639,7 +749,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 		
 	
 	
-	// Wages:
+	// Bank:
 	/**
 	 * Gets the amount of coins banked.
 	 * 
@@ -650,12 +760,26 @@ public class Settlement extends Bundle implements MinuteTicker{
 	}
 	
 	/**
-	 * Adds coins.
+	 * Pays coins.
 	 * 
-	 * @param amount amount to play
+	 * @param amount amount to pay
 	 */
 	public void payCoins(Double amount) {
-		coins+= amount;
+
+		Double settlementShare = amount * EconomyConfiguration.config().getSettlementPercent();
+		Double factionShare = amount * EconomyConfiguration.config().getSettlementFactionPercent();
+		Double membersShare = amount * EconomyConfiguration.config().getSettlementMemberPercent();
+		
+		// Members:
+		distribWages(membersShare);
+		
+		// Settlement:
+		coins+= settlementShare;
+		
+		// Faction:
+		Faction owningFaction = FactionClaimManager.manager().getOwningFaction(getId());
+		if(owningFaction != null) owningFaction.payCoins(factionShare);
+		
 	}
 	
 	/**
@@ -840,6 +964,7 @@ public class Settlement extends Bundle implements MinuteTicker{
 	}
 	
 	
+	
 	// Events:
 	/* 
 	 * (non-Javadoc)
@@ -907,7 +1032,35 @@ public class Settlement extends Bundle implements MinuteTicker{
 		return true;
 		
 	}
-
+	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.Clock.DaytimeTicker#daytimeTick(org.saga.Clock.DaytimeTicker.Daytime)
+	 */
+	@Override
+	public boolean daytimeTick(Daytime daytime) {
+		
+		// Handle wages:
+		if(daytime == EconomyConfiguration.config().getSettlementWagesTime()) handleWages();
+		
+		return true;
+		
+	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.Clock.DaytimeTicker#checkWorld(java.lang.String)
+	 */
+	@Override
+	public boolean checkWorld(String worldName) {
+		return worldName.equals(GeneralConfiguration.config().getDefaultWorld());
+	}
+	
+	
+	
+	// Production:
 	/**
 	 * Handles work points tick.
 	 * 
@@ -949,7 +1102,6 @@ public class Settlement extends Bundle implements MinuteTicker{
 		
 	}
 	
-
 	/**
 	 * Handles resource collection.
 	 * 

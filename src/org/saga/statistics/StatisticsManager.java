@@ -27,7 +27,6 @@ import org.saga.dependencies.EconomyDependency;
 import org.saga.factions.Faction;
 import org.saga.factions.FactionClaimManager;
 import org.saga.messages.GeneralMessages;
-import org.saga.player.Proficiency;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.ProficiencyDefinition;
 import org.saga.player.SagaPlayer;
@@ -932,17 +931,23 @@ public class StatisticsManager implements HourTicker{
 		
 		
 	}
-	
-	
-	public void addWages(Faction faction, Proficiency rank, Double wage) {
 
-		modifyValue("wages.factions." + rank.getName() + "." + faction.getName(), wage);
+	
+	public void addWages(Settlement settlement, Double wage) {
+
+		modifyValue("wages.settlements." + settlement.getName(), wage);
 		
 	}
 	
-	public void addWages(Faction faction, Double bounty) {
+	public void addWages(Faction faction, Double wage) {
 
-		modifyValue("wages.factions.pvp." + faction.getName(), bounty);
+		modifyValue("wages.factions." + faction.getName(), wage);
+		
+	}
+	
+	public void addPvPWages(Faction faction, Double wage) {
+
+		modifyValue("wages.factions.pvp." + faction.getName(), wage);
 		
 	}
 	

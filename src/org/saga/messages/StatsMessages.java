@@ -700,8 +700,6 @@ public class StatsMessages {
 		// Levels, claims and allies:
 		book.addTable(info(faction));
 		book.addLine("");
-		book.addTable(claims(faction));
-		book.addLine("");
 		book.addLine(allies(faction));
 		
 		book.nextPage();
@@ -765,44 +763,6 @@ public class StatsMessages {
 		
 		
 	}
-	
-	private static ChatTable claims(Faction faction){
-		
-		
-		ColourLoop colours = new ColourLoop().addColor(faction.getColour2());
-		ChatTable table = new ChatTable(colours);
-
-		// Wages:
-		table.addLine(GeneralMessages.tableTitle("wages"), "", 0);
-		
-		Hashtable<Integer, Double> wages = faction.calcWages();
-		int min = FactionConfiguration.config().getHierarchyMin();
-		int max = FactionConfiguration.config().getHierarchyMax();
-		
-		if(min != max){
-		
-			for (int hiera = max; hiera >= min; hiera--) {
-				
-				String name = FactionConfiguration.config().getHierarchyName(hiera);
-				Double wage = wages.get(hiera);
-				if(wage == null) wage = 0.0;
-				
-				table.addLine(name, EconomyMessages.coins(wage), 0);
-				
-			}
-			
-		}else{
-			
-			table.addLine("-", "-", 0);
-			
-		}
-		
-		table.collapse();
-		
-		return table;
-		
-		
-	}		
 	
 	private static String allies(Faction faction){
 		

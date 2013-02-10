@@ -12,6 +12,7 @@ import org.saga.dependencies.Trader;
 import org.saga.factions.Faction;
 import org.saga.messages.colours.Colour;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.Settlement;
 import org.saga.utility.chat.ChatUtil;
 
 
@@ -128,9 +129,11 @@ public class EconomyMessages {
 	
 	// Wages:
 	public static String gotPaid(Faction faction, Double amount) {
-		
 		return faction.getColour2() + "Received " + coins(amount) + " in wages.";
-		
+	}
+	
+	public static String gotPaid(Settlement faction, Double amount) {
+		return Colour.normal2 + "Received " + coins(amount) + " in wages.";
 	}
 	
 	public static String gotKillReward(SagaPlayer attakerPlayer, SagaPlayer defenderPlayer, Faction faction, Double amount) {
