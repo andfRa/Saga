@@ -201,7 +201,7 @@ public class ProductionBuilding extends Building{
 	 */
 	public void produce() {
 		
-
+		
 		if(resources.length == 0) return;
 
 		// Produce:

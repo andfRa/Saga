@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 
 import org.bukkit.Chunk;
@@ -25,6 +26,7 @@ import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.Building;
+import org.saga.config.BuildingConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
@@ -72,6 +74,13 @@ public class Bundle extends SagaCustomSerialization{
 	 */
 	private String owner;
 
+	
+	// Optimisation:
+	/**
+	 * Buildings list.
+	 */
+	transient private ArrayList<Building> buildings = null;
+	
 	
 	// Control:
 	/**
@@ -162,34 +171,33 @@ public class Bundle extends SagaCustomSerialization{
 			owner = "";
 		}
 		
-		// Transient:
-		isSavingEnabled = true;
-	
 		if(groupChunks == null){
 			SagaLogger.nullField(this, "groupChunks");
 			groupChunks = new ArrayList<SagaChunk>();
 		}
 		for (int i = 0; i < groupChunks.size(); i++) {
-			SagaChunk coords= groupChunks.get(i);
-			if(coords == null){
 			
+			SagaChunk sagaChunk = groupChunks.get(i);
+			
+			if(sagaChunk == null){
 				SagaLogger.nullField(this, "groupChunks element");
 				groupChunks.remove(i);
 				i--;
 				continue;
-				
 			}
-			coords.complete(this);
-			// Buildings:
-			if(coords.getBuilding() != null){
+			sagaChunk.complete(this);
+			
+			// Building:
+			if(sagaChunk.getBuilding() != null){
 				
 				try {
-					coords.getBuilding().complete();
+					sagaChunk.getBuilding().complete();
 				} catch (InvalidBuildingException e) {
-					SagaLogger.severe(this,"failed to complete " + coords.getBuilding().getName() + " building: "+ e.getClass().getSimpleName() + ":" + e.getMessage());
+					SagaLogger.severe(this,"failed to complete " + sagaChunk.getBuilding().getName() + " building: "+ e.getClass().getSimpleName() + ":" + e.getMessage());
 					disableSaving();
-					coords.clearBuilding();
+					sagaChunk.clearBuilding();
 				}
+				
 			}
 			
 		}
@@ -211,6 +219,10 @@ public class Bundle extends SagaCustomSerialization{
 		if(toggleOptions.remove(null)){
 			SagaLogger.nullField(this, "toggleOptions element");
 		}
+
+		// Control:
+		isSavingEnabled = true;
+	
 		
 		// Statistics:
 		StatisticsManager.manager().setBuildings(this);
@@ -224,17 +236,13 @@ public class Bundle extends SagaCustomSerialization{
 	 */
 	public void enable() {
 		
-		
-		// Enable all buildings:
 		ArrayList<Building> buildings = getBuildings();
+		
 		for (Building building : buildings) {
-			
 			building.enable();
-			
 		}
 		
 		enabled = true;
-		
 		
 	}
 	
@@ -244,17 +252,13 @@ public class Bundle extends SagaCustomSerialization{
 	 */
 	public void disable() {
 		
-
-		// Enable all buildings:
 		ArrayList<Building> buildings = getBuildings();
+		
 		for (Building building : buildings) {
-			
 			building.disable();
-			
 		}
 		
 		enabled = false;
-		
 		
 	}
 	
@@ -269,7 +273,7 @@ public class Bundle extends SagaCustomSerialization{
 	
 	
 	
-	// Chunk group management:
+	// Bundle management:
 	/**
 	 * Adds a new chunk group.
 	 * 
@@ -529,25 +533,30 @@ public class Bundle extends SagaCustomSerialization{
 	 * @return all settlement buildings
 	 */
 	public ArrayList<Building> getBuildings() {
-
-		ArrayList<Building> buildings = new ArrayList<Building>();
-		for (int i = 0; i < groupChunks.size(); i++) {
-			Building building = groupChunks.get(i).getBuilding();
-			if(building != null) buildings.add(building);
+		
+		if(buildings == null){
+			
+			buildings = new ArrayList<Building>();
+		
+			for (int i = 0; i < groupChunks.size(); i++) {
+				Building building = groupChunks.get(i).getBuilding();
+				if(building != null) buildings.add(building);
+			}
+			
+			Collections.sort(buildings, BuildingConfiguration.config().getComparator());
+		
 		}
+		
 		return buildings;
 		
 	}
 	
 	/**
-	 * Gets  buildings count.
+	 * Notifies that buildings have changed.
 	 * 
-	 * @return building count
 	 */
-	public Integer getBuildingCount() {
-
-		return getBuildings().size();
-		
+	public void notifyBuildingChange() {
+		buildings = null;
 	}
 	
 	
@@ -618,23 +627,18 @@ public class Bundle extends SagaCustomSerialization{
 	
 
 	/**
-	 * Gets the first building with the given name.
+	 * Gets the buildings with the given name.
 	 * 
-	 * @param buildingName building name
+	 * @param bldgName building name
 	 * @return buildings with the given name
 	 */
-	public ArrayList<Building> getBuildings(String buildingName) {
+	public ArrayList<Building> getBuildings(String bldgName) {
 
-		
+		ArrayList<Building> allBuildings = getBuildings();
 		ArrayList<Building> buildings = new ArrayList<Building>();
 		
-		for (SagaChunk sagaChunk : groupChunks) {
-			
-			Building building = sagaChunk.getBuilding();
-			if(building == null) continue;
-			
-			if(building.getName().equals(buildingName)) buildings.add(building);
-			
+		for (Building building : allBuildings) {
+			if(building.getName().equals(bldgName)) buildings.add(building);
 		}
 		
 		return buildings;
@@ -644,32 +648,30 @@ public class Bundle extends SagaCustomSerialization{
 	/**
 	 * Gets all buildings instance of the given class.
 	 * 
-	 * @param buildingClass class
+	 * @param bldgClass class
 	 * @return buildings that are instances of the given class
 	 */
-	public <T extends Building> ArrayList<T> getBuildings(Class<T> buildingClass){
+	public <T extends Building> ArrayList<T> getBuildings(Class<T> bldgClass){
 		
+		ArrayList<Building> allBuildings = getBuildings();
+		ArrayList<T> buildings = new ArrayList<T>();
 		
-		ArrayList<Building> buildings = getBuildings();
-		ArrayList<T> filteredBuildings = new ArrayList<T>();
-		for (Building building : buildings) {
+		for (Building building : allBuildings) {
 			
-			if(buildingClass.isInstance(building)){
+			if(bldgClass.isInstance(building)){
 				try {
-					filteredBuildings.add(buildingClass.cast(building));
-				} catch (Exception e) {
-				}
+					buildings.add(bldgClass.cast(building));
+				} catch (Exception e) { }
 			}
 			
 		}
 		
-		return filteredBuildings;
-		
+		return buildings;
 		
 	}
 
 	/**
-	 * Gets all buildings instance of the given class and name.
+	 * Gets all buildings instances of the given class and name.
 	 * 
 	 * @param bldClass class
 	 * @param bldgName building name
@@ -677,21 +679,20 @@ public class Bundle extends SagaCustomSerialization{
 	 */
 	public <T extends Building> ArrayList<T> getBuildings(Class<T> bldClass, String bldgName){
 		
-		ArrayList<Building> buildings = getBuildings();
-		ArrayList<T> filteredBuildings = new ArrayList<T>();
+		ArrayList<Building> allBuildings = getBuildings();
+		ArrayList<T> buildings = new ArrayList<T>();
 		
-		for (Building building : buildings) {
+		for (Building building : allBuildings) {
 			
 			if(bldClass.isInstance(building) && building.getName().equalsIgnoreCase(bldgName)){
 				try {
-					filteredBuildings.add(bldClass.cast(building));
-				} catch (Exception e) {
-				}
+					buildings.add(bldClass.cast(building));
+				} catch (Exception e) { }
 			}
 			
 		}
 		
-		return filteredBuildings;
+		return buildings;
 		
 	}
 	
@@ -704,13 +705,10 @@ public class Bundle extends SagaCustomSerialization{
 	 */
 	public Building getFirstBuilding(String buildingName) {
 
-		for (SagaChunk sagaChunk : groupChunks) {
-			
-			Building building = sagaChunk.getBuilding();
-			if(building == null) continue;
-			
+		ArrayList<Building> allBuildings = getBuildings();
+		
+		for (Building building : allBuildings) {
 			if(building.getName().equals(buildingName)) return building;
-			
 		}
 		
 		return null;

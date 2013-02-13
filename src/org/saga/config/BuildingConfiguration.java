@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 
 import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
@@ -30,7 +32,6 @@ public class BuildingConfiguration {
 	public static BuildingConfiguration config() {
 		return instance;
 	}
-	
 
 	
 	/**
@@ -38,6 +39,11 @@ public class BuildingConfiguration {
 	 */
 	private ArrayList<BuildingDefinition> definitions;
 
+	/**
+	 * Buildings comparator.
+	 */
+	transient Comparator<Building> comparator;
+	
 	
 	
 	// Initialisation:
@@ -53,9 +59,22 @@ public class BuildingConfiguration {
 			SagaLogger.nullField(getClass(), "definitions");
 			definitions = new ArrayList<BuildingDefinition>();
 		}
-		for (BuildingDefinition definition : definitions) {
+		
+		final HashMap<String, Integer> priority = new HashMap<String, Integer>();
+		priority.put(null, 0);
+		
+		for (int i = 0; i < definitions.size(); i++) {
+			BuildingDefinition definition = definitions.get(i);
 			definition.complete();
+			priority.put(definition.getName(), i);
 		}
+		
+		comparator = new Comparator<Building>() {
+			@Override
+			public int compare(Building o1, Building o2) {
+				return priority.get(o2.getName()) - priority.get(o1.getName());
+			}
+		};
 		
 		
 	}
@@ -140,6 +159,16 @@ public class BuildingConfiguration {
 		
 		return names;
 		
+	}
+	
+	
+	/**
+	 * Gets the building priority comparator.
+	 * 
+	 * @return building priority comparator
+	 */
+	public Comparator<Building> getComparator() {
+		return comparator;
 	}
 	
 	

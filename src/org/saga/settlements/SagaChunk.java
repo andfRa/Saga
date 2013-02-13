@@ -371,6 +371,7 @@ public class SagaChunk {
 		this.bld = building;
 		this.bld.setSagaChunk(this);
 		this.bld.enable();
+		if(bundle != null) bundle.notifyBuildingChange();
 		
 	}
 	
@@ -384,6 +385,7 @@ public class SagaChunk {
 			bld.removeSagaChunk();
 			bld.disable();
 			bld.removeSigns();
+			if(bundle != null) bundle.notifyBuildingChange();
 		}
 		
 		this.bld = null;
@@ -394,7 +396,7 @@ public class SagaChunk {
 	 * Clears the building without disabling it on the saga chunk.
 	 * 
 	 */
-	public void clearBuilding() {
+	void clearBuilding() {
 		
 		if(bld != null){
 			bld.removeSagaChunk();
@@ -403,7 +405,7 @@ public class SagaChunk {
 		this.bld = null;
 		
 	}
-
+	
 	
 	
 	// Adjacent:
