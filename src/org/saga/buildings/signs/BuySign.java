@@ -309,47 +309,47 @@ public class BuySign extends BuildingSign {
 	@Override
 	protected void onRightClick(SagaPlayer sagaPlayer) {
 
+
+		// Create item:
+		ItemStack item = this.item.createItem();
 		
-		// Available amount:
-		Integer availAmount = item.getAmount().intValue();
-		
-		// Available coins:
-		if(price == null) return;
-		
-		Double coins = EconomyDependency.getCoins(sagaPlayer);
-		while(coins < price * availAmount && availAmount > 0){
-			availAmount--; 
+		// Available goods:
+		if(stored < 1.0){
+			sagaPlayer.message(EconomyMessages.insufItems(item.getType()));
+			return;
 		}
 		
-		if(availAmount < 1){
+		// Trim amount based on goods:
+		if(item.getAmount() > stored) item.setAmount(stored.intValue());
+		
+		// Trim amount based on coins:
+		double coins = EconomyDependency.getCoins(sagaPlayer);
+		if(item.getAmount() * price > coins) item.setAmount((int)(coins / price));
+		
+		// Available coins:
+		if(item.getAmount() < 1){
 			sagaPlayer.message(EconomyMessages.insufCoins());
 			return;
 		}
 		
-		// Available goods:
-		if(availAmount > stored) availAmount = stored.intValue();
-		
-		if(availAmount < 1){
-			sagaPlayer.message(EconomyMessages.insufItems(getBuilding(), item.getType()));
+		// Take item:
+		if(item.getAmount() < 1){
+			sagaPlayer.message(EconomyMessages.insufItems(item.getType()));
 			return;
 		}
+		stored-= item.getAmount();
 		
-		// Create item:
-		ItemStack item = this.item.createItem();
-		item.setAmount(availAmount);
-		
-		// Transaction:
-		Double cost = price * availAmount;
+		// Finish transaction:
+		Double cost = price * item.getAmount();
 		EconomyDependency.removeCoins(sagaPlayer, cost);
 		getBuilding().getSettlement().payCoins(cost);
 		sagaPlayer.addItem(item);
-		stored-= availAmount;
 		
 		// Inform:
-		sagaPlayer.message(EconomyMessages.bought(item.getType(), availAmount, price));
+		sagaPlayer.message(EconomyMessages.bought(item.getType(), item.getAmount(), price));
 		
 		// Statistics:
-		StatisticsManager.manager().addBuy(sagaPlayer, item.getType(), availAmount, price * availAmount);
+		StatisticsManager.manager().addBuy(sagaPlayer, item.getType(), item.getAmount(), price * item.getAmount());
 		
 		// Update sign:
 		refresh();

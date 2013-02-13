@@ -137,7 +137,7 @@ public class InventoryUtil {
 		ItemStack item = requested.createItem();
 		
 		ItemStack remaining = inventory.removeItem(item).get(0);
-		if(remaining != null) requested.modifyAmount(-remaining.getAmount());
+		if(remaining != null) taken.modifyAmount(-remaining.getAmount());
 		
 		return taken;
 		

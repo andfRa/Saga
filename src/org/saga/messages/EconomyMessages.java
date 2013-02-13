@@ -4,11 +4,9 @@ import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.saga.buildings.Building;
 import org.saga.buildings.production.SagaItem;
 import org.saga.config.EconomyConfiguration;
 import org.saga.dependencies.EconomyDependency;
-import org.saga.dependencies.Trader;
 import org.saga.factions.Faction;
 import org.saga.messages.colours.Colour;
 import org.saga.player.SagaPlayer;
@@ -137,25 +135,13 @@ public class EconomyMessages {
 	// Sell/buy signs:
 	public static String insufItems(Material items) {
 		
-		return Colour.negative + "You don't have enough " + GeneralMessages.material(items) + ".";
-		
-	}
-	
-	public static String insufItems(Building building, Material items) {
-		
-		return Colour.negative + "The " + building.getName() + " doesn't have enough " + GeneralMessages.material(items) + ".";
+		return Colour.negative + "Not enough " + GeneralMessages.material(items) + ".";
 		
 	}
 	
 	public static String insufCoins() {
 		
-		return Colour.negative + "You don't have enough " + coins() + ".";
-		
-	}
-	
-	public static String insufCoins(Trader trader) {
-		
-		return Colour.negative + ChatUtil.capitalize(trader.getName()) + " doesn't have enough " + coins() + ".";
+		return Colour.negative + "Not enough " + coins() + ".";
 		
 	}
 	

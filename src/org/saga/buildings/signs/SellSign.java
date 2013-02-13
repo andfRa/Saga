@@ -333,10 +333,23 @@ public class SellSign extends BuildingSign {
 		SagaItem request = new SagaItem(item);
 		
 		// Available coins:
-		if(price > 0 && request.getAmount()*price > coins) request.setAmount(coins/price);
+		if(coins == 0.0){
+			sagaPlayer.message(EconomyMessages.insufCoins());
+			return;
+		}
 		
-		// Transaction::
+		// Trim amount based on coins:
+		if(request.getAmount()*price > coins) request.setAmount(coins/price);
+		
+		// Available items:
 		SagaItem takenItem = sagaPlayer.takeItem(request);
+		
+		if(takenItem.getAmount() == 0){
+			sagaPlayer.message(EconomyMessages.insufItems(item.getType()));
+			return;
+		}
+		
+		// Finish transaction:
 		pending+= takenItem.getAmount();
 		Double cost = price*takenItem.getAmount();
 		EconomyDependency.addCoins(sagaPlayer, cost);
