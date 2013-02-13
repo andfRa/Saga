@@ -26,7 +26,15 @@ public class GeneralMessages {
 	
 	// Command arguments:
 	public static String notNumber(String number) {
-		return Colour.negative + number + " is not a number.";
+		return Colour.negative + "Argument " + number + " must a number.";
+	}
+	
+	public static String mustBePositive(Double number) {
+		return Colour.negative + "Argument " + number + " must be positive.";
+	}
+	
+	public static String mustBePositive(Integer number) {
+		return Colour.negative + "Argument " + number + " must be positive.";
 	}
 	
 	public static String notOnline(String name) {

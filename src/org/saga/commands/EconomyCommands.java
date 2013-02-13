@@ -7,7 +7,12 @@ import org.saga.dependencies.EconomyDependency;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.GeneralMessages;
 import org.saga.messages.HelpMessages;
+import org.saga.messages.SettlementMessages;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.Bundle;
+import org.saga.settlements.BundleManager;
+import org.saga.settlements.Settlement;
+import org.saga.settlements.Settlement.SettlementPermission;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
 import org.sk89q.CommandPermissions;
@@ -28,6 +33,12 @@ public class EconomyCommands {
 	@CommandPermissions({"saga.user.economy.pay"})
 	public static void pay(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
+		
+		// Disabled:
+		if(!EconomyConfiguration.config().isEnabled()){
+			sagaPlayer.message(EconomyMessages.economyDisabled());
+			return;
+		}
 		
 		// Arguments:
 		SagaPlayer selPlayer = Saga.plugin().getLoadedPlayer(args.getString(0));
@@ -102,18 +113,387 @@ public class EconomyCommands {
 	}
 	
 	
+	// Settlements:
+	
+	@Command(
+		aliases = {"saddcoins","sdeposit"},
+		usage = "[settlement_name] <amount>",
+		flags = "",
+		desc = "Deposit coins to the settlements bank.",
+		min = 1,
+		max = 2
+	)
+	@CommandPermissions({"saga.user.economy.settlements.addcoins"})
+	public static void addCoins(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+
+		// Disabled:
+		if(!EconomyConfiguration.config().isEnabled()){
+			sagaPlayer.message(EconomyMessages.economyDisabled());
+			return;
+		}
+		
+		Bundle selBundle = null;
+		Double amount = null;
+		
+		String strBundle = null;
+		String strAmount = null;
+		
+		switch (args.argsLength()) {
+			
+			case 2:
+
+				// Bundle:
+				strBundle = GeneralMessages.nameFromArg(args.getString(0));
+				selBundle = BundleManager.manager().matchBundle(strBundle);
+				if(selBundle == null){
+					sagaPlayer.message(GeneralMessages.invalidSettlement(strBundle));
+					return;
+				}
+				
+				// Amount:
+				strAmount = args.getString(1);
+				try {
+					amount = Double.parseDouble(strAmount);
+				}
+				catch (NumberFormatException e) {
+					sagaPlayer.message(GeneralMessages.notNumber(strAmount));
+					return;
+				}
+				
+				break;
+
+			default:
+				
+				// Bundle:
+				selBundle = sagaPlayer.getBundle();
+				if(selBundle == null){
+					sagaPlayer.message(SettlementMessages.notMember());
+					return;
+				}
+
+				// Amount:
+				strAmount = args.getString(0);
+				try {
+					amount = Double.parseDouble(strAmount);
+				}
+				catch (NumberFormatException e) {
+					sagaPlayer.message(GeneralMessages.notNumber(strAmount));
+					return;
+				}
+				
+				break;
+				
+		}
+
+		// Settlement:
+		if(!(selBundle instanceof Settlement)){
+			sagaPlayer.message(GeneralMessages.notSettlement(selBundle));
+			return;
+		}
+		Settlement selSettlement = (Settlement) selBundle;
+
+		// Fix amount:
+		if(amount <= 0.0){
+			sagaPlayer.message(GeneralMessages.mustBePositive(amount));
+			return;
+		}
+
+		// Permission:
+		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.ADD_COINS)){
+			sagaPlayer.message(GeneralMessages.noPermission(selBundle));
+			return;
+		}
+
+		// Request coins:
+		amount = sagaPlayer.requestCoins(amount);
+		
+		if(amount != 0.0){
+			
+			// Add coins:
+			selSettlement.modCoins(amount);
+			
+			// Inform:
+			sagaPlayer.message(EconomyMessages.settlementAddedCoins(amount));
+		
+		}else{
+			
+			// Inform:
+			sagaPlayer.message(EconomyMessages.settlementNothingToDeposit());
+			
+		}
+		
+		
+		
+	}
+	
+
+	@Command(
+		aliases = {"sremovecoins","swihdraw"},
+		usage = "[settlement_name] <amount>",
+		flags = "",
+		desc = "Withdraw coins from the settlements bank.",
+		min = 1,
+		max = 2
+	)
+	@CommandPermissions({"saga.user.economy.settlements.removecoins"})
+	public static void removeCoins(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+
+		// Disabled:
+		if(!EconomyConfiguration.config().isEnabled()){
+			sagaPlayer.message(EconomyMessages.economyDisabled());
+			return;
+		}
+		
+		Bundle selBundle = null;
+		Double amount = null;
+		
+		String strBundle = null;
+		String strAmount = null;
+		
+		switch (args.argsLength()) {
+			
+			case 2:
+
+				// Bundle:
+				strBundle = GeneralMessages.nameFromArg(args.getString(0));
+				selBundle = BundleManager.manager().matchBundle(strBundle);
+				if(selBundle == null){
+					sagaPlayer.message(GeneralMessages.invalidSettlement(strBundle));
+					return;
+				}
+				
+				// Amount:
+				strAmount = args.getString(1);
+				try {
+					amount = Double.parseDouble(strAmount);
+				}
+				catch (NumberFormatException e) {
+					sagaPlayer.message(GeneralMessages.notNumber(strAmount));
+					return;
+				}
+				
+				break;
+
+			default:
+				
+				// Bundle:
+				selBundle = sagaPlayer.getBundle();
+				if(selBundle == null){
+					sagaPlayer.message(SettlementMessages.notMember());
+					return;
+				}
+
+				// Amount:
+				strAmount = args.getString(0);
+				try {
+					amount = Double.parseDouble(strAmount);
+				}
+				catch (NumberFormatException e) {
+					sagaPlayer.message(GeneralMessages.notNumber(strAmount));
+					return;
+				}
+				
+				break;
+				
+		}
+
+		// Settlement:
+		if(!(selBundle instanceof Settlement)){
+			sagaPlayer.message(GeneralMessages.notSettlement(selBundle));
+			return;
+		}
+		Settlement selSettlement = (Settlement) selBundle;
+
+		// Fix amount:
+		if(amount <= 0.0){
+			sagaPlayer.message(GeneralMessages.mustBePositive(amount));
+			return;
+		}
+
+		// Permission:
+		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.REMOVE_COINS)){
+			sagaPlayer.message(GeneralMessages.noPermission(selBundle));
+			return;
+		}
+		
+		// Request coins:
+		amount = selSettlement.requestCoins(amount);
+		
+		if(amount != 0.0){
+			
+			// Add coins:
+			sagaPlayer.modCoins(amount);
+			
+			// Inform:
+			sagaPlayer.message(EconomyMessages.settlementRemovedCoins(amount));
+		
+		}else{
+			
+			// Inform:
+			sagaPlayer.message(EconomyMessages.settlementNothingToWithdraw());
+			
+		}
+		
+		
+	}
+	
+	@Command(
+		aliases = {"sbuyblaims","buyclaims"},
+		usage = "[settlement_name] [amount]",
+		flags = "",
+		desc = "Buy additional claims for the settlement.",
+		min = 0,
+		max = 2
+	)
+	@CommandPermissions({"saga.user.economy.settlements.buyclaims"})
+	public static void buyClaims(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+
+		// Disabled:
+		if(!EconomyConfiguration.config().isEnabled()){
+			sagaPlayer.message(EconomyMessages.economyDisabled());
+			return;
+		}
+		
+		Bundle selBundle = null;
+		Integer amount = null;
+		
+		String strBundle = null;
+		String strAmount = null;
+		
+		switch (args.argsLength()) {
+			
+			case 2:
+
+				// Bundle:
+				strBundle = GeneralMessages.nameFromArg(args.getString(0));
+				selBundle = BundleManager.manager().matchBundle(strBundle);
+				if(selBundle == null){
+					sagaPlayer.message(GeneralMessages.invalidSettlement(strBundle));
+					return;
+				}
+				
+				// Amount:
+				strAmount = args.getString(1);
+				try {
+					amount = Integer.parseInt(strAmount);
+				}
+				catch (NumberFormatException e) {
+					sagaPlayer.message(GeneralMessages.notNumber(strAmount));
+					return;
+				}
+				
+				break;
+
+			case 1:
+				
+				// Bundle:
+				selBundle = sagaPlayer.getBundle();
+				if(selBundle == null){
+					sagaPlayer.message(SettlementMessages.notMember());
+					return;
+				}
+
+				// Amount:
+				strAmount = args.getString(0);
+				try {
+					amount = Integer.parseInt(strAmount);
+				}
+				catch (NumberFormatException e) {
+					sagaPlayer.message(GeneralMessages.notNumber(strAmount));
+					return;
+				}
+				
+				break;
+				
+			default:
+
+				// Bundle:
+				selBundle = sagaPlayer.getBundle();
+				if(selBundle == null){
+					sagaPlayer.message(SettlementMessages.notMember());
+					return;
+				}
+				
+				amount = 1;
+				
+				break;
+				
+		}
+
+		// Settlement:
+		if(!(selBundle instanceof Settlement)){
+			sagaPlayer.message(GeneralMessages.notSettlement(selBundle));
+			return;
+		}
+		Settlement selSettlement = (Settlement) selBundle;
+
+		// Fix amount:
+		if(amount <= 0.0){
+			sagaPlayer.message(GeneralMessages.mustBePositive(amount));
+			return;
+		}
+
+		// Permission:
+		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.BUY_CLAIMS)){
+			sagaPlayer.message(GeneralMessages.noPermission(selBundle));
+			return;
+		}
+
+		// Trim amount:
+		Double coins = selSettlement.getCoins();
+		Integer claims = selSettlement.getTotalClaims();
+		Double cost = 0.0;
+		for (int claimsMod = 0; claimsMod <= amount; claimsMod++) {
+			
+			Double costMod = EconomyConfiguration.config().getClaimPointCost(claims + claimsMod + 1);
+			if(cost + costMod > coins){
+				amount = claimsMod;
+				break;
+			}
+			cost+= costMod;
+			
+		}
+		
+		if(amount == 0){
+			sagaPlayer.message(EconomyMessages.settlementInsufficientCoins());
+			return;
+		}
+		
+		// Take coins:
+		selSettlement.modCoins(-cost);
+		
+		// Add claims:
+		selSettlement.modClaims(amount.doubleValue());
+		
+		// Inform:
+		sagaPlayer.message(EconomyMessages.settlementBoughtClaims(amount, cost));
+		
+		
+	}
+	
+	
+	
 	// Other:
 	@Command(
-			aliases = {"ehelp"},
-			usage = "[page]",
-			flags = "",
-			desc = "Display economy help.",
-			min = 0,
-			max = 1
+		aliases = {"ehelp"},
+		usage = "[page]",
+		flags = "",
+		desc = "Display economy help.",
+		min = 0,
+		max = 1
 	)
 	@CommandPermissions({"saga.user.help.economy"})
 	public static void help(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
+
+		// Disabled:
+		if(!EconomyConfiguration.config().isEnabled()){
+			sagaPlayer.message(EconomyMessages.economyDisabled());
+			return;
+		}
 		
 		Integer page = null;
 		

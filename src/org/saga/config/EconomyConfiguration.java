@@ -102,12 +102,12 @@ public class EconomyConfiguration {
 	/**
 	 * Claim point cost.
 	 */
-	private Double claimPointCost;
+	private TwoPointFunction claimPointCost;
 	
 	/**
 	 * Building point cost.
 	 */
-	private Double buildPointCost;
+	private TwoPointFunction buildPointCost;
 	
 	
 	// Settlement wages:
@@ -260,12 +260,12 @@ public class EconomyConfiguration {
 		
 		if(claimPointCost == null){
 			SagaLogger.nullField(getClass(), "claimPointCost");
-			claimPointCost = 0.0;
+			claimPointCost = new TwoPointFunction(0.0);
 		}
 
 		if(buildPointCost == null){
 			SagaLogger.nullField(getClass(), "buildPointCost");
-			buildPointCost = 0.0;
+			buildPointCost = new TwoPointFunction(0.0);
 		}
 		
 		
@@ -424,19 +424,21 @@ public class EconomyConfiguration {
 	/**
 	 * Gets the cost of buying new claim points.
 	 * 
-	 * @return claim points cost.
+	 * @param claims total settlement claims available
+	 * @return claim point cost
 	 */
-	public Double getClaimPointCost() {
-		return claimPointCost;
+	public Double getClaimPointCost(Integer claims) {
+		return claimPointCost.value(claims);
 	}
 	
 	/**
 	 * Gets the building point cost.
 	 * 
-	 * @return building point cost
+	 * @param bpoints total building points available
+	 * @return build point point cost
 	 */
-	public Double getBuildPointCost() {
-		return buildPointCost;
+	public Double getBuildPointCost(Integer bpoints) {
+		return buildPointCost.value(bpoints);
 	}
 	
 	

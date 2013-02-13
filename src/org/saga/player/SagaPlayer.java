@@ -17,6 +17,7 @@ import org.saga.buildings.production.SagaItem;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.dependencies.ChatDependency;
+import org.saga.dependencies.EconomyDependency;
 import org.saga.dependencies.PermissionsDependency;
 import org.saga.dependencies.Trader;
 import org.saga.factions.Faction;
@@ -959,7 +960,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		coins = coins - amount;
 		return true;
 	}
-	
+
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -1109,6 +1110,48 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		InventoryUtil.giveItem(sagaItem, livingEntity.getInventory(), livingEntity.getLocation());
 		
 		livingEntity.updateInventory();
+		
+	}
+	
+	
+	/**
+	 * Counts the available coins.
+	 * Works with economy plugins.
+	 * 
+	 * @return amount of coins
+	 */
+	public Double countCoins() {
+		return EconomyDependency.getCoins(this);
+	}
+
+	/**
+	 * Modifies the amount of coins.
+	 * Works with economy plugins.
+	 * 
+	 * @param amount amount to modify by
+	 */
+	public void modCoins(Double amount) {
+		if(amount > 0){
+			EconomyDependency.addCoins(this, amount);
+		}
+		else if(amount < 0){
+			EconomyDependency.removeCoins(this, -amount);
+		}
+	}
+	
+	/**
+	 * Requests coins.
+	 * Works with economy plugins
+	 * 
+	 * @param request amount request
+	 */
+	public Double requestCoins(Double request) {
+
+		Double coins = countCoins();
+		Double given = request;
+		if(given > coins) given = coins;
+		modCoins(-given);
+		return given;
 		
 	}
 	

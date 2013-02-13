@@ -638,6 +638,16 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 	public void setClaims(Double claims) {
 		this.claims = claims;
 	}
+
+	/**
+	 * Modifies the amount of claims.
+	 * 
+	 * @param amount amount to modify by
+	 */
+	public void modClaims(Double amount) {
+		claims+= amount;
+	}
+	
 	
 	/**
 	 * Gets used claims.
@@ -816,6 +826,15 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 		coins-= given;
 		return given;
 		
+	}
+	
+	/**
+	 * Modifies the amount of coins.
+	 * 
+	 * @param amount amount to modify by
+	 */
+	public void modCoins(Double amount) {
+		coins+= amount;
 	}
 	
 	
@@ -1198,10 +1217,13 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 		
 		ACCESS_WAREHOUSE,
 		ACCESS_STORAGE,
+		ADD_COINS,
 		OPEN_HOME_CHESTS,
 		BUILD,
 		BUILD_BUILDING,
 		BUILDING_UPGRADE,
+		BUY_CLAIMS,
+		BUY_BUILD_POINTS,
 		CLAIM,
 		CLAIM_SETTLEMENT,
 		CRUMBLE_ARENA_SETUP,
@@ -1214,6 +1236,7 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 		SET_ROLE,
 		SET_BUILDING,
 		REMOVE_BUILDING,
+		REMOVE_COINS,
 		RENAME,
 		RESIGN,
 		MEMBER_COMMAND,

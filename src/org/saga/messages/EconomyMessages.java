@@ -24,6 +24,9 @@ public class EconomyMessages {
 		return Colour.negative + "Item " + material + " is invalid.";
 	}
 	
+	public static String economyDisabled() {
+		return Colour.negative + "Economy disabled.";
+	}
 	
 	
 	// Coins:
@@ -49,6 +52,49 @@ public class EconomyMessages {
 
 		return Colour.negative + "Insufficient " + EconomyMessages.coins() + ".";
 		
+	}
+	
+	
+	
+	// Settlement:
+	public static String settlementInsufficientCoins() {
+		return Colour.negative + "The settlement doesn't have enough " + EconomyMessages.coins() + ".";
+	}
+	
+	public static String settlementBoughtClaims(Integer amount, Double cost) {
+		
+		if(amount == 1){
+			return Colour.positive + " The settlement bought a claim for " + EconomyMessages.coins(cost) + ".";
+		}else{
+			return Colour.positive + "The settlement bought "+ amount +" claims for " + EconomyMessages.coins(cost) + ".";
+		}
+		
+	}
+	
+	public static String settlementBoughtBuildPoints(Integer amount, Double cost) {
+		
+		if(amount == 1){
+			return Colour.positive + "The settlement bought a build point for " + EconomyMessages.coins(cost) + ".";
+		}else{
+			return Colour.positive + "The settlement bought "+ amount +" build points for " + EconomyMessages.coins(cost) + ".";
+		}
+		
+	}
+	
+	public static String settlementAddedCoins(Double amount) {
+		return Colour.positive + "Deposited " + EconomyMessages.coins(amount) + " to the settlements bank.";
+	}
+	
+	public static String settlementRemovedCoins(Double amount) {
+		return Colour.positive + "Withdrew " + EconomyMessages.coins(amount) + " from the settlements bank.";
+	}
+	
+	public static String settlementNothingToWithdraw(){
+		return Colour.negative + "Nothing to withdraw.";
+	}
+	
+	public static String settlementNothingToDeposit(){
+		return Colour.negative + "Nothing to deposit.";
 	}
 	
 	
