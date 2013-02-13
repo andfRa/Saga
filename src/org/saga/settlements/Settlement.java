@@ -747,6 +747,15 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 		return getRemainingBuildPoints() >= building.getDefinition().getBuildPoints();
 		
 	}
+	
+	/**
+	 * Gets the building point progress.
+	 * 
+	 * @return building point progress, values 0.0 - 1.0
+	 */
+	public Double getBuildPointsProgress() {
+		return buildPoints - buildPoints.intValue();
+	}
 		
 	
 	
@@ -1020,13 +1029,28 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 		// Produce:
 		handleProduction();
 		
-		// Increase claims:
-		if(claims < SettlementConfiguration.config().getMaxClaims() && checkActiveMembers() && SettlementConfiguration.config().checkBuildingRequirements(this)){
+		// If can lavel:
+		if(checkActiveMembers() && SettlementConfiguration.config().checkBuildingRequirements(this)){
 		
-			claims+= SettlementConfiguration.config().getClaimsPerMinute(online);
+			// Increase claims:
+			if(claims < SettlementConfiguration.config().getMaxClaims()){
+					
+				claims+= SettlementConfiguration.config().getClaimsPerMinute(online);
+				
+				// Statistics:
+				StatisticsManager.manager().addSettlementClaims(this, SettlementConfiguration.config().getClaimsPerMinute(online));
+				
+			}
 			
-			// Statistics:
-			StatisticsManager.manager().addSettlementClaims(this, SettlementConfiguration.config().getClaimsPerMinute(online));
+			// Increase build points:
+			if(buildPoints < SettlementConfiguration.config().getMaxBuildPoints()){
+				
+				buildPoints+= SettlementConfiguration.config().getBuildPointsPerMinute(online);
+				
+				// Statistics:
+				StatisticsManager.manager().addSettlementBuildPoints(this, SettlementConfiguration.config().getBuildPointsPerMinute(online));
+				
+			}
 			
 		}
 		

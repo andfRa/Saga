@@ -1057,6 +1057,10 @@ public class StatisticsManager implements HourTicker{
 		modifyValue("claims.settlements." + settlement.getName(), amount);
 	}
 	
+	public void addSettlementBuildPoints(Settlement settlement, Double amount) {
+		modifyValue("build_points.settlements." + settlement.getName(), amount);
+	}
+	
 	public void addFactionClaims(Faction faction, Double amount) {
 		modifyValue("claims.factions." + faction.getName(), amount);
 	}

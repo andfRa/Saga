@@ -426,7 +426,10 @@ public class StatsMessages {
 		
 		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
 		ChatTable table = new ChatTable(colours);
-		
+
+		// Claims:
+		table.addLine("size", settlement.getUsedClaimed() + "/" + settlement.getTotalClaims(), 0);
+
 		// Building points:
 		table.addLine("build points", settlement.getUsedBuildPoints() + "/" + settlement.getAvailableBuildPoints(), 0);
 		
@@ -437,18 +440,19 @@ public class StatsMessages {
 			table.addLine("owner", Colour.veryNegative + "none", 0);
 		}
 
+		// Next claim:
+		double claimProgress = settlement.getClaimProgress();
+		table.addLine("next claim", (int)(claimProgress*100) + "%", 2);
+		
+		// Next building point:
+		double buildPointProgress = settlement.getBuildPointsProgress();
+		table.addLine("next point", (int)(buildPointProgress*100) + "%", 2);
+
 		// Banked:
 		if(EconomyConfiguration.config().isEnabled()){
-			table.addLine("banked", EconomyMessages.coins(settlement.getCoins()), 0);
+			table.addLine("banked", EconomyMessages.coins(settlement.getCoins()), 2);
 		}
 		
-		// Claims:
-		double progress = settlement.getClaimProgress();
-		table.addLine("size", settlement.getUsedClaimed() + "/" + settlement.getTotalClaims(), 2);
-
-		// Next claim:
-		table.addLine("next claim", (int)(progress*100) + "%", 2);
-
 		table.collapse();
 		
 		return table;
