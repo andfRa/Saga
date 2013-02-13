@@ -741,7 +741,7 @@ public class CrumbleArena extends Building implements SecondTicker{
 	 */
 	private void createArena(ArrayList<Block> arenaBlocks) {
 
-		if(!getSagaChunk().isChunkLoaded()) getSagaChunk().loadChunk();
+		if(!getSagaChunk().isLoaded()) getSagaChunk().loadChunk();
 		
 		for (Block block : arenaBlocks) {
 			if(block.getType() != Material.AIR && block.getType() != DAMAGED_BLOCK.getItemType() && block.getData() != DAMAGED_BLOCK.getData()) continue;
@@ -764,7 +764,7 @@ public class CrumbleArena extends Building implements SecondTicker{
 	 */
 	public void removeArena() {
 		
-		if(!getSagaChunk().isChunkLoaded()) getSagaChunk().loadChunk();
+		if(!getSagaChunk().isLoaded()) getSagaChunk().loadChunk();
 		
 		ArrayList<Block> blocks = getAllArenaBlocks();
 		for (Block block : blocks) {

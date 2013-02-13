@@ -580,7 +580,7 @@ public class SagaLiving <T extends LivingEntity>{
 		
 		Location location = getLocation();
 		
-		if(lastSagaChunk != null && lastSagaChunk.represents(location)){
+		if(lastSagaChunk != null && lastSagaChunk.checkRepresents(location)){
 			return lastSagaChunk;
 		}
 		

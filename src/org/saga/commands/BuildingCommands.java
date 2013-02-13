@@ -66,7 +66,7 @@ public class BuildingCommands {
 		}
 			
 		// Selected chunk bundle:
-		selBundle = selChunk.getChunkBundle();
+		selBundle = selChunk.getBundle();
 
 		// Valid building:
 		if(BuildingConfiguration.config().getBuildingDefinition(buildingName) == null){
@@ -149,7 +149,7 @@ public class BuildingCommands {
 		
 		// Bundle:
 		Bundle selBundle = null;
-		if(sagaChunk != null) selBundle = sagaChunk.getChunkBundle();
+		if(sagaChunk != null) selBundle = sagaChunk.getBundle();
 		
 		if(selBundle == null){
 			sagaPlayer.message(SettlementMessages.notMember());
@@ -212,7 +212,7 @@ public class BuildingCommands {
 		
 		// Bundle:
 		Bundle selBundle = null;
-		if(sagaChunk != null) selBundle = sagaChunk.getChunkBundle();
+		if(sagaChunk != null) selBundle = sagaChunk.getBundle();
 		
 		if(selBundle == null){
 			sagaPlayer.message(SettlementMessages.notMember());

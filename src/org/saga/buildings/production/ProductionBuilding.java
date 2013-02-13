@@ -222,7 +222,7 @@ public class ProductionBuilding extends Building{
 		if(storeable.size() != 0) getChunkBundle().information(this, BuildingMessages.produced(storeable));
 			
 		// Store here if loaded:
-		if(getSagaChunk().isChunkLoaded()){
+		if(getSagaChunk().isLoaded()){
 			for (int i = 0; i < produced.length; i++) {
 				store(produced[i]);
 			}

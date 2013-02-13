@@ -255,7 +255,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		if(sagaChunk == null){
 			return null;
 		}
-		return sagaChunk.getChunkBundle();
+		return sagaChunk.getBundle();
 		
 	}
 	
@@ -266,10 +266,10 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	 */
 	public Settlement getSettlement() {
 		
-		if(sagaChunk == null || !(sagaChunk.getChunkBundle() instanceof Settlement)){
+		if(sagaChunk == null || !(sagaChunk.getBundle() instanceof Settlement)){
 			return null;
 		}
-		return (Settlement) sagaChunk.getChunkBundle();
+		return (Settlement) sagaChunk.getBundle();
 		
 	}
 	

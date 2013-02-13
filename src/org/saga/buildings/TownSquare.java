@@ -284,7 +284,7 @@ public class TownSquare extends Building implements SecondTicker{
 			return;
 		}
 		
-		if(!originChun.isChunkLoaded()){
+		if(!originChun.isLoaded()){
 			originChun.loadChunk();
 		}
 		

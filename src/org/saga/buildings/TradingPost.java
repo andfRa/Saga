@@ -406,7 +406,7 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 		}
 		
 		// Only loaded:
-		if(getSagaChunk().isChunkLoaded()){
+		if(getSagaChunk().isLoaded()){
 
 			// Update sell signs:
 			Collection<SellSign> sellSigns = getBuildingSigns(SellSign.class);

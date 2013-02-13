@@ -92,7 +92,7 @@ public class Warehouse extends Building{
 		ArrayList<Block> storage = findLowestEmpty();
 		
 		// Loaded:
-		if(getSagaChunk().isChunkLoaded())
+		if(getSagaChunk().isLoaded())
 		while(sagaItem.getAmount() >= 1.0 && storage.size() > 0){
 			
 			// Remove block:
@@ -134,7 +134,7 @@ public class Warehouse extends Building{
 		ArrayList<Chest> possibleStorage = findChests();
 		
 		// Loaded:
-		if(getSagaChunk().isChunkLoaded())
+		if(getSagaChunk().isLoaded())
 		while(possibleStorage.size() > 0 && sagaItem.getAmount() >= 1.0){
 			
 			// Random inventory:
@@ -238,7 +238,7 @@ public class Warehouse extends Building{
 		}
 		
 		// Loaded:
-		if(getSagaChunk().isChunkLoaded())
+		if(getSagaChunk().isLoaded())
 		for (Block block : possibleStorage) {
 			
 			if(!requestedItem.checkRepresents(block)) continue;
@@ -354,7 +354,7 @@ public class Warehouse extends Building{
 		}
 		
 		// Loaded:
-		if(getSagaChunk().isChunkLoaded())
+		if(getSagaChunk().isLoaded())
 		for (Block block : possibleStorage) {
 			
 			if(!countItem.checkRepresents(block)) continue;

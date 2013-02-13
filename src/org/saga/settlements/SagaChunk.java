@@ -131,6 +131,17 @@ public class SagaChunk {
 	
 	// Coordinates:
 	/**
+	 * Gets the chunk world.
+	 * 
+	 * @return chunk world, null if none
+	 */
+	public World getWorld() {
+		
+		return Saga.plugin().getServer().getWorld(getWorldName());
+		
+	}
+	
+	/**
 	 * Gets the x.
 	 * 
 	 * @return the x
@@ -159,28 +170,19 @@ public class SagaChunk {
 
 	
 	
-	// Bukkit chunk:
+	// Bundle:
 	/**
-	 * Gets chunk group associated with this saga chunk.
+	 * Gets chunk bundle associated with this saga chunk.
 	 * 
-	 * @return chunk group.
+	 * @return chunk bundle
 	 */
-	public Bundle getChunkBundle() {
+	public Bundle getBundle() {
 		return bundle;
 	}
 	
 	
-	/**
-	 * Gets the chunk world.
-	 * 
-	 * @return chunk world, null if none
-	 */
-	public World getWorld() {
-		
-		return Saga.plugin().getServer().getWorld(getWorldName());
-		
-	}
 	
+	// Bukkit chunk:
 	/**
 	 * Gets a bukkit chunk associated with the saga chunk.
 	 * 
@@ -221,11 +223,11 @@ public class SagaChunk {
 	}
 	
 	/**
-	 * Checks if the chunk is loaded.
+	 * Checks if the bukkit chunk is loaded.
 	 * 
 	 * @return true if loaded
 	 */
-	public boolean isChunkLoaded() {
+	public boolean isLoaded() {
 
 		
 		World world = getWorld();
@@ -312,10 +314,8 @@ public class SagaChunk {
 	 * @param bukkitChunk bukkit chunk
 	 * @return true if the bukkit chunk represents the saga chunk
 	 */
-	public boolean represents(Chunk bukkitChunk) {
-
+	public boolean checkRepresents(Chunk bukkitChunk) {
 		return bukkitChunk.getX() == x && bukkitChunk.getZ() == z && bukkitChunk.getWorld().getName().equals(world);
-		
 	}
 	
 	/**
@@ -324,10 +324,8 @@ public class SagaChunk {
 	 * @param loaction location
 	 * @return true if the location is on the saga chunk
 	 */
-	public boolean represents(Location location) {
-
-		return represents(location.getWorld().getChunkAt(location));
-		
+	public boolean checkRepresents(Location location) {
+		return checkRepresents(location.getWorld().getChunkAt(location));
 	}
 	
 	
@@ -346,7 +344,7 @@ public class SagaChunk {
 		
 		
 	}
-
+	
 	
 	
 	// Building:
@@ -539,7 +537,7 @@ public class SagaChunk {
 		
 
 		// Forward to chunk group:
-		getChunkBundle().onEntityDamage(event, this);
+		getBundle().onEntityDamage(event, this);
 		
 		// Forward to building:
 		if(bld != null) bld.onEntityDamage(event);
@@ -559,7 +557,7 @@ public class SagaChunk {
 		
 
 		// Forward to chunk group:
-		getChunkBundle().onPvpKill(attacker, defender, this);
+		getBundle().onPvpKill(attacker, defender, this);
 		
 		// Forward to building:
 		if(bld != null) bld.onPvPKill(attacker, defender);
@@ -679,7 +677,7 @@ public class SagaChunk {
 		
 
 		// Forward to chunk group:
-		getChunkBundle().onPlayerInteract(event, sagaPlayer, this);
+		getBundle().onPlayerInteract(event, sagaPlayer, this);
 		
 		if(bld != null){
 			
@@ -715,7 +713,7 @@ public class SagaChunk {
 		}
 		
 		// Forward to chunk group:
-		Bundle bundle = getChunkBundle();
+		Bundle bundle = getBundle();
 		if(bundle == null){
 			return;
 		}
@@ -735,7 +733,7 @@ public class SagaChunk {
 
 		
 		// Forward to chunk group:
-		Bundle bundle = getChunkBundle();
+		Bundle bundle = getBundle();
 		if(bundle == null){
 			return;
 		}
@@ -752,7 +750,7 @@ public class SagaChunk {
 	public void onEntityBlockForm(EntityBlockFormEvent event) {
 		
 		// Forward to chunk group:
-		getChunkBundle().onEntityBlockForm(event, this);
+		getBundle().onEntityBlockForm(event, this);
 		
 	}
 	
@@ -781,16 +779,16 @@ public class SagaChunk {
 
 		
 		Bundle lastChunkBundle = null;
-		Bundle thisChunkBundle = getChunkBundle();
+		Bundle thisChunkBundle = getBundle();
 		Building lastBuilding = null;
 		Building thisBuilding = bld;
 		if(last != null){
-			lastChunkBundle = last.getChunkBundle();
+			lastChunkBundle = last.getBundle();
 			lastBuilding = last.bld;
 		}
 		
 		// Forward to chunk group:
-		if(lastChunkBundle != thisChunkBundle) getChunkBundle().onPlayerEnter(sagaPlayer, lastChunkBundle);
+		if(lastChunkBundle != thisChunkBundle) getBundle().onPlayerEnter(sagaPlayer, lastChunkBundle);
 		
 		// Forward to building:
 		if(bld != null && lastBuilding != thisBuilding){
@@ -816,16 +814,16 @@ public class SagaChunk {
 
 		
 		Bundle nextChunkBundle = null;
-		Bundle thisChunkBundle = getChunkBundle();
+		Bundle thisChunkBundle = getBundle();
 		Building nextBuilding = null;
 		Building thisBuilding = bld;
 		if(next != null){
-			nextChunkBundle = next.getChunkBundle();
+			nextChunkBundle = next.getBundle();
 			nextBuilding = next.bld;
 		}
 		
 		// Forward to chunk group:
-		if(nextChunkBundle != thisChunkBundle) getChunkBundle().onPlayerLeave(sagaPlayer, nextChunkBundle);
+		if(nextChunkBundle != thisChunkBundle) getBundle().onPlayerLeave(sagaPlayer, nextChunkBundle);
 		
 		// Forward to building:
 		if(bld != null && nextBuilding != thisBuilding){
@@ -876,7 +874,7 @@ public class SagaChunk {
 		}
 
 		// Forward to chunk group:
-		getChunkBundle().onPlayerCommandPreprocess(sagaPlayer, event, this);
+		getBundle().onPlayerCommandPreprocess(sagaPlayer, event, this);
 
 
 	}
@@ -924,9 +922,9 @@ public class SagaChunk {
 		
 		
 		if(getBuilding() != null){
-			return "(" + world + ", " + x + ", " + z + ")" + "_{" + getBuilding().getName() + ", " + getChunkBundle().getName() + "}";
+			return "(" + world + ", " + x + ", " + z + ")" + "_{" + getBuilding().getName() + ", " + getBundle().getName() + "}";
 		}else{
-			return  "(" + world + ", " + x + ", " + z + ")" + "_{" + getChunkBundle().getName() + "}";
+			return  "(" + world + ", " + x + ", " + z + ")" + "_{" + getBundle().getName() + "}";
 		}
 		
 		
@@ -1021,16 +1019,16 @@ public class SagaChunk {
 		SagaChunk adjacent = null;
 		
 		adjacent = getAdjacent(ChunkSide.BACK);
-		if( adjacent == null || !adjacent.getChunkBundle().getId().equals(getChunkBundle().getId()) ) return true;
+		if( adjacent == null || !adjacent.getBundle().getId().equals(getBundle().getId()) ) return true;
 		
 		adjacent = getAdjacent(ChunkSide.FRONT);
-		if( adjacent == null || !adjacent.getChunkBundle().getId().equals(getChunkBundle().getId()) ) return true;
+		if( adjacent == null || !adjacent.getBundle().getId().equals(getBundle().getId()) ) return true;
 		
 		adjacent = getAdjacent(ChunkSide.LEFT);
-		if( adjacent == null || !adjacent.getChunkBundle().getId().equals(getChunkBundle().getId()) ) return true;
+		if( adjacent == null || !adjacent.getBundle().getId().equals(getBundle().getId()) ) return true;
 		
 		adjacent = getAdjacent(ChunkSide.RIGHT);
-		if( adjacent == null || !adjacent.getChunkBundle().getId().equals(getChunkBundle().getId()) ) return true;
+		if( adjacent == null || !adjacent.getBundle().getId().equals(getBundle().getId()) ) return true;
 		
 		return false;
 		

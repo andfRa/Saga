@@ -145,7 +145,7 @@ public class BlockListener implements Listener{
     	SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(location);
     	
     	// Forward to chunk:
-    	if(sagaChunk != null) sagaChunk.getChunkBundle().onBlockSpread(event, sagaChunk);
+    	if(sagaChunk != null) sagaChunk.getBundle().onBlockSpread(event, sagaChunk);
     	
 		
 	}
@@ -162,7 +162,7 @@ public class BlockListener implements Listener{
     	SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
     	
     	// Forward to chunk:
-    	if(sagaChunk != null) sagaChunk.getChunkBundle().onBlockFromTo(event, sagaChunk);
+    	if(sagaChunk != null) sagaChunk.getBundle().onBlockFromTo(event, sagaChunk);
     	
 		
 	}

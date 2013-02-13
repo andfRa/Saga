@@ -193,7 +193,7 @@ public class SagaMap {
 		char[] locationName = null;
 		
 		if (locationSagaChunk != null) {
-			locationName = locationSagaChunk.getChunkBundle().getName().toUpperCase().toCharArray();
+			locationName = locationSagaChunk.getBundle().getName().toUpperCase().toCharArray();
 		}else{
 			locationName = "WILDERNESS".toCharArray();
 		}

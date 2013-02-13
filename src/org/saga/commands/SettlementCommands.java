@@ -74,7 +74,7 @@ public class SettlementCommands {
 		ArrayList<SagaChunk> adjacent = SagaChunk.getAllAdjacent(location.getChunk());
 		for (SagaChunk sagaChunk : adjacent) {
 			
-			if(sagaChunk.getChunkBundle() != null){
+			if(sagaChunk.getBundle() != null){
 				sagaPlayer.message(SettlementMessages.claimAdjacentDeny());
 				return;
 			}
@@ -194,7 +194,7 @@ public class SettlementCommands {
 		ArrayList<SagaChunk> adjacent = SagaChunk.getAllAdjacent(location.getChunk());
 		for (SagaChunk sagaChunk : adjacent) {
 			
-			if(sagaChunk.getChunkBundle() != selBundle){
+			if(sagaChunk.getBundle() != selBundle){
 				sagaPlayer.message(SettlementMessages.claimAdjacentDeny());
 				return;
 			}
@@ -269,7 +269,7 @@ public class SettlementCommands {
 		}
 	   	
 	   	// Chunk bundle:
-	   	Bundle selBundle = selChunk.getChunkBundle();
+	   	Bundle selBundle = selChunk.getBundle();
 	   	
 	   	// Permissions:
 	   	if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.ABANDON)){
@@ -510,7 +510,7 @@ public class SettlementCommands {
 		
 		// Permission:
 		if(sagaChunk != null){
-			Bundle selBundle = sagaChunk.getChunkBundle();
+			Bundle selBundle = sagaChunk.getBundle();
 			if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.FLASH_CHUNK) ){
 				sagaPlayer.message(GeneralMessages.noPermission(selBundle));
 				return;
