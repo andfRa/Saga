@@ -1318,6 +1318,9 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 			// Pay:
 			EconomyDependency.addCoins(sagaPlayer, wage);
 
+			// Reset:
+			resetWage(sagaPlayer.getName());
+			
 			// Inform:
 			information(EconomyMessages.gotPaid(this, wage), sagaPlayer);
 			
@@ -1387,7 +1390,16 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		return wage;
 		
 	}
-
+	
+	/**
+	 * Resets members wage.
+	 * 
+	 * @param memberName member name
+	 */
+	public void resetWage(String memberName) {
+		wages.remove(memberName);
+	}
+	
 	
 	
 	// Messages:

@@ -11,6 +11,7 @@ import org.saga.buildings.BuildingDefinition;
 import org.saga.buildings.TownSquare;
 import org.saga.buildings.TradingPost;
 import org.saga.buildings.TrainingCamp;
+import org.saga.buildings.Warehouse;
 import org.saga.buildings.signs.AttributeSign;
 import org.saga.buildings.signs.BuySign;
 import org.saga.buildings.signs.GuardianRuneSign;
@@ -269,7 +270,8 @@ public class HelpMessages {
 		// Buildings:
 		book.addLine("Use " + GeneralMessages.command("/bset") + " to set a building on the chunk and " + GeneralMessages.command("/bremove") + " to remove it. " +
 			"Each building requires a certain amount of build points. " +
-			"Build points and new buildings become available when more land is claimed. "
+			"Build points are gained over time. " +
+			"More buildings become available when more land is claimed. "
 		);
 		
 		book.addLine("");
@@ -305,10 +307,14 @@ public class HelpMessages {
 		book.nextPage();
 
 		// Storage:
-		book.addLine("Some buildings can spawn or craft resources. " +
-			"Resources are taken from and stored in storage areas which can be added and removed with " + GeneralMessages.command("/baddstorage") + " and " + GeneralMessages.command("/bremovestorage") + ". " +
-			"Blocks are placed directly to storage areas. " +
-			"Add chests to storage areas to store items."
+		book.addLine("Some buildings can produce resources. " +
+			"Resources are placed in storage areas, which can be added and removed with " + GeneralMessages.command("/baddstorage") + " and " + GeneralMessages.command("/bremovestorage") + ". " +
+			"Blocks (stone, wood, ores etc) are placed directly to storage areas. " +
+			"Add chests to storage areas to store items (food, swords, ingots etc). " +
+			"If a storage area is full then the resources will be stored in a " + warehouse() + ". " +
+			"If certain resources are required for crafting, then they are taken from a " + warehouse() + ". " +
+			"Players with certain roles must be online for a building to function. " +
+			"Use " + GeneralMessages.command("/bstats") + " to see production progress and requirements."
 		);
 		
 		book.nextPage();
@@ -495,6 +501,18 @@ public class HelpMessages {
 		
 		for (BuildingDefinition building : buildings) {
 			if(building.getBuildingClass().equals(TrainingCamp.class.getName())) return building.getName();
+		}
+	
+		return "<missing>";
+	
+	}
+	
+	public static String warehouse(){
+		
+		ArrayList<BuildingDefinition> buildings = BuildingConfiguration.config().getBuildingDefinitions();
+		
+		for (BuildingDefinition building : buildings) {
+			if(building.getBuildingClass().equals(Warehouse.class.getName())) return building.getName();
 		}
 	
 		return "<missing>";

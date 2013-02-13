@@ -524,7 +524,7 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 	 * Handles wages.
 	 * 
 	 */
-	public void handleWages() {
+	private void handleWages() {
 		
 		if(!EconomyConfiguration.config().isEnabled()) return;
 		
@@ -538,7 +538,10 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 			
 			// Pay:
 			EconomyDependency.addCoins(sagaPlayer, wage);
-
+			
+			// Reset:
+			resetWage(sagaPlayer.getName());
+			
 			// Inform:
 			information(EconomyMessages.gotPaid(this, wage), sagaPlayer);
 			
@@ -604,6 +607,15 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 		if(wage == null) return 0.0;
 		return wage;
 		
+	}
+	
+	/**
+	 * Resets members wage.
+	 * 
+	 * @param memberName member name
+	 */
+	public void resetWage(String memberName) {
+		wages.remove(memberName);
 	}
 
 	
