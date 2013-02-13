@@ -180,13 +180,13 @@ public class SagaResource extends SagaRecipe {
 	}
 	
 	/**
-	 * Gets the sum percentage.
+	 * Gets the percentage which indicates how much is collected.
 	 * 
-	 * @return sum percentage
+	 * @return percentage of collected resources
 	 */
-	public double getSumPercentage() {
+	public double getCollectPercentage() {
 
-		if(recipe.length == 0) return 0.0;
+		if(recipe.length == 0) return 1.0;
 		
 		double sum = 0;
 		
@@ -225,7 +225,7 @@ public class SagaResource extends SagaRecipe {
 	 * @return remaining working points
 	 */
 	public double getRemainingWork() {
-		return (getRequiredWork() * getSumPercentage() - work);
+		return (getRequiredWork() * getCollectPercentage() - work);
 	}
 	
 	
