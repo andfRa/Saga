@@ -22,6 +22,7 @@ import org.saga.messages.BuildingMessages;
 import org.saga.messages.ClaimMessages;
 import org.saga.messages.GeneralMessages;
 import org.saga.messages.SettlementMessages;
+import org.saga.messages.StatsMessages;
 import org.saga.messages.effects.SettlementEffectHandler;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Bundle;
@@ -232,14 +233,8 @@ public class BuildingCommands {
 			return;
 		}
 		
-		// Permission:
-		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.REMOVE_BUILDING)){
-			sagaPlayer.message(GeneralMessages.noPermission(selBundle));
-			return;
-		}
-
 		// Inform:
-		sagaPlayer.message(BuildingMessages.stats(selBuilding));
+		sagaPlayer.message(StatsMessages.stats(selBuilding));
 		
 			
 	}
