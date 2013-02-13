@@ -10,10 +10,10 @@
     "storages":1,
     "storageSize":36,
     "production":[
-      {"type":LOG,"amount":2,"data":0,  "reqWork":5,  "recipe":[]},
-      {"type":LOG,"amount":2,"data":1,  "reqWork":5,  "recipe":[]},
-      {"type":LOG,"amount":2,"data":2,  "reqWork":5,  "recipe":[]},
-      {"type":LOG,"amount":2,"data":3,  "reqWork":5,  "recipe":[]}
+      {"type":LOG,"amount":1,"data":0,  "reqWork":2.5,  "recipe":[]},
+      {"type":LOG,"amount":1,"data":1,  "reqWork":2.5,  "recipe":[]},
+      {"type":LOG,"amount":1,"data":2,  "reqWork":2.5,  "recipe":[]},
+      {"type":LOG,"amount":1,"data":3,  "reqWork":2.5,  "recipe":[]}
     ],
     "performTime":"NONE",
     "functions":{},
@@ -74,10 +74,10 @@
     "storages":1,
     "storageSize":36,
     "production":[
-      {"type":WOOD,"amount":4,"data":0,  "reqWork":5,  "recipe":[ {"type":LOG,"amount":1,"data":0} ]},
-      {"type":WOOD,"amount":4,"data":1,  "reqWork":5,  "recipe":[ {"type":LOG,"amount":1,"data":1} ]},
-      {"type":WOOD,"amount":4,"data":2,  "reqWork":5,  "recipe":[ {"type":LOG,"amount":1,"data":2} ]},
-      {"type":WOOD,"amount":4,"data":3,  "reqWork":5,  "recipe":[ {"type":LOG,"amount":1,"data":3} ]}
+      {"type":WOOD,"amount":4,"data":0,  "reqWork":2.5,  "recipe":[ {"type":LOG,"amount":1,"data":0} ]},
+      {"type":WOOD,"amount":4,"data":1,  "reqWork":2.5,  "recipe":[ {"type":LOG,"amount":1,"data":1} ]},
+      {"type":WOOD,"amount":4,"data":2,  "reqWork":2.5,  "recipe":[ {"type":LOG,"amount":1,"data":2} ]},
+      {"type":WOOD,"amount":4,"data":3,  "reqWork":2.5,  "recipe":[ {"type":LOG,"amount":1,"data":3} ]}
     ],
     "performTime":"NONE",
     "functions":{},

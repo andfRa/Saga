@@ -318,19 +318,19 @@
 	{"type":DIAMOND_BOOTS,"price":1650}
 ],
 
-
 "tradingPostExports":[
-	{"type":"IRON_INGOT","amount":1,"price":55,           "reqWork":2},
+	{"type":"BREAD","amount":6,"price":5.5,               "reqWork":2},
+	{"type":"BAKED_POTATO","amount":1,"price":5.5,        "reqWork":2},
 	{"type":"GRILLED_PORK","amount":1,"price":6.6,        "reqWork":2},
 	{"type":"COOKED_BEEF","amount":1,"price":6.6,         "reqWork":2},
 	{"type":"COOKED_CHICKEN","amount":1,"price":5.6,      "reqWork":2},
-	{"type":"BAKED_POTATO","amount":1,"price":5.5,        "reqWork":2},
-	{"type":"WOOD","data":0,"amount":12,"price":1.44375,  "reqWork":2},
-	{"type":"WOOD","data":1,"amount":12,"price":1.44375,  "reqWork":2},
-	{"type":"WOOD","data":2,"amount":12,"price":1.44375,  "reqWork":2},
-	{"type":"WOOD","data":3,"amount":12,"price":1.44375,  "reqWork":2},
-	{"type":"BREAD","amount":6,"price":5.5,               "reqWork":2}
-
+	
+	{"type":"WOOD","data":0,"amount":8,"price":1.44375,   "reqWork":2},
+	{"type":"WOOD","data":1,"amount":8,"price":1.44375,   "reqWork":2},
+	{"type":"WOOD","data":2,"amount":8,"price":1.44375,   "reqWork":2},
+	{"type":"WOOD","data":3,"amount":8,"price":1.44375,   "reqWork":2},
+	
+	{"type":"IRON_INGOT","amount":1,"price":55,           "reqWork":2}
 ],
 
 "enableHooking":true
