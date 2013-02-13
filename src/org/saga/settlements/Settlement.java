@@ -98,6 +98,7 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 		level = 0;
 		claims = SettlementConfiguration.config().getInitialClaims().doubleValue();
 		buildPoints = SettlementConfiguration.config().getInitialBuildPoints().doubleValue();
+		coins = 0.0;
 		
 		playerRoles = new Hashtable<String, Proficiency>();
 		lastSeen = new Hashtable<String, Date>();
