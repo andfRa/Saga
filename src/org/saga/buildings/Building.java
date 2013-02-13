@@ -381,8 +381,15 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 			return;
 		}
 
-		// Permission
+		// Build permission
 		if(!getChunkBundle().hasPermission(sagaPlayer, SettlementPermission.BUILD_BUILDING)){
+			sagaPlayer.message(GeneralMessages.noPermission(this));
+			return;
+		}
+		
+		// Sign create permission:
+		SettlementPermission createPermission = getBuildingSignCreatePermission(event.getLine(0));
+		if(createPermission != null && !getChunkBundle().hasPermission(sagaPlayer, createPermission)){
 			sagaPlayer.message(GeneralMessages.noPermission(this));
 			return;
 		}
@@ -425,8 +432,15 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 		BuildingSign buildingSign = buildingSignAt(event.getBlock().getLocation());
 		if(buildingSign == null) return;
 
-		// Permission
+		// Build permission:
 		if(!getChunkBundle().hasPermission(sagaPlayer, SettlementPermission.BUILD_BUILDING)){
+			sagaPlayer.message(GeneralMessages.noPermission(this));
+			return;
+		}
+
+		// Sign remove permission:
+		SettlementPermission removePermission = getBuildingSignCreatePermission(sign.getLine(0));
+		if(removePermission != null && !getChunkBundle().hasPermission(sagaPlayer, removePermission)){
 			sagaPlayer.message(GeneralMessages.noPermission(this));
 			return;
 		}
@@ -458,7 +472,25 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	protected BuildingSign createBuildingSign(Sign sign, SignChangeEvent event) {
 		return null;
 	}
-
+	
+	/**
+	 * Gets the permission required for the creation of the given sign.
+	 * 
+	 * @return sign creation permission
+	 */
+	protected SettlementPermission getBuildingSignCreatePermission(String firstLine) {
+		return null;
+	}
+	
+	/**
+	 * Gets the permission required for the removal of the given sign.
+	 * 
+	 * @return sign removal permission
+	 */
+	protected SettlementPermission getBuildingSignRemovePermission(String firstLine) {
+		return null;
+	}
+	
 	
 	/**
 	 * Gets all building signs signs.

@@ -1218,8 +1218,10 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 		ADD_RESIDENT,
 		
 		// Trading post:
-		MANAGE_PRICES,
-		MANAGE_DEALS;
+		MANAGE_EXPORT,
+		MANAGE_IMPORT,
+		MANAGE_SELL,
+		MANAGE_BUY;
 		
 		
 	}

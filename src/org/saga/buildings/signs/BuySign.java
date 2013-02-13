@@ -199,25 +199,29 @@ public class BuySign extends BuildingSign {
 
 		// Price:
 		sPrice = getSecondParameter();
-		try {
-			price = Double.parseDouble(sPrice);
-		} catch (NumberFormatException e) {}
+		if(sPrice.length() > 0)
+			try {
+				price = Double.parseDouble(sPrice);
+			} catch (NumberFormatException e) {}
 		
 		// Stored:
 		sMaxStored = getThirdParameter();
-		try {
-			maxStored = Double.parseDouble(sMaxStored);
-		} catch (NumberFormatException e) {}
+		if(sMaxStored.length() > 0)
+			try {
+				maxStored = Double.parseDouble(sMaxStored);
+			} catch (NumberFormatException e) {}
+
+		// Check price:
+		if(price != null && price < 0) price = null;
 		
-		// Fix amount:
-		if(amount != null && amount < 0) amount = 0.0;
+		// Check amount:
+		if(amount != null && amount < 0) amount = null;
+		
+		// Check maxStored:
+		if(maxStored != null && maxStored <= 0.0) maxStored = null;
 		
 		// Fix data:
 		if(data == null) data = 0;
-		
-		// Fix max stored:
-		if(maxStored == null) maxStored = 64.0;
-		if(maxStored <= 0.0) maxStored = 1.0;
 		
 		this.item = new SagaItem(type, amount.doubleValue(), data);
 		

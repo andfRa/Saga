@@ -20,6 +20,7 @@ import org.saga.config.EconomyConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.messages.EconomyMessages;
 import org.saga.settlements.Settlement;
+import org.saga.settlements.Settlement.SettlementPermission;
 
 
 public class TradingPost extends ProductionBuilding implements DaytimeTicker{
@@ -57,6 +58,7 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 	 * Work done for exports.
 	 */
 	private double[] exportsWork;
+	
 	
 	
 	// Initialisation:
@@ -197,6 +199,40 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 		if(event.getLine(0).equalsIgnoreCase(ExportSign.SIGN_NAME)) return ExportSign.create(sign, event.getLine(1), event.getLine(2), event.getLine(3), this);
 		
 		return super.createBuildingSign(sign, event);
+		
+	}
+	
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.buildings.Building#getBuildingSignCreatePermission(java.lang.String)
+	 */
+	@Override
+	protected SettlementPermission getBuildingSignCreatePermission(String firstLine) {
+		
+		if(firstLine.equalsIgnoreCase(BuySign.SIGN_NAME)) return SettlementPermission.MANAGE_BUY;
+		if(firstLine.equalsIgnoreCase(SellSign.SIGN_NAME)) return SettlementPermission.MANAGE_SELL;
+		if(firstLine.equalsIgnoreCase(ImportSign.SIGN_NAME)) return SettlementPermission.MANAGE_IMPORT;
+		if(firstLine.equalsIgnoreCase(ExportSign.SIGN_NAME)) return SettlementPermission.MANAGE_EXPORT;
+		
+		return super.getBuildingSignCreatePermission(firstLine);
+		
+	}
+
+	/* 
+	 * (non-Javadoc)
+	 * 
+	 * @see org.saga.buildings.Building#getBuildingSignRemovePermission(java.lang.String)
+	 */
+	@Override
+	protected SettlementPermission getBuildingSignRemovePermission(String firstLine) {
+		
+		if(firstLine.equalsIgnoreCase(BuySign.SIGN_NAME)) return SettlementPermission.MANAGE_BUY;
+		if(firstLine.equalsIgnoreCase(SellSign.SIGN_NAME)) return SettlementPermission.MANAGE_SELL;
+		if(firstLine.equalsIgnoreCase(ImportSign.SIGN_NAME)) return SettlementPermission.MANAGE_IMPORT;
+		if(firstLine.equalsIgnoreCase(ExportSign.SIGN_NAME)) return SettlementPermission.MANAGE_EXPORT;
+		
+		return super.getBuildingSignCreatePermission(firstLine);
 		
 	}
 	

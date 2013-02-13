@@ -41,6 +41,12 @@ public class SellSign extends BuildingSign {
 	 */
 	public static String AMOUNT_DIV_DISPLAY = "*";
 	
+	/**
+	 * Default max coins.
+	 */
+	public static Double DEFAULT_MAX_COINS = 1000.0;
+
+	
 
 	/**
 	 * Amount of coins stored.
@@ -211,29 +217,32 @@ public class SellSign extends BuildingSign {
 
 		// Price:
 		sPrice = getSecondParameter();
-		try {
-			price = Double.parseDouble(sPrice);
-		} catch (NumberFormatException e) {}
+		if(sPrice.length() > 0)
+			try {
+				price = Double.parseDouble(sPrice);
+			} catch (NumberFormatException e) {}
 		
 		// Coins:
 		sMaxCoins = getThirdParameter();
-		try {
-			maxCoins = Double.parseDouble(sMaxCoins);
-		} catch (NumberFormatException e) {}
+		if(sMaxCoins.length() > 0)
+			try {
+				maxCoins = Double.parseDouble(sMaxCoins);
+			} catch (NumberFormatException e) {}
 		
-		// Fix amount:
-		if(amount != null && amount < 0) amount = 0.0;
+		// Check amount:
+		if(amount != null && amount < 0) amount = null;
+
+		// Check price:
+		if(price != null && price < 0) price = null;
+
+		// Check maxCoins:
+		if(maxCoins != null && maxCoins < 0) maxCoins = null;
+		
 		
 		// Fix data:
 		if(data == null) data = 0;
 		
-		// Fix max coins:
-		if(maxCoins == null) maxCoins = 64.0;
-		if(maxCoins <= 0.0) maxCoins = 1.0;
-		
-		// Round coins:
-		maxCoins = (double)maxCoins.intValue();
-		
+		// Create item:
 		this.item = new SagaItem(type, amount.doubleValue(), data);
 		
 	}
