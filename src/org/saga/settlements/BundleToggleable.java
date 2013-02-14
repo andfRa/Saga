@@ -1,15 +1,16 @@
 package org.saga.settlements;
 
 public enum BundleToggleable {
-
+	
 	
 	OPEN_STORAGE_AREAS,
 	UNLIMITED_BUILDINGS,
 	UNCLAIMABLE,
 	PVP_PROTECTION,
 	FACTION_STORAGE_ACCESS,
-	UNLIMITED_CLAIMS;
-
+	UNLIMITED_CLAIMS,
+	NO_DELETE;
+	
 	
 	// Matching:
 	/**

@@ -294,7 +294,7 @@ public class SettlementCommands {
 		SettlementEffectHandler.playAbandon(sagaPlayer, selChunk);
 		
 		// Delete if none left:
-		if(selBundle.checkDelete()){
+		if(selBundle.getSize() == 0){
 			selBundle.delete();
 			sagaPlayer.message(SettlementMessages.dissolved(selBundle));
 		}
@@ -398,8 +398,8 @@ public class SettlementCommands {
 	@Command(
 			aliases = {"sdissolve"},
 			usage = "[settlement_name]",
-			flags = "",
-			desc = "Dissolve the settlement.",
+			flags = "f",
+			desc = "Dissolve the settlement. The -f flag (admin mode only) is required to delete large and no-delete option settlements.",
 			min = 0,
 			max = 1
 	)
@@ -437,18 +437,21 @@ public class SettlementCommands {
 	   		return;
 	   	}
 
-	   	// Claimed too much:
-	   	if(selBundle instanceof Settlement){
-		   		
-	   		Settlement selSettlement = (Settlement) selBundle;
-		   		
-	   		if(selSettlement.checkToBigToDetele()){
-
-	   			sagaPlayer.message(SettlementMessages.informTooBigDissolve());
-				return;
-				
+	   	// Check no-delete settlements:
+	   	if(!selBundle.checkDetele()){
+	   		
+	   		// Check flag:
+	   		if(!args.hasFlag('f')){
+	   			sagaPlayer.message(SettlementMessages.cantDissolve());
+	   			return;
 	   		}
-	
+	   		
+	   		// Check admin mode:
+	   		if(!sagaPlayer.isAdminMode()){
+	   			sagaPlayer.message(GeneralMessages.noPermissionFlag('f'));
+	   			return;
+	   		}
+	   		
 	   	}
 	   	
 	   	// Delete:
@@ -833,27 +836,13 @@ public class SettlementCommands {
 		sagaPlayer.message(SettlementMessages.haveQuit(sagaPlayer, selBundle));
 		
 		// Delete:
-		if(selBundle instanceof Settlement){
-			
-			Settlement selSettlement = (Settlement) selBundle;
-			
-			if(selBundle.getMemberCount() == 0){
+		if(selBundle.getMemberCount() == 0 && selBundle.checkDetele()){
 
-				if(!selSettlement.checkToBigToDetele()){
-
-					// Delete:
-					selSettlement.delete();
-						
-					// Inform:
-					sagaPlayer.message(SettlementMessages.dissolved(selSettlement));
-					
-				}else{
-					
-					sagaPlayer.message(SettlementMessages.informTooBigDissolve());
-					
-				}
+			// Delete:
+			selBundle.delete();
 				
-			}
+			// Inform:
+			sagaPlayer.message(SettlementMessages.dissolved(selBundle));
 
 			// Statistics:
 			StatisticsManager.manager().setBuildings(selBundle);
@@ -969,29 +958,15 @@ public class SettlementCommands {
 		// Inform:
 		selBundle.information(SettlementMessages.kicked(selPlayer, selBundle));
 		selPlayer.message(SettlementMessages.wasKicked(selPlayer, selBundle));
-		
+
 		// Delete:
-		if(selBundle instanceof Settlement){
-			
-			Settlement selsettlement = (Settlement) selBundle;
-			
-			if(selBundle.getMemberCount() == 0){
+		if(selBundle.getMemberCount() == 0 && selBundle.checkDetele()){
 
-				if(!selsettlement.checkToBigToDetele()){
-
-					// Delete:
-					selsettlement.delete();
-						
-					// Inform:
-					sagaPlayer.message(SettlementMessages.dissolved(selsettlement));
-					
-				}else{
-					
-					sagaPlayer.message(SettlementMessages.informTooBigDissolve());
-					
-				}
+			// Delete:
+			selBundle.delete();
 				
-			}
+			// Inform:
+			sagaPlayer.message(SettlementMessages.dissolved(selBundle));
 
 			// Statistics:
 			StatisticsManager.manager().setBuildings(selBundle);

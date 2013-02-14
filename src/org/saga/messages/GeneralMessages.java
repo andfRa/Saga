@@ -158,6 +158,10 @@ public class GeneralMessages {
 		return Colour.negative + "You don't have permission use " + command + " command (" + bundle.getName() + " settlement).";
 	}
 	
+	public static String noPermissionFlag(Character flag){
+		return Colour.negative + "You don't have permission to use the -" + flag + " flag.";
+	}
+	
 	
 	
 	// Other:

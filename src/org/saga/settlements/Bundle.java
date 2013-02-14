@@ -507,21 +507,20 @@ public class Bundle extends SagaCustomSerialization{
 	}
 
 	/**
-	 * Checks if the bundle should be deleted.
+	 * Checks if the bundle can be deleted.
 	 * 
-	 * @return true if should be deleted
+	 * @return true if can be deleted
 	 */
-	public boolean checkDelete() {
-		return groupChunks.size() == 0;
-	}
-	
-	/**
-	 * Checks if the bundle should is to big to be deleted.
-	 * 
-	 * @return true if too big to be deleted
-	 */
-	public boolean checkToBigToDetele() {
-		return groupChunks.size() >= SettlementConfiguration.config().getNoDeleteSize();
+	public boolean checkDetele() {
+		
+		// Too big:
+		if(groupChunks.size() >= SettlementConfiguration.config().getNoDeleteSize()) return false;
+		
+		// No delete option:
+		if(toggleOptions.contains(BundleToggleable.NO_DELETE)) return false;
+		
+		return true;
+		
 	}
 
 	

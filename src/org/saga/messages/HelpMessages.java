@@ -27,6 +27,7 @@ import org.saga.messages.colours.Colour;
 import org.saga.messages.colours.ColourLoop;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.ProficiencyDefinition;
+import org.saga.settlements.BundleToggleable;
 import org.saga.utility.chat.ChatBook;
 import org.saga.utility.chat.ChatTable;
 import org.saga.utility.chat.RomanNumeral;
@@ -188,6 +189,12 @@ public class HelpMessages {
 			"Use " + GeneralMessages.command("/sunclaim") + " to abandon land. " +
 			"Use " + GeneralMessages.command("/map") + " to see what chunks have already been claimed." +
 			cost
+		);
+		
+		// Dissolve:
+		book.addLine("Use " + GeneralMessages.command("/sdissolve") + " to dissolve a settlement. " +
+			"Settlements are dissolved automatically when there are no members or claimed chunks left. " +
+			"Settlements with at least " + SettlementConfiguration.config().getNoDeleteSize() + " claimed chunks or with the " + BundleToggleable.NO_DELETE + " option can only be dissolved by using the " + GeneralMessages.command("/sdissolve") + " command with a special flag."
 		);
 		
 		// Claims:

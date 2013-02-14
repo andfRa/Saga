@@ -35,8 +35,8 @@ public class SettlementMessages {
 		return Colour.normal1 + "Dissolved " + settlement.getName() + " settlement.";
 	}
 
-	public static String informTooBigDissolve() {
-		return Colour.normal1 + "Settlement larger than " + SettlementConfiguration.config().getNoDeleteSize() + " can't be dissolved.";
+	public static String cantDissolve() {
+		return Colour.negative + "Can't dissolve the settlement.";
 	}
 	
 	
