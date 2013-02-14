@@ -115,7 +115,7 @@ public class EconomyCommands {
 	
 	// Settlements:
 	@Command(
-		aliases = {"saddcoins","sdeposit"},
+		aliases = {"sdeposit","saddcoins"},
 		usage = "[settlement_name] <amount>",
 		flags = "",
 		desc = "Deposit coins to the settlements bank.",
@@ -227,7 +227,7 @@ public class EconomyCommands {
 	}
 
 	@Command(
-		aliases = {"sremovecoins","swihdraw"},
+		aliases = {"swithdraw","sremovecoins"},
 		usage = "[settlement_name] <amount>",
 		flags = "",
 		desc = "Withdraw coins from the settlements bank.",

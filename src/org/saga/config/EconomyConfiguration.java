@@ -1,6 +1,7 @@
 package org.saga.config;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Random;
 
@@ -500,6 +501,29 @@ public class EconomyConfiguration {
 	}
 	
 	/**
+	 * Gets settlement wage percent.
+	 * 
+	 * @param hierarchy hierarchy level
+	 * @return wage percent
+	 */
+	public double getSettlementWagePercent(Integer hierarchy) {
+		
+		double sum = 0.0;
+		
+		Collection<Double> weights = settlementWageWeights.values();
+		for (Double weight : weights) {
+			sum+= weight;
+		}
+		if(sum == 0.0) return 0.0;
+		
+		Double hierWeight = settlementWageWeights.get(hierarchy);
+		if(hierWeight == null) hierWeight = 0.0;
+		
+		return hierWeight/sum;
+		
+	}
+	
+	/**
 	 * Gets the settlement wages time.
 	 * 
 	 * @return settlement wages time
@@ -563,6 +587,29 @@ public class EconomyConfiguration {
 		
 	}
 
+	/**
+	 * Gets faction wage percent.
+	 * 
+	 * @param hierarchy hierarchy level
+	 * @return wage percent
+	 */
+	public double getFactionWagePercent(Integer hierarchy) {
+		
+		double sum = 0.0;
+		
+		Collection<Double> weights = factionWageWeights.values();
+		for (Double weight : weights) {
+			sum+= weight;
+		}
+		if(sum == 0.0) return 0.0;
+		
+		Double hierWeight = factionWageWeights.get(hierarchy);
+		if(hierWeight == null) hierWeight = 0.0;
+		
+		return hierWeight/sum;
+		
+	}
+	
 	/**
 	 * Gets the faction member share percent.
 	 * 

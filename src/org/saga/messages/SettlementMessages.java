@@ -67,6 +67,10 @@ public class SettlementMessages {
 		return Colour.normal1 +  "Claimed chunk for " + bundle.getName() + " settlement.";
 	}
 	
+	public static String notClaimed() {
+		return Colour.negative +  "The chunk is no claimed.";
+	}
+	
 	public static String abandoned(SagaChunk sagaChunk) {
 		return Colour.normal1 +  "Abandoned chunk.";
 	}

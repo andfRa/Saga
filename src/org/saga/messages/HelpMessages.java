@@ -14,7 +14,10 @@ import org.saga.buildings.TrainingCamp;
 import org.saga.buildings.Warehouse;
 import org.saga.buildings.signs.AttributeSign;
 import org.saga.buildings.signs.BuySign;
+import org.saga.buildings.signs.ExportSign;
 import org.saga.buildings.signs.GuardianRuneSign;
+import org.saga.buildings.signs.ImportSign;
+import org.saga.buildings.signs.SellSign;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.BuildingConfiguration;
@@ -30,6 +33,7 @@ import org.saga.player.ProficiencyDefinition;
 import org.saga.settlements.BundleToggleable;
 import org.saga.utility.chat.ChatBook;
 import org.saga.utility.chat.ChatTable;
+import org.saga.utility.chat.ChatUtil;
 import org.saga.utility.chat.RomanNumeral;
 
 public class HelpMessages {
@@ -42,20 +46,94 @@ public class HelpMessages {
 		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
 		ChatBook book = new ChatBook("economy help", colours);
 		
-		// General:
-		book.addLine("Faction members receive wages each " + EconomyConfiguration.config().getFactionWagesTime() + ". " +
-			"Earned coins can be spent at a " + tradingPost() + ". " +
-			"The amount of goods available is limited and is restocked every day. " +
-			"Available coins can be seen under " + GeneralMessages.command("/stats") + "."
-		);
+		String tradingPost = tradingPost();
+		String warehouse = warehouse();
 
 		// Trading post:
-		book.addLine("Every settlement can set a " + tradingPost() + " by using " + GeneralMessages.command("/bset") + ". " +
-			"Buy signs can be created by writing " + GeneralMessages.command(BuySign.SIGN_NAME) + " on the first line and " + GeneralMessages.command("amount" + BuySign.AMOUNT_DIV_DISPLAY + "item_name") + " on the second line. " +
-			"Item ID can also be used instead of " + GeneralMessages.command("item_name") + "." 
+		book.addLine("Each settlement can set a " + tradingPost + " by using " + GeneralMessages.command("/bset") + ". " +
+			"A " + tradingPost + " can have four different signs. "
 		);
 		
-		return book.framedPage(0);
+		book.addLine(ExportSign.SIGN_NAME  + " and " + ImportSign.SIGN_NAME + " signs let players export/import certain items for predefined prices. ");
+		
+		book.addLine(SellSign.SIGN_NAME + " and " + BuySign.SIGN_NAME + " allow members to set their own prices. " +
+			"In order for the " + SellSign.SIGN_NAME + " and " + BuySign.SIGN_NAME + " signs to work, the signs must first collect items from a " + warehouse + " and " + EconomyMessages.coins() + " from the settlements bank."
+		);
+		
+		book.addLine("If players with certain roles are online, then the " + tradingPost + " automatically takes items from a " + warehouse + " and sells them. " +
+			"Earned " + EconomyMessages.coins() + " are distributed."
+		);
+		
+		book.nextPage();
+		
+		// Settlement wages:
+		book.addLine("Each time someone buys from a " + tradingPost + " or when a " + tradingPost + " automatically exports items, the settlement gains " + EconomyMessages.coins() + ".");
+		
+		book.addLine("");
+		
+		// Settlement distribution table:
+		ChatTable sDistTable = new ChatTable(colours);
+		
+		sDistTable.addLine("settlement bank", ChatUtil.displayPercent(EconomyConfiguration.config().getSettlementPercent()),0);
+		
+		double membPerc = EconomyConfiguration.config().getSettlementMemberPercent();
+		int min = SettlementConfiguration.config().getHierarchyMin();
+		int max = SettlementConfiguration.config().getHierarchyMax();
+		for (int i = max; i >= min; i--) {
+			String name = SettlementConfiguration.config().getHierarchyName(i);
+			sDistTable.addLine(name, ChatUtil.displayPercent(membPerc*EconomyConfiguration.config().getSettlementWagePercent(i)),0);
+		}
+		
+		sDistTable.addLine("faction", ChatUtil.displayPercent(EconomyConfiguration.config().getSettlementFactionPercent()),0);
+		
+		sDistTable.collapse();
+
+		book.addTable(sDistTable);
+		
+		book.addLine("");
+		
+		// Faction wages:
+		book.addLine("Faction receives " + EconomyMessages.coins() + " from owned settlements. " +
+			"Earned coins are distributed between faction band and online members:"
+		);
+		
+		book.addLine("");
+		
+		// Faction distribution table:
+		ChatTable fDistTable = new ChatTable(colours);
+		
+		fDistTable.addLine("faction bank", ChatUtil.displayPercent(EconomyConfiguration.config().getFactionPercent()),0);
+		
+		membPerc = EconomyConfiguration.config().getFactionMemberPercent();
+		min = FactionConfiguration.config().getHierarchyMin();
+		max = FactionConfiguration.config().getHierarchyMax();
+		for (int i = max; i >= min; i--) {
+			String name = FactionConfiguration.config().getHierarchyName(i);
+			fDistTable.addLine(name, ChatUtil.displayPercent(membPerc*EconomyConfiguration.config().getFactionWagePercent(i)),0);
+		}
+		
+		fDistTable.collapse();
+
+		book.addTable(fDistTable);
+		
+		book.nextPage();
+		
+		// Settlement buy:
+		int minClaims = SettlementConfiguration.config().getInitialClaims();
+		int maxClaims = SettlementConfiguration.config().getMaxClaims();
+		double claimMinCost = EconomyConfiguration.config().getClaimPointCost(minClaims);
+		double claimMaxCost = EconomyConfiguration.config().getClaimPointCost(maxClaims);
+		double bpointMinCost = EconomyConfiguration.config().getBuildPointCost(minClaims);
+		double bpointMaxCost = EconomyConfiguration.config().getBuildPointCost(maxClaims);
+		
+		book.addLine("Use " + GeneralMessages.command("/sdeposit") + " and " + GeneralMessages.command("/swithdraw") + " to add and remove coins from the settlements bank. " +
+			"Commands " + GeneralMessages.command("/sbuyclaims") + " and " + GeneralMessages.command("/sbuybuildpoints") + " allow to buy more claim and build points. " +
+			"The more claims the settlement has, the more buying new points will cost. " +
+			"Claim points cost " + EconomyMessages.coins(claimMinCost) + " - " + EconomyMessages.coins(claimMaxCost) + ". " +
+			"Build points cost " + EconomyMessages.coins(bpointMinCost) + " - " + EconomyMessages.coins(bpointMaxCost) + "." 
+		);
+		
+		return book.framedPage(page);
 		
 		
 	}

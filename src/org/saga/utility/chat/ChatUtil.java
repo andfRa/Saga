@@ -137,6 +137,10 @@ public class ChatUtil {
 		return shortString;
 		
 	}
+	
+	public static String displayPercent(double value) {
+		return (int)(Math.round(value * 100)) + "%";
+	}
 
 	public static String flatten(Collection<String> array) {
 
