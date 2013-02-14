@@ -595,17 +595,17 @@ public class EconomyCommands {
 		int increased = 0;
 		for (int i = 0; i < amount; i++) {
 			
-			// Check requirements:
-			if(!selSettlement.checkRequirements()){
-				
-				if(i == 0){
-					sagaPlayer.message(GeneralMessages.requirementsNotMet(selSettlement));
-					return;
-				} else{
-					break;
-				}
-				
-			}
+//			// Check requirements:
+//			if(!selSettlement.checkRequirements()){
+//				
+//				if(i == 0){
+//					sagaPlayer.message(GeneralMessages.requirementsNotMet(selSettlement));
+//					return;
+//				} else{
+//					break;
+//				}
+//				
+//			}
 			
 			// Check cost:
 			Double cost = EconomyConfiguration.config().getBuildPointCost(selSettlement.getTotalClaims());
