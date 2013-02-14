@@ -717,6 +717,15 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 	}
 	
 	/**
+	 * Modifies the amount of building points.
+	 * 
+	 * @param amount amount to modify by
+	 */
+	public void modBuildPoints(Double amount) {
+		buildPoints+= amount;
+	}
+	
+	/**
 	 * Gets the amount of building points available.
 	 * 
 	 * @return amount building points available
@@ -994,6 +1003,18 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 		
 		
 	}
+
+	
+	
+	// Requirements:
+	/**
+	 * Check if settlement level requirements are met.
+	 * 
+	 * @return true if the requirements are met
+	 */
+	public boolean checkRequirements() {
+		return checkActiveMembers() && checkBuildings();
+	}
 	
 	/**
 	 * Checks if the settlement has enough active members.
@@ -1002,6 +1023,15 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 	 */
 	public boolean checkActiveMembers() {
 		return countActiveMembers() >= SettlementConfiguration.config().getRequiredActiveMembers(getSize());
+	}
+
+	/**
+	 * Checks if the settlement has required buildings.
+	 * 
+	 * @return true if the settlement has required buildings
+	 */
+	public boolean checkBuildings() {
+		return SettlementConfiguration.config().checkBuildingRequirements(this);
 	}
 	
 	
@@ -1060,8 +1090,8 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 		// Produce:
 		handleProduction();
 		
-		// If can lavel:
-		if(checkActiveMembers() && SettlementConfiguration.config().checkBuildingRequirements(this)){
+		// Check requirements:
+		if(checkRequirements()){
 		
 			// Increase claims:
 			if(claims < SettlementConfiguration.config().getMaxClaims()){

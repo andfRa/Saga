@@ -163,8 +163,18 @@ public class GeneralMessages {
 	}
 	
 	
-	
 	// Other:
+	public static String requirementsNotMet(){
+		return Colour.negative + "Requirements not met.";
+	}
+	
+	public static String requirementsNotMet(Bundle bundle){
+		return Colour.negative + "Requirements not met (" + bundle.getName() + " settlement).";
+	}
+	
+	
+	
+	// Types:
 	public enum CustomColour{
 		
 		RESET_COLOR('x'),

@@ -62,9 +62,9 @@ public class EconomyMessages {
 	public static String settlementBoughtClaims(Integer amount, Double cost) {
 		
 		if(amount == 1){
-			return Colour.positive + " The settlement bought a claim for " + EconomyMessages.coins(cost) + ".";
+			return Colour.positive + "Bought a claim for " + EconomyMessages.coins(cost) + ".";
 		}else{
-			return Colour.positive + "The settlement bought "+ amount +" claims for " + EconomyMessages.coins(cost) + ".";
+			return Colour.positive + "Bought "+ amount +" claims for " + EconomyMessages.coins(cost) + ".";
 		}
 		
 	}
