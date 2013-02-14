@@ -839,6 +839,15 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		
 	}
 	
+	/**
+	 * Modifies the amount of coins.
+	 * 
+	 * @param amount amount to modify by
+	 */
+	public void modCoins(Double amount) {
+		coins+= amount;
+	}
+	
 	
 	
 	// Naming:
@@ -1635,6 +1644,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	public enum FactionPermission{
 
 		
+		ADD_COINS,
 		DISBAND,
 		DELETE,
 		INVITE,
@@ -1648,6 +1658,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		FORM_ALLIANCE,
 		DECLINE_ALLIANCE,
 		BREAK_ALLIANCE,
+		REMOVE_COINS,
 		RESIGN,
 		UNCLAIM;
 		

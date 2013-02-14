@@ -133,6 +133,9 @@ public class HelpMessages {
 			"Build points cost " + EconomyMessages.coins(bpointMinCost) + " - " + EconomyMessages.coins(bpointMaxCost) + "." 
 		);
 		
+		book.addLine("Use " + GeneralMessages.command("/fdeposit") + " and " + GeneralMessages.command("/fwithdraw") + " to add and remove coins from the factions bank. "
+		);
+		
 		return book.framedPage(page);
 		
 		

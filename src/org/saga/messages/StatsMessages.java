@@ -767,6 +767,9 @@ public class StatsMessages {
 		// Next claim:
 		table.addLine("next claim", (int)(progress*100) + "%", 2);
 
+		// Banked:
+		table.addLine("banked", EconomyMessages.coins(faction.getCoins()), 2);
+
 		table.collapse();
 		
 		return table;

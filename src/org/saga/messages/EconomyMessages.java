@@ -97,6 +97,29 @@ public class EconomyMessages {
 	
 	
 	
+	// Faction:
+	public static String factionInsufficientCoins() {
+		return Colour.negative + "The faction doesn't have enough " + EconomyMessages.coins() + ".";
+	}
+	
+	public static String factionAddedCoins(Double amount) {
+		return Colour.positive + "Deposited " + EconomyMessages.coins(amount) + " to the factions bank.";
+	}
+	
+	public static String factionRemovedCoins(Double amount) {
+		return Colour.positive + "Withdrew " + EconomyMessages.coins(amount) + " from the factions bank.";
+	}
+	
+	public static String factionNothingToWithdraw(){
+		return Colour.negative + "Nothing to withdraw.";
+	}
+	
+	public static String factionNothingToDeposit(){
+		return Colour.negative + "Nothing to deposit.";
+	}
+	
+	
+	
 	// Pay:
 	public static String paid(SagaPlayer paidPlayer, Double amount) {
 		return Colour.positive + "Paid " + coins(amount) + "s to " + paidPlayer.getName() + ".";

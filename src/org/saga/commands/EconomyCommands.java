@@ -4,7 +4,11 @@ import org.bukkit.Location;
 import org.saga.Saga;
 import org.saga.config.EconomyConfiguration;
 import org.saga.dependencies.EconomyDependency;
+import org.saga.factions.Faction;
+import org.saga.factions.Faction.FactionPermission;
+import org.saga.factions.FactionManager;
 import org.saga.messages.EconomyMessages;
+import org.saga.messages.FactionMessages;
 import org.saga.messages.GeneralMessages;
 import org.saga.messages.HelpMessages;
 import org.saga.messages.SettlementMessages;
@@ -123,7 +127,7 @@ public class EconomyCommands {
 		max = 2
 	)
 	@CommandPermissions({"saga.user.economy.settlements.addcoins"})
-	public static void addCoins(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	public static void settlementAddCoins(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
 		// Disabled:
@@ -235,7 +239,7 @@ public class EconomyCommands {
 		max = 2
 	)
 	@CommandPermissions({"saga.user.economy.settlements.removecoins"})
-	public static void removeCoins(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	public static void settlementRemoveCoins(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
 		// Disabled:
@@ -346,7 +350,7 @@ public class EconomyCommands {
 		max = 2
 	)
 	@CommandPermissions({"saga.user.economy.settlements.buyclaims"})
-	public static void buyClaims(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	public static void settlementBuyClaims(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
 		// Disabled:
@@ -492,7 +496,7 @@ public class EconomyCommands {
 		max = 2
 	)
 	@CommandPermissions({"saga.user.economy.settlements.buybuildpoints"})
-	public static void buyBuildPoints(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	public static void settlementBuyBuildPoints(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 
 		// Disabled:
@@ -629,6 +633,216 @@ public class EconomyCommands {
 		
 	}
 	
+
+	// Factions:
+	@Command(
+		aliases = {"fdeposit","faddcoins"},
+		usage = "[faction_name] <amount>",
+		flags = "",
+		desc = "Deposit coins to the factions bank.",
+		min = 1,
+		max = 2
+	)
+	@CommandPermissions({"saga.user.economy.factions.addcoins"})
+	public static void factionAddCoins(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+
+		// Disabled:
+		if(!EconomyConfiguration.config().isEnabled()){
+			sagaPlayer.message(EconomyMessages.economyDisabled());
+			return;
+		}
+		
+		Faction selFaction = null;
+		Double amount = null;
+		
+		String strFaction = null;
+		String strAmount = null;
+		
+		switch (args.argsLength()) {
+			
+			case 2:
+
+				// Faction:
+				strFaction = GeneralMessages.nameFromArg(args.getString(0));
+				selFaction = FactionManager.manager().matchFaction(strFaction);
+				if(selFaction == null){
+					sagaPlayer.message(GeneralMessages.invalidFaction(strFaction));
+					return;
+				}
+				
+				// Amount:
+				strAmount = args.getString(1);
+				try {
+					amount = Double.parseDouble(strAmount);
+				}
+				catch (NumberFormatException e) {
+					sagaPlayer.message(GeneralMessages.notNumber(strAmount));
+					return;
+				}
+				
+				break;
+
+			default:
+				
+				// Faction:
+				selFaction = sagaPlayer.getFaction();
+				if(selFaction == null){
+					sagaPlayer.message(FactionMessages.notMember());
+					return;
+				}
+
+				// Amount:
+				strAmount = args.getString(0);
+				try {
+					amount = Double.parseDouble(strAmount);
+				}
+				catch (NumberFormatException e) {
+					sagaPlayer.message(GeneralMessages.notNumber(strAmount));
+					return;
+				}
+				
+				break;
+				
+		}
+
+		// Fix amount:
+		if(amount <= 0.0){
+			sagaPlayer.message(GeneralMessages.mustBePositive(amount));
+			return;
+		}
+
+		// Permission:
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.ADD_COINS)){
+			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
+			return;
+		}
+
+		// Request coins:
+		amount = sagaPlayer.requestCoins(amount);
+		
+		if(amount != 0.0){
+			
+			// Add coins:
+			selFaction.modCoins(amount);
+			
+			// Inform:
+			sagaPlayer.message(EconomyMessages.factionAddedCoins(amount));
+		
+		}else{
+			
+			// Inform:
+			sagaPlayer.message(EconomyMessages.factionNothingToDeposit());
+			
+		}
+		
+		
+		
+	}
+
+	@Command(
+		aliases = {"fwithdraw","fremovecoins"},
+		usage = "[faction_name] <amount>",
+		flags = "",
+		desc = "Withdraw coins from the factions bank.",
+		min = 1,
+		max = 2
+	)
+	@CommandPermissions({"saga.user.economy.factions.removecoins"})
+	public static void factionRemoveCoins(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+
+		// Disabled:
+		if(!EconomyConfiguration.config().isEnabled()){
+			sagaPlayer.message(EconomyMessages.economyDisabled());
+			return;
+		}
+		
+		Faction selFaction = null;
+		Double amount = null;
+		
+		String strFaction = null;
+		String strAmount = null;
+		
+		switch (args.argsLength()) {
+			
+			case 2:
+
+				// Faction:
+				strFaction = GeneralMessages.nameFromArg(args.getString(0));
+				selFaction = FactionManager.manager().matchFaction(strFaction);
+				if(selFaction == null){
+					sagaPlayer.message(GeneralMessages.invalidFaction(strFaction));
+					return;
+				}
+				
+				// Amount:
+				strAmount = args.getString(1);
+				try {
+					amount = Double.parseDouble(strAmount);
+				}
+				catch (NumberFormatException e) {
+					sagaPlayer.message(GeneralMessages.notNumber(strAmount));
+					return;
+				}
+				
+				break;
+
+			default:
+				
+				// Faction:
+				selFaction = sagaPlayer.getFaction();
+				if(selFaction == null){
+					sagaPlayer.message(FactionMessages.notMember());
+					return;
+				}
+
+				// Amount:
+				strAmount = args.getString(0);
+				try {
+					amount = Double.parseDouble(strAmount);
+				}
+				catch (NumberFormatException e) {
+					sagaPlayer.message(GeneralMessages.notNumber(strAmount));
+					return;
+				}
+				
+				break;
+				
+		}
+
+		// Fix amount:
+		if(amount <= 0.0){
+			sagaPlayer.message(GeneralMessages.mustBePositive(amount));
+			return;
+		}
+
+		// Permission:
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.REMOVE_COINS)){
+			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
+			return;
+		}
+		
+		// Request coins:
+		amount = selFaction.requestCoins(amount);
+		
+		if(amount != 0.0){
+			
+			// Add coins:
+			sagaPlayer.modCoins(amount);
+			
+			// Inform:
+			sagaPlayer.message(EconomyMessages.factionRemovedCoins(amount));
+		
+		}else{
+			
+			// Inform:
+			sagaPlayer.message(EconomyMessages.factionNothingToWithdraw());
+			
+		}
+		
+		
+	}
 	
 	
 	// Other:
