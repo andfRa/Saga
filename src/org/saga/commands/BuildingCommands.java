@@ -61,7 +61,7 @@ public class BuildingCommands {
 		// Selected chunk:
 		SagaChunk selChunk = sagaPlayer.getSagaChunk();
 		if(selChunk == null){
-			sagaPlayer.message(BuildingMessages.buildingsOnClaimed(selBundle));
+			sagaPlayer.message(SettlementMessages.chunkNotClaimed());
 			return;
 		}
 			
@@ -159,7 +159,7 @@ public class BuildingCommands {
 		// Selected chunk:
 		SagaChunk selChunk = sagaPlayer.getSagaChunk();
 	   	if(selChunk == null){
-			sagaPlayer.message(BuildingMessages.buildingsOnClaimed(selBundle));
+			sagaPlayer.message(SettlementMessages.chunkNotClaimed());
 			return;
 		}
 		
@@ -206,23 +206,12 @@ public class BuildingCommands {
 	)
 	@CommandPermissions({"saga.user.building.stats"})
 	public static void stats(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
 		
-		SagaChunk sagaChunk = sagaPlayer.getSagaChunk();
-		
-		// Bundle:
-		Bundle selBundle = null;
-		if(sagaChunk != null) selBundle = sagaChunk.getBundle();
-		
-		if(selBundle == null){
-			sagaPlayer.message(SettlementMessages.notMember());
-			return;
-		}
 		
 		// Selected chunk:
 		SagaChunk selChunk = sagaPlayer.getSagaChunk();
 	   	if(selChunk == null){
-			sagaPlayer.message(BuildingMessages.buildingsOnClaimed(selBundle));
+			sagaPlayer.message(SettlementMessages.chunkNotClaimed());
 			return;
 		}
 		

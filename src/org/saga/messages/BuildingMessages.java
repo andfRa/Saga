@@ -36,10 +36,6 @@ public class BuildingMessages {
 	}
 
 	
-	public static String buildingsOnClaimed(Bundle bundle) {
-		return Colour.negative + "Buildings can only be on set on claimed land.";
-	}
-	
 	public static String oneBuilding(Bundle bundle) {
 		return Colour.negative + "A chunk of land can only have one building.";
 	}
