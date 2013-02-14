@@ -428,11 +428,11 @@ public class EconomyCommands {
 		}
 		Settlement selSettlement = (Settlement) selBundle;
 
-		// Requirements:
-		if(!selSettlement.checkRequirements()){
-			sagaPlayer.message(GeneralMessages.requirementsNotMet(selSettlement));
-			return;
-		}
+//		// Requirements:
+//		if(!selSettlement.checkRequirements()){
+//			sagaPlayer.message(GeneralMessages.requirementsNotMet(selSettlement));
+//			return;
+//		}
 		
 		// Fix amount:
 		if(amount <= 0.0){
@@ -569,11 +569,11 @@ public class EconomyCommands {
 		}
 		Settlement selSettlement = (Settlement) selBundle;
 		
-		// Requirements:
-		if(!selSettlement.checkRequirements()){
-			sagaPlayer.message(GeneralMessages.requirementsNotMet(selSettlement));
-			return;
-		}
+//		// Requirements:
+//		if(!selSettlement.checkRequirements()){
+//			sagaPlayer.message(GeneralMessages.requirementsNotMet(selSettlement));
+//			return;
+//		}
 		
 		// Fix amount:
 		if(amount <= 0.0){
