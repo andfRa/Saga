@@ -117,11 +117,10 @@
     "storages":1,
     "storageSize":1,
     "production":[
-      {"type":COAL,"amount":2,"data":0,        "reqWork":4,  "recipe":[ {"type":COAL_ORE,"amount":1} ]},
-      {"type":IRON_INGOT,"amount":1,"data":0,  "reqWork":4,  "recipe":[ {"type":IRON_ORE,"amount":1} ]},
-      {"type":GOLD_INGOT,"amount":1,"data":0,  "reqWork":4,  "recipe":[ {"type":GOLD_ORE,"amount":1} ]},
-      {"type":INK_SACK,"amount":8,"data":4,    "reqWork":4,  "recipe":[ {"type":LAPIS_ORE,"amount":1} ]},
-      {"type":DIAMOND,"amount":1,"data":0,     "reqWork":4,  "recipe":[ {"type":DIAMOND_ORE,"amount":1} ]}
+      {"type":COAL,"amount":2,"data":0,        "reqWork":5,  "recipe":[ {"type":COAL_ORE,"amount":1} ]},
+      {"type":IRON_INGOT,"amount":1,"data":0,  "reqWork":5,  "recipe":[ {"type":IRON_ORE,"amount":1} ]},
+      {"type":GOLD_INGOT,"amount":1,"data":0,  "reqWork":5,  "recipe":[ {"type":GOLD_ORE,"amount":1} ]},
+      {"type":INK_SACK,"amount":8,"data":4,    "reqWork":5,  "recipe":[ {"type":LAPIS_ORE,"amount":1} ]}
     ],
     "performTime":"NONE",
     "functions":{},
