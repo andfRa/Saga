@@ -196,7 +196,7 @@ public class ImportSign extends BuildingSign {
 	public SignStatus getStatus() {
 		
 
-		if(item.getType() == null || item.getType() == Material.AIR || item.getData() == null || item.getAmount() == null) return SignStatus.INVALIDATED;
+		if(item == null || item.getType() == null || item.getType() == Material.AIR || item.getData() == null || item.getAmount() == null) return SignStatus.INVALIDATED;
 		
 		if(EconomyConfiguration.config().getImportItem(item) == null) return SignStatus.INVALIDATED;
 		
@@ -284,34 +284,40 @@ public class ImportSign extends BuildingSign {
 
 		
 		SagaPricedItem importItem = EconomyConfiguration.config().getImportItem(item);
+		if(importItem == null) return;
+		
 		Double price = importItem.getPrice();
-		Integer usedAmount = item.getAmount().intValue();
+		Double coins = EconomyDependency.getCoins(sagaPlayer);
 		
-		while(EconomyDependency.getCoins(sagaPlayer) < price * usedAmount && usedAmount > 0){
-			usedAmount--; 
-		}
+		if(price <= 0.0) return;
 		
-		if(usedAmount < 1){
+		// Create item:
+		ItemStack giveItem = item.createItem();
+		
+		// Trim based on coins:
+		if(price * giveItem.getAmount() > coins) giveItem.setAmount((int)(coins/price));
+		if(giveItem.getAmount() < 1){
 			sagaPlayer.message(EconomyMessages.insufCoins());
 			return;
 		}
 		
-		ItemStack createdItem = new ItemStack(this.item.getType(), usedAmount);
+		// Take coins:
+		Double cost = price*giveItem.getAmount();
+		EconomyDependency.removeCoins(sagaPlayer, cost);
 		
-		// Transaction:
-		EconomyDependency.removeCoins(sagaPlayer, price * usedAmount);
-		sagaPlayer.addItem(createdItem);
+		// Add item:
+		sagaPlayer.addItem(giveItem);
 		
 		// Inform:
-		sagaPlayer.message(EconomyMessages.bought(item.getType(), usedAmount, price));
+		sagaPlayer.message(EconomyMessages.bought(item.getType(), giveItem.getAmount(), price));
 		
 		// Notify transaction:
 		if(getBuilding() instanceof TradingPost){
-			((TradingPost) getBuilding()).notifyImport(price * usedAmount);
+			((TradingPost) getBuilding()).notifyImport(price * giveItem.getAmount());
 		}
 		
 		// Statistics:
-		StatisticsManager.manager().addImport(sagaPlayer, item.getType(), usedAmount, price * usedAmount);
+		StatisticsManager.manager().addImport(sagaPlayer, item.getType(), giveItem.getAmount(), cost);
 		
 		
 	}

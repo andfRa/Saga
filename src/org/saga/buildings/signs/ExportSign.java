@@ -192,7 +192,7 @@ public class ExportSign extends BuildingSign {
 	@Override
 	public SignStatus getStatus() {
 
-		if(item.getType() == null || item.getType() == Material.AIR || item.getData() == null || item.getAmount() == null) return SignStatus.INVALIDATED;
+		if(item == null || item.getType() == null || item.getType() == Material.AIR || item.getData() == null || item.getAmount() == null) return SignStatus.INVALIDATED;
 		
 		if(EconomyConfiguration.config().getImportItem(item) == null) return SignStatus.INVALIDATED;
 		
@@ -285,8 +285,14 @@ public class ExportSign extends BuildingSign {
 		
 		SagaItem request = new SagaItem(item);
 		
-		// Transaction:
+		// Take item:
 		SagaItem takenItem = sagaPlayer.takeItem(request);
+		if(takenItem.getAmount() == 0){
+			sagaPlayer.message(EconomyMessages.insufItems(item.getType()));
+			return;
+		}
+		
+		// Add coins:
 		Double cost = price*takenItem.getAmount();
 		EconomyDependency.addCoins(sagaPlayer, cost);
 		
