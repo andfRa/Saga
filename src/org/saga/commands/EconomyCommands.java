@@ -428,14 +428,8 @@ public class EconomyCommands {
 		}
 		Settlement selSettlement = (Settlement) selBundle;
 
-//		// Requirements:
-//		if(!selSettlement.checkRequirements()){
-//			sagaPlayer.message(GeneralMessages.requirementsNotMet(selSettlement));
-//			return;
-//		}
-		
 		// Fix amount:
-		if(amount <= 0.0){
+		if(amount <= 0){
 			sagaPlayer.message(GeneralMessages.mustBePositive(amount));
 			return;
 		}
@@ -445,35 +439,46 @@ public class EconomyCommands {
 			sagaPlayer.message(GeneralMessages.noPermission(selBundle));
 			return;
 		}
-
-		// Trim amount:
-		Double coins = selSettlement.getCoins();
-		Integer claims = selSettlement.getTotalClaims();
-		Double cost = 0.0;
-		for (int claimsMod = 0; claimsMod <= amount; claimsMod++) {
+		
+		// Buy claims:
+		double spent = 0.0;
+		int increased = 0;
+		for (int i = 0; i < amount; i++) {
 			
-			Double costMod = EconomyConfiguration.config().getClaimPointCost(claims + claimsMod + 1);
-			if(cost + costMod > coins){
-				amount = claimsMod;
-				break;
+			// Check requirements:
+			if(!selSettlement.checkRequirements()){
+				
+				if(i == 0){
+					sagaPlayer.message(GeneralMessages.requirementsNotMet(selSettlement));
+					return;
+				} else{
+					break;
+				}
+				
 			}
-			cost+= costMod;
+			
+			// Check cost:
+			Double cost = EconomyConfiguration.config().getClaimPointCost(selSettlement.getTotalClaims());
+			Double coins = selSettlement.getCoins();
+			if(cost > coins) break;
+			
+			// Take coins:
+			selSettlement.modCoins(-cost);
+			spent+= cost;
+			
+			// Add claims:
+			selSettlement.modClaims(1.0);
+			increased++;
 			
 		}
 		
-		if(amount == 0){
+		if(increased == 0){
 			sagaPlayer.message(EconomyMessages.settlementInsufficientCoins());
 			return;
 		}
 		
-		// Take coins:
-		selSettlement.modCoins(-cost);
-		
-		// Add claims:
-		selSettlement.modClaims(amount.doubleValue());
-		
 		// Inform:
-		sagaPlayer.message(EconomyMessages.settlementBoughtClaims(amount, cost));
+		sagaPlayer.message(EconomyMessages.settlementBoughtClaims(increased, spent));
 		
 		
 	}
@@ -488,7 +493,7 @@ public class EconomyCommands {
 	)
 	@CommandPermissions({"saga.user.economy.settlements.buybuildpoints"})
 	public static void buyBuildPoints(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
+
 
 		// Disabled:
 		if(!EconomyConfiguration.config().isEnabled()){
@@ -568,53 +573,58 @@ public class EconomyCommands {
 			return;
 		}
 		Settlement selSettlement = (Settlement) selBundle;
-		
-//		// Requirements:
-//		if(!selSettlement.checkRequirements()){
-//			sagaPlayer.message(GeneralMessages.requirementsNotMet(selSettlement));
-//			return;
-//		}
-		
+
 		// Fix amount:
-		if(amount <= 0.0){
+		if(amount <= 0){
 			sagaPlayer.message(GeneralMessages.mustBePositive(amount));
 			return;
 		}
 
 		// Permission:
-		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.BUY_BUILD_POINTS)){
+		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.BUY_CLAIMS)){
 			sagaPlayer.message(GeneralMessages.noPermission(selBundle));
 			return;
 		}
-
-		// Trim amount:
-		Double coins = selSettlement.getCoins();
-		Integer claims = selSettlement.getTotalClaims();
-		Double cost = 0.0;
-		for (int claimsMod = 0; claimsMod <= amount; claimsMod++) {
+		
+		// Buy build points:
+		double spent = 0.0;
+		int increased = 0;
+		for (int i = 0; i < amount; i++) {
 			
-			Double costMod = EconomyConfiguration.config().getBuildPointCost(claims + claimsMod + 1);
-			if(cost + costMod > coins){
-				amount = claimsMod;
-				break;
+			// Check requirements:
+			if(!selSettlement.checkRequirements()){
+				
+				if(i == 0){
+					sagaPlayer.message(GeneralMessages.requirementsNotMet(selSettlement));
+					return;
+				} else{
+					break;
+				}
+				
 			}
-			cost+= costMod;
+			
+			// Check cost:
+			Double cost = EconomyConfiguration.config().getBuildPointCost(selSettlement.getTotalClaims());
+			Double coins = selSettlement.getCoins();
+			if(cost > coins) break;
+			
+			// Take coins:
+			selSettlement.modCoins(-cost);
+			spent+= cost;
+			
+			// Add claims:
+			selSettlement.modBuildPoints(1.0);
+			increased++;
 			
 		}
 		
-		if(amount == 0){
+		if(increased == 0){
 			sagaPlayer.message(EconomyMessages.settlementInsufficientCoins());
 			return;
 		}
 		
-		// Take coins:
-		selSettlement.modCoins(-cost);
-		
-		// Add claims:
-		selSettlement.modBuildPoints(amount.doubleValue());
-		
 		// Inform:
-		sagaPlayer.message(EconomyMessages.settlementBoughtBuildPoints(amount, cost));
+		sagaPlayer.message(EconomyMessages.settlementBoughtBuildPoints(increased, spent));
 		
 		
 	}
