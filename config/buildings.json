@@ -31,11 +31,11 @@
     "storages":1,
     "storageSize":1,
     "production":[
-      {"type":WHEAT,"amount":18,"data":0,       "reqWork":10,  "recipe":[]},
-      {"type":POTATO,"amount":1,"data":0,       "reqWork":10,  "recipe":[]},
-      {"type":PORK,"amount":1,"data":0,         "reqWork":30,  "recipe":[]},
-      {"type":RAW_BEEF,"amount":1,"data":0,     "reqWork":30,  "recipe":[]},
-      {"type":RAW_CHICKEN,"amount":1,"data":0,  "reqWork":20,  "recipe":[]}
+      {"type":WHEAT,"amount":18,"data":0,       "reqWork":4,  "recipe":[]},
+      {"type":POTATO,"amount":1,"data":0,       "reqWork":4,  "recipe":[]},
+      {"type":PORK,"amount":1,"data":0,         "reqWork":12,  "recipe":[]},
+      {"type":RAW_BEEF,"amount":1,"data":0,     "reqWork":12,  "recipe":[]},
+      {"type":RAW_CHICKEN,"amount":1,"data":0,  "reqWork":8,  "recipe":[]}
     ],
     "performTime":"NONE",
     "functions":{},
@@ -53,10 +53,10 @@
     "storages":1,
     "storageSize":24,
     "production":[
-      {"type":COAL_ORE,"amount":1,"data":0,     "reqWork":10,  "recipe":[]},
-      {"type":IRON_ORE,"amount":1,"data":0,     "reqWork":10,  "recipe":[]},
-      {"type":GOLD_ORE,"amount":1,"data":0,     "reqWork":30,  "recipe":[]},
-      {"type":LAPIS_ORE,"amount":1,"data":0,    "reqWork":50,  "recipe":[]}
+      {"type":COAL_ORE,"amount":1,"data":0,     "reqWork":5,  "recipe":[]},
+      {"type":IRON_ORE,"amount":1,"data":0,     "reqWork":5,  "recipe":[]},
+      {"type":GOLD_ORE,"amount":1,"data":0,     "reqWork":15,  "recipe":[]},
+      {"type":LAPIS_ORE,"amount":1,"data":0,    "reqWork":25,  "recipe":[]}
     ],
     "performTime":"NONE",
     "functions":{},

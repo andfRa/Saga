@@ -127,11 +127,11 @@ public class ProductionBuilding extends Building{
 		Settlement settlement = getSettlement();
 		if(settlement == null) return;
 		
-		int workAvail = 0;
+		double workAvail = 0;
 		
 		// Find remaining work:
-		double[] workRemain = new double[resources.length];
 		double workTotal = 0;
+		double[] workRemain = new double[resources.length];
 		for (int i = 0; i < workRemain.length; i++) {
 			workRemain[i] = resources[i].getRemainingWork();
 			workTotal+= workRemain[i];
@@ -146,11 +146,28 @@ public class ProductionBuilding extends Building{
 			
 		}
 		
-		if(workTotal == 0) return;
+		if(workTotal == 0.0) return;
 		
-		// Distribute work:
-		for (int i = 0; i < workRemain.length; i++) {
-			resources[i].work(workAvail * workRemain[i]/workTotal);
+		// Distribute work evenly:
+		double shareMax = workAvail / resources.length;
+		for (int i = 0; i < resources.length; i++) {
+			
+			double share = shareMax;
+			if(share > workRemain[i]) share = workRemain[i];
+			workRemain[i]-= share;
+			workAvail-= share;
+			
+			resources[i].work(share);
+			
+		}
+		
+		// Distribute remaining:
+		if(workAvail > 0){
+			
+			for (int i = 0; i < resources.length; i++) {
+				resources[i].work(workAvail * workRemain[i]/workTotal);
+			}
+			
 		}
 		
 		

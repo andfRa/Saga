@@ -10,6 +10,11 @@ public class SagaResource extends SagaRecipe {
 
 	
 	/**
+	 * Decimals for work field.
+	 */
+	private static Integer WORK_DECIMALS = 2;
+	
+	/**
 	 * Resource crafting collected amount.
 	 */
 	private double[] collected;
@@ -52,6 +57,7 @@ public class SagaResource extends SagaRecipe {
 			SagaLogger.nullField(this, "progress");
 			work = 0.0;
 		}
+		
 		
 	}
 	
@@ -216,7 +222,7 @@ public class SagaResource extends SagaRecipe {
 	 * @return work points
 	 */
 	public Double getWork() {
-		return work;
+		return roundToDecimalsCeil(work, WORK_DECIMALS);
 	}
 	
 	/**
@@ -239,7 +245,7 @@ public class SagaResource extends SagaRecipe {
 	public SagaItem produceItem() {
 		
 		// Check work:
-		if(work < getRequiredWork()) return null;
+		if(getWork() < getRequiredWork()) return null;
 		
 		// Check amount:
 		double percent = findProducePercentage();
@@ -269,7 +275,7 @@ public class SagaResource extends SagaRecipe {
 	 */
 	public double findProducePercentage() {
 
-		// Items without a recipe can alwasy be produced:
+		// Items without a recipe can always be produced:
 		if(collected.length == 0) return 1.0;
 		
 		// Find highest amount possible:
@@ -279,7 +285,7 @@ public class SagaResource extends SagaRecipe {
 			if(collected[i]/recipe[i].getAmount() < percent) percent = collected[i]/recipe[i].getAmount();
 		}
 		
-		return (int)(percent);
+		return percent;
 		
 	}
 	
@@ -308,5 +314,20 @@ public class SagaResource extends SagaRecipe {
 		
 	}
 	
+	/**
+	 * Rounds to decimals. 
+	 * 
+	 * @param val double value
+	 * @param dec decimals
+	 * @return rounded double
+	 */
+	public static double roundToDecimalsCeil(double val, int dec) {
+		
+		double pow = Math.pow(10,dec);
+		int temp = (int)Math.ceil(val*pow);
+		return (((double)temp)/pow);
+		
+	}
+
 	
 }
