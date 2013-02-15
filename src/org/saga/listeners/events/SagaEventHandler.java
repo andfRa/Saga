@@ -1,5 +1,6 @@
 package org.saga.listeners.events;
 
+import org.bukkit.block.Block;
 import org.saga.config.FactionConfiguration;
 import org.saga.dependencies.PermissionsDependency;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
@@ -12,30 +13,31 @@ import org.saga.settlements.SagaChunk;
 public class SagaEventHandler {
 
 	
-	public static void onBuild(SagaBuildEvent event) {
+	public static void handleBuild(SagaBuildEvent event) {
 
 		
     	SagaChunk sagaChunk = event.getSagaChunk();
     	SagaPlayer sagaPlayer = event.getSagaPlayer();
     	
     	// Forward to Saga chunk:
-		if(sagaChunk != null){
-			
-			sagaChunk.onBuild(event);
-			
-		}
+		if(sagaChunk != null) sagaChunk.onBuild(event);
     	
     	// Wilderness:
     	else if(!PermissionsDependency.hasPermission(sagaPlayer, PermissionsDependency.WILDERNESS_BUILD_PERMISSION)){
     		
     		event.addBuildOverride(BuildOverride.WILDERNESS_DENY);
     		
+    		Block block = event.getBlock();
+    		if(PermissionsDependency.hasPermission(sagaPlayer, PermissionsDependency.WILDERNESS_BUILD_PERMISSION + "." + block.getTypeId())) event.addBuildOverride(BuildOverride.WILDERNESS_SPECIFIC_BLOCK_ALLOW);
+    		
     	}
 		
+		// Conclude and inform:
 		if(!event.getbuildOverride().isAllow()){
 			
 			event.cancel();
 			sagaPlayer.message(SettlementMessages.buildOverride(event.getbuildOverride()));
+			
 			return;
 			
 		}
@@ -43,7 +45,7 @@ public class SagaEventHandler {
     	
 	}
 	
-	public static void onEntityDamage(SagaEntityDamageEvent event) {
+	public static void handleEntityDamage(SagaEntityDamageEvent event) {
 
 
 		// Forward to Saga chunks:

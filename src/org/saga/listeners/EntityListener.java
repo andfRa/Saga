@@ -60,7 +60,7 @@ public class EntityListener implements Listener{
 
 		// Saga event:
 		SagaEntityDamageEvent damageEvent = new SagaEntityDamageEvent(event, defender);
-		SagaEventHandler.onEntityDamage(damageEvent);
+		SagaEventHandler.handleEntityDamage(damageEvent);
 		if(damageEvent.isCancelled()) return;
 		
 		// Forward to managers:

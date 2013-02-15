@@ -6,14 +6,10 @@
 package org.saga.listeners;
 
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
@@ -26,7 +22,6 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
-import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.config.GeneralConfiguration;
@@ -217,11 +212,11 @@ public class PlayerListener implements Listener {
 		SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
 		
 		// Build event:
-		if(isBuildEvent(event)){
+		if(SagaBuildEvent.isBuildEvent(event)){
 
-			SagaBuildEvent eventB = new SagaBuildEvent(event, sagaPlayer, sagaChunk);
-			SagaEventHandler.onBuild(eventB);
-			if(eventB.isCancelled()) return;
+			SagaBuildEvent bldEvent = new SagaBuildEvent(event, sagaPlayer, sagaChunk);
+			SagaEventHandler.handleBuild(bldEvent);
+			if(bldEvent.isCancelled()) return;
 			
 		}
 
@@ -338,61 +333,5 @@ public class PlayerListener implements Listener {
 		
 	}
 	
-	private boolean isBuildEvent(PlayerInteractEvent event) {
-
-		
-		ItemStack item = event.getPlayer().getItemInHand();
-		Block block = event.getClickedBlock();
-		
-		switch (item.getType()) {
-			
-			case LAVA_BUCKET:
-				
-				return true;
-			
-			case FLINT_AND_STEEL:
-				
-				return true;
-				
-			case FIREBALL:
-				
-				return true;
-
-			case WATER_BUCKET:
-				
-				return true;
-				
-			case BUCKET:
-
-				return true;
-				
-			case INK_SACK:
-				
-				if(item.getData().getData() != 15) break;
-				return true;
-				
-			case PAINTING:
-	
-				return true;
-
-			default:
-				break;
-			
-		}
-		
-		// Fire:
-		if(block != null && block.getRelative(BlockFace.UP) != null && block.getRelative(BlockFace.UP).getType() == Material.FIRE){
-			return true;
-		}
-		
-		// Trample:
-		if(event.getAction() == Action.PHYSICAL && block != null && block.getType() == Material.SOIL){
-			return true;
-		}
-		
-		return false;
-		
-		
-	}
 	
 }

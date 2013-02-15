@@ -41,9 +41,9 @@ public class BlockListener implements Listener{
     	SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(event.getBlock().getLocation());
     	
     	// Build event:
-    	SagaBuildEvent eventB = new SagaBuildEvent(event, sagaPlayer, sagaChunk);
-    	SagaEventHandler.onBuild(eventB);
-    	if(eventB.isCancelled()) return;
+    	SagaBuildEvent bldEvent = new SagaBuildEvent(event, sagaPlayer, sagaChunk);
+    	SagaEventHandler.handleBuild(bldEvent);
+    	if(bldEvent.isCancelled()) return;
 
     	// Saga event:
     	SagaBlockBreakEvent eventS = new SagaBlockBreakEvent(event, sagaPlayer, sagaChunk);
@@ -82,9 +82,9 @@ public class BlockListener implements Listener{
 		SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(event.getBlock().getLocation());
 
     	// Build event:
-    	SagaBuildEvent eventB = new SagaBuildEvent(event, sagaPlayer, sagaChunk);
-    	SagaEventHandler.onBuild(eventB);
-    	if(eventB.isCancelled()) return;
+    	SagaBuildEvent bldEvent = new SagaBuildEvent(event, sagaPlayer, sagaChunk);
+    	SagaEventHandler.handleBuild(bldEvent);
+    	if(bldEvent.isCancelled()) return;
     	
     	// Forward event:
     	if(sagaChunk != null) sagaChunk.onBlockPlace(event, sagaPlayer);
@@ -116,16 +116,16 @@ public class BlockListener implements Listener{
     	SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
     	
     	// Build event:
-    	SagaBuildEvent eventB = new SagaBuildEvent(event, sagaPlayer, sagaChunk);
+    	SagaBuildEvent bldEvent = new SagaBuildEvent(event, sagaPlayer, sagaChunk);
     	
     	// Forward to Saga chunk:
-    	if(eventB.getSagaChunk() != null){
+    	if(bldEvent.getSagaChunk() != null){
     		
-    		sagaChunk.onBuild(eventB);
+    		sagaChunk.onBuild(bldEvent);
     		
     	}
 
-    	if(eventB.isCancelled()) return;
+    	if(bldEvent.isCancelled()) return;
     	
     	// Forward to chunk:
     	if(sagaChunk != null) sagaChunk.onSignChange(event, sagaPlayer);
