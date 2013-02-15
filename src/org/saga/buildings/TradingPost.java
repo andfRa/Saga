@@ -160,6 +160,24 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 		importCoins = 0.0;
 		exportCoins = 0.0;
 
+		// Signs collect:
+		ArrayList<Warehouse> warehouses = getChunkBundle().getBuildings(Warehouse.class);
+		if(getSagaChunk().isLoaded()){
+
+			// Sell signs collect:
+			Collection<SellSign> sellSigns = getBuildingSigns(SellSign.class);
+			for (SellSign sellSign : sellSigns) {
+				sellSign.collect(warehouses);
+			}
+
+			// Buy signs collect:
+			Collection<BuySign> buySigns = getBuildingSigns(BuySign.class);
+			for (BuySign buySign : buySigns) {
+				buySign.collect(warehouses);
+			}
+			
+		}
+		
 		// Refresh signs:
 		refreshSigns();
 		
@@ -402,23 +420,6 @@ public class TradingPost extends ProductionBuilding implements DaytimeTicker{
 			}
 			
 			collectedExports[i]+= collectedItem.getAmount();
-			
-		}
-		
-		// Only loaded:
-		if(getSagaChunk().isLoaded()){
-
-			// Update sell signs:
-			Collection<SellSign> sellSigns = getBuildingSigns(SellSign.class);
-			for (SellSign sellSign : sellSigns) {
-				sellSign.collect(warehouses);
-			}
-
-			// Update buy signs:
-			Collection<BuySign> buySigns = getBuildingSigns(BuySign.class);
-			for (BuySign buySign : buySigns) {
-				buySign.collect(warehouses);
-			}
 			
 		}
 		
