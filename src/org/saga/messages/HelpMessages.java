@@ -182,7 +182,7 @@ public class HelpMessages {
 		book.addLine("Higher attribute scores unlock and upgrade abilities. " +
 			"Upgraded abilities are more efficient and have lower cooldown times. " +
 			"Some abilities require certain buildings and some are only available for certain roles/ranks. " +
-			"Use " + GeneralMessages.command("/pabilityreq") + " to see ability attribute requirements."
+			"Use " + GeneralMessages.command("/pabilityinfo") + " to see ability attribute requirements."
 		);
 		
 		book.addLine("");
@@ -614,17 +614,38 @@ public class HelpMessages {
 
 		
 		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
-		ChatBook book = new ChatBook(definition.getName() + " ability requirements", colours);
+		ChatBook book = new ChatBook(definition.getName() + " ability information", colours);
 		
-//		// Description:
-//		book.addLine(TextUtil.senctence(definition.getDescription()));
-//		
-//		book.addLine("");
-//		
-//		// Usage:
-//		book.addLine(GeneralMessages.columnTitle("usage:") + " " + definition.getUsage());
-//		
-//		book.addLine("");
+		// Description:
+		book.addLine(ChatUtil.senctence(definition.getDescription()));
+		
+		// Usage:
+		book.addLine(GeneralMessages.columnTitle("usage:") + " " + definition.getUsage());
+		
+		book.addLine("");
+		
+		// Stats:
+		ChatTable statsTable = new ChatTable(colours);
+		int min = 1;
+		int max = AbilityConfiguration.config().maxAbilityScore;
+		
+		// Names:
+		statsTable.addLine(GeneralMessages.columnTitle("stat / score"));
+		statsTable.addLine("cooldown");
+		statsTable.addLine(GeneralMessages.material(definition.getUsedItem()) + " used");
+		
+		for (int i = min; i <= max; i++) {
+			
+			statsTable.addLine(RomanNumeral.binaryToRoman(i), i+1);
+			statsTable.addLine(definition.getCooldown(i) + "s", i+1);
+			statsTable.addLine(definition.getUsedAmount(i) + "", i+1);
+			
+		}
+		
+		statsTable.collapse();
+		book.addTable(statsTable);
+		
+		book.addLine("");
 
 		// Ability upgrade table:
 		ChatTable upgrTable = new ChatTable(colours);

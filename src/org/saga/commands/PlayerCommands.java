@@ -195,14 +195,14 @@ public class PlayerCommands {
 	}
 	
 	@Command(
-			aliases = {"pabilityreq"},
+			aliases = {"pabilityinfo"},
 			usage = "<ability_name>",
 			flags = "",
-			desc = "Display ability requirements.",
+			desc = "Display ability information.",
 			min = 1
 	)
-	@CommandPermissions({"saga.user.help.player.ability"})
-	public static void ability(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	@CommandPermissions({"saga.user.help.player.abilityinfo"})
+	public static void abilityInfo(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
 		AbilityDefinition definition = null;
