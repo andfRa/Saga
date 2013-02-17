@@ -298,6 +298,7 @@ public class AdminMessages {
 				add("saga.user.settlement");
 				add("saga.user.building");
 				add("saga.user.faction");
+				add("saga.user.economy");
 				add("saga.admin");
 				add("saga.special");
 				add("saga.statistics");
@@ -644,6 +645,7 @@ public class AdminMessages {
 				add("saga.user.settlement");
 				add("saga.user.building");
 				add("saga.user.faction");
+				add("saga.user.economy");
 				add("saga.admin");
 				add("saga.special");
 				add("saga.statistics");
