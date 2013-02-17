@@ -691,7 +691,7 @@ public class BuildingCommands {
 	// Town square:
 	@Command(
             aliases = {"sspawn"},
-            usage = "",
+            usage = "[settlement_name]",
             flags = "",
             desc = "Spawn in a town square.",
             min = 0,

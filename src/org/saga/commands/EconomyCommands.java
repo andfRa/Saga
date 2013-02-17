@@ -27,7 +27,7 @@ public class EconomyCommands {
 
 	// Coins:
 	@Command(
-			aliases = {"spay", "pay"},
+			aliases = {"pay"},
 			usage = "<name> <amount>",
 			flags = "",
 			desc = "Gives money to someone.",

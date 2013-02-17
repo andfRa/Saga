@@ -74,6 +74,7 @@ public class PermissionsDependency {
 
 		{
 			put(WILDERNESS_BUILD_PERMISSION, "Build outside settlements.");
+			put(WILDERNESS_BUILD_PERMISSION + ".ID", "Build outside settlements (specified block).");
 			put(SPECIAL_DOUBLE_EXP_BONUS, "Double player experience.");
 			put(SPECIAL_TRIPLE_EXP_BONUS, "Triple player experience.");
 		}
