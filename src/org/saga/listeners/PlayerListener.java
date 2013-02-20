@@ -307,13 +307,13 @@ public class PlayerListener implements Listener {
 		Location l1 = event.getFrom();
 		Location l2 = event.getTo();
 		
-		int x1 = (int)l1.getX();
-		int y1 = (int)l1.getY();
-		int z1 = (int)l1.getZ();
+		int x1 = l1.getBlockX();
+		int y1 = l1.getBlockY();
+		int z1 = l1.getBlockZ();
 		
-		int x2 = (int)l2.getX();
-		int y2 = (int)l2.getY();
-		int z2 = (int)l2.getZ();
+		int x2 = l2.getBlockX();
+		int y2 = l2.getBlockY();
+		int z2 = l2.getBlockZ();
 		
 		// Coordinates didn't change much:
 		if(x1 == x2 && y1 == y2 && z1 == z2) return;
