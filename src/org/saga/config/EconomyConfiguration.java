@@ -166,7 +166,23 @@ public class EconomyConfiguration {
 	private TwoPointFunction factionKillReward;
 	
 	
+	// Wars:
+	/**
+	 * Cost to start a siege.
+	 */
+	private TwoPointFunction siegeStartCost;
+	
+	/**
+	 * Cost to start a war.
+	 */
+	private TwoPointFunction warStartCost;
 
+	/**
+	 * Cost to end a war.
+	 */
+	private TwoPointFunction warEndCost;
+	
+	
 	// Trading post:
 	/**
 	 * Exports.
@@ -322,6 +338,23 @@ public class EconomyConfiguration {
 		}
 		factionKillReward.complete();
 		
+		
+		// Wars:
+		if(siegeStartCost == null){
+			SagaLogger.nullField(getClass(), "siegeStartCost");
+			siegeStartCost = new TwoPointFunction(0.0);
+		}
+		siegeStartCost.complete();
+		
+		if(warStartCost == null){
+			SagaLogger.nullField(getClass(), "warStartCost");
+			warStartCost = new TwoPointFunction(0.0);
+		}
+		
+		if(warEndCost == null){
+			SagaLogger.nullField(getClass(), "warEndCost");
+			warEndCost = new TwoPointFunction(0.0);
+		}
 		
 		if(exports == null){
 			SagaLogger.nullField(getClass(), "exports");
@@ -659,6 +692,39 @@ public class EconomyConfiguration {
 	
 		return factionKillReward.value(0);
 		
+	}
+	
+	
+	
+	// Wars:
+	/**
+	 * Gets the cost of declaring sieging a settlement.
+	 * 
+	 * @param ownedSettles amount of owned settlements
+	 * @return cost
+	 */
+	public Double getSiegeCost(Integer ownedSettles) {
+		return siegeStartCost.value(ownedSettles);
+	}
+	
+	/**
+	 * Gets the war start cost.
+	 * 
+	 * @param ownedSettles amount of owned settlements
+	 * @return war start cost
+	 */
+	public Double getWarStartCost(Integer ownedSettles) {
+		return warStartCost.value(ownedSettles);
+	}
+	
+	/**
+	 * Gets the war end cost.
+	 * 
+	 * @param ownedSettles amount of owned settlements
+	 * @return war end cost
+	 */
+	public Double getWarEndCost(Integer ownedSettles) {
+		return warEndCost.value(ownedSettles);
 	}
 	
 	

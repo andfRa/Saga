@@ -19,6 +19,7 @@ public enum Directory {
 	BUILDING_CONFIG("plugins/Saga/config/", "buildings.json"),
 	
 	FACTION_CLAIMS("plugins/Saga/claims/", "faction claims.json"),
+	WARS("plugins/Saga/wars/", "wars.json"),
 	
 	STATISTICS("plugins/Saga/statistics/", WriterReader.NAME_SUBS + ".json"),
 	TRADE_DEALS("plugins/Saga/economy/", WriterReader.NAME_SUBS + " deals.json"),

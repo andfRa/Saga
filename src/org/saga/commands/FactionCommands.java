@@ -15,6 +15,7 @@ import org.saga.factions.Faction;
 import org.saga.factions.Faction.FactionPermission;
 import org.saga.factions.FactionClaimManager;
 import org.saga.factions.FactionManager;
+import org.saga.factions.SiegeManager;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.FactionMessages;
 import org.saga.messages.GeneralMessages;
@@ -1411,7 +1412,6 @@ public class FactionCommands {
 	
 	
 	// Claiming:
-
 	@Command(
             aliases = {"funclaim"},
             usage = "[faction_name] <settlement_name>",
@@ -1508,6 +1508,122 @@ public class FactionCommands {
 		
 	}
 
+
+	// Siege:
+	@Command(
+            aliases = {"fsiege"},
+            usage = "[faction_name] <settlement_name>",
+            flags = "",
+            desc = "Declare a siege.",
+            min = 1,
+            max = 2
+		)
+	@CommandPermissions({"saga.user.faction.siege"})
+	public static void siege(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+		
+		Faction selFaction = null;
+		Bundle selBundle = null;
+		
+		String bundleName = null;
+
+		// Arguments:
+		switch (args.argsLength()) {
+			case 2:
+				
+				// Faction:
+				String factionName = GeneralMessages.nameFromArg(args.getString(0));
+				selFaction = FactionManager.manager().matchFaction(factionName);
+				
+				if(selFaction == null){
+					sagaPlayer.message(GeneralMessages.invalidFaction(factionName));
+					return;
+				}
+
+				// Bundle:
+				bundleName = GeneralMessages.nameFromArg(args.getString(1));
+				selBundle = BundleManager.manager().matchBundle(bundleName);
+				
+				if(selBundle == null){
+					sagaPlayer.message(GeneralMessages.invalidSettlement(bundleName));
+					return;
+				}
+				
+				break;
+
+			default:
+				
+				// Faction:
+				selFaction = sagaPlayer.getFaction();
+				
+				if(selFaction == null){
+					sagaPlayer.message(FactionMessages.notMember());
+					return;
+				}
+
+				// Bundle:
+				bundleName = GeneralMessages.nameFromArg(args.getString(0));
+				selBundle = BundleManager.manager().matchBundle(bundleName);
+				
+				if(selBundle == null){
+					sagaPlayer.message(GeneralMessages.invalidSettlement(bundleName));
+					return;
+				}
+				
+				break;
+				
+		}
+		
+		// Permission:
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.DECLARE_SIEGE)){
+			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
+			return;
+		}
+		
+		// Already owned:
+		Integer bundleID = selBundle.getId();
+		Faction owningFaction = SiegeManager.manager().getOwningFaction(bundleID);
+		if(owningFaction == selFaction){
+			sagaPlayer.message(FactionMessages.alreadyOwned(selFaction, selBundle));
+			return;
+		}
+		
+		// Already sieged:
+		Faction attackingFaction = SiegeManager.manager().getAttackingFaction(bundleID);
+		if(attackingFaction != null){
+			sagaPlayer.message(FactionMessages.siegeAlreadyDeclared(selFaction, selBundle));
+			return;
+		}
+		
+		// Cost:
+		ArrayList<Integer> owned = SiegeManager.manager().getOwnedBundleIDs(selFaction.getId());
+		Double cost = EconomyConfiguration.config().getSiegeCost(owned.size());
+		if(EconomyConfiguration.config().isEnabled() && cost > 0){
+			
+			// Check cost:
+			if(selFaction.getCoins() < cost){
+				selFaction.information(EconomyMessages.insufficient(selFaction), sagaPlayer);
+				return;
+			}
+			
+			// Take coins:
+			selFaction.modCoins(-cost);
+			
+			// Inform:
+			selFaction.information(EconomyMessages.spent(selFaction, cost), sagaPlayer);
+			
+		}
+		
+		// Declare:
+		SiegeManager.manager().handleDeclaration(selFaction.getId(), selBundle.getId());
+		
+		// Inform:
+		selFaction.information(FactionMessages.siegeDeclared(selFaction, selBundle));
+		if(owningFaction != null) owningFaction.information(FactionMessages.siegeWasDeclared(owningFaction, selBundle));
+		
+	}
+
+	
 	
 	// Messages:
 	@Command(

@@ -10,6 +10,7 @@ import org.saga.dependencies.EconomyDependency;
 import org.saga.factions.Faction;
 import org.saga.messages.colours.Colour;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.Bundle;
 import org.saga.settlements.Settlement;
 import org.saga.utility.chat.ChatUtil;
 
@@ -34,6 +35,18 @@ public class EconomyMessages {
 		
 	}
 	
+	public static String spent(Faction faction, Double coins) {
+		
+		return faction.getColour2() + "Spent " + coins(coins) + ".";
+		
+	}
+	
+	public static String spent(Bundle bundle, Double coins) {
+		
+		return Colour.normal1 + "Spent " + coins(coins) + ".";
+		
+	}
+	
 	public static String earned(Double coins) {
 		
 		return Colour.positive + "Earned " + coins(coins) + ".";
@@ -47,18 +60,19 @@ public class EconomyMessages {
 	}
 
 	public static String insufficient() {
-
 		return Colour.negative + "Insufficient " + EconomyMessages.coins() + ".";
-		
 	}
 	
+	public static String insufficient(Bundle bundle) {
+		return Colour.negative + "Insufficient " + EconomyMessages.coins() + ".";
+	}
+	
+	public static String insufficient(Faction bundle) {
+		return Colour.negative + "Insufficient " + EconomyMessages.coins() + ".";
+	}
 	
 	
 	// Settlement:
-	public static String settlementInsufficientCoins() {
-		return Colour.negative + "The settlement doesn't have enough " + EconomyMessages.coins() + ".";
-	}
-	
 	public static String settlementBoughtClaims(Integer amount, Double cost) {
 		
 		if(amount == 1){
@@ -98,10 +112,6 @@ public class EconomyMessages {
 	
 	
 	// Faction:
-	public static String factionInsufficientCoins() {
-		return Colour.negative + "The faction doesn't have enough " + EconomyMessages.coins() + ".";
-	}
-	
 	public static String factionAddedCoins(Double amount) {
 		return Colour.positive + "Deposited " + EconomyMessages.coins(amount) + " to the factions bank.";
 	}

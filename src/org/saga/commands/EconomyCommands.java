@@ -477,7 +477,7 @@ public class EconomyCommands {
 		}
 		
 		if(increased == 0){
-			sagaPlayer.message(EconomyMessages.settlementInsufficientCoins());
+			selBundle.information(EconomyMessages.insufficient(selBundle), sagaPlayer);
 			return;
 		}
 		
@@ -623,7 +623,7 @@ public class EconomyCommands {
 		}
 		
 		if(increased == 0){
-			sagaPlayer.message(EconomyMessages.settlementInsufficientCoins());
+			selBundle.information(EconomyMessages.insufficient(selBundle), sagaPlayer);
 			return;
 		}
 		

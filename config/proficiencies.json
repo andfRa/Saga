@@ -65,7 +65,7 @@
     "hierarchyLevel":"3",
     "attributeBonuses":{"toughness":10},
     "settlementPermissions":[],
-    "factionPermissions":["INVITE","KICK","SET_COLOR","RENAME","SET_RANK","SPAWN"]
+    "factionPermissions":["INVITE","KICK","SET_COLOR","RENAME","SET_RANK","SPAWN","DECLARE_SIEGE"]
   },
 
   {"name":"knight",

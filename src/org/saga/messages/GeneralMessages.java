@@ -7,6 +7,7 @@ import org.saga.factions.Faction;
 import org.saga.messages.colours.Colour;
 import org.saga.settlements.Bundle;
 import org.saga.settlements.Settlement;
+import org.saga.utility.Duration;
 import org.saga.utility.chat.ChatUtil;
 
 public class GeneralMessages {
@@ -161,6 +162,82 @@ public class GeneralMessages {
 	public static String noPermissionFlag(Character flag){
 		return Colour.negative + "You don't have permission to use the -" + flag + " flag.";
 	}
+	
+	
+	
+	// Timing:
+	public static String duration(Duration duration){
+		
+		StringBuffer result = new StringBuffer();
+		if(duration.getSeconds() == 0 && duration.getMinutes() == 0 && duration.getHours() == 0) result.append("0s");
+		
+		// Hours:
+		if(duration.getHours() != 0) {
+			if(result.length() > 0) result.append(" ");
+			result.append(duration.getHours() + "h");
+		}
+		
+		// Minutes:
+		if(duration.getMinutes() != 0 || duration.getHours() != 0){
+			if(result.length() > 0) result.append(" ");
+			result.append(duration.getMinutes() + "m");
+		}
+		
+		// Seconds:
+		if(result.length() > 0) result.append(" ");
+		result.append(duration.getSeconds() + "s");
+		
+		return result.toString();
+		
+	}
+	
+	public static String durationHM(Duration duration){
+		
+		StringBuffer result = new StringBuffer();
+		if(duration.getSeconds() == 0 && duration.getMinutes() == 0 && duration.getHours() == 0) result.append("0s");
+		
+		// Hours:
+		if(duration.getHours() != 0){
+			if(result.length() > 0) result.append(" ");
+			result.append(duration.getHours() + "h");
+		}
+		
+		// Minutes:
+		if(result.length() > 0) result.append(" ");
+		result.append(duration.getMinutes() + "m");
+		
+		return result.toString();
+		
+	}
+	
+	
+	
+	// Bars:
+	public static String tugBar(ChatColor colLeft, ChatColor colRight, String middle, ChatColor colGeneral, Double progress){
+		
+		int left = 10;
+		int right = left;
+		
+		int mod = (int) (progress * left);
+		left-= mod;
+		right+= mod;
+		
+		return colGeneral + "{" + colLeft + ChatUtil.repeat("|", left) + colGeneral + middle + colRight +ChatUtil.repeat("|", right) + colGeneral + "}";
+		
+	}
+	
+	public static String tugBarLeft(ChatColor colLeft, ChatColor colRight, ChatColor colGeneral, Double progress){
+		return tugBar(colLeft, colRight, "[<]", colGeneral, progress);
+	}
+	
+	public static String tugBarRight(ChatColor colLeft, ChatColor colRight, ChatColor colGeneral, Double progress){
+		return tugBar(colLeft, colRight, "[>]", colGeneral, progress);
+	}
+	
+	public static String tugBarStop(ChatColor colLeft, ChatColor colRight, ChatColor colGeneral, Double progress){
+		return tugBar(colLeft, colRight, "[*]", colGeneral, progress);
+	}
+	
 	
 	
 	// Other:

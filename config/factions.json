@@ -23,6 +23,13 @@
 "memberSpeedMult":{"x1":1,"y1":0.5,"x2":5,"y2":3.0},
 "toClaimMembers":1,
 "claimPoints":{"x1":0,"y1":1.0,"x2":250,"y2":5.0},
-"openClaimedStorageAreas":true
+"openClaimedStorageAreas":true,
+
+"siegePrepareMinutes":1440,
+"siegePtsPerSecond":{"x1":-5,"y1":-0.00275,"x2":5,"y2":0.00225},
+"siegeLongRemindIntervalMinutes":30,
+"siegeShortRemindStartMinutes":10,
+"siegeShortRemindIntervalMinutes":1,
+"siegeInProgressRemindIntervalMinutes":5
 
 }

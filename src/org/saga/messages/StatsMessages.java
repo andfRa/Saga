@@ -10,6 +10,7 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
 import org.saga.abilities.AbilityDefinition;
 import org.saga.buildings.Building;
@@ -33,6 +34,7 @@ import org.saga.dependencies.EconomyDependency;
 import org.saga.factions.Faction;
 import org.saga.factions.FactionClaimManager;
 import org.saga.factions.FactionManager;
+import org.saga.factions.SiegeManager;
 import org.saga.messages.colours.Colour;
 import org.saga.messages.colours.ColourLoop;
 import org.saga.player.GuardianRune;
@@ -42,6 +44,7 @@ import org.saga.player.SagaPlayer;
 import org.saga.settlements.Bundle;
 import org.saga.settlements.BundleManager;
 import org.saga.settlements.Settlement;
+import org.saga.utility.Duration;
 import org.saga.utility.chat.ChatBook;
 import org.saga.utility.chat.ChatFramer;
 import org.saga.utility.chat.ChatTable;
@@ -707,9 +710,24 @@ public class StatsMessages {
 		
 		ChatBook book = new ChatBook(faction.getName() + " stats", new ColourLoop().addColor(faction.getColour2()));
 		
-		// Levels, claims and allies:
+		// Info:
 		book.addTable(info(faction));
+		
+		// Sieges:
+		ArrayList<Bundle> attack = SiegeManager.manager().getDeclaredSiegesAttack(faction.getId());
+		ArrayList<Bundle> defend = SiegeManager.manager().getDeclaredSiegesDefend(faction.getId());
+		
+		if(attack.size() > 0 || defend.size() > 0){
+			
+			book.addLine("");
+			
+			book.addTable(siege(faction, attack, defend));
+			
+		}
+		
 		book.addLine("");
+		
+		// Allies:
 		book.addLine(allies(faction));
 		
 		book.nextPage();
@@ -756,19 +774,28 @@ public class StatsMessages {
 		}else{
 			table.addLine("owner", Colour.veryNegative + "none", 0);
 		}
-		
-		int claimed = FactionClaimManager.manager().findSettlementsIds(faction.getId()).length;
-		int totalClaims = faction.getTotalClaims();
-		double progress = faction.getClaimProgress();
-		
-		// Claimed:
-		table.addLine("settlements", claimed + "/" + totalClaims, 2);
-
-		// Next claim:
-		table.addLine("next claim", (int)(progress*100) + "%", 2);
 
 		// Banked:
-		table.addLine("banked", EconomyMessages.coins(faction.getCoins()), 2);
+		table.addLine("banked", EconomyMessages.coins(faction.getCoins()), 0);
+		
+		// Claimed:
+		table.addLine("wars", "-" + "/" + "-", 2);
+
+		// Costs:
+		if(EconomyConfiguration.config().isEnabled()){
+
+			// Siege cost:
+			ArrayList<Integer> owned = SiegeManager.manager().getOwnedBundleIDs(faction.getId());
+			Integer size = owned.size();
+			table.addLine("siege cost", EconomyMessages.coins(EconomyConfiguration.config().getSiegeCost(size)), 2);
+
+			// War start cost:
+			table.addLine("war start cost", EconomyMessages.coins(EconomyConfiguration.config().getWarStartCost(size)), 2);
+
+			// War start cost:
+			table.addLine("war end cost", EconomyMessages.coins(EconomyConfiguration.config().getWarEndCost(size)), 2);
+			
+		}
 
 		table.collapse();
 		
@@ -1020,6 +1047,142 @@ public class StatsMessages {
 		ArrayList<TownSquare> townSquares = settlement.getBuildings(TownSquare.class);
 		if(townSquares.size() == 0) return null;
 		return townSquares.get(0).getSagaChunk().getCenterLocation();
+		
+	}
+	
+	
+	private static ChatTable siege(Faction faction, ArrayList<Bundle> attack, ArrayList<Bundle> defend) {
+		
+		
+		ColourLoop colours = new ColourLoop().addColor(faction.getColour2());
+		ChatTable table = new ChatTable(colours);
+		
+		// Attacking:
+		if(attack.size() > 0){
+			
+			for (Bundle bundle : attack) {
+				table.addLine("attack " + bundle.getName(), siegeAttack(faction, bundle), 0);
+			}
+			
+		}
+		
+		// Defend:
+		if(defend.size() > 0){
+
+			for (Bundle bundle : defend) {
+				table.addLine("defend " + bundle.getName(), siegeDefend(faction, bundle), 0);
+			}
+			
+		}
+		
+		table.collapse();
+		
+		return table;
+		
+		
+	}
+	
+	private static String siegeAttack(Faction faction, Bundle bundle) {
+		
+		
+		// Time:
+		Integer minutes = SiegeManager.manager().getSiegeRemainingMinutes(bundle.getId());
+		if(minutes == null){
+			SagaLogger.severe(StatsMessages.class, "siege remaining minutes not defined for faction " + faction);
+			minutes = 0;
+		}
+		long millis = minutes*60*1000;
+		
+		// Siege not started:
+		if(millis > 0){
+			Duration durationHM = new Duration(millis);
+			return "prepare time " + GeneralMessages.durationHM(durationHM);
+		}
+		
+		// Siege started:
+		else{
+			
+			// Counts:
+			int attackers = SiegeManager.manager().getAttackerCount(bundle.getId());
+			int defenders = SiegeManager.manager().getDefenderCount(bundle.getId());
+			double side = FactionConfiguration.config().getSiegePtsPerSecond(attackers-defenders);
+			
+			// Colours:
+			ChatColor colRight = Colour.normal1;
+			ChatColor colLeft = faction.getColour1();
+			ChatColor colGeneral = faction.getColour2();
+			Faction owningFaction = SiegeManager.manager().getOwningFaction(bundle.getId());
+			if(owningFaction != null) colRight = owningFaction.getColour1();
+			
+			// Progress:
+			Double progress = -SiegeManager.manager().getSiegeProgress(bundle.getId());
+			
+			// Bar:
+			if(side < 0){
+				return attackers + "" + GeneralMessages.tugBarLeft(colLeft, colRight, colGeneral, progress) + colGeneral + "" + defenders;
+			}
+			
+			else if(side > 0){
+				return attackers + "" + GeneralMessages.tugBarRight(colLeft, colRight, colGeneral, progress) + colGeneral + "" + defenders;
+			}
+			
+			else{
+				return attackers + "" + GeneralMessages.tugBarStop(colLeft, colRight, colGeneral, progress) + colGeneral + "" + defenders;
+			}
+			
+		}
+		
+	}
+
+	private static String siegeDefend(Faction faction, Bundle bundle) {
+
+		
+		// Time:
+		Integer minutes = SiegeManager.manager().getSiegeRemainingMinutes(bundle.getId());
+		if(minutes == null){
+			SagaLogger.severe(StatsMessages.class, "siege remaining minutes not defined for faction " + faction);
+			minutes = 0;
+		}
+		long millis = minutes*60*1000;
+		
+		// Siege not started:
+		if(millis > 0){
+			Duration durationHM = new Duration(millis);
+			return "prepare time " + GeneralMessages.durationHM(durationHM);
+		}
+		
+		// Siege started:
+		else{
+			
+			// Counts:
+			int attackers = SiegeManager.manager().getAttackerCount(bundle.getId());
+			int defenders = SiegeManager.manager().getDefenderCount(bundle.getId());
+			double side = FactionConfiguration.config().getSiegePtsPerSecond(attackers-defenders);
+			
+			// Colours:
+			ChatColor colRight = Colour.normal1;
+			ChatColor colLeft = faction.getColour1();
+			ChatColor colGeneral = faction.getColour2();
+			Faction owningFaction = SiegeManager.manager().getAttackingFaction(bundle.getId());
+			if(owningFaction != null) colRight = owningFaction.getColour1();
+			
+			// Progress:
+			Double progress = SiegeManager.manager().getSiegeProgress(bundle.getId());
+			
+			// Bar:
+			if(side < 0){
+				return defenders + " " + GeneralMessages.tugBarRight(colLeft, colRight, colGeneral, progress) + colGeneral + " " + attackers;
+			}
+			
+			else if(side > 0){
+				return defenders + " " + GeneralMessages.tugBarLeft(colLeft, colRight, colGeneral, progress) + colGeneral + " " + attackers;
+			}
+			
+			else{
+				return defenders + " " + GeneralMessages.tugBarStop(colLeft, colRight, colGeneral, progress) + colGeneral + " " + attackers;
+			}
+			
+		}
 		
 	}
 	

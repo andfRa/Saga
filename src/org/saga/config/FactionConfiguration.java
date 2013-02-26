@@ -97,6 +97,40 @@ public class FactionConfiguration {
 	private Boolean openClaimedStorageAreas;
 	
 	
+	// Wars:
+	/**
+	 * Minutes after which a settlement can star to be sieged.
+	 */
+	private Integer siegePrepareMinutes;
+
+	/**
+	 * Siege points gained per second per member.
+	 */
+	private TwoPointFunction siegePtsPerSecond;
+	
+	
+	/**
+	 * The long remind interval.
+	 */
+	private Integer siegeLongRemindIntervalMinutes;
+	
+
+	/**
+	 * The minutes in which the short reminders are started.
+	 */
+	private Integer siegeShortRemindStartMinutes;
+	
+	/**
+	 * The short remind interval.
+	 */
+	private Integer siegeShortRemindIntervalMinutes;
+
+	/**
+	 * The siege in progress remind interval.
+	 */
+	private Integer siegeInProgressRemindIntervalMinutes;
+	
+	
 	
 	// Ranks:
 	/**
@@ -204,7 +238,40 @@ public class FactionConfiguration {
 			openClaimedStorageAreas = false;
 		}
 		
+		// Wars:
+		if(siegePrepareMinutes == null){
+			SagaLogger.nullField(getClass(), "siegePrepareMinutes");
+			siegePrepareMinutes = 10;
+		}
 		
+		if(siegePtsPerSecond == null){
+			SagaLogger.nullField(getClass(), "siegePtsPerSecond");
+			siegePtsPerSecond = new TwoPointFunction(0.0);
+		}
+		
+		
+		if(siegeLongRemindIntervalMinutes == null){
+			SagaLogger.nullField(getClass(), "siegeLongRemindIntervalMinutes");
+			siegeLongRemindIntervalMinutes = 15;
+		}
+		
+		if(siegeShortRemindStartMinutes == null){
+			SagaLogger.nullField(getClass(), "siegeShortRemindStartMinutes");
+			siegeShortRemindStartMinutes = 10;
+		}
+
+		if(siegeShortRemindIntervalMinutes == null){
+			SagaLogger.nullField(getClass(), "siegeShortRemindIntervalMinutes");
+			siegeShortRemindIntervalMinutes = 1;
+		}
+		
+		if(siegeInProgressRemindIntervalMinutes == null){
+			SagaLogger.nullField(getClass(), "siegeInProgressRemindIntervalMinutes");
+			siegeInProgressRemindIntervalMinutes = 1;
+		}
+		
+		
+		// Ranks:
 		if(hierarchyMin == null){
 			SagaLogger.nullField(getClass(), "hierarchyMin");
 			hierarchyMin = 0;
@@ -344,6 +411,62 @@ public class FactionConfiguration {
 		return openClaimedStorageAreas;
 	}
 	
+	
+	// Wars:
+	/**
+	 * Gets the minutes given to prepare for a siege.
+	 * 
+	 * @return minutes to prepare
+	 */
+	public Integer getSiegePrepareMinutes() {
+		return siegePrepareMinutes;
+	}
+	
+	/**
+	 * Gets the siege point gain speed.
+	 * 
+	 * @param dif attackers - defenders
+	 * @return claims per second
+	 */
+	public double getSiegePtsPerSecond(int dif) {
+		return siegePtsPerSecond.value(dif);
+	}
+	
+	/**
+	 * Gets the long interval of the siege reminder.
+	 * 
+	 * @return long interval reminder interval in minutes
+	 */
+	public Integer getSiegeLongRemindIntervalMinutes() {
+		return siegeLongRemindIntervalMinutes;
+	}
+	
+	/**
+	 * Gets the minutes remaining when the short interval must be used.
+	 * 
+	 * @return minutes remaining when the short interval kicks in
+	 */
+	public Integer getSiegeShortRemindStartMinutes() {
+		return siegeShortRemindStartMinutes;
+	}
+	
+	/**
+	 * Gets the short interval of the siege reminder.
+	 * 
+	 * @return short interval reminder interval in minutes
+	 */
+	public Integer getSiegeShortRemindIntervalMinutes() {
+		return siegeShortRemindIntervalMinutes;
+	}
+	
+	/**
+	 * Gets the interval after which the factions are reminded of the siege when it is in progress.
+	 * 
+	 * @return reminder interval when the siege is in progress
+	 */
+	public Integer getSiegeInProgressRemindIntervalMinutes() {
+		return siegeInProgressRemindIntervalMinutes;
+	}
 	
 
 	// Ranks:

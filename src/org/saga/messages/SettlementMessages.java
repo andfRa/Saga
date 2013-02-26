@@ -8,7 +8,7 @@ import org.bukkit.Location;
 import org.saga.buildings.Building;
 import org.saga.config.SettlementConfiguration;
 import org.saga.factions.Faction;
-import org.saga.factions.FactionClaimManager;
+import org.saga.factions.SiegeManager;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.messages.colours.Colour;
 import org.saga.player.Proficiency;
@@ -340,7 +340,7 @@ public class SettlementMessages {
 	public static String entered(Bundle bundle) {
 		
 		// Claimed:
-		Faction faction = FactionClaimManager.manager().getOwningFaction(bundle.getId());
+		Faction faction = SiegeManager.manager().getOwningFaction(bundle.getId());
 		if(faction != null){
 			return Colour.normal1 + "[" + FactionMessages.faction(faction, Colour.normal1) + "]" + ChatColor.ITALIC + " Entered " + bundle.getName() + " settlement.";
 		}
@@ -352,7 +352,7 @@ public class SettlementMessages {
 	public static String left(Bundle bundle) {
 
 		// Claimed:
-		Faction faction = FactionClaimManager.manager().getOwningFaction(bundle.getId());
+		Faction faction = SiegeManager.manager().getOwningFaction(bundle.getId());
 		if(faction != null){
 			return Colour.normal1 + "[" + FactionMessages.faction(faction, Colour.normal1) + "]" + ChatColor.ITALIC + " Left " + bundle.getName() + " settlement.";
 		}

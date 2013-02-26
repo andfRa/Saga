@@ -37,6 +37,7 @@ import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;
 import org.saga.factions.FactionClaimManager;
 import org.saga.factions.FactionManager;
+import org.saga.factions.SiegeManager;
 import org.saga.listeners.BlockListener;
 import org.saga.listeners.EntityListener;
 import org.saga.listeners.PlayerListener;
@@ -119,6 +120,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 
 		// Managers:
 		FactionClaimManager.unload(); // Needs access to factions and bundles.
+		SiegeManager.unload(); // Needs access to factions and bundles.
 		BundleManager.unload(); // Needs building manager.
 		FactionManager.unload(); // Needs access to chunk group manager.
 		StatisticsManager.unload(); // Needs access to clock.
@@ -198,7 +200,8 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		BundleManager.load();
 		FactionManager.load(); // Needs access to chunk group manager.
 		FactionClaimManager.load(); // Needs access to factions and bundles.
-
+		SiegeManager.load(); // Needs access to factions and bundles.
+		
 		// Register events:
 		pluginManager.registerEvents(new PlayerListener(), this);
 		pluginManager.registerEvents(new EntityListener(), this);

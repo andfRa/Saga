@@ -3,10 +3,12 @@ package org.saga.messages;
 import org.bukkit.ChatColor;
 import org.saga.config.FactionConfiguration;
 import org.saga.factions.Faction;
+import org.saga.factions.SiegeManager;
 import org.saga.messages.colours.Colour;
 import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Bundle;
+import org.saga.utility.Duration;
 import org.saga.utility.chat.ChatUtil;
 
 
@@ -345,7 +347,82 @@ public class FactionMessages {
 		return Colour.negative + "Because /squit and /fquit are similar, this command isn't used. Please use /factionquit instead.";
 		
 	}
-
+	
+	
+	
+	// Sieges:
+	public static String siegeDeclared(Faction faction, Bundle bundle) {
+		return faction.getColour2() + "Siege declared on " + bundle.getName() + ".";
+	}
+	
+	public static String siegeWasDeclared(Faction faction, Bundle bundle) {
+		return faction.getColour2() + "Siege was declared on " + bundle.getName() + ".";
+	}
+	
+	public static String siegeAlreadyDeclared(Faction faction, Bundle bundle) {
+		return Colour.negative + "Siege already declared on " + bundle.getName() + ".";
+	}
+	
+	
+	public static String siegeAttackSuccess(Faction faction, Bundle bundle) {
+		return faction.getColour2() + "Successfully sieged " + bundle.getName() + " settlement.";
+	}
+	
+	public static String siegeAttackFailure(Faction faction, Bundle bundle) {
+		return faction.getColour2() + "Failed to siege " + bundle.getName() + " settlement.";
+	}
+	
+	public static String siegeDefendSuccess(Faction defender, Bundle bundle) {
+		return defender.getColour2() + "Successfully defended " + bundle.getName() + " settlement.";
+	}
+	
+	public static String siegeDefendFailure(Faction defender, Bundle bundle) {
+		return defender.getColour2() + "Failed to defend " + bundle.getName() + " settlement.";
+	}
+	
+	
+	public static String alreadyOwned(Faction faction, Bundle bundle) {
+		return Colour.negative + "The faction already owns " + bundle.getName() + ".";
+	}
+	
+	
+	
+	// Siege reminders:
+	public static String siegeAttackReminder(Faction faction, Bundle bundle) {
+		
+		Integer minutes = SiegeManager.manager().getSiegeRemainingMinutes(bundle.getId());
+		
+		if(minutes > 0){
+			
+			Duration durationHM = new Duration(minutes*60000);
+			return faction.getColour2() + "Siege on " + bundle.getName() + " settlement starts in " + GeneralMessages.durationHM(durationHM) + ".";
+		
+		}else{
+			
+			return faction.getColour2() + "Attack " + bundle.getName() + " settlement!";
+			
+		}
+		
+	}
+	
+	public static String siegeDefendReminder(Faction faction, Bundle bundle) {
+		
+		Integer minutes = SiegeManager.manager().getSiegeRemainingMinutes(bundle.getId());
+		
+		if(minutes > 0){
+			
+			Duration durationHM = new Duration(minutes*60000);
+			return faction.getColour2() + "Defence of " + bundle.getName() + " settlement starts in " + GeneralMessages.durationHM(durationHM) + ".";
+		
+		}else{
+			
+			return faction.getColour2() + "Defend " + bundle.getName() + " settlement!";
+			
+		}
+		
+	}
+	
+	
 	
 	
 	// Utility:

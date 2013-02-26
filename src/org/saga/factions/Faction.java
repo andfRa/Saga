@@ -1645,14 +1645,17 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 
 		
 		ADD_COINS,
-		DISBAND,
+		DECLARE_SIEGE,
 		DELETE,
+		DISBAND,
+		END_WAR,
 		INVITE,
 		KICK,
 		QUIT,
 		SET_RANK,
 		SET_COLOR,
 		SET_SPAWN,
+		START_WAR,
 		SPAWN,
 		RENAME,
 		FORM_ALLIANCE,

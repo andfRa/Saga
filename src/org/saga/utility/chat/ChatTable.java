@@ -66,7 +66,7 @@ public class ChatTable {
 	 * 
 	 * @return column widths
 	 */
-	private Double[] getColumnWidths() {
+	public Double[] getColumnWidths() {
 
 		Double[] widths = new Double[table.size()];
 		
@@ -100,6 +100,21 @@ public class ChatTable {
 			this.customWidths.add(customWidths[i]);
 		}
 		
+	}
+	
+	/**
+	 * Sets custom width.
+	 * 
+	 * @param customWidth custom width
+	 */
+	public void setCustomWidths(Double customWidth) {
+		
+		customWidths = new ArrayList<Double>();
+		
+		for (int i = 0; i <= table.size(); i++) {
+			customWidths.add(customWidth/table.size());
+		}
+
 	}
 	
 	/**
