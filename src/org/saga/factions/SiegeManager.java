@@ -679,7 +679,7 @@ public class SiegeManager implements SecondTicker{
 		SagaLogger.info("Loading sieges.");
 		
 		// New:
-		if(!WriterReader.checkExists(Directory.WARS)){
+		if(!WriterReader.checkExists(Directory.SIEGES)){
 			
 			instance = new SiegeManager("");
 			save();
@@ -748,15 +748,15 @@ public class SiegeManager implements SecondTicker{
 
 		
 		// Inform:
-		SagaLogger.info("Saving faction claims.");
+		SagaLogger.info("Saving sieges.");
 		
 		try {
 			
-			WriterReader.write(Directory.WARS, instance);
+			WriterReader.write(Directory.SIEGES, instance);
 			
 		} catch (IOException e) {
 			
-			SagaLogger.severe(FileNotFoundException.class, "write failed");
+			SagaLogger.severe(SiegeManager.class, "write failed");
 			SagaLogger.info("Write failure cause:" + e.getClass().getSimpleName() + ":" + e.getMessage());
 			
 		}
