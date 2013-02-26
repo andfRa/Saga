@@ -676,7 +676,7 @@ public class SiegeManager implements SecondTicker{
 
 		
 		// Inform:
-		SagaLogger.info("Loading faction claims.");
+		SagaLogger.info("Loading sieges.");
 		
 		// New:
 		if(!WriterReader.checkExists(Directory.WARS)){
@@ -731,7 +731,7 @@ public class SiegeManager implements SecondTicker{
 
 		
 		// Inform:
-		SagaLogger.info("Unloading faction claims.");
+		SagaLogger.info("Unloading sieges.");
 		
 		save();
 		
