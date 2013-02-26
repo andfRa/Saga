@@ -691,7 +691,7 @@ public class SiegeManager implements SecondTicker{
 			
 			try {
 				
-				instance = WriterReader.read(Directory.WARS, SiegeManager.class);
+				instance = WriterReader.read(Directory.SIEGES, SiegeManager.class);
 				
 			} catch (FileNotFoundException e) {
 				
