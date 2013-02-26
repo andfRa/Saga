@@ -38,6 +38,7 @@ import org.saga.exceptions.SagaPlayerNotLoadedException;
 import org.saga.factions.FactionClaimManager;
 import org.saga.factions.FactionManager;
 import org.saga.factions.SiegeManager;
+import org.saga.factions.WarManager;
 import org.saga.listeners.BlockListener;
 import org.saga.listeners.EntityListener;
 import org.saga.listeners.PlayerListener;
@@ -54,7 +55,7 @@ import org.sk89q.UnhandledCommandException;
 import org.sk89q.WrappedCommandException;
 
 public class Saga extends JavaPlugin implements MinuteTicker {
-
+	
 	
 	/**
 	 * Plugin instance.
@@ -92,7 +93,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 	 * Minutes left before save.
 	 */
 	private Integer saveMinutes;
-
+	
 	
 	
 	// Plugin:
@@ -120,6 +121,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 
 		// Managers:
 		FactionClaimManager.unload(); // Needs access to factions and bundles.
+		WarManager.unload(); // Needs access to factions and bundles.
 		SiegeManager.unload(); // Needs access to factions and bundles.
 		BundleManager.unload(); // Needs building manager.
 		FactionManager.unload(); // Needs access to chunk group manager.
@@ -201,6 +203,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		FactionManager.load(); // Needs access to chunk group manager.
 		FactionClaimManager.load(); // Needs access to factions and bundles.
 		SiegeManager.load(); // Needs access to factions and bundles.
+		WarManager.load(); // Needs access to factions and bundles.
 		
 		// Register events:
 		pluginManager.registerEvents(new PlayerListener(), this);
@@ -232,7 +235,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 
 		
 	}
-
+	
 	
 	
 	// Players:
@@ -428,17 +431,27 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 
 		
 	}
-
+	
 	
 	
 	// Saving:
 	/**
-	 * Saves all players.
+	 * Saves everything.
 	 * 
 	 */
-	private void saveAllPlayers() {
-
+	public void save() {
 		
+		
+		// Save managers:
+		BundleManager.save();
+		FactionManager.save();
+		FactionClaimManager.save();
+		SiegeManager.save();
+		WarManager.save();
+		StatisticsManager.save();
+
+
+		// Save players:
 		Enumeration<SagaPlayer> sagaPlayers = loadedPlayers.elements();
 		while (sagaPlayers.hasMoreElements()) {
 			
@@ -446,32 +459,8 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 			sagaPlayer.save();
 			
 		}
-
 		
-	}
-
-	/**
-	 * Saves all managers.
-	 * 
-	 */
-	private void saveManagers() {
-
-		BundleManager.save();
-		FactionManager.save();
-		FactionClaimManager.save();
-		StatisticsManager.save();
-
-	}
-
-	/**
-	 * Saves everything.
-	 * 
-	 */
-	public void save() {
-
-		saveManagers();
-		saveAllPlayers();
-
+		
 	}
 
 	
@@ -620,7 +609,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		Saga.plugin().getServer().broadcastMessage(message);
 
 	}
-
+	
 	
 	
 	// Other:
