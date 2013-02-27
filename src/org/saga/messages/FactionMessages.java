@@ -399,7 +399,7 @@ public class FactionMessages {
 		if(minutes > 0){
 			
 			Duration durationHM = new Duration(minutes*60000);
-			return faction.getColour2() + "Siege on " + bundle.getName() + " settlement starts in " + GeneralMessages.durationHM(durationHM) + ".";
+			return faction.getColour2() + "Siege on " + bundle.getName() + " settlement starts in " + GeneralMessages.durationDHM(durationHM) + ".";
 		
 		}else{
 			
@@ -416,7 +416,7 @@ public class FactionMessages {
 		if(minutes > 0){
 			
 			Duration durationHM = new Duration(minutes*60000);
-			return faction.getColour2() + "Defence of " + bundle.getName() + " settlement starts in " + GeneralMessages.durationHM(durationHM) + ".";
+			return faction.getColour2() + "Defence of " + bundle.getName() + " settlement starts in " + GeneralMessages.durationDHM(durationHM) + ".";
 		
 		}else{
 			
@@ -448,9 +448,9 @@ public class FactionMessages {
 	public static String warCantBeDeclaredOnSelf(Faction faction) {
 		return Colour.negative + "Can't declare war on self.";
 	}
-	
-	public static String peaceCantBeDeclaredOnSelf(Faction faction) {
-		return Colour.negative + "Can't declare peace on self.";
+
+	public static String warDeclareWait(Faction faction, Faction target, Duration duration) {
+		return Colour.negative + "Need to wait " + GeneralMessages.durationDHM(duration) + " before a war can be declared on " + faction(target, Colour.negative) + " faction.";
 	}
 	
 	
@@ -466,6 +466,10 @@ public class FactionMessages {
 	
 	public static String peaceDeny(Faction faction, Faction target) {
 		return Colour.negative + "The faction is not at war with " + faction(target, Colour.negative) + ".";
+	}
+
+	public static String peaceCantBeDeclaredOnSelf(Faction faction) {
+		return Colour.negative + "Can't declare peace on self.";
 	}
 	
 	

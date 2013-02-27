@@ -28,6 +28,7 @@ import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Bundle;
 import org.saga.settlements.BundleManager;
+import org.saga.utility.Duration;
 import org.saga.utility.SagaLocation;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
@@ -1749,6 +1750,21 @@ public class FactionCommands {
 			return;
 		}
 		
+		// Declared too soon:
+		Long peaceTime = WarManager.manager().getPeaceDeclarationTime(selFactionID, targetFactionID);
+		if(peaceTime != null){
+			
+			long requiredTime = FactionConfiguration.config().getWarDeclareAfterPeaceMinutes() * 60000L;
+			long currenTime = System.currentTimeMillis();
+			
+			if(currenTime - peaceTime < requiredTime){
+				Duration duration = new Duration(requiredTime - (currenTime - peaceTime));
+				selFaction.information(FactionMessages.warDeclareWait(selFaction, targetFaction, duration), sagaPlayer);
+				return;
+			}
+			
+		}
+		
 		// Cost:
 		if(EconomyConfiguration.config().isEnabled()){
 			Integer ownedSettles = SiegeManager.manager().getOwnedBundleCount(selFactionID);
@@ -1768,7 +1784,7 @@ public class FactionCommands {
 		}
 
 		// Declare:
-		WarManager.manager().setWar(selFactionID, targetFactionID);
+		WarManager.manager().handleDeclareWar(selFactionID, targetFactionID);
 		
 		// Inform:
 		selFaction.information(FactionMessages.warDeclaredOn(selFaction, targetFaction));
@@ -1864,6 +1880,7 @@ public class FactionCommands {
 		
 		// Cost:
 		if(EconomyConfiguration.config().isEnabled()){
+			
 			Integer ownedSettles = SiegeManager.manager().getOwnedBundleCount(selFactionID);
 			Double cost = EconomyConfiguration.config().getWarEndCost(ownedSettles);
 			
@@ -1881,7 +1898,7 @@ public class FactionCommands {
 		}
 
 		// Declare:
-		WarManager.manager().setPeace(selFactionID, targetFactionID);
+		WarManager.manager().handleDeclarePeace(selFactionID, targetFactionID);
 		
 		// Inform:
 		selFaction.information(FactionMessages.peaceDeclaredOn(selFaction, targetFaction));

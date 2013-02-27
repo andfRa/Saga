@@ -3,6 +3,11 @@ package org.saga.utility;
 public class Duration {
 
 	/**
+	 * Days.
+	 */
+	private int days;
+
+	/**
 	 * Hours.
 	 */
 	private int hours;
@@ -25,14 +30,22 @@ public class Duration {
 	 */
 	public Duration(long milliseconds) {
 		
-		int totalSecs = (int) (milliseconds/1000);
+		seconds = (int) ((milliseconds/1000)%60);
+		minutes = (int) ((milliseconds/(1000*60))%60);
+		hours = (int) ((milliseconds/(1000*60*60))%24);
+		days = (int) ((milliseconds/ (1000*60*60*24)));
 		
-		hours = totalSecs / 3600;
-		minutes = (totalSecs % 3600) / 60;
-		seconds = totalSecs % 60;
-
 	}
 	
+
+	/**
+	 * Gets the days.
+	 * 
+	 * @return the days
+	 */
+	public int getDays() {
+		return days;
+	}
 	
 	/**
 	 * Gets the hours.
@@ -44,12 +57,30 @@ public class Duration {
 	}
 	
 	/**
+	 * Gets the full hours.
+	 * 
+	 * @return the hours
+	 */
+	public int getFullHours() {
+		return hours + 24 * days;
+	}
+	
+	/**
 	 * Gets the minutes.
 	 * 
 	 * @return the minutes
 	 */
 	public int getMinutes() {
 		return minutes;
+	}
+
+	/**
+	 * Gets the full minutes.
+	 * 
+	 * @return the minutes
+	 */
+	public int getFullMinutes() {
+		return minutes + 60 * getFullHours();
 	}
 	
 	/**
@@ -59,6 +90,15 @@ public class Duration {
 	 */
 	public int getSeconds() {
 		return seconds;
+	}
+
+	/**
+	 * Gets the full seconds.
+	 * 
+	 * @return the seconds
+	 */
+	public int getFullSeconds() {
+		return seconds + 60 * getFullMinutes();
 	}
 	
 	

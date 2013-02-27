@@ -64,6 +64,7 @@ public class WarManager implements SecondTicker{
 		warsDeclared = new Hashtable<Integer, HashSet<Integer>>();
 		alliancesDeclared = new Hashtable<Integer, HashSet<Integer>>();
 		defeatTimes = new Hashtable<Integer, Long>();
+		peaceTimes = new Hashtable<Integer, Hashtable<Integer,Long>>();
 		
 	}
 
@@ -87,6 +88,11 @@ public class WarManager implements SecondTicker{
 		if(defeatTimes == null){
 			SagaLogger.nullField(getClass(), "defeatTimes");
 			defeatTimes = new Hashtable<Integer, Long>();
+		}
+		
+		if(peaceTimes == null){
+			SagaLogger.nullField(getClass(), "peaceTimes");
+			peaceTimes = new Hashtable<Integer, Hashtable<Integer,Long>>();
 		}
 		
 		
@@ -160,7 +166,7 @@ public class WarManager implements SecondTicker{
 	 * @param faction1ID first faction ID
 	 * @param faction2ID second faction ID
 	 */
-	public void setWar(Integer faction1ID, Integer faction2ID) {
+	private void setWar(Integer faction1ID, Integer faction2ID) {
 		
 		addWarDeclaration(faction1ID, faction2ID);
 		addWarDeclaration(faction2ID, faction1ID);
@@ -173,12 +179,39 @@ public class WarManager implements SecondTicker{
 	 * @param faction1ID first faction ID
 	 * @param faction2ID second faction ID
 	 */
-	public void setPeace(Integer faction1ID, Integer faction2ID) {
+	private void removeWar(Integer faction1ID, Integer faction2ID) {
 		
 		removeWarDeclaration(faction1ID, faction2ID);
 		removeWarDeclaration(faction2ID, faction1ID);
 		
 	}
+	
+	
+	/**
+	 * Handles war declaration.
+	 * 
+	 * @param faction1ID first faction ID
+	 * @param faction2ID second faction ID
+	 */
+	public void handleDeclareWar(Integer faction1ID, Integer faction2ID) {
+
+		setWar(faction1ID, faction2ID);
+		
+	}
+	
+	/**
+	 * Handles peace declaration.
+	 * 
+	 * @param faction1ID first faction ID
+	 * @param faction2ID second faction ID
+	 */
+	public void handleDeclarePeace(Integer faction1ID, Integer faction2ID) {
+
+		removeWar(faction1ID, faction2ID);
+		updatePeaceDeclareTime(faction1ID, faction2ID);
+		
+	}
+
 
 	/**
 	 * Checks if there is a war between factions.
@@ -189,6 +222,49 @@ public class WarManager implements SecondTicker{
 	 */
 	public boolean isAtWar(Integer faction1ID, Integer faction2ID) {
 		return getWarDeclarationIDs(faction1ID).contains(faction2ID);
+	}
+	
+	
+	/**
+	 * Updates peace declaration time.
+	 * 
+	 * @param faction1ID first faction ID
+	 * @param faction2ID second faction ID
+	 */
+	public void updatePeaceDeclareTime(Integer faction1ID, Integer faction2ID) {
+		
+		Hashtable<Integer, Long> peaceTimes1 = peaceTimes.get(faction1ID);
+		if(peaceTimes1 == null){
+			peaceTimes1 = new Hashtable<Integer, Long>();
+			peaceTimes.put(faction1ID, peaceTimes1);
+		}
+
+		Hashtable<Integer, Long> peaceTimes2 = peaceTimes.get(faction2ID);
+		if(peaceTimes2 == null){
+			peaceTimes2 = new Hashtable<Integer, Long>();
+			peaceTimes.put(faction2ID, peaceTimes2);
+		}
+		
+		Long time = System.currentTimeMillis();
+		peaceTimes1.put(faction2ID, time);
+		peaceTimes2.put(faction1ID, time);
+		
+	}
+	
+	/**
+	 * Gets the last time peace was declared.
+	 * 
+	 * @param faction1ID faction ID 1
+	 * @param faction2ID faction ID 2
+	 * @return time in milliseconds peace was declared, null if never
+	 */
+	public Long getPeaceDeclarationTime(Integer faction1ID, Integer faction2ID) {
+		
+		Hashtable<Integer, Long> peaceTimes1 = peaceTimes.get(faction1ID);
+		if(peaceTimes1 == null) return null;
+		
+		return peaceTimes1.get(faction2ID);
+		
 	}
 	
 	

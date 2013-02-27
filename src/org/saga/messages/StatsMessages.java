@@ -1094,7 +1094,7 @@ public class StatsMessages {
 		// Siege not started:
 		if(millis > 0){
 			Duration durationHM = new Duration(millis);
-			return "attack in " + GeneralMessages.durationHM(durationHM);
+			return "attack in " + GeneralMessages.durationDHM(durationHM);
 		}
 		
 		// Siege started:
@@ -1146,7 +1146,7 @@ public class StatsMessages {
 		// Siege not started:
 		if(millis > 0){
 			Duration durationHM = new Duration(millis);
-			return "defend in " + GeneralMessages.durationHM(durationHM);
+			return "defend in " + GeneralMessages.durationDHM(durationHM);
 		}
 		
 		// Siege started:
