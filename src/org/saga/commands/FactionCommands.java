@@ -13,7 +13,6 @@ import org.saga.dependencies.EconomyDependency;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.factions.Faction;
 import org.saga.factions.Faction.FactionPermission;
-import org.saga.factions.FactionClaimManager;
 import org.saga.factions.FactionManager;
 import org.saga.factions.SiegeManager;
 import org.saga.factions.WarManager;
@@ -1497,19 +1496,13 @@ public class FactionCommands {
 		Integer bundleId = selBundle.getId();
 		
 		// Not claimed:
-		if(!FactionClaimManager.manager().getOwningFactionId(bundleId).equals(selFaction.getId())){
+		if(!SiegeManager.manager().getOwningFactionID(bundleId).equals(selFaction.getId())){
 			sagaPlayer.message(FactionMessages.notClaimed(selFaction, selBundle));
 			return;
 		}
 		
 		// Remove owner:
-		FactionClaimManager.manager().clearOwner(bundleId);
-		
-		// Set progress:
-		if(FactionClaimManager.manager().getClaimerId(bundleId) == -1){
-			FactionClaimManager.manager().setClaimer(bundleId, selFaction.getId());
-			FactionClaimManager.manager().setProgress(bundleId, 0.95);
-		}
+		SiegeManager.manager().removeOwnerFaction(bundleId);
 		
 		// Inform:
 		selFaction.information(FactionMessages.unclaimed(selFaction, selBundle));

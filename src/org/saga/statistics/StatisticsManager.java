@@ -25,7 +25,7 @@ import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.factions.Faction;
-import org.saga.factions.FactionClaimManager;
+import org.saga.factions.SiegeManager;
 import org.saga.messages.GeneralMessages;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.ProficiencyDefinition;
@@ -972,14 +972,7 @@ public class StatisticsManager implements HourTicker{
 
 	public void setBundlesOwned(Faction faction) {
 
-		setValue("faction_claiming" + "." + "owned" + "." + faction.getName(), FactionClaimManager.manager().findSettlements(faction.getId()).length);
-		
-	}
-	
-	
-	public void setClaims(Faction faction) {
-
-		setValue("factions.claims" + "." + faction.getName(), faction.getClaims());
+		setValue("faction_claiming" + "." + "owned" + "." + faction.getName(), SiegeManager.manager().getOwnedBundleCount(faction.getId()));
 		
 	}
 	

@@ -17,7 +17,6 @@ import org.saga.config.FactionConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.dependencies.PermissionsDependency;
-import org.saga.factions.Faction;
 import org.saga.messages.colours.Colour;
 import org.saga.player.GuardianRune;
 import org.saga.player.SagaPlayer;
@@ -63,10 +62,6 @@ public class AdminMessages {
 
 	public static String setClaims(Settlement settlement){
 		return Colour.positive + "Settlement " + settlement.getName() + " claims set to " + settlement.getTotalClaims() + ".";
-	}
-	
-	public static String setClaims(Faction faction){
-		return Colour.positive + "Faction " + faction.getName() + " claims set to " +faction.getTotalClaims() + ".";
 	}
 	
 	public static String setBuildPoints(Settlement settlement){

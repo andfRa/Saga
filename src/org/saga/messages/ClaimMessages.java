@@ -68,14 +68,8 @@ public class ClaimMessages {
 		return Colour.normal1 + "[" + FactionMessages.faction(defenderFaction, Colour.normal1) + "<-" + FactionMessages.faction(attackerFaction, Colour.normal1) + "]" + claimed;
 
 	}
-
 	
 	
-	// Spawning:
-	public static String spawnDeny(Faction faction){
-		return Colour.negative + "Can't spawn in settlements that are being claimed.";
-	}
-
 	
 	// Broadcast:
 	public static String claimedBcast(Bundle bundle, Faction faction){

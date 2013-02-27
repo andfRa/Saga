@@ -32,7 +32,6 @@ import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.factions.Faction;
-import org.saga.factions.FactionClaimManager;
 import org.saga.factions.FactionManager;
 import org.saga.factions.SiegeManager;
 import org.saga.factions.WarManager;
@@ -889,7 +888,7 @@ public class StatsMessages {
 			// All ranks:
 			StringBuffer resultRanks = new StringBuffer();
 			
-			Hashtable<String, Double> allAvailRanks = FactionClaimManager.manager().getRanks(faction.getId());
+			Hashtable<String, Double> allAvailRanks = SiegeManager.manager().getRanks(faction.getId());
 			ArrayList<ProficiencyDefinition> allRanks = ProficiencyConfiguration.config().getDefinitions(ProficiencyType.RANK, hierarchy);
 			
 			for (ProficiencyDefinition definition : allRanks) {
@@ -941,7 +940,7 @@ public class StatsMessages {
 	private static ChatTable claimed(Faction faction){
 		
 		
-		Settlement[] settlements = FactionClaimManager.manager().findSettlements(faction.getId());
+		ArrayList<Settlement> settlements = SiegeManager.manager().getOwnedSettlements(faction.getId());
 		
 		ColourLoop colours = new ColourLoop().addColor(faction.getColour2());
 		ChatTable table = new ChatTable(colours);
@@ -950,12 +949,14 @@ public class StatsMessages {
 		// Titles:
 		table.addLine(new String[]{GeneralMessages.columnTitle("settlement"), GeneralMessages.columnTitle("location"), GeneralMessages.columnTitle("closest"), GeneralMessages.columnTitle("distance")});
 		
-		if(settlements.length > 0){
+		if(settlements.size() > 0){
 			
-			for (int i = 0; i < settlements.length; i++) {
+			for (int i = 0; i < settlements.size(); i++) {
 				
-				String name = settlements[i].getName();
-				Location location = retTownSquareLoc(settlements[i]);
+				Settlement settlement = settlements.get(i);
+				
+				String name = settlement.getName();
+				Location location = retTownSquareLoc(settlement);
 				
 				String locationStr = "no " + HelpMessages.townSquare();
 				if(location != null) locationStr = location(location);
@@ -963,7 +964,7 @@ public class StatsMessages {
 				String closestName = "none";
 				Location closestLocation = null;
 
-				Settlement closestSettle = closest(settlements[i], settlements);
+				Settlement closestSettle = closest(settlement, settlements);
 				if(closestSettle != null){
 					closestLocation = retTownSquareLoc(closestSettle);
 					closestName = closestSettle.getName();
@@ -1019,7 +1020,7 @@ public class StatsMessages {
 		
 	}
 
-	private static Settlement closest(Settlement settlement, Settlement[] otherSettles){
+	private static Settlement closest(Settlement settlement, ArrayList<Settlement> otherSettles){
 		
 		
 		Double minDistSuared = Double.MAX_VALUE;
@@ -1029,13 +1030,15 @@ public class StatsMessages {
 		Location location = retTownSquareLoc(settlement);
 		if(location == null) return null;
 				
-		for (int i = 0; i < otherSettles.length; i++) {
+		for (int i = 0; i < otherSettles.size(); i++) {
+			
+			Settlement otherSettlement = otherSettles.get(i);
 			
 			// Same settlement:
-			if(settlement == otherSettles[i]) continue;
+			if(settlement == otherSettlement) continue;
 			
 			// Town square:
-			Location otherLocation = retTownSquareLoc(otherSettles[i]);
+			Location otherLocation = retTownSquareLoc(otherSettlement);
 			if(otherLocation == null) continue;
 			
 			// Other world:
@@ -1044,7 +1047,7 @@ public class StatsMessages {
 			Double distSqared = otherLocation.distanceSquared(location);
 			if(distSqared < minDistSuared){
 				minDistSuared = distSqared;
-				closestSettlement = otherSettles[i];
+				closestSettlement = otherSettlement;
 			}
 			
 		}

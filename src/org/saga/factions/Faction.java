@@ -33,7 +33,6 @@ import org.saga.player.ProficiencyDefinition;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
-import org.saga.settlements.Settlement;
 import org.saga.statistics.StatisticsManager;
 import org.saga.utility.SagaLocation;
 
@@ -64,12 +63,12 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	/**
 	 * Settlement level.
 	 */
-	private Integer level; // TODO Remove unused faction level.
+	private Integer level; // TODO: Remove unused faction level.
 
 	/**
 	 * Available claims.
 	 */
-	private Double claims;
+	private Double claims; // TODO: Remove factions claim field.
 
 	
 	/**
@@ -687,109 +686,6 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	
 	
 	
-	// Claims:
-	/**
-	 * Gets the amount of claims.
-	 * 
-	 * @return amount of claims
-	 */
-	public Double getClaims() {
-		return claims;
-	}
-	
-	/**
-	 * Sets the amount of claims.
-	 * 
-	 * @param claims amount of claims
-	 */
-	public void setClaims(Double claims) {
-		this.claims = claims;
-	}
-	
-	/**
-	 * Gets the total claim amount.
-	 * 
-	 * @return total claim amount
-	 */
-	public Integer getTotalClaims() {
-		return claims.intValue();
-	}
-	
-	/**
-	 * Gets the used claim amount.
-	 * 
-	 * @return used claim amount
-	 */
-	public Integer getUsedClaims() {
-		return FactionClaimManager.manager().findSettlementsIds(getId()).length;
-	}
-
-	/**
-	 * Gets the available claims amount.
-	 * 
-	 * @return available claims amount
-	 */
-	public Integer getAvailableClaims() {
-		return getTotalClaims() - getUsedClaims();
-	}
-
-	/**
-	 * Checks if the faction has claims available.
-	 * 
-	 * @return true if available
-	 */
-	public boolean areClaimsAvailable() {
-		return getAvailableClaims() >= 1;
-	}
-	
-	
-	/**
-	 * Gets the claim progress.
-	 * 
-	 * @return claim progress, values 0.0 - 1.0
-	 */
-	public Double getClaimProgress() {
-		return claims - claims.intValue();
-	}
-	
-	/**
-	 * Gets the claimed settlement count.
-	 * 
-	 * @return claimed settlement count
-	 */
-	public int countClaimedSettles() {
-
-		Settlement[] settlemenents = FactionClaimManager.manager().findSettlements(getId());
-		return settlemenents.length;
-		
-		
-	}
-	
-	/**
-	 * Gets factions claim points.
-	 * 
-	 * @return factions claim points
-	 */
-	public Double calcClaimPoints() {
-
-
-		Settlement[] claimedSettles = FactionClaimManager.manager().findSettlements(getId());
-		Integer[] claimedSizes = FactionClaimManager.getSizes(claimedSettles);
-		
-		Double claimPts = 0.0;
-		for (int i = 0; i < claimedSizes.length; i++) {
-			
-			claimPts+= FactionConfiguration.config().getClaimPoints(claimedSizes[i]); 
-			
-		}
-		
-		return claimPts;
-		
-		
-	}
-
-	
-	
 	// Bank:
 	/**
 	 * Gets the amount of coins banked.
@@ -1084,7 +980,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 */
 	public Integer getAvailableRanks(String rankName) {
 		
-		Hashtable<String, Double> ranks = FactionClaimManager.manager().getRanks(id);
+		Hashtable<String, Double> ranks = SiegeManager.manager().getRanks(id);
 		Double amount = ranks.get(rankName);
 		if(amount == null) return 0;
 		
@@ -1487,7 +1383,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		// TODO Add notify for faction saving disabled.
 	}
 	
-
+	
 	
     // Events:
 	/**

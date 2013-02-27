@@ -23,17 +23,13 @@ import org.saga.buildings.Warehouse;
 import org.saga.buildings.production.SagaItem;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
-import org.saga.config.FactionConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.dependencies.PermissionsDependency;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;
-import org.saga.factions.Faction;
-import org.saga.factions.FactionManager;
 import org.saga.messages.AdminMessages;
 import org.saga.messages.EconomyMessages;
-import org.saga.messages.FactionMessages;
 import org.saga.messages.GeneralMessages;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.SettlementMessages;
@@ -605,72 +601,6 @@ public class AdminCommands {
 		
 		// Inform:
 		sagaPlayer.message(AdminMessages.setBuildPoints(selectedSettlement));
-		
-		
-	}
-	
-	@Command(
-			aliases = {"afsetclaims"},
-			usage = "[faction_name] <level>",
-			flags = "",
-			desc = "Set factions available claims.",
-			min = 1,
-			max = 2
-		)
-	@CommandPermissions({"saga.admin.faction.setclaims"})
-	public static void setFactionClaims(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-
-		Double claims = null;
-		Faction selFaction = null;
-
-		// Arguments:
-		if(args.argsLength() == 2){
-			
-			// Faction:
-			String factionName = GeneralMessages.nameFromArg(args.getString(0));
-			selFaction = FactionManager.manager().matchFaction(factionName);
-			if(selFaction == null){
-				sagaPlayer.message(GeneralMessages.invalidFaction(factionName));
-				return;
-			}
-
-			try {
-				claims = Double.parseDouble(args.getString(1));
-			} catch (NumberFormatException e) {
-				sagaPlayer.message(GeneralMessages.notNumber(args.getString(1)));
-				return;
-			}
-			
-		}else{
-			
-			// Faction:
-			selFaction = sagaPlayer.getFaction();
-			if(selFaction == null){
-				sagaPlayer.message(FactionMessages.notMember());
-				return;
-			}
-
-			try {
-				claims = Double.parseDouble(args.getString(0));
-			} catch (NumberFormatException e) {
-				sagaPlayer.message(GeneralMessages.notNumber(args.getString(0)));
-				return;
-			}
-			
-		}
-		
-		// Invalid claims:
-		if(claims < 0 || claims > FactionConfiguration.config().getMaxClaims()){
-			sagaPlayer.message(AdminMessages.factionClaimsOutOfRange(claims + ""));
-			return;
-		}
-		
-		// Set claims:
-		selFaction.setClaims(claims);
-		
-		// Inform:
-		sagaPlayer.message(AdminMessages.setClaims(selFaction));
 		
 		
 	}

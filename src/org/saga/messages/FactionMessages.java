@@ -389,6 +389,10 @@ public class FactionMessages {
 		return Colour.negative + "The faction already owns " + bundle.getName() + ".";
 	}
 	
+	public static String siegeSpawnDeny(Faction faction){
+		return Colour.negative + "Can't spawn in settlements that are under siege.";
+	}
+	
 	
 	
 	// Siege reminders:

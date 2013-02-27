@@ -191,8 +191,8 @@ public class FactionManager {
 			return;
 		}
 
-		// Remove from claim manager:
-		FactionClaimManager.manager().removeFaction(faction.getId());
+		// Remove from siege manager:
+		SiegeManager.manager().wipeFaction(faction.getId());
 
 		
 	}
@@ -253,7 +253,6 @@ public class FactionManager {
 
 		Collection<Faction> factions = this.loadedFactions.values();
 		for (Faction faction : factions) {
-			StatisticsManager.manager().setClaims(faction);
 			StatisticsManager.manager().setRanks(faction);
 		}
 		

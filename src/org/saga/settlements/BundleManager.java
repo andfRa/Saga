@@ -8,7 +8,7 @@ import java.util.Random;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
 import org.saga.SagaLogger;
-import org.saga.factions.FactionClaimManager;
+import org.saga.factions.SiegeManager;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
@@ -352,8 +352,8 @@ public class BundleManager {
 		
 		registeredBundles.remove(bundle.getId());
 		
-		// Remove from claim manager:
-		FactionClaimManager.manager().removeBundle(bundle.getId());
+		// Remove from siege manager:
+		SiegeManager.manager().wipeBundle(bundle.getId());
 		
 		
 	}

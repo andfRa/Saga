@@ -26,7 +26,7 @@ import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
 import org.saga.config.SettlementConfiguration;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.factions.Faction;
-import org.saga.factions.FactionClaimManager;
+import org.saga.factions.SiegeManager;
 import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.messages.EconomyMessages;
@@ -818,7 +818,7 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 		coins+= settlementShare;
 		
 		// Faction:
-		Faction owningFaction = FactionClaimManager.manager().getOwningFaction(getId());
+		Faction owningFaction = SiegeManager.manager().getOwningFaction(getId());
 		if(owningFaction != null) owningFaction.payCoins(factionShare);
 		
 	}

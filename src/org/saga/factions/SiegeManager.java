@@ -12,6 +12,7 @@ import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.saga.Clock;
 import org.saga.Clock.SecondTicker;
 import org.saga.SagaLogger;
+import org.saga.buildings.Building;
 import org.saga.config.FactionConfiguration;
 import org.saga.messages.FactionMessages;
 import org.saga.player.SagaPlayer;
@@ -19,6 +20,7 @@ import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.settlements.Bundle;
 import org.saga.settlements.BundleManager;
+import org.saga.settlements.Settlement;
 
 public class SiegeManager implements SecondTicker{
 
@@ -154,12 +156,16 @@ public class SiegeManager implements SecondTicker{
 	
 	
 	// Declaration:
+	/**
+	 * Handles siege declaration.
+	 * 
+	 * @param factionID faction ID
+	 * @param bundleID bundle ID
+	 */
 	public void handleDeclaration(Integer factionID, Integer bundleID) {
-		
 		
 		declaredSieges.put(bundleID, factionID);
 		declaredDates.put(bundleID, System.currentTimeMillis());
-		
 		
 	}
 
@@ -235,13 +241,15 @@ public class SiegeManager implements SecondTicker{
 		
 	}
 	
+	
+	
 	// Date:
 	/**
-	 * Gets remaining until the siege. Minutes until start (negative) if not started.
+	 * Gets remaining time until the siege. Minutes after start (negative) if started.
 	 * 
 	 * @param factionID faction ID
 	 * @param bundleID bundle ID
-	 * @return elapsed minutes, negative is not started, null if not declared
+	 * @return elapsed minutes, negative if started, null if not declared
 	 */
 	public Integer getSiegeRemainingMinutes(Integer bundleID) {
 		
@@ -260,6 +268,20 @@ public class SiegeManager implements SecondTicker{
 		int prepareMinutes = FactionConfiguration.config().getSiegePrepareMinutes();
 		return prepareMinutes - calcPassedMinutes(date);
 		
+		
+	}
+	
+	/**
+	 * Checks if the bundle is sieged.
+	 * 
+	 * @param bundleID bundle id
+	 * @return true if sieged
+	 */
+	public boolean isSieged(Integer bundleID) {
+		
+		Double progress = siegeProgresses.get(bundleID);
+		if(progress == null) return false;
+		return  true;
 		
 	}
 	
@@ -467,6 +489,25 @@ public class SiegeManager implements SecondTicker{
 	public ArrayList<Bundle> getOwnedBundles(Integer factionID) {
 		return BundleManager.manager().getBundles(getOwnedBundleIDs(factionID));
 	}
+
+	/**
+	 * Gets all bundles owned by the faction.
+	 * 
+	 * @param factionID faction ID
+	 * @return owned bundles
+	 */
+	public ArrayList<Settlement> getOwnedSettlements(Integer factionID) {
+		
+		ArrayList<Bundle> bundles = BundleManager.manager().getBundles(getOwnedBundleIDs(factionID));
+		ArrayList<Settlement> settlements = new ArrayList<Settlement>();
+		
+		for (Bundle bundle : bundles) {
+			if(bundle instanceof Settlement) settlements.add((Settlement) bundle);
+		}
+		
+		return settlements;
+		
+	}
 	
 	/**
 	 * Gets owned bundle count.
@@ -589,7 +630,7 @@ public class SiegeManager implements SecondTicker{
 	 * @param bundleID bundle ID
 	 * @return owning faction ID
 	 */
-	public Integer getOwningID(Integer bundleID) {
+	public Integer getOwningFactionID(Integer bundleID) {
 		return owningFaction.get(bundleID);
 	}
 	
@@ -600,7 +641,7 @@ public class SiegeManager implements SecondTicker{
 	 * @return owning faction
 	 */
 	public Faction getOwningFaction(Integer bundleID) {
-		Integer id = getOwningID(bundleID);
+		Integer id = getOwningFactionID(bundleID);
 		if(id == null) return null;
 		return FactionManager.manager().getFaction(id);
 	}
@@ -625,6 +666,128 @@ public class SiegeManager implements SecondTicker{
 		Integer id = getAttackingID(bundleID);
 		if(id == null) return null;
 		return FactionManager.manager().getFaction(id);
+	}
+	
+	
+	/**
+	 * Removes the owner of the bundle.
+	 * 
+	 * @param bundleID bundle ID
+	 */
+	public void removeOwnerFaction(Integer bundleID) {
+		attackers.remove(bundleID);
+	}
+
+	/**
+	 * Removes the attacker of the bundle.
+	 * 
+	 * @param bundleID bundle ID
+	 */
+	public void removeAttackingFaction(Integer bundleID) {
+		owningFaction.remove(bundleID);
+	}
+	
+	
+
+	// Bonuses from settlements:
+	/**
+	 * Gets all ranks for the given faction.
+	 * 
+	 * @param factionID faction ID
+	 * @return faction ranks
+	 */
+	public Hashtable<String, Double> getRanks(Integer factionID) {
+
+		
+		Hashtable<String, Double> ranks = new Hashtable<String, Double>();
+		
+		ArrayList<Bundle> bundles = getOwnedBundles(factionID);
+		for (Bundle bundle : bundles) {
+
+			ArrayList<Building> buildings = bundle.getBuildings();
+			
+			for (Building building : buildings) {
+				
+				Set<String> bldranks = building.getDefinition().getAllRanks();
+				for (String rank : bldranks) {
+					
+					Double count = ranks.get(rank);
+					if(count == null) count = 0.0;
+					count+= building.getDefinition().getRanks(rank);
+					ranks.put(rank, count);
+					
+				}
+				
+			}
+			
+			
+		}
+		
+		return ranks;
+		
+		
+	}
+	
+	
+	
+	// Total removal:
+	/**
+	 * Wipes a faction.
+	 * 
+	 * @param factonID faction ID
+	 */
+	public void wipeFaction(Integer factonID) {
+		
+		
+		// Siege in progress:
+		Set<Entry<Integer, Integer>> declarations = declaredSieges.entrySet();
+		
+		for (Entry<Integer, Integer> declaration : declarations) {
+			
+			if(declaration.getValue().equals(factonID)){
+				
+				// Declaration:
+				declarations.remove(declaration.getKey());
+
+				// Attackers:
+				attackers.remove(declaration.getKey());
+
+				// Defenders:
+				defenders.remove(declaration.getKey());
+				
+			}
+			
+		}
+		
+		// Owner:
+		Set<Entry<Integer, Integer>> owners = owningFaction.entrySet();
+		
+		for (Entry<Integer, Integer> owner : owners) {
+			
+			if(owner.getValue().equals(factonID)) owningFaction.remove(owner.getKey());
+			
+		}
+		
+		
+	}
+	
+	/**
+	 * Wipes a bundle.
+	 * 
+	 * @param bundleID bundle ID
+	 */
+	public void wipeBundle(Integer bundleID) {
+		
+		
+		// Siege in progress:
+		declaredDates.remove(bundleID);
+		attackers.remove(bundleID);
+		defenders.remove(bundleID);
+		
+		// Owner:
+		owningFaction.remove(bundleID);
+		
+		
 	}
 	
 	

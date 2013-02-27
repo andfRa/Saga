@@ -25,7 +25,7 @@ import org.saga.config.BuildingConfiguration;
 import org.saga.config.FactionConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.exceptions.InvalidLocationException;
-import org.saga.factions.FactionClaimManager;
+import org.saga.factions.SiegeManager;
 import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
 import org.saga.listeners.events.SagaEntityDamageEvent;
@@ -36,8 +36,8 @@ import org.saga.saveload.SagaCustomSerialization;
 import org.saga.settlements.Bundle;
 import org.saga.settlements.BundleToggleable;
 import org.saga.settlements.SagaChunk;
-import org.saga.settlements.Settlement;
 import org.saga.settlements.SagaChunk.ChunkSide;
+import org.saga.settlements.Settlement;
 import org.saga.settlements.Settlement.SettlementPermission;
 import org.saga.utility.chat.ChatUtil;
 import org.sk89q.CommandContext;
@@ -1046,7 +1046,7 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 				if(getChunkBundle().isOptionEnabled(BundleToggleable.OPEN_STORAGE_AREAS) && wrappedEvent.getBlock().getType() != Material.CHEST) event.addBuildOverride(BuildOverride.OPEN_STORAGE_AREA_ALLOW);				
 			
 				// Faction claims:
-				if(FactionClaimManager.manager().getOwningFactionId(getChunkBundle().getId()) == event.getSagaPlayer().getFactionId()){
+				if(SiegeManager.manager().getOwningFactionID(getChunkBundle().getId()) == event.getSagaPlayer().getFactionId()){
 					
 					// Faction storage area access:
 					if(FactionConfiguration.config().isOpenClaimedStorageAreas()) event.addBuildOverride(BuildOverride.OPEN_CLAIMED_STORAGE_AREA_ALLOW);

@@ -17,9 +17,9 @@ import org.saga.buildings.storage.StorageArea;
 import org.saga.config.BuildingConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.factions.Faction;
-import org.saga.factions.FactionClaimManager;
+import org.saga.factions.SiegeManager;
 import org.saga.messages.BuildingMessages;
-import org.saga.messages.ClaimMessages;
+import org.saga.messages.FactionMessages;
 import org.saga.messages.GeneralMessages;
 import org.saga.messages.SettlementMessages;
 import org.saga.messages.StatsMessages;
@@ -724,18 +724,29 @@ public class BuildingCommands {
 			
 		}
 		
-		// Claimed by a faction:
-		Faction ownerFaction = FactionClaimManager.manager().getOwningFaction(selChunkBundle.getId());
-		if(ownerFaction != null && ownerFaction == sagaPlayer.getFaction()){
+		// Sieged by a faction:
+		if(SiegeManager.manager().isSieged(selChunkBundle.getId())){
 			
-			// Being claimed:
-			if(FactionClaimManager.manager().isClaiming(selChunkBundle.getId())){
-				sagaPlayer.message(ClaimMessages.spawnDeny(ownerFaction));
-				return;
+			Faction defendingFaction = SiegeManager.manager().getOwningFaction(selChunkBundle.getId());
+			Faction attackingFaction = SiegeManager.manager().getAttackingFaction(selChunkBundle.getId());
+			Faction playerFaction = sagaPlayer.getFaction();
+		
+			if(playerFaction != null){
+				
+				if(playerFaction == defendingFaction){
+					defendingFaction.information(FactionMessages.siegeSpawnDeny(defendingFaction), sagaPlayer);
+					return;
+				}
+				
+				else if(playerFaction == attackingFaction){
+					attackingFaction.information(FactionMessages.siegeSpawnDeny(attackingFaction), sagaPlayer);
+					return;
+				}
+				
 			}
 			
 		}
-
+		
 		// Permission:
 		else if(!selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.SPAWN)){
 			sagaPlayer.message(GeneralMessages.noPermission());
