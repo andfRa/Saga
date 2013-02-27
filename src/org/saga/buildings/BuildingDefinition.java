@@ -240,11 +240,11 @@ public class BuildingDefinition {
 	}
 	
 	/**
-	 * Gets the required settlement size.
+	 * Gets the required claimed chunks.
 	 * 
-	 * @return required settlement size
+	 * @return required claimed chunks
 	 */
-	public Integer getRequiredSize() {
+	public Integer getRequiredClaimed() {
 
 		return available.getXMin().intValue();
 
@@ -260,7 +260,7 @@ public class BuildingDefinition {
 	public boolean checkRequirements(Settlement settlement, Integer buildingLevel) {
 		
 		// Building not available:
-		if(getRequiredSize() > settlement.getSize()) return false;
+		if(getRequiredClaimed() > settlement.getSize()) return false;
 		
 		return true;
 		

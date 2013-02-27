@@ -390,7 +390,7 @@ public class StatsMessages {
 	
 	
 	// Settlement stats:
-	public static String stats(SagaPlayer sagaPlayer, Settlement settlement, Integer page) {
+	public static String stats(Settlement settlement, Integer page) {
 		
 		
 		ChatBook book = new ChatBook(settlement.getName() + " stats", new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
@@ -437,29 +437,40 @@ public class StatsMessages {
 		ChatTable table = new ChatTable(colours);
 
 		// Claims:
-		table.addLine("size", settlement.getUsedClaimed() + "/" + settlement.getTotalClaims(), 0);
+		table.addLine("claim points", settlement.getUsedClaimed() + "/" + settlement.getTotalClaims(), 0);
 
 		// Building points:
 		table.addLine("build points", settlement.getUsedBuildPoints() + "/" + settlement.getAvailableBuildPoints(), 0);
+
+		// Next claim:
+		double claimProgress = settlement.getClaimProgress();
+		table.addLine("next cpoint", (int)(claimProgress*100) + "%", 0);
 		
+		// Next building point:
+		double buildPointProgress = settlement.getBuildPointsProgress();
+		table.addLine("next bpoint", (int)(buildPointProgress*100) + "%", 0);
+
 		// Owner:
 		if(settlement.hasOwner()){
 			table.addLine("owner", settlement.getOwner(), 0);
 		}else{
 			table.addLine("owner", Colour.veryNegative + "none", 0);
 		}
-
-		// Next claim:
-		double claimProgress = settlement.getClaimProgress();
-		table.addLine("next claim", (int)(claimProgress*100) + "%", 2);
 		
-		// Next building point:
-		double buildPointProgress = settlement.getBuildPointsProgress();
-		table.addLine("next point", (int)(buildPointProgress*100) + "%", 2);
-
-		// Banked:
+		// Economy:
 		if(EconomyConfiguration.config().isEnabled()){
+			
+			Integer claims = settlement.getTotalClaims();
+
+			// Claim cost:
+			table.addLine("claim cost", EconomyMessages.coins(EconomyConfiguration.config().getClaimPointCost(claims)) , 2);
+
+			// Build point cost:
+			table.addLine("build point cost", EconomyMessages.coins(EconomyConfiguration.config().getBuildPointCost(claims)) , 2);
+
+			// Banked:
 			table.addLine("banked", EconomyMessages.coins(settlement.getCoins()), 2);
+			
 		}
 		
 		table.collapse();
@@ -513,7 +524,7 @@ public class StatsMessages {
 		Comparator<BuildingDefinition> comparator = new Comparator<BuildingDefinition>() {
 			@Override
 			public int compare(BuildingDefinition arg0, BuildingDefinition arg1) {
-				return arg0.getRequiredSize() - arg1.getRequiredSize();
+				return arg0.getRequiredClaimed() - arg1.getRequiredClaimed();
 			}
 		};
 		Arrays.sort(definitions, comparator);
@@ -590,8 +601,8 @@ public class StatsMessages {
 		StringBuffer result = new StringBuffer();
 		
 		// Level:
-		Integer reqSize = definition.getRequiredSize();
-		if(reqSize > 0) result.append("size " + reqSize);
+		Integer reqSize = definition.getRequiredClaimed();
+		if(reqSize > 0) result.append("claimed " + reqSize);
 		
 		return result.toString();
 		
@@ -763,13 +774,10 @@ public class StatsMessages {
 			table.addLine("owner", Colour.veryNegative + "none", 0);
 		}
 
-		// Banked:
-		table.addLine("banked", EconomyMessages.coins(faction.getCoins()), 0);
-		
-		// Claimed:
-		table.addLine("wars", "-" + "/" + "-", 2);
+		// Settlements:
+		table.addLine("settlements", SiegeManager.manager().getOwnedBundleCount(faction.getId()).toString(), 0);
 
-		// Costs:
+		// Economy:
 		if(EconomyConfiguration.config().isEnabled()){
 
 			// Siege cost:
@@ -782,6 +790,9 @@ public class StatsMessages {
 
 			// War start cost:
 			table.addLine("war end cost", EconomyMessages.coins(EconomyConfiguration.config().getWarEndCost(size)), 2);
+
+			// Banked:
+			table.addLine("banked", EconomyMessages.coins(faction.getCoins()), 2);
 			
 		}
 

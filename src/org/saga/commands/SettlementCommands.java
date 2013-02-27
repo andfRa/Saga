@@ -1174,7 +1174,7 @@ public class SettlementCommands {
 		selSettlement = (Settlement) selBundle;
 		
 		// Inform:
-		sagaPlayer.message(StatsMessages.stats(sagaPlayer, selSettlement, page -1));
+		sagaPlayer.message(StatsMessages.stats(selSettlement, page -1));
 		
 		
 	}
