@@ -16,6 +16,7 @@ import org.saga.factions.Faction.FactionPermission;
 import org.saga.factions.FactionClaimManager;
 import org.saga.factions.FactionManager;
 import org.saga.factions.SiegeManager;
+import org.saga.factions.WarManager;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.FactionMessages;
 import org.saga.messages.GeneralMessages;
@@ -961,6 +962,12 @@ public class FactionCommands {
 			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
 			return;
 		}
+
+		// At war:
+		if(WarManager.manager().isAtWar(selFaction.getId(), targetFaction.getId())){
+			selFaction.information(FactionMessages.isAtWarDeny(selFaction, targetFaction), sagaPlayer);
+			return;
+		}
 		
 		// Self invite:
 		if(selFaction == targetFaction){
@@ -969,7 +976,7 @@ public class FactionCommands {
 		}
 		
 		// Already an ally:
-		if(selFaction.isAlly(targetFaction.getId()) && targetFaction.isAlly(selFaction.getId())){
+		if(WarManager.manager().isAlly(selFaction.getId(), targetFaction.getId())){
 			sagaPlayer.message(FactionMessages.alreadyAlliance(selFaction, targetFaction));
 			return;
 		}
@@ -1089,14 +1096,19 @@ public class FactionCommands {
 			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
 			return;
 		}
+
+		// At war:
+		if(WarManager.manager().isAtWar(selFaction.getId(), targetFaction.getId())){
+			selFaction.information(FactionMessages.isAtWarDeny(selFaction, targetFaction), sagaPlayer);
+			return;
+		}
 		
 		// Remove request:
 		selFaction.removeAllianceRequest(targetFaction.getId());
 		targetFaction.removeAllianceRequest(selFaction.getId());
 		
 		// Add allies:
-		selFaction.addAlly(targetFaction.getId());
-		targetFaction.addAlly(selFaction.getId());
+		WarManager.manager().setAlliance(selFaction.getId(), targetFaction.getId());
 		
 		// Inform:
 		selFaction.information(FactionMessages.formedAlliance(selFaction, targetFaction));
@@ -1106,11 +1118,11 @@ public class FactionCommands {
 	}
 
 	@Command(
-			aliases = {"fdeclinetally"},
+			aliases = {"fdeclineally"},
 			usage = "[faction_name] [other_faction_name]",
 			flags = "",
 			desc = "Decline an alliance.",
-			min = 1,
+			min = 0,
 			max = 2
 	)
 	@CommandPermissions({"saga.user.faction.alliance.decline"})
@@ -1273,15 +1285,14 @@ public class FactionCommands {
 		}
 		
 		// No alliance:
-		if(!selFaction.isAlly(targetFaction)){
+		if(!WarManager.manager().isAlly(selFaction.getId(), targetFaction.getId())){
 			sagaPlayer.message(FactionMessages.noAlliance(selFaction, targetFaction));
 			return;
 		}
 		
 		// Remove alliance:
-		targetFaction.removeAlly(selFaction.getId());
-		selFaction.removeAlly(targetFaction.getId());
-
+		WarManager.manager().removeAlliance(selFaction.getId(), targetFaction.getId());
+		
 		// Inform:
 		selFaction.information(FactionMessages.brokeAlliance(selFaction, targetFaction));
 		targetFaction.information(FactionMessages.brokeAlliance(targetFaction, selFaction));
@@ -1579,7 +1590,7 @@ public class FactionCommands {
 			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
 			return;
 		}
-		
+
 		// Already owned:
 		Integer bundleID = selBundle.getId();
 		Faction owningFaction = SiegeManager.manager().getOwningFaction(bundleID);
@@ -1588,10 +1599,31 @@ public class FactionCommands {
 			return;
 		}
 		
+		// Taking over from another:
+		if(owningFaction != null){
+			
+			// Ally:
+			if(WarManager.manager().isAlly(selFaction.getId(), owningFaction.getId())){
+				selFaction.information(FactionMessages.isAllyDeny(selFaction, owningFaction), sagaPlayer);
+				return;
+			}
+			
+			// Not at war:
+			if(FactionConfiguration.config().isSiegeWarRequired()){
+				
+				if(!WarManager.manager().isAtWar(selFaction.getId(), owningFaction.getId())){
+					selFaction.information(FactionMessages.peaceDeny(selFaction, owningFaction), sagaPlayer);
+					return;
+				}
+				
+			}
+			
+		}
+		
 		// Already sieged:
 		Faction attackingFaction = SiegeManager.manager().getAttackingFaction(bundleID);
 		if(attackingFaction != null){
-			sagaPlayer.message(FactionMessages.siegeAlreadyDeclared(selFaction, selBundle));
+			selFaction.information(FactionMessages.siegeAlreadyDeclared(selFaction, selBundle), sagaPlayer);
 			return;
 		}
 		
@@ -1623,6 +1655,240 @@ public class FactionCommands {
 		
 	}
 
+	
+	// War:
+	@Command(
+		aliases = {"fdeclarewar"},
+		usage = "[faction_name] <target_faction_name>",
+		flags = "",
+		desc = "Declare war.",
+		min = 1,
+		max = 2
+	)
+	@CommandPermissions({"saga.user.faction.declarewar"})
+	public static void declareWar(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+		
+		Faction selFaction = null;
+		Faction targetFaction = null;
+		
+		String targetFactionName = null;
+
+		// Arguments:
+		switch (args.argsLength()) {
+			case 2:
+				
+				// Faction:
+				String factionName = GeneralMessages.nameFromArg(args.getString(0));
+				selFaction = FactionManager.manager().matchFaction(factionName);
+				
+				if(selFaction == null){
+					sagaPlayer.message(GeneralMessages.invalidFaction(factionName));
+					return;
+				}
+
+				// Target faction:
+				targetFactionName = GeneralMessages.nameFromArg(args.getString(1));
+				targetFaction = FactionManager.manager().matchFaction(targetFactionName);
+				
+				if(targetFaction == null){
+					sagaPlayer.message(GeneralMessages.invalidFaction(targetFactionName));
+					return;
+				}
+				
+				break;
+
+			default:
+				
+				// Faction:
+				selFaction = sagaPlayer.getFaction();
+				
+				if(selFaction == null){
+					sagaPlayer.message(FactionMessages.notMember());
+					return;
+				}
+
+				// Target faction:
+				targetFactionName = GeneralMessages.nameFromArg(args.getString(0));
+				targetFaction = FactionManager.manager().matchFaction(targetFactionName);
+				
+				if(targetFaction == null){
+					sagaPlayer.message(GeneralMessages.invalidFaction(targetFactionName));
+					return;
+				}
+				
+				break;
+				
+		}
+		
+		// IDs:
+		Integer selFactionID = selFaction.getId();
+		Integer targetFactionID = targetFaction.getId();
+		
+		// Permission:
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.START_WAR)){
+			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
+			return;
+		}
+		
+		// Declaring on self:
+		if(selFaction == targetFaction){
+			selFaction.information(FactionMessages.warCantBeDeclaredOnSelf(selFaction), sagaPlayer);
+			return;
+		}
+		
+		// Already at war:
+		if(WarManager.manager().isAtWar(selFactionID, targetFactionID)){
+			selFaction.information(FactionMessages.warAlreadyDeclared(selFaction, targetFaction), sagaPlayer);
+			return;
+		}
+		
+		// Ally:
+		if(WarManager.manager().isAlly(selFactionID, targetFactionID)){
+			selFaction.information(FactionMessages.isAllyDeny(selFaction, targetFaction), sagaPlayer);
+			return;
+		}
+		
+		// Cost:
+		if(EconomyConfiguration.config().isEnabled()){
+			Integer ownedSettles = SiegeManager.manager().getOwnedBundleCount(selFactionID);
+			Double cost = EconomyConfiguration.config().getWarStartCost(ownedSettles);
+			
+			if(selFaction.getCoins() < cost){
+				selFaction.information(EconomyMessages.insufficient(selFaction), sagaPlayer);
+				return;
+			}
+			
+			// Take coins:
+			selFaction.modCoins(-cost);
+			
+			// Inform:
+			selFaction.information(EconomyMessages.spent(selFaction, cost), sagaPlayer);
+			
+		}
+
+		// Declare:
+		WarManager.manager().setWar(selFactionID, targetFactionID);
+		
+		// Inform:
+		selFaction.information(FactionMessages.warDeclaredOn(selFaction, targetFaction));
+		targetFaction.information(FactionMessages.warDeclaredBy(targetFaction, selFaction));
+		
+	}
+	
+	@Command(
+		aliases = {"fdeclarepeace"},
+		usage = "[faction_name] <target_faction_name>",
+		flags = "",
+		desc = "Declare peace.",
+		min = 1,
+		max = 2
+	)
+	@CommandPermissions({"saga.user.faction.declarepeace"})
+	public static void declarePeace(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+		
+		Faction selFaction = null;
+		Faction targetFaction = null;
+		
+		String targetFactionName = null;
+
+		// Arguments:
+		switch (args.argsLength()) {
+			case 2:
+				
+				// Faction:
+				String factionName = GeneralMessages.nameFromArg(args.getString(0));
+				selFaction = FactionManager.manager().matchFaction(factionName);
+				
+				if(selFaction == null){
+					sagaPlayer.message(GeneralMessages.invalidFaction(factionName));
+					return;
+				}
+
+				// Target faction:
+				targetFactionName = GeneralMessages.nameFromArg(args.getString(1));
+				targetFaction = FactionManager.manager().matchFaction(targetFactionName);
+				
+				if(targetFaction == null){
+					sagaPlayer.message(GeneralMessages.invalidFaction(targetFactionName));
+					return;
+				}
+				
+				break;
+
+			default:
+				
+				// Faction:
+				selFaction = sagaPlayer.getFaction();
+				
+				if(selFaction == null){
+					sagaPlayer.message(FactionMessages.notMember());
+					return;
+				}
+
+				// Target faction:
+				targetFactionName = GeneralMessages.nameFromArg(args.getString(0));
+				targetFaction = FactionManager.manager().matchFaction(targetFactionName);
+				
+				if(targetFaction == null){
+					sagaPlayer.message(GeneralMessages.invalidFaction(targetFactionName));
+					return;
+				}
+				
+				break;
+				
+		}
+		
+		// IDs:
+		Integer selFactionID = selFaction.getId();
+		Integer targetFactionID = targetFaction.getId();
+		
+		// Permission:
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.END_WAR)){
+			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
+			return;
+		}
+		
+		// Declaring on self:
+		if(selFaction == targetFaction){
+			selFaction.information(FactionMessages.peaceCantBeDeclaredOnSelf(selFaction), sagaPlayer);
+			return;
+		}
+		
+		// Already at peace:
+		if(!WarManager.manager().isAtWar(selFactionID, targetFactionID)){
+			selFaction.information(FactionMessages.peaceDeny(selFaction, targetFaction), sagaPlayer);
+			return;
+		}
+		
+		// Cost:
+		if(EconomyConfiguration.config().isEnabled()){
+			Integer ownedSettles = SiegeManager.manager().getOwnedBundleCount(selFactionID);
+			Double cost = EconomyConfiguration.config().getWarEndCost(ownedSettles);
+			
+			if(selFaction.getCoins() < cost){
+				selFaction.information(EconomyMessages.insufficient(selFaction), sagaPlayer);
+				return;
+			}
+			
+			// Take coins:
+			selFaction.modCoins(-cost);
+			
+			// Inform:
+			selFaction.information(EconomyMessages.spent(selFaction, cost), sagaPlayer);
+			
+		}
+
+		// Declare:
+		WarManager.manager().setPeace(selFactionID, targetFactionID);
+		
+		// Inform:
+		selFaction.information(FactionMessages.peaceDeclaredOn(selFaction, targetFaction));
+		targetFaction.information(FactionMessages.peaceDeclaredBy(targetFaction, selFaction));
+		
+	}
+	
 	
 	
 	// Messages:
@@ -1661,12 +1927,12 @@ public class FactionCommands {
 		selFaction.chat(sagaPlayer, message);
 		
 		// Inform allies:
-		Collection<Faction> allyFactions = selFaction.getAllyFactions();
+		Collection<Faction> allyFactions = WarManager.manager().getAllyDeclarations(selFaction.getId());
 		for (Faction allyFaction : allyFactions) {
 			allyFaction.chat(sagaPlayer, message);
 		}
-	
-
+		
+		
 	}
 	
 	

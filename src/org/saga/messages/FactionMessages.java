@@ -307,6 +307,10 @@ public class FactionMessages {
 		
 	}
 
+	public static String isAllyDeny(Faction faction, Faction target) {
+		return Colour.negative + "The faction " + faction(target, Colour.negative) + " is an ally.";
+	}
+	
 	
 	
 	// Rank:
@@ -422,6 +426,47 @@ public class FactionMessages {
 		
 	}
 	
+	
+	
+	// Wars:
+	public static String warAlreadyDeclared(Faction faction, Faction target) {
+		return Colour.negative + "War already declared on " + faction(target, Colour.negative) + " faction.";
+	}
+	
+	public static String warDeclaredOn(Faction faction, Faction target) {
+		return faction.getColour2() + "War declared on " + faction(target, faction.getColour2()) + " faction.";
+	}
+	
+	public static String warDeclaredBy(Faction faction, Faction target) {
+		return faction.getColour2() + "Faction " + faction(target, faction.getColour2()) + " declared war.";
+	}
+	
+	public static String isAtWarDeny(Faction faction, Faction target) {
+		return Colour.negative + "The faction is at war with " + faction(target, Colour.negative) + ".";
+	}
+	
+	public static String warCantBeDeclaredOnSelf(Faction faction) {
+		return Colour.negative + "Can't declare war on self.";
+	}
+	
+	public static String peaceCantBeDeclaredOnSelf(Faction faction) {
+		return Colour.negative + "Can't declare peace on self.";
+	}
+	
+	
+	
+	// Peace:
+	public static String peaceDeclaredOn(Faction faction, Faction target) {
+		return faction.getColour2() + "Peace declared with " + faction(target, faction.getColour2()) + " faction.";
+	}
+	
+	public static String peaceDeclaredBy(Faction faction, Faction target) {
+		return faction.getColour2() + "Faction " + faction(target, faction.getColour2()) + " declared peace.";
+	}
+	
+	public static String peaceDeny(Faction faction, Faction target) {
+		return Colour.negative + "The faction is not at war with " + faction(target, Colour.negative) + ".";
+	}
 	
 	
 	

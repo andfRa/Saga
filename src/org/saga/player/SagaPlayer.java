@@ -540,7 +540,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		
 		// Inform:
 		if(befAttrPoints < aftAttrPoints){
-			message(StatsMessages.gaineAttributePoints(aftAttrPoints - befAttrPoints));
+			message(StatsMessages.gainedAttributePoints(aftAttrPoints - befAttrPoints));
 			StatsEffectHandler.playLevelUp(this);
 		}
 		

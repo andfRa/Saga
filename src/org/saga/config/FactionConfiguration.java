@@ -99,6 +99,17 @@ public class FactionConfiguration {
 	
 	// Wars:
 	/**
+	 * Minutes after a new war can be declared after peace.
+	 */
+	private Integer warDeclareAfterPeaceMinutes;
+	
+	/**
+	 * True if a war is required for a siege.
+	 */
+	private Boolean siegeWarRequired;
+	
+	
+	/**
 	 * Minutes after which a settlement can star to be sieged.
 	 */
 	private Integer siegePrepareMinutes;
@@ -239,6 +250,16 @@ public class FactionConfiguration {
 		}
 		
 		// Wars:
+		if(warDeclareAfterPeaceMinutes == null){
+			SagaLogger.nullField(getClass(), "warDeclareAfterPeaceMinutes");
+			warDeclareAfterPeaceMinutes = 1;
+		}
+		
+		if(siegeWarRequired == null){
+			SagaLogger.nullField(getClass(), "siegeWarRequired");
+			siegeWarRequired = true;
+		}
+		
 		if(siegePrepareMinutes == null){
 			SagaLogger.nullField(getClass(), "siegePrepareMinutes");
 			siegePrepareMinutes = 10;
@@ -413,6 +434,24 @@ public class FactionConfiguration {
 	
 	
 	// Wars:
+	/**
+	 * Gets the minutes after which a new war can be declared after declaring peace.
+	 * 
+	 * @return minutes before a new war
+	 */
+	public Integer getWarDeclareAfterPeaceMinutes() {
+		return warDeclareAfterPeaceMinutes;
+	}
+	
+	/**
+	 * Check if a war is required to declare sieges.
+	 * 
+	 * @return true if war is required
+	 */
+	public Boolean isSiegeWarRequired() {
+		return siegeWarRequired;
+	}
+	
 	/**
 	 * Gets the minutes given to prepare for a siege.
 	 * 

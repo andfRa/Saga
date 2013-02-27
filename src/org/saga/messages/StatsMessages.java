@@ -35,6 +35,7 @@ import org.saga.factions.Faction;
 import org.saga.factions.FactionClaimManager;
 import org.saga.factions.FactionManager;
 import org.saga.factions.SiegeManager;
+import org.saga.factions.WarManager;
 import org.saga.messages.colours.Colour;
 import org.saga.messages.colours.ColourLoop;
 import org.saga.player.GuardianRune;
@@ -712,23 +713,11 @@ public class StatsMessages {
 		
 		// Info:
 		book.addTable(info(faction));
-		
-		// Sieges:
-		ArrayList<Bundle> attack = SiegeManager.manager().getDeclaredSiegesAttack(faction.getId());
-		ArrayList<Bundle> defend = SiegeManager.manager().getDeclaredSiegesDefend(faction.getId());
-		
-		if(attack.size() > 0 || defend.size() > 0){
-			
-			book.addLine("");
-			
-			book.addTable(siege(faction, attack, defend));
-			
-		}
-		
+
 		book.addLine("");
 		
-		// Allies:
-		book.addLine(allies(faction));
+		// Allies, enemies and sieges:
+		book.addTable(alliesEnemiesSieges(faction));
 		
 		book.nextPage();
 		
@@ -804,31 +793,71 @@ public class StatsMessages {
 		
 	}
 	
-	private static String allies(Faction faction){
+	private static ChatTable alliesEnemiesSieges(Faction faction){
 		
 		
-		StringBuffer result = new StringBuffer();
+		ColourLoop colours = new ColourLoop().addColor(faction.getColour2());
+		ChatTable table = new ChatTable(colours);
 
-		ArrayList<String> allies = FactionManager.manager().getFactionNames(faction.getAllies());
-		ArrayList<String> allyInvites = FactionManager.manager().getFactionNames(faction.getAllyInvites());
+		ArrayList<Faction> allies = WarManager.manager().getAllyDeclarations(faction.getId());
+		ArrayList<Faction> allyInvites = FactionManager.manager().getFactions(faction.getAllyInvites());
+		ArrayList<Faction> enemies = WarManager.manager().getWarDeclarations(faction.getId());
 		
-		// Allies:
-		result.append("allies: ");
-		if(allies.size() > 0){
-			result.append(ChatUtil.flatten(allies));
+		ArrayList<Bundle> attack = SiegeManager.manager().getDeclaredSiegesAttack(faction.getId());
+		ArrayList<Bundle> defend = SiegeManager.manager().getDeclaredSiegesDefend(faction.getId());
+		
+		// Names:
+		String separator = "  ";
+		table.addLine(new String[]{GeneralMessages.columnTitle("faction"), GeneralMessages.columnTitle("relation"), separator, GeneralMessages.columnTitle("settlement"), GeneralMessages.columnTitle("siege")});
+		
+		// Left:
+		if(enemies.size() != 0 || allies.size() != 0 || allyInvites.size() != 0){
+
+			// Enemies:
+			for (Faction enemy : enemies) {
+				String name = FactionMessages.faction(enemy, faction.getColour2());
+				String relation = "at war";
+				table.addLine(name, relation, 0);
+			}
+			
+			// Allies:
+			for (Faction ally : allies) {
+				String name = FactionMessages.faction(ally, faction.getColour2());
+				String relation = "ally";
+				table.addLine(name, relation, 0);
+			}
+			
+			// Ally invites:
+			for (Faction enemy : allyInvites) {
+				String name = FactionMessages.faction(enemy, faction.getColour2());
+				String relation = "ally invite";
+				table.addLine(name, relation, 0);
+			}
+
 		}else{
-			result.append("none");
-		}
-
-		// Ally invites:
-		if(allyInvites.size() > 0){
-			
-			result.append("\n");
-			result.append("ally invites: " + ChatUtil.flatten(allyInvites));
-			
+			table.addLine("-", "-", 0);
 		}
 		
-		return result.toString();
+		// Right:
+		if(attack.size() != 0 || defend.size() != 0){
+
+			// Siege attack:
+			for (Bundle bundle : attack) {
+				table.addLine(bundle.getName(), siegeAttack(faction, bundle), 3);
+			}
+			
+			// Siege defend:
+			for (Bundle bundle : defend) {
+				table.addLine(bundle.getName(), siegeDefend(faction, bundle), 3);
+			}
+			
+		}else{
+			table.addLine("-", "-", 3);
+		}
+		
+		table.collapse();
+		
+		return table;
 		
 		
 	}
@@ -1051,37 +1080,6 @@ public class StatsMessages {
 	}
 	
 	
-	private static ChatTable siege(Faction faction, ArrayList<Bundle> attack, ArrayList<Bundle> defend) {
-		
-		
-		ColourLoop colours = new ColourLoop().addColor(faction.getColour2());
-		ChatTable table = new ChatTable(colours);
-		
-		// Attacking:
-		if(attack.size() > 0){
-			
-			for (Bundle bundle : attack) {
-				table.addLine("attack " + bundle.getName(), siegeAttack(faction, bundle), 0);
-			}
-			
-		}
-		
-		// Defend:
-		if(defend.size() > 0){
-
-			for (Bundle bundle : defend) {
-				table.addLine("defend " + bundle.getName(), siegeDefend(faction, bundle), 0);
-			}
-			
-		}
-		
-		table.collapse();
-		
-		return table;
-		
-		
-	}
-	
 	private static String siegeAttack(Faction faction, Bundle bundle) {
 		
 		
@@ -1096,7 +1094,7 @@ public class StatsMessages {
 		// Siege not started:
 		if(millis > 0){
 			Duration durationHM = new Duration(millis);
-			return "prepare time " + GeneralMessages.durationHM(durationHM);
+			return "attack in " + GeneralMessages.durationHM(durationHM);
 		}
 		
 		// Siege started:
@@ -1148,7 +1146,7 @@ public class StatsMessages {
 		// Siege not started:
 		if(millis > 0){
 			Duration durationHM = new Duration(millis);
-			return "prepare time " + GeneralMessages.durationHM(durationHM);
+			return "defend in " + GeneralMessages.durationHM(durationHM);
 		}
 		
 		// Siege started:
@@ -1230,7 +1228,7 @@ public class StatsMessages {
 		
 	}
 	
-	public static ChatTable addProgress(ChatTable table, ProductionBuilding building) {
+	private static ChatTable addProgress(ChatTable table, ProductionBuilding building) {
 		
 		
 		SagaResource[] resources = building.getResources();
@@ -1292,7 +1290,7 @@ public class StatsMessages {
 		
 	}
 
-	public static ChatTable addProgress(ChatTable table, TradingPost building) {
+	private static ChatTable addProgress(ChatTable table, TradingPost building) {
 		
 		SagaPricedItem[] exports = EconomyConfiguration.config().getTradingPostExports();
 		
@@ -1339,7 +1337,7 @@ public class StatsMessages {
 	
 	
 	// Attribute points:
-	public static String gaineAttributePoints(Integer amount) {
+	public static String gainedAttributePoints(Integer amount) {
 		
 		return Colour.veryPositive + "Gained " + amount + " attribute points.";
 		

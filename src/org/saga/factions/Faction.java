@@ -169,7 +169,6 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		colour2 = ChatColor.WHITE;
 		playerRanks = new Hashtable<String, Proficiency>();
 		dailyKills = new HashSet<String>();
-		allies = new HashSet<Integer>();
 		allyRequests = new HashSet<Integer>();
 		wages = new Hashtable<String, Double>();
 		
@@ -280,12 +279,6 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		if(dailyKills == null){
 			SagaLogger.nullField(this, "dailyKills");
 			dailyKills = new HashSet<String>();
-			integrity = false;
-		}
-		
-		if(allies == null){
-			SagaLogger.nullField(this, "allies");
-			allies = new HashSet<Integer>();
 			integrity = false;
 		}
 		
@@ -928,82 +921,25 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 
 	
 	
-	// Allies:
-	/**
-	 * Adds a faction ally.
-	 * 
-	 * @param id ally faction ID
-	 * @return true, if the id was on the list
-	 */
-	public boolean addAlly(Integer id) {
-
-		return allies.add(id);
-		
-	}
-	
-	/**
-	 * Adds a faction ally.
-	 * 
-	 * @param id ally faction ID
-	 * @return true, if the id was on the list
-	 */
-	public boolean removeAlly(Integer id) {
-
-		return allies.remove(id);
-		
-	}
-	
-	/**
-	 * Checks if the faction with the given ID is an ally.
-	 * 
-	 * @param id id
-	 * @return true if ally
-	 */
-	public boolean isAlly(Integer id) {
-		
-		return allies.contains(id);
-		
-	}
-
-	/**
-	 * Checks if the faction is an ally.
-	 * 
-	 * @param faction saga faction
-	 * @return true if ally
-	 */
-	public boolean isAlly(Faction faction) {
-		
-		return allies.contains(faction.getId());
-		
-	}
-	
-	/**
-	 * Gets the allies.
-	 * 
-	 * @return the allies
-	 */
-	public HashSet<Integer> getAllies() {
-		return new HashSet<Integer>(allies);
-	}
-	
-	/**
-	 * Gets the ally factions.
-	 * 
-	 * @return the ally factions
-	 */
-	public Collection<Faction> getAllyFactions() {
-		
-		return FactionManager.manager().getFactions(getAllies());
-		
-	}
-	
+	// Ally invitations:
 	/**
 	 * Gets ally invites.
 	 * 
 	 * @return ally invites
 	 */
 	public HashSet<Integer> getAllyInvites() {
+	
+		// TODO: Remove ally declaration migration:
+		if(allies != null){
+			for (Integer allyID : allies) {
+				SagaLogger.info(this, "migrating faction ID "+ allyID +" ally declaration to " + WarManager.class.getSimpleName());
+				WarManager.manager().setAlliance(getId(), allyID);
+			}
+			allies = null;
+		}
+		
 		return new HashSet<Integer>(allyRequests);
+		
 	}
 	
 	/**
@@ -1570,7 +1506,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		}
 
 		// Ally:
-		if(isAlly(event.defenderPlayer.getFactionId())){
+		if(WarManager.manager().isAlly(getId(), event.defenderPlayer.getFactionId())){
 
 			event.addPvpOverride(PvPOverride.ALLY_DENY);
 			
@@ -1588,7 +1524,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		
 
 		// Ally:
-		if(isAlly(event.attackerPlayer.getFactionId())){
+		if(WarManager.manager().isAlly(getId(), event.defenderPlayer.getFactionId())){
 			
 			event.addPvpOverride(PvPOverride.ALLY_DENY);
 			

@@ -25,6 +25,8 @@
 "claimPoints":{"x1":0,"y1":1.0,"x2":250,"y2":5.0},
 "openClaimedStorageAreas":true,
 
+"warDeclareAfterPeaceMinutes":5760,
+"siegeWarRequired":true,
 "siegePrepareMinutes":1440,
 "siegePtsPerSecond":{"x1":-5,"y1":-0.00275,"x2":5,"y2":0.00225},
 "siegeLongRemindIntervalMinutes":30,

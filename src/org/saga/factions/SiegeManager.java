@@ -457,7 +457,7 @@ public class SiegeManager implements SecondTicker{
 		return bundleIDs;
 		
 	}
-
+	
 	/**
 	 * Gets all bundles owned by the faction.
 	 * 
@@ -466,6 +466,16 @@ public class SiegeManager implements SecondTicker{
 	 */
 	public ArrayList<Bundle> getOwnedBundles(Integer factionID) {
 		return BundleManager.manager().getBundles(getOwnedBundleIDs(factionID));
+	}
+	
+	/**
+	 * Gets owned bundle count.
+	 * 
+	 * @param factionID faction ID
+	 * @return owned bundle count
+	 */
+	public Integer getOwnedBundleCount(Integer factionID) {
+		return getOwnedBundles(factionID).size();
 	}
 	
 	
