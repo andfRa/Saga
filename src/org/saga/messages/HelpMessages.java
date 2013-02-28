@@ -31,6 +31,7 @@ import org.saga.messages.colours.ColourLoop;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.ProficiencyDefinition;
 import org.saga.settlements.BundleToggleable;
+import org.saga.utility.Duration;
 import org.saga.utility.chat.ChatBook;
 import org.saga.utility.chat.ChatTable;
 import org.saga.utility.chat.ChatUtil;
@@ -93,8 +94,8 @@ public class HelpMessages {
 		book.addLine("");
 		
 		// Faction wages:
-		book.addLine("Faction receives " + EconomyMessages.coins() + " from owned settlements. " +
-			"Earned coins are distributed between faction band and online members:"
+		book.addLine("Faction receives coins from owned settlements. " +
+			"Earned coins are distributed between the faction and online members:"
 		);
 		
 		book.addLine("");
@@ -118,23 +119,27 @@ public class HelpMessages {
 		
 		book.nextPage();
 		
-		// Settlement buy:
-		int minClaims = SettlementConfiguration.config().getInitialClaims();
-		int maxClaims = SettlementConfiguration.config().getMaxClaims();
-		double claimMinCost = EconomyConfiguration.config().getClaimPointCost(minClaims);
-		double claimMaxCost = EconomyConfiguration.config().getClaimPointCost(maxClaims);
-		double bpointMinCost = EconomyConfiguration.config().getBuildPointCost(minClaims);
-		double bpointMaxCost = EconomyConfiguration.config().getBuildPointCost(maxClaims);
-		
+		// Settlement:
 		book.addLine("Use " + GeneralMessages.command("/sdeposit") + " and " + GeneralMessages.command("/swithdraw") + " to add and remove coins from the settlements bank. " +
 			"Commands " + GeneralMessages.command("/sbuyclaims") + " and " + GeneralMessages.command("/sbuybuildpoints") + " allow to buy more claim and build points. " +
-			"The more claims the settlement has, the more buying new points will cost. " +
-			"Claim points cost " + EconomyMessages.coins(claimMinCost) + " - " + EconomyMessages.coins(claimMaxCost) + ". " +
-			"Build points cost " + EconomyMessages.coins(bpointMinCost) + " - " + EconomyMessages.coins(bpointMaxCost) + "." 
+			"The more claims the settlement has, the more new points will cost."
+		);
+
+		// Faction:
+		book.addLine(
+			"Use " + GeneralMessages.command("/fdeposit") + " and " + GeneralMessages.command("/fwithdraw") + " to add and remove coins from the factions bank. " +
+			"Factions need coins to declare wars, peace, and to siege settlements. " +
+			"Prices go up as the faction gets more settlements."
 		);
 		
-		book.addLine("Use " + GeneralMessages.command("/fdeposit") + " and " + GeneralMessages.command("/fwithdraw") + " to add and remove coins from the factions bank. "
-		);
+		// Creation:
+		if(EconomyConfiguration.config().getFactionCreateCost() > 0){
+			book.addLine("Creating a faction costs " + EconomyMessages.coins(EconomyConfiguration.config().getFactionCreateCost()) + ".");
+		}
+		
+		if(EconomyConfiguration.config().getSettlementCreateCost() > 0){
+			book.addLine("Creating a settlement costs " + EconomyMessages.coins(EconomyConfiguration.config().getSettlementCreateCost()) + ".");
+		}
 		
 		return book.framedPage(page);
 		
@@ -256,20 +261,13 @@ public class HelpMessages {
 		
 		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
 		ChatBook book = new ChatBook("settlement help", colours);
-
-		// Cost:
-		String cost = "";
-		if(EconomyConfiguration.config().isEnabled() && EconomyConfiguration.config().getSettlementCreateCost() > 0){
-			cost = " Creating a settlement costs " + EconomyMessages.coins(EconomyConfiguration.config().getSettlementCreateCost()) + ".";
-		}
 		
 		// Creation and claiming:
 		book.addLine("A settlement will protect your land. " +
 			"Use " + GeneralMessages.command("/ssettle") + " and " + GeneralMessages.command("/sclaim") + " to create the settlement and claim more land. " +
 			"Land is claimed in 16x16 chunks. " +
 			"Use " + GeneralMessages.command("/sunclaim") + " to abandon land. " +
-			"Use " + GeneralMessages.command("/map") + " to see what chunks have already been claimed." +
-			cost
+			"Use " + GeneralMessages.command("/map") + " to see what chunks have already been claimed."
 		);
 		
 		// Dissolve:
@@ -427,22 +425,6 @@ public class HelpMessages {
 		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
 		ChatBook book = new ChatBook("faction help", colours);
 
-		// Cost:
-		String cost = "";
-		if(EconomyConfiguration.config().isEnabled() && EconomyConfiguration.config().getFactionCreateCost() > 0){
-			cost = " Creating a faction costs " + EconomyMessages.coins(EconomyConfiguration.config().getFactionCreateCost()) + ".";
-		}
-		
-		// Claiming:
-		String townSquare = townSquare();
-		book.addLine("Every settlement that has a " + townSquare + " can be claimed by a faction. " +
-			"To claim a settlement faction members must hold the " + townSquare + " for a certain amount of time. " +
-			"When no members remain, claim progress will decrease over time. " +
-			"To abandon a settlement use " + GeneralMessages.command("/funclaim") + ". " +
-			"The total number of available claims increases with time." +
-			cost
-		);
-		
 		// Pvp:
 		String pvp = "";
 		if(FactionConfiguration.config().factionOnlyPvp){
@@ -463,6 +445,40 @@ public class HelpMessages {
 			"To leave the faction use " + GeneralMessages.command("/factionquit") + ". " +
 			"Troublemakers can be kicked by using " + GeneralMessages.command("/fkick") + ". " +
 			formation
+		);
+		
+		book.nextPage();
+		
+		// Sieges:
+		Duration prepare = new Duration(FactionConfiguration.config().getSiegePrepareMinutes()*60000);
+		book.addLine(
+			"Factions can siege settlements. To declare a siege use " + GeneralMessages.command("/fsiege") + " command. " + 
+			"After a siege is declared, factions have " + GeneralMessages.durationDHM(prepare) + " to prepare. " +
+			"Once a siege starts, both attacking and defending faction members must stand in the settlement area. " + 
+			"Siege progress can be seen under " + GeneralMessages.command("/fstats") + ". " +
+			"A siege/defence is successful when the progress bar reaches all the way to the right. " +
+			"If the bar reaches all the way to the left then the siege/defence has failed. "
+		);
+		
+		book.addLine("A claimed settlement provides taxes, more ranks and access to its " + GeneralMessages.command("/sspawn") + " command.");
+		
+		book.nextPage();
+		
+		// Affiliation:
+		book.addLine(
+			"Commands " + GeneralMessages.command("/ssetaffiliation") + " and " + GeneralMessages.command("/sremoveaffiliation") + " allow the settlement members to set the affiliation of the settlement. " +
+			"If the settlement is not owned, then for the affiliated faction, siege is instantaneous. " +
+			"When the settlement is owned by a faction, then affiliation provides bonuses/penalties during sieges."
+		);
+		
+		// Wars:
+		String warReqForSiege = "";
+		if(FactionConfiguration.config().isSiegeWarRequired()) warReqForSiege = "Factions can't siege each others settlements unless a war is declared. ";
+		
+		book.addLine(
+			"Factions can declare war with " + GeneralMessages.command("/fdeclarewar") + " command and peace with " + GeneralMessages.command("/fdeclarepeace") + " command. " +
+			"After a peace is declared, factions can't start a war with each other for certain amount of time. " +
+			warReqForSiege
 		);
 
 		book.nextPage();
