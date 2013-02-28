@@ -724,13 +724,26 @@ public class BuildingCommands {
 			
 		}
 		
+		// Faction spawn:
+		Faction playerFaction = sagaPlayer.getFaction();
+		Faction owningFaction = SiegeManager.manager().getOwningFaction(selChunkBundle.getId());
+		
+		if(playerFaction != null && playerFaction == owningFaction){
+			// Do nothing;
+		}
+		
+		// Permission:
+		else if(!selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.SPAWN)){
+			sagaPlayer.message(GeneralMessages.noPermission());
+			return;
+		}
+		
 		// Sieged by a faction:
 		if(SiegeManager.manager().isSieged(selChunkBundle.getId())){
 			
-			Faction defendingFaction = SiegeManager.manager().getOwningFaction(selChunkBundle.getId());
+			Faction defendingFaction = owningFaction;
 			Faction attackingFaction = SiegeManager.manager().getAttackingFaction(selChunkBundle.getId());
-			Faction playerFaction = sagaPlayer.getFaction();
-		
+			
 			if(playerFaction != null){
 				
 				if(playerFaction == defendingFaction){
@@ -745,12 +758,6 @@ public class BuildingCommands {
 				
 			}
 			
-		}
-		
-		// Permission:
-		else if(!selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.SPAWN)){
-			sagaPlayer.message(GeneralMessages.noPermission());
-			return;
 		}
 		
 		ArrayList<TownSquare> selBuildings = selChunkBundle.getBuildings(TownSquare.class);
