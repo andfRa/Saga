@@ -324,7 +324,7 @@ public class SiegeManager implements SecondTicker{
 		
 		// Progress:
 		int difference = attakcerMembers.size() - defenderMembers.size();
-		double siegePts = FactionConfiguration.config().getSiegePtsPerSecond(difference);
+		double siegePts = getSiegePtsPerSecond(bundleID, difference);
 		Double progress = modSiegeProgress(bundleID, siegePts);
 		
 		// Attacker success:
@@ -406,6 +406,17 @@ public class SiegeManager implements SecondTicker{
 		
 		return amount;
 		
+	}
+	
+	/**
+	 * Gets siege points per second.
+	 * 
+	 * @param bundleID bundle ID
+	 * @param difference difference in attackers and defenders
+	 * @return siege points per second
+	 */
+	public double getSiegePtsPerSecond(Integer bundleID, int difference) {
+		return FactionConfiguration.config().getSiegePtsPerSecond(difference) + getPtsPerSecondBonusAffiliationBonus(bundleID);
 	}
 	
 	
@@ -537,6 +548,7 @@ public class SiegeManager implements SecondTicker{
 	// Attackers and defenders:
 	/**
 	 * Gets the number of attackers during a siege.
+	 * Updates every second.
 	 * 
 	 * @param bundleID bundle ID
 	 * @return number of attackers
@@ -551,6 +563,7 @@ public class SiegeManager implements SecondTicker{
 	
 	/**
 	 * Gets the number of defenders during a siege.
+	 * Updates every second.
 	 * 
 	 * @param bundleID bundle ID
 	 * @return number of defenders
@@ -665,7 +678,7 @@ public class SiegeManager implements SecondTicker{
 	 * @param bundleID bundle ID
 	 * @return attacking faction ID, null if none
 	 */
-	public Integer getAttackingID(Integer bundleID) {
+	public Integer getAttackingFactionID(Integer bundleID) {
 		return declaredSieges.get(bundleID);
 	}
 	
@@ -676,7 +689,7 @@ public class SiegeManager implements SecondTicker{
 	 * @return attacking faction
 	 */
 	public Faction getAttackingFaction(Integer bundleID) {
-		Integer id = getAttackingID(bundleID);
+		Integer id = getAttackingFactionID(bundleID);
 		if(id == null) return null;
 		return FactionManager.manager().getFaction(id);
 	}
@@ -762,6 +775,26 @@ public class SiegeManager implements SecondTicker{
 	 */
 	public void removeAffiliation(Integer bundleID) {
 		affiliation.remove(bundleID);
+	}
+	
+	/**
+	 * Gets the affiliation siege point speed bonus.
+	 * 
+	 * @param bundleID bundle ID
+	 * @return affiliation siege point speed bonus
+	 */
+	public double getPtsPerSecondBonusAffiliationBonus(Integer bundleID) {
+
+		Integer affiliationID = affiliation.get(bundleID);
+		if(affiliationID == null) return 0.0;
+		
+		Integer attackerID = getAttackingFactionID(bundleID);
+		Integer defenderID = getOwningFactionID(bundleID);
+		
+		if(attackerID != null && attackerID.equals(affiliationID)) return FactionConfiguration.config().getSiegePtsPerSecondAffiliatedBonus();
+		if(defenderID != null && defenderID.equals(affiliationID)) return -FactionConfiguration.config().getSiegePtsPerSecondAffiliatedBonus();
+		return 0.0;
+		
 	}
 	
 	

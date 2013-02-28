@@ -30,6 +30,7 @@
 "siegeWarRequired":true,
 "siegePrepareMinutes":1440,
 "siegePtsPerSecond":{"x1":-5,"y1":-0.00275,"x2":5,"y2":0.00225},
+"siegePtsPerSecondAffiliatedModifier":0.0005,
 "siegeLongRemindIntervalMinutes":30,
 "siegeShortRemindStartMinutes":10,
 "siegeShortRemindIntervalMinutes":1,

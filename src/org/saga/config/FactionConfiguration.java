@@ -125,6 +125,11 @@ public class FactionConfiguration {
 	 */
 	private TwoPointFunction siegePtsPerSecond;
 	
+	/**
+	 * Siege point gain bonus per second for affiliations.
+	 */
+	private Double siegePtsPerSecondAffiliatedModifier;
+	
 	
 	/**
 	 * The long remind interval.
@@ -274,6 +279,11 @@ public class FactionConfiguration {
 		if(siegePtsPerSecond == null){
 			SagaLogger.nullField(getClass(), "siegePtsPerSecond");
 			siegePtsPerSecond = new TwoPointFunction(0.0);
+		}
+		
+		if(siegePtsPerSecondAffiliatedModifier == null){
+			SagaLogger.nullField(getClass(), "siegePtsPerSecondAffiliatedBonus");
+			siegePtsPerSecondAffiliatedModifier = 0.0;
 		}
 		
 		
@@ -484,6 +494,15 @@ public class FactionConfiguration {
 	 */
 	public double getSiegePtsPerSecond(int dif) {
 		return siegePtsPerSecond.value(dif);
+	}
+	
+	/**
+	 * Gets siege points gain speed bonus for affiliated bundles.
+	 * 
+	 * @return siege point gain bonus
+	 */
+	public Double getSiegePtsPerSecondAffiliatedBonus() {
+		return siegePtsPerSecondAffiliatedModifier;
 	}
 	
 	/**

@@ -169,7 +169,6 @@ public class GeneralMessages {
 	public static String duration(Duration duration){
 		
 		StringBuffer result = new StringBuffer();
-		if(duration.getSeconds() == 0 && duration.getMinutes() == 0 && duration.getHours() == 0) result.append("0s");
 
 		// Days:
 		if(duration.getDays() != 0) {
@@ -178,13 +177,13 @@ public class GeneralMessages {
 		}
 
 		// Hours:
-		if(duration.getHours() != 0) {
+		if(duration.getHours() != 0 || duration.getDays() != 0) {
 			if(result.length() > 0) result.append(" ");
 			result.append(duration.getHours() + "h");
 		}
 		
 		// Minutes:
-		if(duration.getMinutes() != 0 || duration.getHours() != 0){
+		if(duration.getMinutes() != 0 || duration.getHours() != 0 || duration.getDays() != 0){
 			if(result.length() > 0) result.append(" ");
 			result.append(duration.getMinutes() + "m");
 		}
@@ -200,7 +199,6 @@ public class GeneralMessages {
 	public static String durationDHM(Duration duration){
 		
 		StringBuffer result = new StringBuffer();
-		if(duration.getSeconds() == 0 && duration.getMinutes() == 0 && duration.getHours() == 0) result.append("0s");
 
 		// Days:
 		if(duration.getDays() != 0){
@@ -209,7 +207,7 @@ public class GeneralMessages {
 		}
 		
 		// Hours:
-		if(duration.getHours() != 0){
+		if(duration.getHours() != 0 || duration.getDays() != 0){
 			if(result.length() > 0) result.append(" ");
 			result.append(duration.getHours() + "h");
 		}

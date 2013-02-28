@@ -1162,7 +1162,7 @@ public class StatsMessages {
 			// Counts:
 			int attackers = SiegeManager.manager().getAttackerCount(bundle.getId());
 			int defenders = SiegeManager.manager().getDefenderCount(bundle.getId());
-			double side = FactionConfiguration.config().getSiegePtsPerSecond(attackers-defenders);
+			double side = SiegeManager.manager().getSiegePtsPerSecond(bundle.getId(), attackers-defenders);
 			
 			// Colours:
 			ChatColor colRight = Colour.normal1;
@@ -1214,7 +1214,7 @@ public class StatsMessages {
 			// Counts:
 			int attackers = SiegeManager.manager().getAttackerCount(bundle.getId());
 			int defenders = SiegeManager.manager().getDefenderCount(bundle.getId());
-			double side = FactionConfiguration.config().getSiegePtsPerSecond(attackers-defenders);
+			double side = SiegeManager.manager().getSiegePtsPerSecond(bundle.getId(), attackers-defenders);
 			
 			// Colours:
 			ChatColor colRight = Colour.normal1;
