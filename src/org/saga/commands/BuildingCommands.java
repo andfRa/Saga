@@ -19,10 +19,10 @@ import org.saga.exceptions.InvalidBuildingException;
 import org.saga.factions.Faction;
 import org.saga.factions.SiegeManager;
 import org.saga.messages.BuildingMessages;
-import org.saga.messages.FactionMessages;
 import org.saga.messages.GeneralMessages;
 import org.saga.messages.SettlementMessages;
 import org.saga.messages.StatsMessages;
+import org.saga.messages.WarMessages;
 import org.saga.messages.effects.SettlementEffectHandler;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Bundle;
@@ -734,12 +734,12 @@ public class BuildingCommands {
 			if(playerFaction != null){
 				
 				if(playerFaction == defendingFaction){
-					defendingFaction.information(FactionMessages.siegeSpawnDeny(defendingFaction), sagaPlayer);
+					defendingFaction.information(WarMessages.siegeSpawnDeny(defendingFaction), sagaPlayer);
 					return;
 				}
 				
 				else if(playerFaction == attackingFaction){
-					attackingFaction.information(FactionMessages.siegeSpawnDeny(attackingFaction), sagaPlayer);
+					attackingFaction.information(WarMessages.siegeSpawnDeny(attackingFaction), sagaPlayer);
 					return;
 				}
 				

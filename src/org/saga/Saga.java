@@ -20,6 +20,7 @@ import org.saga.commands.FactionCommands;
 import org.saga.commands.PlayerCommands;
 import org.saga.commands.SettlementCommands;
 import org.saga.commands.StatisticsCommands;
+import org.saga.commands.WarCommands;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.BuildingConfiguration;
@@ -223,6 +224,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		commandMap.register(PlayerCommands.class);
 		commandMap.register(StatisticsCommands.class);
 		commandMap.register(BuildingCommands.class);
+		commandMap.register(WarCommands.class);
 
 		// Load all saga players:
 		loadAllSagaPlayers();

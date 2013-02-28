@@ -14,7 +14,7 @@ import org.saga.Clock.SecondTicker;
 import org.saga.SagaLogger;
 import org.saga.buildings.Building;
 import org.saga.config.FactionConfiguration;
-import org.saga.messages.FactionMessages;
+import org.saga.messages.WarMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
@@ -60,6 +60,12 @@ public class SiegeManager implements SecondTicker{
 	 * Bundle owning faction.
 	 */
 	private Hashtable<Integer, Integer> owningFaction;
+
+	/**
+	 * Bundle affiliation.
+	 */
+	private Hashtable<Integer, Integer> affiliation;
+	
 	
 	/**
 	 * Attackers counts.
@@ -85,6 +91,7 @@ public class SiegeManager implements SecondTicker{
 		declaredDates = new Hashtable<Integer, Long>();
 		siegeProgresses = new Hashtable<Integer, Double>();
 		owningFaction = new Hashtable<Integer, Integer>();
+		affiliation = new Hashtable<Integer, Integer>();
 		
 		attackers = new Hashtable<Integer, Integer>();
 		defenders = new Hashtable<Integer, Integer>();
@@ -117,6 +124,12 @@ public class SiegeManager implements SecondTicker{
 			SagaLogger.nullField(getClass(), "owningFaction");
 			owningFaction = new Hashtable<Integer, Integer>();
 		}
+		
+		if(affiliation == null){
+			SagaLogger.nullField(getClass(), "affiliation");
+			affiliation = new Hashtable<Integer, Integer>();
+		}
+		
 		
 		
 		// Remove unused declarations:
@@ -235,8 +248,8 @@ public class SiegeManager implements SecondTicker{
 		}
 		
 		// Remind:
-		attacker.information(FactionMessages.siegeAttackReminder(attacker, bundle));
-		if(defender != null) defender.information(FactionMessages.siegeDefendReminder(defender, bundle));
+		attacker.information(WarMessages.siegeAttackReminder(attacker, bundle));
+		if(defender != null) defender.information(WarMessages.siegeDefendReminder(defender, bundle));
 		
 		
 	}
@@ -583,8 +596,8 @@ public class SiegeManager implements SecondTicker{
 		Bundle bundle = BundleManager.manager().getBundle(bundleID);
 		
 		// Inform:
-		attacker.information(FactionMessages.siegeAttackSuccess(attacker, bundle));
-		if(defender != null) defender.information(FactionMessages.siegeDefendFailure(defender, bundle));
+		attacker.information(WarMessages.siegeAttackSuccess(attacker, bundle));
+		if(defender != null) defender.information(WarMessages.siegeDefendFailure(defender, bundle));
 		
 		
 	}
@@ -616,8 +629,8 @@ public class SiegeManager implements SecondTicker{
 		Bundle bundle = BundleManager.manager().getBundle(bundleID);
 		
 		// Inform:
-		attacker.information(FactionMessages.siegeAttackFailure(attacker, bundle));
-		if(defender != null) defender.information(FactionMessages.siegeDefendSuccess(defender, bundle));
+		attacker.information(WarMessages.siegeAttackFailure(attacker, bundle));
+		if(defender != null) defender.information(WarMessages.siegeDefendSuccess(defender, bundle));
 		
 	}
 	
@@ -688,7 +701,42 @@ public class SiegeManager implements SecondTicker{
 	}
 	
 	
-
+	
+	// Affiliation:
+	/**
+	 * Gets bundle affiliation faction ID.
+	 * 
+	 * @param bundleID bundle ID
+	 * @return affiliation ID, null if none
+	 */
+	public Integer getAffiliationID(Integer bundleID) {
+		return affiliation.get(bundleID);
+	}
+	
+	/**
+	 * Gets bundle affiliation faction.
+	 * 
+	 * @param bundleID bundle ID
+	 * @return affiliation, null if none
+	 */
+	public Faction getAffiliation(Integer bundleID) {
+		Integer factionID = getAffiliationID(bundleID);
+		if(factionID == null) factionID = -1;
+		return FactionManager.manager().getFaction(factionID);
+	}
+	
+	/**
+	 * Sets the bundles affiliation.
+	 * 
+	 * @param bundleID bundle ID
+	 * @param factionID faction ID
+	 */
+	public void setAffiliation(Integer bundleID, Integer factionID) {
+		affiliation.put(bundleID, factionID);
+	}
+	
+	
+	
 	// Bonuses from settlements:
 	/**
 	 * Gets all ranks for the given faction.
@@ -768,6 +816,15 @@ public class SiegeManager implements SecondTicker{
 			
 		}
 		
+		// Affiliation:
+		Set<Entry<Integer, Integer>> affiliations = affiliation.entrySet();
+		
+		for (Entry<Integer, Integer> affiliation : affiliations) {
+			
+			if(affiliation.getValue().equals(factonID)) owningFaction.remove(affiliation.getKey());
+			
+		}
+
 		
 	}
 	
@@ -786,6 +843,9 @@ public class SiegeManager implements SecondTicker{
 		
 		// Owner:
 		owningFaction.remove(bundleID);
+		
+		// Affiliation:
+		affiliation.remove(bundleID);
 		
 		
 	}
