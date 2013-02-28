@@ -154,20 +154,33 @@ public class WarMessages {
 	// Settlement affiliation:
 	public static String affiliationSet(Bundle bundle, Faction faction) {
 
-		return Colour.normal1 + "Affiliation set to " + FactionMessages.faction(faction, Colour.normal1) + " faction.";
+		return Colour.normal2 + "The settlement is now affiliated with " + FactionMessages.faction(faction, Colour.normal2) + " faction.";
 		
 	}
 	
-	public static String affiliationRemoved(Bundle bundle, Faction faction) {
+	public static String affiliationRemoved(Bundle bundle) {
 
-		return Colour.normal1 + "Affiliation removed.";
+		return Colour.normal2 + "The settlement is no longer affiliated with a faction.";
 		
 	}
+	
+	
+	public static String affiliationAlreadySet(Bundle bundle, Faction faction) {
+
+		return Colour.negative + "The settlement is already affiliated with " + FactionMessages.faction(faction, Colour.negative) + " faction.";
+		
+	}
+	
+	public static String affiliationNotSet(Bundle bundle) {
+
+		return Colour.negative + "The settlement has no affiliation.";
+		
+	}
+	
 	
 	public static String affiliationJoined(Faction faction, Bundle bundle) {
-
-		return faction.getColour2() + "Settlement willingly " + bundle.getName() + " joined the faction.";
-		
+		return faction.getColour2() + "Settlement " + bundle.getName() + " willingly joined the faction.";
 	}
-
+	
+	
 }

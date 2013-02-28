@@ -18,10 +18,12 @@ import org.saga.factions.WarManager;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.FactionMessages;
 import org.saga.messages.GeneralMessages;
+import org.saga.messages.SettlementMessages;
 import org.saga.messages.WarMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Bundle;
 import org.saga.settlements.BundleManager;
+import org.saga.settlements.Settlement.SettlementPermission;
 import org.saga.utility.Duration;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
@@ -131,6 +133,21 @@ public class WarCommands {
 			
 		}
 		
+		// Not owned:
+		else{
+			
+			// Affiliated settlement:
+			Integer affiliationID = SiegeManager.manager().getAffiliationID(selBundle.getId());
+			
+			if(affiliationID != null && affiliationID.equals(selFaction.getId())){
+				
+				SiegeManager.manager().handleSiegeAffiliated(selBundle, selFaction);
+				return;
+				
+			}
+			
+		}
+		
 		// Already sieged:
 		Faction attackingFaction = SiegeManager.manager().getAttackingFaction(bundleID);
 		if(attackingFaction != null){
@@ -167,7 +184,7 @@ public class WarCommands {
 	}
 
 	@Command(
-            aliases = {"fsiegeunclaim","funclaim"},
+            aliases = {"fsiegeunclaim"},
             usage = "[faction_name] <settlement_name>",
             flags = "",
             desc = "Unclaims a claimed settlement.",
@@ -910,6 +927,189 @@ public class WarCommands {
 		selFaction.information(FactionMessages.brokeAlliance(selFaction, targetFaction));
 		targetFaction.information(FactionMessages.brokeAlliance(targetFaction, selFaction));
 
+		
+	}
+	
+	
+	// Settlement affiliation:
+	@Command(
+		aliases = {"ssetaffiliation"},
+		usage = "[settlement_name] <faction_name>",
+		flags = "",
+		desc = "Set settlement affiliation.",
+		min = 0,
+		max = 2
+	)
+	@CommandPermissions({"saga.user.war.setaffiliation"})
+	public static void setAffiliation(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+
+		Bundle selBundle = null;
+		Faction selFaction = null;
+		
+		String strFaction = null;
+		String strBundle = null;
+
+		// Arguments:
+		switch (args.argsLength()) {
+			case 2:
+				
+				// Bundle:
+				strBundle = GeneralMessages.nameFromArg(args.getString(0));
+				selBundle = BundleManager.manager().matchBundle(strBundle);
+				
+				if(selBundle == null){
+					sagaPlayer.message(GeneralMessages.invalidSettlement(strBundle));
+					return;
+				}
+
+				// Faction:
+				strFaction = GeneralMessages.nameFromArg(args.getString(1));
+				selFaction = FactionManager.manager().matchFaction(strFaction);
+
+				if(selFaction == null){
+					sagaPlayer.message(GeneralMessages.invalidFaction(strFaction));
+					return;
+				}
+				
+				break;
+
+			case 1:
+
+				// Bundle:
+				selBundle = sagaPlayer.getBundle();
+				
+				if(selBundle == null){
+					sagaPlayer.message(SettlementMessages.notMember());
+					return;
+				}
+				
+				// Faction:
+				strFaction = GeneralMessages.nameFromArg(args.getString(0));
+				selFaction = FactionManager.manager().matchFaction(strFaction);
+
+				if(selFaction == null){
+					sagaPlayer.message(GeneralMessages.invalidFaction(strFaction));
+					return;
+				}
+				
+				break;
+				
+			default:
+
+				// Bundle:
+				selBundle = sagaPlayer.getBundle();
+				
+				if(selBundle == null){
+					sagaPlayer.message(SettlementMessages.notMember());
+					return;
+				}
+				
+				// Faction:
+				selFaction = sagaPlayer.getFaction();
+				
+				if(selFaction == null){
+					sagaPlayer.message(FactionMessages.notMember());
+					return;
+				}
+				
+				break;
+				
+		}
+		
+		// Permission:
+		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.SET_AFFILIATION)){
+			sagaPlayer.message(GeneralMessages.noPermission());
+			return;
+		}
+		
+		// Faction and bundle IDs:
+		Integer bundleID = selBundle.getId();
+		Integer factionID = selFaction.getId();
+		
+		// Already affiliated:
+		Integer affiliationID = SiegeManager.manager().getAffiliationID(bundleID);
+		if(affiliationID != null && affiliationID.equals(factionID)){
+			sagaPlayer.message(WarMessages.affiliationAlreadySet(selBundle, selFaction));
+			return;
+		}
+		
+		// Set affiliation:
+		SiegeManager.manager().setAffiliation(bundleID, factionID);
+		
+		// Inform:
+		selBundle.information(WarMessages.affiliationSet(selBundle, selFaction));
+		
+		
+	}
+
+	@Command(
+		aliases = {"sremoveaffiliation"},
+		usage = "[settlement_name]",
+		flags = "",
+		desc = "Remove settlement affiliation.",
+		min = 0,
+		max = 1
+	)
+	@CommandPermissions({"saga.user.war.removeaffiliation"})
+	public static void removeAffiliation(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+		
+		Bundle selBundle = null;
+		
+		String strBundle = null;
+
+		// Arguments:
+		switch (args.argsLength()) {
+			case 1:
+				
+				// Bundle:
+				strBundle = GeneralMessages.nameFromArg(args.getString(0));
+				selBundle = BundleManager.manager().matchBundle(strBundle);
+				
+				if(selBundle == null){
+					sagaPlayer.message(GeneralMessages.invalidSettlement(strBundle));
+					return;
+				}
+				
+				break;
+
+			default:
+
+				// Bundle:
+				selBundle = sagaPlayer.getBundle();
+				
+				if(selBundle == null){
+					sagaPlayer.message(SettlementMessages.notMember());
+					return;
+				}
+				
+				break;
+				
+		}
+		
+		// Permission:
+		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.REMOVE_AFFILIATION)){
+			sagaPlayer.message(GeneralMessages.noPermission());
+			return;
+		}
+		
+		// Bundle ID:
+		Integer bundleID = selBundle.getId();
+		
+		// Not affiliated:
+		Integer affiliationID = SiegeManager.manager().getAffiliationID(bundleID);
+		if(affiliationID == null){
+			sagaPlayer.message(WarMessages.affiliationNotSet(selBundle));
+			return;
+		}
+		
+		// Remove affiliation:
+		SiegeManager.manager().removeAffiliation(bundleID);
+		
+		// Inform:
+		selBundle.information(WarMessages.affiliationRemoved(selBundle));
+		
 		
 	}
 	

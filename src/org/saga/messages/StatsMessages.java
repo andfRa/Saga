@@ -457,6 +457,18 @@ public class StatsMessages {
 		}else{
 			table.addLine("owner", Colour.veryNegative + "none", 0);
 		}
+
+		// Owner:
+		String ownerStr = "none";
+		Faction owner = SiegeManager.manager().getOwningFaction(settlement.getId());
+		if(owner != null) ownerStr = FactionMessages.faction(owner, Colour.normal1);
+		table.addLine("owner faction" ,ownerStr , 2);
+		
+		// Affiliation:
+		String affilStr = "none";
+		Faction affiliation = SiegeManager.manager().getAffiliationFaction(settlement.getId());
+		if(affiliation != null) affilStr = FactionMessages.faction(affiliation, Colour.normal1);
+		table.addLine("affiliation" ,affilStr , 2);
 		
 		// Economy:
 		if(EconomyConfiguration.config().isEnabled()){

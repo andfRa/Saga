@@ -688,7 +688,7 @@ public class SiegeManager implements SecondTicker{
 	 * @param bundleID bundle ID
 	 */
 	public void removeOwnerFaction(Integer bundleID) {
-		attackers.remove(bundleID);
+		owningFaction.remove(bundleID);
 	}
 
 	/**
@@ -703,6 +703,26 @@ public class SiegeManager implements SecondTicker{
 	
 	
 	// Affiliation:
+	/**
+	 * Handles affiliated settlement sieging.
+	 * 
+	 * @param bundle bundle
+	 * @param faction faction
+	 */
+	public void handleSiegeAffiliated(Bundle bundle, Faction faction) {
+		
+		// Already owned:
+		if(owningFaction.get(bundle.getId()) != null) return;
+		
+		// Set as owner:
+		owningFaction.put(bundle.getId(), faction.getId());
+		
+		// Inform:
+		faction.information(WarMessages.affiliationJoined(faction, bundle));
+		
+	}
+	
+	
 	/**
 	 * Gets bundle affiliation faction ID.
 	 * 
@@ -719,7 +739,7 @@ public class SiegeManager implements SecondTicker{
 	 * @param bundleID bundle ID
 	 * @return affiliation, null if none
 	 */
-	public Faction getAffiliation(Integer bundleID) {
+	public Faction getAffiliationFaction(Integer bundleID) {
 		Integer factionID = getAffiliationID(bundleID);
 		if(factionID == null) factionID = -1;
 		return FactionManager.manager().getFaction(factionID);
@@ -733,6 +753,15 @@ public class SiegeManager implements SecondTicker{
 	 */
 	public void setAffiliation(Integer bundleID, Integer factionID) {
 		affiliation.put(bundleID, factionID);
+	}
+	
+	/**
+	 * Removes the bundles affiliation.
+	 * 
+	 * @param bundleID bundle ID
+	 */
+	public void removeAffiliation(Integer bundleID) {
+		affiliation.remove(bundleID);
 	}
 	
 	
