@@ -248,20 +248,29 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		
 		Enumeration<String> playerNames = playerRanks.keys();
 		while(playerNames.hasMoreElements()){
+			
 			String playerName = null;
-			Proficiency proficiency = null;
+			Proficiency rank = null;
 			playerName = playerNames.nextElement();
+			
+			if(!isMember(playerName)){
+				SagaLogger.severe(this, "ranks assigned to a non-member");
+				playerRanks.remove(playerName);
+				continue;
+			}
+			
 			try {
-				proficiency = playerRanks.get(playerName);
-				proficiency.complete();
+				rank = playerRanks.get(playerName);
+				rank.complete();
 			} catch (InvalidProficiencyException e) {
-				SagaLogger.severe(this, "tried to add an invalid " + proficiency + " rank:" + e.getMessage());
+				SagaLogger.severe(this, "tried to add an invalid " + rank + " rank:" + e.getMessage());
 				playerRanks.remove(playerName);
 			}
 			catch (NullPointerException e) {
-				SagaLogger.severe(this, "tried to add a unitialized " + proficiency + " rank");
+				SagaLogger.severe(this, "tried to add a unitialized " + rank + " rank");
 				playerRanks.remove(playerName);
 			}
+			
 		}
 		
 		if(spawn != null){
@@ -574,8 +583,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 * 
 	 * @return online members
 	 */
-	public Collection<SagaPlayer> getOnlineMembers() {
-		
+	public Collection<SagaPlayer> getRawOnlineMembers() {
 		
 		Collection<SagaPlayer> onlinePlayers = Saga.plugin().getLoadedPlayers();
 		Collection<SagaPlayer> onlineMembers = new HashSet<SagaPlayer>();
@@ -588,8 +596,61 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		
 		return onlineMembers;
 		
+	}
+
+	/**
+	 * Gets the online members, including limited members.
+	 * 
+	 * @return online members
+	 */
+	public Collection<SagaPlayer> getOnlineMembers() {
+		
+		Collection<SagaPlayer> onlineMembers = new HashSet<SagaPlayer>(getRawOnlineMembers());
+		Collection<SagaPlayer> onlinePlayers = Saga.plugin().getLoadedPlayers();
+		
+		for (SagaPlayer sagaPlayer : onlinePlayers) {
+			
+			if(sagaPlayer.getFactionId().equals(getId())) onlineMembers.add(sagaPlayer);
+			
+		}
+		
+		return onlineMembers;
 		
 	}
+
+	
+	/**
+	 * Gets the limited online members.
+	 * 
+	 * @return limited online members
+	 */
+	public Collection<SagaPlayer> getLimitedOnlineMembers() {
+		
+		Collection<SagaPlayer> onlineLimited = new HashSet<SagaPlayer>();
+		Collection<SagaPlayer> onlinePlayers = Saga.plugin().getLoadedPlayers();
+		
+		for (SagaPlayer sagaPlayer : onlinePlayers) {
+			
+			if(isLimitedMember(sagaPlayer)) onlineLimited.add(sagaPlayer);
+			
+		}
+		
+		return onlineLimited;
+		
+	}
+	
+	/**
+	 * Checks if the player is a limited member.
+	 * 
+	 * @param sagaPlayer saga player
+	 * @return true if a limited member
+	 */
+	public boolean isLimitedMember(SagaPlayer sagaPlayer) {
+		
+		return !isMember(sagaPlayer.getName()) && sagaPlayer.getFactionId().equals(getId());
+		
+	}
+	
 	
 	/**
 	 * Checks if the member is registered.
@@ -1054,7 +1115,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 
 		if(!isEnabled()) return false;
 		
-		int online = getOnlineMembers().size();
+		int online = getRawOnlineMembers().size();
 		
 		// Statistics:
 		StatisticsManager.manager().addManminutes(this, online);
@@ -1149,7 +1210,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		if(!EconomyConfiguration.config().isEnabled()) return;
 		
 		// Pay online members:
-		Collection<SagaPlayer> online = getOnlineMembers();
+		Collection<SagaPlayer> online = getRawOnlineMembers();
 		
 		for (SagaPlayer sagaPlayer : online) {
 			
@@ -1185,7 +1246,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 		
 		if(!EconomyConfiguration.config().isEnabled()) return;
 		
-		Collection<SagaPlayer> online = getOnlineMembers();
+		Collection<SagaPlayer> online = getRawOnlineMembers();
 		
 		double[] wageWeigths = new double[online.size()];
 		String[] names = new String[online.size()];

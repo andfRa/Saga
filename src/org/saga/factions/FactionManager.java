@@ -59,13 +59,6 @@ public class FactionManager {
 			return;
 		}
 		
-		// Not on the list:
-		if(!faction.isMember(sagaPlayer.getName())){
-			SagaLogger.severe(getClass(), "player " + sagaPlayer.getName() + " is not on the member list for faction " + faction);
-			sagaPlayer.removeFactionId();
-			return;
-		}
-		
 		
 	}
 	

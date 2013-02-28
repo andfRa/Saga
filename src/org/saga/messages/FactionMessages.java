@@ -19,7 +19,7 @@ public class FactionMessages {
 	// Create/delete:
 	public static String created(Faction faction) {
 
-		return Colour.normal1 + "Created " + faction(faction, faction.getColour2()) + " faction.";
+		return Colour.normal1 + "Created " + faction(faction, Colour.normal1) + " faction.";
 		
 	}
 
@@ -240,7 +240,7 @@ public class FactionMessages {
 
 	
 	
-	// Ally:
+	// Alliance:
 	public static String sentAlliance(Faction faction, Faction target) {
 		
 		return faction.getColour2() + "An alliance request was sent to " + faction(target, faction.getColour2()) + " faction.";
@@ -474,6 +474,25 @@ public class FactionMessages {
 
 	public static String peaceCantBeDeclaredOnSelf(Faction faction) {
 		return Colour.negative + "Can't declare peace on self.";
+	}
+	
+	
+	
+	// Limited membership:
+	public static String limitedMembersCantQuit(Faction faction) {
+		return Colour.negative + "Limited members can't quit.";
+	}
+	
+	public static String limitedMemberCantQuitInfo() {
+		return Colour.normal1 + "To leave the faction either quit the settlement or join another faction.";
+	}
+	
+	public static String limitedMembersCantBeKicked(Faction faction) {
+		return Colour.negative + "Can't kick limited members.";
+	}
+	
+	public static String limitedMembersCantHaveRanks(Faction faction) {
+		return Colour.negative + "Can't assign ranks to limited members.";
 	}
 	
 	

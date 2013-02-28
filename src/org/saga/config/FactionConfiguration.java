@@ -26,7 +26,8 @@ public class FactionConfiguration {
 		return instance;
 	}
 	
-
+	
+	
 	/**
 	 * If true then only faction vs faction pvp is allowed.
 	 */
@@ -97,7 +98,12 @@ public class FactionConfiguration {
 	private Boolean openClaimedStorageAreas;
 	
 	
-	// Wars:
+	// Wars and sieges:
+	/**
+	 * If true then limited faction members are enabled.
+	 */
+	private Boolean enableLimitedMembership;
+	
 	/**
 	 * Minutes after a new war can be declared after peace.
 	 */
@@ -148,11 +154,6 @@ public class FactionConfiguration {
 	 * Rank assigned to joined members.
 	 */
 	private String defaultRank;
-
-//	/**
-//	 * Rank assigned to faction owner.
-//	 */
-//	private String ownerRank;
 
 	/**
 	 * Hierarchy minimum.
@@ -250,6 +251,11 @@ public class FactionConfiguration {
 		}
 		
 		// Wars:
+		if(enableLimitedMembership == null){
+			SagaLogger.nullField(getClass(), "enableLimitedMembership");
+			enableLimitedMembership = false;
+		}
+		
 		if(warDeclareAfterPeaceMinutes == null){
 			SagaLogger.nullField(getClass(), "warDeclareAfterPeaceMinutes");
 			warDeclareAfterPeaceMinutes = 1;
@@ -434,6 +440,15 @@ public class FactionConfiguration {
 	
 	
 	// Wars:
+	/**
+	 * Checks if limited members are enabled.
+	 * 
+	 * @return true if limited members are enabled
+	 */
+	public Boolean isLimitedMembershipEnabled() {
+		return enableLimitedMembership;
+	}
+	
 	/**
 	 * Gets the minutes after which a new war can be declared after declaring peace.
 	 * 

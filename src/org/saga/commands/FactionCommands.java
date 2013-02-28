@@ -64,12 +64,13 @@ public class FactionCommands {
 			name = name.replaceAll("  ", " ");
 		}
 
-    	// Already in faction:
-    	if(sagaPlayer.getFaction() != null){
-    		sagaPlayer.message(FactionMessages.alreadyInFaction());
-    		return;
-    	}
-
+		// Full faction member:
+		Faction playerFaction = sagaPlayer.getFaction();
+		if(playerFaction != null && !playerFaction.isLimitedMember(sagaPlayer)){
+			sagaPlayer.message(FactionMessages.alreadyInFaction());
+			return;
+		}
+		
     	// Validate name:
     	if(!validateName(name)){
     		sagaPlayer.message(FactionMessages.invalidName());
@@ -166,8 +167,9 @@ public class FactionCommands {
 			return;
 		}
 		
-		// Already in a faction:
-		if(selPlayer.getFaction() != null){
+		// Full faction member:
+		Faction playerFaction = selPlayer.getFaction();
+		if(playerFaction != null && !playerFaction.isLimitedMember(selPlayer)){
 			sagaPlayer.message(FactionMessages.alreadyInFaction(selPlayer));
 			return;
 		}
@@ -197,16 +199,17 @@ public class FactionCommands {
 	public static void accept(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-		String argsFaction = null;
-		
 		Faction selFaction = null;
+
+		String strFaction = null;
 		
-		// Faction member:
-		if(sagaPlayer.getFaction() != null){
+		// Full faction member:
+		Faction playerFaction = sagaPlayer.getFaction();
+		if(playerFaction != null && !playerFaction.isLimitedMember(sagaPlayer)){
 			sagaPlayer.message(FactionMessages.alreadyInFaction());
 			return;
 		}
-    	
+		
     	// No invites:
     	ArrayList<Faction> inviteFactions = FactionManager.manager().getFactions(sagaPlayer.getFactionInvites());
     	if(inviteFactions.size() == 0){
@@ -218,16 +221,16 @@ public class FactionCommands {
     	switch (args.argsLength()) {
 			case 1:
 				
-				argsFaction = args.getString(0);
-				selFaction = FactionManager.manager().matchFaction(argsFaction);
+				strFaction = args.getString(0);
+				selFaction = FactionManager.manager().matchFaction(strFaction);
 				
 				if(selFaction == null){
-					sagaPlayer.message(GeneralMessages.invalidFaction(argsFaction));
+					sagaPlayer.message(GeneralMessages.invalidFaction(strFaction));
 					return;
 				}
 				
 				if(!inviteFactions.contains(selFaction)){
-					sagaPlayer.message(FactionMessages.noInvite(argsFaction));
+					sagaPlayer.message(FactionMessages.noInvite(strFaction));
 					return;
 				}
 				
@@ -390,9 +393,15 @@ public class FactionCommands {
 			sagaPlayer.message(FactionMessages.cantKickOwner(selFaction));
 			return;
 		}
+
+		// Limited member:
+		if(selFaction.isLimitedMember(selPlayer)){
+			sagaPlayer.message(FactionMessages.limitedMembersCantBeKicked(selFaction));
+			return;
+		}
 		
 		// Not faction member:
-		if(!selFaction.equals(selPlayer.getFaction()) ){
+		if(!selFaction.equals(selPlayer.getFaction())){
 			sagaPlayer.message(FactionMessages.notMember(selPlayer));
 			return;
 		}
@@ -455,6 +464,13 @@ public class FactionCommands {
 			sagaPlayer.message(FactionMessages.notMember());
 			return;
 			
+		}
+		
+		// Limited member:
+		if(selFaction.isLimitedMember(sagaPlayer)){
+			sagaPlayer.message(FactionMessages.limitedMembersCantQuit(selFaction));
+			sagaPlayer.message(FactionMessages.limitedMemberCantQuitInfo());
+			return;
 		}
 		
 //		// Permission:
@@ -556,16 +572,16 @@ public class FactionCommands {
 				
 		}
 
+		// Permission:
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.RESIGN)){
+			sagaPlayer.message(GeneralMessages.noPermission());
+			return;
+		}
+		
 		try {
 			selPlayer = Saga.plugin().forceSagaPlayer(targetName);
 		} catch (NonExistantSagaPlayerException e) {
 			sagaPlayer.message(GeneralMessages.invalidPlayer(targetName));
-			return;
-		}
-		
-		// Permission:
-		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.RESIGN)){
-			sagaPlayer.message(GeneralMessages.noPermission());
 			return;
 		}
 		
@@ -670,8 +686,14 @@ public class FactionCommands {
 			return;
 		}
 
-		// Not faction member:
-		if( !selFaction.equals(selPlayer.getFaction()) ){
+		// Limited member:
+		if(selFaction.isLimitedMember(selPlayer)){
+			sagaPlayer.message(FactionMessages.limitedMembersCantHaveRanks(selFaction));
+			return;
+		}
+		
+		// Not a member:
+		if(selFaction != selPlayer.getFaction()){
 			sagaPlayer.message(FactionMessages.notMember(selPlayer));
 			return;
 		}

@@ -16,12 +16,14 @@ import org.saga.SagaLogger;
 import org.saga.buildings.production.SagaItem;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
+import org.saga.config.FactionConfiguration;
 import org.saga.dependencies.ChatDependency;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.dependencies.PermissionsDependency;
 import org.saga.dependencies.Trader;
 import org.saga.factions.Faction;
 import org.saga.factions.FactionManager;
+import org.saga.factions.SiegeManager;
 import org.saga.messages.GeneralMessages.CustomColour;
 import org.saga.messages.PlayerMessages;
 import org.saga.messages.StatsMessages;
@@ -617,7 +619,18 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	 * @return factions ID, -1 if none
 	 */
 	public Integer getFactionId() {
+		
+		// Undecided members:
+		if(factionId == -1 && chunkGroupId != -1 && FactionConfiguration.config().isLimitedMembershipEnabled()){
+			
+			Integer owningID = SiegeManager.manager().getOwningFactionID(chunkGroupId);
+			if(owningID != null) return owningID;
+			
+		}
+			
+			
 		return factionId;
+		
 	}
 
 	/**
@@ -643,6 +656,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	 */
 	public Faction getFaction() {
 		
+		Integer factionId = getFactionId();
 		if(factionId == -1) return null;
 		
 		return FactionManager.manager().getFaction(factionId);

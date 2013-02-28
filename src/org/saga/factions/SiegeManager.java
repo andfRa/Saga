@@ -638,7 +638,7 @@ public class SiegeManager implements SecondTicker{
 	 * Gets the owning faction.
 	 * 
 	 * @param bundleID bundle ID
-	 * @return owning faction
+	 * @return owning faction, null if none
 	 */
 	public Faction getOwningFaction(Integer bundleID) {
 		Integer id = getOwningFactionID(bundleID);
@@ -650,7 +650,7 @@ public class SiegeManager implements SecondTicker{
 	 * Gets the attacking faction ID.
 	 * 
 	 * @param bundleID bundle ID
-	 * @return attacking faction ID
+	 * @return attacking faction ID, null if none
 	 */
 	public Integer getAttackingID(Integer bundleID) {
 		return declaredSieges.get(bundleID);

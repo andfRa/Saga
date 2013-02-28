@@ -3,6 +3,7 @@ package org.saga.messages;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -940,6 +941,38 @@ public class StatsMessages {
 			
 			// Add roles:
 			result.append(resultRanks);
+			
+		}
+		
+		// Limited members:
+		if(FactionConfiguration.config().isLimitedMembershipEnabled()){
+			
+			result.append("\n");
+			result.append("\n");
+			
+			Collection<SagaPlayer> onlineLimted = faction.getLimitedOnlineMembers();
+			
+			// Naming:
+			result.append(general + GeneralMessages.tableTitle("limited membership"));
+			
+			result.append("\n");
+			
+			if(onlineLimted.size() > 0){
+				
+				Collection<String> limitedNames = new ArrayList<String>();
+				
+				for (SagaPlayer sagaPlayer : onlineLimted) {
+					limitedNames.add(sagaPlayer.getName());
+				}
+				
+				result.append(normal);
+				result.append(ChatUtil.flatten(limitedNames));
+				
+			}else{
+				
+				result.append(normal + "none online");
+				
+			}
 			
 		}
 		
