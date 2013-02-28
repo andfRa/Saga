@@ -40,7 +40,7 @@ public class WarCommands {
             min = 1,
             max = 2
 		)
-	@CommandPermissions({"saga.user.faction.siege"})
+	@CommandPermissions({"saga.user.war.siege"})
 	public static void siege(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
@@ -167,14 +167,14 @@ public class WarCommands {
 	}
 
 	@Command(
-            aliases = {"funclaim"},
+            aliases = {"fsiegeunclaim","funclaim"},
             usage = "[faction_name] <settlement_name>",
             flags = "",
             desc = "Unclaims a claimed settlement.",
             min = 1,
             max = 2
 		)
-	@CommandPermissions({"saga.user.faction.unclaim"})
+	@CommandPermissions({"saga.user.war.siegeunclaim"})
 	public static void unsiege(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
@@ -267,7 +267,7 @@ public class WarCommands {
 		min = 1,
 		max = 2
 	)
-	@CommandPermissions({"saga.user.faction.declarewar"})
+	@CommandPermissions({"saga.user.war.declarewar"})
 	public static void declareWar(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
@@ -401,7 +401,7 @@ public class WarCommands {
 		min = 1,
 		max = 2
 	)
-	@CommandPermissions({"saga.user.faction.declarepeace"})
+	@CommandPermissions({"saga.user.war.declarepeace"})
 	public static void declarePeace(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
@@ -518,7 +518,7 @@ public class WarCommands {
 			min = 1,
 			max = 2
 	)
-	@CommandPermissions({"saga.user.faction.alliance.request"})
+	@CommandPermissions({"saga.user.war.alliance.request"})
 	public static void allianceRequest(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 	    	
 		
@@ -612,7 +612,7 @@ public class WarCommands {
 			min = 0,
 			max = 2
 	)
-	@CommandPermissions({"saga.user.faction.alliance.accept"})
+	@CommandPermissions({"saga.user.war.alliance.accept"})
 	public static void allianceAccept(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 	    	
 		
@@ -738,7 +738,7 @@ public class WarCommands {
 			min = 0,
 			max = 2
 	)
-	@CommandPermissions({"saga.user.faction.alliance.decline"})
+	@CommandPermissions({"saga.user.war.alliance.decline"})
 	public static void allianceDecline(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 	    	
 		
@@ -846,7 +846,7 @@ public class WarCommands {
 			min = 1,
 			max = 2
 	)
-	@CommandPermissions({"saga.user.faction.alliance.remove"})
+	@CommandPermissions({"saga.user.war.alliance.remove"})
 	public static void breakAlliance(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 	    	
 		

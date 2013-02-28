@@ -191,6 +191,7 @@ public class AdminMessages {
 				add("saga.user.settlement");
 				add("saga.user.building");
 				add("saga.user.faction");
+				add("saga.user.war");
 				add("saga.user.economy");
 				add("saga.admin");
 				add("saga.special");
@@ -293,6 +294,7 @@ public class AdminMessages {
 				add("saga.user.settlement");
 				add("saga.user.building");
 				add("saga.user.faction");
+				add("saga.user.war");
 				add("saga.user.economy");
 				add("saga.admin");
 				add("saga.special");
@@ -556,6 +558,7 @@ public class AdminMessages {
 				add("saga.user.settlement");
 				add("saga.user.building");
 				add("saga.user.faction");
+				add("saga.user.war");
 				add("saga.user.economy");
 				add("saga.admin");
 				add("saga.special");
@@ -640,6 +643,7 @@ public class AdminMessages {
 				add("saga.user.settlement");
 				add("saga.user.building");
 				add("saga.user.faction");
+				add("saga.user.war");
 				add("saga.user.economy");
 				add("saga.admin");
 				add("saga.special");
