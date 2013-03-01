@@ -33,11 +33,21 @@ public class VanillaConfiguration {
 	 * Instance of the configuration.
 	 */
 	transient private static VanillaConfiguration instance;
-	
+
 	/**
 	 * Minutes in a minecraft day.
 	 */
 	public static final Double MINUTES_IN_MC_DAY = 20.0; 
+
+	/**
+	 * Maximum food level.
+	 */
+	public static final Integer FOOD_LEVEL_MAX = 20; 
+	
+	/**
+	 * Maximum exhaustion.
+	 */
+	public static final float EXHAUSTION_MAX = 4.0f; 
 	
 	
 	/**

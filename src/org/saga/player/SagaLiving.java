@@ -176,7 +176,28 @@ public class SagaLiving <T extends LivingEntity>{
 	}
 	
 	
-
+	
+	// Food level:
+	/**
+	 * Gets food level.
+	 * 
+	 * @return energy level
+	 */
+	public double getFoodLevel() {
+		return 0.0;
+	}
+	
+	/**
+	 * Modifies food level.
+	 * 
+	 * @param amount amount to modify by
+	 */
+	public void modFoodLevel(double amount) {
+		// Depends on implementation:
+	}
+	
+	
+	
 	// Managers:
 	/**
 	 * Gets the ability manager.

@@ -17,6 +17,7 @@ import org.saga.buildings.production.SagaItem;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.FactionConfiguration;
+import org.saga.config.VanillaConfiguration;
 import org.saga.dependencies.ChatDependency;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.dependencies.PermissionsDependency;
@@ -484,6 +485,56 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		
 	}
 	
+	
+	// Food level:
+	/**
+	 * Gets players food level.
+	 * 
+	 * @return players food level
+	 */
+	@Override
+	public double getFoodLevel() {
+		
+		if(livingEntity == null) return 0.0;
+		
+		return livingEntity.getFoodLevel() - (livingEntity.getExhaustion() / 4.0);
+		
+	}
+	
+	/**
+	 * Modifies players energy.
+	 * 
+	 * @param amount amount to modify by
+	 */
+	@Override
+	public void modFoodLevel(double amount) {
+		
+		if(livingEntity == null) return;
+		
+		int foodLevel = livingEntity.getFoodLevel();
+		float exhaustion = livingEntity.getExhaustion();
+		
+		int foodAmt = (int)amount;
+		float exhAmt = (float) (amount - foodAmt);
+		
+		foodLevel-= foodAmt;
+		exhaustion+= exhAmt;
+		
+		// Normalise exhaustion:
+		while(exhaustion > VanillaConfiguration.EXHAUSTION_MAX){
+			exhaustion-= VanillaConfiguration.EXHAUSTION_MAX;
+			foodLevel-= 1;
+		}
+		
+		// Normalise food level:
+		if(foodLevel < 0) foodLevel = 0;
+		
+		// Set values:
+		livingEntity.setFoodLevel(foodLevel);
+		livingEntity.setExhaustion(exhaustion);
+		
+		
+	}
 	
 
 	// Experience:

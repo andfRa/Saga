@@ -56,6 +56,11 @@ public class AbilityDefinition{
 	private TwoPointFunction usedAmount;
 	
 	/**
+	 * Used amount of food.
+	 */
+	private TwoPointFunction usedFood;
+	
+	/**
 	 * Cooldown.
 	 */
 	private TwoPointFunction cooldown;
@@ -161,6 +166,12 @@ public class AbilityDefinition{
 			SagaLogger.nullField(this, "usedAmount");
 		}
 		usedAmount.complete();
+		
+		if(usedFood == null){
+			usedFood = new TwoPointFunction(0.0);
+			SagaLogger.nullField(this, "usedFood");
+		}
+		usedFood.complete();
 		
 		if(cooldown == null){
 			cooldown = new TwoPointFunction(0.0);
@@ -289,6 +300,16 @@ public class AbilityDefinition{
 	 */
 	public Integer getMaxAmount(Integer level) {
 		return (int)Math.ceil(usedAmount.value(level));
+	}
+	
+	/**
+	 * Gets used food.
+	 * 
+	 * @param score score
+	 * @return used food
+	 */
+	public double getUsedFood(Integer score) {
+		return usedFood.value(score);
 	}
 	
 	/**

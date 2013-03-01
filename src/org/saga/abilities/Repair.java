@@ -110,12 +110,17 @@ public class Repair extends Ability{
 			sagaPlayer.message(AbilityMessages.repairCantRepair(item.getType()));
 			return false;
 		}
+		
+		// TODO: Remove repair ability.
+		int a = 2;
+		if(a>1) return false;
+		
 
-		// Check item consumption:
-		if(!checkCost(usedMaterial, 1)){
-			sagaPlayer.message(AbilityMessages.insufficientItems(this, usedMaterial, 1));
-			return false;
-		}
+//		// Check item consumption:
+//		if(!checkCost(usedMaterial, 1)){
+//			sagaPlayer.message(AbilityMessages.insufficientItems(this, usedMaterial, 1));
+//			return false;
+//		}
 
 		// Check enchant levels:
 		if(enchScore > 0){

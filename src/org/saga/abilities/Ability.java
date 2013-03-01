@@ -293,7 +293,28 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	
 	
 	
-	// Trigger handling:
+	// Trigger requirements:
+	/**
+	 * Checks if the entity has enough of the required item.
+	 * 
+	 * @return true if enough items
+	 */
+	public boolean checkItems() {
+
+		if(!(sagaLiving instanceof SagaPlayer)) return true;
+		
+		PlayerInventory inventory = ((SagaPlayer) sagaLiving).getPlayer().getInventory();
+		
+		Material usedItem = getDefinition().getUsedItem();
+		Integer usedAmount = getDefinition().getUsedAmount(getScore());
+		
+		if(usedItem == Material.AIR) return true;
+		
+		return inventory.contains(usedItem, usedAmount);
+
+		
+	}
+	
 	/**
 	 * Uses the required items.
 	 * 
@@ -328,67 +349,8 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		((SagaPlayer) sagaLiving).removeItem(new ItemStack(material, amount));
 		
 	}
-	
-	/**
-	 * Checks if the ability can be activated.
-	 * 
-	 * @return true if can be activated
-	 */
-	public boolean checkActivation() {
 
-		if(!(sagaLiving instanceof SagaPlayer)) return true;
-		
-		PlayerInventory inventory = ((SagaPlayer) sagaLiving).getPlayer().getInventory();
-		
-		ItemStack itemHand = inventory.getItemInHand();
-		if(itemHand == null) itemHand = new ItemStack(Material.AIR);
-		
-		return getDefinition().getItemRestrictions().contains(itemHand.getType()) || getDefinition().getItemRestrictions().size() == 0;
 
-	}
-	
-	/**
-	 * Checks if the entity has enough of the required item.
-	 * 
-	 * @return true if enough items
-	 */
-	public boolean checkCost() {
-
-		if(!(sagaLiving instanceof SagaPlayer)) return true;
-		
-		PlayerInventory inventory = ((SagaPlayer) sagaLiving).getPlayer().getInventory();
-		
-		Material usedItem = getDefinition().getUsedItem();
-		Integer usedAmount = getDefinition().getUsedAmount(getScore());
-		
-		if(usedItem == Material.AIR) return true;
-		
-		return inventory.contains(usedItem, usedAmount);
-
-		
-	}
-	
-	/**
-	 * Checks if the entity has enough of the required item.
-	 * 
-	 * @param material used item
-	 * @param amount used amount
-	 * @return true if enough
-	 */
-	public boolean checkCost(Material material, Integer amount) {
-
-		if(!(sagaLiving instanceof SagaPlayer)) return true;
-		
-		PlayerInventory inventory = ((SagaPlayer) sagaLiving).getPlayer().getInventory();
-		
-		if(material == Material.AIR) return true;
-		
-		return inventory.contains(material, amount);
-
-		
-	}
-	
-	
 	/**
 	 * Starts the cooldown.
 	 * 
@@ -415,6 +377,41 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	
 	
 	/**
+	 * Uses the required food.
+	 * 
+	 */
+	public void useFood() {
+
+		double used = definition.getUsedFood(getScore());
+		if(used == 0.0) return;
+		
+		sagaLiving.modFoodLevel(-used);
+		
+	}
+	
+	
+	/**
+	 * Checks the item in hand.
+	 * 
+	 * @return true if item in hand correct
+	 */
+	public boolean checkHeldItem() {
+
+		if(!(sagaLiving instanceof SagaPlayer)) return true;
+		
+		PlayerInventory inventory = ((SagaPlayer) sagaLiving).getPlayer().getInventory();
+		
+		ItemStack itemHand = inventory.getItemInHand();
+		if(itemHand == null) itemHand = new ItemStack(Material.AIR);
+		
+		return getDefinition().getItemRestrictions().contains(itemHand.getType()) || getDefinition().getItemRestrictions().size() == 0;
+
+	}
+	
+	
+	
+	// Pretriggers and aftertriggers:
+	/**
 	 * Called before the ability is triggered.
 	 * 
 	 * @return true if can be triggered
@@ -422,8 +419,13 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	public final boolean handlePreTrigger() {
 		
 		
-		if(!checkActivation()) return false;
+		if(!checkHeldItem()) return false;
+
+		// Score:
+		Integer score = getScore();
+		if(score < 1) return false;
 		
+		// Cooldown:
 		if(isCooldown()){
 			
 			// Prevent cooldown spam:
@@ -436,17 +438,24 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 			
 		}
 		
-		if(getScore() < 1) return false;
-		
-		if(!checkCost()){
+		// Item cost:
+		if(!checkItems()){
 			
-			// Prevent cost spam:
 			if(!useSilentPreTrigger()) sagaLiving.message(AbilityMessages.insufficientItems(this, definition.getUsedItem(), definition.getUsedAmount(getScore())));
 			return false;
 			
 		}
-
+		
+		// Food level:
+		if(sagaLiving.getFoodLevel() < definition.getUsedFood(score)){
+			
+			if(!useSilentPreTrigger()) sagaLiving.message(AbilityMessages.insuficientFood(getName()));
+			return false;
+			
+		}
+		
 		return true;
+		
 		
 	}
 	

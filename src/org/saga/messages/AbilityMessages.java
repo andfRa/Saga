@@ -29,10 +29,16 @@ public class AbilityMessages {
 	public static String cantUseUnderground(Ability ability) {
 		return Colour.negative + ChatUtil.capitalize(ability.getName()) + " can't be used below ground.";
 	}
-
+	
 	public static String invalidAbility(String name) {
 		return Colour.negative + "Ability " + name + " is not valid.";
 	}
+	
+	
+	public static String insuficientFood(String name) {
+		return Colour.negative + "Too tired to use " + name + " ability.";
+	}
+	
 	
 	
 	// Repair (not used):

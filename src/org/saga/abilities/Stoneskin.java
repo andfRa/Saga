@@ -120,7 +120,7 @@ public class Stoneskin extends Ability{
 			int hitsRegen = (int)(passed / 1000.0 * getDefinition().getFunction(HITS_PER_ECOND_KEY).value(getScore()));
 			int hitsMax = getDefinition().getFunction(ABSORBED_HITS_KEY).intValue(getScore());
 			for (int i = 0; i < hitsRegen && hits < hitsMax; i++) {
-				if(!checkCost()) break;
+				if(!checkItems()) break;
 				useItems();
 				hits++;
 			}
