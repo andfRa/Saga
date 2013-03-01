@@ -64,11 +64,6 @@ public class AbilityDefinition{
 	 * Cooldown.
 	 */
 	private TwoPointFunction cooldown;
-	
-	/**
-	 * Active for.
-	 */
-	private TwoPointFunction active;
 
 	/**
 	 * Attribute requirements.
@@ -179,13 +174,6 @@ public class AbilityDefinition{
 		}
 		cooldown.complete();
 		
-		if(active == null){
-			active = new TwoPointFunction(0.0);
-			SagaLogger.nullField(this, "active");
-		}
-		active.complete();
-		
-
 		if(attributeRequirements == null){
 			attributeRequirements = new Hashtable<String, TwoPointFunction>();
 			SagaLogger.nullField(this, "attributeRequirements");
@@ -302,6 +290,7 @@ public class AbilityDefinition{
 		return (int)Math.ceil(usedAmount.value(level));
 	}
 	
+	
 	/**
 	 * Gets used food.
 	 * 
@@ -312,6 +301,7 @@ public class AbilityDefinition{
 		return usedFood.value(score);
 	}
 	
+	
 	/**
 	 * Gets the cooldown.
 	 * 
@@ -319,35 +309,6 @@ public class AbilityDefinition{
 	 */
 	public Integer getCooldown(Integer level) {
 		return cooldown.value(level).intValue();
-	}
-	
-	/**
-	 * Gets the active for.
-	 * 
-	 * @return the active for
-	 */
-	public Integer getActiveFor(Integer level) {
-		return active.value(level).intValue();
-	}
-
-
-	/**
-	 * Gets a function for the given key.
-	 * 
-	 * @param key key
-	 * @return function for the given key, 0 if none
-	 */
-	public TwoPointFunction getFunction(String key) {
-
-		TwoPointFunction function = functions.get(key);
-		
-		if(function == null){
-			SagaLogger.severe(this, "failed to retrive function for " + key + " key");
-			return new TwoPointFunction(0.0);
-		}
-		
-		return function;
-
 	}
 	
 	/**
@@ -372,6 +333,26 @@ public class AbilityDefinition{
 		
 		
 	}
+	
+	/**
+	 * Gets a function for the given key.
+	 * 
+	 * @param key key
+	 * @return function for the given key, 0 if none
+	 */
+	public TwoPointFunction getFunction(String key) {
+
+		TwoPointFunction function = functions.get(key);
+		
+		if(function == null){
+			SagaLogger.severe(this, "failed to retrive function for " + key + " key");
+			return new TwoPointFunction(0.0);
+		}
+		
+		return function;
+
+	}
+	
 	
 	
 	// Requirements:

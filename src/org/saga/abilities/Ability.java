@@ -466,6 +466,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	public void handleAfterTrigger() {
 		
 		useItems();
+		useFood();
 		startCooldown();
 
 		if(sagaLiving instanceof SagaPlayer){

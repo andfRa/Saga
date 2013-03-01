@@ -17,7 +17,6 @@ import org.saga.buildings.production.SagaItem;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.FactionConfiguration;
-import org.saga.config.VanillaConfiguration;
 import org.saga.dependencies.ChatDependency;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.dependencies.PermissionsDependency;
@@ -515,16 +514,10 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		float exhaustion = livingEntity.getExhaustion();
 		
 		int foodAmt = (int)amount;
-		float exhAmt = (float) (amount - foodAmt);
+		float exhAmt = (float) ((amount - foodAmt) / 4.0);
 		
-		foodLevel-= foodAmt;
-		exhaustion+= exhAmt;
-		
-		// Normalise exhaustion:
-		while(exhaustion > VanillaConfiguration.EXHAUSTION_MAX){
-			exhaustion-= VanillaConfiguration.EXHAUSTION_MAX;
-			foodLevel-= 1;
-		}
+		foodLevel+= foodAmt;
+		exhaustion-= exhAmt;
 		
 		// Normalise food level:
 		if(foodLevel < 0) foodLevel = 0;
@@ -532,7 +525,6 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		// Set values:
 		livingEntity.setFoodLevel(foodLevel);
 		livingEntity.setExhaustion(exhaustion);
-		
 		
 	}
 	

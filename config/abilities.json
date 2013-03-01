@@ -12,7 +12,6 @@
     "usedAmount":{"x1":1,"y1":0.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":1,"y1":60.0,"x2":3,"y2":30.0},
-    "active":{"x1":1,"y1":0.0},
     "attributeRequirements":{
       "strength":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
     },
@@ -32,7 +31,6 @@
     "usedAmount":{"x1":1,"y1":0.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":1,"y1":60.0,"x2":3,"y2":30.0},
-    "active":{"x1":1,"y1":0.0},
     "attributeRequirements":{
       "precision":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
     },
@@ -55,7 +53,6 @@
     "usedAmount":{"x1":1,"y1":0.0},
     "cooldown":{"x1":1,"y1":0.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
-    "active":{"x1":1,"y1":0.0},
     "attributeRequirements":{
       "willpower":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
     },
@@ -77,7 +74,6 @@
     "usedAmount":{"x1":1,"y1":0.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":1,"y1":60.0,"x2":3,"y2":30.0},
-    "active":{"x1":1,"y1":0.0},
     "attributeRequirements":{
       "strength":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
     },
@@ -100,7 +96,6 @@
     "usedAmount":{"x1":1,"y1":0.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":1,"y1":30.0,"x2":3,"y2":15.0},
-    "active":{"x1":1,"y1":0.0},
     "attributeRequirements":{
       "precision":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
     },
@@ -123,7 +118,6 @@
     "usedAmount":{"x1":1,"y1":0.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":1,"y1":30.0,"x2":3,"y2":15.0},
-    "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
     "attributeRequirements":{
       "willpower":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
     },
@@ -145,7 +139,6 @@
     "usedAmount":{"x1":1,"y1":0.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":1,"y1":60.0,"x2":3,"y2":30.0},
-    "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
     "attributeRequirements":{
       "strength":{"x1":1,"y1":5.0,"x2":3,"y2":45.0},
       "willpower":{"x1":1,"y1":3.0,"x2":3,"y2":25.0}
@@ -169,7 +162,6 @@
     "usedAmount":{"x1":1,"y1":0.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":1,"y1":0.0},
-    "active":{"x1":1,"y1":0.0},
     "attributeRequirements":{
       "willpower":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
     },
@@ -192,7 +184,6 @@
     "usedAmount":{"x1":1,"y1":0.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":1,"y1":30.0,"x2":3,"y2":15.0},
-    "active":{"x1":1,"y1":0.0},
     "attributeRequirements":{
       "precision":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
     },
@@ -214,7 +205,6 @@
     "usedAmount":{"x1":1,"y1":0.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":1,"y1":30.0,"x2":3,"y2":15.0},
-    "active":{"x1":1,"y1":0.0},
     "attributeRequirements":{
       "precision":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
     },
@@ -238,7 +228,6 @@
     "usedAmount":{"x1":1,"y1":0.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":1,"y1":14.0,"x2":3,"y2":7.0},
-    "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
     "attributeRequirements":{ "strength":{"x1":1,"y1":15.0,"x2":3,"y2":50.0} },
     "buildingsRequired":{},
     "proficiencyRestrictions":[],
@@ -259,7 +248,6 @@
     "usedAmount":{"x1":1,"y1":0.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":1,"y1":5.0,"x2":3,"y2":2.0},
-    "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
     "attributeRequirements":{ "precision":{"x1":1,"y1":15.0,"x2":3,"y2":50.0} },
     "buildingsRequired":{},
     "proficiencyRestrictions":[],
@@ -277,7 +265,6 @@
     "usedAmount":{"x1":1,"y1":1.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":1,"y1":3.0,"x2":3,"y2":3.0},
-    "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
     "attributeRequirements":{ "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":50.0} },
     "buildingsRequired":{},
     "proficiencyRestrictions":[],
@@ -295,7 +282,6 @@
     "usedAmount":{"x1":1,"y1":0.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":0,"y1":18.0,"x2":3,"y2":4.0},
-    "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
     "attributeRequirements":{ "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":50.0} },
     "buildingsRequired":{},
     "proficiencyRestrictions":[],
@@ -318,7 +304,6 @@
     "usedAmount":{"x1":1,"y1":0.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":0,"y1":0.0,"x2":3,"y2":0.0},
-    "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
     "attributeRequirements":{"strength":{ "x1":1,"y1":20.0,"x2":3,"y2":50.0} },
     "buildingsRequired":{3:["armoury"]},
     "proficiencyRestrictions":["warrior","knight"],
@@ -341,7 +326,6 @@
     "usedAmount":{"x1":1,"y1":0.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":0,"y1":0.0,"x2":3,"y2":0.0},
-    "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
     "attributeRequirements":{
       "strength":{ "x1":1,"y1":10.0,"x2":3,"y2":25.0},
       "precision":{ "x1":1,"y1":10.0,"x2":3,"y2":25.0}
@@ -366,7 +350,6 @@
     "usedAmount":{"x1":1,"y1":0.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":1,"y1":7.0,"x2":3,"y2":3.0},
-    "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
     "attributeRequirements":{
       "strength":{ "x1":1,"y1":10.0,"x2":3,"y2":25.0},
       "willpower":{ "x1":1,"y1":10.0,"x2":3,"y2":25.0}
@@ -388,7 +371,6 @@
     "usedAmount":{"x1":1,"y1":1.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":1,"y1":5.0,"x2":3,"y2":2.0},
-    "active":{"x1":1,"y1":12.0,"x2":3,"y2":20.0},
     "attributeRequirements":{
       "precision":{"x1":1,"y1":10.0,"x2":3,"y2":25.0},
       "strength":{"x1":1,"y1":10.0,"x2":3,"y2":25.0}
@@ -407,9 +389,8 @@
     "activationAction":"NONE",
     "usedItem":"AIR",
     "usedAmount":{"x1":1,"y1":0.0},
-    "usedFood":{"x1":1,"y1":4.0,"x2":3,"y2":2.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
-    "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
+    "cooldown":{"x1":0,"y1":0.0},
     "attributeRequirements":{ "precision":{"x1":1,"y1":20.0,"x2":3,"y2":50.0} },
     "buildingsRequired":{3:["bowyer"]},
     "proficiencyRestrictions":["archer","marksman"],
@@ -432,7 +413,6 @@
     "usedAmount":{"x1":1,"y1":0.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":0,"y1":0.0},
-    "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
     "attributeRequirements":{
       "precision":{"x1":1,"y1":10.0,"x2":3,"y2":25.0},
       "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":25.0}
@@ -454,7 +434,6 @@
     "usedAmount":{"x1":1,"y1":1.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":0,"y1":180.0,"x2":3,"y2":0.0},
-    "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
     "attributeRequirements":{
       "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":25.0},
       "strength":{"x1":1,"y1":10.0,"x2":3,"y2":25.0}
@@ -478,7 +457,6 @@
     "usedAmount":{"x1":1,"y1":1.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":0,"y1":20.0,"x2":3,"y2":15.0},
-    "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
     "attributeRequirements":{
       "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":25.0},
       "precision":{"x1":1,"y1":10.0,"x2":3,"y2":25.0}
@@ -503,7 +481,6 @@
     "usedAmount":{"x1":1,"y1":10.0,"x2":3,"y2":5.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":0,"y1":20.0,"x2":3,"y2":15.0},
-    "active":{"x1":1,"y1":12.0,"x2":3,"y2":0.0},
     "attributeRequirements":{
       "willpower":{"x1":1,"y1":20.0,"x2":3,"y2":50.0}
     },
@@ -530,7 +507,6 @@
     "usedAmount":{"x1":1,"y1":0.0},
     "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
     "cooldown":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
-    "active":{"x1":1,"y1":0.0},
     "attributeRequirements":{
       "luck":{"x1":1,"y1":0.0,"x2":3,"y2":30.0}
     },
