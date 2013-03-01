@@ -35,6 +35,7 @@ public class AbilityDefinition{
 	 */
 	private String name;
 
+	
 	/**
 	 * Trigger item restrictions.
 	 */
@@ -54,11 +55,23 @@ public class AbilityDefinition{
 	 * Used amount.
 	 */
 	private TwoPointFunction usedAmount;
+
 	
 	/**
 	 * Used amount of food.
 	 */
 	private TwoPointFunction usedFood;
+
+	/**
+	 * Minimum food level.
+	 */
+	private Double minFood;
+	
+	
+	/**
+	 * Delay ticks required between usages.
+	 */
+	private Integer cooldownTicks;
 	
 	/**
 	 * Cooldown.
@@ -167,6 +180,16 @@ public class AbilityDefinition{
 			SagaLogger.nullField(this, "usedFood");
 		}
 		usedFood.complete();
+		
+		if(minFood == null){
+			minFood = 0.0;
+			SagaLogger.nullField(this, "minFood");
+		}
+		
+		if(cooldownTicks == null){
+			cooldownTicks = 0;
+			SagaLogger.nullField(this, "cooldownTicks");
+		}
 		
 		if(cooldown == null){
 			cooldown = new TwoPointFunction(0.0);
@@ -301,6 +324,24 @@ public class AbilityDefinition{
 		return usedFood.value(score);
 	}
 	
+	/**
+	 * Gets the minimum amount of food leve the ability can be used with.
+	 * 
+	 * @return minimum food level
+	 */
+	public Double getMinFood() {
+		return minFood;
+	}
+	
+	
+	/**
+	 * Gets the required delay ticks between usages.
+	 * 
+	 * @return required delay ticks
+	 */
+	public Integer getCooldownTicks() {
+		return cooldownTicks;
+	}
 	
 	/**
 	 * Gets the cooldown.

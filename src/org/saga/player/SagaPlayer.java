@@ -496,7 +496,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		
 		if(livingEntity == null) return 0.0;
 		
-		return livingEntity.getFoodLevel() - (livingEntity.getExhaustion() / 4.0);
+		return livingEntity.getFoodLevel();
 		
 	}
 	

@@ -198,6 +198,22 @@ public class SagaLiving <T extends LivingEntity>{
 	
 	
 	
+	// Ticks:
+	/**
+	 * Gets ticks lived.
+	 * 
+	 * @return ticks lived
+	 */
+	public int getTicksLived() {
+		
+		if(livingEntity == null) return 0;
+		
+		return livingEntity.getTicksLived();
+		
+	}
+	
+	
+	
 	// Managers:
 	/**
 	 * Gets the ability manager.
