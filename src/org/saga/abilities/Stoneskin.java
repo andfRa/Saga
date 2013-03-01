@@ -2,40 +2,16 @@ package org.saga.abilities;
 
 import org.bukkit.Effect;
 import org.bukkit.Material;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.saga.SagaLogger;
 import org.saga.attributes.DamageType;
-import org.saga.exceptions.InvalidAbilityException;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 
 public class Stoneskin extends Ability{
 
 	
 	/**
-	 * Absorb total key.
+	 * Damage multiplier.
 	 */
-	transient private static String ABSORBED_HITS_KEY = "absorbed hits";
-
-	/**
-	 * Hit regeneration per second key.
-	 */
-	transient private static String HITS_PER_ECOND_KEY = "hits per second";
-
-	/**
-	 * Minimum time required for regeneration.
-	 */
-	transient private static Integer REGENERATION_MIN_TIME = 1000;
-
-	
-	/**
-	 * Amount to absorb.
-	 */
-	private Integer hits = 0;
-	
-	/**
-	 * Time when last parry was activated.
-	 */
-	private Long time;
+	transient private static String DAMAGE_MULTIPLIER_KEY = "damage multiplier";
 	
 	
 	
@@ -47,36 +23,9 @@ public class Stoneskin extends Ability{
 	public Stoneskin(AbilityDefinition definition) {
 		
         super(definition);
-
-		hits = 0;
-		time = System.currentTimeMillis();
 		
 	}
 	
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.abilities.Ability#complete()
-	 */
-	@Override
-	public boolean complete() throws InvalidAbilityException {
-
-		super.complete();
-	
-		if (hits == null) {
-			SagaLogger.nullField(this, "hits");
-			hits = 0;
-		}
-		
-		if (time == null) {
-			SagaLogger.nullField(this, "time");
-			time = System.currentTimeMillis();
-		}
-		
-		return true;
-		
-	}
-
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -91,15 +40,14 @@ public class Stoneskin extends Ability{
 	
 	// Usage:
 	/* 
-	 * Custom item usage.
+	 * Enables defence.
 	 * 
-	 * @see org.saga.abilities.Ability#handleInteractPreTrigger(org.bukkit.event.player.PlayerInteractEvent)
+	 * @see org.saga.abilities.Ability#handleDefendPreTrigger(org.saga.listeners.events.SagaEntityDamageEvent)
 	 */
 	@Override
-	public boolean handleInteractPreTrigger(PlayerInteractEvent event) {
+	public boolean handleDefendPreTrigger(SagaEntityDamageEvent event) {
 		return true;
 	}
-	
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -112,27 +60,11 @@ public class Stoneskin extends Ability{
 		// Melee, ranged and magic:
 		if(event.type != DamageType.MELEE && event.type != DamageType.RANGED && event.type != DamageType.MAGIC) return false;
 		
-		// Regenerate:
-		long passed = System.currentTimeMillis() - time;
-		time = System.currentTimeMillis();
-		if(passed >= REGENERATION_MIN_TIME){
+		// Multiply damage:
+		double multiplier = getDefinition().getFunction(DAMAGE_MULTIPLIER_KEY).value(getScore());
+		event.multiplyDamage(multiplier);
 		
-			int hitsRegen = (int)(passed / 1000.0 * getDefinition().getFunction(HITS_PER_ECOND_KEY).value(getScore()));
-			int hitsMax = getDefinition().getFunction(ABSORBED_HITS_KEY).intValue(getScore());
-			for (int i = 0; i < hitsRegen && hits < hitsMax; i++) {
-				if(!checkItems()) break;
-				useItems();
-				hits++;
-			}
-			
-		}
-		
-		if(hits <= 0) return false;
-		
-		// Absorb:
-		hits--;
-		event.cancel();
-		
+		// Effect:
 		if(event.defenderPlayer != null) event.defenderPlayer.playGlobalEffect(Effect.STEP_SOUND, Material.STONE.getId());
 		
 		return false;
