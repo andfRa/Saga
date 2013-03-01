@@ -25,7 +25,6 @@ import org.saga.messages.WarMessages;
 import org.saga.player.Proficiency;
 import org.saga.player.Proficiency.ProficiencyType;
 import org.saga.player.SagaPlayer;
-import org.saga.utility.SagaLocation;
 import org.sk89q.Command;
 import org.sk89q.CommandContext;
 import org.sk89q.CommandPermissions;
@@ -866,79 +865,29 @@ public class FactionCommands {
 	}
 	
 	@Command(
-            aliases = {"flist"},
-            usage = "[faction_name or prefix]",
-            flags = "",
-            desc = "List faction memebers.",
-            min = 0,
-            max = 1
-        )
-        @CommandPermissions({"saga.user.faction.list"})
+		aliases = {"flist"},
+		usage = "[faction_name or prefix]",
+		flags = "",
+		desc = "List faction memebers.",
+		min = 0,
+		max = 1
+	)
+	@CommandPermissions({"saga.user.faction.list"})
 	public static void list(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
 	
-	Faction selFaction = null;
-
-	// Arguments:
-	if(args.argsLength() == 1){
 		
-		String factionName = GeneralMessages.nameFromArg(args.getString(0));
-		selFaction = FactionManager.manager().matchFaction(factionName);
-		
-		if(selFaction == null){
-			sagaPlayer.message(GeneralMessages.invalidFaction(factionName));
-			return;
-		}
-		
-	}else{
-		 
-		selFaction = sagaPlayer.getFaction();
-		
-		if(selFaction == null){
-			sagaPlayer.message(FactionMessages.notMember());
-			return;
-		}
-		
-	}
+		Faction selFaction = null;
 	
-	// Inform:
-	sagaPlayer.message(StatsMessages.list(selFaction));
-	
-
-}
-	
-	
-	
-	// Spawn:
-	@Command(
-            aliases = {"fspawn"},
-            usage = "[faction_name]",
-            flags = "",
-            desc = "Teleport to the faction spawn point.",
-            min = 0,
-            max = 1
-		)
-	@CommandPermissions({"saga.user.faction.spawn"})
-	public static void spawn(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-		
-		// Part of a faction:
-		Faction selFaction = sagaPlayer.getFaction();
-		if(selFaction == null){
-			sagaPlayer.message(FactionMessages.notMember());
-			return;
-		}
-
 		// Arguments:
-		 if(args.argsLength() == 1){
+		if(args.argsLength() == 1){
 			
-			selFaction = FactionManager.manager().matchFaction(args.getString(0));
+			String factionName = GeneralMessages.nameFromArg(args.getString(0));
+			selFaction = FactionManager.manager().matchFaction(factionName);
 			
 			if(selFaction == null){
-				sagaPlayer.message(GeneralMessages.invalidFaction(args.getString(0)));
+				sagaPlayer.message(GeneralMessages.invalidFaction(factionName));
 				return;
 			}
-			
 			
 		}else{
 			 
@@ -950,81 +899,11 @@ public class FactionCommands {
 			}
 			
 		}
-		
-		// Permission:
-		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.SPAWN)){
-			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
-			return;
-		}
-
-		// Spawn point:
-		SagaLocation spawnPoint = selFaction.getSpawn();
-		if(spawnPoint == null){
-			sagaPlayer.message(FactionMessages.noSpawn(selFaction));
-			return;
-		}
-		
-		// Teleport:
-		sagaPlayer.teleport(spawnPoint.getLocation());
-		
-		
-	}
-	
-	@Command(
-            aliases = {"fsetspawn"},
-            usage = "[faction_name]",
-            flags = "",
-            desc = "Sets factions spawn point.",
-            min = 0,
-            max = 1
-		)
-	@CommandPermissions({"saga.user.faction.spawn.set"})
-	public static void setspawn(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-		
-		
-		// Part of a faction:
-		Faction selFaction = sagaPlayer.getFaction();
-		if(selFaction == null){
-			sagaPlayer.message(FactionMessages.notMember());
-			return;
-		}
-
-		// Arguments:
-		 if(args.argsLength() == 1){
-			
-			selFaction = FactionManager.manager().matchFaction(args.getString(0));
-			
-			if(selFaction == null){
-				sagaPlayer.message(GeneralMessages.invalidFaction(args.getString(0)));
-				return;
-			}
-			
-			
-		}else{
-			 
-			selFaction = sagaPlayer.getFaction();
-			
-			if(selFaction == null){
-				sagaPlayer.message(FactionMessages.notMember());
-				return;
-			}
-			
-		}
-		
-		// Permission:
-		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.SET_SPAWN)){
-			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
-			return;
-		}
-
-		// Set spawn point:
-		selFaction.setSpawn(sagaPlayer.getLocation());
 		
 		// Inform:
-		selFaction.information(FactionMessages.newSpawn(selFaction));
+		sagaPlayer.message(StatsMessages.list(selFaction));
 		
-		
-		
+	
 	}
 	
 	

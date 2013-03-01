@@ -262,7 +262,7 @@ public class WarCommands {
 		}
 		
 		// Remove owner:
-		SiegeManager.manager().removeOwnerFaction(bundleId);
+		SiegeManager.manager().handleRemoveOwnerFaction(bundleId);
 		
 		// Inform:
 		selFaction.information(FactionMessages.unclaimed(selFaction, selBundle));
@@ -1112,6 +1112,323 @@ public class WarCommands {
 		
 		
 	}
+	
+	
+
+	// Spawn:
+	@Command(
+		aliases = {"fsetcapital"},
+		usage = "[faction_name] <settlement_name>",
+		flags = "",
+		desc = "Set faction capital settlement.",
+		min = 0,
+		max = 2
+	)
+	@CommandPermissions({"saga.user.war.setcapital"})
+	public static void setCapital(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+
+		Bundle selBundle = null;
+		Faction selFaction = null;
+		
+		String strFaction = null;
+		String strBundle = null;
+
+		// Arguments:
+		switch (args.argsLength()) {
+			case 2:
+
+				// Faction:
+				strFaction = GeneralMessages.nameFromArg(args.getString(0));
+				selFaction = FactionManager.manager().matchFaction(strFaction);
+
+				if(selFaction == null){
+					sagaPlayer.message(GeneralMessages.invalidFaction(strFaction));
+					return;
+				}
+				
+				// Bundle:
+				strBundle = GeneralMessages.nameFromArg(args.getString(1));
+				selBundle = BundleManager.manager().matchBundle(strBundle);
+				
+				if(selBundle == null){
+					sagaPlayer.message(GeneralMessages.invalidSettlement(strBundle));
+					return;
+				}
+				
+				break;
+
+			case 1:
+
+				// Faction:
+				selFaction = sagaPlayer.getFaction();
+				
+				if(selFaction == null){
+					sagaPlayer.message(FactionMessages.notMember());
+					return;
+				}
+
+				// Bundle:
+				strBundle = GeneralMessages.nameFromArg(args.getString(0));
+				selBundle = BundleManager.manager().matchBundle(strBundle);
+				
+				if(selBundle == null){
+					sagaPlayer.message(GeneralMessages.invalidSettlement(strBundle));
+					return;
+				}
+				
+				break;
+				
+			default:
+
+				// Faction:
+				selFaction = sagaPlayer.getFaction();
+				
+				if(selFaction == null){
+					sagaPlayer.message(FactionMessages.notMember());
+					return;
+				}
+
+				// Bundle:
+				selBundle = sagaPlayer.getBundle();
+				
+				if(selBundle == null){
+					sagaPlayer.message(SettlementMessages.notMember());
+					return;
+				}
+				
+				break;
+				
+		}
+		
+		// Permission:
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.SET_CAPITAL)){
+			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
+			return;
+		}
+		
+		// Owned:
+		Integer ownerID = SiegeManager.manager().getOwningFactionID(selBundle.getId());
+		if(ownerID == null || !selFaction.getId().equals(ownerID)){
+			sagaPlayer.message(WarMessages.notOwned(selFaction, selBundle));
+			return;
+		}
+		
+		// Already set:
+		Integer capitalID = SiegeManager.manager().getCapitalID(selFaction.getId());
+		if(capitalID != null && capitalID.equals(selBundle.getId())){
+			sagaPlayer.message(WarMessages.capitalAlreadySet(selFaction, selBundle));
+			return;
+		}
+		
+		// Cost:
+		Double cost = EconomyConfiguration.config().getCapitalSetCost();
+		if(EconomyConfiguration.config().isEnabled() && cost > 0){
+			
+			// Check cost:
+			if(selFaction.getCoins() < cost){
+				selFaction.information(EconomyMessages.insufficient(selFaction), sagaPlayer);
+				return;
+			}
+			
+			// Take coins:
+			selFaction.modCoins(-cost);
+			
+			// Inform:
+			selFaction.information(EconomyMessages.spent(selFaction, cost), sagaPlayer);
+			
+		}
+		
+		// Set capital:
+		SiegeManager.manager().setCapitalID(selFaction.getId(), selBundle.getId());
+		
+		// Inform:
+		selFaction.information(WarMessages.capitalSet(selFaction, selBundle));
+		
+		
+	}
+	
+	@Command(
+		aliases = {"fremovecapital"},
+		usage = "[faction_name] <settlement_name>",
+		flags = "",
+		desc = "Remove faction capital settlement.",
+		min = 0,
+		max = 2
+	)
+	@CommandPermissions({"saga.user.war.removecapital"})
+	public static void removeCapital(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+
+		Bundle selBundle = null;
+		Faction selFaction = null;
+		
+		String strFaction = null;
+		String strBundle = null;
+
+		// Arguments:
+		switch (args.argsLength()) {
+			case 2:
+
+				// Faction:
+				strFaction = GeneralMessages.nameFromArg(args.getString(0));
+				selFaction = FactionManager.manager().matchFaction(strFaction);
+
+				if(selFaction == null){
+					sagaPlayer.message(GeneralMessages.invalidFaction(strFaction));
+					return;
+				}
+				
+				// Bundle:
+				strBundle = GeneralMessages.nameFromArg(args.getString(1));
+				selBundle = BundleManager.manager().matchBundle(strBundle);
+				
+				if(selBundle == null){
+					sagaPlayer.message(GeneralMessages.invalidSettlement(strBundle));
+					return;
+				}
+				
+				break;
+
+			case 1:
+
+				// Faction:
+				selFaction = sagaPlayer.getFaction();
+				
+				if(selFaction == null){
+					sagaPlayer.message(FactionMessages.notMember());
+					return;
+				}
+
+				// Bundle:
+				strBundle = GeneralMessages.nameFromArg(args.getString(0));
+				selBundle = BundleManager.manager().matchBundle(strBundle);
+				
+				if(selBundle == null){
+					sagaPlayer.message(GeneralMessages.invalidSettlement(strBundle));
+					return;
+				}
+				
+				break;
+				
+			default:
+
+				// Faction:
+				selFaction = sagaPlayer.getFaction();
+				
+				if(selFaction == null){
+					sagaPlayer.message(FactionMessages.notMember());
+					return;
+				}
+
+				// Bundle:
+				selBundle = sagaPlayer.getBundle();
+				
+				if(selBundle == null){
+					sagaPlayer.message(SettlementMessages.notMember());
+					return;
+				}
+				
+				break;
+				
+		}
+		
+		// Permission:
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.REMOVE_CAPITAL)){
+			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
+			return;
+		}
+		
+//		// Owned:
+//		Integer ownerID = SiegeManager.manager().getOwningFactionID(selBundle.getId());
+//		if(ownerID == null || !selFaction.getId().equals(ownerID)){
+//			sagaPlayer.message(WarMessages.notOwned(selFaction, selBundle));
+//			return;
+//		}
+
+		// Not set:
+		Integer capitalID = SiegeManager.manager().getCapitalID(selFaction.getId());
+		if(capitalID == null){
+			sagaPlayer.message(WarMessages.capitalNotSet(selFaction));
+			return;
+		}
+		
+		// Remove capital:
+		SiegeManager.manager().removeCapitalID(selFaction.getId());
+		
+		// Inform:
+		selFaction.information(WarMessages.capitalRemoved(selFaction));
+		
+		
+	}
+
+
+	
+	
+	
+	@Command(
+		aliases = {"fspawn"},
+		usage = "[faction_name]",
+		flags = "",
+		desc = "Teleport to the faction capital spawn point.",
+		min = 0,
+		max = 1
+	)
+	@CommandPermissions({"saga.user.war.factionspawn"})
+	public static void spawn(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+		
+		
+		// Part of a faction:
+		Faction selFaction = sagaPlayer.getFaction();
+		if(selFaction == null){
+			sagaPlayer.message(FactionMessages.notMember());
+			return;
+		}
+
+		// Arguments:
+		 if(args.argsLength() == 1){
+			
+			selFaction = FactionManager.manager().matchFaction(args.getString(0));
+			
+			if(selFaction == null){
+				sagaPlayer.message(GeneralMessages.invalidFaction(args.getString(0)));
+				return;
+			}
+			
+			
+		}else{
+			 
+			selFaction = sagaPlayer.getFaction();
+			
+			if(selFaction == null){
+				sagaPlayer.message(FactionMessages.notMember());
+				return;
+			}
+			
+		}
+		
+		// Permission:
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.SPAWN)){
+			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
+			return;
+		}
+		
+		// Capital:
+		Bundle capital = SiegeManager.manager().getCapital(selFaction.getId());
+		
+		if(capital == null){
+			
+			sagaPlayer.message(WarMessages.capitalNotSet(selFaction));
+			return;
+			
+		}
+		
+		// Handle spawn:
+		BuildingCommands.handleSpawn(sagaPlayer, capital);
+		
+		
+	}
+	
 	
 	
 }

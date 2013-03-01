@@ -43,6 +43,10 @@ public class WarMessages {
 		return Colour.negative + "The faction already owns " + bundle.getName() + ".";
 	}
 	
+	public static String notOwned(Faction faction, Bundle bundle) {
+		return Colour.negative + "The faction doesn't own " + bundle.getName() + " settlement.";
+	}
+	
 	public static String siegeSpawnDeny(Faction faction){
 		return Colour.negative + "Can't spawn in settlements that are under siege.";
 	}
@@ -180,6 +184,29 @@ public class WarMessages {
 	
 	public static String affiliationJoined(Faction faction, Bundle bundle) {
 		return faction.getColour2() + "Settlement " + bundle.getName() + " willingly joined the faction.";
+	}
+	
+	
+	
+	// Capital settlement:
+	public static String capitalSet(Faction faction, Bundle bundle) {
+		return faction.getColour2() + "Settlement " + bundle.getName() + " is now the capital.";
+	}
+	
+	public static String capitalRemoved(Faction faction) {
+		return faction.getColour2() + "The faction no longer has a capital settlement.";
+	}
+	
+	public static String capitalAlreadySet(Faction faction, Bundle bundle) {
+		return Colour.negative + "Settlement " + bundle.getName() + " is already the capital.";
+	}
+	
+	public static String capitalNotSet(Faction faction) {
+		return Colour.negative + "Faction capital settlement not set.";
+	}
+	
+	public static String capitalNoTownSquare(Faction faction) {
+		return Colour.negative + "The capital settlement has no " + HelpMessages.townSquare() + ".";
 	}
 	
 	

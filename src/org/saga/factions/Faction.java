@@ -1535,29 +1535,45 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 *
 	 */
 	public enum FactionPermission{
-
 		
-		ADD_COINS,
-		DECLARE_SIEGE,
+		
+		// Management:
 		DELETE,
 		DISBAND,
-		END_WAR,
 		INVITE,
 		KICK,
 		QUIT,
 		SET_RANK,
+		RESIGN,
+		
+		// Customisation:
 		SET_COLOR,
-		SET_SPAWN,
-		START_WAR,
-		SPAWN,
 		RENAME,
+
+		// Coins:
+		ADD_COINS,
+		REMOVE_COINS,
+		
+		// Siege:
+		DECLARE_SIEGE,
+		UNCLAIM,
+		
+		// War:
+		START_WAR,
+		END_WAR,
+
+		// Alliance:
 		FORM_ALLIANCE,
 		DECLINE_ALLIANCE,
 		BREAK_ALLIANCE,
-		REMOVE_COINS,
-		RESIGN,
-		UNCLAIM;
+
+		// Capital:
+		SET_CAPITAL,
+		REMOVE_CAPITAL,
 		
+		// Spawn:
+		SET_SPAWN,
+		SPAWN;
 		
 	}
 	

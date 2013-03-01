@@ -128,9 +128,13 @@ public class HelpMessages {
 		// Faction:
 		book.addLine(
 			"Use " + GeneralMessages.command("/fdeposit") + " and " + GeneralMessages.command("/fwithdraw") + " to add and remove coins from the factions bank. " +
-			"Factions need coins to declare wars, peace, and to siege settlements. " +
+			"Factions need coins to declare wars, peace and to siege settlements. " +
 			"Prices go up as the faction gets more settlements."
 		);
+		
+		if(EconomyConfiguration.config().getCapitalSetCost() > 0.0){
+			book.addLine("Setting a faction capital costs " + EconomyMessages.coins(EconomyConfiguration.config().getCapitalSetCost()) + ". ");
+		}
 		
 		// Creation:
 		if(EconomyConfiguration.config().getFactionCreateCost() > 0){
@@ -460,7 +464,7 @@ public class HelpMessages {
 			"If the bar reaches all the way to the left then the siege/defence has failed. "
 		);
 		
-		book.addLine("A claimed settlement provides taxes, more ranks and access to its " + GeneralMessages.command("/sspawn") + " command.");
+		book.addLine("A owned settlement provides taxes, more ranks and access to its " + GeneralMessages.command("/sspawn") + " command.");
 		
 		book.nextPage();
 		
@@ -533,9 +537,10 @@ public class HelpMessages {
 		// Rename:
 		book.addLine("To rename the faction use " + GeneralMessages.command("/frename") + ".");
 
-		// Spawn:
-		book.addLine("Faction spawn can be set with " + GeneralMessages.command("/fsetspawn") + ". " +
-			" Use " + GeneralMessages.command("/fspawn") + " to teleport to the faction spawn point."
+		// Capital:
+		book.addLine(
+			"A faction can set and remove its capital settlement with " + GeneralMessages.command("/fsetcapital") + " and " + GeneralMessages.command("/fremovecapital") + ". " +
+			"Command " + GeneralMessages.command("/fspawn") + " teleports to the capital settlement."
 		);
 		
 		book.nextPage();
@@ -548,13 +553,6 @@ public class HelpMessages {
 			"An alliance can be broken with " + GeneralMessages.command("/fremoveally") + "."
 		);
 
-		book.nextPage();
-
-		// Spawning:
-		book.addLine("All faction members can use " + GeneralMessages.command("/sspawn settle_name") + " command for claimed settlements. " +
-			"The command is not available when the settlement is being claimed by a rival faction."
-		);
-		
 		return book.framedPage(page);
 		
 		

@@ -690,69 +690,87 @@ public class BuildingCommands {
 	
 	// Town square:
 	@Command(
-            aliases = {"sspawn"},
-            usage = "[settlement_name]",
-            flags = "",
-            desc = "Spawn in a town square.",
-            min = 0,
-            max = 1)
+		aliases = {"sspawn"},
+		usage = "[settlement_name]",
+		flags = "",
+		desc = "Spawn in a town square.",
+		min = 0,
+		max = 1)
 	@CommandPermissions({"saga.user.building.townsquare.spawn"})
 	public static void spawn(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
-		Bundle selChunkBundle = null;
+		Bundle selBundle = null;
+		
+		String strBundle = null;
 		
 		// Arguments:
-		if(args.argsLength() == 1){
+		switch (args.argsLength()) {
 			
-			// Chunk group:
-			String groupName = GeneralMessages.nameFromArg(args.getString(0));
-			selChunkBundle = BundleManager.manager().matchBundle(groupName);
-			if(selChunkBundle == null){
-				sagaPlayer.message(GeneralMessages.invalidSettlement(groupName));
-				return;
-			}
-			
-		}else{
-			
-			// Chunk group:
-			selChunkBundle = sagaPlayer.getBundle();
-			if(selChunkBundle == null){
-				sagaPlayer.message(SettlementMessages.notMember());
-				return;
-			}
-			
+			case 1:
+
+				// Bundle:
+				strBundle = GeneralMessages.nameFromArg(args.getString(0));
+				selBundle = BundleManager.manager().matchBundle(strBundle);
+				
+				if(selBundle == null){
+					sagaPlayer.message(GeneralMessages.invalidSettlement(strBundle));
+					return;
+				}
+				
+				break;
+
+			default:
+				
+				// Bundle:
+				selBundle = sagaPlayer.getBundle();
+				
+				if(selBundle == null){
+					sagaPlayer.message(SettlementMessages.notMember());
+					return;
+				}
+				
+				break;
+				
 		}
 		
+		// Handle spawn:
+		handleSpawn(sagaPlayer, selBundle);
+		
+		
+	}
+	
+	public static void handleSpawn(SagaPlayer sagaPlayer, Bundle bundle){
+		
+
 		// Faction spawn:
 		Faction playerFaction = sagaPlayer.getFaction();
-		Faction owningFaction = SiegeManager.manager().getOwningFaction(selChunkBundle.getId());
-		
+		Faction owningFaction = SiegeManager.manager().getOwningFaction(bundle.getId());
 		if(playerFaction != null && playerFaction == owningFaction){
 			// Do nothing;
 		}
 		
 		// Permission:
-		else if(!selChunkBundle.hasPermission(sagaPlayer, SettlementPermission.SPAWN)){
+		else if(!bundle.hasPermission(sagaPlayer, SettlementPermission.SPAWN)){
 			sagaPlayer.message(GeneralMessages.noPermission());
 			return;
 		}
 		
 		// Sieged by a faction:
-		if(SiegeManager.manager().isSieged(selChunkBundle.getId())){
+		if(SiegeManager.manager().isSieged(bundle.getId())){
 			
 			Faction defendingFaction = owningFaction;
-			Faction attackingFaction = SiegeManager.manager().getAttackingFaction(selChunkBundle.getId());
+			Faction attackingFaction = SiegeManager.manager().getAttackingFaction(bundle.getId());
 			
 			if(playerFaction != null){
 				
 				if(playerFaction == defendingFaction){
-					defendingFaction.information(WarMessages.siegeSpawnDeny(defendingFaction), sagaPlayer);
+					sagaPlayer.message(WarMessages.siegeSpawnDeny(defendingFaction));
 					return;
 				}
 				
 				else if(playerFaction == attackingFaction){
-					attackingFaction.information(WarMessages.siegeSpawnDeny(attackingFaction), sagaPlayer);
+					sagaPlayer.message(WarMessages.siegeSpawnDeny(attackingFaction));
 					return;
 				}
 				
@@ -760,10 +778,10 @@ public class BuildingCommands {
 			
 		}
 		
-		ArrayList<TownSquare> selBuildings = selChunkBundle.getBuildings(TownSquare.class);
+		ArrayList<TownSquare> selBuildings = bundle.getBuildings(TownSquare.class);
 		
 		if(selBuildings.size() == 0){
-			sagaPlayer.message(BuildingMessages.noTownSquare(selChunkBundle));
+			sagaPlayer.message(BuildingMessages.noTownSquare(bundle));
 			return;
 		}
 		
@@ -782,15 +800,17 @@ public class BuildingCommands {
 		// Location:
 		Location spawnLocation = selBuilding.getSpawnLocation();
 		if(spawnLocation == null){
+			
 			SagaLogger.severe(selBuilding, sagaPlayer + " player failed to respawn at " + selBuilding.getDisplayName());
 			sagaPlayer.error("failed to respawn");
 			return;
+			
 		}
 		
 		// Teleport:
 		sagaPlayer.teleport(spawnLocation);
 		
-	
+		
 	}
 	
 	

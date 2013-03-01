@@ -65,6 +65,11 @@ public class SiegeManager implements SecondTicker{
 	 * Bundle affiliation.
 	 */
 	private Hashtable<Integer, Integer> affiliation;
+
+	/**
+	 * Faction capital.
+	 */
+	private Hashtable<Integer, Integer> factionCapital;
 	
 	
 	/**
@@ -92,6 +97,7 @@ public class SiegeManager implements SecondTicker{
 		siegeProgresses = new Hashtable<Integer, Double>();
 		owningFaction = new Hashtable<Integer, Integer>();
 		affiliation = new Hashtable<Integer, Integer>();
+		factionCapital = new Hashtable<Integer, Integer>();
 		
 		attackers = new Hashtable<Integer, Integer>();
 		defenders = new Hashtable<Integer, Integer>();
@@ -128,6 +134,11 @@ public class SiegeManager implements SecondTicker{
 		if(affiliation == null){
 			SagaLogger.nullField(getClass(), "affiliation");
 			affiliation = new Hashtable<Integer, Integer>();
+		}
+		
+		if(factionCapital == null){
+			SagaLogger.nullField(getClass(), "factionCapital");
+			factionCapital = new Hashtable<Integer, Integer>();
 		}
 		
 		
@@ -600,6 +611,15 @@ public class SiegeManager implements SecondTicker{
 		attackers.remove(bundleID);
 		defenders.remove(bundleID);
 		
+		// Remove capital:
+		if(defenderID != null){
+			
+			Integer capitalBundleID = factionCapital.get(defenderID);
+			
+			if(capitalBundleID != null && capitalBundleID.equals(bundleID)) factionCapital.remove(defenderID);
+			
+		}
+		
 		// Set owner:
 		owningFaction.put(bundleID, attackerID);
 		
@@ -651,6 +671,35 @@ public class SiegeManager implements SecondTicker{
 	
 	// Attacker and defender:
 	/**
+	 * Handles setting owner faction.
+	 * 
+	 * @param bundleID bundle ID
+	 * @param factionID faction ID
+	 */
+	public void handleSetOwnerFaction(Integer bundleID, Integer factionID) {
+		owningFaction.put(bundleID, factionID);
+	}
+	
+	/**
+	 * Handles removing owner faction.
+	 * 
+	 * @param bundleID bundle ID
+	 */
+	public void handleRemoveOwnerFaction(Integer bundleID) {
+		
+		Integer factionID = removeOwnerFaction(bundleID);
+		if(factionID == null) return;
+		
+		// Remove capital:
+		Integer capitalID = factionCapital.get(factionID);
+		if(capitalID != null && capitalID.equals(bundleID)){
+			factionCapital.remove(factionID);
+		}
+		
+	}
+	
+	
+	/**
 	 * Gets the owning faction ID.
 	 * 
 	 * @param bundleID bundle ID
@@ -699,20 +748,12 @@ public class SiegeManager implements SecondTicker{
 	 * Removes the owner of the bundle.
 	 * 
 	 * @param bundleID bundle ID
+	 * @return removed owning faction, null if none
 	 */
-	public void removeOwnerFaction(Integer bundleID) {
-		owningFaction.remove(bundleID);
+	private Integer removeOwnerFaction(Integer bundleID) {
+		return owningFaction.remove(bundleID);
 	}
 
-	/**
-	 * Removes the attacker of the bundle.
-	 * 
-	 * @param bundleID bundle ID
-	 */
-	public void removeAttackingFaction(Integer bundleID) {
-		owningFaction.remove(bundleID);
-	}
-	
 	
 	
 	// Affiliation:
@@ -795,6 +836,54 @@ public class SiegeManager implements SecondTicker{
 		if(defenderID != null && defenderID.equals(affiliationID)) return -FactionConfiguration.config().getSiegePtsPerSecondAffiliatedBonus();
 		return 0.0;
 		
+	}
+	
+	
+	
+	// Capital bundle:
+	/**
+	 * Gets faction capital bundle ID.
+	 * 
+	 * @param factionID faction ID
+	 * @return faction capital bundle ID, null if none
+	 */
+	public Integer getCapitalID(Integer factionID) {
+		return factionCapital.get(factionID);
+	}
+	
+	/**
+	 * Gets faction capital bundle.
+	 * 
+	 * @param factionID faction ID
+	 * @return faction capital bundle, null if none
+	 */
+	public Bundle getCapital(Integer factionID) {
+		
+		Integer bundleID = getCapitalID(factionID);
+		if(bundleID == null) return null;
+		return BundleManager.manager().getBundle(bundleID);
+		
+	}
+	
+	
+	
+	/**
+	 * Sets the faction capital bundle ID.
+	 * 
+	 * @param factionID faction ID
+	 * @param bundleID bundle ID
+	 */
+	public void setCapitalID(Integer factionID, Integer bundleID) {
+		factionCapital.put(factionID, bundleID);
+	}
+
+	/**
+	 * Removes the faction capital bundle ID.
+	 * 
+	 * @param factionID faction ID
+	 */
+	public void removeCapitalID(Integer factionID) {
+		factionCapital.remove(factionID);
 	}
 	
 	
@@ -886,7 +975,10 @@ public class SiegeManager implements SecondTicker{
 			if(affiliation.getValue().equals(factonID)) owningFaction.remove(affiliation.getKey());
 			
 		}
-
+		
+		// Capital:
+		factionCapital.remove(factonID);
+		
 		
 	}
 	
@@ -908,6 +1000,13 @@ public class SiegeManager implements SecondTicker{
 		
 		// Affiliation:
 		affiliation.remove(bundleID);
+		
+		// Capital:
+		Set<Entry<Integer, Integer>> capitals = factionCapital.entrySet();
+		
+		for (Entry<Integer, Integer> capital : capitals) {
+			if(capital.getValue().equals(bundleID)) factionCapital.remove(capital.getKey());
+		}
 		
 		
 	}

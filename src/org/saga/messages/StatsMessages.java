@@ -788,7 +788,10 @@ public class StatsMessages {
 		}
 
 		// Settlements:
-		table.addLine("settlements", SiegeManager.manager().getOwnedBundleCount(faction.getId()).toString(), 0);
+		String strCapital = "none";
+		Bundle capital = SiegeManager.manager().getCapital(faction.getId());
+		if(capital != null) strCapital = capital.getName();
+		table.addLine("capital", strCapital, 0);
 
 		// Economy:
 		if(EconomyConfiguration.config().isEnabled()){

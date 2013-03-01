@@ -182,6 +182,11 @@ public class EconomyConfiguration {
 	 */
 	private TwoPointFunction warEndCost;
 	
+	/**
+	 * Cost of setting a faction capital settlement.
+	 */
+	private Double capitalSetCost;
+	
 	
 	// Trading post:
 	/**
@@ -350,12 +355,18 @@ public class EconomyConfiguration {
 			SagaLogger.nullField(getClass(), "warStartCost");
 			warStartCost = new TwoPointFunction(0.0);
 		}
-		
+
 		if(warEndCost == null){
 			SagaLogger.nullField(getClass(), "warEndCost");
 			warEndCost = new TwoPointFunction(0.0);
 		}
+
+		if(capitalSetCost == null){
+			SagaLogger.nullField(getClass(), "capitalSetCost");
+			capitalSetCost = 0.0;
+		}
 		
+		// Trading post:
 		if(exports == null){
 			SagaLogger.nullField(getClass(), "exports");
 			exports = new SagaPricedItem[0];
@@ -727,6 +738,14 @@ public class EconomyConfiguration {
 		return warEndCost.value(ownedSettles);
 	}
 	
+	/**
+	 * Gets the cost to set the faction capital.
+	 * 
+	 * @return cost to set faction capital
+	 */
+	public Double getCapitalSetCost() {
+		return capitalSetCost;
+	}
 	
 	
 	// Trading post:

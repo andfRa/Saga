@@ -41,6 +41,7 @@
 "siegeStartCost":{"x1":0,"y1":500,"x2":100,"y2":100500},
 "warStartCost":{"x1":0,"y1":1000,"x2":100,"y2":101000},
 "warEndCost":{"x1":0,"y1":1000,"x2":100,"y2":101000},
+"capitalSetCost":200,
 
 "imports":[
 	{"type":IRON_INGOT,"price":62.5},
