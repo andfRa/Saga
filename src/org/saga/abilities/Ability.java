@@ -42,6 +42,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 */
 	private Integer active;
 	
+
 	/**
 	 * Cooldown.
 	 */
@@ -61,6 +62,12 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 * Cooldown last value.
 	 */
 	transient private Integer lastCooldown;
+
+	/**
+	 * Ticks at which the ability was triggered.
+	 */
+	transient private Integer triggeredTicks;
+	
 	
 	
 	// Initialisation:
@@ -84,6 +91,8 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		this.active = 0;
 		this.clock = false;
 		this.lastCooldown = -1;
+		
+		this.triggeredTicks = 0;
 		
 	}
 
@@ -123,6 +132,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		}
 		
 		// Transient:
+		triggeredTicks = 0;
 		clock = false;
 		updateClock();
 		
@@ -350,31 +360,15 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		
 	}
 
-
-	/**
-	 * Starts the cooldown.
-	 * 
-	 */
-	protected void startCooldown() {
-
-		this.cooldown = definition.getCooldown(getScore());
-		
-		// Update clock:
-		updateClock();
-
-	}
-
-	/**
-	 * Checks if on cooldown.
-	 * 
-	 * @return true if on cooldown
-	 */
-	protected boolean isCooldown() {
-		
-		return cooldown > 0;
-
-	}
 	
+	/**
+	 * Checks food level requirement.
+	 * 
+	 * @return true of the food level is high enough
+	 */
+	public boolean checkFood() {
+		return sagaLiving.getFoodLevel() - definition.getMinFood() >= definition.getUsedFood(getScore());
+	}
 	
 	/**
 	 * Uses the required food.
@@ -409,6 +403,38 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	}
 	
 	
+	/**
+	 * Checks if enough ticks has passed after last trigger.
+	 * 
+	 * @return true if enough ticks passed
+	 */
+	public boolean checkCooldownTicks() {
+		return sagaLiving.getTicksLived() - triggeredTicks > definition.getCooldownTicks();
+	}
+	
+	/**
+	 * Starts the cooldown.
+	 * 
+	 */
+	protected void startCooldown() {
+
+		this.cooldown = definition.getCooldown(getScore());
+		
+		// Update clock:
+		updateClock();
+
+	}
+
+	/**
+	 * Checks if on cooldown.
+	 * 
+	 * @return true if on cooldown
+	 */
+	protected boolean isCooldown() {
+		return cooldown > 0;
+	}
+	
+	
 	
 	// Pretriggers and aftertriggers:
 	/**
@@ -424,6 +450,13 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		// Score:
 		Integer score = getScore();
 		if(score < 1) return false;
+		
+		// Cooldown ticks:
+		if(!checkCooldownTicks()){
+			
+			return false;
+			
+		}
 		
 		// Cooldown:
 		if(isCooldown()){
@@ -447,7 +480,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		}
 		
 		// Food level:
-		if(sagaLiving.getFoodLevel() < definition.getUsedFood(score)){
+		if(!checkFood()){
 			
 			if(!useSilentPreTrigger()) sagaLiving.message(AbilityMessages.insuficientFood(getName()));
 			return false;
@@ -468,7 +501,8 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		useItems();
 		useFood();
 		startCooldown();
-
+		triggeredTicks = sagaLiving.getTicksLived();
+		
 		if(sagaLiving instanceof SagaPlayer){
 
 			// Ability effect:

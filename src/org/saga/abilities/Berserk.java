@@ -21,7 +21,7 @@ public class Berserk extends Ability{
 	/**
 	 * Hits made.
 	 */
-	private Integer hits;
+	private Integer hit;
 	
 	
 	
@@ -34,7 +34,7 @@ public class Berserk extends Ability{
 		
         super(definition);
 
-		hits = 0;
+		hit = 0;
 		
 	}
 	
@@ -48,9 +48,9 @@ public class Berserk extends Ability{
 		
 		super.complete();
 	
-		if (hits == null) {
-			SagaLogger.nullField(this, "hits");
-			hits = 0;
+		if (hit == null) {
+			SagaLogger.nullField(this, "hit");
+			hit = 0;
 		}
 		
 		return true;
@@ -84,7 +84,7 @@ public class Berserk extends Ability{
 	
 	@Override
 	public boolean handleDefendPreTrigger(SagaEntityDamageEvent event) {
-		return hits > 0;
+		return hit > 0;
 	}
 	
 	/* 
@@ -98,20 +98,20 @@ public class Berserk extends Ability{
 		if(event.isCancelled()) return false;
 		
 		// Increase hits:
-		hits++;
+		hit++;
 		
 		// Only melee:
 		if(event.type != DamageType.MELEE ) return false;
 		
 		// Enough hits:
-		if(hits < getDefinition().getFunction(HITS_REQUIRED).value(getScore())) return false;
+		if(hit < getDefinition().getFunction(HITS_REQUIRED).value(getScore())) return false;
 		
 		// Increase damage:
 		double mult = getDefinition().getFunction(DAMAGE_MULTIPLIER).value(getScore());
 		event.multiplyDamage(mult);
 		
 		// Reset hits:
-		hits = 0;
+		hit = 0;
 		
 		return true;
 		
@@ -125,7 +125,7 @@ public class Berserk extends Ability{
 	@Override
 	public boolean triggerDefend(SagaEntityDamageEvent event) {
 		
-		hits = 0;
+		hit = 0;
 		return false;
 	
 	}

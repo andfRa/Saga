@@ -14,13 +14,20 @@ import org.saga.player.SagaPlayer;
 
 public class Counterattack extends Ability{
 	
+	
+	/**
+	 * Facing half angle value key.
+	 */
+	transient private static String FACING_HALF_ANGLE = "facing half angle";
+	
+	
 	/**
 	 * Used to prevent loops of death.
 	 */
 	private Boolean progress = null;
-
-
-
+	
+	
+	
 	// Initialisation:
 	/**
 	 * Initialises using definition.
@@ -33,6 +40,15 @@ public class Counterattack extends Ability{
 	
 	}
 	
+	/* 
+	 * Cancels trigger spam.
+	 * 
+	 * @see org.saga.abilities.Ability#useSilentPreTrigger()
+	 */
+	@Override
+	public boolean useSilentPreTrigger() {
+		return true;
+	}
 	
 	
 	// Ability usage:
@@ -66,7 +82,7 @@ public class Counterattack extends Ability{
 		SagaPlayer sagaDefender = (SagaPlayer) getSagaLiving();
 		Player defender = sagaDefender.getPlayer();
 		
-		// Must be blocking:
+		// Blocking:
 		if(!sagaDefender.getPlayer().isBlocking()) return false;
 		
 		// Attacker:
@@ -75,6 +91,11 @@ public class Counterattack extends Ability{
 		else if(event.attackerCreature != null) attacker = event.attackerCreature;
 		else return false;
 		
+		// Check degrees:
+		double deg = Parry.getFacing(defender, attacker);
+		if(Math.abs(deg -180) > getDefinition().getFunction(FACING_HALF_ANGLE).value(getCooldown())) return false;
+		
+		// Animation:
 		StatsEffectHandler.playAnimateArm(sagaDefender);
 		
 		// Defenders weapon:
@@ -101,7 +122,7 @@ public class Counterattack extends Ability{
 		
 		// Cancel and redirect:
 		event.cancel();
-		attacker.damage((int)damage);
+		attacker.damage((int)damage, defender);
 		
 		return true;
 		

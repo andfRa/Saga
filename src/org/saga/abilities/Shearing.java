@@ -62,6 +62,8 @@ public class Shearing extends Ability{
 	@Override
 	public boolean triggerShear(PlayerShearEntityEvent event) {
 		
+		boolean triggered = false;
+		
 		// Sheep:
 		if(event.getEntity() instanceof Sheep){
 			
@@ -69,10 +71,11 @@ public class Shearing extends Ability{
 			Location location = sheep.getLocation();
 			
 			Integer bonus = getDefinition().getFunction(BONUS_WOOL_KEY).randomIntValue(getScore());
-			if(bonus < 1) return true;
+			if(bonus < 1) return false;
 			
 			for (int i = 0; i < bonus; i++) {
-				location.getWorld().dropItemNaturally(location, new ItemStack(Material.WOOL, 1, sheep.getColor().getDyeData()));
+				location.getWorld().dropItemNaturally(location, new ItemStack(Material.WOOL, 1, sheep.getColor().getWoolData()));
+				triggered = true;
 			}
 			
 		}
@@ -84,15 +87,16 @@ public class Shearing extends Ability{
 			Location location = mushroomCow.getLocation();
 			
 			Integer bonus = getDefinition().getFunction(BONUS_MUSHROOMS_KEY).randomIntValue(getScore());
-			if(bonus < 1) return true;
+			if(bonus < 1) return false;
 			
 			for (int i = 0; i < bonus; i++) {
 				location.getWorld().dropItemNaturally(location, new ItemStack(Material.RED_MUSHROOM, 1));
+				triggered = true;
 			}
 			
 		}
 		
-		return false;
+		return triggered;
 		
 	}
 

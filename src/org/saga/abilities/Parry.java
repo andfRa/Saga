@@ -5,6 +5,8 @@ import org.bukkit.util.Vector;
 import org.saga.SagaLogger;
 import org.saga.exceptions.InvalidAbilityException;
 import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.messages.effects.StatsEffectHandler;
+import org.saga.player.SagaPlayer;
 
 public class Parry extends Ability{
 
@@ -17,12 +19,7 @@ public class Parry extends Ability{
 	 * Active time value key.
 	 */
 	transient private static String ACTIVE_TIME = "active time";
-
-	/**
-	 * Hit chance modifier value key.
-	 */
-	transient private static String HIT_CHANCE_MODIFIER = "hit chance";
-
+	
 	
 	/**
 	 * Amount to absorb.
@@ -111,7 +108,7 @@ public class Parry extends Ability{
 		if(time != null){
 			
 			if(getDefinition().getFunction(ACTIVE_TIME).value(getScore()) * 1000.0 >= System.currentTimeMillis() - time){
-				event.modifyHitChance(getDefinition().getFunction(HIT_CHANCE_MODIFIER).value(getScore()));
+				event.cancel();
 			}else{
 				time = null;
 			}
@@ -124,7 +121,10 @@ public class Parry extends Ability{
 		
 		// Check degrees:
 		if(Math.abs(deg -180) > getDefinition().getFunction(FACING_HALF_ANGLE).value(getCooldown())) return false;
-	
+
+		// Animation:
+		if(getSagaLiving() instanceof SagaPlayer) StatsEffectHandler.playAnimateArm((SagaPlayer) getSagaLiving());
+		
 		// Parry:
 		event.cancel();
 		time = System.currentTimeMillis();
