@@ -11,6 +11,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
+import org.saga.buildings.production.SagaPricedItem;
+import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.messages.GeneralMessages;
@@ -43,7 +45,7 @@ public class SagaBlockBreakEvent {
 	/**
 	 * Saga living.
 	 */
-	public final SagaLiving<?> sagaPlayer;
+	public final SagaLiving<?> sagaLiving;
 	
 	/**
 	 * Location saga chunk.
@@ -86,7 +88,7 @@ public class SagaBlockBreakEvent {
 		
 		this.event = event;
 		this.tool = event.getPlayer().getItemInHand().getType();
-		this.sagaPlayer = sagaPlayer;
+		this.sagaLiving = sagaPlayer;
 		this.block = event.getBlock();
     	this.blockSagaChunk = sagaChunk;
     	
@@ -147,11 +149,26 @@ public class SagaBlockBreakEvent {
 		// Natural break:
 		if(isNatural){
 
-			// Award exp:
-			if(sagaPlayer != null && sagaPlayer instanceof SagaPlayer){
+			// Award:
+			if(sagaLiving != null && sagaLiving instanceof SagaPlayer){
 				
+				SagaPlayer rsagaPlayer = (SagaPlayer) sagaLiving;
+				
+				// Award exp:
 				Double exp = ExperienceConfiguration.config().getExp(block);
-				((SagaPlayer)sagaPlayer).awardExp(exp);
+				((SagaPlayer)sagaLiving).awardExp(exp);
+				
+				SagaPricedItem blockCoins = EconomyConfiguration.config().getBlocCoinsItem(block);
+				if(blockCoins != null){
+				
+					// Award coins:
+					double coins = blockCoins.getPrice();
+					rsagaPlayer.handleModCoins(coins);
+					
+					// Statistics:
+					StatisticsManager.manager().addBlockCoins(rsagaPlayer, block.getType(), coins);
+					
+				}
 				
 				// Statistics:
 				StatisticsManager.manager().addExp("block", GeneralMessages.material(block.getType()), exp);
@@ -220,7 +237,7 @@ public class SagaBlockBreakEvent {
 	 * @return the Saga living entity
 	 */
 	public SagaLiving<?> getSagaPlayer() {
-		return sagaPlayer;
+		return sagaLiving;
 	}
 
 	/**

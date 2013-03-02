@@ -232,7 +232,7 @@ public class AttributeManager {
 	public void handleBlockBreak(SagaBlockBreakEvent event) {
 
 		
-		AttributeManager manager = (event.sagaPlayer != null) ? event.sagaPlayer.getAttributeManager() : null;
+		AttributeManager manager = (event.sagaLiving != null) ? event.sagaLiving.getAttributeManager() : null;
 		if(manager == null) return;
 
 		// Drops:

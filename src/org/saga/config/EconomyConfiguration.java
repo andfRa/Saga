@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Random;
 
+import org.bukkit.block.Block;
 import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.SagaLogger;
@@ -203,7 +204,15 @@ public class EconomyConfiguration {
 	 * Trading post automatic exports.
 	 */
 	private SagaPricedItem[] tradingPostExports;
-
+	
+	
+	
+	// World:
+	/**
+	 * Coins from blocks.
+	 */
+	private SagaPricedItem[] blockCoins;
+	
 	
 	
 	// Options:
@@ -392,6 +401,17 @@ public class EconomyConfiguration {
 		}
 
 		
+		// World:
+		if(blockCoins == null){
+			SagaLogger.nullField(getClass(), "tradingPostExports");
+			blockCoins = new SagaPricedItem[0];
+		}
+		for (SagaPricedItem item : blockCoins) {
+			item.complete();
+		}
+		
+		
+		// Options;
 		if(enableHooking == null){
 			SagaLogger.nullField(getClass(), "enableHooking");
 			enableHooking= true;
@@ -788,6 +808,25 @@ public class EconomyConfiguration {
 	 */
 	public SagaPricedItem[] getTradingPostExports() {
 		return tradingPostExports;
+	}
+	
+	
+	
+	// World:
+	/**
+	 * Gets the block coins item for the given block.
+	 * 
+	 * @param sagaItem block
+	 * @return block coins item, null if none
+	 */
+	public SagaPricedItem getBlocCoinsItem(Block sagaItem) {
+
+		for (int i = 0; i < blockCoins.length; i++) {
+			if(blockCoins[i].checkRepresents(sagaItem)) return blockCoins[i];
+		}
+		
+		return null;
+		
 	}
 	
 	
