@@ -12,11 +12,11 @@ import org.saga.messages.effects.StatsEffectHandler;
 import org.saga.player.SagaPlayer;
 
 
-public class ResetSign extends BuildingSign{
+public class ResetAttributeSign extends BuildingSign{
 
 	
 	/**
-	 * Name for the 
+	 * Name for the sign.
 	 */
 	public static String SIGN_NAME = "=[RESET_ATTR]=";
 
@@ -44,10 +44,8 @@ public class ResetSign extends BuildingSign{
 	 * @param event event that created the sign
 	 * @param building building
 	 */
-	private ResetSign(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building){
-	
+	private ResetAttributeSign(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building){
 		super(sign, SIGN_NAME, secondLine, thirdLine, fourthLine, building);
-		
 	}
 	
 	/**
@@ -61,8 +59,8 @@ public class ResetSign extends BuildingSign{
 	 * @param building building
 	 * @return training sign
 	 */
-	public static ResetSign create(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building) {
-		return new ResetSign(sign, secondLine.toLowerCase(), thirdLine, fourthLine, building);
+	public static ResetAttributeSign create(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building) {
+		return new ResetAttributeSign(sign, secondLine.toLowerCase(), thirdLine, fourthLine, building);
 	}
 
 	/* 
@@ -111,24 +109,27 @@ public class ResetSign extends BuildingSign{
 			case ENABLED:
 
 				if(index == 1) return getAmount() + AMOUNT_DIV_DISPLAY + getAttribute();
-				if(index == 3 && cost > 0.0) return "cost: " + EconomyMessages.coins(cost);
+				if(EconomyConfiguration.config().isEnabled())
+					if(index == 3 && cost > 0.0) return "cost: " + EconomyMessages.coins(cost);
 				break;
 
 			case DISABLED:
 
 				if(index == 1) return getFirstParameter();
-				if(index == 3 && cost > 0.0) return "cost: " + EconomyMessages.coins(cost);
+				if(EconomyConfiguration.config().isEnabled())
+					if(index == 3 && cost > 0.0) return "cost: " + EconomyMessages.coins(cost);
 				break;
 				
 			case INVALIDATED:
 
-				if(index == 1) return SettlementConfiguration.config().invalidSignColor + "amt" + AMOUNT_DIV_DISPLAY + "attribute";
+				if(index == 1) return SettlementConfiguration.config().invalidSignColor + "amt" + AMOUNT_DIV + "attribute";
 				break;
 				
 			default:
 				
 				if(index == 1) return "-";
-				if(index == 3) return "-";
+				if(EconomyConfiguration.config().isEnabled())
+					if(index == 3) return "-";
 				break;
 
 		}
@@ -144,18 +145,16 @@ public class ResetSign extends BuildingSign{
 	 * @return amount to reset, -1 if invalid
 	 */
 	private Integer getAmount() {
-
 		
 		String[] firstParam = getFirstParameter().split(AMOUNT_DIV);
 		if(firstParam.length < 2) return 5;
 		
 		try {
-			return Integer.parseInt(firstParam[0]);
+			return Math.abs(Integer.parseInt(firstParam[0]));
 		}
 		catch (NumberFormatException e) {
 			return -1;
 		}
-
 		
 	}
 	
@@ -193,9 +192,7 @@ public class ResetSign extends BuildingSign{
 	 * @return reset cost
 	 */
 	private Double getResetCost(Integer amount) {
-		
 		return EconomyConfiguration.config().getAttributeResetCost() * amount;
-		
 	}
 	
 	
@@ -210,35 +207,40 @@ public class ResetSign extends BuildingSign{
 	protected void onRightClick(SagaPlayer sagaPlayer) {
 
 		
-		String attribute = getAttribute();
-		Integer attributeScore = sagaPlayer.getRawAttributeScore(attribute);
+		String attrName = getAttribute();
+		Integer score = sagaPlayer.getRawAttributeScore(attrName);
+		Integer nextScore = score - getAmount();
 		
 		// Already minimum:
-		if(attributeScore <= 0){
-			sagaPlayer.message(BuildingMessages.attrAlreadyReset(attribute));
+		if(score <= 0){
+			sagaPlayer.message(BuildingMessages.attrAlreadyReset(attrName));
 			return;
 		}
 
-		// Amount to reset:
-		Integer amount = getAmount();
-		if(amount > attributeScore) amount = attributeScore;
+		// Normalise next score:
+		if(nextScore < 0) nextScore = 0;
 		
-		// Enough coins:
-		Double cost = getResetCost(amount);
-		if(EconomyDependency.getCoins(sagaPlayer) < cost){
-			sagaPlayer.message(EconomyMessages.insufficient());
-			return;
-		}
+		// Economy:
+		if(EconomyConfiguration.config().isEnabled()){
 
-		// Take coins:
-		EconomyDependency.removeCoins(sagaPlayer, cost);
-		sagaPlayer.message(EconomyMessages.spent(cost));
+			// Enough coins:
+			Double cost = getResetCost();
+			if(EconomyDependency.getCoins(sagaPlayer) < cost){
+				sagaPlayer.message(EconomyMessages.insufficient());
+				return;
+			}
+
+			// Take coins:
+			EconomyDependency.removeCoins(sagaPlayer, cost);
+			sagaPlayer.message(EconomyMessages.spent(cost));
+			
+		}
 		
 		// Reset:
-		sagaPlayer.setAttributeScore(attribute, attributeScore - amount);
+		sagaPlayer.setAttributeScore(attrName, nextScore);
 		
 		// Inform:
-		sagaPlayer.message(BuildingMessages.resetAttr(attribute, attributeScore - amount));
+		sagaPlayer.message(BuildingMessages.resetAttr(attrName, nextScore));
 		
 		// Play effect:
 		StatsEffectHandler.playSign(sagaPlayer);

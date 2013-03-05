@@ -1,8 +1,10 @@
 package org.saga.buildings.signs;
 
 import org.bukkit.block.Sign;
+import org.saga.SagaLogger;
+import org.saga.abilities.Ability;
 import org.saga.buildings.Building;
-import org.saga.config.AttributeConfiguration;
+import org.saga.config.AbilityConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.SettlementConfiguration;
 import org.saga.dependencies.EconomyDependency;
@@ -12,13 +14,13 @@ import org.saga.messages.effects.StatsEffectHandler;
 import org.saga.player.SagaPlayer;
 
 
-public class ResetSign extends BuildingSign{
+public class ResetAbilitySign extends BuildingSign{
 
 	
 	/**
-	 * Name for the 
+	 * Name for the sign.
 	 */
-	public static String SIGN_NAME = "=[RESET_ATTR]=";
+	public static String SIGN_NAME = "=[RESET_ABIL]=";
 
 	/**
 	 * Amount division string.
@@ -44,10 +46,8 @@ public class ResetSign extends BuildingSign{
 	 * @param event event that created the sign
 	 * @param building building
 	 */
-	private ResetSign(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building){
-	
+	private ResetAbilitySign(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building){
 		super(sign, SIGN_NAME, secondLine, thirdLine, fourthLine, building);
-		
 	}
 	
 	/**
@@ -61,8 +61,8 @@ public class ResetSign extends BuildingSign{
 	 * @param building building
 	 * @return training sign
 	 */
-	public static ResetSign create(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building) {
-		return new ResetSign(sign, secondLine.toLowerCase(), thirdLine, fourthLine, building);
+	public static ResetAbilitySign create(Sign sign, String secondLine, String thirdLine, String fourthLine, Building building) {
+		return new ResetAbilitySign(sign, secondLine.toLowerCase(), thirdLine, fourthLine, building);
 	}
 
 	/* 
@@ -83,15 +83,13 @@ public class ResetSign extends BuildingSign{
 	 */
 	@Override
 	public SignStatus getStatus() {
-	
 		
-		String attribute = getAttribute();
+		String abilName = getAttribute();
 		Integer amount = getAmount();
 		
-		if(!AttributeConfiguration.config().getAttributeNames().contains(attribute) || amount == -1) return SignStatus.INVALIDATED;
+		if(AbilityConfiguration.config().getDefinition(abilName) == null || amount == -1) return SignStatus.INVALIDATED;
 		
 		return SignStatus.ENABLED;
-		
 		
 	}
 	
@@ -111,24 +109,27 @@ public class ResetSign extends BuildingSign{
 			case ENABLED:
 
 				if(index == 1) return getAmount() + AMOUNT_DIV_DISPLAY + getAttribute();
-				if(index == 3 && cost > 0.0) return "cost: " + EconomyMessages.coins(cost);
+				if(EconomyConfiguration.config().isEnabled())
+					if(index == 3 && cost > 0.0) return "cost: " + EconomyMessages.coins(cost);
 				break;
 
 			case DISABLED:
 
 				if(index == 1) return getFirstParameter();
-				if(index == 3 && cost > 0.0) return "cost: " + EconomyMessages.coins(cost);
+				if(EconomyConfiguration.config().isEnabled())
+					if(index == 3 && cost > 0.0) return "cost: " + EconomyMessages.coins(cost);
 				break;
 				
 			case INVALIDATED:
 
-				if(index == 1) return SettlementConfiguration.config().invalidSignColor + "amt" + AMOUNT_DIV_DISPLAY + "attribute";
+				if(index == 1) return SettlementConfiguration.config().invalidSignColor + "amt" + AMOUNT_DIV + "attribute";
 				break;
 				
 			default:
 				
 				if(index == 1) return "-";
-				if(index == 3) return "-";
+				if(EconomyConfiguration.config().isEnabled())
+					if(index == 3) return "-";
 				break;
 
 		}
@@ -144,18 +145,16 @@ public class ResetSign extends BuildingSign{
 	 * @return amount to reset, -1 if invalid
 	 */
 	private Integer getAmount() {
-
 		
 		String[] firstParam = getFirstParameter().split(AMOUNT_DIV);
-		if(firstParam.length < 2) return 5;
+		if(firstParam.length < 2) return 1;
 		
 		try {
-			return Integer.parseInt(firstParam[0]);
+			return Math.abs(Integer.parseInt(firstParam[0]));
 		}
 		catch (NumberFormatException e) {
 			return -1;
 		}
-
 		
 	}
 	
@@ -193,9 +192,7 @@ public class ResetSign extends BuildingSign{
 	 * @return reset cost
 	 */
 	private Double getResetCost(Integer amount) {
-		
-		return EconomyConfiguration.config().getAttributeResetCost() * amount;
-		
+		return EconomyConfiguration.config().getAbilityResetCost() * amount;
 	}
 	
 	
@@ -208,37 +205,51 @@ public class ResetSign extends BuildingSign{
 	 */
 	@Override
 	protected void onRightClick(SagaPlayer sagaPlayer) {
-
 		
-		String attribute = getAttribute();
-		Integer attributeScore = sagaPlayer.getRawAttributeScore(attribute);
+		
+		String abilName = getFirstParameter();
+		Integer score = sagaPlayer.getAbilityScore(abilName);
+		Integer nextScore = score - getAmount();
 		
 		// Already minimum:
-		if(attributeScore <= 0){
-			sagaPlayer.message(BuildingMessages.attrAlreadyReset(attribute));
+		if(score <= 0){
+			sagaPlayer.message(BuildingMessages.abilityAlreadyReset(abilName));
 			return;
 		}
-
-		// Amount to reset:
-		Integer amount = getAmount();
-		if(amount > attributeScore) amount = attributeScore;
 		
-		// Enough coins:
-		Double cost = getResetCost(amount);
-		if(EconomyDependency.getCoins(sagaPlayer) < cost){
-			sagaPlayer.message(EconomyMessages.insufficient());
+		// Ability:
+		Ability ability = sagaPlayer.getAbility(abilName);
+		if(ability == null){
+			SagaLogger.severe(this, "failed to retrieve " + abilName + " ability from " + sagaPlayer.getName());
+			sagaPlayer.error("Failed to find " + abilName + " ability.");
 			return;
 		}
+		
+		// Normalise next score:
+		if(nextScore < 0) nextScore = 0;
+		
+		// Economy:
+		if(EconomyConfiguration.config().isEnabled()){
 
-		// Take coins:
-		EconomyDependency.removeCoins(sagaPlayer, cost);
-		sagaPlayer.message(EconomyMessages.spent(cost));
+			// Enough coins:
+			Integer amount = getAmount();
+			Double cost = getResetCost(amount);
+			if(EconomyDependency.getCoins(sagaPlayer) < cost){
+				sagaPlayer.message(EconomyMessages.insufficient());
+				return;
+			}
+
+			// Take coins:
+			EconomyDependency.removeCoins(sagaPlayer, cost);
+			sagaPlayer.message(EconomyMessages.spent(cost));
+			
+		}
 		
 		// Reset:
-		sagaPlayer.setAttributeScore(attribute, attributeScore - amount);
+		sagaPlayer.setAblityScore(abilName, nextScore);
 		
 		// Inform:
-		sagaPlayer.message(BuildingMessages.resetAttr(attribute, attributeScore - amount));
+		sagaPlayer.message(BuildingMessages.abilityReset(ability, nextScore));
 		
 		// Play effect:
 		StatsEffectHandler.playSign(sagaPlayer);

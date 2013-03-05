@@ -50,6 +50,11 @@ public class SagaLiving <T extends LivingEntity>{
 	
 	// Abilities:
 	/**
+	 * Ability scores.
+	 */
+	private Hashtable<String, Integer> abilityScores;
+	
+	/**
 	 * All abilities.
 	 */
 	private ArrayList<Ability> abilities;
@@ -84,6 +89,7 @@ public class SagaLiving <T extends LivingEntity>{
 
 		this.abilities = new ArrayList<Ability>();
 		this.attributeScores = new Hashtable<String, Integer>();
+		this.abilityScores = new Hashtable<String, Integer>();
 		this.abilityManager = new AbilityManager(this);
 		this.attributeManager = new AttributeManager(this);
 	
@@ -132,6 +138,11 @@ public class SagaLiving <T extends LivingEntity>{
 		if(attributeScores == null){
 			attributeScores = new Hashtable<String, Integer>();
 			SagaLogger.nullField(this, "attributeScores");
+		}
+		
+		if(abilityScores == null){
+			abilityScores = new Hashtable<String, Integer>();
+			SagaLogger.nullField(this, "abilityScores");
 		}
 		
 		this.abilityManager = new AbilityManager(this);
@@ -302,7 +313,7 @@ public class SagaLiving <T extends LivingEntity>{
 		abilityManager.update();
 		
 	}
-
+	
 	
 	/**
 	 * Gets the used attribute points.
@@ -310,7 +321,7 @@ public class SagaLiving <T extends LivingEntity>{
 	 * @return total attribute points
 	 */
 	public Integer getUsedAttributePoints() {
-
+		
 		ArrayList<String> attributes = AttributeConfiguration.config().getAttributeNames();
 		Integer total = 0;
 		for (String attribute : attributes) {
@@ -321,9 +332,77 @@ public class SagaLiving <T extends LivingEntity>{
 		
 	}
 
+	/**
+	 * Gets the available attribute points.
+	 * 
+	 * @return available attribute points
+	 */
+	public Integer getAvailableAttributePoints() {
+		return 0;
+	}
+	
+	/**
+	 * Gets the remaining attribute points.
+	 * 
+	 * @return remaining attribute points
+	 */
+	public Integer getRemainingAttributePoints() {
+		return getAvailableAttributePoints() - getUsedAttributePoints();
+	}
+	
 	
 	
 	// Abilities:
+	/**
+	 * Gets the score for the given ability.
+	 * 
+	 * @param abilName ability name
+	 * @return ability score
+	 */
+	public Integer getRawAbilityScore(String abilName) {
+
+		Integer score = abilityScores.get(abilName);
+		if(score == null) return 0;
+		return score;
+
+	}
+	
+	/**
+	 * Gets the score for the given ability.
+	 * Includes restrictions.
+	 * 
+	 * @param abilName ability name
+	 * @return ability score
+	 */
+	public Integer getAbilityScore(String abilName) {
+		
+		Integer score = getRawAbilityScore(abilName);
+		if(score == 0) return 0;
+		
+		Ability ability = getAbility(abilName);
+		
+		Integer maxScore = ability.getDefinition().findScore(this);
+		if(score > maxScore) score = maxScore;
+		
+		return score;
+		
+	}
+	
+
+	/**
+	 * Sets ability score.
+	 * 
+	 * @param abilName ability name
+	 * @param score score
+	 */
+	public void setAblityScore(String abilName, Integer score) {
+		
+		this.abilityScores.put(abilName, score);
+		abilityManager.update();
+		
+	}
+	
+	
 	/**
 	 * Gets an ability with the given name.
 	 * 
@@ -341,23 +420,6 @@ public class SagaLiving <T extends LivingEntity>{
 		
 		return null;
 		
-		
-	}
-	
-	/**
-	 * Gets the score for the giver ability. Includes bonuses.
-	 * 
-	 * @param name ability name
-	 * @return ability score
-	 */
-	public Integer getAbilityScore(String name) {
-
-		
-		Ability ability = getAbility(name);
-		if(ability == null) return 0;
-		
-		return ability.getDefinition().getScore(this);
-
 		
 	}
 	
@@ -405,8 +467,46 @@ public class SagaLiving <T extends LivingEntity>{
 		
 
 	}
-
-
+	
+	
+	/**
+	 * Gets the used ability points.
+	 * 
+	 * @return total ability points
+	 */
+	public Integer getUsedAbilityPoints() {
+		
+		ArrayList<String> abilities = AbilityConfiguration.config().getAbilityNames();
+		Integer total = 0;
+		for (String ability : abilities) {
+			total+= getRawAbilityScore(ability);
+		}
+		
+		return total;
+		
+	}
+	
+	/**
+	 * Gets the available ability points.
+	 * 
+	 * @return available ability points
+	 */
+	public Integer getAvailableAbilityPoints() {
+		
+		return 0;
+		
+	}
+	
+	/**
+	 * Gets the remaining ability points.
+	 * 
+	 * @return remaining ability points
+	 */
+	public Integer getRemainingAbilityPoints() {
+		return getAvailableAbilityPoints() - getUsedAbilityPoints();
+	}
+	
+	
 	
 	// Ability usage:
 	/**

@@ -49,7 +49,6 @@ public class AbilityManager {
 	 * 
 	 */
 	public void update() {
-
 		
 		HashSet<Ability> allAbilities = sagaLiving.getAbilities();
 		abilities = new HashSet<Ability>();
@@ -57,15 +56,10 @@ public class AbilityManager {
 		// Only add abilities if the requirements are met:
 		for (Ability ability : allAbilities) {
 			
-			if(ability.getScore() > 0){
-				abilities.add(ability);
-			}
+			if(ability.getScore() > 0) abilities.add(ability);
 			
 		}
 		
-		
-		
-
 	}
 
 	/**

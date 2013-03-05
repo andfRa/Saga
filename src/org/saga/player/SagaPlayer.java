@@ -14,6 +14,7 @@ import org.bukkit.inventory.ItemStack;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.production.SagaItem;
+import org.saga.config.AbilityConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.FactionConfiguration;
@@ -268,25 +269,43 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	}
 
 	
-	/**
-	 * Gets the available attribute points.
+	/* 
+	 * (non-Javadoc)
 	 * 
-	 * @return available attribute points
+	 * @see org.saga.player.SagaLiving#getAvailableAttributePoints()
 	 */
+	@Override
 	public Integer getAvailableAttributePoints() {
-
 		return ExperienceConfiguration.config().getAttributePoints(exp);
-		
 	}
 	
-	/**
-	 * Gets the remaining attribute points.
+	
+	
+	// Abilities:
+	/* 
+	 * (non-Javadoc)
 	 * 
-	 * @return remaining attribute points
+	 * @see org.saga.player.SagaLiving#getAvailableAbilityPoints()
 	 */
-	public Integer getRemainingAttributePoints() {
-
-		return getAvailableAttributePoints() - getUsedAttributePoints();
+	@Override
+	public Integer getAvailableAbilityPoints() {
+		
+		
+		// Cap:
+		Integer cap = AbilityConfiguration.config().getDefaultAbilityCap();
+		
+		Proficiency role = getRole();
+		if(role != null) cap+= role.getDefinition().getAbilityCapBonus();
+		
+		Proficiency rank = getRank();
+		if(rank != null) cap+= rank.getDefinition().getAbilityCapBonus();
+		
+		// Available:
+		Integer available = ExperienceConfiguration.config().getAbilityPoints(exp);
+		if(available > cap) available = cap;
+		
+		return available;
+		
 		
 	}
 	
@@ -485,6 +504,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	}
 	
 	
+	
 	// Food level:
 	/**
 	 * Gets players food level.
@@ -528,7 +548,8 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		
 	}
 	
-
+	
+	
 	// Experience:
 	/**
 	 * Sets player experience.
@@ -554,18 +575,31 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	}
 	
 	/**
-	 * Gets the remaining experience.
+	 * Gets the remaining experience for attributes.
 	 * 
 	 * @return remaining experience
 	 */
-	public Double getRemainingExp() {
+	public Double getAttributeRemainingExp() {
 		
 		int attrPoints = ExperienceConfiguration.config().getAttributePoints(exp);
 		
-		return ExperienceConfiguration.config().calcExp(attrPoints + 1) - exp;
+		return ExperienceConfiguration.config().calcAttributeExp(attrPoints + 1) - exp;
 		
 	}
-
+	
+	/**
+	 * Gets the remaining experience for abilities.
+	 * 
+	 * @return remaining experience
+	 */
+	public Double getAbilityRemainingExp() {
+		
+		int attrPoints = ExperienceConfiguration.config().getAbilityPoints(exp);
+		
+		return ExperienceConfiguration.config().calcAbilityExp(attrPoints + 1) - exp;
+		
+	}
+	
 	/**
 	 * Awards player experience.
 	 * 
@@ -576,18 +610,26 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		amount*= ExperienceConfiguration.config().getExpGainMultiplier(exp);
 		amount*= getExpMult();
 		
-		int befAttrPoints = ExperienceConfiguration.config().getAttributePoints(exp);
+		int befAttributes = ExperienceConfiguration.config().getAttributePoints(exp);
+		int befAbilites = ExperienceConfiguration.config().getAbilityPoints(exp);
 		
 		this.exp += amount;
 		if(exp > ExperienceConfiguration.config().getMaxExp()) exp = ExperienceConfiguration.config().getMaxExp().doubleValue(); 
 		
-		int aftAttrPoints = ExperienceConfiguration.config().getAttributePoints(exp);
-		
+		int aftAttributes = ExperienceConfiguration.config().getAttributePoints(exp);
+		int aftAbilities = ExperienceConfiguration.config().getAbilityPoints(exp);
+
 		// Inform:
-		if(befAttrPoints < aftAttrPoints){
-			message(StatsMessages.gainedAttributePoints(aftAttrPoints - befAttrPoints));
+		if(befAttributes < aftAttributes){
+			message(StatsMessages.gainedAttributePoints(aftAttributes - befAttributes));
 			StatsEffectHandler.playLevelUp(this);
 		}
+
+		if(befAbilites < aftAbilities){
+			message(StatsMessages.gainedAbilityPoints(aftAttributes - befAttributes));
+			StatsEffectHandler.playLevelUp(this);
+		}
+		
 		
 	}
 	

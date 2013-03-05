@@ -34,7 +34,7 @@ public class AbilityDefinition{
 	 * Ability name.
 	 */
 	private String name;
-
+	
 	
 	/**
 	 * Trigger item restrictions.
@@ -77,7 +77,8 @@ public class AbilityDefinition{
 	 * Cooldown.
 	 */
 	private TwoPointFunction cooldown;
-
+	
+	
 	/**
 	 * Attribute requirements.
 	 */
@@ -197,6 +198,7 @@ public class AbilityDefinition{
 		}
 		cooldown.complete();
 		
+		// Requirements;
 		if(attributeRequirements == null){
 			attributeRequirements = new Hashtable<String, TwoPointFunction>();
 			SagaLogger.nullField(this, "attributeRequirements");
@@ -353,12 +355,12 @@ public class AbilityDefinition{
 	}
 	
 	/**
-	 * Gets entities ability score.
+	 * Finds entities possible ability score.
 	 * 
 	 * @param sagaLiving saga entity
 	 * @return ability score
 	 */
-	public Integer getScore(SagaLiving<?> sagaLiving) {
+	public Integer findScore(SagaLiving<?> sagaLiving) {
 
 		
 		int prevScore = 0;
@@ -473,13 +475,12 @@ public class AbilityDefinition{
 	 * @return true if requirements are met
 	 */
 	public boolean checkAttributes(SagaLiving<?> sagaLiving, Integer abilityScore) {
-
-
+		
 		Set<String> attributeNames = attributeRequirements.keySet();
 		
 		for (String attrName : attributeNames) {
 			
-			if(sagaLiving.getAttributeScore(attrName) < getAttrReq(attrName, abilityScore)){
+			if(sagaLiving.getRawAttributeScore(attrName) < getAttrReq(attrName, abilityScore)){
 				return false;
 			}
 			
@@ -487,7 +488,6 @@ public class AbilityDefinition{
 		
 		return true;
 		
-
 	}
 	
 	/**
@@ -497,7 +497,7 @@ public class AbilityDefinition{
 	 * @param abilityScore ability score
 	 * @return true if requirements are met
 	 */
-	public boolean checkProficiencies(SagaLiving<?> sagaLiving, Integer abilityScore) {
+	public boolean checkProficiencies(SagaLiving<?> sagaLiving) {
 
 		
 		if(proficiencyRestrictions.size() == 0) return true;
@@ -524,7 +524,7 @@ public class AbilityDefinition{
 	public boolean checkRequirements(SagaLiving<?> sagaLiving, Integer abilityScore) {
 		return checkAttributes(sagaLiving, abilityScore)&&
 				checkBuildings(sagaLiving, abilityScore) &&
-				checkProficiencies(sagaLiving, abilityScore);
+				checkProficiencies(sagaLiving);
 	}
 	
 	

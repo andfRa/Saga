@@ -31,6 +31,7 @@ import org.saga.config.FactionConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
+import org.saga.config.VanillaConfiguration;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.factions.Faction;
 import org.saga.factions.FactionManager;
@@ -47,6 +48,7 @@ import org.saga.settlements.BundleManager;
 import org.saga.settlements.Settlement;
 import org.saga.utility.Duration;
 import org.saga.utility.chat.ChatBook;
+import org.saga.utility.chat.ChatFiller;
 import org.saga.utility.chat.ChatFramer;
 import org.saga.utility.chat.ChatTable;
 import org.saga.utility.chat.ChatUtil;
@@ -62,9 +64,9 @@ public class StatsMessages {
 		ChatBook book = new ChatBook("stats", new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
 		
 		// Attributes and levels:
-		book.addTable(info(sagaPlayer));
+		book.addTable(physical(sagaPlayer));
 		book.addLine("");
-		book.addTable(factionSettlement(sagaPlayer));
+		book.addTable(info(sagaPlayer));
 
 		book.nextPage();
 		
@@ -82,13 +84,28 @@ public class StatsMessages {
 	}
 	
 	
-	private static ChatTable info(SagaPlayer sagaPlayer) {
+	private static ChatTable physical(SagaPlayer sagaPlayer) {
 
 		
 		ChatTable table = new ChatTable(new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
 		DecimalFormat format = new DecimalFormat("00");
+
+		// Health:
+		table.addLine("health", ChatUtil.round((double)sagaPlayer.getHealth(), 0) + "/" + ChatUtil.round((double)sagaPlayer.getTotalHealth(), 0), 0);
+
+		// Stamina:
+		table.addLine("stamina", ChatUtil.round((double)sagaPlayer.getFoodLevel(), 0) + "/" + ChatUtil.round((double)VanillaConfiguration.FOOD_LEVEL_MAX, 0), 0);
+
+		// Attribute exp:
+		table.addLine("next attr.", (int)(100.0 - 100.0 * sagaPlayer.getAttributeRemainingExp() / ExperienceConfiguration.config().getAttributePointCost()) + "%", 0);
+		
+		// Ability exp:
+		table.addLine("next abil.", (int)(100.0 - 100.0 * sagaPlayer.getAbilityRemainingExp() / ExperienceConfiguration.config().getAbilityPointCost()) + "%", 0);
+		
+		table.addLine("","", 0);
 		
 		// Attributes:
+		String score = " ";
 		ArrayList<String> attrNames = AttributeConfiguration.config().getAttributeNames();
 		for (String attrName : attrNames) {
 			
@@ -98,7 +115,7 @@ public class StatsMessages {
 			String scoreCurr = format.format(attrScore + attrBonus);
 			String scoreMax = format.format(AttributeConfiguration.config().maxAttributeScore + attrBonus);
 			
-			String score = scoreCurr + "/" + scoreMax;
+			score = scoreCurr + "/" + scoreMax;
 			
 			// Colours:
 			if(attrBonus > 0){
@@ -112,23 +129,81 @@ public class StatsMessages {
 			
 		}
 		
-		// Health:
-		table.addLine("Health", ChatUtil.round((double)sagaPlayer.getHealth(), 0) + "/" + ChatUtil.round((double)sagaPlayer.getTotalHealth(), 0), 2);
+		// Available attributes:
+		String attrPoints = "" + sagaPlayer.getRemainingAttributePoints() + "";
+		String filler = ChatFiller.fillString(attrPoints, ChatFiller.calcLength(score));
+		filler = filler.replace(attrPoints, "");
 		
-		String attrPoints = sagaPlayer.getUsedAttributePoints() + "/" + sagaPlayer.getAvailableAttributePoints();
 		if(sagaPlayer.getRemainingAttributePoints() < 0){
 			attrPoints = ChatColor.DARK_RED + attrPoints;
 		}
 		else if (sagaPlayer.getRemainingAttributePoints() > 0) {
 			attrPoints = ChatColor.DARK_GREEN + attrPoints;
+		}else{
+			attrPoints = Colour.unavailable + attrPoints;
 		}
-		table.addLine("Attributes", attrPoints, 2);
+		
+		attrPoints = filler + attrPoints;
+		
+		table.addLine("", attrPoints, 0);
+		
+		// Abilities:
+		ArrayList<AbilityDefinition> definitions = AbilityConfiguration.config().getDefinitions();
+		
+		for (AbilityDefinition definition : definitions) {
+			
+			if(!definition.checkProficiencies(sagaPlayer)) continue;
+			
+			String name = definition.getName();
+			Integer actScore = sagaPlayer.getAbilityScore(definition.getName());
+			score = actScore + "/" + AbilityConfiguration.config().maxAbilityScore;
+			
+			// Colours:
+			Integer rawScore = sagaPlayer.getRawAbilityScore(definition.getName());
+			System.out.println(name + ": " + actScore + ">" + rawScore);
+			if(actScore > rawScore){
+				score = Colour.positive + score;
+			}
+			else if(actScore < rawScore){
+				score = Colour.negative + score;
+			}
+			
+			table.addLine(name, score, 2);
+			
+		}
+		
+		// Available abilities:
+		String abilPoints = "" + sagaPlayer.getRemainingAbilityPoints();
+		filler = ChatFiller.fillString(abilPoints, ChatFiller.calcLength(score));
+		filler = filler.replace(abilPoints, "");
+		
+		if(sagaPlayer.getRemainingAbilityPoints() < 0){
+			abilPoints = ChatColor.DARK_RED + abilPoints;
+		}
+		else if (sagaPlayer.getRemainingAbilityPoints() > 0) {
+			abilPoints = ChatColor.DARK_GREEN + abilPoints;
+		}else{
+			abilPoints = Colour.unavailable + abilPoints;
+		}
+		
+		abilPoints = filler + abilPoints;
+		
+		table.addLine("", abilPoints, 2);
+		
+		table.collapse();
+		
+		return table;
+		
 
-		// Exp:
-		table.addLine("Progress", (int)(100.0 - 100.0 * sagaPlayer.getRemainingExp() / ExperienceConfiguration.config().getAttributePointCost()) + "%", 2);
-
+	}
+	
+	private static ChatTable info(SagaPlayer sagaPlayer) {
+		
+		
+		ChatTable table = new ChatTable(new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
+		
 		// Wallet:
-		table.addLine("Wallet", EconomyMessages.coins(EconomyDependency.getCoins(sagaPlayer)), 2);
+		table.addLine("wallet", EconomyMessages.coins(EconomyDependency.getCoins(sagaPlayer)), 0);
 		
 		// Guard rune:
 		if(GeneralConfiguration.config().isRuneEnabled()){
@@ -143,26 +218,13 @@ public class StatsMessages {
 					rune= "discharged";
 				}
 			}
-			table.addLine("Guard rune", rune, 2);
+			table.addLine("guard rune", rune, 2);
 		}
-		
-		table.collapse();
-		
-		return table;
-		
-
-	}
-	
-	private static ChatTable factionSettlement(SagaPlayer sagaPlayer) {
-
-		
-		ChatTable table = new ChatTable(new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
-
 		
 		// Faction and settlement:
 		String faction = "none";
 		if(sagaPlayer.getFaction() != null) faction = sagaPlayer.getFaction().getName();
-
+		
 		String settlement = "none";
 		if(sagaPlayer.getBundle() != null) settlement = sagaPlayer.getBundle().getName();
 		
@@ -172,10 +234,10 @@ public class StatsMessages {
 		// Rank and role:
 		String rank = "none";
 		if(sagaPlayer.getRank() != null) rank = sagaPlayer.getRank().getName();
-
+		
 		String role = "none";
 		if(sagaPlayer.getRole() != null) role = sagaPlayer.getRole().getName();
-
+		
 		table.addLine("rank", rank, 0);
 		table.addLine("role", role, 2);
 		
@@ -200,12 +262,10 @@ public class StatsMessages {
     			
     			String name = ability.getName() + " " + RomanNumeral.binaryToRoman(ability.getScore());
     			String required = "";
-    			String status = "";
     			
     			if(ability.getScore() == 0){
     				name = Colour.unavailable + name;
     				required = Colour.unavailable + required;
-    				status = Colour.unavailable + status;
     			}
     			
     			if(ability.getScore() < AbilityConfiguration.config().maxAbilityScore){
@@ -225,16 +285,7 @@ public class StatsMessages {
     				required = "-";
     			}
     			
-    			if(ability.getScore() == 0){
-    				status+= "-";
-    			}
-    			else if(ability.getCooldown() <= 0){
-					status+= "ready";
-				}else{
-					status = ability.getCooldown() + "s";
-				}
-    			
-    			table.addLine(new String[]{name, required, status});
+    			table.addLine(new String[]{name, required});
     			
     		}
     		
@@ -1398,11 +1449,13 @@ public class StatsMessages {
 
 	
 	
-	// Attribute points:
+	// Attribute and ability points:
 	public static String gainedAttributePoints(Integer amount) {
-		
 		return Colour.veryPositive + "Gained " + amount + " attribute points.";
-		
+	}
+	
+	public static String gainedAbilityPoints(Integer amount) {
+		return Colour.veryPositive + "Gained " + amount + " ability points.";
 	}
 	
 	

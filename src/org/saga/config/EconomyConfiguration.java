@@ -71,10 +71,16 @@ public class EconomyConfiguration {
 	public Double guardianRuneRechargeCost;
 
 	
+	// Reset:
 	/**
-	 * Reset cost.
+	 * Attribute reset cost.
 	 */
 	private Double attributeResetCost;
+	
+	/**
+	 * Attribute reset cost.
+	 */
+	private Double abilityResetCost;
 
 
 	// Create rename:
@@ -254,11 +260,19 @@ public class EconomyConfiguration {
 			guardianRuneRechargeCost = 1000.0;
 		}
 		
+		
+		// Reset:
 		if(attributeResetCost == null){
 			SagaLogger.nullField(getClass(), "attributeResetCost");
 			attributeResetCost= Double.MAX_VALUE;
 		}
 		
+		if(abilityResetCost == null){
+			SagaLogger.nullField(getClass(), "abilityResetCost");
+			abilityResetCost= Double.MAX_VALUE;
+		}
+		
+		// Create rename:
 		if(settlementCreateCost == null){
 			SagaLogger.nullField(getClass(), "settlementCreateCost");
 			settlementCreateCost = 1000.0;
@@ -412,16 +426,25 @@ public class EconomyConfiguration {
 		return enabled;
 	}
 	
-
 	
-	// Attributes:
+	
+	// Reset:
 	/**
 	 * Gets the attribute reset cost.
 	 * 
-	 * @return single attribute reset coin cost
+	 * @return attribute point reset coin cost
 	 */
-	public Double getResetCost() {
+	public Double getAttributeResetCost() {
 		return attributeResetCost;
+	}
+	
+	/**
+	 * Gets the ability reset cost.
+	 * 
+	 * @return ability point reset coin cost
+	 */
+	public Double getAbilityResetCost() {
+		return abilityResetCost;
 	}
 	
 	

@@ -13,7 +13,6 @@ import org.saga.Clock.SecondTicker;
 import org.saga.SagaLogger;
 import org.saga.abilities.AbilityDefinition.ActivationAction;
 import org.saga.config.AbilityConfiguration;
-import org.saga.config.ExperienceConfiguration;
 import org.saga.exceptions.InvalidAbilityException;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.messages.AbilityMessages;
@@ -42,7 +41,6 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 */
 	private Integer active;
 	
-
 	/**
 	 * Cooldown.
 	 */
@@ -202,7 +200,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 
 	
 	
-	// Interaction:
+	// Parameters:
 	/**
 	 * Gets the definition.
 	 * 
@@ -279,26 +277,6 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 */
 	public Integer getTotalCooldown() {
 		return getDefinition().getCooldown(getScore());
-	}
-
-	/**
-	 * Awards exp for ability usage.
-	 * 
-	 * @param value ability dependent value
-	 * @return exp awarded
-	 */
-	public Double awardExp(Integer value) {
-
-		if(!(sagaLiving instanceof SagaPlayer)) return 0.0;
-		
-		Double exp = ExperienceConfiguration.config().getExp(this, value);
-		((SagaPlayer) sagaLiving).awardExp(exp);
-		
-		// Statistics:
-		StatisticsManager.manager().addExp("ability", getName(), exp);
-		
-		return exp;
-
 	}
 	
 	

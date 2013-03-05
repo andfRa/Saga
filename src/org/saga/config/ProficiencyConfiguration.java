@@ -57,15 +57,16 @@ public class ProficiencyConfiguration {
 		
 		
 		boolean integrity=true;
-
+		
+		// Definitions:
 		if(definitions == null){
 			definitions = new ArrayList<ProficiencyDefinition>();
-			SagaLogger.severe(getClass(), "profiecncyDefinitions field failed to initalize");
+			SagaLogger.nullField(getClass(), "definitions");
 			integrity=false;
 		}
 		for (int i = 0; i < definitions.size() && i >= 0; i++) {
 			if(definitions.get(i) == null){
-				SagaLogger.severe(getClass(), "definitions field element failed to initalize");
+				SagaLogger.nullField(getClass(), "definitions element");
 				definitions.remove(i);
 				i--;
 				continue;
@@ -79,9 +80,10 @@ public class ProficiencyConfiguration {
 		
 		
 	}
-
 	
-	// Interaction:
+	
+	
+	// Definitions:
 	/**
 	 * Gets a proficiency definition.
 	 * 
@@ -102,6 +104,7 @@ public class ProficiencyConfiguration {
 		
 	}
 	
+
 	/**
 	 * Gets all definitions.
 	 * 

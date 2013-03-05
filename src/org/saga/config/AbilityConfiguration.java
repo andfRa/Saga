@@ -30,6 +30,10 @@ public class AbilityConfiguration {
 	}
 	
 	
+	/**
+	 * Default ability cap.
+	 */
+	private Integer defaultAbilityCap;
 	
 	/**
 	 * Maximum ability score.
@@ -50,6 +54,11 @@ public class AbilityConfiguration {
 	 */
 	public void complete() {
 		
+		
+		if(defaultAbilityCap == null){
+			defaultAbilityCap = 0;
+			SagaLogger.nullField(getClass(), "defaultAbilityCap");
+		}
 		
 		if(maxAbilityScore == null){
 			maxAbilityScore = 0;
@@ -81,10 +90,21 @@ public class AbilityConfiguration {
 
 		
 	}
-
 	
 	
-	// Interaction:
+	// Limitations:
+	/**
+	 * Gets the default ability cap.
+	 * 
+	 * @return default ability cap
+	 */
+	public Integer getDefaultAbilityCap() {
+		return defaultAbilityCap;
+	}
+	
+	
+	
+	// Definitions:
 	/**
 	 * Gets the ability definition.
 	 * 
@@ -110,8 +130,10 @@ public class AbilityConfiguration {
 		return new ArrayList<AbilityDefinition>(definitions);
 		
 	}
-
 	
+	
+	
+	// Creation:
 	/**
 	 * Creates an ability.
 	 * 

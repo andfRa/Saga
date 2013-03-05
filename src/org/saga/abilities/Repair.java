@@ -156,9 +156,6 @@ public class Repair extends Ability{
 			
 		}
 		
-		// Award experience:
-		awardExp(new Integer(repair));
-		
 		return true;
 		
 		

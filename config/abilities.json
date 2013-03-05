@@ -1,7 +1,7 @@
 {
 
+"defaultAbilityCap":6,
 "maxAbilityScore":3,
-
 
 "definitions":[
   {"className":"org.saga.abilities.ChopDown",

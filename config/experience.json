@@ -1,7 +1,9 @@
 {
 
+"abilityPointCost":833.333333,
 "attributePointCost":150,
 
+"maxExp":15000,
 "expGainMultiplier":{"x1":0,"y1":1.0,"x2":15000.0,"y2":0.05},
 
 "blockExp":{
@@ -26,7 +28,7 @@
   "blaze":10.0,
   "bigslime":12.5,
   "smallslime":5.0,
-  "zombiepigman":8.0,
+  "pigzombie":8.0,
   "zombie":6.75,
   "skeleton":6.75,
   "spider":6.75,

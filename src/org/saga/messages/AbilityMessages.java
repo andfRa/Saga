@@ -6,7 +6,7 @@ import org.saga.messages.colours.Colour;
 import org.saga.utility.chat.ChatUtil;
 
 public class AbilityMessages {
-
+	
 	
 	// Usage:
 	public static String insufficientItems(Ability ability, Material material, Integer amount) {

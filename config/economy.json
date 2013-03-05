@@ -9,6 +9,7 @@
 "guardianRuneRechargeCost":1500,
 
 "attributeResetCost":250,
+"abilityResetCost":850,
 
 "settlementCreateCost":0,
 "factionCreateCost":0,

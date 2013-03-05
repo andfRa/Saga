@@ -6,6 +6,7 @@
     "type":"ROLE",
     "hierarchyLevel":"3",
     "attributeBonuses":{"luck":10,"toughness":5},
+    "abilityCapBonus":6,
     "settlementPermissions":["BUILD","BUILD_BUILDING","CLAIM","INVITE","ABANDON","KICK","SET_BUILDING","REMOVE_BUILDING","RENAME","SPAWN","MEMBER_COMMAND","ADD_RESIDENT","REMOVE_RESIDENT","MANAGE_PRICES","MANAGE_DEALS","ACCESS_WAREHOUSE","ACCESS_STORAGE","HURT_FARM_ANIMALS","FLASH_CHUNK","STORAGE_AREA_ADD","STORAGE_AREA_REMOVE","STORAGE_AREA_FLASH","ADD_COINS","REMOVE_COINS","BUY_CLAIMS","BUY_BUILD_POINTS"],
     "factionPermissions":[]
   },
@@ -14,6 +15,7 @@
     "type":"ROLE",
     "hierarchyLevel":"2",
     "attributeBonuses":{"toughness":6,"strength":4},
+    "abilityCapBonus":6,
     "settlementPermissions":["BUILD","BUILD_BUILDING","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE","HURT_FARM_ANIMALS","FLASH_CHUNK","STORAGE_AREA_ADD","STORAGE_AREA_REMOVE","STORAGE_AREA_FLASH"],
     "factionPermissions":[]
   },
@@ -22,6 +24,7 @@
     "type":"ROLE",
     "hierarchyLevel":"2",
     "attributeBonuses":{"strength":6,"precision":4},
+    "abilityCapBonus":6,
     "settlementPermissions":["BUILD","BUILD_BUILDING","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE","HURT_FARM_ANIMALS","FLASH_CHUNK","STORAGE_AREA_ADD","STORAGE_AREA_REMOVE","STORAGE_AREA_FLASH"],
     "factionPermissions":[]
   },
@@ -30,6 +33,7 @@
     "type":"ROLE",
     "hierarchyLevel":"2",
     "attributeBonuses":{"precision":6,"willpower":4},
+    "abilityCapBonus":6,
     "settlementPermissions":["BUILD","BUILD_BUILDING","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE","HURT_FARM_ANIMALS","FLASH_CHUNK","STORAGE_AREA_ADD","STORAGE_AREA_REMOVE","STORAGE_AREA_FLASH"],
     "factionPermissions":[]
   },
@@ -38,6 +42,7 @@
     "type":"ROLE",
     "hierarchyLevel":"2",
     "attributeBonuses":{"luck":6,"toughness":4},
+    "abilityCapBonus":6,
     "settlementPermissions":["BUILD","BUILD_BUILDING","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE","HURT_FARM_ANIMALS","FLASH_CHUNK","STORAGE_AREA_ADD","STORAGE_AREA_REMOVE","STORAGE_AREA_FLASH","MANAGE_EXPORT","MANAGE_IMPORT","MANAGE_SELL","MANAGE_BUY"],
     "factionPermissions":[]
   },
@@ -46,6 +51,7 @@
     "type":"INVALID",
     "hierarchyLevel":"2",
     "attributeBonuses":{"willpower":6,"toughness":4},
+    "abilityCapBonus":6,
     "settlementPermissions":["BUILD","BUILD_BUILDING","SPAWN","MEMBER_COMMAND","ACCESS_WAREHOUSE","ACCESS_STORAGE","HURT_FARM_ANIMALS","FLASH_CHUNK","STORAGE_AREA_ADD","STORAGE_AREA_REMOVE","STORAGE_AREA_FLASH"],
     "factionPermissions":[]
   },
@@ -54,6 +60,7 @@
     "type":"ROLE",
     "hierarchyLevel":"1",
     "attributeBonuses":{},
+    "abilityCapBonus":6,
     "settlementPermissions":["BUILD","SPAWN","MEMBER_COMMAND"],
     "factionPermissions":[]
   },
@@ -64,6 +71,7 @@
     "type":"INVALID",
     "hierarchyLevel":"3",
     "attributeBonuses":{"toughness":10},
+    "abilityCapBonus":6,
     "settlementPermissions":[],
     "factionPermissions":["INVITE","KICK","SET_COLOR","RENAME","SET_RANK","SPAWN","DECLARE_SIEGE"]
   },
@@ -72,6 +80,7 @@
     "type":"RANK",
     "hierarchyLevel":"3",
     "attributeBonuses":{"strength":10,"toughness":5},
+    "abilityCapBonus":6,
     "settlementPermissions":[],
     "factionPermissions":["INVITE","KICK","SET_COLOR","RENAME","SET_RANK","SPAWN","ADD_COINS","REMOVE_COINS"]
   },
@@ -80,6 +89,7 @@
     "type":"RANK",
     "hierarchyLevel":"3",
     "attributeBonuses":{"precision":10,"toughness":5},
+    "abilityCapBonus":6,
     "settlementPermissions":[],
     "factionPermissions":["INVITE","KICK","SET_COLOR","RENAME","SET_RANK","SPAWN","ADD_COINS","REMOVE_COINS"]
   },
@@ -88,6 +98,7 @@
     "type":"RANK",
     "hierarchyLevel":"3",
     "attributeBonuses":{"willpower":10,"toughness":5},
+    "abilityCapBonus":6,
     "settlementPermissions":[],
     "factionPermissions":["INVITE","KICK","SET_COLOR","RENAME","SET_RANK","SPAWN","ADD_COINS","REMOVE_COINS"]
   },
@@ -96,6 +107,7 @@
     "type":"RANK",
     "hierarchyLevel":"2",
     "attributeBonuses":{"strength":8,"toughness":2},
+    "abilityCapBonus":6,
     "settlementPermissions":[],
     "factionPermissions":["SPAWN"]
   },
@@ -104,6 +116,7 @@
     "type":"RANK",
     "hierarchyLevel":"2",
     "attributeBonuses":{"precision":8,"toughness":2},
+    "abilityCapBonus":6,
     "settlementPermissions":[],
     "factionPermissions":["SPAWN"]
   },
@@ -112,6 +125,7 @@
     "type":"RANK",
     "hierarchyLevel":"2",
     "attributeBonuses":{"willpower":8,"toughness":2},
+    "abilityCapBonus":6,
     "settlementPermissions":[],
     "factionPermissions":["SPAWN"]
   },
@@ -120,6 +134,7 @@
     "type":"RANK",
     "hierarchyLevel":"1",
     "attributeBonuses":{},
+    "abilityCapBonus":2,
     "settlementPermissions":[],
     "factionPermissions":["INVITE","SPAWN"]
   },
@@ -128,6 +143,7 @@
     "type":"RANK",
     "hierarchyLevel":"1",
     "attributeBonuses":{},
+    "abilityCapBonus":2,
     "settlementPermissions":[],
     "factionPermissions":["SPAWN"]
   }

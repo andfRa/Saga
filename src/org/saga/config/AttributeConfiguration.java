@@ -33,12 +33,7 @@ public class AttributeConfiguration {
 	 * Maximum attribute score.
 	 */
 	public Integer maxAttributeScore;
-
-	/**
-	 * Maximum attribute points.
-	 */
-	public Integer maxAttributePoints;
-
+	
 	/**
 	 * Damage penalty totals.
 	 * If Minecraft damage is below these values, then a penalty is applied to the resulting damage.
@@ -64,11 +59,6 @@ public class AttributeConfiguration {
 		if(maxAttributeScore == null){
 			SagaLogger.nullField(getClass(), "maxAttributeScore");
 			maxAttributeScore= 1;
-		}
-		
-		if(maxAttributePoints == null){
-			SagaLogger.nullField(getClass(), "maxAttributePoints");
-			maxAttributePoints= 50;
 		}
 		
 		if(damagePenaltyValues == null){
@@ -136,15 +126,6 @@ public class AttributeConfiguration {
 		return attributeNames;
 		
 		
-	}
-
-	/**
-	 * Gets the maximum amount of attribute points.
-	 * 
-	 * @return maximum amount of attribute points.
-	 */
-	public Integer getMaxAttributePoints() {
-		return maxAttributePoints;
 	}
 	
 	

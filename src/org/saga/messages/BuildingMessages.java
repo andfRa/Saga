@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.saga.abilities.Ability;
 import org.saga.buildings.Arena;
 import org.saga.buildings.Arena.ArenaPlayer;
 import org.saga.buildings.Building;
@@ -18,6 +19,7 @@ import org.saga.settlements.Bundle;
 import org.saga.utility.chat.ChatFramer;
 import org.saga.utility.chat.ChatTable;
 import org.saga.utility.chat.ChatUtil;
+import org.saga.utility.chat.RomanNumeral;
 
 public class BuildingMessages {
 
@@ -370,7 +372,7 @@ public class BuildingMessages {
 	
 	
 	
-	// Reset sign:
+	// Attribute reset sign:
 	public static String resetAttr(String attribute, Integer score) {
 		return Colour.normal1 + ChatUtil.capitalize(attribute) + " score reset to " + score + ".";
 	}
@@ -379,9 +381,35 @@ public class BuildingMessages {
 		return Colour.negative + ChatUtil.capitalize(attribute) + " score is already 0.";
 	}
 	
-	public static String trainLimitReached(String attribute) {
-		return Colour.negative + ChatUtil.capitalize(attribute) + " can't be trained any further.";
+	
+	
+	// Ability sign:
+	public static String abilityRequirementsNotMet(Ability ability, Integer score) {
+		return Colour.negative + "Requirements not met for " + ability.getName() + " " + RomanNumeral.binaryToRoman(score) + " ability.";
 	}
+	
+	public static String abilityUpgraded(Ability ability, Integer score) {
+		return Colour.positive + "Upgraded to " + ability.getName() + " " + RomanNumeral.binaryToRoman(score) + ".";
+	}
+	
+	public static String abilityMaxReached(String abilName) {
+		return Colour.negative + "Ability " + abilName + " can't be upgraded any further.";
+	}
+	
+	
+	
+	// Ability reset:
+	public static String abilityAlreadyReset(String ability) {
+		return Colour.negative + ChatUtil.capitalize(ability) + " score is already 0.";
+	}
+	
+	public static String abilityReset(Ability ability, Integer score) {
+		
+		if(score <= 0) return Colour.positive + "Reset " + ability.getName() + " ability.";
+		return Colour.positive + "Reset to " + ability.getName() + " " + RomanNumeral.binaryToRoman(score) + ".";
+		
+	}
+	
 	
 	
 	// Upgrading:

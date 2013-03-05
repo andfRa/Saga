@@ -33,11 +33,24 @@ public class ExperienceConfiguration {
 	}
 	
 	
+	// Attributes and abilities:
 	/**
 	 * Attribute point cost.
 	 */
 	private Double attributePointCost;
 
+	/**
+	 * Ability point cost.
+	 */
+	private Double abilityPointCost;
+	
+	
+	// Experience gain:
+	/**
+	 * Maximum experience.
+	 */
+	private Double maxExp;
+	
 	/**
 	 * Experience gain multiplier for given exp value.
 	 */
@@ -64,6 +77,8 @@ public class ExperienceConfiguration {
 	 */
 	private Hashtable<String, TwoPointFunction> abilityExp;
 	
+	
+	// Spawners:
 	/**
 	 * Spawner enchant points multiplier.
 	 */
@@ -97,12 +112,25 @@ public class ExperienceConfiguration {
 		
 		// Set instance:
 		instance = this;
-
+		
+		// Attributes and abilities:
 		if(attributePointCost == null){
 			SagaLogger.nullField(getClass(), "attributePointCost");
 			attributePointCost = 500.0;
 		}
+		
+		if(abilityPointCost == null){
+			SagaLogger.nullField(getClass(), "abilityPointCost");
+			abilityPointCost = 500.0;
+		}
 
+		// Experience gain:
+		if(maxExp == null){
+			maxExp = 10000000000.0;
+			SagaLogger.nullField(getClass(), "maxExp");
+			integrity = false;
+		}
+		
 		if(expGainMultiplier == null){
 			expGainMultiplier = new TwoPointFunction(1.0);
 			SagaLogger.nullField(getClass(), "expGainMultiplier");
@@ -156,7 +184,7 @@ public class ExperienceConfiguration {
 
 	
 	
-	// Leveling:
+	// Attributes and abilities:
 	/**
 	 * Gets the cost of a single attribute point.
 	 * 
@@ -167,7 +195,7 @@ public class ExperienceConfiguration {
 	}
 	
 	/**
-	 * Gets the amount of attribute points available
+	 * Gets the amount of attribute points available.
 	 * 
 	 * @param exp player exp
 	 * @return attribute points
@@ -177,12 +205,35 @@ public class ExperienceConfiguration {
 	}
 	
 	/**
-	 * Gets max experience points.
+	 * Gets the cost of a single ability point.
 	 * 
-	 * @return max experience points
+	 * @return ability point cost
+	 */
+	public Double getAbilityPointCost() {
+		return abilityPointCost;
+	}
+	
+	/**
+	 * Gets the amount of ability points available.
+	 * 
+	 * @param exp player exp
+	 * @return ability points
+	 */
+	public Integer getAbilityPoints(Double exp) {
+		return (int) (exp / abilityPointCost);
+	}
+	
+	
+	
+	
+	// Experience gain:
+	/**
+	 * Gets max experience.
+	 * 
+	 * @return max experience
 	 */
 	public Double getMaxExp() {
-		return attributePointCost * AttributeConfiguration.config().getMaxAttributePoints();
+		return maxExp;
 	}
 
 	/**
@@ -191,12 +242,21 @@ public class ExperienceConfiguration {
 	 * @param attrPoints attribute points
 	 * @return experience needed
 	 */
-	public Double calcExp(Integer attrPoints) {
+	public Double calcAttributeExp(Integer attrPoints) {
 		return attributePointCost * attrPoints;
 	}
 	
+	/**
+	 * Calculates experience points needed for given ability points.
+	 * 
+	 * @param abilPoints ability points
+	 * @return experience needed
+	 */
+	public Double calcAbilityExp(Integer abilPoints) {
+		return abilityPointCost * abilPoints;
+	}
 	
-	// Experience:
+	
 	/**
 	 * Gets the experience gain multiplier.
 	 * 
@@ -252,7 +312,6 @@ public class ExperienceConfiguration {
 	 * @return experience
 	 */
 	public Double getExp(Creature creature) {
-
 		
 		Double exp = creatureExp.get(creature.getClass().getSimpleName().toLowerCase().replace("craft", ""));
 		
@@ -261,7 +320,6 @@ public class ExperienceConfiguration {
 		if(exp == null) return 0.0;
 		
 		return exp;
-		
 		
 	}
 	
