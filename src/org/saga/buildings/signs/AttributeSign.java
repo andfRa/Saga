@@ -15,7 +15,7 @@ public class AttributeSign extends BuildingSign{
 	/**
 	 * Name for the sign.
 	 */
-	public static String SIGN_NAME = "=[TRAIN_ATTR]=";
+	public static String SIGN_NAME = "=TRAIN_ATTR=";
 	
 	
 	

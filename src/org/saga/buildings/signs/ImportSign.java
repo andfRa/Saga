@@ -22,7 +22,7 @@ public class ImportSign extends BuildingSign {
 	/**
 	 * Name for the sign.
 	 */
-	public static String SIGN_NAME = "=[IMPORT]=";
+	public static String SIGN_NAME = "=IMPORT=";
 
 	/**
 	 * Amount division string.

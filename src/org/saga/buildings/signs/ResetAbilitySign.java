@@ -20,7 +20,7 @@ public class ResetAbilitySign extends BuildingSign{
 	/**
 	 * Name for the sign.
 	 */
-	public static String SIGN_NAME = "=[RESET_ABIL]=";
+	public static String SIGN_NAME = "=RESET_ABIL=";
 
 	/**
 	 * Amount division string.

@@ -18,7 +18,7 @@ public class ResetSign extends BuildingSign{
 	/**
 	 * Name for the 
 	 */
-	public static String SIGN_NAME = "=[RESET_ATTR]=";
+	public static String SIGN_NAME = "=RESET_ATTR=";
 
 	/**
 	 * Amount division string.

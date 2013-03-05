@@ -24,7 +24,7 @@ public class BuySign extends BuildingSign {
 	/**
 	 * Name for the sign.
 	 */
-	public static String SIGN_NAME = "=[BUY]=";
+	public static String SIGN_NAME = "=BUY=";
 
 	/**
 	 * Amount division string.

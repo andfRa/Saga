@@ -17,7 +17,7 @@ public class AbilitySign extends BuildingSign{
 	/**
 	 * Name for the sign.
 	 */
-	public static String SIGN_NAME = "=[TRAIN_ABIL]=";
+	public static String SIGN_NAME = "=TRAIN_ABIL=";
 	
 	
 	// Initialisation:

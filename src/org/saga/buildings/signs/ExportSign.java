@@ -21,7 +21,7 @@ public class ExportSign extends BuildingSign {
 	/**
 	 * Name for the sign.
 	 */
-	public static String SIGN_NAME = "=[EXPORT]=";
+	public static String SIGN_NAME = "=EXPORT=";
 
 	/**
 	 * Amount division string.

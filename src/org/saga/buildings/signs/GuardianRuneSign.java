@@ -19,7 +19,7 @@ public class GuardianRuneSign extends BuildingSign{
 	/**
 	 * Name for the 
 	 */
-	public static String SIGN_NAME = "=[RECHARGE]=";
+	public static String SIGN_NAME = "=RECHARGE=";
 	
 	/**
 	 * Rune type.

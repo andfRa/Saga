@@ -24,7 +24,7 @@ public class SellSign extends BuildingSign {
 	/**
 	 * Name for the sign.
 	 */
-	public static String SIGN_NAME = "=[SELL]=";
+	public static String SIGN_NAME = "=SELL=";
 
 	/**
 	 * Amount division string.
