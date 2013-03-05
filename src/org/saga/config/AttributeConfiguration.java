@@ -28,11 +28,19 @@ public class AttributeConfiguration {
 	public static AttributeConfiguration config() {
 		return instance;
 	}
+	
+	
+	
+	/**
+	 * Default attribute cap.
+	 */
+	private Integer normalAttributeCap;
 
 	/**
-	 * Maximum attribute score.
+	 * Maximum attribute cap.
 	 */
-	public Integer maxAttributeScore;
+	private Integer maxAttributeCap;
+	
 	
 	/**
 	 * Damage penalty totals.
@@ -40,11 +48,11 @@ public class AttributeConfiguration {
 	 */
 	private Hashtable<DamageType, Double> damagePenaltyValues;
 	
+	
 	/**
 	 * Attributes.
 	 */
 	private ArrayList<Attribute> attributes; 
-	
 	
 	
 	
@@ -56,9 +64,14 @@ public class AttributeConfiguration {
 	public void complete() {
 		
 		
-		if(maxAttributeScore == null){
-			SagaLogger.nullField(getClass(), "maxAttributeScore");
-			maxAttributeScore= 1;
+		if(normalAttributeCap == null){
+			SagaLogger.nullField(getClass(), "normalAttributeCap");
+			normalAttributeCap= 1;
+		}
+		
+		if(maxAttributeCap == null){
+			SagaLogger.nullField(getClass(), "maxAttributeCap");
+			maxAttributeCap= 1;
 		}
 		
 		if(damagePenaltyValues == null){
@@ -81,8 +94,28 @@ public class AttributeConfiguration {
 	
 	
 	
+	// Attribute points:
+	/**
+	 * Gets the normal attribute cap.
+	 * 
+	 * @return normal attribute cap
+	 */
+	public Integer getNormalAttributeCap() {
+		return normalAttributeCap;
+	}
 	
-	// Getters:
+	/**
+	 * Gets the maximum attribute cap.
+	 * 
+	 * @return maximum attribute cap
+	 */
+	public Integer getMaxAttributeCap() {
+		return maxAttributeCap;
+	}
+	
+	
+	
+	// Damage modification:
 	/**
 	 * Get damage penalty value.
 	 * 
@@ -98,6 +131,9 @@ public class AttributeConfiguration {
 		
 	}
 	
+	
+	
+	// Attributes:
 	/**
 	 * Gets the attributes.
 	 * 

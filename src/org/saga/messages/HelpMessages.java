@@ -12,6 +12,7 @@ import org.saga.buildings.TownSquare;
 import org.saga.buildings.TradingPost;
 import org.saga.buildings.TrainingCamp;
 import org.saga.buildings.Warehouse;
+import org.saga.buildings.signs.AbilitySign;
 import org.saga.buildings.signs.AttributeSign;
 import org.saga.buildings.signs.BuySign;
 import org.saga.buildings.signs.ExportSign;
@@ -161,7 +162,7 @@ public class HelpMessages {
 		book.addLine( 
 			"Players gain attribute points from killing creatures, getting crafting materials and pvp. " +
 			"Attribute points can be used to increase attribute scores. " +
-			"Higher attribute scores make you stronger." +
+			"Higher scores provide better physical bonuses. " +
 			"Attributes can be increased by interacting with " + AttributeSign.SIGN_NAME + " signs. " +
 			"Training signs can only be set at a " + trainingCamp + " building. " +
 			"Use " + GeneralMessages.command("/stats") + " to see your attributes."
@@ -188,8 +189,11 @@ public class HelpMessages {
 		book.nextPage();
 		
 		// Ability descriptions:
-		book.addLine("Higher attribute scores unlock and upgrade abilities. " +
-			"Upgraded abilities are more efficient and have lower cooldown times. " +
+		book.addLine(
+			"Ability points are gained the same way attribute points. " +
+			"Ability points are used to unlock new abilities and upgrade existing ones. " +
+			"Abilities can be upgraded by a " + AbilitySign.SIGN_NAME + " sign. " +
+			"Upgraded abilities are more powerful and consume less hunger points. " +
 			"Some abilities require certain buildings and some are only available for certain roles/ranks. " +
 			"Use " + GeneralMessages.command("/pabilityinfo") + " to see ability attribute requirements."
 		);

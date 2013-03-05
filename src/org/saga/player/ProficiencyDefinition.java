@@ -36,7 +36,12 @@ public class ProficiencyDefinition{
 	 * Attribute bonuses.
 	 */
 	private Hashtable<String, Integer> attributeBonuses;
-
+	
+	/**
+	 * Attribute cap bonus.
+	 */
+	private Hashtable<String, Integer> attributeCapBonus;
+	
 	/**
 	 * Ability cap bonus.
 	 */
@@ -97,6 +102,11 @@ public class ProficiencyDefinition{
 		if(attributeBonuses == null){
 			attributeBonuses = new Hashtable<String, Integer>();
 			SagaLogger.nullField(this, "attributeBonuses");
+		}
+		
+		if(attributeCapBonus == null){
+			attributeCapBonus = new Hashtable<String, Integer>();
+			SagaLogger.nullField(this, "attributeCapBonus");
 		}
 		
 		if(abilityCapBonus == null){
@@ -201,7 +211,22 @@ public class ProficiencyDefinition{
 		return bonus;
 		
 	}
-	
+
+	/**
+	 * Gets attribute cap bonus.
+	 * 
+	 * @param attrName attribute name
+	 * @return attribute cap bonus
+	 */
+	public Integer getAttributeCapBonus(String attrName) {
+		
+		Integer bonus = attributeCapBonus.get(attrName);
+		if(bonus == null) return 0;
+		
+		return bonus;
+		
+	}
+
 	/**
 	 * Gets ability cap bonus.
 	 * 

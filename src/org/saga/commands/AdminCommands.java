@@ -278,7 +278,7 @@ public class AdminCommands {
 		}
 		
 		// Invalid score:
-		if(score < 0 || score > AttributeConfiguration.config().maxAttributeScore){
+		if(score < 0 || score > selPlayer.getAttributeCap(attrName)){
 			
 			sagaPlayer.message(AdminMessages.attributeScoreOutOfRange(score + ""));
 			return;

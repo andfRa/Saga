@@ -90,7 +90,7 @@ public class SagaEntityDeathEvent {
 			// Statistics:
 			Integer usedAttr = damEvent.defenderPlayer.getUsedAttributePoints();
 			String range = "";
-			for (int maxi = 0; maxi <= AttributeConfiguration.config().maxAttributeScore; maxi+=10) {
+			for (int maxi = 0; maxi <= AttributeConfiguration.config().getMaxAttributeCap(); maxi+=10) {
 				
 				if(usedAttr < maxi + 1){
 

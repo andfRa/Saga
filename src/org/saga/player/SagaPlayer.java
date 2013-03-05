@@ -15,6 +15,7 @@ import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.production.SagaItem;
 import org.saga.config.AbilityConfiguration;
+import org.saga.config.AttributeConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.FactionConfiguration;
@@ -228,18 +229,23 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 
 		
 		Integer bonus = super.getAttrScoreBonus(attrName);
-		Proficiency prof = null;
 		
-		prof = getRole();
-		if(prof != null){
-			bonus+= prof.getDefinition().getAttributeBonus(attrName);
+		// Ask role:
+		Proficiency role = getRole();
+		if(role != null){
+			bonus+= role.getDefinition().getAttributeBonus(attrName);
 		}
 		
 		// Ask rank:
-		prof = getRank();
-		if(prof != null){
-			bonus+= prof.getDefinition().getAttributeBonus(attrName);
+		Proficiency rank = getRank();
+		if(rank != null){
+			bonus+= rank.getDefinition().getAttributeBonus(attrName);
 		}
+		
+		// Cap:
+		Integer rawScore = getRawAttributeScore(attrName);
+		Integer cap = getAttributeCap(attrName);
+		if(rawScore + bonus > cap) bonus = cap - rawScore;
 		
 		return bonus;
 		
@@ -269,6 +275,38 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	}
 
 	
+	/**
+	 * Gets the attribute cap.
+	 * 
+	 * @param attrName attribute name
+	 * @return attribute cap
+	 */
+	public Integer getAttributeCap(String attrName) {
+		
+		
+		Integer cap = AttributeConfiguration.config().getNormalAttributeCap();
+		Proficiency prof = null;
+		
+		// Ask role:
+		prof = getRole();
+		if(prof != null){
+			cap+= prof.getDefinition().getAttributeCapBonus(attrName);
+		}
+		
+		// Ask rank:
+		prof = getRank();
+		if(prof != null){
+			cap+= prof.getDefinition().getAttributeCapBonus(attrName);
+		}
+		
+		// Normalise:
+		if(cap > AttributeConfiguration.config().getMaxAttributeCap()) cap = AttributeConfiguration.config().getMaxAttributeCap();
+		
+		return cap;
+		
+		
+	}
+	
 	/* 
 	 * (non-Javadoc)
 	 * 
@@ -292,7 +330,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		
 		
 		// Cap:
-		Integer cap = AbilityConfiguration.config().getDefaultAbilityCap();
+		Integer cap = AbilityConfiguration.config().getNormalAbilityCap();
 		
 		Proficiency role = getRole();
 		if(role != null) cap+= role.getDefinition().getAbilityCapBonus();

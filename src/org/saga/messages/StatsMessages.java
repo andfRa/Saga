@@ -113,7 +113,7 @@ public class StatsMessages {
 			Integer attrScore = sagaPlayer.getRawAttributeScore(attrName);
 			
 			String scoreCurr = format.format(attrScore + attrBonus);
-			String scoreMax = format.format(AttributeConfiguration.config().maxAttributeScore + attrBonus);
+			String scoreMax = format.format(sagaPlayer.getAttributeCap(attrName));
 			
 			score = scoreCurr + "/" + scoreMax;
 			
@@ -160,7 +160,6 @@ public class StatsMessages {
 			
 			// Colours:
 			Integer rawScore = sagaPlayer.getRawAbilityScore(definition.getName());
-			System.out.println(name + ": " + actScore + ">" + rawScore);
 			if(actScore > rawScore){
 				score = Colour.positive + score;
 			}

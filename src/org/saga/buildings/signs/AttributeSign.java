@@ -128,27 +128,29 @@ public class AttributeSign extends BuildingSign{
 	 */
 	@Override
 	protected void onRightClick(SagaPlayer sagaPlayer) {
-
-		String attribute = getFirstParameter();
-		Integer attributeScore = sagaPlayer.getRawAttributeScore(attribute) + 1;
+		
+		
+		String attrName = getFirstParameter();
+		Integer nextScore = sagaPlayer.getRawAttributeScore(attrName) + 1;
 		
 		// Already maximum:
-		if(attributeScore > AttributeConfiguration.config().maxAttributeScore){
-			sagaPlayer.message(BuildingMessages.attributeMaxReached(attribute));
+		Integer scoreCap = sagaPlayer.getAttributeCap(attrName);
+		if(nextScore > scoreCap){
+			sagaPlayer.message(BuildingMessages.attributeMaxReached(attrName, scoreCap));
 			return;
 		}
 		
 		// Available points:
 		if(sagaPlayer.getRemainingAttributePoints() < 1){
-			sagaPlayer.message(BuildingMessages.attributePointsRequired(attribute));
+			sagaPlayer.message(BuildingMessages.attributePointsRequired(attrName));
 			return;
 		}
 		
 		// Increase:
-		sagaPlayer.setAttributeScore(attribute, attributeScore);
+		sagaPlayer.setAttributeScore(attrName, nextScore);
 		
 		// Inform:
-		sagaPlayer.message(BuildingMessages.attributeIncreased(attribute, attributeScore));
+		sagaPlayer.message(BuildingMessages.attributeIncreased(attrName, nextScore));
 		
 		// Play effect:
 		StatsEffectHandler.playSign(sagaPlayer);

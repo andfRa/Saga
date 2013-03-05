@@ -1,6 +1,7 @@
 {
 
-"maxAttributeScore":50,
+"normalAttributeCap":50,
+"maxAttributeCap":95,
 
 "damagePenaltyValues":{
   "MELEE":7,

@@ -646,9 +646,10 @@ public class EconomyConfiguration {
 	public Double getWageWeigth(Faction faction, SagaPlayer sagaPlayer) {
 
 		Proficiency rank = faction.getRank(sagaPlayer.getName());
+		if(rank == null) return 0.0;
 		
 		Double wage = settlementWageWeights.get(rank.getHierarchy());
-		if(wage == null) wage = 0.0;
+		if(wage == null) return 0.0;
 		
 		return wage;
 		

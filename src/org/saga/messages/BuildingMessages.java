@@ -10,9 +10,8 @@ import org.saga.buildings.Arena.ArenaPlayer;
 import org.saga.buildings.Building;
 import org.saga.buildings.CrumbleArena;
 import org.saga.buildings.CrumbleArena.CrumblePlayer;
-import org.saga.buildings.production.SagaItem;
 import org.saga.buildings.TownSquare;
-import org.saga.config.AttributeConfiguration;
+import org.saga.buildings.production.SagaItem;
 import org.saga.messages.colours.Colour;
 import org.saga.messages.colours.ColourLoop;
 import org.saga.settlements.Bundle;
@@ -358,8 +357,8 @@ public class BuildingMessages {
 	
 	
 	// Attribute sign:
-	public static String attributeMaxReached(String attribute) {
-		return Colour.negative + "Can't increase " + attribute + " above " + AttributeConfiguration.config().maxAttributeScore + ".";
+	public static String attributeMaxReached(String attribute, Integer max) {
+		return Colour.negative + "Can't increase " + attribute + " above " + max + ".";
 	}
 
 	public static String attributeIncreased(String attribute, Integer score) {

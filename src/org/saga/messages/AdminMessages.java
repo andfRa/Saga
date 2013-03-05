@@ -94,7 +94,7 @@ public class AdminMessages {
 	}
 	
 	public static String attributeScoreOutOfRange(String score){
-		return Colour.negative + "Attribute score " + score + " is out of range. Allowed range: 0 - " + AttributeConfiguration.config().maxAttributeScore + ".";
+		return Colour.negative + "Attribute score " + score + " is out of range. Allowed range: 0 - " + AttributeConfiguration.config().getMaxAttributeCap() + ".";
 	}
 	
 	
@@ -424,7 +424,7 @@ public class AdminMessages {
 		
 		StringBuffer result = new StringBuffer();
 		ArrayList<Attribute> attributes = AttributeConfiguration.config().getAttributes();
-		int max = AttributeConfiguration.config().maxAttributeScore;
+		int max = AttributeConfiguration.config().getMaxAttributeCap();
 		
 		// Begin:
 		result.append("==" + "Attributes" + "==" + "\n");
@@ -745,7 +745,7 @@ public class AdminMessages {
 		
 		StringBuffer result = new StringBuffer();
 		ArrayList<Attribute> attributes = AttributeConfiguration.config().getAttributes();
-		int max = AttributeConfiguration.config().maxAttributeScore;
+		int max = AttributeConfiguration.config().getMaxAttributeCap();
 		
 		// Title:
 		result.append("==Attributes");
