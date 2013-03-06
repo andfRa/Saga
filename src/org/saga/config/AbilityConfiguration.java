@@ -30,6 +30,7 @@ public class AbilityConfiguration {
 	}
 	
 	
+	// Scores:
 	/**
 	 * Normal ability cap.
 	 */
@@ -40,6 +41,31 @@ public class AbilityConfiguration {
 	 */
 	public Integer maxAbilityScore;
 	
+	
+	// Energy:
+	/**
+	 * Base energy points.
+	 */
+	private Integer baseEnergyPoins;
+
+	/**
+	 * Energy gained for one food.
+	 */
+	private Integer energyRegenPerFood;
+
+	/**
+	 * Energy regeneration seconds.
+	 */
+	private Double regenDelaySeconds;
+	
+	/**
+	 * Minimum food level required for the energy to regenerate.
+	 */
+	private Integer energyMinimumFood;
+	
+	
+	
+	// Definitions;
 	/**
 	 * Abilities.
 	 */
@@ -55,6 +81,7 @@ public class AbilityConfiguration {
 	public void complete() {
 		
 		
+		// Scores:
 		if(normalAbilityCap == null){
 			normalAbilityCap = 0;
 			SagaLogger.nullField(getClass(), "normalAbilityCap");
@@ -65,6 +92,30 @@ public class AbilityConfiguration {
 			SagaLogger.nullField(getClass(), "maxAbilityScore");
 		}
 		
+		// Energy:
+		if(baseEnergyPoins == null){
+			baseEnergyPoins = 0;
+			SagaLogger.nullField(getClass(), "baseEnergyPoins");
+		}
+		
+		if(energyRegenPerFood == null){
+			energyRegenPerFood = 0;
+			SagaLogger.nullField(getClass(), "energyRegenPerFood");
+		}
+		
+		if(regenDelaySeconds == null){
+			regenDelaySeconds = 0.0;
+			SagaLogger.nullField(getClass(), "regenDelaySeconds");
+		}
+		
+		if(energyMinimumFood == null){
+			energyMinimumFood = 0;
+			SagaLogger.nullField(getClass(), "energyMinimumFood");
+		}
+		
+		
+		
+		// Definitions:
 		if(definitions == null){
 			SagaLogger.nullField(getClass(), "definitions");
 			definitions = new ArrayList<AbilityDefinition>();
@@ -92,7 +143,7 @@ public class AbilityConfiguration {
 	}
 	
 	
-	// Limitations:
+	// Scores:
 	/**
 	 * Gets the normal ability cap.
 	 * 
@@ -100,6 +151,45 @@ public class AbilityConfiguration {
 	 */
 	public Integer getNormalAbilityCap() {
 		return normalAbilityCap;
+	}
+	
+	
+	
+	// Energy:
+	/**
+	 * Gets the base energy points.
+	 * 
+	 * @return base energy points
+	 */
+	public Integer getBaseEnergyPoins() {
+		return baseEnergyPoins;
+	}
+	
+	/**
+	 * Gets the energy for a single level.
+	 * 
+	 * @return energy per food level
+	 */
+	public int getEnergyPerFoodCost() {
+		return energyRegenPerFood;
+	}
+	
+	/**
+	 * Gets the tick delay in seconds.
+	 * 
+	 * @return regeneration delay in seconds
+	 */
+	public Double getEnergyRegenSeconds() {
+		return regenDelaySeconds;
+	}
+	
+	/**
+	 * Gets the minimum food level required for energy regeneration.
+	 * 
+	 * @return minimum food level for energy regeneration
+	 */
+	public Integer getEnergyMinimumFood() {
+		return energyMinimumFood;
 	}
 	
 	

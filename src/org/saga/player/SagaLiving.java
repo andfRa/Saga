@@ -15,6 +15,7 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
+import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
 import org.saga.abilities.AbilityManager;
@@ -31,7 +32,17 @@ public class SagaLiving <T extends LivingEntity>{
 
 	
 	// Living entity:
+	/**
+	 * Wrapped entity:
+	 */
 	transient protected T livingEntity = null;
+	
+	
+	// Physical:
+	/**
+	 * Players energy.
+	 */
+	private Integer energy;
 	
 	
 	// Positioning:
@@ -71,7 +82,14 @@ public class SagaLiving <T extends LivingEntity>{
 	 */
 	transient protected AttributeManager attributeManager;
 	
-
+	
+	// Control:
+	/**
+	 * Indicates that the energy is regenerating.
+	 */
+	transient private boolean energyRegenFlag = false;
+	
+	
 	
 	// Initialisation:
 	/**
@@ -87,6 +105,7 @@ public class SagaLiving <T extends LivingEntity>{
 	 */
 	public SagaLiving(String name) {
 
+		this.energy = AbilityConfiguration.config().getBaseEnergyPoins();
 		this.abilities = new ArrayList<Ability>();
 		this.attributeScores = new Hashtable<String, Integer>();
 		this.abilityScores = new Hashtable<String, Integer>();
@@ -102,8 +121,14 @@ public class SagaLiving <T extends LivingEntity>{
 	 * 
 	 */
 	protected void complete() {
-
-
+		
+		
+		// Physical:
+		if(energy == null){
+			energy = 0;
+			SagaLogger.nullField(this, "energy");
+		}
+		
 		// Abilities:
 		if(abilities == null){
 			abilities = new ArrayList<Ability>();
@@ -148,7 +173,11 @@ public class SagaLiving <T extends LivingEntity>{
 		this.abilityManager = new AbilityManager(this);
 		this.attributeManager = new AttributeManager(this);
 		
+		// Synchronise:
 		syncAbilities();
+
+		// Start regeneration:
+		handleEnergyRegen();
 		
 		
 	}
@@ -187,6 +216,100 @@ public class SagaLiving <T extends LivingEntity>{
 	}
 	
 	
+
+	// Energy:
+	/**
+	 * Gets players energy.
+	 * 
+	 * @return players energy
+	 */
+	public int getEnergy() {
+		return energy;
+	}
+	
+	/**
+	 * Calculates maximum energy points.
+	 * 
+	 * @return maximum energy points
+	 */
+	public int calcMaxEnergy() {
+		return AbilityConfiguration.config().getBaseEnergyPoins();
+	}
+	
+	/**
+	 * Modifies energy.
+	 * 
+	 * @param amount amount
+	 */
+	public void modEnergy(int amount) {
+		
+		if(amount == 0) return;
+		energy+= amount;
+		
+		// Regeneration process:
+		handleEnergyRegen();
+		
+	}
+	
+	/**
+	 * Handles energy regeneration.
+	 * 
+	 */
+	public void handleEnergyRegen() {
+		
+		
+		Integer maxEnergy = AbilityConfiguration.config().getBaseEnergyPoins();
+		
+		// Full:
+		if(energy >= maxEnergy) return;
+		
+		// Already regenerating:
+		if(energyRegenFlag) return;
+		
+		// Add flag:
+		energyRegenFlag = true;
+		
+		// Schedule regeneration:
+		long delay = AbilityConfiguration.config().getEnergyRegenSeconds().longValue() * 20L;
+		Saga.plugin().getServer().getScheduler().scheduleSyncDelayedTask(Saga.plugin(), new Runnable() {
+			
+			@Override
+			public void run() {
+				
+				// Online:
+				if(livingEntity == null){
+					energyRegenFlag = false; // Remove flag.
+					return;
+				}
+				
+				// Check food level:
+				if(getFoodLevel() < AbilityConfiguration.config().getEnergyMinimumFood()){
+					energyRegenFlag = false; // Remove flag.
+					return;
+				}
+				
+				// Regenerate:
+				int maxEnergy = calcMaxEnergy();
+				int energyPts = AbilityConfiguration.config().getEnergyPerFoodCost();
+				
+				modFoodLevel(-1);
+				energy+= energyPts;
+				if(energy > maxEnergy) energy = maxEnergy;
+				
+				// Remove flag:
+				energyRegenFlag = false;
+				
+				// Next tick:
+				if(energy <= maxEnergy) handleEnergyRegen();
+				
+			}
+			
+		}, delay);
+		
+		
+	}
+	
+	
 	
 	// Food level:
 	/**
@@ -194,8 +317,8 @@ public class SagaLiving <T extends LivingEntity>{
 	 * 
 	 * @return energy level
 	 */
-	public double getFoodLevel() {
-		return 0.0;
+	public int getFoodLevel() {
+		return 0;
 	}
 	
 	/**
@@ -203,7 +326,7 @@ public class SagaLiving <T extends LivingEntity>{
 	 * 
 	 * @param amount amount to modify by
 	 */
-	public void modFoodLevel(double amount) {
+	public void modFoodLevel(int amount) {
 		// Depends on implementation:
 	}
 	

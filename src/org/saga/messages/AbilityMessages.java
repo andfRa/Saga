@@ -35,8 +35,8 @@ public class AbilityMessages {
 	}
 	
 	
-	public static String insuficientFood(String name) {
-		return Colour.negative + "Too tired to use " + name + " ability.";
+	public static String insuficientEnergy(String name) {
+		return Colour.negative + "Not enough energy to use " + name + " ability.";
 	}
 	
 	

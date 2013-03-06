@@ -292,6 +292,9 @@ public class PlayerListener implements Listener {
 			SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(((Player)event.getEntity()).getName());
 			if(sagaPlayer == null) return;
 			
+			// Handle energy regeneration:
+			sagaPlayer.handleEnergyRegen();
+			
 			// Forward to managers:
 			sagaPlayer.getAbilityManager().onFoodLevelChange(event);
 

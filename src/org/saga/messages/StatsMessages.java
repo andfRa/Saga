@@ -31,7 +31,6 @@ import org.saga.config.FactionConfiguration;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.ProficiencyConfiguration;
 import org.saga.config.SettlementConfiguration;
-import org.saga.config.VanillaConfiguration;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.factions.Faction;
 import org.saga.factions.FactionManager;
@@ -94,7 +93,7 @@ public class StatsMessages {
 		table.addLine("health", ChatUtil.round((double)sagaPlayer.getHealth(), 0) + "/" + ChatUtil.round((double)sagaPlayer.getTotalHealth(), 0), 0);
 
 		// Stamina:
-		table.addLine("stamina", ChatUtil.round((double)sagaPlayer.getFoodLevel(), 0) + "/" + ChatUtil.round((double)VanillaConfiguration.FOOD_LEVEL_MAX, 0), 0);
+		table.addLine("energy", ChatUtil.round(100.0 * sagaPlayer.getEnergy() / sagaPlayer.calcMaxEnergy(), 0) + "%", 0);
 
 		// Attribute exp:
 		table.addLine("next attr.", (int)(100.0 - 100.0 * sagaPlayer.getAttributeRemainingExp() / ExperienceConfiguration.config().getAttributePointCost()) + "%", 0);
@@ -262,16 +261,16 @@ public class StatsMessages {
     			String name = ability.getName() + " " + RomanNumeral.binaryToRoman(ability.getScore());
     			String required = "";
     			
-    			if(ability.getScore() == 0){
+    			Integer nextScore = sagaPlayer.getRawAbilityScore(ability.getName()) + 1;
+    			if(!ability.getDefinition().checkRequirements(sagaPlayer, nextScore)){
     				name = Colour.unavailable + name;
     				required = Colour.unavailable + required;
     			}
     			
     			if(ability.getScore() < AbilityConfiguration.config().maxAbilityScore){
     				
-    				String requirements = requirements(ability.getDefinition(), ability.getScore() + 1);
+    				String requirements = requirements(ability.getDefinition(), nextScore);
     				String restrictions = restrictions(ability.getDefinition());
-    				
     				
     				if(restrictions.length() > 0){
     					if(requirements.length() > 0) requirements+= ", ";

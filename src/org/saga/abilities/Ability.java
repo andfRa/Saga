@@ -340,24 +340,24 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 
 	
 	/**
-	 * Checks food level requirement.
+	 * Checks energy requirement.
 	 * 
-	 * @return true of the food level is high enough
+	 * @return true of the energy is high enough
 	 */
-	public boolean checkFood() {
-		return sagaLiving.getFoodLevel() - definition.getMinFood() >= definition.getUsedFood(getScore());
+	public boolean checkEnergy() {
+		return sagaLiving.getEnergy() >= definition.getUsedEnergy(getScore());
 	}
 	
 	/**
-	 * Uses the required food.
+	 * Uses the required energy.
 	 * 
 	 */
-	public void useFood() {
+	public void useEnergy() {
 
-		double used = definition.getUsedFood(getScore());
+		int used = definition.getUsedEnergy(getScore());
 		if(used == 0.0) return;
 		
-		sagaLiving.modFoodLevel(-used);
+		sagaLiving.modEnergy(-used);
 		
 	}
 	
@@ -457,10 +457,10 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 			
 		}
 		
-		// Food level:
-		if(!checkFood()){
+		// Energy:
+		if(!checkEnergy()){
 			
-			if(!useSilentPreTrigger()) sagaLiving.message(AbilityMessages.insuficientFood(getName()));
+			if(!useSilentPreTrigger()) sagaLiving.message(AbilityMessages.insuficientEnergy(getName()));
 			return false;
 			
 		}
@@ -477,7 +477,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	public void handleAfterTrigger() {
 		
 		useItems();
-		useFood();
+		useEnergy();
 		startCooldown();
 		triggeredTicks = sagaLiving.getTicksLived();
 		

@@ -13,6 +13,7 @@ import java.util.HashSet;
 
 import org.bukkit.ChatColor;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.saga.Clock;
 import org.saga.Clock.DaytimeTicker.Daytime;
@@ -963,7 +964,11 @@ public class AdminCommands {
 			
 		}
 		
-		sagaPlayer.message("numb=" + numb1);
+		Player player = sagaPlayer.getPlayer();
+		sagaPlayer.message(player.getName() + ": food=" + player.getFoodLevel() + " saturation=" + player.getSaturation() + " exhaustion=" + player.getExhaustion());
+		
+		player.setExhaustion(20f);
+		
 		
 	}
 	

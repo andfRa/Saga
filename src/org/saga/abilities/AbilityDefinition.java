@@ -58,15 +58,10 @@ public class AbilityDefinition{
 
 	
 	/**
-	 * Used amount of food.
+	 * Used energy.
 	 */
-	private TwoPointFunction usedFood;
+	private TwoPointFunction usedEnergy;
 
-	/**
-	 * Minimum food level.
-	 */
-	private Double minFood;
-	
 	
 	/**
 	 * Delay ticks required between usages.
@@ -176,16 +171,11 @@ public class AbilityDefinition{
 		}
 		usedAmount.complete();
 		
-		if(usedFood == null){
-			usedFood = new TwoPointFunction(0.0);
-			SagaLogger.nullField(this, "usedFood");
+		if(usedEnergy == null){
+			usedEnergy = new TwoPointFunction(0.0);
+			SagaLogger.nullField(this, "usedEnergy");
 		}
-		usedFood.complete();
-		
-		if(minFood == null){
-			minFood = 0.0;
-			SagaLogger.nullField(this, "minFood");
-		}
+		usedEnergy.complete();
 		
 		if(cooldownTicks == null){
 			cooldownTicks = 0;
@@ -317,22 +307,13 @@ public class AbilityDefinition{
 	
 	
 	/**
-	 * Gets used food.
+	 * Gets used energy.
 	 * 
-	 * @param score score
-	 * @return used food
+	 * @param score ability score
+	 * @return used energy
 	 */
-	public double getUsedFood(Integer score) {
-		return usedFood.value(score);
-	}
-	
-	/**
-	 * Gets the minimum amount of food leve the ability can be used with.
-	 * 
-	 * @return minimum food level
-	 */
-	public Double getMinFood() {
-		return minFood;
+	public int getUsedEnergy(Integer score) {
+		return usedEnergy.intValue(score);
 	}
 	
 	

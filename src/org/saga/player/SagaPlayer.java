@@ -55,11 +55,11 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	private Double health;
 
 	
-
 	/**
 	 * Experience.
 	 */
 	private Double exp;
+	
 	
 	/**
 	 * Amount of coins the player has.
@@ -111,9 +111,9 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	/**
 	 * Disables and enables player information saving.
 	 */
-	transient private boolean isSavingEnabled=true;
+	transient private boolean savingEnabledFlag = true;
 	
-
+	
 	
 	// Loading and initialisation:
 	/**
@@ -132,14 +132,18 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		super(name);
 		
 		this.name = name;
+		this.health = getTotalHealth();
+
 		this.exp = 0.0;
+		
 		this.factionId = -1;
 		this.chunkGroupId = -1;
 		this.factionInvites = new ArrayList<Integer>();
 		this.bundleInvites = new ArrayList<Integer>();
+		
 		this.coins = EconomyConfiguration.config().playerCoins;
+		
 		this.guardRune = new GuardianRune(this);
-		this.health = getTotalHealth();
 		
 	}
 	
@@ -197,7 +201,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 			SagaLogger.nullField(this, "guardRune");
 		}
 		guardRune.complete();
-
+		
 		
 	}
 
@@ -380,7 +384,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
     	ChatDependency.updatePrefix(this);
 		
 		// Saving disabled:
-		if(!isSavingEnabled){
+		if(!savingEnabledFlag){
 			error("player information saving disabled");
 		}
 
@@ -550,9 +554,9 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	 * @return players food level
 	 */
 	@Override
-	public double getFoodLevel() {
+	public int getFoodLevel() {
 		
-		if(livingEntity == null) return 0.0;
+		if(livingEntity == null) return 0;
 		
 		return livingEntity.getFoodLevel();
 		
@@ -564,25 +568,10 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	 * @param amount amount to modify by
 	 */
 	@Override
-	public void modFoodLevel(double amount) {
+	public void modFoodLevel(int amount) {
 		
 		if(livingEntity == null) return;
-		
-		int foodLevel = livingEntity.getFoodLevel();
-		float exhaustion = livingEntity.getExhaustion();
-		
-		int foodAmt = (int)amount;
-		float exhAmt = (float) ((amount - foodAmt) / 4.0);
-		
-		foodLevel+= foodAmt;
-		exhaustion-= exhAmt;
-		
-		// Normalise food level:
-		if(foodLevel < 0) foodLevel = 0;
-		
-		// Set values:
-		livingEntity.setFoodLevel(foodLevel);
-		livingEntity.setExhaustion(exhaustion);
+		livingEntity.setFoodLevel(livingEntity.getFoodLevel() + amount);
 		
 	}
 	
@@ -1404,7 +1393,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	 * @return true if player information should be saved
 	 */
 	public boolean isSavingEnabled() {
-            return isSavingEnabled;
+            return savingEnabledFlag;
 	}
 	
 	/**
@@ -1413,7 +1402,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	 * @param enabled true if enabled
 	 */
 	public void setSavingEnabled(boolean enabled) {
-            this.isSavingEnabled = enabled;
+            this.savingEnabledFlag = enabled;
 	}
 	
 	/**
