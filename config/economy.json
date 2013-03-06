@@ -79,6 +79,8 @@
 	{"type":"IRON_INGOT","amount":1,"price":55,           "reqWork":2}
 ],
 
+"blockCoins":[],
+
 "enableHooking":true
 
 }

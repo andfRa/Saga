@@ -1078,6 +1078,12 @@ public class StatisticsManager implements HourTicker{
 	}
 	
 	
+	public void addBlockCoins(SagaPlayer sagaPlayer, Material material, Double coins) {
+		modifyValue("eco.block_coins." + material + "." + sagaPlayer.getName(), coins);
+	}
+	
+	
+	
 	// Load unload:
 	/**
 	 * Loads the manager.

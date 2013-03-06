@@ -1246,7 +1246,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	 * 
 	 * @return amount of coins
 	 */
-	public Double countCoins() {
+	public Double handleCountCoins() {
 		return EconomyDependency.getCoins(this);
 	}
 
@@ -1256,7 +1256,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	 * 
 	 * @param amount amount to modify by
 	 */
-	public void modCoins(Double amount) {
+	public void handleModCoins(Double amount) {
 		if(amount > 0){
 			EconomyDependency.addCoins(this, amount);
 		}
@@ -1273,10 +1273,10 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	 */
 	public Double requestCoins(Double request) {
 
-		Double coins = countCoins();
+		Double coins = handleCountCoins();
 		Double given = request;
 		if(given > coins) given = coins;
-		modCoins(-given);
+		handleModCoins(-given);
 		return given;
 		
 	}

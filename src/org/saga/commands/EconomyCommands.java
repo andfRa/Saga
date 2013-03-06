@@ -326,7 +326,7 @@ public class EconomyCommands {
 		if(amount != 0.0){
 			
 			// Add coins:
-			sagaPlayer.modCoins(amount);
+			sagaPlayer.handleModCoins(amount);
 			
 			// Inform:
 			sagaPlayer.message(EconomyMessages.settlementRemovedCoins(amount));
@@ -829,7 +829,7 @@ public class EconomyCommands {
 		if(amount != 0.0){
 			
 			// Add coins:
-			sagaPlayer.modCoins(amount);
+			sagaPlayer.handleModCoins(amount);
 			
 			// Inform:
 			sagaPlayer.message(EconomyMessages.factionRemovedCoins(amount));
