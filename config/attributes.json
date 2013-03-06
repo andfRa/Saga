@@ -10,7 +10,7 @@
 
 "attributes":[
   {"name":"strength",
-    "attack":{"MELEE_MODIFIER":{"x1":0,"y1":0.0,"x2":100,"y2":21}},
+    "attack":{"MELEE_MODIFIER":{"x1":0,"y1":0.0,"x2":100,"y2":10}},
     "defend":{},
     "passive":{},
     "handling":{
@@ -23,43 +23,55 @@
 
   {"name":"precision",
     "attack":{
-      "RANGED_MODIFIER":{"x1":0,"y1":0.0,"x2":100,"y2":30.0},
-      "MELEE_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":100,"y2":1.0},
-      "RANGED_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":100,"y2":1.0},
-      "MAGIC_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":100,"y2":1.0}
+      "RANGED_MODIFIER":{"x1":0,"y1":0.0,"x2":100,"y2":15.0},
+      "MELEE_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":100,"y2":0.5},
+      "RANGED_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":100,"y2":0.5},
+      "MAGIC_ARMOUR_PENETRATION":{"x1":0,"y1":0.0,"x2":100,"y2":0.5}
     },
     "defend":{},
     "passive":{},
     "handling":{
-      "STONE_SPADE":{"x1":0,"y1":0.0,"x2":100,"y2":1.0},
-      "IRON_SPADE":{"x1":0,"y1":0.0,"x2":100,"y2":1.0},
-      "DIAMOND_SPADE":{"x1":0,"y1":0.0,"x2":100,"y2":1.0}
+      "STONE_SPADE":{"x1":0,"y1":0.0,"x2":100,"y2":0.5},
+      "IRON_SPADE":{"x1":0,"y1":0.0,"x2":100,"y2":0.5},
+      "DIAMOND_SPADE":{"x1":0,"y1":0.0,"x2":100,"y2":0.5}
     },
     "description":"Ranged damage, armour pierce, shovel handling."
   },
   
   {"name":"willpower",
     "attack":{
-      "MAGIC_MODIFIER":{"x1":0,"y1":0.0,"x2":100,"y2":18.0},
-      "MELEE_ENCHANT_PENETRATION":{"x1":0,"y1":0.0,"x2":100,"y2":1.0},
-      "RANGED_ENCHANT_PENETRATION":{"x1":0,"y1":0.0,"x2":100,"y2":1.0},
-      "MAGIC_ENCHANT_PENETRATION":{"x1":0,"y1":0.0,"x2":100,"y2":1.0}
+      "MAGIC_MODIFIER":{"x1":0,"y1":0.0,"x2":100,"y2":9.0},
+      "MELEE_ENCHANT_PENETRATION":{"x1":0,"y1":0.0,"x2":100,"y2":0.5},
+      "RANGED_ENCHANT_PENETRATION":{"x1":0,"y1":0.0,"x2":100,"y2":0.5},
+      "MAGIC_ENCHANT_PENETRATION":{"x1":0,"y1":0.0,"x2":100,"y2":0.5}
      },
     "defend":{},
     "passive":{},
     "handling":{
-      "STONE_PICKAXE":{"x1":0,"y1":0.0,"x2":100,"y2":1.0},
-      "IRON_PICKAXE":{"x1":0,"y1":0.0,"x2":100,"y2":1.0},
-      "DIAMOND_PICKAXE":{"x1":0,"y1":0.0,"x2":100,"y2":1.0}
+      "STONE_PICKAXE":{"x1":0,"y1":0.0,"x2":100,"y2":0.5},
+      "IRON_PICKAXE":{"x1":0,"y1":0.0,"x2":100,"y2":0.5},
+      "DIAMOND_PICKAXE":{"x1":0,"y1":0.0,"x2":100,"y2":0.5}
     },
     "description":"Magic damage, enchant pierce, pickaxe handling."
   },
 
-  {"name":"toughness",
+  {"name":"fortitude",
+    "attack":{},
+    "defend":{
+    	"MELEE_MULTIPLIER":{"x1":0,"y1":1.0,"x2":100,"y2":-0.60},
+    	"RANGED_MULTIPLIER":{"x1":0,"y1":1.0,"x2":100,"y2":-0.60},
+    	"MAGIC_MULTIPLIER":{"x1":0,"y1":1.0,"x2":100,"y2":-0.60}
+    },
+    "passive":{},
+    "handling":{},
+    "description":"Damage resistance."
+  },
+  
+  {"name":"constitution",
     "attack":{},
     "defend":{},
     "passive":{
-    	"HEALTH_MODIFIER":{"x1":0,"y1":0.0,"x2":100,"y2":60.0}
+    	"HEALTH_MODIFIER":{"x1":0,"y1":0.0,"x2":100,"y2":30.0}
     },
     "handling":{},
     "description":"Health bonus."
@@ -67,12 +79,16 @@
   
   {"name":"luck",
     "attack":{},
-    "defend":{},
+    "defend":{
+    	"MELEE_HIT_CHANCE_MODIFIER":{"x1":0,"y1":-0.0,"x2":100,"y2":-0.60},
+    	"RANGED_HIT_CHANCE_MODIFIER":{"x1":0,"y1":-0.0,"x2":100,"y2":-0.60},
+    	"MAGIC_HIT_CHANCE_MODIFIER":{"x1":0,"y1":-0.0,"x2":100,"y2":-0.60}
+    },
     "passive":{
-      "EXTRA_DROP_CHANCE_MODIFIER":{"x1":0,"y1":0,"x2":100,"y2":0.60}
+      "EXTRA_DROP_CHANCE_MODIFIER":{"x1":0,"y1":0,"x2":100,"y2":0.30}
     },
     "handling":{},
-    "description":"Additional drops from blocks."
+    "description":"Additional drops and dodge."
   }
 ]
 

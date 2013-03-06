@@ -15,7 +15,7 @@
     "cooldownTicks":25,
     "cooldown":{"x1":1,"y1":0.0},
     "attributeRequirements":{
-      "strength":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
+      "fortitude":{"x1":1,"y1":15.0,"x2":3,"y2":90.0}
     },
     "buildingsRequired":{},
     "proficiencyRestrictions":["woodcutter"],
@@ -36,7 +36,7 @@
     "cooldownTicks":25,
     "cooldown":{"x1":1,"y1":0.0},
     "attributeRequirements":{
-      "precision":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
+      "fortitude":{"x1":1,"y1":15.0,"x2":3,"y2":90.0}
     },
     "buildingsRequired":{},
     "proficiencyRestrictions":["woodcutter"],
@@ -61,7 +61,7 @@
     "cooldownTicks":25,
     "cooldown":{"x1":1,"y1":0.0},
     "attributeRequirements":{
-      "willpower":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
+      "luck":{"x1":1,"y1":15.0,"x2":3,"y2":90.0}
     },
     "buildingsRequired":{},
     "proficiencyRestrictions":["woodcutter"],
@@ -84,7 +84,8 @@
     "cooldownTicks":25,
     "cooldown":{"x1":1,"y1":0.0},
     "attributeRequirements":{
-      "strength":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
+      "constitution":{"x1":1,"y1":5.0,"x2":3,"y2":45.0},
+      "fortitude":{"x1":1,"y1":5.0,"x2":3,"y2":45.0}
     },
     "buildingsRequired":{},
     "proficiencyRestrictions":["farmer"],
@@ -95,30 +96,6 @@
     "colour":4841998,
     "description":"digs dirt and sand",
     "usage":"rclick with a spade"
-  },
-  
-  {"className":"org.saga.abilities.Shearing",
-    "name":"shearing",
-    "itemRestrictions":["SHEARS"],
-    "activationAction":"RIGHT_CLICK",
-    "usedItem":"AIR",
-    "usedAmount":{"x1":1,"y1":0.0},
-    "usedFood":{"x1":1,"y1":2.0},
-    "minFood":8.0,
-    "cooldownTicks":25,
-    "cooldown":{"x1":1,"y1":0.0},
-    "attributeRequirements":{
-      "precision":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
-    },
-    "buildingsRequired":{},
-    "proficiencyRestrictions":["farmer"],
-    "functions":{
-      "bonus wool":{"x1":1,"y1":2.0,"x2":3,"y2":4.0},
-      "bonus mushrooms":{"x1":1,"y1":2.5,"x2":3,"y2":5.0}
-    },
-    "colour":4841998,
-    "description":"shearing is more effective",
-    "usage":"automatic"
   },
   
   {"className":"org.saga.abilities.Harvest",
@@ -132,7 +109,8 @@
     "cooldownTicks":25,
     "cooldown":{"x1":1,"y1":0.0},
     "attributeRequirements":{
-      "willpower":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
+      "constitution":{"x1":1,"y1":5.0,"x2":3,"y2":45.0},
+      "fortitude":{"x1":1,"y1":5.0,"x2":3,"y2":45.0}
     },
     "buildingsRequired":{},
     "proficiencyRestrictions":["farmer"],
@@ -140,6 +118,30 @@
     "colour":4841998,
     "description":"cuts wheat and reeds",
     "usage":"rclick with a hoe"
+  },
+  
+  {"className":"org.saga.abilities.Shearing",
+    "name":"shearing",
+    "itemRestrictions":["SHEARS"],
+    "activationAction":"RIGHT_CLICK",
+    "usedItem":"AIR",
+    "usedAmount":{"x1":1,"y1":0.0},
+    "usedFood":{"x1":1,"y1":2.0},
+    "minFood":8.0,
+    "cooldownTicks":25,
+    "cooldown":{"x1":1,"y1":0.0},
+    "attributeRequirements":{
+      "luck":{"x1":1,"y1":15.0,"x2":3,"y2":90.0}
+    },
+    "buildingsRequired":{},
+    "proficiencyRestrictions":["farmer"],
+    "functions":{
+      "bonus wool":{"x1":1,"y1":2.0,"x2":3,"y2":4.0},
+      "bonus mushrooms":{"x1":1,"y1":2.5,"x2":3,"y2":5.0}
+    },
+    "colour":4841998,
+    "description":"shearing is more effective",
+    "usage":"automatic"
   },
   
   
@@ -155,8 +157,7 @@
     "cooldownTicks":25,
     "cooldown":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
     "attributeRequirements":{
-      "strength":{"x1":1,"y1":5.0,"x2":3,"y2":45.0},
-      "willpower":{"x1":1,"y1":3.0,"x2":3,"y2":25.0}
+      "constitution":{"x1":1,"y1":15.0,"x2":3,"y2":90.0}
     },
     "buildingsRequired":{},
     "proficiencyRestrictions":["miner"],
@@ -180,7 +181,7 @@
     "cooldownTicks":0,
     "cooldown":{"x1":1,"y1":0.0},
     "attributeRequirements":{
-      "willpower":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
+      "constitution":{"x1":1,"y1":15.0,"x2":3,"y2":90.0}
     },
     "buildingsRequired":{},
     "proficiencyRestrictions":["miner"],
@@ -204,7 +205,7 @@
     "cooldownTicks":25,
     "cooldown":{"x1":1,"y1":30.0,"x2":3,"y2":15.0},
     "attributeRequirements":{
-      "precision":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
+      "luck":{"x1":1,"y1":15.0,"x2":3,"y2":90.0}
     },
     "buildingsRequired":{},
     "proficiencyRestrictions":["miner"],
@@ -227,7 +228,7 @@
     "cooldownTicks":25,
     "cooldown":{"x1":1,"y1":30.0,"x2":3,"y2":15.0},
     "attributeRequirements":{
-      "precision":{"x1":1,"y1":15.0,"x2":3,"y2":50.0}
+      "luck":{"x1":1,"y1":15.0,"x2":3,"y2":90.0}
     },
     "buildingsRequired":{},
     "proficiencyRestrictions":["miner"],
@@ -251,7 +252,7 @@
     "minFood":12.0,
     "cooldownTicks":25,
     "cooldown":{"x1":1,"y1":14.0,"x2":3,"y2":7.0},
-    "attributeRequirements":{ "strength":{"x1":1,"y1":15.0,"x2":3,"y2":50.0} },
+    "attributeRequirements":{ "strength":{"x1":1,"y1":15,"x2":3,"y2":90} },
     "buildingsRequired":{},
     "proficiencyRestrictions":[],
     "functions":{
@@ -263,23 +264,23 @@
     "usage":"random chance when the target player gets hit"
   },
   
-  {"className":"org.saga.abilities.Ricochet",
-    "name":"ricochet",
-    "itemRestrictions":[],
-    "activationAction":"NONE",
-    "usedItem":"AIR",
-    "usedAmount":{"x1":1,"y1":0.0},
-    "usedFood":{"x1":1,"y1":1.0},
-    "minFood":12.0,
+  {"className":"org.saga.abilities.Dart",
+    "name":"dart",
+    "itemRestrictions":["ARROW"],
+    "activationAction":"RIGHT_CLICK",
+    "usedItem":"ARROW",
+    "usedAmount":{"x1":1,"y1":1.0},
+    "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
+    "minFood":8.0,
     "cooldownTicks":25,
     "cooldown":{"x1":1,"y1":0.0},
-    "attributeRequirements":{ "precision":{"x1":1,"y1":15.0,"x2":3,"y2":50.0} },
+    "attributeRequirements":{ "precision":{"x1":1,"y1":15,"x2":3,"y2":90} },
     "buildingsRequired":{},
     "proficiencyRestrictions":[],
-    "functions":{"range":{"x1":1,"y1":5.0,"x2":3,"y2":8.0}},
+    "functions":{"speed":{"x1":1,"y1":2.0,"x2":3,"y2":4.0}},
     "colour":8873510,
-    "description":"arrows ricochet",
-    "usage":"miss target with an arrow"
+    "description":"shoots an arrow",
+    "usage":"rclick with an arrow"
   },
   
   {"className":"org.saga.abilities.Fireball",
@@ -292,7 +293,7 @@
     "minFood":4.0,
     "cooldownTicks":50,
     "cooldown":{"x1":1,"y1":0.0},
-    "attributeRequirements":{ "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":50.0} },
+    "attributeRequirements":{ "willpower":{"x1":1,"y1":15,"x2":3,"y2":90} },
     "buildingsRequired":{},
     "proficiencyRestrictions":[],
     "functions":{"speed":{"x1":1,"y1":0.70,"x2":3,"y2":2.0}},
@@ -311,7 +312,7 @@
     "minFood":4.0,
     "cooldownTicks":50,
     "cooldown":{"x1":0,"y1":0.0},
-    "attributeRequirements":{ "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":50.0} },
+    "attributeRequirements":{ "willpower":{"x1":1,"y1":15,"x2":3,"y2":90} },
     "buildingsRequired":{},
     "proficiencyRestrictions":[],
     "functions":{
@@ -335,7 +336,7 @@
     "minFood":12.0,
     "cooldownTicks":25,
     "cooldown":{"x1":0,"y1":0.0},
-    "attributeRequirements":{"strength":{ "x1":1,"y1":20.0,"x2":3,"y2":50.0} },
+    "attributeRequirements":{ "strength":{"x1":1,"y1":15,"x2":3,"y2":90} },
     "buildingsRequired":{3:["armoury"]},
     "proficiencyRestrictions":["warrior","knight"],
     "functions":{
@@ -357,10 +358,7 @@
     "minFood":8.0,
     "cooldownTicks":50,
     "cooldown":{"x1":0,"y1":0.0},
-    "attributeRequirements":{
-      "strength":{ "x1":1,"y1":10.0,"x2":3,"y2":25.0},
-      "precision":{ "x1":1,"y1":10.0,"x2":3,"y2":25.0}
-    },
+    "attributeRequirements":{ "strength":{"x1":1,"y1":15,"x2":3,"y2":90} },
     "buildingsRequired":{3:["armoury"]},
     "proficiencyRestrictions":["warrior","knight"],
     "functions":{
@@ -382,10 +380,7 @@
     "minFood":8.0,
     "cooldownTicks":50,
     "cooldown":{"x1":1,"y1":0.0},
-    "attributeRequirements":{
-      "strength":{ "x1":1,"y1":10.0,"x2":3,"y2":25.0},
-      "willpower":{ "x1":1,"y1":10.0,"x2":3,"y2":25.0}
-    },
+    "attributeRequirements":{ "strength":{"x1":1,"y1":15,"x2":3,"y2":90} },
     "buildingsRequired":{3:["armoury"]},
     "proficiencyRestrictions":["warrior","knight"],
     "functions":{
@@ -395,30 +390,28 @@
     "description":"redirects melee damage",
     "usage":"block with a sword"
   },
+
   
   
-  {"className":"org.saga.abilities.Dart",
-    "name":"dart",
-    "itemRestrictions":["ARROW"],
-    "activationAction":"RIGHT_CLICK",
-    "usedItem":"ARROW",
-    "usedAmount":{"x1":1,"y1":1.0},
-    "usedFood":{"x1":1,"y1":3.0,"x2":3,"y2":1.0},
-    "minFood":8.0,
+  {"className":"org.saga.abilities.Ricochet",
+    "name":"ricochet",
+    "itemRestrictions":[],
+    "activationAction":"NONE",
+    "usedItem":"AIR",
+    "usedAmount":{"x1":1,"y1":0.0},
+    "usedFood":{"x1":1,"y1":1.0},
+    "minFood":12.0,
     "cooldownTicks":25,
     "cooldown":{"x1":1,"y1":0.0},
-    "attributeRequirements":{
-      "precision":{"x1":1,"y1":10.0,"x2":3,"y2":25.0},
-      "strength":{"x1":1,"y1":10.0,"x2":3,"y2":25.0}
-    },
+    "attributeRequirements":{ "precision":{"x1":1,"y1":15,"x2":3,"y2":90} },
     "buildingsRequired":{3:["bowyer"]},
     "proficiencyRestrictions":["archer","marksman"],
-    "functions":{"speed":{"x1":1,"y1":2.0,"x2":3,"y2":4.0}},
+    "functions":{"range":{"x1":1,"y1":5.0,"x2":3,"y2":8.0}},
     "colour":8873510,
-    "description":"shoots an arrow",
-    "usage":"rclick with an arrow"
+    "description":"arrows ricochet",
+    "usage":"miss target with an arrow"
   },
-  
+
   {"className":"org.saga.abilities.Backstab",
     "name":"backstab",
     "itemRestrictions":[],
@@ -429,7 +422,7 @@
     "minFood":8.0,
     "cooldownTicks":25,
     "cooldown":{"x1":0,"y1":0.0},
-    "attributeRequirements":{ "precision":{"x1":1,"y1":20.0,"x2":3,"y2":50.0} },
+    "attributeRequirements":{ "precision":{"x1":1,"y1":15,"x2":3,"y2":90} },
     "buildingsRequired":{3:["bowyer"]},
     "proficiencyRestrictions":["archer","marksman"],
     "functions":{
@@ -453,10 +446,7 @@
     "minFood":8.0,
     "cooldownTicks":25,
     "cooldown":{"x1":0,"y1":0.0},
-    "attributeRequirements":{
-      "precision":{"x1":1,"y1":10.0,"x2":3,"y2":25.0},
-      "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":25.0}
-    },
+    "attributeRequirements":{ "precision":{"x1":1,"y1":15,"x2":3,"y2":90} },
     "buildingsRequired":{3:["bowyer"]},
     "proficiencyRestrictions":["archer","marksman"],
     "functions":{"speed":{"x1":1,"y1":1.5,"x2":3,"y2":3.0}},
@@ -476,10 +466,7 @@
     "minFood":12.0,
     "cooldownTicks":0,
     "cooldown":{"x1":0,"y1":0.0},
-    "attributeRequirements":{
-      "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":25.0},
-      "strength":{"x1":1,"y1":10.0,"x2":3,"y2":25.0}
-    },
+    "attributeRequirements":{ "willpower":{"x1":1,"y1":15,"x2":3,"y2":90} },
     "buildingsRequired":{3:["academy"]},
     "proficiencyRestrictions":["mage","wizard"],
     "functions":{
@@ -500,16 +487,13 @@
     "minFood":8.0,
     "cooldownTicks":50,
     "cooldown":{"x1":0,"y1":0.0},
-    "attributeRequirements":{
-      "willpower":{"x1":1,"y1":10.0,"x2":3,"y2":25.0},
-      "precision":{"x1":1,"y1":10.0,"x2":3,"y2":25.0}
-    },
+    "attributeRequirements":{ "willpower":{"x1":1,"y1":15,"x2":3,"y2":90} },
     "buildingsRequired":{3:["academy"]},
     "proficiencyRestrictions":["mage","wizard"],
     "functions":{
       "distance":{"x1":1,"y1":16.0,"x2":3,"y2":32.0},
       "speed":{"x1":1,"y1":1.25,"x2":3,"y2":2.0},
-      "bonus fireballs":{"x1":1,"y1":2.0,"x2":3,"y2":6.0}
+      "bonus fireballs":{"x1":1,"y1":4.0,"x2":3,"y2":8.0}
     },
     "colour":12724739,
     "description":"calls meteors from the sky",
@@ -526,9 +510,7 @@
     "minFood":8.0,
     "cooldownTicks":50,
     "cooldown":{"x1":0,"y1":0.0},
-    "attributeRequirements":{
-      "willpower":{"x1":1,"y1":20.0,"x2":3,"y2":50.0}
-    },
+    "attributeRequirements":{ "willpower":{"x1":1,"y1":15,"x2":3,"y2":90} },
     "buildingsRequired":{3:["academy"]},
     "proficiencyRestrictions":["mage","wizard"],
     "functions":{
@@ -554,9 +536,7 @@
     "minFood":0.0,
     "cooldownTicks":25,
     "cooldown":{"x1":1,"y1":0.0,"x2":3,"y2":0.0},
-    "attributeRequirements":{
-      "luck":{"x1":1,"y1":0.0,"x2":3,"y2":30.0}
-    },
+    "attributeRequirements":{ "luck":{"x1":1,"y1":0.0,"x2":3,"y2":30.0}  },
     "buildingsRequired":{3:["town square"]},
     "proficiencyRestrictions":["lord"],
     "functions":{},

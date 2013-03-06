@@ -67,7 +67,7 @@ public class AttributeManager {
 				event.multiplyDamage(attackerManager.getAttackModifier(AttributeParameter.MELEE_MULTIPLIER));
 				
 				// Hit chance:
-				event.modifyHitChance(attackerManager.getAttackModifier(AttributeParameter.MELEE_HIT_CHANCE));
+				event.modifyHitChance(attackerManager.getAttackModifier(AttributeParameter.MELEE_HIT_CHANCE_MODIFIER));
 
 				// Armour penetration:
 				event.modifyArmourPenetration(attackerManager.getAttackModifier(AttributeParameter.MELEE_ARMOUR_PENETRATION));
@@ -86,7 +86,7 @@ public class AttributeManager {
 				event.multiplyDamage(attackerManager.getAttackModifier(AttributeParameter.RANGED_MULTIPLIER));
 				
 				// Hit chance:
-				event.modifyHitChance(attackerManager.getAttackModifier(AttributeParameter.RANGED_HIT_CHANCE));
+				event.modifyHitChance(attackerManager.getAttackModifier(AttributeParameter.RANGED_HIT_CHANCE_MODIFIER));
 
 				// Armour penetration:
 				event.modifyArmourPenetration(attackerManager.getAttackModifier(AttributeParameter.RANGED_ARMOUR_PENETRATION));
@@ -105,7 +105,7 @@ public class AttributeManager {
 				event.multiplyDamage(attackerManager.getAttackModifier(AttributeParameter.MAGIC_MULTIPLIER));
 				
 				// Hit chance:
-				event.modifyHitChance(attackerManager.getAttackModifier(AttributeParameter.MAGIC_HIT_CHANCE));
+				event.modifyHitChance(attackerManager.getAttackModifier(AttributeParameter.MAGIC_HIT_CHANCE_MODIFIER));
 
 				// Armour penetration:
 				event.modifyArmourPenetration(attackerManager.getAttackModifier(AttributeParameter.MAGIC_ARMOUR_PENETRATION));
@@ -149,16 +149,13 @@ public class AttributeManager {
 				event.multiplyDamage(defenderManager.getDefendModifier(AttributeParameter.MELEE_MULTIPLIER));
 				
 				// Hit chance:
-				event.modifyHitChance(defenderManager.getDefendModifier(AttributeParameter.MELEE_HIT_CHANCE));
+				event.modifyHitChance(defenderManager.getDefendModifier(AttributeParameter.MELEE_HIT_CHANCE_MODIFIER));
 
 				// Armour penetration:
 				event.modifyArmourPenetration(defenderManager.getDefendModifier(AttributeParameter.MELEE_ARMOUR_PENETRATION));
 
 				// Enchant penetration:
 				event.modifyEnchantPenetration(defenderManager.getDefendModifier(AttributeParameter.MELEE_ENCHANT_PENETRATION));
-				
-				// Block:
-				event.modifyEnchantPenetration(defenderManager.getDefendModifier(AttributeParameter.MELEE_BLOCK_MODIFIER));
 				
 				break;
 
@@ -171,17 +168,14 @@ public class AttributeManager {
 				event.multiplyDamage(defenderManager.getDefendModifier(AttributeParameter.RANGED_MULTIPLIER));
 				
 				// Hit chance:
-				event.modifyHitChance(defenderManager.getDefendModifier(AttributeParameter.RANGED_HIT_CHANCE));
+				event.modifyHitChance(defenderManager.getDefendModifier(AttributeParameter.RANGED_HIT_CHANCE_MODIFIER));
 
 				// Armour penetration:
 				event.modifyArmourPenetration(defenderManager.getDefendModifier(AttributeParameter.RANGED_ARMOUR_PENETRATION));
 
 				// Enchant penetration:
 				event.modifyEnchantPenetration(defenderManager.getDefendModifier(AttributeParameter.RANGED_ENCHANT_PENETRATION));
-
-				// Block:
-				event.modifyEnchantPenetration(defenderManager.getDefendModifier(AttributeParameter.RANGED_BLOCK_MODIFIER));
-			
+				
 				break;
 
 			case MAGIC:
@@ -193,17 +187,14 @@ public class AttributeManager {
 				event.multiplyDamage(defenderManager.getDefendModifier(AttributeParameter.MAGIC_MULTIPLIER));
 				
 				// Hit chance:
-				event.modifyHitChance(defenderManager.getDefendModifier(AttributeParameter.MAGIC_HIT_CHANCE));
+				event.modifyHitChance(defenderManager.getDefendModifier(AttributeParameter.MAGIC_HIT_CHANCE_MODIFIER));
 
 				// Armour penetration:
 				event.modifyArmourPenetration(defenderManager.getDefendModifier(AttributeParameter.MAGIC_ARMOUR_PENETRATION));
 
 				// Enchant penetration:
 				event.modifyEnchantPenetration(defenderManager.getDefendModifier(AttributeParameter.MAGIC_ENCHANT_PENETRATION));
-
-				// Block:
-				event.modifyEnchantPenetration(defenderManager.getDefendModifier(AttributeParameter.MAGIC_BLOCK_MODIFIER));
-			
+				
 				break;
 			
 			case BURN:
