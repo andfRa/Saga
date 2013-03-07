@@ -389,7 +389,7 @@ public class BuildingMessages {
 	
 	public static String abilityUpgraded(Ability ability, Integer score) {
 		
-		if(score == 0) return Colour.positive + "Learned " + ability.getName() + " " + RomanNumeral.binaryToRoman(score) + " ability.";
+		if(score == 1) return Colour.positive + "Learned " + ability.getName() + " " + RomanNumeral.binaryToRoman(score) + " ability.";
 		return Colour.positive + "Upgraded to " + ability.getName() + " " + RomanNumeral.binaryToRoman(score) + ".";
 		
 	}
