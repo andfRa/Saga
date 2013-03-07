@@ -194,7 +194,7 @@
     "proficienciesRequired":{1:["miner"]},
     "functions":{
       "gain multiplier":{"x1":0,"y1":1.25,"x2":3,"y2":1.75},
-      "lose multiplier":{"x1":0,"y1":0.80,"x2":50,"y2":0.60}
+      "lose multiplier":{"x1":0,"y1":0.80,"x2":3,"y2":0.60}
     },
     "colour":7566195,
     "briefDescription":"food bar is filled faster and drained slower",
