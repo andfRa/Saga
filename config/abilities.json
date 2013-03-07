@@ -65,7 +65,8 @@
     "cooldownTicks":25,
     "cooldown":{"x1":1,"y1":0.0},
     "attributeRequirements":{
-      "luck":{"x1":1,"y1":15.0,"x2":3,"y2":90.0}
+      "fortitude":{"x1":1,"y1":5.0,"x2":3,"y2":30.0},
+      "luck":{"x1":1,"y1":10.0,"x2":3,"y2":60.0}
     },
     "buildingsRequired":{},
     "proficienciesRequired":{1:["woodcutter"]},
@@ -135,7 +136,9 @@
     "cooldownTicks":25,
     "cooldown":{"x1":1,"y1":0.0},
     "attributeRequirements":{
-      "luck":{"x1":1,"y1":15.0,"x2":3,"y2":90.0}
+      "fortitude":{"x1":1,"y1":5.0,"x2":3,"y2":15.0},
+      "constitution":{"x1":1,"y1":5.0,"x2":3,"y2":15.0},
+      "luck":{"x1":1,"y1":5.0,"x2":3,"y2":60.0}
     },
     "buildingsRequired":{},
     "proficienciesRequired":{1:["farmer"]},
@@ -209,7 +212,8 @@
     "cooldownTicks":25,
     "cooldown":{"x1":1,"y1":30.0,"x2":3,"y2":15.0},
     "attributeRequirements":{
-      "luck":{"x1":1,"y1":15.0,"x2":3,"y2":90.0}
+      "constitution":{"x1":1,"y1":5.0,"x2":3,"y2":30.0},
+      "luck":{"x1":1,"y1":10.0,"x2":3,"y2":60.0}
     },
     "buildingsRequired":{},
     "proficienciesRequired":{1:["miner"]},
@@ -232,7 +236,8 @@
     "cooldownTicks":25,
     "cooldown":{"x1":1,"y1":30.0,"x2":3,"y2":15.0},
     "attributeRequirements":{
-      "luck":{"x1":1,"y1":15.0,"x2":3,"y2":90.0}
+      "constitution":{"x1":1,"y1":5.0,"x2":3,"y2":30.0},
+      "luck":{"x1":1,"y1":10.0,"x2":3,"y2":60.0}
     },
     "buildingsRequired":{},
     "proficienciesRequired":{1:["miner"]},
