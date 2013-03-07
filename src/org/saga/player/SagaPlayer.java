@@ -182,15 +182,10 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 			SagaLogger.nullField(this, "stamina");
 		}
 		
-		System.out.println("COMPLETE BEF:" + chunkGroupId);
-		
 		if(chunkGroupId == null){
 			chunkGroupId = -1;
 			SagaLogger.nullField(this, "chunkGroupId");
 		}
-		
-		System.out.println("COMPLETE AFTER:" + chunkGroupId);
-		
 		
 		if(factionInvites == null){
 			factionInvites = new ArrayList<Integer>();
