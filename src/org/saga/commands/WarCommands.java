@@ -42,7 +42,7 @@ public class WarCommands {
             min = 1,
             max = 2
 		)
-	@CommandPermissions({"saga.user.war.siege"})
+	@CommandPermissions({"saga.user.war.siege.declarewar"})
 	public static void siege(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
@@ -191,7 +191,7 @@ public class WarCommands {
             min = 1,
             max = 2
 		)
-	@CommandPermissions({"saga.user.war.siegeunclaim"})
+	@CommandPermissions({"saga.user.war.siege.unclaim"})
 	public static void unsiege(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
@@ -284,7 +284,7 @@ public class WarCommands {
 		min = 1,
 		max = 2
 	)
-	@CommandPermissions({"saga.user.war.declarewar"})
+	@CommandPermissions({"saga.user.war.declare"})
 	public static void declareWar(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
@@ -940,7 +940,7 @@ public class WarCommands {
 		min = 0,
 		max = 2
 	)
-	@CommandPermissions({"saga.user.war.setaffiliation"})
+	@CommandPermissions({"saga.user.war.settlement.setaffiliation"})
 	public static void setAffiliation(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 
@@ -1051,7 +1051,7 @@ public class WarCommands {
 		min = 0,
 		max = 1
 	)
-	@CommandPermissions({"saga.user.war.removeaffiliation"})
+	@CommandPermissions({"saga.user.war.settlement.removeaffiliation"})
 	public static void removeAffiliation(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
