@@ -131,13 +131,14 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		
 		super(name);
 		
-		this.name = name;
-		this.health = getTotalHealth();
-
-		this.exp = 0.0;
-		
 		this.factionId = -1;
 		this.chunkGroupId = -1;
+		
+		this.name = name;
+		this.health = getTotalHealth();
+		
+		this.exp = 0.0;
+		
 		this.factionInvites = new ArrayList<Integer>();
 		this.bundleInvites = new ArrayList<Integer>();
 		
@@ -181,10 +182,15 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 			SagaLogger.nullField(this, "stamina");
 		}
 		
+		System.out.println("COMPLETE BEF:" + chunkGroupId);
+		
 		if(chunkGroupId == null){
 			chunkGroupId = -1;
 			SagaLogger.nullField(this, "chunkGroupId");
 		}
+		
+		System.out.println("COMPLETE AFTER:" + chunkGroupId);
+		
 		
 		if(factionInvites == null){
 			factionInvites = new ArrayList<Integer>();
