@@ -61,10 +61,10 @@ public class AttributeManager {
 			case MELEE:
 
 				// Modifier:
-				event.modifyDamage(attackerManager.getAttackModifier(AttributeParameter.MELEE_MODIFIER));
+				event.modifyDamage(attackerManager.getAttackModifier(AttributeParameter.MELEE_DAMAGE_MODIFIER));
 
 				// Multiplier:
-				event.multiplyDamage(attackerManager.getAttackModifier(AttributeParameter.MELEE_MULTIPLIER));
+				event.multiplyDamage(attackerManager.getAttackModifier(AttributeParameter.MELEE_DAMAGE_MULTIPLIER));
 				
 				// Hit chance:
 				event.modifyHitChance(attackerManager.getAttackModifier(AttributeParameter.MELEE_HIT_CHANCE_MODIFIER));
@@ -80,10 +80,10 @@ public class AttributeManager {
 			case RANGED:
 
 				// Modifier:
-				event.modifyDamage(attackerManager.getAttackModifier(AttributeParameter.RANGED_MODIFIER));
+				event.modifyDamage(attackerManager.getAttackModifier(AttributeParameter.RANGED_DAMAGE_MODIFIER));
 
 				// Multiplier:
-				event.multiplyDamage(attackerManager.getAttackModifier(AttributeParameter.RANGED_MULTIPLIER));
+				event.multiplyDamage(attackerManager.getAttackModifier(AttributeParameter.RANGED_DAMAGE_MULTIPLIER));
 				
 				// Hit chance:
 				event.modifyHitChance(attackerManager.getAttackModifier(AttributeParameter.RANGED_HIT_CHANCE_MODIFIER));
@@ -99,10 +99,10 @@ public class AttributeManager {
 			case MAGIC:
 
 				// Modifier:
-				event.modifyDamage(attackerManager.getAttackModifier(AttributeParameter.MAGIC_MODIFIER));
+				event.modifyDamage(attackerManager.getAttackModifier(AttributeParameter.MAGIC_DAMAGE_MODIFIER));
 
 				// Multiplier:
-				event.multiplyDamage(attackerManager.getAttackModifier(AttributeParameter.MAGIC_MULTIPLIER));
+				event.multiplyDamage(attackerManager.getAttackModifier(AttributeParameter.MAGIC_DAMAGE_MULTIPLIER));
 				
 				// Hit chance:
 				event.modifyHitChance(attackerManager.getAttackModifier(AttributeParameter.MAGIC_HIT_CHANCE_MODIFIER));
@@ -143,10 +143,10 @@ public class AttributeManager {
 			case MELEE:
 
 				// Modifier:
-				event.modifyDamage(defenderManager.getDefendModifier(AttributeParameter.MELEE_MODIFIER));
+				event.modifyDamage(defenderManager.getDefendModifier(AttributeParameter.MELEE_DAMAGE_MODIFIER));
 				
 				// Multiplier:
-				event.multiplyDamage(defenderManager.getDefendModifier(AttributeParameter.MELEE_MULTIPLIER));
+				event.multiplyDamage(defenderManager.getDefendModifier(AttributeParameter.MELEE_DAMAGE_MULTIPLIER));
 				
 				// Hit chance:
 				event.modifyHitChance(defenderManager.getDefendModifier(AttributeParameter.MELEE_HIT_CHANCE_MODIFIER));
@@ -162,10 +162,10 @@ public class AttributeManager {
 			case RANGED:
 
 				// Modifier:
-				event.modifyDamage(defenderManager.getDefendModifier(AttributeParameter.RANGED_MODIFIER));
+				event.modifyDamage(defenderManager.getDefendModifier(AttributeParameter.RANGED_DAMAGE_MODIFIER));
 
 				// Multiplier:
-				event.multiplyDamage(defenderManager.getDefendModifier(AttributeParameter.RANGED_MULTIPLIER));
+				event.multiplyDamage(defenderManager.getDefendModifier(AttributeParameter.RANGED_DAMAGE_MULTIPLIER));
 				
 				// Hit chance:
 				event.modifyHitChance(defenderManager.getDefendModifier(AttributeParameter.RANGED_HIT_CHANCE_MODIFIER));
@@ -181,10 +181,10 @@ public class AttributeManager {
 			case MAGIC:
 
 				// Modifier:
-				event.modifyDamage(defenderManager.getDefendModifier(AttributeParameter.MAGIC_MODIFIER));
+				event.modifyDamage(defenderManager.getDefendModifier(AttributeParameter.MAGIC_DAMAGE_MODIFIER));
 
 				// Multiplier:
-				event.multiplyDamage(defenderManager.getDefendModifier(AttributeParameter.MAGIC_MULTIPLIER));
+				event.multiplyDamage(defenderManager.getDefendModifier(AttributeParameter.MAGIC_DAMAGE_MULTIPLIER));
 				
 				// Hit chance:
 				event.modifyHitChance(defenderManager.getDefendModifier(AttributeParameter.MAGIC_HIT_CHANCE_MODIFIER));
