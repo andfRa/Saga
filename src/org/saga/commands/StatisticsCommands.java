@@ -25,44 +25,9 @@ import org.sk89q.CommandPermissions;
 
 
 public class StatisticsCommands {
-
-	@Command(
-			aliases = {"stgeneral"},
-			usage = "",
-			flags = "",
-			desc = "Show general statistics.",
-			min = 0,
-			max = 0
-	)
-	@CommandPermissions({"saga.statistics.general"})
-    public static void general(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-		// Inform:
-		sagaPlayer.message(StatisticsMessages.general());
-		
-		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
-		
-	}
-    	
-	@Command(
-			aliases = {"stabilities"},
-			usage = "",
-			flags = "",
-			desc = "Show ability statistics.",
-			min = 0,
-			max = 0
-	)
-	@CommandPermissions({"saga.statistics.abilities"})
-	public static void abilities(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-		// Inform:
-		sagaPlayer.message(StatisticsMessages.values("abilities used", "abilities.used", "ability", "uses sum", true, 0, 0));
-            	
-		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
-            	
-	}
 	
 	
+	// X-ray:
 	@Command(
 			aliases = {"stxraysusp","stxraysuspects","stxrayind"},
 			usage = "",
@@ -71,7 +36,7 @@ public class StatisticsCommands {
 			min = 0,
 			max = 1
 	)
-	@CommandPermissions({"saga.statistics.xrayindication"})
+	@CommandPermissions({"saga.statistics.xray.indication"})
 	public static void xrayIndication(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
@@ -111,7 +76,7 @@ public class StatisticsCommands {
 			min = 1,
 			max = 1
 	)
-	@CommandPermissions({"saga.statistics.xrayconfirm"})
+	@CommandPermissions({"saga.statistics.xray.confirm"})
 	public static void xrayConfirm(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 		
 		
@@ -134,6 +99,8 @@ public class StatisticsCommands {
 	}
 	
 	
+	
+	// Stats:
 	@Command(
 			aliases = {"stexp"},
 			usage = "",
@@ -142,7 +109,7 @@ public class StatisticsCommands {
 			min = 0,
 			max = 1
 	)
-	@CommandPermissions({"saga.statistics.exp"})
+	@CommandPermissions({"saga.statistics.stats.exp"})
 	public static void exp(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
@@ -171,25 +138,102 @@ public class StatisticsCommands {
 	    
 	}
 	
-	
 	@Command(
 		aliases = {"stattributes","stattr"},
 		usage = "",
 		flags = "",
-		desc = "Show attribute statistics.",
+		desc = "Show trained attributes statistics.",
 		min = 0,
 		max = 0
 	)
-	@CommandPermissions({"saga.statistics.attributes"})
+	@CommandPermissions({"saga.statistics.stats.attributes"})
 	public static void attributes(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		// Inform:
-		sagaPlayer.message(StatisticsMessages.values("attributes trained", "attributes", "attribute", "score sum", true, 0, 0));
+		sagaPlayer.message(StatisticsMessages.values("attributes trained", "attributes.trained", "attribute", "score sum", true, 0, 0));
 		
 		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
 		
 	}
 
+	@Command(
+		aliases = {"stabilities","stabil"},
+		usage = "",
+		flags = "",
+		desc = "Show trained abilities statistics.",
+		min = 0,
+		max = 0
+	)
+	@CommandPermissions({"saga.statistics.stats.abilities"})
+	public static void abilities(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		// Inform:
+		sagaPlayer.message(StatisticsMessages.values("abilities trained", "abilities.trained", "ability", "score sum", true, 0, 0));
+		
+		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+		
+	}
+	
+	@Command(
+			aliases = {"stusedabilities","stabiluse"},
+			usage = "",
+			flags = "",
+			desc = "Show used abilities statistics.",
+			min = 0,
+			max = 0
+	)
+	@CommandPermissions({"saga.statistics.stats.usedabilities"})
+	public static void usedAbilities(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		// Inform:
+		sagaPlayer.message(StatisticsMessages.values("abilities used", "abilities.used", "ability", "uses sum", true, 0, 0));
+            	
+		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+            	
+	}
+	
+	
+	
+	// Proficiencies:
+	@Command(
+		aliases = {"stroles"},
+		usage = "",
+		flags = "a",
+		desc = "Show role statistics. The -a flag shows individual settlements.",
+		min = 0,
+		max = 0
+		)
+	@CommandPermissions({"saga.statistics.proficiencies.roles"})
+	public static void roles(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	
+		// Inform:
+		sagaPlayer.message(StatisticsMessages.values("roles", "settlements.roles.used", "used", "available", "role", "used", "available", !args.hasFlag('a'), 0, 0));
+		
+		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+	            	
+	}
+	
+	@Command(
+		aliases = {"stranks"},
+		usage = "",
+		flags = "a",
+		desc = "Show rank statistics. The -a flag shows individual settlements.",
+		min = 0,
+		max = 0
+		)
+	@CommandPermissions({"saga.statistics.proficiencies.ranks"})
+	public static void ranks(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	
+		// Inform:
+		sagaPlayer.message(StatisticsMessages.values("ranks", "factions.ranks.used", "used", "available", "rank", "used", "available", !args.hasFlag('a'), 0, 0));
+		
+		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+	            	
+	}
+	
+	
+	
+	// Economy:
 	@Command(
 			aliases = {"stbalance","stbal"},
 			usage = "",
@@ -198,7 +242,7 @@ public class StatisticsCommands {
 			min = 0,
 			max = 1
 	)
-	@CommandPermissions({"saga.statistics.economy"})
+	@CommandPermissions({"saga.statistics.economy.balance"})
 	public static void balance(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
@@ -227,47 +271,6 @@ public class StatisticsCommands {
 	    
 	}
 	
-	
-	@Command(
-			aliases = {"streset"},
-			usage = "",
-			flags = "",
-			desc = "Reset and archive statistics.",
-			min = 0,
-			max = 0
-	)
-	@CommandPermissions({"saga.statistics.reset"})
-	public static void reset(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-	    // Archive:
-		StatisticsManager.manager().archive();
-		
-		// Reset:
-		StatisticsManager.manager().reset();
-		
-		// Inform:
-	    sagaPlayer.message(StatisticsMessages.reset());
-	        	
-	}
-	
-	@Command(
-		aliases = {"stbuildings"},
-		usage = "",
-		flags = "",
-		desc = "Show building statistics.",
-		min = 0,
-		max = 0
-	)
-	@CommandPermissions({"saga.statistics.buildings"})
-	public static void buildings(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-
-		// Inform:
-		sagaPlayer.message(StatisticsMessages.values("buildings set", "buildings.set", "building", "set sum", true, 0, 0));
-	           	
-		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
-		
-	}
-		
 	@Command(
 		aliases = {"stwages"},
 		usage = "",
@@ -276,7 +279,7 @@ public class StatisticsCommands {
 		min = 0,
 		max = 0
 		)
-	@CommandPermissions({"saga.statistics.wages"})
+	@CommandPermissions({"saga.statistics.economy.wages"})
 	public static void wages(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		// Inform:
@@ -285,7 +288,26 @@ public class StatisticsCommands {
 		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
 	            	
 	}
+	
+	
+	// Settlement:
+	@Command(
+		aliases = {"stbuildings"},
+		usage = "",
+		flags = "",
+		desc = "Show building statistics.",
+		min = 0,
+		max = 0
+	)
+	@CommandPermissions({"saga.statistics.settlement.buildings"})
+	public static void buildings(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
+		// Inform:
+		sagaPlayer.message(StatisticsMessages.values("buildings set", "buildings.set", "building", "set sum", true, 0, 0));
+	           	
+		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+		
+	}
 	
 	@Command(
 		aliases = {"stclaimed"},
@@ -295,7 +317,7 @@ public class StatisticsCommands {
 		min = 0,
 		max = 0
 		)
-	@CommandPermissions({"saga.statistics.claimed"})
+	@CommandPermissions({"saga.statistics.settlement.claimed"})
 	public static void claimed(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 	
 		// Inform:
@@ -306,6 +328,8 @@ public class StatisticsCommands {
 	}
 
 	
+	
+	// Histograms:
 	@Command(
 			aliases = {"stxrayhist","stxraytable"},
 			usage = "[material]",
@@ -357,7 +381,7 @@ public class StatisticsCommands {
     	
     	
 	}
-	
+
 	@Command(
 			aliases = {"stattrhist"},
 			usage = "",
@@ -367,14 +391,37 @@ public class StatisticsCommands {
 			max = 0
 	)
 	@CommandPermissions({"saga.statistics.histogram.attributes"})
-	public static void levelsHistogram(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	public static void attributesHistogram(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
     	// Data:
-    	Integer[] data = StatisticsManager.manager().getSpentAttributes();
+    	Double[] data = StatisticsManager.manager().createHistogramData("attributes.trained");
     	
 	    // Inform:
-    	sagaPlayer.message(StatisticsMessages.histogram("spent attribute points histogram", data, 10, 0));
+    	sagaPlayer.message(StatisticsMessages.histogram("trained attribute points histogram", data, 10, 0));
+	    
+    	sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+	    
+	    
+	}
+
+	@Command(
+			aliases = {"stabilhist"},
+			usage = "",
+			flags = "",
+			desc = "Show spent ability distribution histogram.",
+			min = 0,
+			max = 0
+	)
+	@CommandPermissions({"saga.statistics.histogram.abilities"})
+	public static void abilityHistogram(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		
+    	// Data:
+    	Double[] data = StatisticsManager.manager().createHistogramData("abilities.trained");
+    	
+	    // Inform:
+    	sagaPlayer.message(StatisticsMessages.histogram("trained ability points histogram", data, 10, 0));
 	    
     	sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
 	    
@@ -390,7 +437,7 @@ public class StatisticsCommands {
 			max = 0
 	)
 	@CommandPermissions({"saga.statistics.histogram.settlementclaims"})
-	public static void slevelsHistogram(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	public static void sclaimsHistogram(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
 		
     	// Data:
@@ -472,67 +519,31 @@ public class StatisticsCommands {
 	    
 	    
 	}
-
-
+	
+	
+	
+	// Management:
 	@Command(
-		aliases = {"stonline"},
-		usage = "",
-		flags = "a",
-		desc = "Show online statistics. The -a flag shows individual factions and settlements.",
-		min = 0,
-		max = 0
-		)
-	@CommandPermissions({"saga.statistics.online"})
-	public static void online(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-	
-		// Inform:
-		sagaPlayer.message(StatisticsMessages.values("online claims", "online", "online", "claims", "group", "minutes", "claims", !args.hasFlag('a'), 0, 0));
-		
-		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
-	            	
-	}
+			aliases = {"streset"},
+			usage = "",
+			flags = "",
+			desc = "Reset and archive statistics.",
+			min = 0,
+			max = 0
+	)
+	@CommandPermissions({"saga.statistics.reset"})
+	public static void reset(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
 
-	
-
-	@Command(
-		aliases = {"stroles"},
-		usage = "",
-		flags = "a",
-		desc = "Show role statistics. The -a flag shows individual settlements.",
-		min = 0,
-		max = 0
-		)
-	@CommandPermissions({"saga.statistics.roles"})
-	public static void roles(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-	
-		// Inform:
-		sagaPlayer.message(StatisticsMessages.values("roles", "settlements.roles.used", "used", "available", "role", "used", "available", !args.hasFlag('a'), 0, 0));
+	    // Archive:
+		StatisticsManager.manager().archive();
 		
-		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
-	            	
-	}
-	
-	@Command(
-		aliases = {"stranks"},
-		usage = "",
-		flags = "a",
-		desc = "Show rank statistics. The -a flag shows individual settlements.",
-		min = 0,
-		max = 0
-		)
-	@CommandPermissions({"saga.statistics.ranks"})
-	public static void ranks(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
-	
-		// Inform:
-		sagaPlayer.message(StatisticsMessages.values("ranks", "factions.ranks.used", "used", "available", "rank", "used", "available", !args.hasFlag('a'), 0, 0));
+		// Reset:
+		StatisticsManager.manager().reset();
 		
-		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
-	            	
+		// Inform:
+	    sagaPlayer.message(StatisticsMessages.reset());
+	        	
 	}
-	
-	
-
-	
 	
 	@Command(
 			aliases = {"stupdateplayers"},
@@ -567,6 +578,45 @@ public class StatisticsCommands {
     	sagaPlayer.message(StatisticsMessages.updated());
 	    
 	    
+	}
+	
+	
+	
+	// Other:
+	@Command(
+		aliases = {"stonline"},
+		usage = "",
+		flags = "a",
+		desc = "Show online statistics. The -a flag shows individual factions and settlements.",
+		min = 0,
+		max = 0
+		)
+	@CommandPermissions({"saga.statistics.online"})
+	public static void online(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+	
+		// Inform:
+		sagaPlayer.message(StatisticsMessages.values("online claims", "online", "online", "claims", "group", "minutes", "claims", !args.hasFlag('a'), 0, 0));
+		
+		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+	            	
+	}
+
+	@Command(
+			aliases = {"stgeneral"},
+			usage = "",
+			flags = "",
+			desc = "Show general statistics.",
+			min = 0,
+			max = 0
+	)
+	@CommandPermissions({"saga.statistics.general"})
+    public static void general(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		// Inform:
+		sagaPlayer.message(StatisticsMessages.general());
+		
+		sagaPlayer.message(StatisticsMessages.statisticsAge(StatisticsManager.manager().calcStatisticsAge()));
+		
 	}
 
 	

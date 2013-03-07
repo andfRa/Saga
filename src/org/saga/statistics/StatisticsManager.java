@@ -18,6 +18,7 @@ import org.saga.Clock;
 import org.saga.Clock.HourTicker;
 import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
+import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.BuildingConfiguration;
 import org.saga.config.GeneralConfiguration;
@@ -95,10 +96,6 @@ public class StatisticsManager implements HourTicker{
 	private Hashtable<String, Hashtable<Material, Integer>> foundVeins;
 
 	
-	/**
-	 * Player levels.
-	 */
-	private Hashtable<String, Integer> playerLevels; 
 
 	/**
 	 * Player attributes.
@@ -165,12 +162,6 @@ public class StatisticsManager implements HourTicker{
 			integrity=false;
 		}
 		
-		if(playerLevels == null){
-			SagaLogger.severe(getClass(), "playerLevels");
-			playerLevels = new Hashtable<String, Integer>();
-			integrity=false;
-		}
-
 		if(playerSellCoins == null){
 			SagaLogger.nullField(getClass(), "playerSellCoins");
 			playerSellCoins = new Hashtable<String, Hashtable<Material,Double>>();
@@ -273,8 +264,6 @@ public class StatisticsManager implements HourTicker{
 		xrayStatistics = new Hashtable<String, Hashtable<Material,Integer>>();
 		blockDataChanges = 0;
 		
-		playerLevels = new Hashtable<String, Integer>();
-		
 		playerBuyCoins = new Hashtable<String, Hashtable<Material,Double>>();
 		playerSellCoins = new Hashtable<String, Hashtable<Material,Double>>();
 		playerBuyAmount = new Hashtable<String, Hashtable<Material,Integer>>();
@@ -353,14 +342,6 @@ public class StatisticsManager implements HourTicker{
 		return blockDataChanges;
 	}
 
-	
-	// Levels:
-	public Integer[] getSpentAttributes() {
-
-		return playerLevels.values().toArray(new Integer[0]);
-		
-	}
-	
 	
 	
 	// Economy:
@@ -601,15 +582,6 @@ public class StatisticsManager implements HourTicker{
 
 		return getValue("xray_confirmed" + "." + material.toString() + "." + name) > 0.0;
 		
-	}
-	
-	
-	
-	// Level and attributes:
-	public void setSpentAttributes(SagaPlayer sagaPlayer) {
-
-		playerLevels.put(sagaPlayer.getName(), sagaPlayer.getUsedAttributePoints());
-
 	}
 	
 	
@@ -863,7 +835,7 @@ public class StatisticsManager implements HourTicker{
 	
 	
 	// Updating:
-	public void setAttributes(SagaPlayer sagaPlayer) {
+	public void setPlayer(SagaPlayer sagaPlayer) {
 
 		
 		ArrayList<String> attributes = AttributeConfiguration.config().getAttributeNames();
@@ -872,13 +844,22 @@ public class StatisticsManager implements HourTicker{
 			Integer score = sagaPlayer.getRawAttributeScore(attribute);
 			if(score < 1) continue;
 			
-			setValue("attributes" + "." + attribute + "." + sagaPlayer.getName(), score);
+			setValue("attributes.trained" + "." + attribute + "." + sagaPlayer.getName(), score);
+			
+		}
+		
+		ArrayList<String> abilities = AbilityConfiguration.config().getAbilityNames();
+		for (String ability : abilities) {
+			
+			Integer score = sagaPlayer.getRawAbilityScore(ability);
+			if(score < 1) continue;
+			
+			setValue("abilities.trained" + "." + ability + "." + sagaPlayer.getName(), score);
 			
 		}
 		
 		
 	}
-	
 	
 	public void addGuardRuneRestore(SagaPlayer sagaPlayer) {
 

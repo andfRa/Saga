@@ -221,8 +221,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	public void updateStatistics() {
 	
 		StatisticsManager.manager().setWallet(this);
-		StatisticsManager.manager().setSpentAttributes(this);
-    	StatisticsManager.manager().setAttributes(this);
+    	StatisticsManager.manager().setPlayer(this);
 
 	}
 	
