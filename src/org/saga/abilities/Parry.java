@@ -102,13 +102,25 @@ public class Parry extends Ability{
 		LivingEntity defender = event.defenderPlayer.getLivingEntity();
 		LivingEntity attacker = event.getAttacker();
 		
+		SagaPlayer sagaLiving = event.defenderPlayer;
+		
 		if(defender == null || attacker == null) return false;
 		
 		// Damage immunity:
 		if(time != null){
 			
 			if(getDefinition().getFunction(ACTIVE_TIME).value(getScore()) * 1000.0 >= System.currentTimeMillis() - time){
+				
 				event.cancel();
+
+				// Animation:
+				if(sagaLiving instanceof SagaPlayer) StatsEffectHandler.playAnimateArm(sagaLiving);
+				
+				// Effect:
+				StatsEffectHandler.playParry(sagaLiving);
+				
+				return false;
+				
 			}else{
 				time = null;
 			}
@@ -123,7 +135,10 @@ public class Parry extends Ability{
 		if(Math.abs(deg -180) > getDefinition().getFunction(FACING_HALF_ANGLE).value(getCooldown())) return false;
 
 		// Animation:
-		if(getSagaLiving() instanceof SagaPlayer) StatsEffectHandler.playAnimateArm((SagaPlayer) getSagaLiving());
+		if(sagaLiving instanceof SagaPlayer) StatsEffectHandler.playAnimateArm(sagaLiving);
+		
+		// Effect:
+		StatsEffectHandler.playParry(sagaLiving);
 		
 		// Parry:
 		event.cancel();

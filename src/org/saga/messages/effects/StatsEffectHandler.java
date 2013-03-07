@@ -29,6 +29,26 @@ public class StatsEffectHandler {
 		
 	}
 	
+	public static void playParry(SagaLiving<LivingEntity> sagaliving) {
+		
+		LivingEntity living = sagaliving.getLivingEntity();
+		
+		Location loc = living.getLocation();
+		
+		loc.getWorld().playSound(loc, Sound.ANVIL_LAND, 1.0f, 2.0f);
+		
+	}
+	
+	public static void playParry(SagaPlayer sagaliving) {
+		
+		LivingEntity living = sagaliving.getLivingEntity();
+		
+		Location loc = living.getLocation();
+		
+		loc.getWorld().playSound(loc, Sound.ANVIL_LAND, 1.0f, 2.0f);
+		
+	}
+	
 	public static void playLevelUp(SagaPlayer sagaPlayer) {
 
 		sagaPlayer.playGlobalSound(Sound.LEVEL_UP, 1.0F, 0.5F);

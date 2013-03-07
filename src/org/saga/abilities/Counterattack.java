@@ -24,7 +24,7 @@ public class Counterattack extends Ability{
 	/**
 	 * Used to prevent loops of death.
 	 */
-	private Boolean progress = null;
+	transient private Boolean progress = null;
 	
 	
 	
@@ -76,7 +76,7 @@ public class Counterattack extends Ability{
 		
 		// Only physical:
 		if(event.type != DamageType.MELEE) return false;
-
+		
 		// Defender must be a player:
 		if(!(getSagaLiving() instanceof SagaPlayer)) return false;
 		SagaPlayer sagaDefender = (SagaPlayer) getSagaLiving();
@@ -123,6 +123,12 @@ public class Counterattack extends Ability{
 		// Cancel and redirect:
 		event.cancel();
 		attacker.damage((int)damage, defender);
+		
+		// Animation:
+		if(sagaDefender instanceof SagaPlayer) StatsEffectHandler.playAnimateArm(sagaDefender);
+		
+		// Effect:
+		StatsEffectHandler.playParry(sagaDefender);
 		
 		return true;
 		
