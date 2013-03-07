@@ -207,7 +207,7 @@ public class HelpMessages {
 		if(abilities.size() > 0){
 			
 			for (AbilityDefinition ability : abilities) {
-				abilityDescTable.addLine(new String[]{ability.getName(), ability.getDescription()});
+				abilityDescTable.addLine(new String[]{ability.getName(), ability.getBriefDescription()});
 			}
 			
 		}else{
@@ -635,33 +635,7 @@ public class HelpMessages {
 		ChatBook book = new ChatBook(definition.getName() + " ability information", colours);
 		
 		// Description:
-		book.addLine(ChatUtil.senctence(definition.getDescription()));
-		
-		// Usage:
-		book.addLine(GeneralMessages.columnTitle("usage:") + " " + definition.getUsage());
-		
-		book.addLine("");
-		
-		// Stats:
-		ChatTable statsTable = new ChatTable(colours);
-		int min = 1;
-		int max = AbilityConfiguration.config().maxAbilityScore;
-		
-		// Names:
-		statsTable.addLine(GeneralMessages.columnTitle("stat / score"));
-		statsTable.addLine("cooldown");
-		statsTable.addLine(GeneralMessages.material(definition.getUsedItem()) + " used");
-		
-		for (int i = min; i <= max; i++) {
-			
-			statsTable.addLine(RomanNumeral.binaryToRoman(i), i+1);
-			statsTable.addLine(definition.getCooldown(i) + "s", i+1);
-			statsTable.addLine(definition.getUsedAmount(i) + "", i+1);
-			
-		}
-		
-		statsTable.collapse();
-		book.addTable(statsTable);
+		book.addLine(ChatUtil.senctence(definition.getFullDescription()));
 		
 		book.addLine("");
 
@@ -690,6 +664,12 @@ public class HelpMessages {
 		
 		upgrTable.collapse();
 		book.addTable(upgrTable);
+		
+		book.addLine("");
+
+		// Usage:
+		book.addLine(GeneralMessages.columnTitle("usage:") + " " + definition.getUsage());
+		
 		
 		return book.framedPage(0);
 		

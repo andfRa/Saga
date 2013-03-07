@@ -1335,6 +1335,49 @@ public class AdminCommands {
 		
 	}
 	
+
+	@Command(
+			aliases = {"awriteabilities"},
+			usage = "",
+			flags = "c",
+			desc = "Write all abilities in MediaWiki format. The c flag changes the format to WikiCreole.",
+			min = 0
+	)
+	@CommandPermissions({"saga.admin.wiki.writeabilities"})
+	public static void writeAbilities(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		
+		String wikiText = "";
+		
+		ArrayList<Method> commandMethods = new ArrayList<Method>(PermissionsDependency.getCommandMap().getCommandMethods());
+		
+		// WikiCreole:
+		if(args.hasFlag('c')){
+			wikiText = AdminMessages.wikiAbilitiesCreole(commandMethods);
+		}
+		
+		// MediaWiki:
+		else{
+			wikiText = AdminMessages.wikiAbilities(commandMethods);
+		}
+			
+		Directory dir = Directory.WIKI;
+		String name = "abilities";
+		
+		try {
+			WriterReader.writeString(dir, name, wikiText);
+		}
+		catch (IOException e) {
+			sagaPlayer.error("Failed to write wiki " + name);
+			SagaLogger.severe(AdminCommands.class, "failed to write wiki " + name + ": " + e.getClass().getSimpleName() + ":" + e.getMessage());
+			return;
+		}
+		
+		// Inform:
+		sagaPlayer.message(AdminMessages.writeDone(dir, name));
+		
+		
+	}
 	
 	
 }

@@ -9,8 +9,10 @@ import java.util.Map.Entry;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.saga.Clock.DaytimeTicker.Daytime;
+import org.saga.abilities.AbilityDefinition;
 import org.saga.attributes.Attribute;
 import org.saga.attributes.AttributeParameter;
+import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.FactionConfiguration;
@@ -25,6 +27,7 @@ import org.saga.saveload.WriterReader;
 import org.saga.settlements.Settlement;
 import org.saga.utility.TwoPointFunction;
 import org.saga.utility.chat.ChatUtil;
+import org.saga.utility.chat.RomanNumeral;
 import org.sk89q.Command;
 import org.sk89q.CommandPermissions;
 
@@ -804,8 +807,226 @@ public class AdminMessages {
 		
 	}
 	
-	
+	public static String wikiAbilities(ArrayList<Method> commandMethods) {
+		
+		
+		StringBuffer result = new StringBuffer();
+		
+		ArrayList<AbilityDefinition> definitions = AbilityConfiguration.config().getDefinitions();
+		
+		// Title:
+		result.append("=Abilities=");
+		
+		result.append("\n");
+		
+		for (int i = 0; i < definitions.size(); i++) {
+			
+			AbilityDefinition definition = definitions.get(i);
+			
+			result.append("\n");
+			
+			// Name:
+			result.append("==" + ChatUtil.capitalize(definition.getName()) + "==");
+			
+			result.append("\n");
+			result.append("\n");
 
+			// Description:
+			result.append(ChatUtil.senctence(definition.getFullDescription()));
+			
+			result.append("\n");
+			result.append("\n");
+
+			result.append("{|");
+			
+			result.append("\n");
+
+			// Scores:
+			result.append("|");
+			result.append("Score");
+			for (int score = 1; score <= AbilityConfiguration.config().maxAbilityScore; score++) {
+
+				result.append("||");
+				result.append(RomanNumeral.binaryToRoman(score));
+
+			}
+			result.append("\n");
+			result.append("|-");
+			
+			
+			result.append("\n");
+			
+			// Energy:
+			result.append("|");
+			result.append("Energy");
+			for (int score = 1; score <= AbilityConfiguration.config().maxAbilityScore; score++) {
+
+				result.append("||");
+				result.append(definition.getUsedEnergy(score));
+				
+			}
+			result.append("\n");
+			result.append("|-");
+			
+			result.append("\n");
+			
+			// Attributes:
+			result.append("|");
+			result.append("Requirements");
+			for (int score = 1; score <= AbilityConfiguration.config().maxAbilityScore; score++) {
+				
+				result.append("||");
+				result.append(StatsMessages.requirements(definition, score));
+				
+				
+			}
+			result.append("\n");
+			result.append("|}");
+			
+
+			result.append("\n");
+			result.append("\n");
+
+			// Usage:
+			result.append("Usage: ");
+			result.append(definition.getUsage());
+			result.append(".");
+			
+			// Restrictions:
+			String restrictions = StatsMessages.restrictions(definition);
+			if(restrictions.length() > 0){
+				
+				result.append("\n");
+				result.append("\n");
+				
+				result.append("Restrictions: ");
+				result.append(restrictions);
+				result.append(".");
+				
+			}
+
+			result.append("\n");
+			
+		}
+		
+		return result.toString();
+		
+		
+	}
+
+	public static String wikiAbilitiesCreole(ArrayList<Method> commandMethods) {
+		
+		
+		String rowCompensation = " | | | | | | | | | | | | | |";
+		String horizontalLine = "----";
+		
+		StringBuffer result = new StringBuffer();
+		
+		ArrayList<AbilityDefinition> definitions = AbilityConfiguration.config().getDefinitions();
+		
+		// Title:
+		result.append("=Abilities");
+		
+		result.append("\n");
+		result.append("\n");
+		
+		result.append(horizontalLine);
+		
+		for (int i = 0; i < definitions.size(); i++) {
+			
+			AbilityDefinition definition = definitions.get(i);
+			
+			result.append("\n");
+			
+			result.append("\n");
+			
+			// Name:
+			result.append("==" + ChatUtil.capitalize(definition.getName()));
+			
+			result.append("\n");
+			result.append("\n");
+
+			// Description:
+			result.append(ChatUtil.senctence(definition.getFullDescription()));
+			
+			result.append("\n");
+			result.append("\n");
+
+			// Scores:
+			result.append("|");
+			result.append("Score");
+			result.append("|");
+			for (int score = 1; score <= AbilityConfiguration.config().maxAbilityScore; score++) {
+				result.append(RomanNumeral.binaryToRoman(score));
+				result.append("|");
+			}
+			result.append(rowCompensation);
+			
+			result.append("\n");
+			
+			// Energy:
+			result.append("|");
+			result.append("Energy");
+			result.append("|");
+			for (int score = 1; score <= AbilityConfiguration.config().maxAbilityScore; score++) {
+				
+				// Energy:
+				result.append(definition.getUsedEnergy(score));
+				
+				result.append("|");
+				
+			}
+			result.append(rowCompensation);
+			
+			result.append("\n");
+			
+			// Attributes:
+			result.append("|");
+			result.append("Requirements");
+			result.append("|");
+			for (int score = 1; score <= AbilityConfiguration.config().maxAbilityScore; score++) {
+				
+				result.append(StatsMessages.requirements(definition, score));
+				result.append("|");
+				
+			}
+			result.append(rowCompensation);
+
+			result.append("\n");
+			result.append("\n");
+
+			// Usage:
+			result.append("Usage: ");
+			result.append(definition.getUsage());
+			result.append(".");
+			
+			// Restrictions:
+			String restrictions = StatsMessages.restrictions(definition);
+			if(restrictions.length() > 0){
+
+				result.append("\n");
+				result.append("\n");
+				
+				result.append("Restrictions: ");
+				result.append(restrictions);
+				result.append(".");
+				
+			}
+
+			result.append("\n");
+			
+			result.append(horizontalLine);
+			
+			
+		}
+		
+		return result.toString();
+		
+		
+	}
+	
+	
+	
 	// Saving loading:
 	public static String saving() {
 		return Colour.veryPositive + "Saving Saga information.";

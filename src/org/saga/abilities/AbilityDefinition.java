@@ -87,7 +87,7 @@ public class AbilityDefinition{
 	/**
 	 * Proficiency restrictions.
 	 */
-	private HashSet<String> proficiencyRestrictions;
+	private Hashtable<Integer, ArrayList<String>> proficienciesRequired;
 	
 	/**
 	 * Ability functions.
@@ -103,11 +103,16 @@ public class AbilityDefinition{
 	 * Usage description.
 	 */
 	private String usage;
-	
+
 	/**
-	 * Description.
+	 * Brief description.
 	 */
-	private String description;
+	private String briefDescription;
+
+	/**
+	 * Full description.
+	 */
+	private String fullDescription;
 
 	
 	
@@ -203,9 +208,9 @@ public class AbilityDefinition{
 			SagaLogger.nullField(this, "buildingsRequired");
 		}
 		
-		if(proficiencyRestrictions == null){
-			proficiencyRestrictions = new HashSet<String>();
-			SagaLogger.nullField(this, "proficiencyRestrictions");
+		if(proficienciesRequired == null){
+			proficienciesRequired = new Hashtable<Integer, ArrayList<String>>();
+			SagaLogger.nullField(this, "proficienciesRequired");
 		}
 		
 		if(functions == null){
@@ -222,8 +227,13 @@ public class AbilityDefinition{
 			SagaLogger.nullField(this, "usage");
 		}
 
-		if(description == null){
-			description = "";
+		if(briefDescription == null){
+			briefDescription = "";
+			SagaLogger.nullField(this, "description");
+		}
+		
+		if(fullDescription == null){
+			fullDescription = "";
 			SagaLogger.nullField(this, "description");
 		}
 		
@@ -401,23 +411,41 @@ public class AbilityDefinition{
 	/**
 	 * Gets building requirements.
 	 * 
+	 * @param score ability score
 	 * @return buildings requirements
 	 */
-	public ArrayList<String> getBldgReq(Integer score) {
+	public HashSet<String> getBldgReq(Integer score) {
+
+		HashSet<String> required = new HashSet<String>();
+		for (int curScore = score; curScore >= 0; curScore--) {
+			
+			ArrayList<String> req = buildingsRequired.get(curScore);
+			if(req != null) required.addAll(req);
+			
+		}
 		
-		ArrayList<String> req = buildingsRequired.get(score);
-		if(req == null) return new ArrayList<String>();
-		return req;
+		return required;
 		
 	}
 
 	/**
 	 * Gets proficiency restrictions.
 	 * 
+	 * @param score ability score
 	 * @return proficiency restrictions
 	 */
-	public HashSet<String> getProfRestr() {
-		return new HashSet<String>(proficiencyRestrictions);
+	public HashSet<String> getProfReq(Integer score) {
+		
+		HashSet<String> required = new HashSet<String>();
+		for (int curScore = score; curScore >= 0; curScore--) {
+			
+			ArrayList<String> req = proficienciesRequired.get(curScore);
+			if(req != null) required.addAll(req);
+			
+		}
+		
+		return required;
+		
 	}
 	
 	
@@ -431,15 +459,15 @@ public class AbilityDefinition{
 	public boolean checkBuildings(SagaLiving<?> sagaLiving, Integer abilityScore) {
 
 		
-		ArrayList<String> req = getBldgReq(abilityScore);
+		HashSet<String> required = getBldgReq(abilityScore);
 		
-		if(req.size() == 0) return true;
+		if(required.size() == 0) return true;
 		Bundle bundle = sagaLiving.getBundle();
 		if(bundle == null) return false;
 		
-		for (String building : req) {
+		for (String bldgName : required) {
 			
-			if(bundle.getFirstBuilding(building) == null) return false;
+			if(bundle.getFirstBuilding(bldgName) == null) return false;
 			
 		}
 		
@@ -478,21 +506,25 @@ public class AbilityDefinition{
 	 * @param abilityScore ability score
 	 * @return true if requirements are met
 	 */
-	public boolean checkProficiencies(SagaLiving<?> sagaLiving) {
-
+	public boolean checkProficiencies(SagaLiving<?> sagaLiving, Integer abilityScore) {
 		
-		if(proficiencyRestrictions.size() == 0) return true;
+		
+		if(!(sagaLiving instanceof SagaPlayer)) return false;
+		SagaPlayer sagaPlayer = (SagaPlayer) sagaLiving;
+		
+		HashSet<String> required = getProfReq(abilityScore);
+		
+		if(required.size() == 0) return true;
 
-		if(sagaLiving instanceof SagaPlayer){
-			Proficiency role = ((SagaPlayer) sagaLiving).getRole();
-			Proficiency rank = ((SagaPlayer) sagaLiving).getRank();
-			if(role != null && proficiencyRestrictions.contains(role.getName())) return true;
-			if(rank != null && proficiencyRestrictions.contains(rank.getName())) return true;
-		}
+		Proficiency role = sagaPlayer.getRole();
+		if(role != null && required.contains(role.getName())) return true;
+
+		Proficiency rank = sagaPlayer.getRank();
+		if(rank != null && required.contains(rank.getName())) return true;
 		
 		return false;
 		
-
+		
 	}
 	
 	/**
@@ -505,7 +537,7 @@ public class AbilityDefinition{
 	public boolean checkRequirements(SagaLiving<?> sagaLiving, Integer abilityScore) {
 		return checkAttributes(sagaLiving, abilityScore)&&
 				checkBuildings(sagaLiving, abilityScore) &&
-				checkProficiencies(sagaLiving);
+				checkProficiencies(sagaLiving, abilityScore);
 	}
 	
 	
@@ -524,12 +556,21 @@ public class AbilityDefinition{
 	
 	// Info:
 	/**
-	 * Gets the description.
+	 * Gets the brief description.
 	 * 
-	 * @return the description
+	 * @return brief description
 	 */
-	public String getDescription() {
-		return description;
+	public String getBriefDescription() {
+		return briefDescription;
+	}
+	
+	/**
+	 * Gets the full description.
+	 * 
+	 * @return full description
+	 */
+	public String getFullDescription() {
+		return fullDescription;
 	}
 
 	/**
@@ -540,7 +581,7 @@ public class AbilityDefinition{
 	public String getUsage() {
 		return usage;
 	}
-
+	
 	
 	
 	// Other:

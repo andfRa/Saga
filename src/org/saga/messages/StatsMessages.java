@@ -7,7 +7,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -104,7 +103,7 @@ public class StatsMessages {
 		table.addLine("","", 0);
 		
 		// Attributes:
-		String score = " ";
+		String strScore = " ";
 		ArrayList<String> attrNames = AttributeConfiguration.config().getAttributeNames();
 		for (String attrName : attrNames) {
 			
@@ -114,23 +113,23 @@ public class StatsMessages {
 			String scoreCurr = format.format(attrScore + attrBonus);
 			String scoreMax = format.format(sagaPlayer.getAttributeCap(attrName));
 			
-			score = scoreCurr + "/" + scoreMax;
+			strScore = scoreCurr + "/" + scoreMax;
 			
 			// Colours:
 			if(attrBonus > 0){
-				score = Colour.positive + score;
+				strScore = Colour.positive + strScore;
 			}
 			else if(attrBonus < 0){
-				score = Colour.negative + score;
+				strScore = Colour.negative + strScore;
 			}
 			
-			table.addLine(attrName, score, 0);
+			table.addLine(attrName, strScore, 0);
 			
 		}
 		
 		// Available attributes:
 		String attrPoints = "" + sagaPlayer.getRemainingAttributePoints() + "";
-		String filler = ChatFiller.fillString(attrPoints, ChatFiller.calcLength(score));
+		String filler = ChatFiller.fillString(attrPoints, ChatFiller.calcLength(strScore));
 		filler = filler.replace(attrPoints, "");
 		
 		if(sagaPlayer.getRemainingAttributePoints() < 0){
@@ -151,28 +150,28 @@ public class StatsMessages {
 		
 		for (AbilityDefinition definition : definitions) {
 			
-			if(!definition.checkProficiencies(sagaPlayer)) continue;
-			
+			if(!definition.checkProficiencies(sagaPlayer, 1)) continue;
+
 			String name = definition.getName();
-			Integer actScore = sagaPlayer.getAbilityScore(definition.getName());
-			score = actScore + "/" + AbilityConfiguration.config().maxAbilityScore;
+			Integer score = sagaPlayer.getAbilityScore(definition.getName());
+			strScore = score + "/" + AbilityConfiguration.config().maxAbilityScore;
 			
 			// Colours:
 			Integer rawScore = sagaPlayer.getRawAbilityScore(definition.getName());
-			if(actScore > rawScore){
-				score = Colour.positive + score;
+			if(score > rawScore){
+				strScore = Colour.positive + strScore;
 			}
-			else if(actScore < rawScore){
-				score = Colour.negative + score;
+			else if(score < rawScore){
+				strScore = Colour.negative + strScore;
 			}
 			
-			table.addLine(name, score, 2);
+			table.addLine(name, strScore, 2);
 			
 		}
 		
 		// Available abilities:
 		String abilPoints = "" + sagaPlayer.getRemainingAbilityPoints();
-		filler = ChatFiller.fillString(abilPoints, ChatFiller.calcLength(score));
+		filler = ChatFiller.fillString(abilPoints, ChatFiller.calcLength(strScore));
 		filler = filler.replace(abilPoints, "");
 		
 		if(sagaPlayer.getRemainingAbilityPoints() < 0){
@@ -252,6 +251,9 @@ public class StatsMessages {
 		
 		ChatTable table = new ChatTable(new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
 		HashSet<Ability> allAbilities = sagaPlayer.getAbilities();
+		
+		// Names:
+		table.addLine(new String[]{GeneralMessages.columnTitle("ability"), GeneralMessages.columnTitle("next")});
 		
     	// Add abilities:
     	if(allAbilities.size() > 0){
@@ -412,9 +414,16 @@ public class StatsMessages {
 			result.append(GeneralMessages.attrAbrev(attribute) + " " + reqScore);
 			
 		}
-
+		
+		// Proficiencies:
+		HashSet<String> proficiencies = definition.getProfReq(score);
+		if(proficiencies.size() > 0){
+			if(result.length() > 0) result.append(", ");
+			result.append(ChatUtil.flatten(proficiencies));
+		}
+		
 		// Buildings:
-		List<String> buildings = definition.getBldgReq(score);
+		HashSet<String> buildings = definition.getBldgReq(score);
 		if(buildings.size() > 0){
 			if(result.length() > 0) result.append(", ");
 			result.append(ChatUtil.flatten(buildings));
@@ -427,13 +436,7 @@ public class StatsMessages {
 	
 	public static String restrictions(AbilityDefinition definition) {
 
-		StringBuffer result = new StringBuffer();
-		
-		// Proficiencies:
-		HashSet<String> proficiencies = definition.getProfRestr();
-		if(proficiencies.size() > 0) result.append(ChatUtil.flatten(proficiencies));
-		
-		return result.toString().replace(", ", "/");
+		return "";
 		
 	}
 	
