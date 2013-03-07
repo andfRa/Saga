@@ -743,7 +743,7 @@ public class AdminMessages {
 	public static String wikiAttributesCreole(ArrayList<Method> commandMethods) {
 		
 		
-		int step = 5;
+		int step = 10;
 		int init = 5;
 		
 		StringBuffer result = new StringBuffer();

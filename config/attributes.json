@@ -58,9 +58,9 @@
   {"name":"fortitude",
     "attack":{},
     "defend":{
-    	"MELEE_MULTIPLIER":{"x1":0,"y1":1.0,"x2":100,"y2":-0.60},
-    	"RANGED_MULTIPLIER":{"x1":0,"y1":1.0,"x2":100,"y2":-0.60},
-    	"MAGIC_MULTIPLIER":{"x1":0,"y1":1.0,"x2":100,"y2":-0.60}
+    	"MELEE_MULTIPLIER":{"x1":0,"y1":-0.0,"x2":100,"y2":-0.60},
+    	"RANGED_MULTIPLIER":{"x1":0,"y1":-0.0,"x2":100,"y2":-0.60},
+    	"MAGIC_MULTIPLIER":{"x1":0,"y1":-0.0,"x2":100,"y2":-0.60}
     },
     "passive":{},
     "handling":{},
