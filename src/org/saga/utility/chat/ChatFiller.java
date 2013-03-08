@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
-import org.saga.messages.GeneralMessages.CustomColour;
+import org.saga.messages.colours.Colour.CustomColour;
 
 public class ChatFiller {
 

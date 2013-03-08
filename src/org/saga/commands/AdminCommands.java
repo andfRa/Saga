@@ -1290,16 +1290,14 @@ public class AdminCommands {
 		
 		String wikiText = "";
 		
-		ArrayList<Method> commandMethods = new ArrayList<Method>(PermissionsDependency.getCommandMap().getCommandMethods());
-		
 		// WikiCreole:
 		if(args.hasFlag('c')){
-			wikiText = AdminMessages.wikiAttributesCreole(commandMethods);
+			wikiText = AdminMessages.wikiAttributesCreole();
 		}
 		
 		// MediaWiki:
 		else{
-			wikiText = AdminMessages.wikiAttributes(commandMethods);
+			wikiText = AdminMessages.wikiAttributes();
 		}
 			
 		Directory dir = Directory.WIKI;
@@ -1320,7 +1318,6 @@ public class AdminCommands {
 		
 	}
 	
-
 	@Command(
 			aliases = {"awriteabilities"},
 			usage = "",
@@ -1334,20 +1331,59 @@ public class AdminCommands {
 		
 		String wikiText = "";
 		
-		ArrayList<Method> commandMethods = new ArrayList<Method>(PermissionsDependency.getCommandMap().getCommandMethods());
-		
 		// WikiCreole:
 		if(args.hasFlag('c')){
-			wikiText = AdminMessages.wikiAbilitiesCreole(commandMethods);
+			wikiText = AdminMessages.wikiAbilitiesCreole();
 		}
 		
 		// MediaWiki:
 		else{
-			wikiText = AdminMessages.wikiAbilities(commandMethods);
+			wikiText = AdminMessages.wikiAbilities();
 		}
 			
 		Directory dir = Directory.WIKI;
 		String name = "abilities";
+		
+		try {
+			WriterReader.writeString(dir, name, wikiText);
+		}
+		catch (IOException e) {
+			sagaPlayer.error("Failed to write wiki " + name);
+			SagaLogger.severe(AdminCommands.class, "failed to write wiki " + name + ": " + e.getClass().getSimpleName() + ":" + e.getMessage());
+			return;
+		}
+		
+		// Inform:
+		sagaPlayer.message(AdminMessages.writeDone(dir, name));
+		
+		
+	}
+
+	@Command(
+			aliases = {"awritehelpmessages"},
+			usage = "",
+			flags = "c",
+			desc = "Write all help messages in MediaWiki format. The c flag changes the format to WikiCreole.",
+			min = 0
+	)
+	@CommandPermissions({"saga.admin.wiki.writehelpmessages"})
+	public static void writeHelpMessages(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		
+		String wikiText = "";
+		
+		// WikiCreole:
+		if(args.hasFlag('c')){
+			wikiText = AdminMessages.wikiHelpMessagesCreole();
+		}
+		
+		// MediaWiki:
+		else{
+			wikiText = AdminMessages.wikiHelpMessages();
+		}
+			
+		Directory dir = Directory.WIKI;
+		String name = "help messages";
 		
 		try {
 			WriterReader.writeString(dir, name, wikiText);

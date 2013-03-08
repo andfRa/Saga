@@ -43,7 +43,7 @@ public class StatisticsMessages {
 		
 		ChatBook book = new ChatBook("general statistics", colours);
 		
-		book.addTable(table);
+		book.add(table);
 		
 		return book.framedPage(0);
 		
@@ -101,7 +101,7 @@ public class StatisticsMessages {
 		
 		ChatBook book = new ChatBook("experience statistics", colours);
 		
-		book.addTable(table);
+		book.add(table);
 		
 		return book.framedPage(page);
 		
@@ -157,7 +157,7 @@ public class StatisticsMessages {
 		}
 			
 		table.collapse();
-		book.addTable(table);
+		book.add(table);
 		
 		return book.framedPage(page);
 		
@@ -194,7 +194,7 @@ public class StatisticsMessages {
 		}
 		
 		table.collapse();
-		book.addTable(table);
+		book.add(table);
 		
 		return book.framedPage(page);
 		
@@ -234,7 +234,7 @@ public class StatisticsMessages {
 		}
 		
 		table.collapse();
-		book.addTable(table);
+		book.add(table);
 		
 		return book.framedPage(page);
 		
@@ -328,10 +328,10 @@ public class StatisticsMessages {
 		ChatBook book = new ChatBook("x-ray indications", colours);
 		
 		// Notes:
-		book.addLine("NOTE: xray indication still needs calibrating. Don't ban without investigating!");
-		book.addLine("Use " + GeneralMessages.command("/xrayconfirm") + " when you confirmed x-ray usage.");
+		book.add("NOTE: xray indication still needs calibrating. Don't ban without investigating!");
+		book.add("Use " + GeneralMessages.command("/xrayconfirm") + " when you confirmed x-ray usage.");
 		
-		book.addLine("");
+		book.add("");
 		
 		// Columns:
 		table.addLine(new String[]{GeneralMessages.columnTitle("name"), GeneralMessages.columnTitle("ratio/ind"), GeneralMessages.columnTitle("veins")});
@@ -369,7 +369,7 @@ public class StatisticsMessages {
 		}
 		
 		table.collapse();
-		book.addTable(table);
+		book.add(table);
 		
 		return book.framedPage(0);
 		

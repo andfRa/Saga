@@ -62,19 +62,19 @@ public class StatsMessages {
 		ChatBook book = new ChatBook("stats", new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
 		
 		// Attributes and levels:
-		book.addTable(physical(sagaPlayer));
-		book.addLine("");
-		book.addTable(info(sagaPlayer));
+		book.add(physical(sagaPlayer));
+		book.add("");
+		book.add(info(sagaPlayer));
 
 		book.nextPage();
 		
 		// Abilities:
-		book.addTable(abilities(sagaPlayer));
+		book.add(abilities(sagaPlayer));
 
 		book.nextPage();
 		
 		// Invites:
-		book.addTable(invites(sagaPlayer));
+		book.add(invites(sagaPlayer));
 		
 		return book.framedPage(page);
 
@@ -449,20 +449,20 @@ public class StatsMessages {
 		ChatBook book = new ChatBook(settlement.getName() + " stats", new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
 		
 		// Claims and active members:
-		book.addTable(info(settlement));
-		book.addLine("");
-		book.addLine(GeneralMessages.tableTitle("required"));
-		book.addTable(requirements(settlement));
+		book.add(info(settlement));
+		book.add("");
+		book.add(GeneralMessages.tableTitle("required"));
+		book.add(requirements(settlement));
 		
 		book.nextPage();
 
 		// Buildings:
-		book.addTable(buildings(settlement));
+		book.add(buildings(settlement));
 
 		book.nextPage();
 		
 		// Members:
-		book.addLine(listMembers(settlement));
+		book.add(listMembers(settlement));
 		
 		return book.framedPage(page);
 
@@ -787,22 +787,22 @@ public class StatsMessages {
 		ChatBook book = new ChatBook(faction.getName() + " stats", new ColourLoop().addColor(faction.getColour2()));
 		
 		// Info:
-		book.addTable(info(faction));
+		book.add(info(faction));
 
-		book.addLine("");
+		book.add("");
 		
 		// Allies, enemies and sieges:
-		book.addTable(alliesEnemiesSieges(faction));
+		book.add(alliesEnemiesSieges(faction));
 		
 		book.nextPage();
 		
 		// Members:
-		book.addLine(listMembers(faction));
+		book.add(listMembers(faction));
 		
 		book.nextPage();
 		
 		// Claimed:
-		book.addTable(claimed(faction));
+		book.add(claimed(faction));
 		
 		return book.framedPage(page);
 
@@ -1318,7 +1318,7 @@ public class StatsMessages {
 				
 				addProgress(table, prBuilding);
 				table.collapse();
-				book.addTable(table);
+				book.add(table);
 				
 			}
 			
@@ -1328,11 +1328,11 @@ public class StatsMessages {
 				TradingPost tpost = (TradingPost) building;
 				addProgress(table, tpost);
 				table.collapse();
-				book.addTable(table);
+				book.add(table);
 				
 			}
 			
-			if(book.lines() <= 1) table.addLine(new String[]{"-","-","-"});
+			if(book.sections() <= 1) table.addLine(new String[]{"-","-","-"});
 			
 			return book.framedPage(0);
 			

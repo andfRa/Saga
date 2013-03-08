@@ -43,7 +43,35 @@ public class HelpMessages {
 	
 	// Help:
 	public static String ehelp(int page) {
+		
+		return ebook().framedPage(page);
+		
+	}
+	
+	public static String phelp(int page) {
+		
+		return pbook().framedPage(page);
+		
+	}
+	
+	public static String shelp(int page) {
+		
+		return sbook().framedPage(page);
+		
+		
+	}
+	
+	public static String fhelp(int page) {
 
+		return fbook().framedPage(page);
+		
+	}
+
+	
+	
+	// Help books:
+	public static ChatBook ebook() {
+		
 		
 		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
 		ChatBook book = new ChatBook("economy help", colours);
@@ -52,26 +80,26 @@ public class HelpMessages {
 		String warehouse = warehouse();
 
 		// Trading post:
-		book.addLine("Each settlement can set a " + tradingPost + " by using " + GeneralMessages.command("/bset") + ". " +
+		book.add("Each settlement can set a " + tradingPost + " by using " + GeneralMessages.command("/bset") + ". " +
 			"A " + tradingPost + " can have four different signs. "
 		);
 		
-		book.addLine(ExportSign.SIGN_NAME  + " and " + ImportSign.SIGN_NAME + " signs let players export/import certain items for predefined prices. ");
+		book.add(ExportSign.SIGN_NAME  + " and " + ImportSign.SIGN_NAME + " signs let players export/import certain items for predefined prices. ");
 		
-		book.addLine(SellSign.SIGN_NAME + " and " + BuySign.SIGN_NAME + " allow members to set their own prices. " +
+		book.add(SellSign.SIGN_NAME + " and " + BuySign.SIGN_NAME + " allow members to set their own prices. " +
 			"In order for the " + SellSign.SIGN_NAME + " and " + BuySign.SIGN_NAME + " signs to work, the signs must first collect items from a " + warehouse + " and " + EconomyMessages.coins() + " from the settlements bank."
 		);
 		
-		book.addLine("If players with certain roles are online, then the " + tradingPost + " automatically takes items from a " + warehouse + " and sells them. " +
+		book.add("If players with certain roles are online, then the " + tradingPost + " automatically takes items from a " + warehouse + " and sells them. " +
 			"Earned " + EconomyMessages.coins() + " are distributed."
 		);
 		
 		book.nextPage();
 		
 		// Settlement wages:
-		book.addLine("Each time someone buys from a " + tradingPost + " or when a " + tradingPost + " automatically exports items, the settlement gains " + EconomyMessages.coins() + ".");
+		book.add("Each time someone buys from a " + tradingPost + " or when a " + tradingPost + " automatically exports items, the settlement gains " + EconomyMessages.coins() + ".");
 		
-		book.addLine("");
+		book.add("");
 		
 		// Settlement distribution table:
 		ChatTable sDistTable = new ChatTable(colours);
@@ -90,16 +118,16 @@ public class HelpMessages {
 		
 		sDistTable.collapse();
 
-		book.addTable(sDistTable);
+		book.add(sDistTable);
 		
-		book.addLine("");
+		book.add("");
 		
 		// Faction wages:
-		book.addLine("Faction receives coins from owned settlements. " +
+		book.add("Faction receives coins from owned settlements. " +
 			"Earned coins are distributed between the faction and online members:"
 		);
 		
-		book.addLine("");
+		book.add("");
 		
 		// Faction distribution table:
 		ChatTable fDistTable = new ChatTable(colours);
@@ -116,42 +144,42 @@ public class HelpMessages {
 		
 		fDistTable.collapse();
 
-		book.addTable(fDistTable);
+		book.add(fDistTable);
 		
 		book.nextPage();
 		
 		// Settlement:
-		book.addLine("Use " + GeneralMessages.command("/sdeposit") + " and " + GeneralMessages.command("/swithdraw") + " to add and remove coins from the settlements bank. " +
+		book.add("Use " + GeneralMessages.command("/sdeposit") + " and " + GeneralMessages.command("/swithdraw") + " to add and remove coins from the settlements bank. " +
 			"Commands " + GeneralMessages.command("/sbuyclaims") + " and " + GeneralMessages.command("/sbuybuildpoints") + " allow to buy more claim and build points. " +
 			"The more claims the settlement has, the more new points will cost."
 		);
 
 		// Faction:
-		book.addLine(
+		book.add(
 			"Use " + GeneralMessages.command("/fdeposit") + " and " + GeneralMessages.command("/fwithdraw") + " to add and remove coins from the factions bank. " +
 			"Factions need coins to declare wars, peace and to siege settlements. " +
 			"Prices go up as the faction gets more settlements."
 		);
 		
 		if(EconomyConfiguration.config().getCapitalSetCost() > 0.0){
-			book.addLine("Setting a faction capital costs " + EconomyMessages.coins(EconomyConfiguration.config().getCapitalSetCost()) + ". ");
+			book.add("Setting a faction capital costs " + EconomyMessages.coins(EconomyConfiguration.config().getCapitalSetCost()) + ". ");
 		}
 		
 		// Creation:
 		if(EconomyConfiguration.config().getFactionCreateCost() > 0){
-			book.addLine("Creating a faction costs " + EconomyMessages.coins(EconomyConfiguration.config().getFactionCreateCost()) + ".");
+			book.add("Creating a faction costs " + EconomyMessages.coins(EconomyConfiguration.config().getFactionCreateCost()) + ".");
 		}
 		
 		if(EconomyConfiguration.config().getSettlementCreateCost() > 0){
-			book.addLine("Creating a settlement costs " + EconomyMessages.coins(EconomyConfiguration.config().getSettlementCreateCost()) + ".");
+			book.add("Creating a settlement costs " + EconomyMessages.coins(EconomyConfiguration.config().getSettlementCreateCost()) + ".");
 		}
 		
-		return book.framedPage(page);
+		return book;
 		
 		
 	}
 	
-	public static String phelp(int page) {
+	public static ChatBook pbook() {
 		
 		
 		ColourLoop messageColor = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
@@ -159,7 +187,7 @@ public class HelpMessages {
 
 		// Attributes:
 		String trainingCamp = trainingCamp();
-		book.addLine( 
+		book.add( 
 			"Players gain attribute points from killing creatures, getting crafting materials and pvp. " +
 			"Attribute points can be used to increase attribute scores. " +
 			"Higher scores provide better physical bonuses. " +
@@ -168,7 +196,7 @@ public class HelpMessages {
 			"Use " + GeneralMessages.command("/stats") + " to see your attributes."
 		);
 		
-		book.addLine("");
+		book.add("");
 		
 		// Attribute table:
 		ChatTable attrTable = new ChatTable(messageColor);
@@ -184,12 +212,12 @@ public class HelpMessages {
 			attrTable.addLine("-", "-", 0);
 		}
 		attrTable.collapse();
-		book.addTable(attrTable);
+		book.add(attrTable);
 		
 		book.nextPage();
 		
 		// Ability descriptions:
-		book.addLine(
+		book.add(
 			"Ability points are gained the same way attribute points. " +
 			"Ability points are used to unlock new abilities and upgrade existing ones. " +
 			"Abilities can be upgraded by a " + AbilitySign.SIGN_NAME + " sign. " +
@@ -198,7 +226,7 @@ public class HelpMessages {
 			"Use " + GeneralMessages.command("/pabilityinfo") + " to see ability attribute requirements."
 		);
 		
-		book.addLine("");
+		book.add("");
 		
 		// Ability description table:
 		ChatTable abilityDescTable = new ChatTable(messageColor);
@@ -214,17 +242,17 @@ public class HelpMessages {
 			abilityDescTable.addLine(new String[]{"-", "-"});
 		}
 		abilityDescTable.collapse();
-		book.addTable(abilityDescTable);
+		book.add(abilityDescTable);
 		
 		book.nextPage();
 		
 		// Ability activation:
-		book.addLine("There are active and passive abilities. " +
+		book.add("There are active and passive abilities. " +
 			"Active abilities can be activated by clicking with a certain item. " +
 			"Passive abilities are always active and are triggered by a certain action."
 		);
 		
-		book.addLine("");
+		book.add("");
 		
 		// Ability table:
 		ChatTable abilityUsageTable = new ChatTable(messageColor);
@@ -239,7 +267,7 @@ public class HelpMessages {
 			abilityUsageTable.addLine(new String[]{"-", "-"});
 		}
 		abilityUsageTable.collapse();
-		book.addTable(abilityUsageTable);
+		book.add(abilityUsageTable);
 		
 		if(GeneralConfiguration.config().isRuneEnabled()){
 			
@@ -249,7 +277,7 @@ public class HelpMessages {
 			String rechargeCost = "";
 			String academy = academy();
 			if(EconomyConfiguration.config().guardianRuneRechargeCost > 0) rechargeCost = "Recharge costs " + EconomyMessages.coins(EconomyConfiguration.config().guardianRuneRechargeCost) + ". ";
-			book.addLine("The guardian rune will restore all carried items after death. " +
+			book.add("The guardian rune will restore all carried items after death. " +
 				"The rune needs to be recharged after every use. " +
 				"Recharging is done by interacting with a " + GuardianRuneSign.SIGN_NAME + " sign. " + 
 				"Recharge signs can only be set at a " + academy + " building. " +
@@ -259,19 +287,19 @@ public class HelpMessages {
 			
 		}
 		
-		return book.framedPage(page);
+		return book;
 		
 		
 	}
 	
-	public static String shelp(int page) {
+	public static ChatBook sbook() {
 		
 		
 		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
 		ChatBook book = new ChatBook("settlement help", colours);
 		
 		// Creation and claiming:
-		book.addLine("A settlement will protect your land. " +
+		book.add("A settlement will protect your land. " +
 			"Use " + GeneralMessages.command("/ssettle") + " and " + GeneralMessages.command("/sclaim") + " to create the settlement and claim more land. " +
 			"Land is claimed in 16x16 chunks. " +
 			"Use " + GeneralMessages.command("/sunclaim") + " to abandon land. " +
@@ -279,20 +307,20 @@ public class HelpMessages {
 		);
 		
 		// Dissolve:
-		book.addLine("Use " + GeneralMessages.command("/sdissolve") + " to dissolve a settlement. " +
+		book.add("Use " + GeneralMessages.command("/sdissolve") + " to dissolve a settlement. " +
 			"Settlements are dissolved automatically when there are no members or claimed chunks left. " +
 			"Settlements with at least " + SettlementConfiguration.config().getNoDeleteSize() + " claimed chunks or with the " + BundleToggleable.NO_DELETE + " option can only be dissolved by using the " + GeneralMessages.command("/sdissolve") + " command with a special flag."
 		);
 		
 		// Claims:
-		book.addLine("Available claims are gained over time. " +
+		book.add("Available claims are gained over time. " +
 			"The speed at which they are gained is determined by the number of online members. " +
 			"A certain amount of members is required for the settlement to gain more claims. " +
 			"Use " + GeneralMessages.command("/sstats") + " to see settlement claims, requirements and other stats."
 		);
 		
 		// Invite:
-		book.addLine("Use " + GeneralMessages.command("/sinvite") + " to invite another player to the settlement. " +
+		book.add("Use " + GeneralMessages.command("/sinvite") + " to invite another player to the settlement. " +
 			"Settlement invitations can be accepted with " + GeneralMessages.command("/saccept") + " and declined with " + GeneralMessages.command("/sdecline") + ". " +
 			"A player can only be in a single settlement. " +
 			"Use " + GeneralMessages.command("/settlementquit") + " to leave a settlement. " +
@@ -303,9 +331,9 @@ public class HelpMessages {
 		if(bldgReq.size() > 0){
 			
 			// Building requirements:
-			book.addLine("At some point, certain building will be required for the settlement to gain more claims.");
+			book.add("At some point, certain building will be required for the settlement to gain more claims.");
 			
-			book.addLine("");
+			book.add("");
 			
 			// Requirements table:
 			ChatTable bldgsReqTable = new ChatTable(colours);
@@ -314,21 +342,21 @@ public class HelpMessages {
 				bldgsReqTable.addLine(new String[]{req.getKey(), req.getValue().toString()});
 			}
 			bldgsReqTable.collapse();
-			book.addTable(bldgsReqTable);
+			book.add(bldgsReqTable);
 			
 		}
 		
 		book.nextPage();
 		
 		// Roles:
-		book.addLine("Use " + GeneralMessages.command("/ssetrole") + " to assign a role to a member. " +
+		book.add("Use " + GeneralMessages.command("/ssetrole") + " to assign a role to a member. " +
 			"Each role gives certain attribute bonuses. " +
 			"The amount of available roles increases when certain buildings are set. " +
 			"Roles also determine which actions and commands are permitted. " +
 			"Some abilities are only available for certain roles."
 		);
 		
-		book.addLine("");
+		book.add("");
 
 		// Role table:
 		ChatTable rolesTable = new ChatTable(colours);
@@ -357,18 +385,18 @@ public class HelpMessages {
 		}
 		
 		rolesTable.collapse();
-		book.addTable(rolesTable);
+		book.add(rolesTable);
 		
 		book.nextPage();
 		
 		// Buildings:
-		book.addLine("Use " + GeneralMessages.command("/bset") + " to set a building on the chunk and " + GeneralMessages.command("/bremove") + " to remove it. " +
+		book.add("Use " + GeneralMessages.command("/bset") + " to set a building on the chunk and " + GeneralMessages.command("/bremove") + " to remove it. " +
 			"Each building requires a certain amount of build points. " +
 			"Build points are gained over time. " +
 			"More buildings become available when more land is claimed. "
 		);
 		
-		book.addLine("");
+		book.add("");
 
 		// Buildings table:
 		ChatTable bldgsTable = new ChatTable(colours);
@@ -396,12 +424,12 @@ public class HelpMessages {
 		}
 		
 		bldgsTable.collapse();
-		book.addTable(bldgsTable);
+		book.add(bldgsTable);
 		
 		book.nextPage();
 
 		// Storage:
-		book.addLine("Some buildings can produce resources. " +
+		book.add("Some buildings can produce resources. " +
 			"Resources are placed in storage areas, which can be added and removed with " + GeneralMessages.command("/baddstorage") + " and " + GeneralMessages.command("/bremovestorage") + ". " +
 			"Blocks (stone, wood, ores etc) are placed directly to storage areas. " +
 			"Add chests to storage areas to store items (food, swords, ingots etc). " +
@@ -414,20 +442,20 @@ public class HelpMessages {
 		book.nextPage();
 
 		// Other:
-		book.addLine("To prevent griefing from settlement members, restrict building by setting homes with " + GeneralMessages.command("/bset home") + ". " +
+		book.add("To prevent griefing from settlement members, restrict building by setting homes with " + GeneralMessages.command("/bset home") + ". " +
 			"Only the owner and residents can build in homes. " +
 			"Residents can be added and removed with " + GeneralMessages.command("/baddresident") + " and " + GeneralMessages.command("/bremoveresident") + ". "
 		);
 		
-		book.addLine("Use " + GeneralMessages.command("/srename") + " to rename the settlement.");
-		book.addLine("Use " + GeneralMessages.command("/sresign") + " to declare someone else as the settlement owner.");
+		book.add("Use " + GeneralMessages.command("/srename") + " to rename the settlement.");
+		book.add("Use " + GeneralMessages.command("/sresign") + " to declare someone else as the settlement owner.");
 		
-		return book.framedPage(page);
+		return book;
 		
 		
 	}
 	
-	public static String fhelp(int page) {
+	public static ChatBook fbook() {
 
 		
 		ColourLoop colours = new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2);
@@ -446,7 +474,7 @@ public class HelpMessages {
 		}
 		
 		// Creation:
-		book.addLine(pvp +
+		book.add(pvp +
 			"To create a faction use " + GeneralMessages.command("/fcreate") + ". " +
 			"New members can be invited with " + GeneralMessages.command("/finvite") + ". " +
 			"Use " + GeneralMessages.command("/faccept") + " and " + GeneralMessages.command("/fdecline") + " to accept or decline faction invitations. " +
@@ -459,7 +487,7 @@ public class HelpMessages {
 		
 		// Sieges:
 		Duration prepare = new Duration(FactionConfiguration.config().getSiegePrepareMinutes()*60000);
-		book.addLine(
+		book.add(
 			"Factions can siege settlements. To declare a siege use " + GeneralMessages.command("/fsiege") + " command. " + 
 			"After a siege is declared, factions have " + GeneralMessages.durationDHM(prepare) + " to prepare. " +
 			"Once a siege starts, both attacking and defending faction members must stand in the settlement area. " + 
@@ -468,12 +496,12 @@ public class HelpMessages {
 			"If the bar reaches all the way to the left then the siege/defence has failed. "
 		);
 		
-		book.addLine("A owned settlement provides taxes, more ranks and access to its " + GeneralMessages.command("/sspawn") + " command.");
+		book.add("A owned settlement provides taxes, more ranks and access to its " + GeneralMessages.command("/sspawn") + " command.");
 		
 		book.nextPage();
 		
 		// Affiliation:
-		book.addLine(
+		book.add(
 			"Commands " + GeneralMessages.command("/ssetaffiliation") + " and " + GeneralMessages.command("/sremoveaffiliation") + " allow the settlement members to set the affiliation of the settlement. " +
 			"If the settlement is not owned, then for the affiliated faction, siege is instantaneous. " +
 			"When the settlement is owned by a faction, then affiliation provides bonuses/penalties during sieges."
@@ -483,7 +511,7 @@ public class HelpMessages {
 		String warReqForSiege = "";
 		if(FactionConfiguration.config().isSiegeWarRequired()) warReqForSiege = "Factions can't siege each others settlements unless a war is declared. ";
 		
-		book.addLine(
+		book.add(
 			"Factions can declare war with " + GeneralMessages.command("/fdeclarewar") + " command and peace with " + GeneralMessages.command("/fdeclarepeace") + " command. " +
 			"After a peace is declared, factions can't start a war with each other for certain amount of time. " +
 			warReqForSiege
@@ -492,14 +520,14 @@ public class HelpMessages {
 		book.nextPage();
 		
 		// Ranks:
-		book.addLine("Use " + GeneralMessages.command("/fsetrank") + " to assign a rank to a member. " +
+		book.add("Use " + GeneralMessages.command("/fsetrank") + " to assign a rank to a member. " +
 			"Each rank gives certain attribute bonuses. " +
 			"The amount of available ranks increases when the faction claims settlements that have certain buildings. " +
 			"Ranks also determine which commands are permitted. " +
 			"Some abilities are only available to certain ranks."
 		);
 		
-		book.addLine("");
+		book.add("");
 
 		// Rank table:
 		ChatTable rolesTable = new ChatTable(colours);
@@ -528,21 +556,21 @@ public class HelpMessages {
 		}
 		
 		rolesTable.collapse();
-		book.addTable(rolesTable);
+		book.add(rolesTable);
 		
 		book.nextPage();
 
 		// Chat:
-		book.addLine("Once the faction is formed, members gain access to faction chat " + GeneralMessages.command("/f") + ". ");
+		book.add("Once the faction is formed, members gain access to faction chat " + GeneralMessages.command("/f") + ". ");
 
 		// Colours:
-		book.addLine("Faction colours can be customised with " + GeneralMessages.command("/fsetcolor1") + " and " + GeneralMessages.command("/fsetcolor2") + ".");
+		book.add("Faction colours can be customised with " + GeneralMessages.command("/fsetcolor1") + " and " + GeneralMessages.command("/fsetcolor2") + ".");
 
 		// Rename:
-		book.addLine("To rename the faction use " + GeneralMessages.command("/frename") + ".");
+		book.add("To rename the faction use " + GeneralMessages.command("/frename") + ".");
 
 		// Capital:
-		book.addLine(
+		book.add(
 			"A faction can set and remove its capital settlement with " + GeneralMessages.command("/fsetcapital") + " and " + GeneralMessages.command("/fremovecapital") + ". " +
 			"Command " + GeneralMessages.command("/fspawn") + " teleports to the capital settlement."
 		);
@@ -550,18 +578,18 @@ public class HelpMessages {
 		book.nextPage();
 
 		// Alliances:
-		book.addLine("Factions can form alliances. " +
+		book.add("Factions can form alliances. " +
 			"Allied factions share faction chat and can't attack each other. " +
 			"An alliance request can be requested with " + GeneralMessages.command("/frequestally") + ". " +
 			"Alliance requests can be accepted and declined with " + GeneralMessages.command("/facceptally") + " and " + GeneralMessages.command("/fdeclineally") + ". " +
 			"An alliance can be broken with " + GeneralMessages.command("/fremoveally") + "."
 		);
 
-		return book.framedPage(page);
+		return book;
 		
 		
 	}
-
+	
 	
 	
 	// Buildings:
@@ -635,9 +663,9 @@ public class HelpMessages {
 		ChatBook book = new ChatBook(definition.getName() + " ability information", colours);
 		
 		// Description:
-		book.addLine(ChatUtil.senctence(definition.getFullDescription()));
+		book.add(ChatUtil.senctence(definition.getFullDescription()));
 		
-		book.addLine("");
+		book.add("");
 
 		// Ability upgrade table:
 		ChatTable upgrTable = new ChatTable(colours);
@@ -663,12 +691,12 @@ public class HelpMessages {
 		}
 		
 		upgrTable.collapse();
-		book.addTable(upgrTable);
+		book.add(upgrTable);
 		
-		book.addLine("");
+		book.add("");
 
 		// Usage:
-		book.addLine(GeneralMessages.columnTitle("usage:") + " " + definition.getUsage());
+		book.add(GeneralMessages.columnTitle("usage:") + " " + definition.getUsage());
 		
 		
 		return book.framedPage(0);

@@ -9,9 +9,9 @@ public class ChatTable {
 
 	
 	/**
-	 * Book pages.
+	 * Table cells.
 	 */
-	public ArrayList<ArrayList<String>> table = new ArrayList<ArrayList<String>>();
+	public ArrayList<ArrayList<String>> cells = new ArrayList<ArrayList<String>>();
 	
 	/**
 	 * Selected column.
@@ -40,7 +40,7 @@ public class ChatTable {
 		this.colours = colours;
 		
 		this.columnIndex = 0;
-		table.add(new ArrayList<String>());
+		cells.add(new ArrayList<String>());
 		
 	}
 	
@@ -55,7 +55,7 @@ public class ChatTable {
 	 */
 	private Double getColumnWidth(int i) {
 
-		if(customWidths == null || i >= customWidths.size() || i < 0) return ChatFiller.CHAT_WIDTH / table.size();
+		if(customWidths == null || i >= customWidths.size() || i < 0) return ChatFiller.CHAT_WIDTH / cells.size();
 		
 		return customWidths.get(i);
 		
@@ -68,7 +68,7 @@ public class ChatTable {
 	 */
 	public Double[] getColumnWidths() {
 
-		Double[] widths = new Double[table.size()];
+		Double[] widths = new Double[cells.size()];
 		
 		for (int i = 0; i < widths.length; i++) {
 			widths[i] = getColumnWidth(i);
@@ -111,8 +111,8 @@ public class ChatTable {
 		
 		customWidths = new ArrayList<Double>();
 		
-		for (int i = 0; i <= table.size(); i++) {
-			customWidths.add(customWidth/table.size());
+		for (int i = 0; i <= cells.size(); i++) {
+			customWidths.add(customWidth/cells.size());
 		}
 
 	}
@@ -144,7 +144,7 @@ public class ChatTable {
 		
 		customWidths = new ArrayList<Double>();
 		
-		for (ArrayList<String> column : table) {
+		for (ArrayList<String> column : cells) {
 			
 			double maxWidth = 0;
 			
@@ -173,7 +173,7 @@ public class ChatTable {
 	 */
 	public void addLine(String line) {
 		
-		ArrayList<String> column = table.get(columnIndex);
+		ArrayList<String> column = cells.get(columnIndex);
 		
 		column.add(line);
 		
@@ -187,11 +187,11 @@ public class ChatTable {
 	 */
 	public void addLine(String line, Integer index) {
 		
-		while(table.size() <= index){
-			table.add(new ArrayList<String>());
+		while(cells.size() <= index){
+			cells.add(new ArrayList<String>());
 		}
 		
-		ArrayList<String> column = table.get(index);
+		ArrayList<String> column = cells.get(index);
 		
 		column.add(line);
 		
@@ -234,7 +234,7 @@ public class ChatTable {
 	public int size() {
 
 		int size = 0;
-		for (ArrayList<String> column : table) {
+		for (ArrayList<String> column : cells) {
 			size += column.size();
 		}
 		
@@ -256,7 +256,7 @@ public class ChatTable {
 		
 		// Table size:
 		int rows = 0;
-		for (ArrayList<String> column : table) {
+		for (ArrayList<String> column : cells) {
 			if(column.size() > rows) rows = column.size();
 		}
 		
@@ -266,9 +266,9 @@ public class ChatTable {
 			String row = "";
 			
 			// All columns:
-			for (int colind = 0; colind < table.size(); colind++) {
+			for (int colind = 0; colind < cells.size(); colind++) {
 				
-				ArrayList<String> column = table.get(colind);
+				ArrayList<String> column = cells.get(colind);
 				
 				if(rowind < column.size()){
 					
@@ -292,17 +292,17 @@ public class ChatTable {
 	}
 	
 	/**
-	 * Gets all cells with correct widths.
+	 * Gets formated contents.
 	 * 
-	 * @return table
+	 * @return contents
 	 */
-	public String[][] getTable() {
+	public String[][] getContents() {
 		
 		
 		int rows = 0;
-		int cols = table.size();
+		int cols = cells.size();
 		
-		for (ArrayList<String> column : table) {
+		for (ArrayList<String> column : cells) {
 			if(rows < column.size()) rows = column.size();
 		}
 		
@@ -314,10 +314,46 @@ public class ChatTable {
 			
 			for (int row = 0; row < rows; row++) {
 				
-				if(row < table.get(col).size()){
-					result[row][col] = ChatFiller.fillString(table.get(col).get(row), width);
+				if(row < cells.get(col).size()){
+					result[row][col] = ChatFiller.fillString(cells.get(col).get(row), width);
 				}else{
 					result[row][col] = ChatFiller.fillString("", width);
+				}
+				
+			}
+			
+		}
+		
+		return result;
+		
+		
+	}
+	
+	/**
+	 * Gets raw contents.
+	 * 
+	 * @return contents
+	 */
+	public String[][] getRawContents() {
+		
+		
+		int rows = 0;
+		int cols = cells.size();
+		
+		for (ArrayList<String> column : cells) {
+			if(rows < column.size()) rows = column.size();
+		}
+		
+		String[][] result = new String[rows][cols];
+		
+		for (int col = 0; col < cols; col++) {
+			
+			for (int row = 0; row < rows; row++) {
+				
+				if(row < cells.get(col).size()){
+					result[row][col] = cells.get(col).get(row);
+				}else{
+					result[row][col] = "";
 				}
 				
 			}
@@ -345,7 +381,7 @@ public class ChatTable {
 		
 		// Table size:
 		int rows = 0;
-		for (ArrayList<String> column : table) {
+		for (ArrayList<String> column : cells) {
 			if(column.size() > rows) rows = column.size();
 		}
 		
@@ -357,9 +393,9 @@ public class ChatTable {
 			
 			// All columns:
 			ChatColor elementColor = colours.nextColour();
-			for (int colInd = 0; colInd < table.size(); colInd++) {
+			for (int colInd = 0; colInd < cells.size(); colInd++) {
 				
-				ArrayList<String> column = table.get(colInd);
+				ArrayList<String> column = cells.get(colInd);
 				
 				if(row < column.size()){
 					

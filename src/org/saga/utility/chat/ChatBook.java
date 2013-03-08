@@ -1,6 +1,7 @@
 package org.saga.utility.chat;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 
 import org.bukkit.ChatColor;
 import org.saga.messages.GeneralMessages;
@@ -17,6 +18,12 @@ public class ChatBook {
 	
 	
 	/**
+	 * Table indication.
+	 */
+	public final static Character TABLE = '\u03a4';
+	
+	
+	/**
 	 * Book title.
 	 */
 	private String title;
@@ -27,9 +34,14 @@ public class ChatBook {
 	private double width;
 	
 	/**
-	 * Book lines.
+	 * Section.
 	 */
-	private ArrayList<String> lines = new ArrayList<String>();
+	private ArrayList<String> sections = new ArrayList<String>();
+	
+	/**
+	 * All tables.
+	 */
+	private Hashtable<String, ChatTable> tables = new Hashtable<String, ChatTable>();
 	
 	/**
 	 * Message colours.
@@ -44,7 +56,7 @@ public class ChatBook {
 	 * 
 	 * @param title book title
 	 * @param width book width of total chat width
-	 * @param colours book line colours
+	 * @param colours book sect colours
 	 */
 	public ChatBook(String title, Double width, ColourLoop colours) {
 		
@@ -58,7 +70,7 @@ public class ChatBook {
 	 * Creates a book.
 	 * 
 	 * @param title book title
-	 * @param colours book line colours
+	 * @param colours book sect colours
 	 */
 	public ChatBook(String title, ColourLoop colours) {
 		this(title, 1.0, colours);
@@ -66,29 +78,29 @@ public class ChatBook {
 	
 	
 	
-	// Content:
+	// Fill:
 	/**
-	 * Adds line.
+	 * Adds a section.
 	 * 
 	 * @param line line
-	 * @param allowBreak true if breaking into lines additional lines is allowed
+	 * @param allowBreak true if breaking into sections is allowed
 	 */
-	public void addLine(String line, boolean allowBreak) {
+	public void add(String line, boolean allowBreak) {
 
 		
-		// Multiple lines:
+		// Multiple sections:
 		if(line.contains("\n")){
 			
-			String[] lines = line.split("\n");
-			for (int i = 0; i < lines.length; i++) {
-				addLine(lines[i]);
+			String[] sects = line.split("\n");
+			for (int i = 0; i < sects.length; i++) {
+				add(sects[i]);
 			}
 			
 			return;
 			
 		}
 		
-		// Long line:
+		// Long sections:
 		if(allowBreak && ChatFiller.MAX_LENGTH * line.length() > ChatFramer.MAX_CONTENTS_WIDTH){
 			
 			String[] words = line.split(" ");
@@ -103,7 +115,7 @@ public class ChatBook {
 				// Flush:
 				if(length + wordLength > ChatFramer.MAX_CONTENTS_WIDTH){
 					
-					lines.add(colours.nextColour() + text.toString());
+					sections.add(colours.nextColour() + text.toString());
 					
 					length = 0.0;
 					text = new StringBuffer();
@@ -118,51 +130,39 @@ public class ChatBook {
 			}
 			
 			// Flush remaining:
-			if(length > 0) lines.add(colours.nextColour() + text.toString());
+			if(length > 0) sections.add(colours.nextColour() + text.toString());
 			
 		}
 		
-		// Short line:
+		// Short sect:
 		else{
-			lines.add(colours.nextColour() + line);
+			sections.add(colours.nextColour() + line);
 		}
 		
 		
 	}
 	
 	/**
-	 * Adds line. The line can be broken in to additional lines.
+	 * Adds a section.
 	 * 
-	 * @param line line
+	 * @param sect section
 	 */
-	public void addLine(String line) {
-		addLine(line, true);
+	public void add(String sect) {
+		add(sect, true);
 	}
-
-
+	
 	/**
 	 * Adds a table to the book.
 	 * 
 	 * @param table table
 	 */
-	public void addTable(ChatTable table) {
+	public void add(ChatTable table) {
 
-		String[][] contents = table.getTable();
+		int index = tables.size();
+		String key = TABLE.toString() + index;
 		
-		for (int row = 0; row < contents.length; row++) {
-			
-			StringBuffer line = new StringBuffer();
-			ChatColor colour = colours.nextColour();
-			
-			for (int col = 0; col < contents[row].length; col++) {
-				
-				line.append(colour + contents[row][col]);
-				
-			}
-			
-			lines.add(line.toString());
-			
-		}
+		sections.add(key);
+		tables.put(key, table);
 		
 	}
 
@@ -171,13 +171,13 @@ public class ChatBook {
 	 */
 	public void nextPage() {
 
-		lines.add(PAGE_BREAK);
+		sections.add(PAGE_BREAK);
 		
 	}
 	
 	
 	
-	// Creation:
+	// Create:
 	/**
 	 * Creates a page.
 	 * 
@@ -196,9 +196,9 @@ public class ChatBook {
 		
 		int currPage = 0;
 		
-		for (String line : lines) {
+		for (String sect : sections) {
 			
-			if(line.equals(PAGE_BREAK)){
+			if(sect.equals(PAGE_BREAK)){
 				currPage++;
 				continue;
 			}
@@ -208,7 +208,18 @@ public class ChatBook {
 			
 			if(result.length() > 0) result.append("\n");
 			
-			result.append(line);
+			// Table:
+			if(sect.startsWith(TABLE.toString())){
+				
+				ChatTable table = tables.get(sect);
+				if(table == null) result.append(sect);
+				result.append(createTable(table));
+				
+			}
+			// Section:
+			else{
+				result.append(sect);
+			}
 			
 		}
 		
@@ -240,7 +251,16 @@ public class ChatBook {
 		return ChatFramer.frame(title, content, Colour.frame, width);
 		
 	}
-
+	
+	/**
+	 * Gets the section count
+	 * 
+	 * @return section count
+	 */
+	public Integer sections() {
+		return sections.size();
+	}
+	
 	/**
 	 * Gets the last page.
 	 * 
@@ -251,8 +271,8 @@ public class ChatBook {
 		
 		Integer last = 0;
 		
-		for (String line : lines) {
-			if(line.equals(PAGE_BREAK)) last++;
+		for (String sect : sections) {
+			if(sect.equals(PAGE_BREAK)) last++;
 		}
 		
 		return last;
@@ -261,13 +281,70 @@ public class ChatBook {
 	}
 	
 	/**
-	 * Gets the line count
+	 * Converts a table to a String.
 	 * 
-	 * @return line count
+	 * @param table table
+	 * @return table in string form
 	 */
-	public Integer lines() {
-		return lines.size();
+	private String createTable(ChatTable table) {
+		
+		
+		StringBuffer rows = new StringBuffer();
+		
+		String[][] contents = table.getContents();
+		
+		for (int row = 0; row < contents.length; row++) {
+			
+			StringBuffer sect = new StringBuffer();
+			ChatColor colour = colours.nextColour();
+			
+			for (int col = 0; col < contents[row].length; col++) {
+				
+				sect.append(colour + contents[row][col]);
+				
+			}
+			
+			if(row != 0) rows.append("\n");
+			rows.append(sect.toString());
+			
+		}
+		
+		return rows.toString();
+		
+		
 	}
-
+	
+	
+	// Elements:
+	/**
+	 * Gets the title.
+	 * 
+	 * @return title
+	 */
+	public String getTitle() {
+		return title;
+	}
+	
+	/**
+	 * Gets a table with the given key.
+	 * 
+	 * @param key key, format '{@link #TABLE} + integer'
+	 * @return
+	 */
+	public ChatTable getTable(String key) {
+		return tables.get(key);
+	}
+	
+	/**
+	 * Gets a section.
+	 * 
+	 * @param index index
+	 * @return section
+	 * @throws IndexOutOfBoundsException if index is out of bounds
+	 */
+	public String getSection(int index) {
+		return sections.get(index);
+	}
+	
 	
 }
