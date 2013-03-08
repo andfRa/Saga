@@ -1,5 +1,7 @@
 package org.saga.messages.colours;
 
+import java.util.Stack;
+
 import org.bukkit.ChatColor;
 
 public class Colour {
@@ -25,11 +27,11 @@ public class Colour {
 	
 	
 	
-	public enum CustomColour{
+	public enum CustomColour {
 		
 		
-		PREVIOUS_COLOR('x'),
-		PREVIOUS_FORMAT('x');
+		PREVIOUS_COLOR('\u2193'),
+		NORMAL_FORMAT('\u21D3');
 		
 		private char ch;
 		
@@ -46,30 +48,45 @@ public class Colour {
 		 */
 		public static String process(String message){
 			
-			ChatColor color = null;
+			StringBuffer result = new StringBuffer(message.length());
+			Stack<ChatColor> cols = new Stack<ChatColor>();
 			
-			// Find default colour:
-			char[] chmessage = message.toCharArray();
-			for (int i = 1; i < chmessage.length; i++) {
+			for (int i = 0; i < message.length(); i++) {
 				
-				if(chmessage[i - 1] == ChatColor.COLOR_CHAR){
-					color = ChatColor.getByChar(chmessage[i]);
+				char c = message.charAt(i);
+				
+				// Last colour:
+				if(c == ChatColor.COLOR_CHAR && i + 1 < message.length()){
 					
-					if(color != null && color.isColor()) break;
-					else color = null;
+					ChatColor nextCol = ChatColor.getByChar(message.charAt(i+1));
+					if(nextCol != null && nextCol.isColor()) cols.push(nextCol);
 					
 				}
 				
+				// Previous colour:
+				if(c == PREVIOUS_COLOR.ch){
+					
+					cols.pop();
+					if(!cols.isEmpty()) result.append(cols.pop());
+					continue;
+					
+				}
+				
+				// Previous format:
+				if(c == NORMAL_FORMAT.ch){
+					
+					result.append(ChatColor.RESET);
+					if(!cols.isEmpty()) result.append(cols.peek());
+					continue;
+					
+				}
+				
+				// Text:
+				result.append(c);
+				
 			}
 			
-			// Reset colours:
-			if(color != null){
-				message = message.replace(PREVIOUS_COLOR.toString(), color.toString());
-			}else{
-				message = message.replace(PREVIOUS_COLOR.toString(), "");
-			}
-			
-			return message;
+			return result.toString();
 			
 		}
 		
@@ -87,11 +104,18 @@ public class Colour {
 				
 				char c = message.charAt(i);
 				
+				// Custom colours:
+				if(c == PREVIOUS_COLOR.ch) continue;
+				if(c == NORMAL_FORMAT.ch) continue;
+				
+				// Normal colours:
 				if(c == ChatColor.COLOR_CHAR){
 					i++;
-				}else{
-					result.append(c);
+					continue;
 				}
+				
+				// Text:
+				result.append(c);
 				
 			}
 			
@@ -101,17 +125,22 @@ public class Colour {
 		
 		
 		/**
+		 * Gets the associated character.
+		 * 
+		 * @return character
+		 */
+		public char getChar() {
+			return ch;
+		}
+		
+		/**
 		 * Creates custom colour in string format.
 		 * 
 		 * @return custom colour in string format
 		 */
 		@Override
 		public String toString() {
-			
-			if(this == PREVIOUS_FORMAT) return ChatColor.RESET.toString() + PREVIOUS_COLOR.toString();
-			
-			return new String(new char[]{ChatColor.COLOR_CHAR, ch});
-			
+			return new String(new char[]{ch});
 		}
 		
 		

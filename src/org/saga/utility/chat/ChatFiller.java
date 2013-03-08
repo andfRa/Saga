@@ -96,6 +96,9 @@ public class ChatFiller {
 			
 			put('\u2591', 2.0);
 			
+			put(CustomColour.PREVIOUS_COLOR.getChar(), 0.0);
+			put(CustomColour.NORMAL_FORMAT.getChar(), 0.0);
+			
 		}
 	};
 	
@@ -254,10 +257,10 @@ public class ChatFiller {
 //		str = str.replace("\u278C", ChatColor.DARK_GRAY + "\"");
 		
 		str = str.replace("\u278A", ChatColor.DARK_GRAY + "`");
-		str = str.replace("\u278B", ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "`" + CustomColour.PREVIOUS_FORMAT);
-		str = str.replace("\u278C", ChatColor.DARK_GRAY + "" + ChatColor.BOLD + " " + CustomColour.PREVIOUS_FORMAT);
+		str = str.replace("\u278B", ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "`" + CustomColour.NORMAL_FORMAT);
+		str = str.replace("\u278C", ChatColor.DARK_GRAY + "" + ChatColor.BOLD + " " + CustomColour.NORMAL_FORMAT);
 		
-		return CustomColour.process(str);
+		return str;
 		
 	}
 	
