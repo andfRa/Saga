@@ -84,9 +84,9 @@ public class HelpMessages {
 			"A " + tradingPost + " can have four different signs. "
 		);
 		
-		book.add(ExportSign.SIGN_NAME  + " and " + ImportSign.SIGN_NAME + " signs let players export/import certain items for predefined prices. ");
+		book.add("Signs " + ExportSign.SIGN_NAME  + " and " + ImportSign.SIGN_NAME + " let players export/import certain items for predefined prices. ");
 		
-		book.add(SellSign.SIGN_NAME + " and " + BuySign.SIGN_NAME + " allow members to set their own prices. " +
+		book.add("Signs " + SellSign.SIGN_NAME + " and " + BuySign.SIGN_NAME + " allow members to set their own prices. " +
 			"In order for the " + SellSign.SIGN_NAME + " and " + BuySign.SIGN_NAME + " signs to work, the signs must first collect items from a " + warehouse + " and " + EconomyMessages.coins() + " from the settlements bank."
 		);
 		
@@ -350,7 +350,7 @@ public class HelpMessages {
 		
 		// Roles:
 		book.add("Use " + GeneralMessages.command("/ssetrole") + " to assign a role to a member. " +
-			"Each role gives certain attribute bonuses. " +
+			"Roles give certain attribute bonuses and increased caps. " +
 			"The amount of available roles increases when certain buildings are set. " +
 			"Roles also determine which actions and commands are permitted. " +
 			"Some abilities are only available for certain roles."
@@ -363,7 +363,7 @@ public class HelpMessages {
 		ArrayList<ProficiencyDefinition> roles = ProficiencyConfiguration.config().getDefinitions(ProficiencyType.ROLE);
 			
 		// Titles:
-		rolesTable.addLine(new String[]{GeneralMessages.columnTitle("role"), GeneralMessages.columnTitle("bonus")});
+		rolesTable.addLine(new String[]{GeneralMessages.columnTitle("role"), GeneralMessages.columnTitle("bonus"), GeneralMessages.columnTitle("cap")});
 
 		// Values:
 		if(roles.size() != 0){
@@ -371,16 +371,18 @@ public class HelpMessages {
 			for (ProficiencyDefinition definition : roles) {
 				
 				String roleName = definition.getName();
-				String bonuses = bonuses(definition);
-				if(bonuses.length() == 0) bonuses = "none";
+				String bonus = bonuses(definition);
+				String cap = caps(definition);
+				if(bonus.length() == 0) bonus = "-";
+				if(cap.length() == 0) cap = "-";
 				
-				rolesTable.addLine(new String[]{roleName, bonuses});
+				rolesTable.addLine(new String[]{roleName, bonus, cap});
 				
 			}
 
 		}else{
 			
-			rolesTable.addLine(new String[]{"-", "-"});
+			rolesTable.addLine(new String[]{"-", "-", "-"});
 
 		}
 		
@@ -521,7 +523,7 @@ public class HelpMessages {
 		
 		// Ranks:
 		book.add("Use " + GeneralMessages.command("/fsetrank") + " to assign a rank to a member. " +
-			"Each rank gives certain attribute bonuses. " +
+			"Each rank gives certain attribute bonuses and increased caps. " +
 			"The amount of available ranks increases when the faction claims settlements that have certain buildings. " +
 			"Ranks also determine which commands are permitted. " +
 			"Some abilities are only available to certain ranks."
@@ -534,24 +536,26 @@ public class HelpMessages {
 		ArrayList<ProficiencyDefinition> roles = ProficiencyConfiguration.config().getDefinitions(ProficiencyType.RANK);
 			
 		// Titles:
-		rolesTable.addLine(new String[]{GeneralMessages.columnTitle("rank"), GeneralMessages.columnTitle("bonus")});
+		rolesTable.addLine(new String[]{GeneralMessages.columnTitle("rank"), GeneralMessages.columnTitle("bonus"), GeneralMessages.columnTitle("cap"),});
 
 		// Values:
 		if(roles.size() != 0){
 			
 			for (ProficiencyDefinition definition : roles) {
-				
+
 				String roleName = definition.getName();
-				String bonuses = bonuses(definition);
-				if(bonuses.length() == 0) bonuses = "none";
+				String bonus = bonuses(definition);
+				String cap = caps(definition);
+				if(bonus.length() == 0) bonus = "-";
+				if(cap.length() == 0) cap = "-";
 				
-				rolesTable.addLine(new String[]{roleName, bonuses});
+				rolesTable.addLine(new String[]{roleName, bonus, cap});
 				
 			}
 
 		}else{
 			
-			rolesTable.addLine(new String[]{"-", "-"});
+			rolesTable.addLine(new String[]{"-", "-", "-"});
 
 		}
 		
@@ -717,6 +721,30 @@ public class HelpMessages {
 		for (String attribute : attributeNames) {
 			
 			Integer bonus = definition.getAttributeBonus(attribute);
+			if(bonus <= 0) continue;
+			
+			if(result.length() > 0) result.append(", ");
+			
+			result.append("+" + bonus + " " + GeneralMessages.attrAbrev(attribute));
+			
+		}
+
+		return result.toString();
+		
+	
+	}
+	
+	public static String caps(ProficiencyDefinition definition) {
+
+		
+		StringBuffer result = new StringBuffer();
+		
+		// Attributes:
+		ArrayList<String> attributeNames = AttributeConfiguration.config().getAttributeNames();
+		
+		for (String attribute : attributeNames) {
+			
+			Integer bonus = definition.getAttributeCapBonus(attribute);
 			if(bonus <= 0) continue;
 			
 			if(result.length() > 0) result.append(", ");
