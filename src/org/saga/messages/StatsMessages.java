@@ -513,13 +513,13 @@ public class StatsMessages {
 		// Owner:
 		String ownerStr = "none";
 		Faction owner = SiegeManager.manager().getOwningFaction(settlement.getId());
-		if(owner != null) ownerStr = FactionMessages.faction(owner, Colour.normal1);
+		if(owner != null) ownerStr = FactionMessages.faction(owner);
 		table.addLine("owner faction" ,ownerStr , 2);
 		
 		// Affiliation:
 		String affilStr = "none";
 		Faction affiliation = SiegeManager.manager().getAffiliationFaction(settlement.getId());
-		if(affiliation != null) affilStr = FactionMessages.faction(affiliation, Colour.normal1);
+		if(affiliation != null) affilStr = FactionMessages.faction(affiliation);
 		table.addLine("affiliation" ,affilStr , 2);
 		
 		// Economy:
@@ -893,21 +893,21 @@ public class StatsMessages {
 
 			// Enemies:
 			for (Faction enemy : enemies) {
-				String name = FactionMessages.faction(enemy, faction.getColour2());
+				String name = FactionMessages.faction(enemy);
 				String relation = "at war";
 				table.addLine(name, relation, 0);
 			}
 			
 			// Allies:
 			for (Faction ally : allies) {
-				String name = FactionMessages.faction(ally, faction.getColour2());
+				String name = FactionMessages.faction(ally);
 				String relation = "ally";
 				table.addLine(name, relation, 0);
 			}
 			
 			// Ally invites:
 			for (Faction enemy : allyInvites) {
-				String name = FactionMessages.faction(enemy, faction.getColour2());
+				String name = FactionMessages.faction(enemy);
 				String relation = "ally invite";
 				table.addLine(name, relation, 0);
 			}

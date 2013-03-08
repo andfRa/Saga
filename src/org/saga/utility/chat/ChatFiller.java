@@ -254,8 +254,8 @@ public class ChatFiller {
 //		str = str.replace("\u278C", ChatColor.DARK_GRAY + "\"");
 		
 		str = str.replace("\u278A", ChatColor.DARK_GRAY + "`");
-		str = str.replace("\u278B", ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "`" + CustomColour.RESET_FORMAT);
-		str = str.replace("\u278C", ChatColor.DARK_GRAY + "" + ChatColor.BOLD + " " + CustomColour.RESET_FORMAT);
+		str = str.replace("\u278B", ChatColor.DARK_GRAY + "" + ChatColor.BOLD + "`" + CustomColour.PREVIOUS_FORMAT);
+		str = str.replace("\u278C", ChatColor.DARK_GRAY + "" + ChatColor.BOLD + " " + CustomColour.PREVIOUS_FORMAT);
 		
 		return CustomColour.process(str);
 		

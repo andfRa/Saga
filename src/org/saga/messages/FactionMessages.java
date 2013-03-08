@@ -4,6 +4,7 @@ import org.bukkit.ChatColor;
 import org.saga.config.FactionConfiguration;
 import org.saga.factions.Faction;
 import org.saga.messages.colours.Colour;
+import org.saga.messages.colours.Colour.CustomColour;
 import org.saga.player.Proficiency;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Bundle;
@@ -17,7 +18,7 @@ public class FactionMessages {
 	// Create/delete:
 	public static String created(Faction faction) {
 
-		return Colour.normal1 + "Created " + faction(faction, Colour.normal1) + " faction.";
+		return Colour.normal1 + "Created " + faction(faction) + " faction.";
 		
 	}
 
@@ -36,7 +37,7 @@ public class FactionMessages {
 	}
 	
 	public static String disbandedOther(Faction faction) {
-		return faction.getColour2() + "Disbanded " + faction(faction, faction.getColour2()) + " faction.";
+		return faction.getColour2() + "Disbanded " + faction(faction) + " faction.";
 	}
 
 	
@@ -52,7 +53,7 @@ public class FactionMessages {
 	
 	public static String renamed(Faction faction) {
 
-		return faction.getColour2() + "Faction was renamed to " + faction(faction, faction.getColour2()) + ".";
+		return faction.getColour2() + "Faction was renamed to " + faction(faction) + ".";
 		
 	}
 
@@ -91,7 +92,7 @@ public class FactionMessages {
 	}
 	
 	public static String declinedInvite(Faction faction) {
-		return Colour.normal1 + "Declined a join invitation from " + faction(faction, Colour.normal1) + " faction.";
+		return Colour.normal1 + "Declined a join invitation from " + faction(faction) + " faction.";
 	}
 	
 	public static String declinedInvites() {
@@ -128,7 +129,7 @@ public class FactionMessages {
 	
 	
 	public static String haveQuit(SagaPlayer sagaPlayer, Faction faction) {
-		return faction.getColour2() + "Quit " + faction(faction, faction.getColour2()) + " faction.";
+		return faction.getColour2() + "Quit " + faction(faction) + " faction.";
 	}
 	
 	public static String quit(SagaPlayer sagaPlayer, Faction faction) {
@@ -241,13 +242,13 @@ public class FactionMessages {
 	// Alliance:
 	public static String sentAlliance(Faction faction, Faction target) {
 		
-		return faction.getColour2() + "An alliance request was sent to " + faction(target, faction.getColour2()) + " faction.";
+		return faction.getColour2() + "An alliance request was sent to " + faction(faction) + " faction.";
 		
 	}
 	
 	public static String recievedAlliance(Faction faction, Faction source) {
 		
-		return faction.getColour2() + "Recieved an alliance request from " + faction(source, faction.getColour2()) + " faction.";
+		return faction.getColour2() + "Recieved an alliance request from " + faction(faction) + " faction.";
 		
 	}
 	
@@ -259,19 +260,19 @@ public class FactionMessages {
 
 	public static String declinedAllianceRequest(Faction faction, Faction target) {
 		
-		return faction.getColour2() + "Alliance request from " + faction(target, faction.getColour2()) + " faction was declined.";
+		return faction.getColour2() + "Alliance request from " + faction(faction) + " faction was declined.";
 		
 	}
 	
 	public static String formedAlliance(Faction faction, Faction target) {
 		
-		return faction.getColour2() + "An alliance was formed with " + faction(target, faction.getColour2()) + " faction.";
+		return faction.getColour2() + "An alliance was formed with " + faction(faction) + " faction.";
 		
 	}
 	
 	public static String brokeAlliance(Faction faction, Faction target) {
 		
-		return faction.getColour2() + "The alliance with " + faction(target, faction.getColour2()) + " faction was broken.";
+		return faction.getColour2() + "The alliance with " + faction(faction) + " faction was broken.";
 		
 	}
 
@@ -283,7 +284,7 @@ public class FactionMessages {
 	
 	public static String alreadyAlliance(Faction faction, Faction targetFaction) {
 		
-		return Colour.negative + "An alliance with " + faction(targetFaction, Colour.negative) + " is already formed.";
+		return Colour.negative + "An alliance with " + faction(targetFaction) + " is already formed.";
 		
 	}
 
@@ -295,7 +296,7 @@ public class FactionMessages {
 	
 	public static String noAlliance(Faction faction, Faction targetFaction) {
 		
-		return Colour.negative + "No alliance formed with " + faction(targetFaction, Colour.negative) + " faction.";
+		return Colour.negative + "No alliance formed with " + faction(targetFaction) + " faction.";
 		
 	}
 	
@@ -306,7 +307,7 @@ public class FactionMessages {
 	}
 
 	public static String isAllyDeny(Faction faction, Faction target) {
-		return Colour.negative + "The faction " + faction(target, Colour.negative) + " is an ally.";
+		return Colour.negative + "The faction " + faction(target) + " is an ally.";
 	}
 	
 	
@@ -353,15 +354,15 @@ public class FactionMessages {
 	
 	
 	// Utility:
-	public static String faction(Faction faction, ChatColor colour) {
+	public static String faction(Faction faction) {
 		
-		return faction.getColour1() + faction.getName() + colour;
+		return faction.getColour1() + faction.getName() + CustomColour.PREVIOUS_COLOR;
 		
 	}
 	
-	public static String faction(ChatColor style, Faction faction, ChatColor colour) {
+	public static String faction(ChatColor format, Faction faction) {
 		
-		return faction.getColour1().toString() + style + faction.getName() + colour + style;
+		return faction.getColour1().toString() + format + faction.getName() + CustomColour.PREVIOUS_COLOR + format;
 		
 	}
 

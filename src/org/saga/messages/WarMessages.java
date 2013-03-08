@@ -92,19 +92,19 @@ public class WarMessages {
 	
 	// Wars:
 	public static String warAlreadyDeclared(Faction faction, Faction target) {
-		return Colour.negative + "War already declared on " + FactionMessages.faction(target, Colour.negative) + " faction.";
+		return Colour.negative + "War already declared on " + FactionMessages.faction(target) + " faction.";
 	}
 	
 	public static String warDeclaredOn(Faction faction, Faction target) {
-		return faction.getColour2() + "War declared on " + FactionMessages.faction(target, faction.getColour2()) + " faction.";
+		return faction.getColour2() + "War declared on " + FactionMessages.faction(target) + " faction.";
 	}
 	
 	public static String warDeclaredBy(Faction faction, Faction target) {
-		return faction.getColour2() + "Faction " + FactionMessages.faction(target, faction.getColour2()) + " declared war.";
+		return faction.getColour2() + "Faction " + FactionMessages.faction(target) + " declared war.";
 	}
 	
 	public static String isAtWarDeny(Faction faction, Faction target) {
-		return Colour.negative + "The faction is at war with " + FactionMessages.faction(target, Colour.negative) + ".";
+		return Colour.negative + "The faction is at war with " + FactionMessages.faction(target) + ".";
 	}
 	
 	public static String warCantBeDeclaredOnSelf(Faction faction) {
@@ -112,22 +112,22 @@ public class WarMessages {
 	}
 
 	public static String warDeclareWait(Faction faction, Faction target, Duration duration) {
-		return Colour.negative + "Need to wait " + GeneralMessages.durationDHM(duration) + " before a war can be declared on " + FactionMessages.faction(target, Colour.negative) + " faction.";
+		return Colour.negative + "Need to wait " + GeneralMessages.durationDHM(duration) + " before a war can be declared on " + FactionMessages.faction(target) + " faction.";
 	}
 	
 	
 	
 	// Peace:
 	public static String peaceDeclaredOn(Faction faction, Faction target) {
-		return faction.getColour2() + "Peace declared with " + FactionMessages.faction(target, faction.getColour2()) + " faction.";
+		return faction.getColour2() + "Peace declared with " + FactionMessages.faction(target) + " faction.";
 	}
 	
 	public static String peaceDeclaredBy(Faction faction, Faction target) {
-		return faction.getColour2() + "Faction " + FactionMessages.faction(target, faction.getColour2()) + " declared peace.";
+		return faction.getColour2() + "Faction " + FactionMessages.faction(target) + " declared peace.";
 	}
 	
 	public static String peaceDeny(Faction faction, Faction target) {
-		return Colour.negative + "The faction is not at war with " + FactionMessages.faction(target, Colour.negative) + ".";
+		return Colour.negative + "The faction is not at war with " + FactionMessages.faction(target) + ".";
 	}
 
 	public static String peaceCantBeDeclaredOnSelf(Faction faction) {
@@ -158,7 +158,7 @@ public class WarMessages {
 	// Settlement affiliation:
 	public static String affiliationSet(Bundle bundle, Faction faction) {
 
-		return Colour.normal2 + "The settlement is now affiliated with " + FactionMessages.faction(faction, Colour.normal2) + " faction.";
+		return Colour.normal2 + "The settlement is now affiliated with " + FactionMessages.faction(faction) + " faction.";
 		
 	}
 	
@@ -171,7 +171,7 @@ public class WarMessages {
 	
 	public static String affiliationAlreadySet(Bundle bundle, Faction faction) {
 
-		return Colour.negative + "The settlement is already affiliated with " + FactionMessages.faction(faction, Colour.negative) + " faction.";
+		return Colour.negative + "The settlement is already affiliated with " + FactionMessages.faction(faction) + " faction.";
 		
 	}
 	

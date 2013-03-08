@@ -103,13 +103,13 @@ public class GeneralMessages {
 	// Text elements:
 	public static String highlight(String command){
 		
-		return ChatColor.UNDERLINE + command + CustomColour.RESET_FORMAT;
+		return ChatColor.UNDERLINE + command + CustomColour.PREVIOUS_FORMAT;
 		
 	}
 	
 	public static String command(String command){
 	
-		return ChatColor.ITALIC + command + CustomColour.RESET_FORMAT;
+		return ChatColor.ITALIC + command + CustomColour.PREVIOUS_FORMAT;
 	
 	}
 	

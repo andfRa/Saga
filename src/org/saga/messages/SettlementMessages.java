@@ -342,7 +342,7 @@ public class SettlementMessages {
 		// Claimed:
 		Faction faction = SiegeManager.manager().getOwningFaction(bundle.getId());
 		if(faction != null){
-			return Colour.normal1 + "[" + FactionMessages.faction(faction, Colour.normal1) + "]" + ChatColor.ITALIC + " Entered " + bundle.getName() + " settlement.";
+			return Colour.normal1 + "[" + FactionMessages.faction(faction) + "]" + ChatColor.ITALIC + " Entered " + bundle.getName() + " settlement.";
 		}
 		
 		return Colour.normal1 + "" + ChatColor.ITALIC + "Entered " + bundle.getName() + " settlement.";
@@ -354,7 +354,7 @@ public class SettlementMessages {
 		// Claimed:
 		Faction faction = SiegeManager.manager().getOwningFaction(bundle.getId());
 		if(faction != null){
-			return Colour.normal1 + "[" + FactionMessages.faction(faction, Colour.normal1) + "]" + ChatColor.ITALIC + " Left " + bundle.getName() + " settlement.";
+			return Colour.normal1 + "[" + FactionMessages.faction(faction) + "]" + ChatColor.ITALIC + " Left " + bundle.getName() + " settlement.";
 		}
 		
 		return Colour.normal1 + "" + ChatColor.ITALIC + "Left " + bundle.getName() + " settlement.";

@@ -11,11 +11,11 @@ public class ClaimMessages {
 	
 	// Faction notifications:
 	public static String loosing(Bundle bundle, Faction defenderFaction, Faction attackerFaction, Double progress){
-		return defenderFaction.getColour2() + "Loosing " + bundle.getName() + " to " + FactionMessages.faction(attackerFaction, defenderFaction.getColour2())+ "." + " " + ChatUtil.round(progress * 100, 1) + "% claimed.";
+		return defenderFaction.getColour2() + "Loosing " + bundle.getName() + " to " + FactionMessages.faction(attackerFaction) + "." + " " + ChatUtil.round(progress * 100, 1) + "% claimed.";
 	}
 
 	public static String claiming(Bundle bundle, Faction attackerFaction, Faction defenderFaction, Double progress){
-		return attackerFaction.getColour2() + "Seizing " + bundle.getName() + " from " + FactionMessages.faction(defenderFaction, attackerFaction.getColour2())+ "." + " " + ChatUtil.round(progress * 100, 1) + "% claimed.";
+		return attackerFaction.getColour2() + "Seizing " + bundle.getName() + " from " + FactionMessages.faction(defenderFaction)+ "." + " " + ChatUtil.round(progress * 100, 1) + "% claimed.";
 	}
 	
 	public static String claiming(Bundle bundle, Faction attackerFaction, Double progress){
@@ -32,7 +32,7 @@ public class ClaimMessages {
 			claimed = " " + ChatUtil.round(progress * 100, 1) + "% claimed.";
 		}
 		
-		return Colour.normal1 + "[" + "->" + FactionMessages.faction(faction, Colour.normal1) + "]" + claimed;
+		return Colour.normal1 + "[" + "->" + FactionMessages.faction(faction) + "]" + claimed;
 	
 	}
 
@@ -43,7 +43,7 @@ public class ClaimMessages {
 			claimed = " " + ChatUtil.round(progress * 100, 1) + "% claimed.";
 		}
 		
-		return Colour.normal1 + "[" + FactionMessages.faction(defenderFaction, Colour.normal1) + "->" + FactionMessages.faction(attackerFaction, Colour.normal1) + "]" + claimed;
+		return Colour.normal1 + "[" + FactionMessages.faction(defenderFaction) + "->" + FactionMessages.faction(attackerFaction) + "]" + claimed;
 
 	}
 	
@@ -54,7 +54,7 @@ public class ClaimMessages {
 			claimed = " " + ChatUtil.round(progress * 100, 1) + "% claimed.";
 		}
 		
-		return Colour.normal1 + "[" + "<-" + FactionMessages.faction(faction, Colour.normal1) + "]" + claimed;
+		return Colour.normal1 + "[" + "<-" + FactionMessages.faction(faction) + "]" + claimed;
 	
 	}
 
@@ -65,7 +65,7 @@ public class ClaimMessages {
 			claimed = " " + ChatUtil.round(progress * 100, 1) + "% claimed.";
 		}
 		
-		return Colour.normal1 + "[" + FactionMessages.faction(defenderFaction, Colour.normal1) + "<-" + FactionMessages.faction(attackerFaction, Colour.normal1) + "]" + claimed;
+		return Colour.normal1 + "[" + FactionMessages.faction(defenderFaction) + "<-" + FactionMessages.faction(attackerFaction) + "]" + claimed;
 
 	}
 	
@@ -73,7 +73,7 @@ public class ClaimMessages {
 	
 	// Broadcast:
 	public static String claimedBcast(Bundle bundle, Faction faction){
-		return Colour.announce + "" + "Settlement " + bundle.getName() + " was claimed by " + FactionMessages.faction(ChatColor.UNDERLINE, faction, Colour.announce)+".";
+		return Colour.announce + "" + "Settlement " + bundle.getName() + " was claimed by " + FactionMessages.faction(ChatColor.UNDERLINE, faction)+".";
 	}
 	
 	

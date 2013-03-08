@@ -28,8 +28,8 @@ public class Colour {
 	public enum CustomColour{
 		
 		
-		RESET_COLOR('x'),
-		RESET_FORMAT('x');
+		PREVIOUS_COLOR('x'),
+		PREVIOUS_FORMAT('x');
 		
 		private char ch;
 		
@@ -64,9 +64,9 @@ public class Colour {
 			
 			// Reset colours:
 			if(color != null){
-				message = message.replace(RESET_COLOR.toString(), color.toString());
+				message = message.replace(PREVIOUS_COLOR.toString(), color.toString());
 			}else{
-				message = message.replace(RESET_COLOR.toString(), "");
+				message = message.replace(PREVIOUS_COLOR.toString(), "");
 			}
 			
 			return message;
@@ -108,7 +108,7 @@ public class Colour {
 		@Override
 		public String toString() {
 			
-			if(this == RESET_FORMAT) return ChatColor.RESET.toString() + RESET_COLOR.toString();
+			if(this == PREVIOUS_FORMAT) return ChatColor.RESET.toString() + PREVIOUS_COLOR.toString();
 			
 			return new String(new char[]{ChatColor.COLOR_CHAR, ch});
 			
