@@ -12,6 +12,7 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -20,8 +21,6 @@ import org.saga.Clock.DaytimeTicker.Daytime;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.Building;
-import org.saga.buildings.Warehouse;
-import org.saga.buildings.production.SagaItem;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.SettlementConfiguration;
@@ -932,42 +931,28 @@ public class AdminCommands {
 		
 		
 		
-		Integer numb1 = 0;
+		Double numb1 = 1.0;
 		if(args.argsLength() > 0){
 			try {
-				numb1 = args.getInteger(0);
+				numb1 = args.getDouble(0);
 			}
 			catch (NumberFormatException e) {
 				sagaPlayer.message(ChatColor.RED + args.getString(0) + " must be a number!");
 			}
 		}
 		
-		Integer numb2 = 0;
-		if(args.argsLength() > 0){
+		Double numb2 = 1.0;
+		if(args.argsLength() > 1){
 			try {
-				numb2 = args.getInteger(1);
+				numb2 = args.getDouble(1);
 			}
 			catch (NumberFormatException e) {
 				sagaPlayer.message(ChatColor.RED + args.getString(0) + " must be a number!");
 			}
-		}
-		
-		if(sagaPlayer.getSagaChunk() != null && sagaPlayer.getSagaChunk().getBuilding() instanceof Warehouse){
-			
-			Warehouse wh = (Warehouse) sagaPlayer.getSagaChunk().getBuilding();
-			
-			ItemStack item = new ItemStack(numb1, numb2);
-			System.out.println("ITEM=" + item);
-			SagaItem sagaItem = new SagaItem(item);
-			
-			wh.withdraw(sagaItem);
-			
 		}
 		
 		Player player = sagaPlayer.getPlayer();
-		sagaPlayer.message(player.getName() + ": food=" + player.getFoodLevel() + " saturation=" + player.getSaturation() + " exhaustion=" + player.getExhaustion());
-		
-		player.setExhaustion(20f);
+		player.playSound(player.getLocation(), Sound.ANVIL_LAND, numb1.floatValue(), numb2.floatValue());
 		
 		
 	}

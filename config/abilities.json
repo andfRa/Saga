@@ -400,6 +400,31 @@
     "fullDescription":"Reflects enemy damage on successful block. Upgrading increases the angle at which the ability is effective.",
     "usage":"block with a sword"
   },
+  
+  {"className":"org.saga.abilities.Charge",
+    "name":"charge",
+    "itemRestrictions":["DIAMOND_SWORD","GOLD_SWORD","IRON_SWORD","STONE_SWORD"],
+    "activationAction":"LEFT_CLICK",
+    "usedItem":"AIR",
+    "usedAmount":{"x1":1,"y1":0.0},
+    "usedEnergy":{"x1":1,"y1":80,"x2":3,"y2":50},
+    "cooldownTicks":50,
+    "cooldown":{"x1":1,"y1":0.0},
+    "attributeRequirements":{ "strength":{"x1":1,"y1":15,"x2":3,"y2":90} },
+    "buildingsRequired":{3:["armoury"]},
+    "proficienciesRequired":{1:["warrior","knight"]},
+    "functions":{
+      "speed":{"x1":1,"y1":2.0,"x2":3,"y2":3.0},
+      "duration":{"x1":1,"y1":0.75,"x2":3,"y2":1.0},
+      "push radius":{"x1":1,"y1":2.0,"x2":3,"y2":2.0},
+      "push speed":{"x1":1,"y1":1.0,"x2":3,"y2":1.0},
+      "push damage":{"x1":1,"y1":5.0,"x2":3,"y2":15.0} 
+    },
+    "colour":3599322,
+    "briefDescription":"charges towards target",
+    "fullDescription":"Charges the player towards the target. Increased damage, speed and duration when upgraded.",
+    "usage":"sprint and attack"
+  },
 
   
   
