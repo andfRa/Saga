@@ -108,9 +108,6 @@ public class TownSquare extends Building implements SecondTicker{
 		long passed = current - previous;
 		long addition = getDefinition().getFunction(RESPAWN_DAMAGE_IMMUNITY_TIME).longValue(passed / 1000.0) * 1000;
 		
-		System.out.println("passed=" + passed/1000.0);
-		System.out.println("addition=" + addition/1000.0);
-		
 		protectionTimes.put(sagaPlayer.getName(), current + addition);
 		
 	}
