@@ -619,11 +619,11 @@ public class SettlementCommands {
 		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.INVITE) ){
 			sagaPlayer.message(GeneralMessages.noPermission());
 			return;
-			
 		}
 		
-		// Already a member:
-		if(selBundle.isMember(selPlayer.getName())){
+		// Bundle member:
+		Bundle playerBundle = selPlayer.getBundle();
+		if(playerBundle != null){
 			sagaPlayer.message(SettlementMessages.alreadyInSettlement(selPlayer));
 			return;
 		}
