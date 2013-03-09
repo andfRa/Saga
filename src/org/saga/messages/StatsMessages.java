@@ -263,7 +263,7 @@ public class StatsMessages {
     			String name = ability.getName() + " " + RomanNumeral.binaryToRoman(ability.getScore());
     			String required = "";
     			
-    			Integer nextScore = sagaPlayer.getRawAbilityScore(ability.getName()) + 1;
+    			Integer nextScore = sagaPlayer.getAbilityScore(ability.getName()) + 1;
     			if(!ability.getDefinition().checkRequirements(sagaPlayer, nextScore)){
     				name = Colour.unavailable + name;
     				required = Colour.unavailable + required;
