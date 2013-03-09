@@ -72,17 +72,11 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		return plugin;
 	}
 	
-	private Random random = new Random();
-
 	/**
-	 * Gets the random number generator.
-	 * 
-	 * @return random number generator
+	 * Random generator.
 	 */
-	public static Random getRandom() {
-		return Saga.plugin().random;
-	}
-	
+	public static final Random RANDOM = new Random();
+
 	
 	/**
 	 * All saga players.

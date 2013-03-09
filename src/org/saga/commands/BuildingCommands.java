@@ -793,6 +793,9 @@ public class BuildingCommands {
 			break;
 			
 		}
+
+		// Update spawning protection:
+		selBuilding.updateSpawningProtect(sagaPlayer);
 		
 		// Prepare chunk:
 		selBuilding.getSagaChunk().loadChunk();

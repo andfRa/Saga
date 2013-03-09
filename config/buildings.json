@@ -229,7 +229,9 @@
     "storageSize":0,
     "production":[],
     "performTime":"NONE",
-    "functions":{},
+    "functions":{
+      "respawn immunity":{"x1":30,"y1":0.0,"x2":60,"y2":30.0}
+    },
     "roles":{"lord":2},
     "ranks":{},
     "description":"enables spawn command",

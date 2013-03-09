@@ -196,7 +196,7 @@ public class TwoPointFunction {
 		return value(x.doubleValue());
 		
 	}
-	
+
 	/**
 	 * Calculates the value for the given y value.
 	 * 
@@ -274,6 +274,30 @@ public class TwoPointFunction {
 		return randomBooleanValue(x.doubleValue());
 		
 	}
+	
+	
+	/**
+	 * Calculates the value for the given y value.
+	 * 
+	 * @param x x value
+	 */
+	public long longValue(Integer x) {
+		
+		return value(x.doubleValue()).longValue();
+		
+	}
+	
+	/**
+	 * Calculates the value for the given y value.
+	 * 
+	 * @param x x value
+	 */
+	public long longValue(Double x) {
+		
+		return value(x).longValue();
+		
+	}
+	
 	
 	
 	/**

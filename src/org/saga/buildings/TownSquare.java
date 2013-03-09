@@ -1,29 +1,35 @@
 package org.saga.buildings;
 
-import java.util.Random;
+import java.util.Hashtable;
 
 import org.bukkit.Location;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.util.Vector;
 import org.saga.Clock.SecondTicker;
+import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.exceptions.InvalidBuildingException;
-import org.saga.factions.SiegeManager;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.SagaChunk;
 
 public class TownSquare extends Building implements SecondTicker{
-
+	
 	
 	/**
-	 * Random generator.
+	 * Damage immunity after respawn.
 	 */
-	transient private Random random;
+	transient private final String RESPAWN_DAMAGE_IMMUNITY_TIME = "respawn immunity";
 	
 	
-
+	/**
+	 * Immunity times.
+	 */
+	transient private Hashtable<String, Long> protectionTimes;
+	
+	
+	
 	// Initialisation:
 	/**
 	 * Creates a building from the definition.
@@ -32,12 +38,9 @@ public class TownSquare extends Building implements SecondTicker{
 	 */
 	public TownSquare(BuildingDefinition definition) {
 		
-		
 		super(definition);
 		
-		random = new Random();
-//		count = 0;
-		
+		protectionTimes = new Hashtable<String, Long>();
 		
 	}
 
@@ -49,15 +52,11 @@ public class TownSquare extends Building implements SecondTicker{
 	@Override
 	public boolean complete() throws InvalidBuildingException {
 		
-
 		boolean integrity = super.complete();
 		
-		// Transient:
-		random = new Random();
-//		count = 0;
+		protectionTimes = new Hashtable<String, Long>();
 		
 		return integrity;
-		
 		
 	}
 	
@@ -89,7 +88,34 @@ public class TownSquare extends Building implements SecondTicker{
 	
 	
 	
-	// Utility:
+	// Spawning:
+	/**
+	 * Updates spawn camping protection.
+	 * 
+	 * @param sagaPlayer Saga player
+	 */
+	public void updateSpawningProtect(SagaPlayer sagaPlayer) {
+		
+		long current = System.currentTimeMillis();
+		
+		// Previous time:
+		Long previous = protectionTimes.get(sagaPlayer.getName());
+		if(previous == null) previous = current - getDefinition().getFunction(RESPAWN_DAMAGE_IMMUNITY_TIME).getXMax();
+		
+		// Still active:
+		if(previous > current) return;
+		
+		long passed = current - previous;
+		long addition = getDefinition().getFunction(RESPAWN_DAMAGE_IMMUNITY_TIME).longValue(passed / 1000.0) * 1000;
+		
+		System.out.println("passed=" + passed/1000.0);
+		System.out.println("addition=" + addition/1000.0);
+		
+		protectionTimes.put(sagaPlayer.getName(), current + addition);
+		
+	}
+	
+	
 	/**
 	 * Gets the spawn location on this chunk.
 	 * 
@@ -105,8 +131,8 @@ public class TownSquare extends Building implements SecondTicker{
 		
 		// Displacement:
 		double spreadRadius = 6;
-		Double x = 2 * spreadRadius * (random.nextDouble() - 0.5);
-		Double z = 2 * spreadRadius * (random.nextDouble() - 0.5);
+		Double x = 2 * spreadRadius * (Saga.RANDOM.nextDouble() - 0.5);
+		Double z = 2 * spreadRadius * (Saga.RANDOM.nextDouble() - 0.5);
 		Vector displacement = new Vector(x.intValue(), 2, z.intValue());
 		
 		// Shifted location:
@@ -156,7 +182,7 @@ public class TownSquare extends Building implements SecondTicker{
 	 */
 	@Override
 	public void onMemberRespawn(SagaPlayer sagaPlayer, PlayerRespawnEvent event) {
-
+		
 		
 		// Location chunk:
 		SagaChunk locationChunk = getSagaChunk();
@@ -165,17 +191,13 @@ public class TownSquare extends Building implements SecondTicker{
 			return;
 		}
 		
-//		// Cool down;
-//		if(isOnCooldown){
-//			sagaPlayer.sendMessage(BuildingMessages.cooldown(this, cooldownLeft));
-//			return;
-//		}else{
-//			startCooldown();
-//		}
-
+		// Update spawning protection:
+		updateSpawningProtect(sagaPlayer);
+		
 		// Prepare chunk:
 		prepareChunk();
 		
+		// Respawn:
 		Location spawnLocation = getSpawnLocation();
 		
 		if(spawnLocation == null){
@@ -184,10 +206,9 @@ public class TownSquare extends Building implements SecondTicker{
 			return;
 		}
 		
-		// Respawn:
 		event.setRespawnLocation(spawnLocation);
 		
-	
+		
 	}
 	
 	/* 
@@ -197,20 +218,26 @@ public class TownSquare extends Building implements SecondTicker{
 	 */
 	@Override
 	public void onEntityDamage(SagaEntityDamageEvent event){
+		
+		
+		if(event.attackerPlayer != null && event.defenderPlayer != null){
+			
+			Long immunity = protectionTimes.get(event.attackerPlayer.getName());
+			if(immunity != null && immunity >= System.currentTimeMillis()){
+				event.addPvpOverride(PvPOverride.RESPAWN_DENY);
+				return;
+			}
+			
+		}
+		
+		if(event.defenderPlayer != null){
 
-		
-		// Deny damage:
-		if(event.isCvP()){
-			event.cancel();
-		}
-		
-		else if(event.isPvP()){
-			event.addPvpOverride(PvPOverride.SAFE_AREA_DENY);
-		}
-		
-		// Allow PvP if being claimed:
-		if(event.isFvF() && SiegeManager.manager().isSieged(getChunkBundle().getId())){
-			event.addPvpOverride(PvPOverride.FACTION_CLAIMING_ALLOW);
+			Long immunity = protectionTimes.get(event.defenderPlayer.getName());
+			if(immunity != null && immunity >= System.currentTimeMillis()){
+				event.addPvpOverride(PvPOverride.RESPAWN_DENY);
+				return;
+			}
+			
 		}
 		
 		

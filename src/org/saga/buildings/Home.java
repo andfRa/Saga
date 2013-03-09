@@ -9,8 +9,6 @@ import org.saga.SagaLogger;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
-import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.messages.BuildingMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Settlement.SettlementPermission;
@@ -19,7 +17,7 @@ public class Home extends Building {
 
 	
 	/**
-	 * residents.
+	 * Home residents.
 	 */
 	private ArrayList<String> residents;
 	
@@ -197,29 +195,10 @@ public class Home extends Building {
 		
 		
 	}
-
+	
 	
 	
 	// Events:
-	/* 
-	 * (non-Javadoc)
-	 * 
-	 * @see org.saga.buildings.Building#onPlayerDamagedByPlayer(org.bukkit.event.entity.EntityDamageByEntityEvent, org.saga.SagaPlayer, org.saga.SagaPlayer)
-	 */
-	@Override
-	public void onEntityDamage(SagaEntityDamageEvent event){
-			
-		// Deny damage:
-		if(event.isCvP()){
-			event.cancel();
-		}
-		
-		else if(event.isPvP()){
-			event.addPvpOverride(PvPOverride.SAFE_AREA_DENY);
-		}
-		
-	}
-	
 	/* 
 	 * (non-Javadoc)
 	 * 

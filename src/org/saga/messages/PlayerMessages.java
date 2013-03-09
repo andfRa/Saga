@@ -78,7 +78,11 @@ public class PlayerMessages {
 		case SAFE_AREA_DENY:
 			
 			return Colour.negative + "Can't attack players in safe areas.";
-			
+		
+		case RESPAWN_DENY:
+	
+				return Colour.negative + "Can't attack players after respawning.";
+	
 		default:
 			
 			break;

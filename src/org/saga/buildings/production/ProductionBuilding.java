@@ -313,7 +313,7 @@ public class ProductionBuilding extends Building{
 		while(sagaItem.getAmount() > 0 && possibleStorage.size() > 0){
 			
 			// Remove block:
-			int index = Saga.getRandom().nextInt(possibleStorage.size());
+			int index = Saga.RANDOM.nextInt(possibleStorage.size());
 			Block block = possibleStorage.get(index);
 			block.setTypeIdAndData(sagaItem.getType().getId(), sagaItem.getData().byteValue(), false);
 			sagaItem.modifyAmount(-1);
@@ -338,7 +338,7 @@ public class ProductionBuilding extends Building{
 		while(possibleStorage.size() > 0 && sagaItem.getAmount() >= 1.0){
 			
 			// Inventory:
-			int index = Saga.getRandom().nextInt(possibleStorage.size());
+			int index = Saga.RANDOM.nextInt(possibleStorage.size());
 			Chest chest = possibleStorage.get(index);
 			Inventory inventory = chest.getInventory();
 
