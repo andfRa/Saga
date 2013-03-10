@@ -397,6 +397,10 @@ public class BuildingMessages {
 	public static String abilityMaxReached(String abilName) {
 		return Colour.negative + "Ability " + abilName + " can't be upgraded any further.";
 	}
+
+	public static String abilityPointsRequired(String ability) {
+		return Colour.negative + "Not enough ability points to increase " + ability + ".";
+	}
 	
 	
 	

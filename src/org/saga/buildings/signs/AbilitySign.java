@@ -137,6 +137,12 @@ public class AbilitySign extends BuildingSign{
 			return;
 		}
 		
+		// Ability points:
+		if(sagaPlayer.getRemainingAbilityPoints() < 1){
+			sagaPlayer.message(BuildingMessages.abilityPointsRequired(abilName));
+			return;
+		}
+		
 		// Requirements:
 		if(!ability.getDefinition().checkRequirements(sagaPlayer, nextScore)){
 			sagaPlayer.message(BuildingMessages.abilityRequirementsNotMet(ability, nextScore));
