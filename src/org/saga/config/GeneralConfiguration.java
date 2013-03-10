@@ -107,6 +107,11 @@ public class GeneralConfiguration {
 	 * True to stop all creeper explosion land damage.
 	 */
 	public Boolean stopCreeperExplosions;
+
+	/**
+	 * Ratio of blocks destroyed.
+	 */
+	private Double playerFireballDestruction;
 	
 	
 	// Statistics:
@@ -244,10 +249,17 @@ public class GeneralConfiguration {
 			blockPlaceData = new Hashtable<Material, Byte>();
 		}
 		
+		
 		if(stopCreeperExplosions == null){
 			SagaLogger.nullField(getClass(), "stopCreeperExplosions");
 			stopCreeperExplosions = false;
 		}
+		
+		if(playerFireballDestruction == null){
+			SagaLogger.nullField(getClass(), "playerFireballDestruction");
+			playerFireballDestruction = 1.0;
+		}
+		
 		
 		if(guardRuneEnabled == null){
 			SagaLogger.nullField(getClass(), "guardRuneEnabled");
@@ -336,6 +348,18 @@ public class GeneralConfiguration {
 		
 		return data;
 
+	}
+	
+	
+	
+	// World damage:
+	/**
+	 * Gets the ratio of destroyed blocks from player fireballs.
+	 * 
+	 * @return player fireball destroy ratio
+	 */
+	public Double getPlayerFireballDestruction() {
+		return playerFireballDestruction;
 	}
 	
 	

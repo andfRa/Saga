@@ -1,10 +1,14 @@
 package org.saga.listeners;
 
+import java.util.List;
+
 import org.bukkit.Chunk;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.Creeper;
+import org.bukkit.entity.Fireball;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
@@ -114,7 +118,17 @@ public class EntityListener implements Listener{
 	public void onEntityExplode(EntityExplodeEvent event) {
 		
 		if(GeneralConfiguration.isDisabled(event.getLocation().getWorld())) return;
-    	
+		
+		// Limit player fireball destruction:
+		if(event.getEntity() instanceof Fireball && ((Fireball) event.getEntity()).getShooter() instanceof Player){
+			
+			int remaining = (int) (GeneralConfiguration.config().getPlayerFireballDestruction() * event.blockList().size());
+			List<Block> blocks = event.blockList();
+			while (remaining < blocks.size()){
+				event.blockList().remove(blocks.size() - 1);
+			}
+			
+		}
 		
 		// Stop creeper terrain damage.
 		if(GeneralConfiguration.config().stopCreeperExplosions && event.getEntity() instanceof Creeper){

@@ -22,7 +22,9 @@
   "SUGAR_CANE_BLOCK":1,
   "LAPIS_ORE":9
 },
+
 "stopCreeperExplosions":true,
+"playerFireballDestruction":0.5,
 
 "guardRuneEnabled":true,
 "guardRuneDisableWorlds":["creative"],

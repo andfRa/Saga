@@ -2,8 +2,6 @@ package org.saga.shape;
 
 import java.util.ArrayList;
 
-import org.saga.SagaLogger;
-
 public class TrapezoidGrid {
 	
 	
