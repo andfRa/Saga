@@ -1,22 +1,23 @@
 package org.saga.abilities;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.Deque;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.block.Block;
+import org.bukkit.World;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 import org.saga.Saga;
-import org.saga.config.VanillaConfiguration;
-import org.saga.messages.AbilityMessages;
 import org.saga.messages.effects.StatsEffectHandler;
-import org.saga.player.SagaLiving;
 import org.saga.player.SagaPlayer;
+import org.saga.shape.Point;
+import org.saga.shape.TrapezoidGrid;
+import org.saga.utility.TwoPointFunction;
 
 public class Meteors extends Ability{
 
@@ -29,49 +30,24 @@ public class Meteors extends Ability{
 	/**
 	 * Shoot delay.
 	 */
-	private static Long SHOOT_TICKS_DELAY = 5L;
-	
-	/**
-	 * Shoot shift vectors.
-	 */
-	@SuppressWarnings("serial")
-	transient private final static ArrayList<Vector> SHOOT_SHIFTS = new ArrayList<Vector>(){
-		{
-			add(new Vector(1.25, SHOOT_HEIGHT, 0));
-			add(new Vector(-1.25, SHOOT_HEIGHT, 0));
-			add(new Vector(0.0, SHOOT_HEIGHT, 1.25));
-			add(new Vector(0.0, SHOOT_HEIGHT, -1.25));
-			add(new Vector(1.25, SHOOT_HEIGHT, 1.25));
-			add(new Vector(-1.25, SHOOT_HEIGHT, -1.25));
-			add(new Vector(1.25, SHOOT_HEIGHT,- 1.25));
-			add(new Vector(-1.25, SHOOT_HEIGHT, 1.25));
-			
-			add(new Vector(2.5, SHOOT_HEIGHT, 0));
-			add(new Vector(-2.5, SHOOT_HEIGHT, 0));
-			add(new Vector(0.0, SHOOT_HEIGHT, 2.5));
-			add(new Vector(0.0, SHOOT_HEIGHT, -2.5));
-			add(new Vector(2.5, SHOOT_HEIGHT, 2.5));
-			add(new Vector(-2.5, SHOOT_HEIGHT, -2.5));
-			add(new Vector(2.5, SHOOT_HEIGHT,- 2.5));
-			add(new Vector(-2.5, SHOOT_HEIGHT, 2.5));
-		}
-	};
+	private static Long SHOOT_TICKS_DELAY = 2L;
 	
 	
 	/**
-	 * Distance key.
+	 * Fireball density key.
 	 */
-	private static String DISTANCE = "distance";
+	private static String DENSITY_KEY = "density";
+
+	/**
+	 * Fireball density multiplier key.
+	 */
+	private static String DENSITY_MULTIPLIER_KEY = "density multiplier";
+	
 	
 	/**
 	 * Speed range key.
 	 */
-	private static String SPEED = "speed";
-	
-	/**
-	 * Number of additional fireballs key.
-	 */
-	private static String BONUS_FIREBALLS = "bonus fireballs";
+	private static String SPEED_KEY = "speed";
 	
 	
 	
@@ -107,53 +83,89 @@ public class Meteors extends Ability{
 	public boolean triggerInteract(PlayerInteractEvent event) {
 		
 		
-		SagaLiving<?> sagaLiving = getSagaLiving();
-		final LivingEntity shooter = sagaLiving.getLivingEntity();
+		int width = 3;
+		int height = 6;
+		int bottom = 1;
+		double step = 0.5;
+		double shift = 2.5;
 		
-		// Target:
-		Block block = sagaLiving.getLivingEntity().getTargetBlock(null, getDefinition().getFunction(DISTANCE).intValue(getScore()));
-		if(block.getType() == Material.AIR){
-			sagaLiving.message(AbilityMessages.targetTooFar(this));
-			return false;
+		Location loc = event.getPlayer().getLocation();
+		World world = loc.getWorld();
+		final Player player = event.getPlayer();
+		
+		TrapezoidGrid trapezoid = new TrapezoidGrid(1.0, width, height, bottom, step);
+		
+		// Find angle:
+		Vector dir = loc.getDirection();
+		double rot = Math.atan(dir.getZ() / dir.getX());
+		if(dir.getX() < 0.0) rot-= Math.PI;
+		
+		// Create position grid:
+		ArrayList<ArrayList<Point>> grid = trapezoid.create(shift, loc.getX(), loc.getZ(), rot);
+		
+		// Number of fireballs:
+		int[] fireballs = new int[grid.size()];
+		double densMult = getDefinition().getFunction(DENSITY_MULTIPLIER_KEY).value(getScore());
+		TwoPointFunction densityFunction = getDefinition().getFunction(DENSITY_KEY);
+		for (int r = 0; r < grid.size(); r++) {
+			
+			double density = densityFunction.value(r) * densMult;
+			fireballs[r] = (int) (density * grid.get(r).size());
+			
 		}
-		final Location target = block.getLocation().add(0.5, 0.5, 0.5);;
 		
-		// Check if not underground:
-		if(!checkSky(block)){
-			sagaLiving.message(AbilityMessages.cantUseUnderground(this));
-			return false;
+		// Create shoot order:
+		final Deque<Point> shoorOrder = new ArrayDeque<Point>();
+		for (int r = 0; r < fireballs.length; r++) {
+			
+			while (fireballs[r] > 0){
+				
+				// Find points:
+				ArrayList<Point> column = grid.get(r);
+				if(column.size() == 0){
+					fireballs[r] = 0;
+					continue;
+				}
+				
+				// Take fireball:
+				fireballs[r]--;
+				
+				// Take point:
+				int index = Saga.RANDOM.nextInt(column.size());
+				shoorOrder.push(column.remove(index));
+				
+			}
+			
 		}
 		
 		// Fire the balls balls balls:
-		Random random = new Random();
-		int bonusFireballs = getDefinition().getFunction(BONUS_FIREBALLS).intValue(getScore());;
-		final double speed = getDefinition().getFunction(SPEED).value(getScore());
+		final double speed = getDefinition().getFunction(SPEED_KEY).value(getScore());
+		int count = 0;
+		boolean trigger = false;
 		
-		long delay = SHOOT_TICKS_DELAY;
-		
-		shootFireball(shooter, target.clone().add(0.0, SHOOT_HEIGHT, 0.0), speed);
-		ArrayList<Vector> shootShifts = new ArrayList<Vector>(SHOOT_SHIFTS);
-		while(shootShifts.size() > 0 && bonusFireballs > 0){
+		while(!shoorOrder.isEmpty()){
 			
-			int i = random.nextInt(shootShifts.size());
-			final Location shootLocation = target.clone().add(shootShifts.get(i));
+			count++;
+			
+			Point point = shoorOrder.pollLast();
+			final Location target = new Location(world, point.getX(), world.getHighestBlockYAt(loc) + SHOOT_HEIGHT, point.getZ());
+			
+			if(Math.abs(target.getY() - loc.getY()) > SHOOT_HEIGHT) continue;
+			trigger = true;
 			
 			Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Saga.plugin(), new Runnable() {
 				@Override
 				public void run() {
-					shootFireball(shooter, shootLocation, speed);
+					shootFireball(player, target, speed);
 				}
-			}, delay);
-			
-			delay+= SHOOT_TICKS_DELAY;
-			
-			shootShifts.remove(i);
-			bonusFireballs--;
+			}, count * SHOOT_TICKS_DELAY);
 			
 		}
 		
+		if(!trigger) return false;
+		
 		// Effect:
-		StatsEffectHandler.playSpellCast(sagaLiving);
+		StatsEffectHandler.playSpellCast(getSagaLiving());
 		
 		if(getSagaLiving() instanceof SagaPlayer) StatsEffectHandler.playAnimateArm((SagaPlayer) getSagaLiving());
 		
@@ -186,32 +198,8 @@ public class Meteors extends Ability{
 		
 		// Remove fire:
 		fireball.setIsIncendiary(false);
+		fireball.setYield(0.65f);
 		return fireball;
-		
-		
-	}
-	
-	/**
-	 * Checks if the target block or nearby blocks see the sky.
-	 * 
-	 * @param block block
-	 * @return true if sky is visible
-	 */
-	private static boolean checkSky(Block block) {
-
-		
-		byte skyLight = VanillaConfiguration.getSkyLightLevel();
-		for (int x = -1; x <= 1; x++) {
-			for (int y = - 1; y <= 1; y++) {
-				for (int z = - 1; z <= 1; z++) {
-					if(block.getRelative(x, y, z).getLightFromSky() == skyLight){
-						return true;
-					}
-				}
-			}
-		}
-		
-		return false;
 		
 		
 	}

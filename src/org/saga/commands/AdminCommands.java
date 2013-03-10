@@ -952,7 +952,7 @@ public class AdminCommands {
 		}
 		
 		Player player = sagaPlayer.getPlayer();
-		player.playSound(player.getLocation(), Sound.ANVIL_LAND, numb1.floatValue(), numb2.floatValue());
+		player.playSound(player.getLocation(), Sound.FALL_BIG, numb1.floatValue(), numb2.floatValue());
 		
 		
 	}

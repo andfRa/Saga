@@ -525,15 +525,17 @@
     "buildingsRequired":{3:["academy"]},
     "proficienciesRequired":{1:["mage","wizard"]},
     "functions":{
-      "distance":{"x1":1,"y1":16.0,"x2":3,"y2":32.0},
-      "speed":{"x1":1,"y1":1.25,"x2":3,"y2":2.0},
-      "bonus fireballs":{"x1":1,"y1":4.0,"x2":3,"y2":8.0}
+      "density":{"x1":1,"y1":1.0,"x2":8,"y2":0.25},
+      "density multiplier":{"x1":1,"y1":0.75,"x2":3,"y2":1.5},
+      "speed":{"x1":1,"y1":1.0,"x2":3,"y2":1.5}
     },
     "colour":12724739,
     "briefDescription":"calls meteors from the sky",
     "fullDescription":"Spawns a meteor shower. Meteor speed and amount increases when upgraded.",
     "usage":"rclick with a ghast tear"
   },
+  
+  
   
   {"className":"org.saga.abilities.Lightning",
     "name":"lightning",
