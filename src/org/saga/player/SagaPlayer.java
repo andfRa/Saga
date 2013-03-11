@@ -4,7 +4,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import org.bukkit.ChatColor;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.bukkit.Sound;
@@ -1011,11 +1010,28 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	 */
 	public void error(String message) {
 		
-		message(ChatColor.DARK_RED + message);
+		message(Colour.veryNegative + "Error! " + message);
           
 	}
-
 	
+	/**
+	 * Sends a info message.
+	 * 
+	 * @param message message
+	 */
+	public void info(String message) {
+    	
+		message(Colour.normal1 + "Info! " + message);
+        
+    }
+
+    public void warning(String message) {
+    	
+    	message(Colour.negative + "Warning! " + message);
+        
+    }
+	
+    
 	
 	// Effects and sounds:
 	/**
@@ -1464,20 +1480,5 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		
 	}
 	
-	
-	
-	// Debuging:
-	public void info(String message) {
-    	
-        if (livingEntity != null) livingEntity.sendMessage(Colour.normal1 + message);
-        
-    }
-
-    public void warning(String message) {
-
-        if (livingEntity != null)  this.livingEntity.sendMessage(Colour.negative + message);
-
-    }
-
     
 }
