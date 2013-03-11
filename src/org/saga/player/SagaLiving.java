@@ -538,7 +538,7 @@ public class SagaLiving <T extends LivingEntity>{
 		HashSet<Ability> abilities = getAbilities();
 		
 		for (Ability ability : abilities) {
-			if(ability.getName().equals(name)) return ability;
+			if(ability.getName().equalsIgnoreCase(name)) return ability;
 		}
 		
 		return null;
