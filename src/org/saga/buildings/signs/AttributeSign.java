@@ -150,7 +150,7 @@ public class AttributeSign extends BuildingSign{
 		sagaPlayer.setAttributeScore(attrName, nextScore);
 		
 		// Inform:
-		sagaPlayer.message(BuildingMessages.attributeIncreased(attrName, nextScore));
+		sagaPlayer.message(BuildingMessages.attributeTrained(attrName, nextScore));
 		
 		// Play effect:
 		StatsEffectHandler.playSign(sagaPlayer);

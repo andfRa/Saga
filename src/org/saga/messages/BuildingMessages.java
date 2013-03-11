@@ -357,78 +357,67 @@ public class BuildingMessages {
 	
 	
 	// Attribute sign:
+	public static String attributeTrained(String attribute, Integer score) {
+		return Colour.positive + "Trained " + attribute + " to " + score + ".";
+	}
+	
 	public static String attributeMaxReached(String attribute, Integer max) {
-		return Colour.negative + "Can't increase " + attribute + " above " + max + ".";
+		return Colour.negative + ChatUtil.capitalize(attribute) + " can't be trained above " + max + ".";
 	}
-
-	public static String attributeIncreased(String attribute, Integer score) {
-		return Colour.positive + ChatUtil.capitalize(attribute) + " increased to " + score + ".";
-	}
-
+	
 	public static String attributePointsRequired(String attribute) {
-		return Colour.negative + "Not enough attribute points to increase " + attribute + ".";
+		return Colour.negative + "Not enough attribute points to train " + attribute + ".";
 	}
 	
 	
 	
 	// Attribute reset sign:
 	public static String resetAttr(String attribute, Integer score) {
-		return Colour.normal1 + ChatUtil.capitalize(attribute) + " score reset to " + score + ".";
+		return Colour.normal1 + ChatUtil.capitalize(attribute) + " reset to " + score + ".";
 	}
 	
 	public static String attrAlreadyReset(String attribute) {
-		return Colour.negative + ChatUtil.capitalize(attribute) + " score is already 0.";
+		return Colour.negative + ChatUtil.capitalize(attribute) + " is already reset.";
 	}
 	
 	
 	
 	// Ability sign:
-	public static String abilityRequirementsNotMet(Ability ability, Integer score) {
-		return Colour.negative + "Requirements not met for " + ability.getName() + " " + RomanNumeral.binaryToRoman(score) + " ability.";
-	}
-	
-	public static String abilityUpgraded(Ability ability, Integer score) {
+	public static String abilityTrained(Ability ability, Integer score) {
 		
-		if(score == 1) return Colour.positive + "Learned " + ability.getName() + " " + RomanNumeral.binaryToRoman(score) + " ability.";
+		if(score == 1) return Colour.positive + "Learned " + ability.getName() + ".";
 		return Colour.positive + "Upgraded to " + ability.getName() + " " + RomanNumeral.binaryToRoman(score) + ".";
 		
 	}
 	
+	public static String abilityRequirementsNotMet(Ability ability, Integer score) {
+		return Colour.negative + "Requirements not met for " + ability.getName() + " " + RomanNumeral.binaryToRoman(score) + ".";
+	}
+	
 	public static String abilityMaxReached(String abilName) {
-		return Colour.negative + "Ability " + abilName + " can't be upgraded any further.";
+		return Colour.negative + ChatUtil.capitalize(abilName) + " can't be upgraded any further.";
 	}
 
 	public static String abilityPointsRequired(String ability) {
-		return Colour.negative + "Not enough ability points to increase " + ability + ".";
+		return Colour.negative + "Not enough ability points to upgrade " + ability + ".";
 	}
 	
 	
 	
 	// Ability reset:
 	public static String abilityAlreadyReset(String ability) {
-		return Colour.negative + ChatUtil.capitalize(ability) + " score is already 0.";
+		return Colour.negative + ChatUtil.capitalize(ability) + " is already reset.";
 	}
 	
 	public static String abilityReset(Ability ability, Integer score) {
 		
-		if(score <= 0) return Colour.positive + "Reset " + ability.getName() + " ability.";
-		return Colour.positive + "Reset to " + ability.getName() + " " + RomanNumeral.binaryToRoman(score) + ".";
+		if(score <= 0) return Colour.positive + "Reset " + ability.getName() + ".";
+		return Colour.positive + ChatUtil.capitalize(ability.getName()) + " reset to " + RomanNumeral.binaryToRoman(score) + ".";
 		
 	}
 	
 	
 	
-	// Upgrading:
-	public static String upgraded(Building building) {
-		return Colour.positive + ChatUtil.capitalize(building.getName()) + " upgraded.";
-	}
-	
-	public static String upgradeLimit(Building building) {
-		return Colour.negative + "Upgrade limit reached for " + building.getName() + ".";
-	}
-	
-
-
 	// Town square:
 	public static String noTownSquare(Bundle bundle){
 		return Colour.negative + "" + bundle.getName() + " doesn't have a " + ChatUtil.className(TownSquare.class) + ".";

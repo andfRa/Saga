@@ -164,7 +164,7 @@ public class AbilitySign extends BuildingSign{
 		sagaPlayer.setAblityScore(abilName, nextScore);
 		
 		// Inform:
-		sagaPlayer.message(BuildingMessages.abilityUpgraded(ability, nextScore));
+		sagaPlayer.message(BuildingMessages.abilityTrained(ability, nextScore));
 		
 		// Play effect:
 		StatsEffectHandler.playSign(sagaPlayer);
