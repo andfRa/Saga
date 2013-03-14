@@ -83,13 +83,24 @@ public class StatsEffectHandler {
 	
 	public static void playCrush(SagaLiving<?> sagaLiving) {
 		
-		// Smoke:
-		for (int i = 5; i <= 12; i++) {
-			sagaLiving.playGlobalEffect(Effect.SMOKE, i);
+		Location loc = sagaLiving.getLocation();
+		
+		double deg = 0.0;
+		double radius = 0.5;
+		
+		int[] datas = new int[]{5, 2, 1, 0, 3, 6, 7, 8};
+		
+		for (int i = 0; i < 8; i++) {
+			
+			double nx = radius * Math.cos(deg);
+			double nz = radius * -Math.sin(deg);
+			Location target = loc.clone().add(nx, 0.0, nz);
+			loc.getWorld().playEffect(target, Effect.SMOKE, datas[i]);
+			deg+= Math.PI / 4.0;
+			
 		}
 		
 		// Sound:
-		Location loc = sagaLiving.getLocation();
 		loc.getWorld().playSound(loc, Sound.FALL_BIG, 0.5f, 0.5f);
 		
 	}

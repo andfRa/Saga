@@ -444,8 +444,8 @@
       "jump duration":{"x1":1,"y1":0.15},
       "down speed":{"x1":1,"y1":-1.5},
       "damage threshold":{"x1":0,"y1":5.0},
-      "push radius":{"x1":1,"y1":2.0,"x2":3,"y2":2.0},
-      "push speed":{"x1":1,"y1":1.0,"x2":3,"y2":1.0},
+      "push radius":{"x1":1,"y1":2.0,"x2":3,"y2":3.0},
+      "push speed":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
       "push damage":{"x1":1,"y1":5.0,"x2":3,"y2":15.0} 
     },
     "colour":3599322,
