@@ -76,7 +76,7 @@ public class Charge extends Ability{
 	 */
 	@Override
 	public boolean handleInteractPreTrigger(PlayerInteractEvent event) {
-		return event.getPlayer().isSprinting() && super.handlePreTrigger();
+		return event.getPlayer().isSprinting() && getSagaLiving().isGrounded() && super.handlePreTrigger();
 	}
 	
 	/* 
@@ -130,34 +130,42 @@ public class Charge extends Ability{
 		velocity.normalize().multiply(speed);
 		attacker.setVelocity(velocity);
 		
-		// Sneak to make it look cool:
-		if(attacker instanceof Player) ((Player) attacker).setSneaking(true);
-		
-		// Push:
-		double pushRadius = getDefinition().getFunction(PUSH_RADIUS_KEY).value(getScore());
-		double pushSpeed = getDefinition().getFunction(PUSH_SPEED_KEY).value(getScore());
-		
-		List<Entity> nearby = attacker.getNearbyEntities(pushRadius, pushRadius, pushRadius);
-		for (Entity entity : nearby) {
-			
-			if(!(entity instanceof LivingEntity)) continue;
-			
-			LivingEntity defender = (LivingEntity) entity;
-			int damage = getDefinition().getFunction(PUSH_DAMAGE_KEY).intValue(getScore());
-			
-			// Damage event:
-			SagaEntityDamageEvent event = new SagaEntityDamageEvent(new EntityDamageEvent(attacker, DamageCause.FALLING_BLOCK, damage), defender);
-			SagaEventHandler.handleEntityDamage(event);
-			if(event.isCancelled()) continue;
-			
-			// Push:
-			sagaLiving.pushAwayEntity(defender, pushSpeed);
-			
-			// Damage:
-			defender.damage(damage, attacker);
-			
+		// Sneak and check push:
+		boolean push = true;
+		if(attacker instanceof Player){
+			((Player) attacker).setSneaking(true);
+			if(!((Player) attacker).isBlocking()) push = false;
 		}
 		
+		if(push){
+			
+			// Push:
+			double pushRadius = getDefinition().getFunction(PUSH_RADIUS_KEY).value(getScore());
+			double pushSpeed = getDefinition().getFunction(PUSH_SPEED_KEY).value(getScore());
+			
+			List<Entity> nearby = attacker.getNearbyEntities(pushRadius, pushRadius, pushRadius);
+			for (Entity entity : nearby) {
+				
+				if(!(entity instanceof LivingEntity)) continue;
+				
+				LivingEntity defender = (LivingEntity) entity;
+				int damage = getDefinition().getFunction(PUSH_DAMAGE_KEY).intValue(getScore());
+				
+				// Damage event:
+				SagaEntityDamageEvent event = new SagaEntityDamageEvent(new EntityDamageEvent(attacker, DamageCause.FALLING_BLOCK, damage), defender);
+				SagaEventHandler.handleEntityDamage(event);
+				if(event.isCancelled()) continue;
+				
+				// Push:
+				sagaLiving.pushAwayEntity(defender, pushSpeed);
+				
+				// Damage:
+				defender.damage(damage, attacker);
+				
+			}
+			
+		}
+				
 		Saga.plugin().getServer().getScheduler().scheduleSyncDelayedTask(Saga.plugin(), new Runnable() {
 			
 			@Override
