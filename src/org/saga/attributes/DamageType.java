@@ -36,11 +36,14 @@ public enum DamageType {
 
 			// Fireball:
 			if(edbye.getDamager() instanceof Fireball) return MAGIC;
-			
-			// Normal:
+
+			// Lightning:
 			if(edbye.getCause() == DamageCause.LIGHTNING) return OTHER;
+
+			// Melee:
+			if(edbye.getCause() == DamageCause.ENTITY_ATTACK) return MELEE;
 			
-			return MELEE;
+			return OTHER;
 			
 		}
 		
