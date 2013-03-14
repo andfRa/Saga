@@ -500,6 +500,11 @@ public class HelpMessages {
 		
 		book.add("A owned settlement provides taxes, more ranks and access to its " + GeneralMessages.command("/sspawn") + " command.");
 		
+		// Defeat:
+		if(FactionConfiguration.config().getSiegeEnableNoSettleDisband()){
+			book.add("The faction is defeated if all settlements are lost.");
+		}
+		
 		book.nextPage();
 		
 		// Affiliation:
