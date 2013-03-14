@@ -36,6 +36,6 @@
 "siegeShortRemindStartMinutes":10,
 "siegeShortRemindIntervalMinutes":1,
 "siegeInProgressRemindIntervalMinutes":5,
-"siegeEnableNoSettleDisband":true
+"siegeEnableNoSettleDisband":false
 
 }
