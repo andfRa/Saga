@@ -22,6 +22,7 @@ import org.saga.abilities.AbilityManager;
 import org.saga.attributes.AttributeManager;
 import org.saga.config.AbilityConfiguration;
 import org.saga.config.AttributeConfiguration;
+import org.saga.config.VanillaConfiguration;
 import org.saga.exceptions.InvalidAbilityException;
 import org.saga.settlements.Bundle;
 import org.saga.settlements.BundleManager;
@@ -825,6 +826,31 @@ public class SagaLiving <T extends LivingEntity>{
 
 		
 	}	
+	
+	/**
+	 * Checks if the entity on the ground.
+	 * 
+	 * @return true if on the ground
+	 */
+	public boolean isGrounded() {
+
+		if(livingEntity == null) return true;
+		return livingEntity.getLocation().getY() == livingEntity.getLocation().getBlockY();
+		
+	}
+	
+	/**
+	 * Checks if the entity is falling.
+	 * Not completely accurate!
+	 * 
+	 * @return true if falling
+	 */
+	public boolean isFalling() {
+
+		if(livingEntity == null) return false;
+		return -livingEntity.getVelocity().getY() > VanillaConfiguration.FALLING_VELOCITY_UNCERTAINTY;
+		
+	}
 	
 	
 	

@@ -48,6 +48,16 @@ public class VanillaConfiguration {
 	 * Maximum exhaustion.
 	 */
 	public static final float EXHAUSTION_MAX = 4.0f; 
+
+	/**
+	 * Falling velocity uncertainty.
+	 */
+	public static final double FALLING_VELOCITY_UNCERTAINTY = 0.25; 
+
+	/**
+	 * Falling minimum damage height.
+	 */
+	public static final float FALLING_MIMUM_DAMAGE_HEIGHT = 4.0f; 
 	
 	
 	/**

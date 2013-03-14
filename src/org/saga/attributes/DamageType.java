@@ -12,6 +12,7 @@ public enum DamageType {
 	RANGED,
 	MAGIC,
 	BURN,
+	FALL,
 	OTHER;
 	
 	
@@ -47,6 +48,8 @@ public enum DamageType {
 		else{
 			
 			if(event.getCause() == DamageCause.FIRE_TICK) return BURN;
+			
+			if(event.getCause() == DamageCause.FALL) return FALL;
 			
 		}
 		

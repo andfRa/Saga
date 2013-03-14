@@ -513,6 +513,15 @@ public class SagaEntityDamageEvent {
 	
 	
 	/**
+	 * Gets base damage.
+	 * 
+	 * @return base damage
+	 */
+	public int getBaseDamage() {
+		return event.getDamage();
+	}
+	
+	/**
 	 * Checks if the event is cancelled.
 	 * 
 	 * @return true if cancelled

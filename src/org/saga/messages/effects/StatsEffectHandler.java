@@ -81,6 +81,19 @@ public class StatsEffectHandler {
 		
 	}
 	
+	public static void playCrush(SagaLiving<?> sagaLiving) {
+		
+		// Smoke:
+		for (int i = 5; i <= 12; i++) {
+			sagaLiving.playGlobalEffect(Effect.SMOKE, i);
+		}
+		
+		// Sound:
+		Location loc = sagaLiving.getLocation();
+		loc.getWorld().playSound(loc, Sound.FALL_BIG, 0.5f, 0.5f);
+		
+	}
+	
 	public static void playRecharge(SagaLiving<?> sagaLiving) {
 	
 		// Flames:
