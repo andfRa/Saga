@@ -39,6 +39,15 @@ public class WarMessages {
 	}
 	
 	
+	public static String siegeDefeated(Faction attacker, Faction defender) {
+		return attacker.getColour2() + "Defeated " + FactionMessages.faction(defender) + ".";
+	}
+	
+	public static String siegeGotDefeated(Faction attacker, Faction defender) {
+		return defender.getColour2() + "The faction was defeated by " + FactionMessages.faction(attacker) + ".";
+	}
+	
+	
 	public static String alreadyOwned(Faction faction, Bundle bundle) {
 		return Colour.negative + "The faction already owns " + bundle.getName() + ".";
 	}

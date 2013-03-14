@@ -671,7 +671,13 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 * @return true if formed
 	 */
 	public boolean isFormed() {
-		return getMemberCount() >= FactionConfiguration.config().formationAmount;
+		
+		if(getMemberCount() < FactionConfiguration.config().formationAmount) return false;
+		
+		if(SiegeManager.manager().getOwnedBundleCount(id) < FactionConfiguration.config().getFormationSettlements()) return false;
+		
+		return true;
+		
 	}
 	
 	/**

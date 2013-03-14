@@ -666,6 +666,13 @@ public class FactionCommands {
 			rankName = GeneralMessages.nameFromArg(args.getString(1)).toLowerCase();
 			
 		}
+
+		// Formed:
+		if(!selFaction.isFormed()){
+			sagaPlayer.message(FactionMessages.notFormed(selFaction));
+			sagaPlayer.message(FactionMessages.notFormedInfo(selFaction));
+			return;
+		}
 		
 		// Force player:
 		SagaPlayer selPlayer;

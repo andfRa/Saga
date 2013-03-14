@@ -172,8 +172,24 @@ public class FactionMessages {
 	}
 	
 	public static String notFormedInfo(Faction faction) {
-
-		return Colour.normal1 + "The faction requires " + (FactionConfiguration.config().formationAmount-faction.getMemberCount()) + " more members.";
+		
+		StringBuffer result = new StringBuffer();
+		
+		if(FactionConfiguration.config().formationAmount != 0 || FactionConfiguration.config().getFormationSettlements() != 0){
+			
+			if(FactionConfiguration.config().formationAmount != 0){
+				result.append(FactionConfiguration.config().formationAmount + " members");
+			}
+			if(FactionConfiguration.config().getFormationSettlements() != 0){
+				if(result.length() > 0) result.append(" and ");
+				result.append(FactionConfiguration.config().getFormationSettlements() + " settlements");
+			}
+			
+		}else{
+			result.append("nothing");
+		}
+		
+		return Colour.normal1 + "The faction requires " + result.toString() + " to form.";
 		
 	}
 

@@ -41,6 +41,11 @@ public class FactionConfiguration {
 	public Integer formationAmount;
 
 	/**
+	 * Amount of settlements needed for the faction to form.
+	 */
+	public Integer formationSettlements;
+	
+	/**
 	 * Minimum name length.
 	 */
 	private Integer minNameLength;
@@ -153,6 +158,12 @@ public class FactionConfiguration {
 	private Integer siegeInProgressRemindIntervalMinutes;
 	
 	
+	/**
+	 * If true the faction will be disbanded when no owned settlements are left.
+	 */
+	private Boolean siegeEnableNoSettleDisband;
+	
+	
 	
 	// Ranks:
 	/**
@@ -190,9 +201,16 @@ public class FactionConfiguration {
 			factionOnlyPvp = true;
 		}
 		
+		
+		// Creation:
 		if(formationAmount == null){
 			SagaLogger.nullField(getClass(), "formationAmount");
 			formationAmount = 3;
+		}
+
+		if(formationSettlements == null){
+			SagaLogger.nullField(getClass(), "formationSettlements");
+			formationSettlements = 1;
 		}
 		
 		if(minNameLength == null){
@@ -204,6 +222,7 @@ public class FactionConfiguration {
 			SagaLogger.nullField(getClass(), "maxNameLength");
 			maxNameLength = 5;
 		}
+		
 		
 		if(claimsPerMinute == null){
 			SagaLogger.nullField(getClass(), "claimsPerMinute");
@@ -307,6 +326,12 @@ public class FactionConfiguration {
 			siegeInProgressRemindIntervalMinutes = 1;
 		}
 		
+		if(siegeEnableNoSettleDisband == null){
+			SagaLogger.nullField(getClass(), "siegeEnableNoSettleDisband");
+			siegeEnableNoSettleDisband = false;
+		}
+		
+		
 		
 		// Ranks:
 		if(hierarchyMin == null){
@@ -340,6 +365,15 @@ public class FactionConfiguration {
 	
 	
 	// Creation:
+	/**
+	 * Gets required settlements for formation.
+	 * 
+	 * @return required settlement amount
+	 */
+	public Integer getFormationSettlements() {
+		return formationSettlements;
+	}
+	
 	/**
 	 * Gets the minimum name length.
 	 * 
@@ -539,6 +573,15 @@ public class FactionConfiguration {
 	 */
 	public Integer getSiegeInProgressRemindIntervalMinutes() {
 		return siegeInProgressRemindIntervalMinutes;
+	}
+	
+	/**
+	 * Gets if the faction will get disbanded if no owned settles are left.
+	 * 
+	 * @return true if the faction will get disbanded
+	 */
+	public Boolean getSiegeEnableNoSettleDisband() {
+		return siegeEnableNoSettleDisband;
 	}
 	
 

@@ -12,6 +12,7 @@
 "factionOnlyPvp":true,
 
 "formationAmount":4,
+"formationSettlements":0,
 "minNameLength":3,
 "maxNameLength":6,
 
@@ -34,6 +35,7 @@
 "siegeLongRemindIntervalMinutes":30,
 "siegeShortRemindStartMinutes":10,
 "siegeShortRemindIntervalMinutes":1,
-"siegeInProgressRemindIntervalMinutes":5
+"siegeInProgressRemindIntervalMinutes":5,
+"siegeEnableNoSettleDisband":true
 
 }

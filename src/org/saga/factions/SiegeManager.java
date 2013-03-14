@@ -341,7 +341,10 @@ public class SiegeManager implements SecondTicker{
 		// Attacker success:
 		if(progress >= 1.0){
 			handleSiegeSucess(bundleID, attackerID);
+			handleDefeating(attackerID, defenderID);
 		}
+		
+		// Attack failure:
 		else if(progress <= -1.0){
 			handleSiegeFailure(bundleID, attackerID);
 		}
@@ -664,6 +667,46 @@ public class SiegeManager implements SecondTicker{
 		// Inform:
 		attacker.information(WarMessages.siegeAttackFailure(attacker, bundle));
 		if(defender != null) defender.information(WarMessages.siegeDefendSuccess(defender, bundle));
+		
+	}
+	
+	/**
+	 * Handles factions getting defeated after loosing settlements.
+	 * 
+	 * @param attackerID attacker faction ID
+	 * @param defenderID defender faction ID
+	 */
+	private void handleDefeating(Integer attackerID, Integer defenderID) {
+		
+		
+		// Check if enabled:
+		if(!FactionConfiguration.config().getSiegeEnableNoSettleDisband()) return;
+		
+		// Check if nothing left:
+		int owned = getOwnedBundleCount(defenderID);
+		if(owned > 0) return;
+		
+		// Factions:
+		Faction attacker = FactionManager.manager().getFaction(attackerID);
+		Faction defender = FactionManager.manager().getFaction(defenderID);
+
+		if(attacker == null){
+			SagaLogger.severe(getClass() + "no attacker faction for faction ID " + attackerID);
+			return;
+		}
+		if(defender == null){
+			SagaLogger.severe(getClass() + "no defender faction for faction ID " + defenderID);
+			return;
+		}
+		
+		
+		// Inform:
+		attacker.information(WarMessages.siegeDefeated(attacker, defender));
+		defender.information(WarMessages.siegeGotDefeated(attacker, defender));
+		
+		// Delete:
+		defender.delete();
+		
 		
 	}
 	
