@@ -414,15 +414,15 @@
     "buildingsRequired":{3:["armoury"]},
     "proficienciesRequired":{1:["warrior","knight"]},
     "functions":{
-      "speed":{"x1":1,"y1":2.0,"x2":3,"y2":3.0},
+      "speed":{"x1":1,"y1":1.5,"x2":3,"y2":2.5},
       "duration":{"x1":1,"y1":0.75,"x2":3,"y2":1.0},
-      "push radius":{"x1":1,"y1":2.0,"x2":3,"y2":2.0},
-      "push speed":{"x1":1,"y1":1.0,"x2":3,"y2":1.0},
-      "push damage":{"x1":1,"y1":5.0,"x2":3,"y2":15.0} 
+      "push radius":{"x1":1,"y1":2.0},
+      "push speed":{"x1":1,"y1":1.0},
+      "push damage":{"x1":1,"y1":5.0} 
     },
     "colour":3599322,
     "briefDescription":"charges towards target",
-    "fullDescription":"Charges the player towards the target. Increased damage, speed and duration when upgraded.",
+    "fullDescription":"Charges the player towards the target. Increased speed and duration when upgraded.",
     "usage":"sprint and block"
   },
 
@@ -444,13 +444,13 @@
       "jump duration":{"x1":1,"y1":0.15},
       "down speed":{"x1":1,"y1":-1.5},
       "damage threshold":{"x1":0,"y1":5.0},
-      "push radius":{"x1":1,"y1":2.0,"x2":3,"y2":3.0},
-      "push speed":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
-      "push damage":{"x1":1,"y1":5.0,"x2":3,"y2":15.0} 
+      "push radius":{"x1":1,"y1":2.0,"x2":3,"y2":4.0},
+      "push speed":{"x1":1,"y1":1.0,"x2":3,"y2":3.0},
+      "push damage":{"x1":1,"y1":5.0,"x2":3,"y2":5.0} 
     },
     "colour":3599322,
     "briefDescription":"jumps and crushes hostiles",
-    "fullDescription":"Falling on mobs or players damage them. Increased damage when upgraded.",
+    "fullDescription":"Falling on mobs or players damage them. Increased radius and power when upgraded.",
     "usage":"jump and block"
   },
   
