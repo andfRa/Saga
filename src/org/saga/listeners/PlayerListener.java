@@ -229,7 +229,7 @@ public class PlayerListener implements Listener {
 		sagaPlayer.getAbilityManager().onInteract(event);
 		
 		// Recancel:
-		if(recancel) event.setCancelled(false);
+		if(recancel) event.setCancelled(true);
 		
 		
 	}
