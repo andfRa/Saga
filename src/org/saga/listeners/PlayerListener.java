@@ -195,20 +195,13 @@ public class PlayerListener implements Listener {
 		SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
 		if(sagaPlayer == null) return;
 		
-		// Uncancel:
-		boolean recancel = false;
-		if(event.isCancelled()){
-			event.setCancelled(false);
-			recancel = true;
-		}
-
+		// Forward to ability manager:
+		sagaPlayer.getAbilityManager().onInteract(event);
+		
+		if(event.isCancelled()) return;
+		
 		// Get Saga chunk:
-		Location location = null;
-		if(event.getClickedBlock() != null){
-			location = event.getClickedBlock().getLocation();
-		}else{
-			location = event.getPlayer().getLocation();
-		}
+		Location location = event.getClickedBlock() != null ? event.getClickedBlock().getLocation() : event.getPlayer().getLocation();
 		SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(location.getWorld().getChunkAt(location));
 		
 		// Build event:
@@ -222,14 +215,6 @@ public class PlayerListener implements Listener {
 
 		// Forward to saga chunk:
 		if(sagaChunk != null) sagaChunk.onPlayerInteract(event, sagaPlayer);
-		
-		if(event.isCancelled()) return;
-		
-		// Forward to managers:
-		sagaPlayer.getAbilityManager().onInteract(event);
-		
-		// Recancel:
-		if(recancel) event.setCancelled(true);
 		
 		
 	}
