@@ -1,6 +1,6 @@
 name: Saga
 main: org.saga.Saga
-version: 0.9
+version: 0.9.1
 author: andfRa
 softdepend:
   - GroupManager
