@@ -744,7 +744,7 @@ public class BuildingCommands {
 		aliases = {"bsetspawn"},
 		usage = "",
 		flags = "",
-		desc = "Sets the spawn of area of the settlement.",
+		desc = "Set spawn area for town square.",
 		min = 0,
 		max = 0)
 	@CommandPermissions({"saga.user.building.townsquare.setspawn"})
