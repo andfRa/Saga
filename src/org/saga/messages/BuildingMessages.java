@@ -423,6 +423,10 @@ public class BuildingMessages {
 		return Colour.negative + "" + bundle.getName() + " doesn't have a " + ChatUtil.className(TownSquare.class) + ".";
 	}
 	
+	public static String townSquareSpawnAreaSet(){
+		return Colour.positive + "Spawn area set.";
+	}
+	
 	
 	// Farm:
 	public static String farmAnimalsDamageDeny() {

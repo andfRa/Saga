@@ -740,6 +740,42 @@ public class BuildingCommands {
 		
 	}
 	
+	@Command(
+		aliases = {"bsetspawn"},
+		usage = "",
+		flags = "",
+		desc = "Sets the spawn of area of the settlement.",
+		min = 0,
+		max = 0)
+	@CommandPermissions({"saga.user.building.townsquare.setspawn"})
+	public static void setSpawn(CommandContext args, Saga plugin, SagaPlayer sagaPlayer) {
+
+		
+		// Retrieve building:
+		TownSquare selBuilding = null;
+		try {
+			selBuilding = Building.retrieveBuilding(args, plugin, sagaPlayer, TownSquare.class);
+		} catch (Throwable e) {
+			sagaPlayer.message(e.getMessage());
+			return;
+		}
+	
+		// Permission:
+		Bundle selBundle = selBuilding.getChunkBundle();
+		if(!selBundle.hasPermission(sagaPlayer, SettlementPermission.TOWN_SQUARE_SET_SPAWN)){
+			sagaPlayer.message(GeneralMessages.noPermission(selBundle));
+			return;
+		}
+		
+		// Set location:
+		selBuilding.setSpawn(new SagaLocation(sagaPlayer.getLocation()));
+		
+		// Inform:
+		sagaPlayer.message(BuildingMessages.townSquareSpawnAreaSet());
+			
+	}
+	
+	
 	public static void handleSpawn(SagaPlayer sagaPlayer, Bundle bundle){
 		
 
@@ -801,7 +837,7 @@ public class BuildingCommands {
 		selBuilding.getSagaChunk().loadChunk();
 		
 		// Location:
-		Location spawnLocation = selBuilding.getSpawnLocation();
+		Location spawnLocation = selBuilding.findSpawnLocation();
 		if(spawnLocation == null){
 			
 			SagaLogger.severe(selBuilding, sagaPlayer + " player failed to respawn at " + selBuilding.getDisplayName());

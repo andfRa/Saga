@@ -1266,6 +1266,7 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 		SET_AFFILIATION,
 		SET_ROLE,
 		SET_BUILDING,
+		TOWN_SQUARE_SET_SPAWN,
 		REMOVE_AFFILIATION,
 		REMOVE_BUILDING,
 		REMOVE_COINS,

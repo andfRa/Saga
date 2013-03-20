@@ -1,21 +1,31 @@
 package org.saga.buildings;
 
+import java.util.HashSet;
 import java.util.Hashtable;
 
 import org.bukkit.Location;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.util.Vector;
 import org.saga.Clock.SecondTicker;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.exceptions.InvalidBuildingException;
+import org.saga.exceptions.InvalidLocationException;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.SagaChunk;
+import org.saga.utility.SagaLocation;
 
 public class TownSquare extends Building implements SecondTicker{
 	
+	
+	/**
+	 * Maximum number of spawn blocks.
+	 */
+	transient private final int SPAWN_BLOCK_LIMIT = 64;
 	
 	/**
 	 * Damage immunity after respawn.
@@ -27,6 +37,12 @@ public class TownSquare extends Building implements SecondTicker{
 	 * Immunity times.
 	 */
 	transient private Hashtable<String, Long> protectionTimes;
+	
+	
+	/**
+	 * Spawn location.
+	 */
+	private SagaLocation spawn = null;
 	
 	
 	
@@ -52,11 +68,21 @@ public class TownSquare extends Building implements SecondTicker{
 	@Override
 	public boolean complete() throws InvalidBuildingException {
 		
-		boolean integrity = super.complete();
+		super.complete();
 		
+		if(spawn != null)
+			try {
+				spawn.complete();
+			}
+			catch (InvalidLocationException e) {
+				SagaLogger.severe(this, "invalid spawn location: " + spawn);
+				spawn = null;
+			}
+		
+		// Transient:
 		protectionTimes = new Hashtable<String, Long>();
 		
-		return integrity;
+		return true;
 		
 	}
 	
@@ -114,11 +140,47 @@ public class TownSquare extends Building implements SecondTicker{
 	
 	
 	/**
-	 * Gets the spawn location on this chunk.
+	 * Gets the spawn location.
 	 * 
-	 * @return spawn location, null if not found
+	 * @return the spawnLocation, null if none
 	 */
-	public Location getSpawnLocation() {
+	public SagaLocation getSpawn() {
+		return spawn;
+	}
+
+	
+	/**
+	 * Sets the spawn location.
+	 * 
+	 * @param spawn the spawnLocation to set, null if none
+	 */
+	public void setSpawn(SagaLocation spawn) {
+		this.spawn = spawn;
+	}
+	
+	
+	/**
+	 * Finds the spawn location.
+	 * 
+	 * @return finds the spawn location
+	 */
+	public Location findSpawnLocation() {
+
+		Location location = findLeveledSpawnLocation();
+		if(location != null) return location;
+		
+		location = findTopSpawnLocation();
+		return location;
+		
+	}
+	
+
+	/**
+	 * Finds the top spawn location on this chunk.
+	 * 
+	 * @return top spawn location, null if not found
+	 */
+	public Location findTopSpawnLocation() {
 
 		
 		SagaChunk sagaChunk = getSagaChunk();
@@ -148,6 +210,110 @@ public class TownSquare extends Building implements SecondTicker{
 		
 	}
 	
+	/**
+	 * Finds the levelled spawn location on this chunk.
+	 * 
+	 * @return levelled spawn location, null if not found or not possible
+	 */
+	public Location findLeveledSpawnLocation() {
+		
+		if(spawn == null) return null;
+		
+		SagaChunk sagaChunk = getSagaChunk();
+		if(sagaChunk == null) return null;
+		
+		// Possible spawn blocks:
+		HashSet<Block> blocks = new HashSet<Block>();
+		fillAdjecentValid(spawn.getLocation().getBlock(), blocks);
+		if(blocks.size() == 0) return null;
+		
+		int next = Saga.RANDOM.nextInt(blocks.size());
+		for (Block block : blocks) {
+			if(next == 0) return block.getLocation().add(0.5, 0.5, 0.5);
+			next--;
+		}
+		
+		return null;
+		
+	}
+	
+	/**
+	 * Fills the blocks set with all possible spawn location blocks.
+	 * 
+	 * @param anchor anchor block
+	 * @param blocks all blocks
+	 * @return true if the anchor block was valid
+	 */
+	public boolean fillAdjecentValid(Block anchor, HashSet<Block> blocks) {
+		
+		Block up = anchor.getRelative(BlockFace.UP);
+		Block same = anchor.getRelative(BlockFace.SELF);
+		Block down = anchor.getRelative(BlockFace.DOWN);
+		
+		// Limit:
+		if(blocks.size() > SPAWN_BLOCK_LIMIT) return false;
+		
+		// Add block:
+		if(blocks.contains(anchor)) return false;
+		if(isValidSpawnBlock(anchor)){
+			blocks.add(anchor);
+		}else{
+			return false;
+		}
+		
+		// Self:
+		if(same.getRelative(BlockFace.SELF).getChunk() == anchor.getChunk())
+			if(!fillAdjecentValid(same.getRelative(BlockFace.SELF), blocks))
+				if(!fillAdjecentValid(down.getRelative(BlockFace.SELF), blocks))
+					fillAdjecentValid(up.getRelative(BlockFace.SELF), blocks);
+		
+		// North:
+		if(same.getRelative(BlockFace.NORTH).getChunk() == anchor.getChunk())
+			if(!fillAdjecentValid(same.getRelative(BlockFace.NORTH), blocks))
+				if(!fillAdjecentValid(down.getRelative(BlockFace.NORTH), blocks))
+					fillAdjecentValid(up.getRelative(BlockFace.NORTH), blocks);
+		
+		// East:
+		if(same.getRelative(BlockFace.EAST).getChunk() == anchor.getChunk())
+			if(!fillAdjecentValid(same.getRelative(BlockFace.EAST), blocks))
+				if(!fillAdjecentValid(down.getRelative(BlockFace.EAST), blocks))
+					fillAdjecentValid(up.getRelative(BlockFace.EAST), blocks);
+		
+		// South:
+		if(same.getRelative(BlockFace.SOUTH).getChunk() == anchor.getChunk())
+			if(!fillAdjecentValid(same.getRelative(BlockFace.SOUTH), blocks))
+				if(!fillAdjecentValid(down.getRelative(BlockFace.SOUTH), blocks))
+					fillAdjecentValid(up.getRelative(BlockFace.SOUTH), blocks);
+		
+		// West:
+		if(same.getRelative(BlockFace.WEST).getChunk() == anchor.getChunk())
+			if(!fillAdjecentValid(same.getRelative(BlockFace.WEST), blocks))
+				if(!fillAdjecentValid(down.getRelative(BlockFace.WEST), blocks))
+					fillAdjecentValid(up.getRelative(BlockFace.WEST), blocks);
+		
+		return true;
+		
+	}
+
+	
+	/**
+	 * Checks if the block is valid for spawning.
+	 * 
+	 * @param block block
+	 * @return true if valid
+	 */
+	public boolean isValidSpawnBlock(Block block) {
+		
+		if(!block.getRelative(BlockFace.DOWN).getType().isSolid()) return false;
+		
+		if(block.getType().isSolid()) return false;
+		if(block.getRelative(BlockFace.UP).getType().isSolid()) return false;
+		if(block.getRelative(BlockFace.UP).getRelative(BlockFace.UP).getType().isSolid()) return false;
+		
+		return true;
+		
+	}
+
 	/**
 	 * Prepares the chunk.
 	 * 
@@ -195,7 +361,7 @@ public class TownSquare extends Building implements SecondTicker{
 		prepareChunk();
 		
 		// Respawn:
-		Location spawnLocation = getSpawnLocation();
+		Location spawnLocation = findSpawnLocation();
 		
 		if(spawnLocation == null){
 			SagaLogger.severe(this, "can't continue with onMemberRespawnEvent, because the location can't be retrieved");
