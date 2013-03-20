@@ -846,6 +846,11 @@ public class BuildingCommands {
 			
 		}
 		
+		// Direction:
+		Location playerLocation = sagaPlayer.getLocation();
+		spawnLocation.setPitch(playerLocation.getPitch());
+		spawnLocation.setYaw(playerLocation.getYaw());
+		
 		// Teleport:
 		sagaPlayer.teleport(spawnLocation);
 		
