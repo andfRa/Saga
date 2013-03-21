@@ -19,6 +19,7 @@ import org.bukkit.util.Vector;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
+import org.saga.abilities.AbilityDefinition;
 import org.saga.abilities.AbilityManager;
 import org.saga.attributes.AttributeManager;
 import org.saga.config.AbilityConfiguration;
@@ -500,9 +501,8 @@ public class SagaLiving <T extends LivingEntity>{
 		Integer score = getRawAbilityScore(abilName);
 		if(score == 0) return 0;
 		
-		Ability ability = getAbility(abilName);
-		
-		Integer maxScore = ability.getDefinition().findScore(this);
+		AbilityDefinition definition = AbilityConfiguration.config().getDefinition(abilName);
+		Integer maxScore = definition.findScore(this);
 		if(score > maxScore) score = maxScore;
 		
 		return score;
