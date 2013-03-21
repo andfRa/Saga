@@ -16,6 +16,7 @@ import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.listeners.events.SagaEventHandler;
 import org.saga.messages.effects.StatsEffectHandler;
 import org.saga.player.SagaLiving;
+import org.saga.player.SagaPlayer;
 
 public class Crush extends Ability{
 	
@@ -153,11 +154,18 @@ public class Crush extends Ability{
 		SagaLiving sagaLiving = getSagaLiving();
 		LivingEntity attacker = sagaLiving.getWrapped();
 		
-		// Blocking:
-		if(!event.defenderPlayer.getPlayer().isBlocking()) return false;
-		
-		// Stop crouching:
-		event.defenderPlayer.getPlayer().setSneaking(false);
+		// Player:
+		if(event.sagaDefender instanceof SagaPlayer){
+			
+			Player defenderPlayer = ((SagaPlayer) event.sagaDefender).getPlayer();
+			
+			// Blocking:
+			if(!defenderPlayer.isBlocking()) return false;
+			
+			// Stop crouching:
+			defenderPlayer.setSneaking(false);
+			
+		}
 		
 		// Push:
 		boolean trigger = false;

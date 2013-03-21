@@ -69,9 +69,9 @@ public class Backstab extends Ability{
 	public boolean triggerAttack(SagaEntityDamageEvent event) {
 		
 		
-		if(event.attackerPlayer == null) return false;
+		if(event.sagaAttacker == null) return false;
 		LivingEntity defender = event.getDefender();
-		LivingEntity attacker = event.attackerPlayer.getPlayer();
+		LivingEntity attacker = event.sagaAttacker.getWrapped();
 		
 		if(defender == null || attacker == null) return false;
 		

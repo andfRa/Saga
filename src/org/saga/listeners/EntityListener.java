@@ -33,6 +33,7 @@ import org.saga.listeners.events.SagaEntityDeathEvent;
 import org.saga.listeners.events.SagaEventHandler;
 import org.saga.metadata.SpawnerTag;
 import org.saga.player.GuardianRune;
+import org.saga.player.SagaLiving;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.BundleManager;
 import org.saga.settlements.SagaChunk;
@@ -68,19 +69,19 @@ public class EntityListener implements Listener{
 		if(damageEvent.isCancelled()) return;
 		
 		// Forward to managers:
-		SagaPlayer attackerPlayer = damageEvent.attackerPlayer;
-		SagaPlayer defenderPlayer = damageEvent.defenderPlayer;
-		if(defenderPlayer != null){
+		SagaLiving sagaAttacker = damageEvent.sagaAttacker;
+		SagaLiving sagaDefender = damageEvent.sagaDefender;
+		if(sagaDefender != null){
 			
-			defenderPlayer.getAttributeManager().handleDefend(damageEvent);
-			defenderPlayer.getAbilityManager().onDefend(damageEvent);
+			sagaDefender.getAttributeManager().handleDefend(damageEvent);
+			sagaDefender.getAbilityManager().onDefend(damageEvent);
 			
 		}
 		
-		if(attackerPlayer != null){
+		if(sagaAttacker != null){
 			
-			attackerPlayer.getAttributeManager().handleAttack(damageEvent);
-			attackerPlayer.getAbilityManager().onAttack(damageEvent);
+			sagaAttacker.getAttributeManager().handleAttack(damageEvent);
+			sagaAttacker.getAbilityManager().onAttack(damageEvent);
 			
 		}
 		
@@ -189,19 +190,22 @@ public class EntityListener implements Listener{
 		
 		SagaEntityDeathEvent sagaEvent = new SagaEntityDeathEvent(event, event.getEntity());
 		
-		SagaPlayer sagaDead = null;
-		SagaPlayer sagaAttacker = null;
+		SagaLiving sagaDefender = null;
+		SagaLiving sagaAttacker = null;
 		Creature deadCreature = null;
 		
 		if(sagaEvent.getLastDamageEvent() != null){
-			sagaDead = sagaEvent.getLastDamageEvent().defenderPlayer;
-			sagaAttacker = sagaEvent.getLastDamageEvent().attackerPlayer;
-			deadCreature =  sagaEvent.getLastDamageEvent().defenderCreature;
+			sagaDefender = sagaEvent.getLastDamageEvent().sagaDefender;
+			sagaAttacker = sagaEvent.getLastDamageEvent().sagaAttacker;
+			deadCreature =  sagaEvent.getLastDamageEvent().creatureDefender;
 		}
 		
 		
 		// Player got killed by a player:
-		if(sagaDead != null && sagaAttacker != null){
+		if(sagaDefender instanceof SagaPlayer && sagaAttacker instanceof SagaPlayer){
+			
+			SagaPlayer attackerPlayer = (SagaPlayer) sagaAttacker;
+			SagaPlayer defenderPlayer = (SagaPlayer) sagaDefender;
 			
 			// Get saga chunk:
 			Location location = sagaAttacker.getLocation();
@@ -209,13 +213,13 @@ public class EntityListener implements Listener{
 			SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(chunk);
 			
 			// Forward to chunk:
-			if(sagaChunk != null) sagaChunk.onPvpKill(sagaAttacker, sagaDead);
+			if(sagaChunk != null) sagaChunk.onPvpKill(attackerPlayer, defenderPlayer);
 			
 			// Forward to faction:
-			Faction attackerFaction = sagaAttacker.getFaction();
-			Faction deadFaction = sagaDead.getFaction();
-			if(attackerFaction != null) attackerFaction.onPvpKill(sagaAttacker, sagaDead);
-			if(deadFaction != null && deadFaction != attackerFaction) deadFaction.onPvpKill(sagaAttacker, sagaDead);
+			Faction attackerFaction = attackerPlayer.getFaction();
+			Faction deadFaction = defenderPlayer.getFaction();
+			if(attackerFaction != null) attackerFaction.onPvpKill(attackerPlayer, defenderPlayer);
+			if(deadFaction != null && deadFaction != attackerFaction) deadFaction.onPvpKill(attackerPlayer, defenderPlayer);
 			
 			
 		}
@@ -226,11 +230,13 @@ public class EntityListener implements Listener{
 		}
 		
 		// Player got killed:
-		if(sagaDead != null){
+		if(sagaDefender instanceof SagaPlayer){
+			
+			SagaPlayer defenderPlayer = (SagaPlayer) sagaDefender;
 			
 			// Guardian rune:
-			GuardianRune rune = sagaDead.getGuardRune();
-			if(rune.isEnabled()) GuardianRune.handleAbsorb(sagaDead, event);
+			GuardianRune rune = defenderPlayer.getGuardRune();
+			if(rune.isEnabled()) GuardianRune.handleAbsorb(defenderPlayer, event);
 			
 		}
 		

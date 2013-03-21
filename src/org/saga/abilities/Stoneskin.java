@@ -65,7 +65,7 @@ public class Stoneskin extends Ability{
 		event.multiplyDamage(multiplier);
 		
 		// Effect:
-		if(event.defenderPlayer != null) event.defenderPlayer.playGlobalEffect(Effect.STEP_SOUND, Material.STONE.getId());
+		if(event.sagaDefender != null) event.sagaDefender.playGlobalEffect(Effect.STEP_SOUND, Material.STONE.getId());
 		
 		return false;
 		

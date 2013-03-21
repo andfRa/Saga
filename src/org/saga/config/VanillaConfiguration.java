@@ -11,13 +11,14 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.Ghast;
+import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.saga.SagaLogger;
-import org.saga.player.SagaPlayer;
 import org.saga.settlements.SagaMap;
 import org.saga.utility.chat.ChatFramer;
 
@@ -72,11 +73,15 @@ public class VanillaConfiguration {
 	 * Thanks, gamerzap.
 	 * 
 	 * @param event event
-	 * @param sagaPlayer saga player
+	 * @param living living entity
 	 * @return armour multiplier
 	 */
-	public static double getArmourMultiplier(EntityDamageEvent event, SagaPlayer sagaPlayer) {
+	public static double getArmourMultiplier(EntityDamageEvent event, LivingEntity living) {
 		
+		
+		Player player = null;
+		if(living instanceof Player) player = (Player) living;
+		if(player == null) return 1.0;
 		
 		// Armour not effective:
 		if(
@@ -88,9 +93,7 @@ public class VanillaConfiguration {
 			event.getCause() != DamageCause.BLOCK_EXPLOSION
 		) return 1.0;
 
-		if(sagaPlayer.getPlayer() == null) return 1.0;
-		
-		PlayerInventory inventory = sagaPlayer.getPlayer().getInventory();
+		PlayerInventory inventory = player.getInventory();
 
 		ItemStack boots = inventory.getBoots();
 		ItemStack helmet = inventory.getHelmet();
@@ -139,14 +142,9 @@ public class VanillaConfiguration {
 	/**
 	 * Gets the blocking multiplier.
 	 * 
-	 * 
-	 * @param event event
-	 * @param sagaPlayer saga player
-	 * @return blocking multiplier
 	 */
 	public static double getBlockingMultiplier() {
 		
-			
 		return 0.5;
 		
 	}
@@ -155,13 +153,17 @@ public class VanillaConfiguration {
 	 * Checks if the damage will be blocked.
 	 * 
 	 * @param event event
-	 * @param defenderPlayer defender player
+	 * @param living living entity
 	 * @return true if blocked
 	 */
-	public static boolean checkBlocking(EntityDamageEvent event, SagaPlayer defenderPlayer) {
+	public static boolean checkBlocking(EntityDamageEvent event, LivingEntity living) {
 
+		Player player = null;
+		if(living instanceof Player) player = (Player) living;
+		if(player == null) return false;
+		
 		DamageCause cause = event.getCause();
-		return defenderPlayer.getPlayer().isBlocking() && (cause == DamageCause.ENTITY_ATTACK || cause == DamageCause.PROJECTILE || cause == DamageCause.ENTITY_EXPLOSION || cause == DamageCause.BLOCK_EXPLOSION);
+		return player.isBlocking() && (cause == DamageCause.ENTITY_ATTACK || cause == DamageCause.PROJECTILE || cause == DamageCause.ENTITY_EXPLOSION || cause == DamageCause.BLOCK_EXPLOSION);
 		
 	}
 	
@@ -169,15 +171,17 @@ public class VanillaConfiguration {
 	 * Gets the damage amount EPF multiplier for enchantments.
 	 * 
 	 * @param event event
-	 * @param sagaPlayer saga player
+	 * @param living living entity
 	 * @return EPF multiplier
 	 */
-	public static double getEPFMultiplier(EntityDamageEvent event, SagaPlayer sagaPlayer) {
+	public static double getEPFMultiplier(EntityDamageEvent event, LivingEntity living) {
 		
 		
-		if(sagaPlayer.getPlayer() == null) return 1.0;
+		Player player = null;
+		if(living instanceof Player) player = (Player) living;
+		if(player == null) return 1.0;
 		
-		PlayerInventory inventory = sagaPlayer.getPlayer().getInventory();
+		PlayerInventory inventory = player.getInventory();
 
 		ItemStack boots = inventory.getBoots();
 		ItemStack helmet = inventory.getHelmet();

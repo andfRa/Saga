@@ -201,7 +201,7 @@ public class AttributeManager {
 				
 				if(randomBoolean(defenderManager.getDefendModifier(AttributeParameter.BURN_RESIST))){
 					event.cancel();
-					event.defenderPlayer.playGlobalEffect(Effect.EXTINGUISH, 0);
+					event.sagaDefender.playGlobalEffect(Effect.EXTINGUISH, 0);
 				}
 
 				break;

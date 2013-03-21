@@ -2,7 +2,7 @@ package org.saga.abilities;
 
 import org.bukkit.entity.Creature;
 import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.player.SagaPlayer;
+import org.saga.player.SagaLiving;
 
 public class ForceBow extends Ability{
 
@@ -55,19 +55,19 @@ public class ForceBow extends Ability{
 		if(speed < 0) return false;
 		
 		// Force:
-		SagaPlayer attackerPlayer = event.attackerPlayer;
-		SagaPlayer defenderPlayer = event.defenderPlayer;
-		Creature defenderCreature = event.defenderCreature;
+		SagaLiving sagaAttacker = event.sagaAttacker;
+		SagaLiving sagaDefender = event.sagaDefender;
+		Creature defenderCreature = event.creatureDefender;
 		
-		if(defenderPlayer != null){
+		if(sagaDefender != null){
 			
-			attackerPlayer.pushAwayEntity(defenderPlayer.getPlayer(), speed);
+			sagaAttacker.pushAwayEntity(sagaDefender.getWrapped(), speed);
 			
 		}
 		
 		else if(defenderCreature != null){
 			
-			attackerPlayer.pushAwayEntity(defenderCreature, speed);
+			sagaAttacker.pushAwayEntity(defenderCreature, speed);
 			
 		}
 		

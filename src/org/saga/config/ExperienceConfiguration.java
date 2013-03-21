@@ -10,7 +10,7 @@ import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.bukkit.entity.Creature;
 import org.saga.SagaLogger;
 import org.saga.abilities.Ability;
-import org.saga.player.SagaPlayer;
+import org.saga.player.SagaLiving;
 import org.saga.saveload.Directory;
 import org.saga.saveload.WriterReader;
 import org.saga.utility.TwoPointFunction;
@@ -289,19 +289,17 @@ public class ExperienceConfiguration {
 	}
 
 	/**
-	 * gets the experience for a creature kill.
+	 * gets the experience for a player kill.
 	 * 
-	 * @param sagaPlayer saga player
+	 * @param sagaDefender saga player
 	 * @return experience
 	 */
-	public Double getExp(SagaPlayer sagaPlayer) {
-
+	public Double getExp(SagaLiving sagaDefender) {
 		
-		Double exp = playerExp.value(sagaPlayer.getUsedAttributePoints());
+		Double exp = playerExp.value(sagaDefender.getUsedAttributePoints());
 		if(exp == null) return 0.0;
 		
 		return exp;
-		
 		
 	}
 	

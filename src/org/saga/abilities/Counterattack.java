@@ -87,8 +87,8 @@ public class Counterattack extends Ability{
 		
 		// Attacker:
 		LivingEntity attacker = null;
-		if(event.attackerPlayer != null) attacker = event.attackerPlayer.getPlayer();
-		else if(event.attackerCreature != null) attacker = event.attackerCreature;
+		if(event.sagaAttacker != null) attacker = event.sagaAttacker.getWrapped();
+		else if(event.creatureAttacker != null) attacker = event.creatureAttacker;
 		else return false;
 		
 		// Check degrees:
@@ -111,11 +111,11 @@ public class Counterattack extends Ability{
 		// Calculate actual damage:
 		double damage = edbeEvent.getDamage();
 		
-		if(event.attackerPlayer instanceof SagaPlayer){
+		if(event.sagaAttacker instanceof SagaPlayer){
 			
-			damage*= VanillaConfiguration.getArmourMultiplier(edbeEvent, (SagaPlayer)event.attackerPlayer);
-			damage*= VanillaConfiguration.getEPFMultiplier(edbeEvent, (SagaPlayer)event.attackerPlayer);
-			if(VanillaConfiguration.checkBlocking(edbeEvent, (SagaPlayer)event.attackerPlayer))
+			damage*= VanillaConfiguration.getArmourMultiplier(edbeEvent, event.sagaAttacker.getWrapped());
+			damage*= VanillaConfiguration.getEPFMultiplier(edbeEvent, event.sagaAttacker.getWrapped());
+			if(VanillaConfiguration.checkBlocking(edbeEvent, event.sagaAttacker.getWrapped()))
 				damage*= VanillaConfiguration.getBlockingMultiplier();
 			
 		}

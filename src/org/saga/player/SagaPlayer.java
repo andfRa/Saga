@@ -497,7 +497,7 @@ public class SagaPlayer extends SagaLiving implements Trader{
 		
 		if(wrapped == null) return;
 		
-		getPlayer().setHealth(getHalfHearts());
+		getWrapped().setHealth(getHalfHearts());
 		
 	}
 	
@@ -520,7 +520,7 @@ public class SagaPlayer extends SagaLiving implements Trader{
 			return 19;
 		}
 		
-		if(wrapped != null && getPlayer().getHealth() == 20 && this.health < totalHealth){
+		if(wrapped != null && getWrapped().getHealth() == 20 && this.health < totalHealth){
 			return 19;
 		}
 		
@@ -575,7 +575,7 @@ public class SagaPlayer extends SagaLiving implements Trader{
 		
 		if(wrapped == null) return 0;
 		
-		return getPlayer().getFoodLevel();
+		return getWrapped().getFoodLevel();
 		
 	}
 	
@@ -588,7 +588,7 @@ public class SagaPlayer extends SagaLiving implements Trader{
 	public void modFoodLevel(int amount) {
 		
 		if(wrapped == null) return;
-		getPlayer().setFoodLevel(getPlayer().getFoodLevel() + amount);
+		getWrapped().setFoodLevel(getWrapped().getFoodLevel() + amount);
 		
 	}
 	
@@ -644,12 +644,14 @@ public class SagaPlayer extends SagaLiving implements Trader{
 		
 	}
 	
-	/**
+	/* 
 	 * Awards player experience.
 	 * 
-	 * @param amount amount of exp
+	 * @see org.saga.player.SagaLiving#awardExp(java.lang.Double)
 	 */
+	@Override
 	public void awardExp(Double amount) {
+		
 		
 		amount*= ExperienceConfiguration.config().getExpGainMultiplier(exp);
 		amount*= getExpMult();
@@ -703,18 +705,17 @@ public class SagaPlayer extends SagaLiving implements Trader{
 	
 	
 	// Items:
-	/**
-	 * Gets player item in hand.
+	/* 
+	 * Gets player item.
 	 * 
-	 * @return player item in hand air if not online or none
+	 * @see org.saga.player.SagaLiving#getHandItem()
 	 */
-	public ItemStack getItemInHand() {
-
+	@Override
+	public ItemStack getHandItem() {
 		
 		if(wrapped == null) return new ItemStack(Material.AIR);
 		
-		return getPlayer().getItemInHand();
-		
+		return getWrapped().getItemInHand();
 		
 	}
 	
@@ -729,13 +730,13 @@ public class SagaPlayer extends SagaLiving implements Trader{
 		
 		if(wrapped == null) return;
 		
-		ItemStack item = getPlayer().getItemInHand();
+		ItemStack item = getWrapped().getItemInHand();
 
 		if(item == null || item.getType().getMaxDurability() <= 0 ) return;
 			
 		item.setDurability((short) (item.getDurability() + 1));
 
-		getPlayer().updateInventory();
+		getWrapped().updateInventory();
 		
 	}
 	
@@ -966,7 +967,7 @@ public class SagaPlayer extends SagaLiving implements Trader{
 			return;
 		}
 		
-		lastSagaChunk = BundleManager.manager().getSagaChunk(getPlayer().getLocation());
+		lastSagaChunk = BundleManager.manager().getSagaChunk(getWrapped().getLocation());
 		
 		
 	}
@@ -1017,7 +1018,7 @@ public class SagaPlayer extends SagaLiving implements Trader{
 	public void message(String message) {
 		
 		if(message.length() == 0) return;
-		if(wrapped != null) getPlayer().sendMessage(CustomColour.process(message));
+		if(wrapped != null) getWrapped().sendMessage(CustomColour.process(message));
 		
 	}
 
@@ -1062,7 +1063,7 @@ public class SagaPlayer extends SagaLiving implements Trader{
 		
 		if(wrapped == null) return;
 		
-		getPlayer().playEffect(getLocation(), effect, value);
+		getWrapped().playEffect(getLocation(), effect, value);
 		
 	}
 	
@@ -1078,7 +1079,7 @@ public class SagaPlayer extends SagaLiving implements Trader{
 		if(wrapped == null) return;
 		
 		// TODO: Play sound
-		getPlayer().playSound(getLocation(), sound, arg2, arg3);
+		getWrapped().playSound(getLocation(), sound, arg2, arg3);
 		
 		
 	}
@@ -1142,13 +1143,13 @@ public class SagaPlayer extends SagaLiving implements Trader{
 		
 		if(wrapped != null){
 			
-			boolean dropped = InventoryUtil.addItem(itemStack, getPlayer().getInventory(), getPlayer().getLocation());
+			boolean dropped = InventoryUtil.addItem(itemStack, getWrapped().getInventory(), getWrapped().getLocation());
 			
 			if(dropped){
 				message(PlayerMessages.inventoryFullDropping());
 			}
 			
-			getPlayer().updateInventory(); // TODO replace updateInventory()
+			getWrapped().updateInventory(); // TODO replace updateInventory()
 			
 		}
 		
@@ -1165,9 +1166,9 @@ public class SagaPlayer extends SagaLiving implements Trader{
 		
 		if(wrapped != null){
 			
-			InventoryUtil.removeItem(itemStack, getPlayer().getInventory());
+			InventoryUtil.removeItem(itemStack, getWrapped().getInventory());
 			
-			getPlayer().updateInventory();
+			getWrapped().updateInventory();
 			
 		}
 		
@@ -1186,7 +1187,7 @@ public class SagaPlayer extends SagaLiving implements Trader{
 			
 			InventoryUtil.removeItem(material, amount, false, getPlayer());
 			
-			getPlayer().updateInventory(); // TODO replace updateInventory()
+			getWrapped().updateInventory(); // TODO replace updateInventory()
 			
 		}
 		
@@ -1202,7 +1203,7 @@ public class SagaPlayer extends SagaLiving implements Trader{
 		
 		if(wrapped != null){
 			
-			return InventoryUtil.getItemCount(item, getPlayer().getInventory().getContents());
+			return InventoryUtil.getItemCount(item, getWrapped().getInventory().getContents());
 			
 		}
 		return 0;
@@ -1244,9 +1245,9 @@ public class SagaPlayer extends SagaLiving implements Trader{
 			return taken;
 		}
 		
-		SagaItem taken = InventoryUtil.takeItem(requested, getPlayer().getInventory());
+		SagaItem taken = InventoryUtil.takeItem(requested, getWrapped().getInventory());
 		
-		getPlayer().updateInventory();
+		getWrapped().updateInventory();
 		
 		return taken;
 		
@@ -1266,9 +1267,9 @@ public class SagaPlayer extends SagaLiving implements Trader{
 			return;
 		}
 		
-		InventoryUtil.giveItem(sagaItem, getPlayer().getInventory(), getPlayer().getLocation());
+		InventoryUtil.giveItem(sagaItem, getWrapped().getInventory(), getWrapped().getLocation());
 		
-		getPlayer().updateInventory();
+		getWrapped().updateInventory();
 		
 	}
 	

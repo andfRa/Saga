@@ -17,6 +17,8 @@ import org.saga.Saga;
 import org.saga.attributes.DamageType;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.VanillaConfiguration;
+import org.saga.factions.Faction;
+import org.saga.player.SagaLiving;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.BundleManager;
 import org.saga.settlements.SagaChunk;
@@ -50,22 +52,22 @@ public class SagaEntityDamageEvent {
 	/**
 	 * Attacker creature, null if none.
 	 */
-	public final Creature attackerCreature;
+	public final Creature creatureAttacker;
 	
 	/**
 	 * Defender creature, null if none
 	 */
-	public final Creature defenderCreature;
+	public final Creature creatureDefender;
 	
 	/**
-	 * Attacker player, null if none.
+	 * Attacker Saga entity, null if none.
 	 */
-	public final SagaPlayer attackerPlayer;
+	public final SagaLiving sagaAttacker;
 	
 	/**
-	 * Defender player, null if none
+	 * Defender saga entity, null if none
 	 */
-	public final SagaPlayer defenderPlayer;
+	public final SagaLiving sagaDefender;
 	
 	
 	/**
@@ -170,8 +172,8 @@ public class SagaEntityDamageEvent {
 		// Get attacker saga player:
 		if(attacker instanceof Player){
 
-			attackerPlayer = Saga.plugin().getLoadedPlayer( ((Player) attacker).getName() );
-			attackerCreature = null;
+			sagaAttacker = Saga.plugin().getLoadedPlayer( ((Player) attacker).getName() );
+			creatureAttacker = null;
 			
 			// Tool:
 			tool = ((Player) attacker).getItemInHand().getType();
@@ -181,14 +183,14 @@ public class SagaEntityDamageEvent {
 		// Get attacker creature:
 		else if(attacker instanceof Creature){
 			
-			attackerCreature = (Creature)attacker;
-			attackerPlayer = null;
+			creatureAttacker = (Creature)attacker;
+			sagaAttacker = null;
 			tool = Material.AIR;
 			
 		}else{
 			
-			attackerCreature = null;
-			attackerPlayer = null;
+			creatureAttacker = null;
+			sagaAttacker = null;
 			tool = Material.AIR;
 			
 		}
@@ -196,23 +198,23 @@ public class SagaEntityDamageEvent {
 		// Get defender saga player:
 		if(defender instanceof Player){
 
-			defenderPlayer = Saga.plugin().getLoadedPlayer( ((Player) defender).getName() );
-			defenderCreature = null;
+			sagaDefender = Saga.plugin().getLoadedPlayer( ((Player) defender).getName() );
+			creatureDefender = null;
 			
 		}
 		
 		// Get defender creature:
 		else if(defender instanceof Creature){
 			
-			defenderPlayer = null;
-			defenderCreature = (Creature)defender;
+			sagaDefender = null;
+			creatureDefender = (Creature)defender;
 			
 		}
 		
 		else{
 			
-			defenderPlayer = null;
-			defenderCreature = null;
+			sagaDefender = null;
+			creatureDefender = null;
 			
 		}
 		
@@ -331,38 +333,38 @@ public class SagaEntityDamageEvent {
 		event.setDamage((int)damage);
 		
 		// Apply damage to player:
-		if(defenderPlayer != null){
+		if(sagaDefender != null){
 			
 			double harm = damage;
 			
 			// Armour:
-			double armour = VanillaConfiguration.getArmourMultiplier(event, defenderPlayer) + penetration;
+			double armour = VanillaConfiguration.getArmourMultiplier(event, sagaDefender.getWrapped()) + penetration;
 			if(armour < 0.0) armour = 0.0;
 			if(armour > 1.0) armour = 1.0;
 			harm*= armour;
 		
 			// Enchantments:
-			double ench = VanillaConfiguration.getEPFMultiplier(event, defenderPlayer) + disenchant;
+			double ench = VanillaConfiguration.getEPFMultiplier(event, sagaDefender.getWrapped()) + disenchant;
 			if(ench < 0.0) ench = 0.0;
 			if(ench > 1.0) ench = 1.0;
 			harm*= ench;
 			
 			// Blocking:
-			if(VanillaConfiguration.checkBlocking(event, defenderPlayer)) harm*= blocking;
+			if(VanillaConfiguration.checkBlocking(event, sagaDefender.getWrapped())) harm*= blocking;
 			
 			// Apply Saga damage:
-			defenderPlayer.damage(harm);
+			sagaDefender.damage(harm);
 			
 			// Prevent death:
-			if(defenderPlayer.getHealth() > 0 && defenderPlayer.getHalfHearts() <= damage){
-				event.setDamage(defenderPlayer.getHalfHearts() - 1);
+			if(sagaDefender.getHealth() > 0 && sagaDefender.getWrapped().getHealth() <= damage){
+				event.setDamage(sagaDefender.getWrapped().getHealth() - 1);
 			}
 			
 		}
 		
 		// Reduce tool damage:
 		final int undurability;
-		if(attackerPlayer != null) undurability = attackerPlayer.getItemInHand().getDurability();
+		if(sagaAttacker != null) undurability = sagaAttacker.getHandItem().getDurability();
 		else undurability = 0;
 		
 		// Schedule for next tick:
@@ -372,15 +374,15 @@ public class SagaEntityDamageEvent {
 			public void run() {
 				
 				// Health synchronisation:
-				if(defenderPlayer != null){
-					Player player = defenderPlayer.getPlayer();
-					if(player.isDead() || player.getHealth() == 0) return;
-					defenderPlayer.synchHealth();
+				if(sagaDefender != null){
+					LivingEntity defender = sagaDefender.getWrapped();
+					if(defender.isDead() || defender.getHealth() == 0) return;
+					sagaDefender.synchHealth();
 				}
 				
 				// Tool damage reduction:
-				if(attackerPlayer != null){
-					Player player = attackerPlayer.getPlayer();
+				if(sagaAttacker instanceof SagaPlayer){
+					Player player = ((SagaPlayer)sagaAttacker).getPlayer();
 					ItemStack item = player.getItemInHand();
 					int damage = item.getDurability() - undurability;
 					damage = TwoPointFunction.randomRound(sloppiness * damage).shortValue();
@@ -393,7 +395,7 @@ public class SagaEntityDamageEvent {
 		}, 1);
 		
 		// Player killed player:
-		if(attackerPlayer != null && defenderPlayer != null){
+		if(sagaAttacker != null && sagaDefender != null){
 			
 		}
 		
@@ -430,8 +432,8 @@ public class SagaEntityDamageEvent {
 	 * @return true if blocking
 	 */
 	public boolean isBlocking() {
-		if(defenderPlayer == null) return false;
-		return VanillaConfiguration.checkBlocking(event, defenderPlayer);
+		if(sagaDefender == null) return false;
+		return VanillaConfiguration.checkBlocking(event, sagaDefender.getWrapped());
 	}
 	
 	/**
@@ -441,7 +443,7 @@ public class SagaEntityDamageEvent {
 	 */
 	public boolean isPvP() {
 
-		return attackerPlayer != null && defenderPlayer != null;
+		return sagaAttacker instanceof SagaPlayer && sagaDefender instanceof SagaPlayer;
 
 	}
 	
@@ -452,7 +454,7 @@ public class SagaEntityDamageEvent {
 	 */
 	public boolean isPvC() {
 
-		return attackerPlayer != null && defenderCreature != null;
+		return sagaAttacker != null && creatureDefender != null;
 
 	}
 	
@@ -463,7 +465,7 @@ public class SagaEntityDamageEvent {
 	 */
 	public boolean isCvC() {
 
-		return attackerCreature != null && defenderCreature != null;
+		return creatureAttacker != null && creatureDefender != null;
 
 	}
 
@@ -474,7 +476,7 @@ public class SagaEntityDamageEvent {
 	 */
 	public boolean isCvP() {
 
-		return attackerCreature != null && defenderPlayer != null;
+		return creatureAttacker != null && sagaDefender != null;
 
 	}
 
@@ -484,10 +486,10 @@ public class SagaEntityDamageEvent {
 	 * @return true if faction versus faction.
 	 */
 	public boolean isFvF() {
-
-		if(attackerPlayer == null || defenderPlayer == null) return false;
-		return attackerPlayer.getFaction() != null && defenderPlayer.getFaction() != null;
-
+		
+		if(!(sagaAttacker instanceof SagaPlayer) || !(sagaDefender  instanceof SagaPlayer)) return false;
+		return ((SagaPlayer) sagaAttacker).getFaction() != null && ((SagaPlayer) sagaDefender).getFaction() != null;
+		
 	}
 
 
@@ -497,8 +499,8 @@ public class SagaEntityDamageEvent {
 	 * @return attacker, null if none
 	 */
 	public LivingEntity getAttacker() {
-		if(attackerPlayer != null) return attackerPlayer.getPlayer();
-		return attackerCreature;
+		if(sagaAttacker != null) return sagaAttacker.getWrapped();
+		return creatureAttacker;
 	}
 
 	/**
@@ -507,9 +509,31 @@ public class SagaEntityDamageEvent {
 	 * @return defender, null if none
 	 */
 	public LivingEntity getDefender() {
-		if(defenderPlayer != null) return defenderPlayer.getPlayer();
-		return defenderCreature;
+		if(sagaDefender != null) return sagaDefender.getWrapped();
+		return creatureDefender;
 	}
+	
+
+	/**
+	 * Gets attacker faction.
+	 * 
+	 * @return attacker faction, null if none
+	 */
+	public Faction getAttackerFaction() {
+		if(sagaAttacker instanceof SagaPlayer) return ((SagaPlayer) sagaAttacker).getFaction();
+		return null;
+	}
+
+	/**
+	 * Gets defender faction.
+	 * 
+	 * @return defender faction, null if none
+	 */
+	public Faction getDefenderFaction() {
+		if(sagaDefender instanceof SagaPlayer) return ((SagaPlayer) sagaDefender).getFaction();
+		return null;
+	}
+	
 	
 	
 	/**

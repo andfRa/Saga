@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
@@ -15,6 +16,7 @@ import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Fireball;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 import org.saga.Saga;
 import org.saga.SagaLogger;
@@ -204,9 +206,79 @@ public class SagaLiving {
 	public LivingEntity getWrapped() {
 		return wrapped;
 	}
-	
-	
 
+	// Health:
+	/**
+	 * Gets entities health.
+	 * 
+	 * @return entities health
+	 */
+	public Double getHealth() {
+		
+		if(wrapped == null) return 1.0;
+		
+		return (double)wrapped.getHealth();
+		
+	}
+	
+	/**
+	 * Damages the player.
+	 * 
+	 * @param amount damage amount
+	 */
+	public void damage(Double amount) {
+		
+		if(wrapped == null) return;
+		wrapped.damage(amount.intValue());
+		
+	}
+	
+	/**
+	 * Damages the player.
+	 * 
+	 * @param amount damage amount
+	 */
+	public void heal(Double amount) {
+		
+		if(wrapped == null) return;
+		wrapped.damage(-amount.intValue());
+		
+	}
+	
+	/**
+	 * Synchronises players health.
+	 * 
+	 */
+	public void synchHealth() {
+		
+	}
+	
+	/**
+	 * Checks if the saga player is dead.
+	 * 
+	 * @return true if dead
+	 */
+	public boolean isDead() {
+		
+		if(wrapped == null) return false;
+		return wrapped.isDead();
+		
+	}
+	
+	
+	
+	// Experience:
+	/**
+	 * Awards experience.
+	 * 
+	 * @param amount amount of exp
+	 */
+	public void awardExp(Double amount) {
+		
+	}
+	
+	
+	
 	// Energy:
 	/**
 	 * Gets players energy.
@@ -989,6 +1061,15 @@ public class SagaLiving {
 	
 	// Items:
 	/**
+	 * Gets item in hand.
+	 * 
+	 * @return item in hand, air if none
+	 */
+	public ItemStack getHandItem() {
+		return new ItemStack(Material.AIR);
+	}
+	
+	/**
 	 * Damages living entities tool if possible.
 	 * 
 	 */
@@ -997,5 +1078,8 @@ public class SagaLiving {
 		return;
 		
 	}
+	
+	
+	
 	
 }

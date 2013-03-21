@@ -1,9 +1,9 @@
 package org.saga.abilities;
 
 import org.bukkit.entity.Creature;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.LivingEntity;
 import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.player.SagaPlayer;
+import org.saga.player.SagaLiving;
 
 public class Ignite extends Ability{
 	
@@ -56,12 +56,12 @@ public class Ignite extends Ability{
 		if(duration < 1) return false;
 		
 		// Ignite:
-		SagaPlayer defenderPlayer = event.defenderPlayer;
-		Creature defenderCreature = event.defenderCreature;
+		SagaLiving defenderPlayer = event.sagaDefender;
+		Creature defenderCreature = event.creatureDefender;
 		
 		if(defenderPlayer != null){
 			
-			Player player = defenderPlayer.getPlayer();
+			LivingEntity player = defenderPlayer.getWrapped();
 			
 			player.setFireTicks(player.getFireTicks() + duration);
 			

@@ -6,6 +6,7 @@ import org.saga.SagaLogger;
 import org.saga.exceptions.InvalidAbilityException;
 import org.saga.listeners.events.SagaEntityDamageEvent;
 import org.saga.messages.effects.StatsEffectHandler;
+import org.saga.player.SagaLiving;
 import org.saga.player.SagaPlayer;
 
 public class Parry extends Ability{
@@ -98,11 +99,11 @@ public class Parry extends Ability{
 	public boolean triggerDefend(SagaEntityDamageEvent event) {
 		
 		
-		if(event.defenderPlayer == null) return false;
-		LivingEntity defender = event.defenderPlayer.getWrapped();
+		if(event.sagaDefender == null) return false;
+		LivingEntity defender = event.sagaDefender.getWrapped();
 		LivingEntity attacker = event.getAttacker();
 		
-		SagaPlayer sagaLiving = event.defenderPlayer;
+		SagaLiving sagaLiving = event.sagaDefender;
 		
 		if(defender == null || attacker == null) return false;
 		
@@ -114,7 +115,7 @@ public class Parry extends Ability{
 				event.cancel();
 
 				// Animation:
-				if(sagaLiving instanceof SagaPlayer) StatsEffectHandler.playAnimateArm(sagaLiving);
+				if(sagaLiving instanceof SagaPlayer) StatsEffectHandler.playAnimateArm((SagaPlayer)sagaLiving);
 				
 				// Effect:
 				StatsEffectHandler.playParry(sagaLiving);
@@ -135,7 +136,7 @@ public class Parry extends Ability{
 		if(Math.abs(deg -180) > getDefinition().getFunction(FACING_HALF_ANGLE).value(getCooldown())) return false;
 
 		// Animation:
-		if(sagaLiving instanceof SagaPlayer) StatsEffectHandler.playAnimateArm(sagaLiving);
+		if(sagaLiving instanceof SagaPlayer) StatsEffectHandler.playAnimateArm((SagaPlayer)sagaLiving);
 		
 		// Effect:
 		StatsEffectHandler.playParry(sagaLiving);

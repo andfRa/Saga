@@ -383,9 +383,16 @@ public class TownSquare extends Building implements SecondTicker{
 	public void onEntityDamage(SagaEntityDamageEvent event){
 		
 		
-		if(event.attackerPlayer != null && event.defenderPlayer != null){
+		SagaPlayer attackerPlayer = null;
+		SagaPlayer defenderPlayer = null;
+		
+		if(event.sagaAttacker instanceof SagaPlayer) attackerPlayer = (SagaPlayer)event.sagaAttacker;
+		if(event.sagaDefender instanceof SagaPlayer) defenderPlayer = (SagaPlayer)event.sagaDefender;
+		
+		
+		if(event.sagaAttacker != null && event.sagaDefender != null){
 			
-			Long immunity = protectionTimes.get(event.attackerPlayer.getName());
+			Long immunity = protectionTimes.get(attackerPlayer);
 			if(immunity != null && immunity >= System.currentTimeMillis()){
 				event.addPvpOverride(PvPOverride.RESPAWN_DENY);
 				return;
@@ -393,9 +400,9 @@ public class TownSquare extends Building implements SecondTicker{
 			
 		}
 		
-		if(event.defenderPlayer != null){
+		if(event.sagaDefender != null){
 
-			Long immunity = protectionTimes.get(event.defenderPlayer.getName());
+			Long immunity = protectionTimes.get(defenderPlayer);
 			if(immunity != null && immunity >= System.currentTimeMillis()){
 				event.addPvpOverride(PvPOverride.RESPAWN_DENY);
 				return;

@@ -58,18 +58,18 @@ public class SagaEventHandler {
 		if(event.isPvP()){
 			
 			// Damaged self:
-			if(event.defenderPlayer == event.attackerPlayer) event.addPvpOverride(PvPOverride.SELF_ALLOW);
+			if(event.sagaDefender == event.sagaAttacker) event.addPvpOverride(PvPOverride.SELF_ALLOW);
 
 			// Only faction versus faction:
 			if(FactionConfiguration.config().factionOnlyPvp && !event.isFvF()) event.addPvpOverride(PvPOverride.FACTION_ONLY_PVP_DENY);
 			
 			// Forward to Saga factions:
-			if(event.attackerPlayer.getFaction() != null) event.attackerPlayer.getFaction().onPvPAttack(event);
-			if(event.defenderPlayer.getFaction() != null) event.defenderPlayer.getFaction().onPvPDefend(event);
+			if(event.getAttackerFaction() != null) event.getAttackerFaction().onPvPAttack(event);
+			if(event.getDefenderFaction() != null) event.getDefenderFaction().onPvPDefend(event);
 
 			// PvP override:
 			if(!event.getOverride().isAllow()){
-				event.attackerPlayer.message(PlayerMessages.pvpOverride(event));
+				event.sagaAttacker.message(PlayerMessages.pvpOverride(event));
 				event.cancel();
 				return;
 			}

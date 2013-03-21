@@ -1461,20 +1461,25 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	public void onPvPAttack(SagaEntityDamageEvent event){
 		
 		
-		// Same faction:
-		if(isMember(event.defenderPlayer.getName())){
+		SagaPlayer defenderPlayer = null;
+		if(event.sagaDefender instanceof SagaPlayer) defenderPlayer = (SagaPlayer) event.sagaDefender;
+		
+		
+		// Defender:
+		if(defenderPlayer != null){
 			
-			event.addPvpOverride(PvPOverride.SAME_FACTION_DENY);
+			// Same faction:
+			if(defenderPlayer != null && isMember(defenderPlayer.getName())){
+				event.addPvpOverride(PvPOverride.SAME_FACTION_DENY);
+			}
+
+			// Ally:
+			if(WarManager.manager().isAlly(getId(), defenderPlayer.getFactionId())){
+				event.addPvpOverride(PvPOverride.ALLY_DENY);
+			}
 			
 		}
-
-		// Ally:
-		if(WarManager.manager().isAlly(getId(), event.defenderPlayer.getFactionId())){
-
-			event.addPvpOverride(PvPOverride.ALLY_DENY);
-			
-		}
-
+		
 		
 	}
 	
@@ -1485,14 +1490,22 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 */
 	public void onPvPDefend(SagaEntityDamageEvent event){
 		
+		
+		SagaPlayer defenderPlayer = null;
+		if(event.sagaDefender instanceof SagaPlayer) defenderPlayer = (SagaPlayer) event.sagaDefender;
+		
+		// Defender:
+		if(defenderPlayer != null){
 
-		// Ally:
-		if(WarManager.manager().isAlly(getId(), event.defenderPlayer.getFactionId())){
-			
-			event.addPvpOverride(PvPOverride.ALLY_DENY);
+			// Ally:
+			if(WarManager.manager().isAlly(getId(), defenderPlayer.getFactionId())){
+				
+				event.addPvpOverride(PvPOverride.ALLY_DENY);
+				
+			}
 			
 		}
-
+		
 		
 	}
 

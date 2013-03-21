@@ -32,10 +32,12 @@ public class Farm extends ProductionBuilding {
 	// Events:
 	@Override
 	public void onEntityDamage(SagaEntityDamageEvent event) {
-	
 		
-		Creature damaged = event.defenderCreature;
-		SagaPlayer damager = event.attackerPlayer;
+		
+		if(!(event.sagaAttacker instanceof SagaPlayer)) return;
+		
+		Creature damaged = event.creatureDefender;
+		SagaPlayer damager = (SagaPlayer) event.sagaAttacker;
 		
 		// Stop animal abuse by non members:
 		if(damaged instanceof Animals && damager != null){

@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.saga.attributes.DamageType;
 import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.player.SagaPlayer;
 
 public class Bash extends Ability{
 
@@ -65,17 +66,16 @@ public class Bash extends Ability{
 	public boolean triggerAttack(SagaEntityDamageEvent event) {
 
 		
-		// Only player vs player:
-		if(!event.isPvP()) return false;
+		// Defender must be player:
+		if(!(event.sagaDefender instanceof SagaPlayer)) return false;
+		Player defenderPlayer = (Player) event.sagaDefender.getWrapped();
 		
 		// Only melee and ranged:
 		if(event.type != DamageType.MELEE && event.type != DamageType.RANGED) return false;
 		
 		// Only if the target is holding a sword:
-		Material targetsItem = event.defenderPlayer.getItemInHand().getType();
+		Material targetsItem = event.sagaDefender.getHandItem().getType();
 		if(targetsItem != Material.DIAMOND_SWORD && targetsItem != Material.GOLD_SWORD && targetsItem != Material.IRON_SWORD && targetsItem != Material.STONE_SWORD && targetsItem != Material.WOOD_SWORD && targetsItem != Material.BOW) return false;
-		
-		Player defender = event.defenderPlayer.getPlayer();
 		
 		// Determine disarm:
 		Random random = new Random();
@@ -88,7 +88,7 @@ public class Bash extends Ability{
 		if(random.nextDouble() > disarm) return false;
 		
 		// Slots:
-		int firstSlot = defender.getInventory().getHeldItemSlot();
+		int firstSlot = defenderPlayer.getInventory().getHeldItemSlot();
 		int secondSlot = firstSlot + 1;
 		if(firstSlot == 0){
 			secondSlot = 2;
@@ -102,18 +102,18 @@ public class Bash extends Ability{
 			}
 		}
 		
-		ItemStack firstStack = defender.getInventory().getItem(firstSlot);
-		ItemStack secondStack = defender.getInventory().getItem(secondSlot);
+		ItemStack firstStack = defenderPlayer.getInventory().getItem(firstSlot);
+		ItemStack secondStack = defenderPlayer.getInventory().getItem(secondSlot);
 		
 		// Disarm:
-		defender.getInventory().clear(firstSlot);
-		defender.getInventory().clear(secondSlot);
+		defenderPlayer.getInventory().clear(firstSlot);
+		defenderPlayer.getInventory().clear(secondSlot);
 		
-		if(secondStack != null && !secondStack.getType().equals(Material.AIR)) defender.getInventory().setItem(firstSlot, secondStack);
-		if(firstStack != null && !firstStack.getType().equals(Material.AIR)) defender.getInventory().setItem(secondSlot, firstStack);
+		if(secondStack != null && !secondStack.getType().equals(Material.AIR)) defenderPlayer.getInventory().setItem(firstSlot, secondStack);
+		if(firstStack != null && !firstStack.getType().equals(Material.AIR)) defenderPlayer.getInventory().setItem(secondSlot, firstStack);
 		
 		// Update inventory:
-		defender.updateInventory();
+		defenderPlayer.updateInventory();
 		
 		return true;
 		

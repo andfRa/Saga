@@ -57,7 +57,7 @@ public class SagaEntityDeathEvent {
 			String group = "creature";
 			
 			// Get exp:
-			Double exp = ExperienceConfiguration.config().getExp(damEvent.defenderCreature);
+			Double exp = ExperienceConfiguration.config().getExp(damEvent.creatureDefender);
 			
 			// Unnatural spawn:
 			if(event.getEntity().hasMetadata(SpawnerTag.METADATA_KEY)){
@@ -72,10 +72,10 @@ public class SagaEntityDeathEvent {
 			}
 			
 			// Award exp:
-			damEvent.attackerPlayer.awardExp(exp);
+			damEvent.sagaAttacker.awardExp(exp);
 			
 			// Statistics:
-			String creatureName = damEvent.defenderCreature.getClass().getSimpleName().replace("_", " ").toLowerCase().replace("craft","");
+			String creatureName = damEvent.creatureDefender.getClass().getSimpleName().replace("_", " ").toLowerCase().replace("craft","");
 			StatisticsManager.manager().addExp(group, creatureName, exp);
 			
 		}
@@ -84,11 +84,11 @@ public class SagaEntityDeathEvent {
 		else if(damEvent.isPvP()){
 			
 			// Award exp:
-			Double exp = ExperienceConfiguration.config().getExp(damEvent.defenderPlayer);
-			damEvent.attackerPlayer.awardExp(exp);
+			Double exp = ExperienceConfiguration.config().getExp(damEvent.sagaDefender);
+			damEvent.sagaAttacker.awardExp(exp);
 			
 			// Statistics:
-			Integer usedAttr = damEvent.defenderPlayer.getUsedAttributePoints();
+			Integer usedAttr = damEvent.sagaDefender.getUsedAttributePoints();
 			String range = "";
 			for (int maxi = 0; maxi <= AttributeConfiguration.config().getMaxAttributeCap(); maxi+=10) {
 				

@@ -60,18 +60,18 @@ public class DamageWeapon extends Ability{
 	public boolean triggerDefend(SagaEntityDamageEvent event) {
 
 		
-		// Only pvp:
-		if(event.attackerPlayer == null) return false;
+		// Defender:
+		if(!(event.sagaDefender instanceof SagaPlayer)) return false;
 		
 		// Targets item:
-		ItemStack targetItem = event.attackerPlayer.getItemInHand();
+		ItemStack targetItem = event.sagaAttacker.getHandItem();
 		
 		// Can be damaged:
 		if(targetItem == null || targetItem.getType().getMaxDurability() < 1) return false;
 		
 		// Damage:
 		double raw = getDefinition().getFunction(WEAPON_DAMAGE_KEY).value(getScore());
-		double armour = getArmourMultiplier(event.defenderPlayer);
+		double armour = getArmourMultiplier((SagaPlayer)event.sagaDefender);
 		short damage = TwoPointFunction.randomRound(raw * armour).shortValue();
 		
 		// Damage:
