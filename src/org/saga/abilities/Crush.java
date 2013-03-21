@@ -105,7 +105,7 @@ public class Crush extends Ability{
 	public boolean triggerInteract(PlayerInteractEvent event) {
 		
 		
-		final LivingEntity attacker = getSagaLiving().getLivingEntity();
+		final LivingEntity attacker = getSagaLiving().getWrapped();
 		
 		// Horizontal:
 		double horSpeed = getDefinition().getFunction(HORIZONTAL_SPEED_KEY).value(getScore());
@@ -151,7 +151,7 @@ public class Crush extends Ability{
 		
 		
 		SagaLiving<?> sagaLiving = getSagaLiving();
-		LivingEntity attacker = sagaLiving.getLivingEntity();
+		LivingEntity attacker = sagaLiving.getWrapped();
 		
 		// Blocking:
 		if(!event.defenderPlayer.getPlayer().isBlocking()) return false;

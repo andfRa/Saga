@@ -67,7 +67,7 @@ public class Force extends Ability{
 		SagaLiving<?> sagaLiving = getSagaLiving();
 		Integer abilityLevel = getScore();
 		
-		LivingEntity player = sagaLiving.getLivingEntity();
+		LivingEntity player = sagaLiving.getWrapped();
 		if(player == null){
 			SagaLogger.severe(this, "can't continue with trigger because the player isn't online");
 			return false;

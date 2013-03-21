@@ -31,7 +31,7 @@ public class StatsEffectHandler {
 	
 	public static void playParry(SagaLiving<LivingEntity> sagaliving) {
 		
-		LivingEntity living = sagaliving.getLivingEntity();
+		LivingEntity living = sagaliving.getWrapped();
 		
 		Location loc = living.getLocation();
 		
@@ -41,7 +41,7 @@ public class StatsEffectHandler {
 	
 	public static void playParry(SagaPlayer sagaliving) {
 		
-		LivingEntity living = sagaliving.getLivingEntity();
+		LivingEntity living = sagaliving.getWrapped();
 		
 		Location loc = living.getLocation();
 		

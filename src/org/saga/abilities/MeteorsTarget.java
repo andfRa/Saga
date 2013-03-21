@@ -108,10 +108,10 @@ public class MeteorsTarget extends Ability{
 		
 		
 		SagaLiving<?> sagaLiving = getSagaLiving();
-		final LivingEntity shooter = sagaLiving.getLivingEntity();
+		final LivingEntity shooter = sagaLiving.getWrapped();
 		
 		// Target:
-		Block block = sagaLiving.getLivingEntity().getTargetBlock(null, getDefinition().getFunction(DISTANCE).intValue(getScore()));
+		Block block = sagaLiving.getWrapped().getTargetBlock(null, getDefinition().getFunction(DISTANCE).intValue(getScore()));
 		if(block.getType() == Material.AIR){
 			sagaLiving.message(AbilityMessages.targetTooFar(this));
 			return false;

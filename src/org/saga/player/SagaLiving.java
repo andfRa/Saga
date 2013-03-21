@@ -33,11 +33,11 @@ import org.saga.shape.RelativeShape.Orientation;
 public class SagaLiving <T extends LivingEntity>{
 
 	
-	// Living entity:
+	// Wrapped:
 	/**
 	 * Wrapped entity:
 	 */
-	transient protected T livingEntity = null;
+	transient protected T wrapped = null;
 	
 	
 	// Physical:
@@ -188,33 +188,29 @@ public class SagaLiving <T extends LivingEntity>{
 	
 	// Entity:
 	/**
-	 * Sets the living entity.
+	 * Wraps the entity.
 	 * 
-	 * @param livingEntity living entity
+	 * @param entity entity to wrap
 	 */
-	public void setLivingEntity(T livingEntity) {
-		
-		this.livingEntity = livingEntity;
-		
+	public void wrap(T entity) {
+		this.wrapped = entity;
 	}
 	
 	/**
-	 * Sets the living entity.
+	 * Unwraps the entity.
 	 * 
 	 */
-	public void removeLivingEntity() {
-
-		this.livingEntity = null;
-		
+	public void unwrap() {
+		this.wrapped = null;
 	}
 	
 	/**
-	 * Gets the living entity.
+	 * Gets the wrapped entity.
 	 * 
-	 * @return living entity, null if not wrapped
+	 * @return wrapped entity, null if not wrapped
 	 */
-	public T getLivingEntity() {
-		return livingEntity;
+	public T getWrapped() {
+		return wrapped;
 	}
 	
 	
@@ -279,7 +275,7 @@ public class SagaLiving <T extends LivingEntity>{
 			public void run() {
 				
 				// Online:
-				if(livingEntity == null){
+				if(wrapped == null){
 					energyRegenFlag = false; // Remove flag.
 					return;
 				}
@@ -342,9 +338,9 @@ public class SagaLiving <T extends LivingEntity>{
 	 */
 	public int getTicksLived() {
 		
-		if(livingEntity == null) return 0;
+		if(wrapped == null) return 0;
 		
-		return livingEntity.getTicksLived();
+		return wrapped.getTicksLived();
 		
 	}
 	
@@ -663,10 +659,10 @@ public class SagaLiving <T extends LivingEntity>{
 
 		
 		// Ignore if the living entity isn't online:
-		if(livingEntity == null) return;
+		if(wrapped == null) return;
 		
 		// Shooter:
-		Location shootLocation = livingEntity.getEyeLocation();
+		Location shootLocation = wrapped.getEyeLocation();
 
 		// Direction vector:
 		Vector directionVector = shootLocation.getDirection().normalize();
@@ -699,7 +695,7 @@ public class SagaLiving <T extends LivingEntity>{
 
 		
 		// Ignore if no entity is wrapped:
-		if(livingEntity == null) return;
+		if(wrapped == null) return;
 		
 		// Direction vector:
 		Vector directionVector = shootLocation.getDirection().normalize();
@@ -709,7 +705,7 @@ public class SagaLiving <T extends LivingEntity>{
 		fireball.setVelocity(directionVector.multiply(speed));
 		
 		// Set shooter:
-		fireball.setShooter(livingEntity);
+		fireball.setShooter(wrapped);
 		
 		// Remove fire:
 		if(fireball instanceof Fireball){
@@ -727,9 +723,9 @@ public class SagaLiving <T extends LivingEntity>{
 
 		
 		// Ignore if no entity is wrapped:
-		if(livingEntity == null) return;
+		if(wrapped == null) return;
 		
-		Arrow arrow = livingEntity.launchProjectile(Arrow.class);
+		Arrow arrow = wrapped.launchProjectile(Arrow.class);
 		
 		// Velocity vector:
 		Vector velocity = arrow.getVelocity().clone();
@@ -739,7 +735,7 @@ public class SagaLiving <T extends LivingEntity>{
 		arrow.setVelocity(velocity);
 		
 		// Play effect:
-		livingEntity.getLocation().getWorld().playEffect(getLocation(), Effect.BOW_FIRE, 0);
+		wrapped.getLocation().getWorld().playEffect(getLocation(), Effect.BOW_FIRE, 0);
 		
 		
 	}
@@ -747,22 +743,22 @@ public class SagaLiving <T extends LivingEntity>{
 	/**
 	 * Pushes away an entity from the entity.
 	 * 
-	 * @param entity entity
+	 * @param target entity
 	 * @param speed speed
 	 * @return entities velocity vector, zero length if none
 	 */
-	public Vector pushAwayEntity(Entity entity, double speed) {
+	public Vector pushAwayEntity(Entity target, double speed) {
 
 		
 		// Ignore if no entity is wrapped:
-		if(livingEntity == null) return new Vector(0, 0, 0);
+		if(wrapped == null) return new Vector(0, 0, 0);
 		
 		// Get velocity unit vector:
-		Vector velocity = entity.getLocation().toVector().subtract(getLocation().toVector()).normalize();
+		Vector velocity = target.getLocation().toVector().subtract(getLocation().toVector()).normalize();
 		velocity.multiply(speed);
 		
 		// Set speed and push entity:
-		entity.setVelocity(velocity);
+		target.setVelocity(velocity);
 		
 		return velocity;
 		
@@ -779,9 +775,9 @@ public class SagaLiving <T extends LivingEntity>{
 	 */
 	public Location getLocation() {
 
-		if(livingEntity == null) return null;
+		if(wrapped == null) return null;
 
-		return livingEntity.getLocation();
+		return wrapped.getLocation();
 		
 	}
 
@@ -793,7 +789,7 @@ public class SagaLiving <T extends LivingEntity>{
 	 */
 	public void teleport(Location location) {
 
-		if(livingEntity != null) livingEntity.teleport(location);
+		if(wrapped != null) wrapped.teleport(location);
 		
 	}
 	
@@ -818,9 +814,9 @@ public class SagaLiving <T extends LivingEntity>{
 	public Orientation getOrientation(){
 		
 		
-		if(livingEntity == null) return Orientation.WEST;
+		if(wrapped == null) return Orientation.WEST;
 		
-		Location entityLocation = livingEntity.getEyeLocation();
+		Location entityLocation = wrapped.getEyeLocation();
 		double yaw = entityLocation.getYaw();
 		
 		if( (yaw >= 315.0 && yaw <= 360) || (yaw >= 0 && yaw <= 45.0) || (yaw <= 0 && yaw >= -45.0) || (yaw <= -315 && yaw >= -360.0) ){
@@ -855,8 +851,8 @@ public class SagaLiving <T extends LivingEntity>{
 	 */
 	public boolean isGrounded() {
 
-		if(livingEntity == null) return true;
-		return livingEntity.getLocation().getY() == livingEntity.getLocation().getBlockY();
+		if(wrapped == null) return true;
+		return wrapped.getLocation().getY() == wrapped.getLocation().getBlockY();
 		
 	}
 	
@@ -868,8 +864,8 @@ public class SagaLiving <T extends LivingEntity>{
 	 */
 	public boolean isFalling() {
 
-		if(livingEntity == null) return false;
-		return -livingEntity.getVelocity().getY() > VanillaConfiguration.FALLING_VELOCITY_UNCERTAINTY;
+		if(wrapped == null) return false;
+		return -wrapped.getVelocity().getY() > VanillaConfiguration.FALLING_VELOCITY_UNCERTAINTY;
 		
 	}
 	
@@ -883,7 +879,7 @@ public class SagaLiving <T extends LivingEntity>{
 	 */
 	public SagaChunk getSagaChunk(){
 		
-		if(livingEntity == null) return null;
+		if(wrapped == null) return null;
 		
 		Location location = getLocation();
 		
@@ -906,9 +902,9 @@ public class SagaLiving <T extends LivingEntity>{
 	 */
 	public void playGlobalEffect(Effect effect, int value) {
 		
-		if(livingEntity == null) return;
+		if(wrapped == null) return;
 		
-		livingEntity.getLocation().getWorld().playEffect(getLocation(), effect, value);
+		wrapped.getLocation().getWorld().playEffect(getLocation(), effect, value);
 		
 	}
 	
@@ -935,7 +931,7 @@ public class SagaLiving <T extends LivingEntity>{
 	 */
 	public void playGlobalSound(Sound sound, float volume, float pitch) {
 
-		if(livingEntity == null) return;
+		if(wrapped == null) return;
 		getLocation().getWorld().playSound(getLocation(), sound, volume, pitch);
 		
 	}
@@ -951,7 +947,7 @@ public class SagaLiving <T extends LivingEntity>{
 	 */
 	public Double getDistance(Location location) {
 		
-		if(livingEntity == null) return 0.0;
+		if(wrapped == null) return 0.0;
 		
 		return getLocation().distance(location);
 		
@@ -967,9 +963,9 @@ public class SagaLiving <T extends LivingEntity>{
 	 */
 	public List<Entity> getNearbyEntities(double x, double y, double z) {
 		
-		if(livingEntity == null) return new ArrayList<Entity>();
+		if(wrapped == null) return new ArrayList<Entity>();
 		
-		return livingEntity.getNearbyEntities(x, y, z);
+		return wrapped.getNearbyEntities(x, y, z);
 		
 	}
 

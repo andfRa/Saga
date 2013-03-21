@@ -371,7 +371,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	public void setPlayer(Player player) {
 		
 		
-		super.setLivingEntity(player);
+		super.wrap(player);
 		
 		// Admin mode:
 		if(isAdminMode() && !PermissionsDependency.hasPermission(player, PermissionsDependency.ADMIN_MODE_PERMISSION)){
@@ -397,7 +397,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	public void removePlayer() {
 
 		// Admin mode:
-		if(isAdminMode() && !PermissionsDependency.hasPermission(livingEntity, PermissionsDependency.ADMIN_MODE_PERMISSION)){
+		if(isAdminMode() && !PermissionsDependency.hasPermission(wrapped, PermissionsDependency.ADMIN_MODE_PERMISSION)){
 			disableAdminMode();
 			SagaLogger.info(this, "no permission for admin mode");
 		}
@@ -407,7 +407,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		
 		lastSagaChunk = null;
 
-		removeLivingEntity();
+		unwrap();
 		
 	}
 	
@@ -417,7 +417,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	 * @return player, null if not online
 	 */
 	public Player getPlayer() {
-		return livingEntity;
+		return wrapped;
 	}
 	
 	
@@ -477,9 +477,9 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	 */
 	public void synchHealth() {
 		
-		if(livingEntity == null) return;
+		if(wrapped == null) return;
 		
-		livingEntity.setHealth(getHalfHearts());
+		wrapped.setHealth(getHalfHearts());
 		
 	}
 	
@@ -502,7 +502,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 			return 19;
 		}
 		
-		if(livingEntity != null && livingEntity.getHealth() == 20 && this.health < totalHealth){
+		if(wrapped != null && wrapped.getHealth() == 20 && this.health < totalHealth){
 			return 19;
 		}
 		
@@ -555,9 +555,9 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	@Override
 	public int getFoodLevel() {
 		
-		if(livingEntity == null) return 0;
+		if(wrapped == null) return 0;
 		
-		return livingEntity.getFoodLevel();
+		return wrapped.getFoodLevel();
 		
 	}
 	
@@ -569,8 +569,8 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	@Override
 	public void modFoodLevel(int amount) {
 		
-		if(livingEntity == null) return;
-		livingEntity.setFoodLevel(livingEntity.getFoodLevel() + amount);
+		if(wrapped == null) return;
+		wrapped.setFoodLevel(wrapped.getFoodLevel() + amount);
 		
 	}
 	
@@ -693,9 +693,9 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	public ItemStack getItemInHand() {
 
 		
-		if(livingEntity == null) return new ItemStack(Material.AIR);
+		if(wrapped == null) return new ItemStack(Material.AIR);
 		
-		return livingEntity.getItemInHand();
+		return wrapped.getItemInHand();
 		
 		
 	}
@@ -709,7 +709,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	@Override
 	public void damageTool() {
 		
-		if(livingEntity == null) return;
+		if(wrapped == null) return;
 		
 		ItemStack item = getPlayer().getItemInHand();
 
@@ -944,11 +944,11 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	public void refreshChunk() {
 		
 		
-		if(livingEntity == null){
+		if(wrapped == null){
 			return;
 		}
 		
-		lastSagaChunk = BundleManager.manager().getSagaChunk(livingEntity.getLocation());
+		lastSagaChunk = BundleManager.manager().getSagaChunk(wrapped.getLocation());
 		
 		
 	}
@@ -999,7 +999,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	public void message(String message) {
 		
 		if(message.length() == 0) return;
-		if(livingEntity != null) livingEntity.sendMessage(CustomColour.process(message));
+		if(wrapped != null) wrapped.sendMessage(CustomColour.process(message));
 		
 	}
 
@@ -1042,9 +1042,9 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	 */
 	public void playEffect(Effect effect, int value) {
 		
-		if(livingEntity == null) return;
+		if(wrapped == null) return;
 		
-		livingEntity.playEffect(getLocation(), effect, value);
+		wrapped.playEffect(getLocation(), effect, value);
 		
 	}
 	
@@ -1057,10 +1057,10 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	 */
 	public void playSound(Sound sound, float arg2, float arg3) {
 		
-		if(livingEntity == null) return;
+		if(wrapped == null) return;
 		
 		// TODO: Play sound
-		livingEntity.playSound(getLocation(), sound, arg2, arg3);
+		wrapped.playSound(getLocation(), sound, arg2, arg3);
 		
 		
 	}
@@ -1122,15 +1122,15 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	@Override
 	public void addItem(ItemStack itemStack) {
 		
-		if(livingEntity != null){
+		if(wrapped != null){
 			
-			boolean dropped = InventoryUtil.addItem(itemStack, livingEntity.getInventory(), livingEntity.getLocation());
+			boolean dropped = InventoryUtil.addItem(itemStack, wrapped.getInventory(), wrapped.getLocation());
 			
 			if(dropped){
 				message(PlayerMessages.inventoryFullDropping());
 			}
 			
-			livingEntity.updateInventory(); // TODO replace updateInventory()
+			wrapped.updateInventory(); // TODO replace updateInventory()
 			
 		}
 		
@@ -1145,11 +1145,11 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	@Override
 	public void removeItem(ItemStack itemStack) {
 		
-		if(livingEntity != null){
+		if(wrapped != null){
 			
-			InventoryUtil.removeItem(itemStack, livingEntity.getInventory());
+			InventoryUtil.removeItem(itemStack, wrapped.getInventory());
 			
-			livingEntity.updateInventory();
+			wrapped.updateInventory();
 			
 		}
 		
@@ -1164,11 +1164,11 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	@SuppressWarnings("deprecation")
 	public void removeItem(Material material, int amount) {
 		
-		if(livingEntity != null){
+		if(wrapped != null){
 			
-			InventoryUtil.removeItem(material, amount, false, livingEntity);
+			InventoryUtil.removeItem(material, amount, false, wrapped);
 			
-			livingEntity.updateInventory(); // TODO replace updateInventory()
+			wrapped.updateInventory(); // TODO replace updateInventory()
 			
 		}
 		
@@ -1182,9 +1182,9 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	@Override
 	public Integer getAmount(Material item) {
 		
-		if(livingEntity != null){
+		if(wrapped != null){
 			
-			return InventoryUtil.getItemCount(item, livingEntity.getInventory().getContents());
+			return InventoryUtil.getItemCount(item, wrapped.getInventory().getContents());
 			
 		}
 		return 0;
@@ -1220,15 +1220,15 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	@SuppressWarnings("deprecation")
 	public SagaItem takeItem(SagaItem requested) {
 
-		if(livingEntity == null){
+		if(wrapped == null){
 			SagaItem taken = new SagaItem(requested);
 			taken.setAmount(0.0);
 			return taken;
 		}
 		
-		SagaItem taken = InventoryUtil.takeItem(requested, livingEntity.getInventory());
+		SagaItem taken = InventoryUtil.takeItem(requested, wrapped.getInventory());
 		
-		livingEntity.updateInventory();
+		wrapped.updateInventory();
 		
 		return taken;
 		
@@ -1243,14 +1243,14 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	@SuppressWarnings("deprecation")
 	public void giveItem(SagaItem sagaItem) {
 
-		if(livingEntity == null){
+		if(wrapped == null){
 			SagaLogger.warning(this, "can't give a item: no entity wrapped");
 			return;
 		}
 		
-		InventoryUtil.giveItem(sagaItem, livingEntity.getInventory(), livingEntity.getLocation());
+		InventoryUtil.giveItem(sagaItem, wrapped.getInventory(), wrapped.getLocation());
 		
-		livingEntity.updateInventory();
+		wrapped.updateInventory();
 		
 	}
 	
@@ -1471,7 +1471,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		
 		
 		StringBuffer result = new StringBuffer();
-		if(this.livingEntity == null){
+		if(this.wrapped == null){
 			result.append("(offline)");
 		}
 		

@@ -218,7 +218,7 @@ public class Ricochet extends Ability{
 		
 		if(target == null || arrow == null) return;
 	
-		LivingEntity shooter = getSagaLiving().getLivingEntity();
+		LivingEntity shooter = getSagaLiving().getWrapped();
 		
 		Location origLoc = arrow.getLocation();
 		origLoc.add(0, 0.5, 0);

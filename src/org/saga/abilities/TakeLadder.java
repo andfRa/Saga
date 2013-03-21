@@ -107,8 +107,8 @@ public class TakeLadder extends Ability{
 		// Inventory:
 		PlayerInventory inventory = null;
 		Player player = null;
-		if(getSagaLiving().getLivingEntity() instanceof Player){
-			player = (Player) getSagaLiving().getLivingEntity();
+		if(getSagaLiving().getWrapped() instanceof Player){
+			player = (Player) getSagaLiving().getWrapped();
 			inventory = player.getInventory();
 		}else{
 			return false;

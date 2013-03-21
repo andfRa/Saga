@@ -99,7 +99,7 @@ public class Parry extends Ability{
 		
 		
 		if(event.defenderPlayer == null) return false;
-		LivingEntity defender = event.defenderPlayer.getLivingEntity();
+		LivingEntity defender = event.defenderPlayer.getWrapped();
 		LivingEntity attacker = event.getAttacker();
 		
 		SagaPlayer sagaLiving = event.defenderPlayer;

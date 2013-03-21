@@ -108,7 +108,7 @@ public class Charge extends Ability{
 	private void handleCharging(final SagaLiving<?> sagaLiving) {
 		
 		
-		LivingEntity attacker = sagaLiving.getLivingEntity();
+		LivingEntity attacker = sagaLiving.getWrapped();
 		
 		double duration = getDefinition().getFunction(DURATION_KEY).value(getScore()) * 1000;
 		
