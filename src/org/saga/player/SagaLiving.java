@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -69,7 +70,7 @@ public class SagaLiving <T extends LivingEntity>{
 	/**
 	 * All abilities.
 	 */
-	private ArrayList<Ability> abilities;
+	private List<Ability> abilities;
 	
 	
 	// Managers:
@@ -522,6 +523,8 @@ public class SagaLiving <T extends LivingEntity>{
 	public void setAblityScore(String abilName, Integer score) {
 		
 		this.abilityScores.put(abilName, score);
+		
+		syncAbilities();
 		abilityManager.update();
 		
 	}
@@ -567,29 +570,47 @@ public class SagaLiving <T extends LivingEntity>{
 	}
 
 	/**
-	 * Creates and adds all missing abilities.
+	 * Synchronises abilities to scores.
 	 * 
 	 */
 	private void syncAbilities() {
-
 		
-		ArrayList<String> abilityNames = AbilityConfiguration.config().getAbilityNames();
-		for (String abilityName : abilityNames) {
-			if(!hasAbility(abilityName)){
-				
-				try {
-					Ability ability = AbilityConfiguration.createAbility(abilityName);
-					ability.setSagaLiving(this);
-					abilities.add(ability);
+		
+		List<Ability> result = new ArrayList<Ability>();
+		
+		Set<String> trained = abilityScores.keySet();
+		
+		for (String abilName : trained) {
+			
+			Ability ability = null;
+			
+			// Check available:
+			for (Ability availAbility : abilities) {
+				if(availAbility.getName().equals(abilName)){
+					ability = availAbility;
+					break;
 				}
-				catch (InvalidAbilityException e) {
-					SagaLogger.severe(this, "failed to create ability: " + e.getClass().getSimpleName() + ":" + e.getMessage());
-				}
-				
 			}
+			
+			if(ability != null) continue;
+			
+			// Create new ability:
+			try {
+				ability = AbilityConfiguration.createAbility(abilName);
+				ability.setSagaLiving(this);
+				result.add(ability);
+			}
+			catch (InvalidAbilityException e) {
+				SagaLogger.severe(this, "failed to create " + abilName + " ability: " + e.getClass().getSimpleName() + ":" + e.getMessage());
+			}
+			
 		}
 		
-
+		
+		// Update:
+		abilities = result;
+		
+		
 	}
 	
 	
