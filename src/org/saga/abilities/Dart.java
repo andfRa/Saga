@@ -49,7 +49,7 @@ public class Dart extends Ability{
 		
 
 		// Shoot:
-		SagaLiving<?> sagaLiving = getSagaLiving();
+		SagaLiving sagaLiving = getSagaLiving();
 		sagaLiving.shootArrow(getDefinition().getFunction(SPEED_KEY).value(getScore()));
 
 		if(getSagaLiving() instanceof SagaPlayer) StatsEffectHandler.playAnimateArm((SagaPlayer) getSagaLiving());

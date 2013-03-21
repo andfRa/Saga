@@ -107,7 +107,7 @@ public class MeteorsTarget extends Ability{
 	public boolean triggerInteract(PlayerInteractEvent event) {
 		
 		
-		SagaLiving<?> sagaLiving = getSagaLiving();
+		SagaLiving sagaLiving = getSagaLiving();
 		final LivingEntity shooter = sagaLiving.getWrapped();
 		
 		// Target:

@@ -22,7 +22,7 @@ public class AttributeManager {
 	/**
 	 * Saga living entity.
 	 */
-	private SagaLiving<?> sagaLiving;
+	private SagaLiving sagaLiving;
 	
 	/**
 	 * Attributes.
@@ -35,7 +35,7 @@ public class AttributeManager {
 	 * 
 	 * @param sagaLiving Saga living entity
 	 */
-	public AttributeManager(SagaLiving<?> sagaLiving) {
+	public AttributeManager(SagaLiving sagaLiving) {
 
 		this.sagaLiving = sagaLiving;
 		this.attributes = AttributeConfiguration.config().getAttributes();

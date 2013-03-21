@@ -23,7 +23,7 @@ public class AbilityManager {
 	/**
 	 * Saga living entity.
 	 */
-	private SagaLiving<?> sagaLiving;
+	private SagaLiving sagaLiving;
 	
 	
 	
@@ -33,7 +33,7 @@ public class AbilityManager {
 	 * 
 	 * @param sagaLiving saga living entity
 	 */
-	public AbilityManager(SagaLiving<?> sagaLiving) {
+	public AbilityManager(SagaLiving sagaLiving) {
 
 		
 		this.sagaLiving = sagaLiving;

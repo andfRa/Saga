@@ -351,7 +351,7 @@ public class AbilityDefinition{
 	 * @param sagaLiving saga entity
 	 * @return ability score
 	 */
-	public Integer findScore(SagaLiving<?> sagaLiving) {
+	public Integer findScore(SagaLiving sagaLiving) {
 
 		
 		int prevScore = 0;
@@ -456,7 +456,7 @@ public class AbilityDefinition{
 	 * @param abilityScore ability score
 	 * @return true if requirements are met
 	 */
-	public boolean checkBuildings(SagaLiving<?> sagaLiving, Integer abilityScore) {
+	public boolean checkBuildings(SagaLiving sagaLiving, Integer abilityScore) {
 
 		
 		HashSet<String> required = getBldgReq(abilityScore);
@@ -483,7 +483,7 @@ public class AbilityDefinition{
 	 * @param abilityScore ability score
 	 * @return true if requirements are met
 	 */
-	public boolean checkAttributes(SagaLiving<?> sagaLiving, Integer abilityScore) {
+	public boolean checkAttributes(SagaLiving sagaLiving, Integer abilityScore) {
 		
 		Set<String> attributeNames = attributeRequirements.keySet();
 		
@@ -506,7 +506,7 @@ public class AbilityDefinition{
 	 * @param abilityScore ability score
 	 * @return true if requirements are met
 	 */
-	public boolean checkProficiencies(SagaLiving<?> sagaLiving, Integer abilityScore) {
+	public boolean checkProficiencies(SagaLiving sagaLiving, Integer abilityScore) {
 		
 		
 		if(!(sagaLiving instanceof SagaPlayer)) return false;
@@ -534,7 +534,7 @@ public class AbilityDefinition{
 	 * @param abilityScore ability score
 	 * @return true if the requirements are met
 	 */
-	public boolean checkRequirements(SagaLiving<?> sagaLiving, Integer abilityScore) {
+	public boolean checkRequirements(SagaLiving sagaLiving, Integer abilityScore) {
 		return checkAttributes(sagaLiving, abilityScore)&&
 				checkBuildings(sagaLiving, abilityScore) &&
 				checkProficiencies(sagaLiving, abilityScore);

@@ -74,7 +74,7 @@ public class PlaceLadder extends Ability{
 		// Check placement:
 		if(clickedBlock == null || event.getBlockFace() != BlockFace.UP) return false;
 		
-		SagaLiving<?> sagaLiving = getSagaLiving();
+		SagaLiving sagaLiving = getSagaLiving();
 		
 		// Data:
 		byte data = getData(clickedBlock.getRelative(BlockFace.UP), sagaLiving);
@@ -143,7 +143,7 @@ public class PlaceLadder extends Ability{
 	 * @param sagaLiving saga entity that placed the ladder, null if ignore
 	 * @return block data, -1 if can't attach
 	 */
-	private static byte getData(Block target, SagaLiving<?> sagaLiving) {
+	private static byte getData(Block target, SagaLiving sagaLiving) {
 
 		
 		// Try orientation:

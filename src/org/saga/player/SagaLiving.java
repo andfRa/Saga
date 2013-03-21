@@ -31,14 +31,14 @@ import org.saga.settlements.BundleManager;
 import org.saga.settlements.SagaChunk;
 import org.saga.shape.RelativeShape.Orientation;
 
-public class SagaLiving <T extends LivingEntity>{
+public class SagaLiving {
 
 	
 	// Wrapped:
 	/**
 	 * Wrapped entity:
 	 */
-	transient protected T wrapped = null;
+	transient protected LivingEntity wrapped = null;
 	
 	
 	// Physical:
@@ -189,15 +189,6 @@ public class SagaLiving <T extends LivingEntity>{
 	
 	// Entity:
 	/**
-	 * Wraps the entity.
-	 * 
-	 * @param entity entity to wrap
-	 */
-	public void wrap(T entity) {
-		this.wrapped = entity;
-	}
-	
-	/**
 	 * Unwraps the entity.
 	 * 
 	 */
@@ -210,7 +201,7 @@ public class SagaLiving <T extends LivingEntity>{
 	 * 
 	 * @return wrapped entity, null if not wrapped
 	 */
-	public T getWrapped() {
+	public LivingEntity getWrapped() {
 		return wrapped;
 	}
 	

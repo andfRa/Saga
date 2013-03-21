@@ -73,7 +73,7 @@ public class Lightning extends Ability{
 	public boolean triggerInteract(PlayerInteractEvent event) {
 		
 		
-		SagaLiving<?> sagaLiving = getSagaLiving();
+		SagaLiving sagaLiving = getSagaLiving();
 		LivingEntity shooter = sagaLiving.getWrapped();
 		Location target = null;
 		

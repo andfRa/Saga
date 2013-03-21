@@ -49,7 +49,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	/**
 	 * Saga player.
 	 */
-	transient private SagaLiving<?> sagaLiving = null;
+	transient private SagaLiving sagaLiving = null;
 
 	/**
 	 * Clock is enabled if true.
@@ -224,7 +224,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 * 
 	 * @param sagaLiving saga entity
 	 */
-	public void setSagaLiving(SagaLiving<?> sagaLiving) {
+	public void setSagaLiving(SagaLiving sagaLiving) {
 		
 		this.sagaLiving = sagaLiving;
 		
@@ -235,7 +235,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 * 
 	 * @return saga entity
 	 */
-	public SagaLiving<?> getSagaLiving() {
+	public SagaLiving getSagaLiving() {
 		return sagaLiving;
 	}
 

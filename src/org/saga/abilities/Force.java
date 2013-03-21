@@ -64,7 +64,7 @@ public class Force extends Ability{
 	public boolean triggerInteract(PlayerInteractEvent event) {
 		
 
-		SagaLiving<?> sagaLiving = getSagaLiving();
+		SagaLiving sagaLiving = getSagaLiving();
 		Integer abilityLevel = getScore();
 		
 		LivingEntity player = sagaLiving.getWrapped();

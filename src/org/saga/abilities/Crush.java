@@ -150,7 +150,7 @@ public class Crush extends Ability{
 	public boolean triggerDefend(SagaEntityDamageEvent event) {
 		
 		
-		SagaLiving<?> sagaLiving = getSagaLiving();
+		SagaLiving sagaLiving = getSagaLiving();
 		LivingEntity attacker = sagaLiving.getWrapped();
 		
 		// Blocking:

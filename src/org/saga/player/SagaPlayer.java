@@ -38,7 +38,7 @@ import org.saga.settlements.Settlement;
 import org.saga.statistics.StatisticsManager;
 import org.saga.utility.InventoryUtil;
 
-public class SagaPlayer extends SagaLiving<Player> implements Trader{
+public class SagaPlayer extends SagaLiving implements Trader{
 
 	
 	
@@ -371,7 +371,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	public void setPlayer(Player player) {
 		
 		
-		super.wrap(player);
+		wrap(player);
 		
 		// Admin mode:
 		if(isAdminMode() && !PermissionsDependency.hasPermission(player, PermissionsDependency.ADMIN_MODE_PERMISSION)){
@@ -397,7 +397,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	public void removePlayer() {
 
 		// Admin mode:
-		if(isAdminMode() && !PermissionsDependency.hasPermission(wrapped, PermissionsDependency.ADMIN_MODE_PERMISSION)){
+		if(isAdminMode() && !PermissionsDependency.hasPermission(getPlayer(), PermissionsDependency.ADMIN_MODE_PERMISSION)){
 			disableAdminMode();
 			SagaLogger.info(this, "no permission for admin mode");
 		}
@@ -417,9 +417,27 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	 * @return player, null if not online
 	 */
 	public Player getPlayer() {
-		return wrapped;
+		return (Player)wrapped;
 	}
 	
+	/* 
+	 * Gets the player.
+	 * 
+	 * @see org.saga.player.SagaLiving#getWrapped()
+	 */
+	@Override
+	public Player getWrapped() {
+		return (Player)wrapped;
+	}
+	
+	/**
+	 * Wraps a player.
+	 * 
+	 * @param player player
+	 */
+	public void wrap(Player player) {
+		wrapped = player;
+	}
 	
 	
 	// Health:
@@ -479,7 +497,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		
 		if(wrapped == null) return;
 		
-		wrapped.setHealth(getHalfHearts());
+		getPlayer().setHealth(getHalfHearts());
 		
 	}
 	
@@ -502,7 +520,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 			return 19;
 		}
 		
-		if(wrapped != null && wrapped.getHealth() == 20 && this.health < totalHealth){
+		if(wrapped != null && getPlayer().getHealth() == 20 && this.health < totalHealth){
 			return 19;
 		}
 		
@@ -557,7 +575,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		
 		if(wrapped == null) return 0;
 		
-		return wrapped.getFoodLevel();
+		return getPlayer().getFoodLevel();
 		
 	}
 	
@@ -570,7 +588,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	public void modFoodLevel(int amount) {
 		
 		if(wrapped == null) return;
-		wrapped.setFoodLevel(wrapped.getFoodLevel() + amount);
+		getPlayer().setFoodLevel(getPlayer().getFoodLevel() + amount);
 		
 	}
 	
@@ -695,7 +713,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		
 		if(wrapped == null) return new ItemStack(Material.AIR);
 		
-		return wrapped.getItemInHand();
+		return getPlayer().getItemInHand();
 		
 		
 	}
@@ -948,7 +966,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 			return;
 		}
 		
-		lastSagaChunk = BundleManager.manager().getSagaChunk(wrapped.getLocation());
+		lastSagaChunk = BundleManager.manager().getSagaChunk(getPlayer().getLocation());
 		
 		
 	}
@@ -999,7 +1017,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 	public void message(String message) {
 		
 		if(message.length() == 0) return;
-		if(wrapped != null) wrapped.sendMessage(CustomColour.process(message));
+		if(wrapped != null) getPlayer().sendMessage(CustomColour.process(message));
 		
 	}
 
@@ -1044,7 +1062,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		
 		if(wrapped == null) return;
 		
-		wrapped.playEffect(getLocation(), effect, value);
+		getPlayer().playEffect(getLocation(), effect, value);
 		
 	}
 	
@@ -1060,7 +1078,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		if(wrapped == null) return;
 		
 		// TODO: Play sound
-		wrapped.playSound(getLocation(), sound, arg2, arg3);
+		getPlayer().playSound(getLocation(), sound, arg2, arg3);
 		
 		
 	}
@@ -1124,13 +1142,13 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		
 		if(wrapped != null){
 			
-			boolean dropped = InventoryUtil.addItem(itemStack, wrapped.getInventory(), wrapped.getLocation());
+			boolean dropped = InventoryUtil.addItem(itemStack, getPlayer().getInventory(), getPlayer().getLocation());
 			
 			if(dropped){
 				message(PlayerMessages.inventoryFullDropping());
 			}
 			
-			wrapped.updateInventory(); // TODO replace updateInventory()
+			getPlayer().updateInventory(); // TODO replace updateInventory()
 			
 		}
 		
@@ -1147,9 +1165,9 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		
 		if(wrapped != null){
 			
-			InventoryUtil.removeItem(itemStack, wrapped.getInventory());
+			InventoryUtil.removeItem(itemStack, getPlayer().getInventory());
 			
-			wrapped.updateInventory();
+			getPlayer().updateInventory();
 			
 		}
 		
@@ -1166,9 +1184,9 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		
 		if(wrapped != null){
 			
-			InventoryUtil.removeItem(material, amount, false, wrapped);
+			InventoryUtil.removeItem(material, amount, false, getPlayer());
 			
-			wrapped.updateInventory(); // TODO replace updateInventory()
+			getPlayer().updateInventory(); // TODO replace updateInventory()
 			
 		}
 		
@@ -1184,7 +1202,7 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 		
 		if(wrapped != null){
 			
-			return InventoryUtil.getItemCount(item, wrapped.getInventory().getContents());
+			return InventoryUtil.getItemCount(item, getPlayer().getInventory().getContents());
 			
 		}
 		return 0;
@@ -1226,9 +1244,9 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 			return taken;
 		}
 		
-		SagaItem taken = InventoryUtil.takeItem(requested, wrapped.getInventory());
+		SagaItem taken = InventoryUtil.takeItem(requested, getPlayer().getInventory());
 		
-		wrapped.updateInventory();
+		getPlayer().updateInventory();
 		
 		return taken;
 		
@@ -1248,9 +1266,9 @@ public class SagaPlayer extends SagaLiving<Player> implements Trader{
 			return;
 		}
 		
-		InventoryUtil.giveItem(sagaItem, wrapped.getInventory(), wrapped.getLocation());
+		InventoryUtil.giveItem(sagaItem, getPlayer().getInventory(), getPlayer().getLocation());
 		
-		wrapped.updateInventory();
+		getPlayer().updateInventory();
 		
 	}
 	

@@ -79,7 +79,7 @@ public class Repair extends Ability{
 		}
 		
 		Integer skillLevel = getScore();
-		SagaLiving<?> sagaPlayer = getSagaLiving();
+		SagaLiving sagaPlayer = getSagaLiving();
 		
 		// Requirements:
 		Material usedMaterial = getRepairMaterial(item.getType());

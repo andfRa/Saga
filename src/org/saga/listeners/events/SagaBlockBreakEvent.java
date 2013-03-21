@@ -45,7 +45,7 @@ public class SagaBlockBreakEvent {
 	/**
 	 * Saga living.
 	 */
-	public final SagaLiving<?> sagaLiving;
+	public final SagaLiving sagaLiving;
 	
 	/**
 	 * Location saga chunk.
@@ -83,7 +83,7 @@ public class SagaBlockBreakEvent {
 	 * @param sagaPlayer saga player
 	 * @param sagaChunk saga chunk
 	 */
-	public SagaBlockBreakEvent(BlockBreakEvent event, SagaLiving<?> sagaPlayer, SagaChunk sagaChunk) {
+	public SagaBlockBreakEvent(BlockBreakEvent event, SagaLiving sagaPlayer, SagaChunk sagaChunk) {
 
 		
 		this.event = event;
@@ -236,7 +236,7 @@ public class SagaBlockBreakEvent {
 	 * 
 	 * @return the Saga living entity
 	 */
-	public SagaLiving<?> getSagaPlayer() {
+	public SagaLiving getSagaPlayer() {
 		return sagaLiving;
 	}
 

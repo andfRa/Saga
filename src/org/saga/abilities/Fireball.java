@@ -45,7 +45,7 @@ public class Fireball extends Ability{
 	public boolean triggerInteract(PlayerInteractEvent event) {
 		
 		
-		SagaLiving<?> sagaLiving = getSagaLiving();
+		SagaLiving sagaLiving = getSagaLiving();
 		
 		Vector shootDirection = event.getPlayer().getEyeLocation().getDirection().normalize();
 

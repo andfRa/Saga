@@ -105,7 +105,7 @@ public class Charge extends Ability{
 	 * 
 	 * @param living entity that is charging
 	 */
-	private void handleCharging(final SagaLiving<?> sagaLiving) {
+	private void handleCharging(final SagaLiving sagaLiving) {
 		
 		
 		LivingEntity attacker = sagaLiving.getWrapped();

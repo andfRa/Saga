@@ -29,7 +29,7 @@ public class StatsEffectHandler {
 		
 	}
 	
-	public static void playParry(SagaLiving<LivingEntity> sagaliving) {
+	public static void playParry(SagaLiving sagaliving) {
 		
 		LivingEntity living = sagaliving.getWrapped();
 		
@@ -69,7 +69,7 @@ public class StatsEffectHandler {
 		
 	}
 	
-	public static void playSpellCast(SagaLiving<?> sagaLiving) {
+	public static void playSpellCast(SagaLiving sagaLiving) {
 		
 		// Smoke:
 		for (int i = 5; i <= 12; i++) {
@@ -81,7 +81,7 @@ public class StatsEffectHandler {
 		
 	}
 	
-	public static void playCrush(SagaLiving<?> sagaLiving) {
+	public static void playCrush(SagaLiving sagaLiving) {
 		
 		Location loc = sagaLiving.getLocation();
 		
@@ -105,7 +105,7 @@ public class StatsEffectHandler {
 		
 	}
 	
-	public static void playRecharge(SagaLiving<?> sagaLiving) {
+	public static void playRecharge(SagaLiving sagaLiving) {
 	
 		// Flames:
 		sagaLiving.playGlobalEffect(Effect.BLAZE_SHOOT, 0);
