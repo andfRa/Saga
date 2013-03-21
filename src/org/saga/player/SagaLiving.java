@@ -518,7 +518,7 @@ public class SagaLiving <T extends LivingEntity>{
 	 */
 	public void setAblityScore(String abilName, Integer score) {
 		
-		this.abilityScores.put(abilName, score);
+		this.abilityScores.put(abilName.toLowerCase(), score);
 		
 		syncAbilities();
 		abilityManager.update();
@@ -597,6 +597,7 @@ public class SagaLiving <T extends LivingEntity>{
 				result.add(ability);
 			}
 			catch (InvalidAbilityException e) {
+				abilityScores.remove(abilName);
 				SagaLogger.severe(this, "failed to create " + abilName + " ability: " + e.getClass().getSimpleName() + ":" + e.getMessage());
 			}
 			
