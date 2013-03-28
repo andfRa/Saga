@@ -1,7 +1,6 @@
 package org.saga.listeners.events;
 
 import java.util.PriorityQueue;
-import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -25,12 +24,6 @@ import org.saga.settlements.SagaChunk;
 import org.saga.utility.TwoPointFunction;
 
 public class SagaEntityDamageEvent {
-
-	
-	/**
-	 * Random generator.
-	 */
-	private static Random RANDOM = new Random();
 
 	
 	/**
@@ -134,20 +127,22 @@ public class SagaEntityDamageEvent {
 	
 	
 	
-	// Initialise:
+	// Initiate:
 	/**
-	 * Sets entity damage event.
+	 * Extracts saga entities and chunks.
 	 * 
 	 * @param event event
 	 * @param defender defender entity
 	 */
-	public SagaEntityDamageEvent(EntityDamageEvent event, LivingEntity defender) {
-
+	public SagaEntityDamageEvent(EntityDamageEvent event) {
+		
 		
 		Entity attacker = null;
+		LivingEntity defender = null;
 
 		this.event = event;
 		type = DamageType.getDamageType(event);
+		if(event.getEntity() instanceof LivingEntity) defender = (LivingEntity) event.getEntity();
 		
 		// Damage penalty:
 		// Prevents massive damage from weak attacks.
@@ -323,14 +318,14 @@ public class SagaEntityDamageEvent {
 		if(isCancelled()) return;
 
 		// Dodge:
-		if(hitChance <= RANDOM.nextDouble()) {
+		if(hitChance <= Saga.RANDOM.nextDouble()) {
 			event.setCancelled(true);
 			return;
 		}
 		
 		// Modify damage:
 		double damage = calcDamage();
-		event.setDamage((int)damage);
+		event.setDamage((int)Math.ceil(damage));
 		
 		// Apply damage to player:
 		if(sagaDefender != null){
@@ -353,12 +348,10 @@ public class SagaEntityDamageEvent {
 			if(VanillaConfiguration.checkBlocking(event, sagaDefender.getWrapped())) harm*= blocking;
 			
 			// Apply Saga damage:
-			sagaDefender.damage(harm);
+			sagaDefender.getWrapped().damage((int)Math.ceil(harm));
 			
-			// Prevent death:
-			if(sagaDefender.getHealth() > 0 && sagaDefender.getWrapped().getHealth() <= damage){
-				event.setDamage(sagaDefender.getWrapped().getHealth() - 1);
-			}
+			// Take control:
+			event.setDamage(0);
 			
 		}
 		
@@ -373,13 +366,6 @@ public class SagaEntityDamageEvent {
 			@Override
 			public void run() {
 				
-				// Health synchronisation:
-				if(sagaDefender != null){
-					LivingEntity defender = sagaDefender.getWrapped();
-					if(defender.isDead() || defender.getHealth() == 0) return;
-					sagaDefender.synchHealth();
-				}
-				
 				// Tool damage reduction:
 				if(sagaAttacker instanceof SagaPlayer){
 					Player player = ((SagaPlayer)sagaAttacker).getPlayer();
@@ -393,11 +379,6 @@ public class SagaEntityDamageEvent {
 				
 			}
 		}, 1);
-		
-		// Player killed player:
-		if(sagaAttacker != null && sagaDefender != null){
-			
-		}
 		
 		
 	}
@@ -454,7 +435,7 @@ public class SagaEntityDamageEvent {
 	 */
 	public boolean isPvC() {
 
-		return sagaAttacker != null && creatureDefender != null;
+		return sagaAttacker instanceof SagaPlayer && creatureDefender != null;
 
 	}
 	
@@ -476,7 +457,7 @@ public class SagaEntityDamageEvent {
 	 */
 	public boolean isCvP() {
 
-		return creatureAttacker != null && sagaDefender != null;
+		return creatureAttacker != null && sagaDefender instanceof SagaPlayer;
 
 	}
 

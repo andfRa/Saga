@@ -192,7 +192,7 @@ public class Watchtower extends Building implements DaytimeTicker{
 		eString = new StringBuffer();
 		boolean first = true;
 		while (spotted.hasMoreElements()) {
-			String mob = (String) spotted.nextElement();
+			String mob = spotted.nextElement();
 			Integer amount = mobReport.get(mob);
 			
 			if(!first){

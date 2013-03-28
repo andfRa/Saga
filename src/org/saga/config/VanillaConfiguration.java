@@ -44,6 +44,11 @@ public class VanillaConfiguration {
 	 * Maximum food level.
 	 */
 	public static final Integer FOOD_LEVEL_MAX = 20; 
+
+	/**
+	 * Player default health.
+	 */
+	public static final Integer PLAYER_DEFAULT_HEALTH = 20; 
 	
 	/**
 	 * Maximum exhaustion.
@@ -308,7 +313,7 @@ public class VanillaConfiguration {
 
 		if(enchLevel == 0) return 0;
 		
-		return (int) ( (6 + enchLevel * enchLevel) / 2 );
+		return (6 + enchLevel * enchLevel) / 2;
 		
 	}
 
@@ -322,6 +327,24 @@ public class VanillaConfiguration {
 	public static boolean hasTicks(DamageCause cause) {
 
 		return cause == DamageCause.ENTITY_ATTACK || cause == DamageCause.FIRE || cause == DamageCause.CONTACT || cause == DamageCause.SUFFOCATION || cause == DamageCause.LAVA;
+		
+	}
+	
+	/**
+	 * Check is the given the entity will not get damaged.
+	 * 
+	 * @param cause event cause
+	 * @param entity entity
+	 * @return true if can't be damaged
+	 */
+	public static boolean checkNoDamage(DamageCause cause, Entity entity) {
+		
+		if(entity instanceof LivingEntity){
+			if(!hasTicks(cause)) return false;
+			return ((LivingEntity) entity).getNoDamageTicks() > ((LivingEntity) entity).getMaximumNoDamageTicks()/2F;
+		}
+		
+		return false;
 		
 	}
 	

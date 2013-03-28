@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.HashSet;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -348,7 +347,6 @@ public class AdminCommands {
 		
 		// Heal:
 		selPlayer.restoreHealth();
-		selPlayer.synchHealth();
 		
 		// Inform:
 		if(selPlayer != sagaPlayer){
@@ -952,7 +950,9 @@ public class AdminCommands {
 		}
 		
 		Player player = sagaPlayer.getPlayer();
-		player.playSound(player.getLocation(), Sound.FALL_BIG, numb1.floatValue(), numb2.floatValue());
+		player.setNoDamageTicks(player.getMaximumNoDamageTicks());
+		player.setMaxHealth(numb1.intValue());
+		player.setHealth(numb2.intValue());
 		
 		
 	}

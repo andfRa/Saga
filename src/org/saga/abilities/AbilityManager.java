@@ -27,21 +27,17 @@ public class AbilityManager {
 	
 	
 	
-	// Initialisation:
+	// Initiation:
 	/**
-	 * Sets entity.
+	 * Initiates the manager. Update needed before abilities are initialised.
 	 * 
 	 * @param sagaLiving saga living entity
 	 */
 	public AbilityManager(SagaLiving sagaLiving) {
-
 		
 		this.sagaLiving = sagaLiving;
 		abilities = new HashSet<Ability>();
 		
-		update();
-		
-
 	}
 	
 	/**

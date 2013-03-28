@@ -152,8 +152,8 @@ public class Charge extends Ability{
 				int damage = getDefinition().getFunction(PUSH_DAMAGE_KEY).intValue(getScore());
 				
 				// Damage event:
-				SagaEntityDamageEvent event = new SagaEntityDamageEvent(new EntityDamageEvent(attacker, DamageCause.FALLING_BLOCK, damage), defender);
-				SagaEventHandler.handleEntityDamage(event);
+				SagaEntityDamageEvent event = new SagaEntityDamageEvent(new EntityDamageEvent(attacker, DamageCause.FALLING_BLOCK, damage));
+				SagaEventHandler.handlePvP(event);
 				if(event.isCancelled()) continue;
 				
 				// Push:

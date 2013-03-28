@@ -45,7 +45,7 @@ public class SagaEventHandler {
     	
 	}
 	
-	public static void handleEntityDamage(SagaEntityDamageEvent event) {
+	public static void handlePvP(SagaEntityDamageEvent event) {
 
 
 		// Forward to Saga chunks:

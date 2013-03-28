@@ -1,6 +1,5 @@
 package org.saga.listeners.events;
 
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.ExperienceConfiguration;
@@ -26,18 +25,13 @@ public class SagaEntityDeathEvent {
 	 * Sets death event.
 	 * 
 	 * @param event event
-	 * @param deadEntity dead entity
 	 */
-	public SagaEntityDeathEvent(EntityDeathEvent event, LivingEntity deadEntity) {
-
+	public SagaEntityDeathEvent(EntityDeathEvent event) {
 		
 		this.event = event;
 		
-		// Entity damage event:
-		if(event.getEntity().getLastDamageCause() != null) damEvent = new SagaEntityDamageEvent(event.getEntity().getLastDamageCause(), event.getEntity());
+		if(event.getEntity().getLastDamageCause() != null) damEvent = new SagaEntityDamageEvent(event.getEntity().getLastDamageCause());
 		
-		
-
 	}
 
 	

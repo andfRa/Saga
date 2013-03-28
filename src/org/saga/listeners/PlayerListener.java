@@ -85,12 +85,9 @@ public class PlayerListener implements Listener {
 		// Set player:
 		sagaPlayer.setPlayer(player);
 		
-
+		
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
 		
-		// Synchronise health:
-		sagaPlayer.synchHealth();
-
 		// Forward to chunk group:
 		if(sagaPlayer.getBundle() != null) sagaPlayer.getBundle().onMemberJoin(event, sagaPlayer);
 		
@@ -134,11 +131,7 @@ public class PlayerListener implements Listener {
 		
 		SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
 		if(sagaPlayer == null) return;
-
 		
-		// Restore health:
-		sagaPlayer.restoreHealth();
-
 		// Get chunk group:
 		Bundle bundle = sagaPlayer.getBundle();
 		

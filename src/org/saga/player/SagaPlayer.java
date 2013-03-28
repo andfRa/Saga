@@ -18,7 +18,6 @@ import org.saga.config.AttributeConfiguration;
 import org.saga.config.EconomyConfiguration;
 import org.saga.config.ExperienceConfiguration;
 import org.saga.config.FactionConfiguration;
-import org.saga.dependencies.ChatDependency;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.dependencies.PermissionsDependency;
 import org.saga.dependencies.Trader;
@@ -134,7 +133,6 @@ public class SagaPlayer extends SagaLiving implements Trader{
 		this.chunkGroupId = -1;
 		
 		this.name = name;
-		this.health = getTotalHealth();
 		
 		this.exp = 0.0;
 		
@@ -254,29 +252,6 @@ public class SagaPlayer extends SagaLiving implements Trader{
 		
 		
 	}
-
-	/* 
-	 * Compensates hearth loss.
-	 * 
-	 * @see org.saga.player.SagaLivingEntity#setAttributeScore(java.lang.String, java.lang.Integer)
-	 */
-	@Override
-	public void setAttributeScore(String attribute, Integer score) {
-		
-		int beforeHhearts = getHalfHearts();
-		
-		super.setAttributeScore(attribute, score);
-		
-		int afterHhearts = getHalfHearts();
-		
-		// Compensate heart loss and synch:
-		if(beforeHhearts != afterHhearts){
-			health = getHealth(beforeHhearts);
-		}
-		synchHealth();
-		
-	}
-
 	
 	/**
 	 * Gets the attribute cap.
@@ -379,9 +354,9 @@ public class SagaPlayer extends SagaLiving implements Trader{
 			SagaLogger.info(this, "no permission for admin mode");
 		}
 		
-    	// Update chat prefix:
-    	ChatDependency.updatePrefix(this);
-		
+    	// Update:
+		update();
+    	
 		// Saving disabled:
 		if(!savingEnabledFlag){
 			error("player information saving disabled");
@@ -402,11 +377,8 @@ public class SagaPlayer extends SagaLiving implements Trader{
 			SagaLogger.info(this, "no permission for admin mode");
 		}
 		
-    	// Update chat prefix:
-    	ChatDependency.updatePrefix(this);
-		
 		lastSagaChunk = null;
-
+		
 		unwrap();
 		
 	}
@@ -437,129 +409,6 @@ public class SagaPlayer extends SagaLiving implements Trader{
 	 */
 	public void wrap(Player player) {
 		wrapped = player;
-	}
-	
-	
-	// Health:
-	/**
-	 * Gets players health.
-	 * 
-	 * @return players health
-	 */
-	public Double getHealth() {
-		
-		if(health < 0) health = 0.0;
-		
-		return health;
-		
-	}
-	
-	/**
-	 * Gets player health for given amount of half hearts
-	 * 
-	 * @param halfhearts
-	 * @return
-	 */
-	public Double getHealth(int halfhearts) {
-		
-		return getTotalHealth() / 20.0 * halfhearts;
-		
-	}
-	
-	/**
-	 * Damages the player.
-	 * 
-	 * @param amount damage amount
-	 */
-	public void damage(Double amount) {
-
-		health-= amount;
-		
-	}
-	
-	/**
-	 * Damages the player.
-	 * 
-	 * @param amount damage amount
-	 */
-	public void heal(Double amount) {
-
-		health+= amount;
-		if(health > getTotalHealth()) health = getTotalHealth();
-		
-	}
-	
-	/**
-	 * Synchronises players health.
-	 * 
-	 */
-	public void synchHealth() {
-		
-		if(wrapped == null) return;
-		
-		getWrapped().setHealth(getHalfHearts());
-		
-	}
-	
-	/**
-	 * Gets the health in half hearts format.
-	 * 
-	 * @return health in half hearts
-	 */
-	public int getHalfHearts() {
-
-		double totalHealth = getTotalHealth();
-		
-		int hhearts = (int)(20.0 * getHealth() / totalHealth);
-		
-		if(hhearts == 0 && this.health > 0){
-			return 1;
-		}
-		
-		if(hhearts == 20 && this.health < totalHealth){
-			return 19;
-		}
-		
-		if(wrapped != null && getWrapped().getHealth() == 20 && this.health < totalHealth){
-			return 19;
-		}
-		
-		if(hhearts > 20) hhearts = 20;
-		
-		return hhearts;
-		
-	}
-	
-	/**
-	 * Gets players total health.
-	 * 
-	 * @return players total health
-	 */
-	public Double getTotalHealth() {
-		
-		return attributeManager.getHealthModifier() + 20.0;
-		
-	}
-	
-	/**
-	 * Restores health.
-	 * 
-	 */
-	public void restoreHealth() {
-		
-		health = getTotalHealth();
-		
-	}
-	
-	/**
-	 * Checks if the saga player is dead.
-	 * 
-	 * @return true if dead
-	 */
-	public boolean isDead() {
-
-		return health <= 0;
-		
 	}
 	
 	
@@ -603,9 +452,6 @@ public class SagaPlayer extends SagaLiving implements Trader{
 	public void setExp(Integer exp) {
 		
 		this.exp = exp.doubleValue();
-		
-		// Update managers:
-		abilityManager.update();
 		
 	}
 	

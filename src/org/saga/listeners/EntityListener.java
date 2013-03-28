@@ -44,28 +44,25 @@ public class EntityListener implements Listener{
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamage(EntityDamageEvent event) {
 		
+		
 		// Creative or cancelled:
 		if(event.getEntity() instanceof Player && ((Player)event.getEntity()).getGameMode() == GameMode.CREATIVE || event.isCancelled()) return;
 		
-		// Not a living:
-		if(!(event.getEntity() instanceof LivingEntity)) return;
-		LivingEntity defender= (LivingEntity) event.getEntity();
-		
 		// Damage ticks:
-		if(VanillaConfiguration.hasTicks(event.getCause()) && defender.getNoDamageTicks() > defender.getMaximumNoDamageTicks()/2F){
+		if(VanillaConfiguration.checkNoDamage(event.getCause(), event.getEntity())){
 			event.setCancelled(true);
 			return;
 		}
 		
+		// Disabled:
 		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
-    	
 		
 		// Dead:
-		if(defender.getHealth() <= 0) return;
+		if(event.getEntity().isDead()) return;
 
 		// Saga event:
-		SagaEntityDamageEvent damageEvent = new SagaEntityDamageEvent(event, defender);
-		SagaEventHandler.handleEntityDamage(damageEvent);
+		SagaEntityDamageEvent damageEvent = new SagaEntityDamageEvent(event);
+		SagaEventHandler.handlePvP(damageEvent);
 		if(damageEvent.isCancelled()) return;
 		
 		// Forward to managers:
@@ -95,10 +92,8 @@ public class EntityListener implements Listener{
 	public void onProjectileHit(ProjectileHitEvent event) {
 		
 		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
-    	
 		
-		if(!(event.getEntity() instanceof Projectile)) return;
-		Projectile projectile = (Projectile) event.getEntity();
+		Projectile projectile = event.getEntity();
 	
 		// Shot by player:
 		if((projectile.getShooter() instanceof Player)){
@@ -188,7 +183,7 @@ public class EntityListener implements Listener{
 		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
     	
 		
-		SagaEntityDeathEvent sagaEvent = new SagaEntityDeathEvent(event, event.getEntity());
+		SagaEntityDeathEvent sagaEvent = new SagaEntityDeathEvent(event);
 		
 		SagaLiving sagaDefender = null;
 		SagaLiving sagaAttacker = null;
@@ -251,29 +246,6 @@ public class EntityListener implements Listener{
 
 		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
     	
-		
-		// Players:
-		if(event.getEntity() instanceof Player){
-
-			// Get player:
-			Player player = (Player) event.getEntity();
-	    	final SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(player.getName());
-	    	if(sagaPlayer == null) return;
-
-			// Synchronise:
-			sagaPlayer.synchHealth();
-	    	
-	    	int prevHearths = sagaPlayer.getHalfHearts();
-	    	
-	    	// Heal:
-	    	sagaPlayer.heal((double)event.getAmount());
-			
-	    	int nextHearths = sagaPlayer.getHalfHearts();
-	    	
-	    	event.setAmount(nextHearths - prevHearths);
-	    	
-		}
-		
 		
 	}
 

@@ -96,7 +96,7 @@ public class SagaLiving {
 	
 	
 	
-	// Initialisation:
+	// Initiate:
 	/**
 	 * Used by gson.
 	 * 
@@ -187,6 +187,60 @@ public class SagaLiving {
 		
 	}
 	
+	/**
+	 * Updates everything.
+	 * 
+	 */
+	public void update() {
+		abilityManager.update();
+		updateHealth();
+	}
+	
+	/**
+	 * Synchronises abilities to scores.
+	 * 
+	 */
+	private void syncAbilities() {
+		
+		
+		List<Ability> result = new ArrayList<Ability>();
+		
+		Set<String> trained = abilityScores.keySet();
+		
+		for (String abilName : trained) {
+			
+			boolean next = false;
+			
+			// Check available:
+			for (Ability ability : abilities) {
+				if(ability.getName().equals(abilName)){
+					result.add(ability);
+					next = true;
+					break;
+				}
+			}
+			
+			if(next) continue;
+			
+			// Create new ability:
+			try {
+				Ability ability = AbilityConfiguration.createAbility(abilName);
+				ability.setSagaLiving(this);
+				result.add(ability);
+			}
+			catch (InvalidAbilityException e) {
+				abilityScores.remove(abilName);
+				SagaLogger.severe(this, "failed to create " + abilName + " ability: " + e.getClass().getSimpleName() + ":" + e.getMessage());
+			}
+			
+		}
+		
+		// Update:
+		abilities = result;
+		
+		
+	}
+	
 	
 	
 	// Entity:
@@ -206,20 +260,64 @@ public class SagaLiving {
 	public LivingEntity getWrapped() {
 		return wrapped;
 	}
-
+	
+	
+	
 	// Health:
 	/**
 	 * Gets entities health.
 	 * 
 	 * @return entities health
 	 */
-	public Double getHealth() {
+	public Integer getHealth() {
 		
-		if(wrapped == null) return 1.0;
+		if(wrapped == null) return VanillaConfiguration.PLAYER_DEFAULT_HEALTH;
 		
-		return (double)wrapped.getHealth();
+		return wrapped.getHealth();
 		
 	}
+	
+	/**
+	 * Gets entities health.
+	 * 
+	 * @return entities health
+	 */
+	public Integer getTotalHealth() {
+		
+		if(wrapped == null) return VanillaConfiguration.PLAYER_DEFAULT_HEALTH;
+		
+		return wrapped.getMaxHealth();
+		
+	}
+	
+	/**
+	 * Gets entities maximum health.
+	 * 
+	 * @return entities maximum health
+	 */
+	public int getMaxHealth() {
+		
+		return attributeManager.getHealthModifier() + VanillaConfiguration.PLAYER_DEFAULT_HEALTH;
+		
+	}
+	
+	
+	/**
+	 * Updates entities health.
+	 * 
+	 */
+	public void updateHealth() {
+		
+		if(wrapped == null) return;
+		
+		double hpRate = (double)wrapped.getHealth() / (double)wrapped.getMaxHealth();
+		int maxHealth = getMaxHealth();
+		
+		wrapped.setMaxHealth(maxHealth);
+		wrapped.setHealth((int)Math.ceil(maxHealth*hpRate));
+		
+	}
+	
 	
 	/**
 	 * Damages the player.
@@ -232,26 +330,30 @@ public class SagaLiving {
 		wrapped.damage(amount.intValue());
 		
 	}
-	
+
 	/**
-	 * Damages the player.
+	 * Heals the player.
 	 * 
 	 * @param amount damage amount
 	 */
 	public void heal(Double amount) {
 		
 		if(wrapped == null) return;
-		wrapped.damage(-amount.intValue());
+		wrapped.setHealth(wrapped.getHealth() + amount.intValue());
 		
 	}
 	
 	/**
-	 * Synchronises players health.
+	 * Restores all health.
 	 * 
 	 */
-	public void synchHealth() {
+	public void restoreHealth() {
+		
+		if(wrapped == null) return;
+		wrapped.setHealth(wrapped.getMaxHealth());
 		
 	}
+	
 	
 	/**
 	 * Checks if the saga player is dead.
@@ -430,15 +532,6 @@ public class SagaLiving {
 	}
 	
 	
-	/**
-	 * Updates everything.
-	 * 
-	 */
-	public void update() {
-		abilityManager.update();
-	}
-	
-	
 	
 	// Attributes:
 	/**
@@ -495,7 +588,8 @@ public class SagaLiving {
 	public void setAttributeScore(String attribute, Integer score) {
 		
 		this.attributeScores.put(attribute, score);
-		abilityManager.update();
+		
+		update();
 		
 	}
 	
@@ -584,7 +678,7 @@ public class SagaLiving {
 		this.abilityScores.put(abilName.toLowerCase(), score);
 		
 		syncAbilities();
-		abilityManager.update();
+		update();
 		
 	}
 	
@@ -610,67 +704,12 @@ public class SagaLiving {
 	}
 	
 	/**
-	 * Checks if the entity has an ability.
-	 * 
-	 * @param name ability name
-	 * @return true if the entity has the ability
-	 */
-	public boolean hasAbility(String name) {
-		return getAbility(name) != null;	
-	}
-	
-	/**
 	 * Gets abilities.
 	 * 
 	 * @return abilities
 	 */
 	public HashSet<Ability> getAbilities() {
 		return new HashSet<Ability>(abilities);
-	}
-
-	/**
-	 * Synchronises abilities to scores.
-	 * 
-	 */
-	private void syncAbilities() {
-		
-		
-		List<Ability> result = new ArrayList<Ability>();
-		
-		Set<String> trained = abilityScores.keySet();
-		
-		for (String abilName : trained) {
-			
-			Ability ability = null;
-			
-			// Check available:
-			for (Ability availAbility : abilities) {
-				if(availAbility.getName().equals(abilName)){
-					ability = availAbility;
-					break;
-				}
-			}
-			
-			if(ability != null) continue;
-			
-			// Create new ability:
-			try {
-				ability = AbilityConfiguration.createAbility(abilName);
-				ability.setSagaLiving(this);
-				result.add(ability);
-			}
-			catch (InvalidAbilityException e) {
-				abilityScores.remove(abilName);
-				SagaLogger.severe(this, "failed to create " + abilName + " ability: " + e.getClass().getSimpleName() + ":" + e.getMessage());
-			}
-			
-		}
-		
-		
-		// Update:
-		abilities = result;
-		
-		
 	}
 	
 	
@@ -743,9 +782,8 @@ public class SagaLiving {
 		fireballl.setVelocity(directionVector.multiply(speed));
 		
 		// Remove fire:
-		if(fireballl instanceof Fireball){
-			((Fireball) fireballl).setIsIncendiary(false);
-		}
+		fireballl.setIsIncendiary(false);
+		
 		
 	}
 	
@@ -772,9 +810,8 @@ public class SagaLiving {
 		fireball.setShooter(wrapped);
 		
 		// Remove fire:
-		if(fireball instanceof Fireball){
-			((Fireball) fireball).setIsIncendiary(false);
-		}
+		fireball.setIsIncendiary(false);
+		
 		
 	}
 	
@@ -1078,8 +1115,6 @@ public class SagaLiving {
 		return;
 		
 	}
-	
-	
 	
 	
 }

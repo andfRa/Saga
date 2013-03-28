@@ -181,8 +181,8 @@ public class Crush extends Ability{
 			int damage = getDefinition().getFunction(PUSH_DAMAGE_KEY).intValue(getScore());
 			
 			// Damage event:
-			SagaEntityDamageEvent devent = new SagaEntityDamageEvent(new EntityDamageEvent(attacker, DamageCause.FALLING_BLOCK, damage), defender);
-			SagaEventHandler.handleEntityDamage(devent);
+			SagaEntityDamageEvent devent = new SagaEntityDamageEvent(new EntityDamageEvent(attacker, DamageCause.FALLING_BLOCK, damage));
+			SagaEventHandler.handlePvP(devent);
 			if(devent.isCancelled()) continue;
 			
 			// Push:

@@ -125,7 +125,7 @@ public class Counterattack extends Ability{
 		attacker.damage((int)damage, defender);
 		
 		// Animation:
-		if(sagaDefender instanceof SagaPlayer) StatsEffectHandler.playAnimateArm(sagaDefender);
+		StatsEffectHandler.playAnimateArm(sagaDefender);
 		
 		// Effect:
 		StatsEffectHandler.playParry(sagaDefender);

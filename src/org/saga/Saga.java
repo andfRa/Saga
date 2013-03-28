@@ -280,12 +280,9 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		// Synchronise:
 		FactionManager.manager().syncFaction(sagaPlayer);
 		BundleManager.manager().syncBundle(sagaPlayer);
-
-		// Update:
-		sagaPlayer.update();
-
+		
 		return sagaPlayer;
-
+		
 		
 	}
 

@@ -324,8 +324,8 @@ public class SagaResource extends SagaRecipe {
 	public static double roundToDecimalsCeil(double val, int dec) {
 		
 		double pow = Math.pow(10,dec);
-		int temp = (int)Math.ceil(val*pow);
-		return (((double)temp)/pow);
+		double temp = (int)Math.ceil(val*pow);
+		return temp/pow;
 		
 	}
 
