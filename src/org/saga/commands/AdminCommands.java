@@ -958,7 +958,7 @@ public class AdminCommands {
 	}
 	
 	@Command(
-		aliases = {"damagetool","dt"},
+		aliases = {"damagetool","adt"},
 		usage = "",
 		flags = "",
 		desc = "Debug assist command.",
