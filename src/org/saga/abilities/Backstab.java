@@ -3,7 +3,7 @@ package org.saga.abilities;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
-import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent;
 
 public class Backstab extends Ability{
 
@@ -57,7 +57,7 @@ public class Backstab extends Ability{
 	 * @see org.saga.abilities.Ability#handleAttackPreTrigger(org.saga.listeners.events.SagaEntityDamageEvent)
 	 */
 	@Override
-	public boolean handleAttackPreTrigger(SagaEntityDamageEvent event) {
+	public boolean handleAttackPreTrigger(SagaDamageEvent event) {
 		return handlePreTrigger();
 	}
 	
@@ -66,7 +66,7 @@ public class Backstab extends Ability{
 	 * 
 	 * @see org.saga.abilities.Ability#triggerAttack(org.saga.listeners.events.SagaEntityDamageEvent)
 	 */
-	public boolean triggerAttack(SagaEntityDamageEvent event) {
+	public boolean triggerAttack(SagaDamageEvent event) {
 		
 		
 		if(event.sagaAttacker == null) return false;

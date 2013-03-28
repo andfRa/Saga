@@ -14,7 +14,7 @@ import org.saga.SagaLogger;
 import org.saga.abilities.AbilityDefinition.ActivationAction;
 import org.saga.config.AbilityConfiguration;
 import org.saga.exceptions.InvalidAbilityException;
-import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent;
 import org.saga.messages.AbilityMessages;
 import org.saga.messages.effects.StatsEffectHandler;
 import org.saga.player.SagaLiving;
@@ -520,7 +520,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 * @param event event
 	 * @return true if can be triggered
 	 */
-	public boolean handleAttackPreTrigger(SagaEntityDamageEvent event) {
+	public boolean handleAttackPreTrigger(SagaDamageEvent event) {
 		return false;
 	}
 
@@ -530,7 +530,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 * @param event event
 	 * @return true if can be triggered
 	 */
-	public boolean handleDefendPreTrigger(SagaEntityDamageEvent event) {
+	public boolean handleDefendPreTrigger(SagaDamageEvent event) {
 		return false;
 	}
 	
@@ -593,7 +593,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 * @param event event
 	 * @return true if triggered
 	 */
-	public boolean triggerAttack(SagaEntityDamageEvent event) {
+	public boolean triggerAttack(SagaDamageEvent event) {
 		return false;
 	}
 
@@ -603,7 +603,7 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 	 * @param event event
 	 * @return true if triggered
 	 */
-	public boolean triggerDefend(SagaEntityDamageEvent event) {
+	public boolean triggerDefend(SagaDamageEvent event) {
 		return false;
 	}
 

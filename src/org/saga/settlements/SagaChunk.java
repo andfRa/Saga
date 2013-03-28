@@ -26,7 +26,7 @@ import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.Building;
 import org.saga.listeners.events.SagaBuildEvent;
-import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent;
 import org.saga.messages.BuildingMessages;
 import org.saga.player.SagaPlayer;
 
@@ -529,18 +529,18 @@ public class SagaChunk {
 	
 	// Damage events:
 	/**
-	 * Called when a player is damaged by another player.
+	 * Called when a living entity gets damaged.
 	 * 
 	 * @param event event
 	 */
-	public void onEntityDamage(SagaEntityDamageEvent event){
+	public void onDamage(SagaDamageEvent event){
 		
 
 		// Forward to chunk group:
-		getBundle().onEntityDamage(event, this);
+		getBundle().onDamage(event, this);
 		
 		// Forward to building:
-		if(bld != null) bld.onEntityDamage(event);
+		if(bld != null) bld.onDamage(event);
 
 		
 	}

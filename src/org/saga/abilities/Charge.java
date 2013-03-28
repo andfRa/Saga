@@ -10,7 +10,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.util.Vector;
 import org.saga.Saga;
-import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent;
 import org.saga.listeners.events.SagaEventHandler;
 import org.saga.player.SagaLiving;
 
@@ -152,8 +152,8 @@ public class Charge extends Ability{
 				int damage = getDefinition().getFunction(PUSH_DAMAGE_KEY).intValue(getScore());
 				
 				// Damage event:
-				SagaEntityDamageEvent event = new SagaEntityDamageEvent(new EntityDamageEvent(attacker, DamageCause.FALLING_BLOCK, damage));
-				SagaEventHandler.handlePvP(event);
+				SagaDamageEvent event = new SagaDamageEvent(new EntityDamageEvent(attacker, DamageCause.FALLING_BLOCK, damage));
+				SagaEventHandler.handleDamage(event);
 				if(event.isCancelled()) continue;
 				
 				// Push:

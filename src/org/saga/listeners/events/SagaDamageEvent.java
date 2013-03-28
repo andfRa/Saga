@@ -23,7 +23,7 @@ import org.saga.settlements.BundleManager;
 import org.saga.settlements.SagaChunk;
 import org.saga.utility.TwoPointFunction;
 
-public class SagaEntityDamageEvent {
+public class SagaDamageEvent {
 
 	
 	/**
@@ -123,7 +123,7 @@ public class SagaEntityDamageEvent {
 	/**
 	 * PvP override.
 	 */
-	private PriorityQueue<PvPOverride> pvpOverride = new PriorityQueue<SagaEntityDamageEvent.PvPOverride>();
+	private PriorityQueue<PvPOverride> pvpOverride = new PriorityQueue<SagaDamageEvent.PvPOverride>();
 	
 	
 	
@@ -134,7 +134,7 @@ public class SagaEntityDamageEvent {
 	 * @param event event
 	 * @param defender defender entity
 	 */
-	public SagaEntityDamageEvent(EntityDamageEvent event) {
+	public SagaDamageEvent(EntityDamageEvent event) {
 		
 		
 		Entity attacker = null;

@@ -24,8 +24,8 @@ import org.saga.config.ProficiencyConfiguration.InvalidProficiencyException;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.exceptions.InvalidLocationException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
-import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
+import org.saga.listeners.events.SagaDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent.PvPOverride;
 import org.saga.messages.EconomyMessages;
 import org.saga.messages.FactionMessages;
 import org.saga.player.Proficiency;
@@ -1458,7 +1458,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 * 
 	 * @param event event
 	 */
-	public void onPvPAttack(SagaEntityDamageEvent event){
+	public void onPvPAttack(SagaDamageEvent event){
 		
 		
 		SagaPlayer defenderPlayer = null;
@@ -1488,7 +1488,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 * 
 	 * @param event event
 	 */
-	public void onPvPDefend(SagaEntityDamageEvent event){
+	public void onPvPDefend(SagaDamageEvent event){
 		
 		
 		SagaPlayer defenderPlayer = null;

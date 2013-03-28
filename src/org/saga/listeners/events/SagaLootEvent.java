@@ -1,7 +1,6 @@
 package org.saga.listeners.events;
 
 import java.util.ArrayList;
-import java.util.Random;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -23,13 +22,7 @@ import org.saga.settlements.SagaChunk;
 import org.saga.statistics.StatisticsManager;
 import org.saga.utility.TwoPointFunction;
 
-public class SagaBlockBreakEvent {
-
-	
-	/**
-	 * Random generator.
-	 */
-	private static Random RANDOM = new Random();
+public class SagaLootEvent {
 
 
 	/**
@@ -83,7 +76,7 @@ public class SagaBlockBreakEvent {
 	 * @param sagaPlayer saga player
 	 * @param sagaChunk saga chunk
 	 */
-	public SagaBlockBreakEvent(BlockBreakEvent event, SagaLiving sagaPlayer, SagaChunk sagaChunk) {
+	public SagaLootEvent(BlockBreakEvent event, SagaLiving sagaPlayer, SagaChunk sagaChunk) {
 
 		
 		this.event = event;
@@ -176,9 +169,9 @@ public class SagaBlockBreakEvent {
 			}
 			
 			// Select and drop:
-			if(RANDOM.nextDouble() < extra && drops.size() > 0){
+			if(Saga.RANDOM.nextDouble() < extra && drops.size() > 0){
 				Location location = block.getLocation();
-				ItemStack drop = drops.get(RANDOM.nextInt(drops.size()));
+				ItemStack drop = drops.get(Saga.RANDOM.nextInt(drops.size()));
 				location.getWorld().dropItemNaturally(location, drop);
 			}
 			

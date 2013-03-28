@@ -1,7 +1,7 @@
 package org.saga.buildings;
 
-import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
+import org.saga.listeners.events.SagaDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent.PvPOverride;
 
 public class TownHall extends Building{
 
@@ -56,7 +56,7 @@ public class TownHall extends Building{
 	 * @see org.saga.buildings.Building#onPlayerDamagedByPlayer(org.bukkit.event.entity.EntityDamageByEntityEvent, org.saga.SagaPlayer, org.saga.SagaPlayer)
 	 */
 	@Override
-	public void onEntityDamage(SagaEntityDamageEvent event){
+	public void onDamage(SagaDamageEvent event){
 
 		
 		if(event.isPvP()){

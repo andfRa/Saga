@@ -8,7 +8,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.saga.Saga;
 import org.saga.attributes.DamageType;
 import org.saga.config.VanillaConfiguration;
-import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent;
 import org.saga.messages.effects.StatsEffectHandler;
 import org.saga.player.SagaPlayer;
 
@@ -58,7 +58,7 @@ public class Counterattack extends Ability{
 	 * @see org.saga.abilities.Ability#handleDefendPreTrigger(org.saga.listeners.events.SagaEntityDamageEvent)
 	 */
 	@Override
-	public boolean handleDefendPreTrigger(SagaEntityDamageEvent event) {
+	public boolean handleDefendPreTrigger(SagaDamageEvent event) {
 		return handlePreTrigger();
 	}
 	
@@ -68,7 +68,7 @@ public class Counterattack extends Ability{
 	 * @see org.saga.abilities.Ability#onPlayerInteractPlayer(org.bukkit.event.player.PlayerInteractEntityEvent, org.saga.player.SagaPlayer)
 	 */
 	@Override
-	public boolean triggerDefend(SagaEntityDamageEvent event) {
+	public boolean triggerDefend(SagaDamageEvent event) {
 
 		
 		// Prevent loops:

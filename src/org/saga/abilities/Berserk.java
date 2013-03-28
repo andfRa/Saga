@@ -3,7 +3,7 @@ package org.saga.abilities;
 import org.saga.SagaLogger;
 import org.saga.attributes.DamageType;
 import org.saga.exceptions.InvalidAbilityException;
-import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent;
 
 public class Berserk extends Ability{
 
@@ -68,7 +68,7 @@ public class Berserk extends Ability{
 	 * @see org.saga.abilities.Ability#handleAttackPreTrigger(org.saga.listeners.events.SagaEntityDamageEvent)
 	 */
 	@Override
-	public boolean handleAttackPreTrigger(SagaEntityDamageEvent event) {
+	public boolean handleAttackPreTrigger(SagaDamageEvent event) {
 		return handlePreTrigger();
 	}
 	
@@ -83,7 +83,7 @@ public class Berserk extends Ability{
 	}
 	
 	@Override
-	public boolean handleDefendPreTrigger(SagaEntityDamageEvent event) {
+	public boolean handleDefendPreTrigger(SagaDamageEvent event) {
 		return hit > 0;
 	}
 	
@@ -93,7 +93,7 @@ public class Berserk extends Ability{
 	 * @see org.saga.abilities.Ability#triggerAttack(org.saga.listeners.events.SagaEntityDamageEvent)
 	 */
 	@Override
-	public boolean triggerAttack(SagaEntityDamageEvent event) {
+	public boolean triggerAttack(SagaDamageEvent event) {
 		
 		if(event.isCancelled()) return false;
 		
@@ -123,7 +123,7 @@ public class Berserk extends Ability{
 	 * @see org.saga.abilities.Ability#triggerDefend(org.saga.listeners.events.SagaEntityDamageEvent)
 	 */
 	@Override
-	public boolean triggerDefend(SagaEntityDamageEvent event) {
+	public boolean triggerDefend(SagaDamageEvent event) {
 		
 		hit = 0;
 		return false;

@@ -2,8 +2,8 @@ package org.saga.messages;
 
 import org.bukkit.ChatColor;
 import org.saga.config.GeneralConfiguration;
-import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
+import org.saga.listeners.events.SagaDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent.PvPOverride;
 import org.saga.messages.colours.Colour;
 import org.saga.player.GuardianRune;
 import org.saga.player.Proficiency.ProficiencyType;
@@ -57,7 +57,7 @@ public class PlayerMessages {
 	
 
 	// Player versus player:
-	public static String pvpOverride(SagaEntityDamageEvent event){
+	public static String pvpOverride(SagaDamageEvent event){
 		
 		
 		PvPOverride cause = event.getOverride();

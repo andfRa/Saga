@@ -3,7 +3,7 @@ package org.saga.abilities;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
-import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent;
 import org.saga.player.SagaPlayer;
 import org.saga.utility.TwoPointFunction;
 
@@ -47,7 +47,7 @@ public class DamageWeapon extends Ability{
 	 * @see org.saga.abilities.Ability#handleDefendPreTrigger(org.saga.listeners.events.SagaEntityDamageEvent)
 	 */
 	@Override
-	public boolean handleDefendPreTrigger(SagaEntityDamageEvent event) {
+	public boolean handleDefendPreTrigger(SagaDamageEvent event) {
 		return handlePreTrigger();
 	}
 	
@@ -57,7 +57,7 @@ public class DamageWeapon extends Ability{
 	 * @see org.saga.abilities.Ability#onPlayerInteractPlayer(org.bukkit.event.player.PlayerInteractEntityEvent, org.saga.player.SagaPlayer)
 	 */
 	@Override
-	public boolean triggerDefend(SagaEntityDamageEvent event) {
+	public boolean triggerDefend(SagaDamageEvent event) {
 
 		
 		// Defender:

@@ -6,7 +6,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.saga.attributes.DamageType;
-import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent;
 import org.saga.player.SagaPlayer;
 
 public class Bash extends Ability{
@@ -52,7 +52,7 @@ public class Bash extends Ability{
 	 * @see org.saga.abilities.Ability#handleAttackPreTrigger(org.saga.listeners.events.SagaEntityDamageEvent)
 	 */
 	@Override
-	public boolean handleAttackPreTrigger(SagaEntityDamageEvent event) {
+	public boolean handleAttackPreTrigger(SagaDamageEvent event) {
 		return handlePreTrigger();
 	}
 	
@@ -63,7 +63,7 @@ public class Bash extends Ability{
 	 */
 	@SuppressWarnings("deprecation")
 	@Override
-	public boolean triggerAttack(SagaEntityDamageEvent event) {
+	public boolean triggerAttack(SagaDamageEvent event) {
 
 		
 		// Defender must be player:

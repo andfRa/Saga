@@ -490,7 +490,7 @@ public class StatsMessages {
 		ChatTable table = new ChatTable(colours);
 
 		// Claims:
-		table.addLine("claim points", settlement.getUsedClaimed() + "/" + settlement.getTotalClaims(), 0);
+		table.addLine("claim points", settlement.getUsedClaims() + "/" + settlement.getTotalClaims(), 0);
 
 		// Building points:
 		table.addLine("build points", settlement.getUsedBuildPoints() + "/" + settlement.getAvailableBuildPoints(), 0);

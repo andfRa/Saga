@@ -6,7 +6,7 @@ import org.bukkit.entity.Creature;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.saga.buildings.production.ProductionBuilding;
-import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent;
 import org.saga.messages.GeneralMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.Bundle;
@@ -31,7 +31,7 @@ public class Farm extends ProductionBuilding {
 	
 	// Events:
 	@Override
-	public void onEntityDamage(SagaEntityDamageEvent event) {
+	public void onDamage(SagaDamageEvent event) {
 		
 		
 		if(!(event.sagaAttacker instanceof SagaPlayer)) return;

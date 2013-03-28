@@ -12,7 +12,7 @@ import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.util.Vector;
 import org.saga.Saga;
-import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent;
 
 public class Ricochet extends Ability{
 	
@@ -195,7 +195,7 @@ public class Ricochet extends Ability{
 	 * @see org.saga.abilities.Ability#triggerAttack(org.saga.listeners.events.SagaEntityDamageEvent)
 	 */
 	@Override
-	public boolean triggerAttack(SagaEntityDamageEvent event) {
+	public boolean triggerAttack(SagaDamageEvent event) {
 		
 		
 		// Successful hit doesn't need ricochet:

@@ -12,7 +12,7 @@ import org.bukkit.util.Vector;
 import org.saga.Saga;
 import org.saga.attributes.DamageType;
 import org.saga.config.VanillaConfiguration;
-import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent;
 import org.saga.listeners.events.SagaEventHandler;
 import org.saga.messages.effects.StatsEffectHandler;
 import org.saga.player.SagaLiving;
@@ -93,7 +93,7 @@ public class Crush extends Ability{
 	 * @see org.saga.abilities.Ability#handleDefendPreTrigger(org.saga.listeners.events.SagaEntityDamageEvent)
 	 */
 	@Override
-	public boolean handleDefendPreTrigger(SagaEntityDamageEvent event) {
+	public boolean handleDefendPreTrigger(SagaDamageEvent event) {
 		return event.type == DamageType.FALL;
 	}
 	
@@ -148,7 +148,7 @@ public class Crush extends Ability{
 	}
 	
 	@Override
-	public boolean triggerDefend(SagaEntityDamageEvent event) {
+	public boolean triggerDefend(SagaDamageEvent event) {
 		
 		
 		SagaLiving sagaLiving = getSagaLiving();
@@ -181,8 +181,8 @@ public class Crush extends Ability{
 			int damage = getDefinition().getFunction(PUSH_DAMAGE_KEY).intValue(getScore());
 			
 			// Damage event:
-			SagaEntityDamageEvent devent = new SagaEntityDamageEvent(new EntityDamageEvent(attacker, DamageCause.FALLING_BLOCK, damage));
-			SagaEventHandler.handlePvP(devent);
+			SagaDamageEvent devent = new SagaDamageEvent(new EntityDamageEvent(attacker, DamageCause.FALLING_BLOCK, damage));
+			SagaEventHandler.handleDamage(devent);
 			if(devent.isCancelled()) continue;
 			
 			// Push:

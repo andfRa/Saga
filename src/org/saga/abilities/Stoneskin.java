@@ -3,7 +3,7 @@ package org.saga.abilities;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.saga.attributes.DamageType;
-import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent;
 
 public class Stoneskin extends Ability{
 
@@ -45,7 +45,7 @@ public class Stoneskin extends Ability{
 	 * @see org.saga.abilities.Ability#handleDefendPreTrigger(org.saga.listeners.events.SagaEntityDamageEvent)
 	 */
 	@Override
-	public boolean handleDefendPreTrigger(SagaEntityDamageEvent event) {
+	public boolean handleDefendPreTrigger(SagaDamageEvent event) {
 		return true;
 	}
 	/* 
@@ -54,7 +54,7 @@ public class Stoneskin extends Ability{
 	 * @see org.saga.abilities.Ability#onPlayerInteractPlayer(org.bukkit.event.player.PlayerInteractEntityEvent, org.saga.player.SagaPlayer)
 	 */
 	@Override
-	public boolean triggerDefend(SagaEntityDamageEvent event) {
+	public boolean triggerDefend(SagaDamageEvent event) {
 		
 		
 		// Melee, ranged and magic:

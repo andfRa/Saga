@@ -6,8 +6,8 @@ import java.util.Random;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.saga.config.AttributeConfiguration;
-import org.saga.listeners.events.SagaBlockBreakEvent;
-import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaLootEvent;
+import org.saga.listeners.events.SagaDamageEvent;
 import org.saga.player.SagaLiving;
 
 public class AttributeManager {
@@ -50,7 +50,7 @@ public class AttributeManager {
 	 * 
 	 * @param event event
 	 */
-	public void handleAttack(SagaEntityDamageEvent event) {
+	public void handleAttack(SagaDamageEvent event) {
 
 		
 		AttributeManager attackerManager = sagaLiving.getAttributeManager();
@@ -132,7 +132,7 @@ public class AttributeManager {
 	 * 
 	 * @param event event
 	 */
-	public void handleDefend(SagaEntityDamageEvent event) {
+	public void handleDefend(SagaDamageEvent event) {
 
 		
 		AttributeManager defenderManager = sagaLiving.getAttributeManager();
@@ -220,7 +220,7 @@ public class AttributeManager {
 	 * 
 	 * @param event event
 	 */
-	public void handleBlockBreak(SagaBlockBreakEvent event) {
+	public void handleBlockBreak(SagaLootEvent event) {
 
 		
 		AttributeManager manager = (event.sagaLiving != null) ? event.sagaLiving.getAttributeManager() : null;

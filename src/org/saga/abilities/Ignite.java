@@ -2,7 +2,7 @@ package org.saga.abilities;
 
 import org.bukkit.entity.Creature;
 import org.bukkit.entity.LivingEntity;
-import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent;
 import org.saga.player.SagaLiving;
 
 public class Ignite extends Ability{
@@ -35,7 +35,7 @@ public class Ignite extends Ability{
 	 * @see org.saga.abilities.Ability#handleInteractPreTrigger(org.bukkit.event.player.PlayerInteractEvent)
 	 */
 	@Override
-	public boolean handleAttackPreTrigger(SagaEntityDamageEvent event) {
+	public boolean handleAttackPreTrigger(SagaDamageEvent event) {
 		return handlePreTrigger();
 	}
 	
@@ -45,7 +45,7 @@ public class Ignite extends Ability{
 	 * @see org.saga.abilities.Ability#onPlayerInteractPlayer(org.bukkit.event.player.PlayerInteractEntityEvent, org.saga.player.SagaPlayer)
 	 */
 	@Override
-	public boolean triggerAttack(SagaEntityDamageEvent event) {
+	public boolean triggerAttack(SagaDamageEvent event) {
 
 		
 		// Only fireball:

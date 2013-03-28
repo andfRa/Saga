@@ -12,9 +12,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.FoodLevelChangeEvent;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
-import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -39,9 +37,12 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
-
+		
+		
+		// Saga disabled:
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
 		
+		// Get Saga player:
 		SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
 		if(sagaPlayer == null) return;
 
@@ -127,12 +128,16 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerRespawn(PlayerRespawnEvent event) {
 		
+
+		// Saga disabled:
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
 		
+		// Get Saga player:
 		SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
 		if(sagaPlayer == null) return;
 		
-		// Get chunk group:
+		
+		// Get bundle:
 		Bundle bundle = sagaPlayer.getBundle();
 		
 		// Forward to chunk group:
@@ -144,19 +149,24 @@ public class PlayerListener implements Listener {
 			GuardianRune.handleRestore(sagaPlayer);
 			
 		}
-
+		
 		
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerMove(PlayerMoveEvent event) {
-
+		
+		
+		// Chunk changed:
 		if(event.getFrom().getChunk() == event.getTo().getChunk()) return;
+		
+		// Saga disabled:
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
 		
+		// Get Saga player:
 		SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
 		if(sagaPlayer == null) return;
-
+		
 		
 		// Handle chunk change:
 		handleChunkChange(sagaPlayer, event);
@@ -167,8 +177,11 @@ public class PlayerListener implements Listener {
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerTeleport(PlayerTeleportEvent event) {
 
+
+		// Saga disabled:
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
 		
+		// Get Saga player:
 		SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
 		if(sagaPlayer == null) return;
 		
@@ -176,17 +189,20 @@ public class PlayerListener implements Listener {
 		// Handle chunk change:
 		handleChunkChange(sagaPlayer, event);
 		
-
+		
 	}
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 
 		
+		// Saga disabled:
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
 		
+		// Get Saga player:
 		SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
 		if(sagaPlayer == null) return;
+		
 		
 		// Forward to ability manager:
 		sagaPlayer.getAbilityManager().onInteract(event);
@@ -214,44 +230,34 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onPlayerChat(AsyncPlayerChatEvent event) {
-
+		
+		
+		// Saga disabled:
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
 		
+		// Get Saga player:
 		SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
 		if(sagaPlayer == null) return;
 		
 		
+		// Format chat:
 		event.setFormat(ChatDependency.format(event.getFormat(), sagaPlayer));
 		
 		
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-
-		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
-		
-		SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
-		if(sagaPlayer == null) return;
-		
-		
-	}
-	
-	@EventHandler(priority = EventPriority.HIGH)
-	public void onPlayerChangedWorld(PlayerChangedWorldEvent event) {
-
-		SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
-		if(sagaPlayer == null) return;
-		
-	}
 	
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerShearEntity(PlayerShearEntityEvent event) {
-
+		
+		
+		// Saga disabled:
 		if(GeneralConfiguration.isDisabled(event.getPlayer().getWorld())) return;
 		
+		// Get Saga player:
 		SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(event.getPlayer().getName());
 		if(sagaPlayer == null) return;
+		
 		
 		// Forward to managers:
 		sagaPlayer.getAbilityManager().onShear(event);
@@ -261,10 +267,13 @@ public class PlayerListener implements Listener {
 	
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onFoodLevelChange(FoodLevelChangeEvent event) {
-
+		
+		
+		// Saga disabled:
 		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
 		
 		
+		// Handle change:
 		if(event.getEntity() instanceof Player){
 
 			SagaPlayer sagaPlayer = Saga.plugin().getLoadedPlayer(((Player)event.getEntity()).getName());

@@ -16,8 +16,8 @@ import org.saga.Clock.SecondTicker;
 import org.saga.SagaLogger;
 import org.saga.config.SettlementConfiguration;
 import org.saga.exceptions.InvalidBuildingException;
-import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
+import org.saga.listeners.events.SagaDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent.PvPOverride;
 import org.saga.messages.BuildingMessages;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.SagaChunk;
@@ -416,7 +416,7 @@ public class Arena extends Building implements SecondTicker{
 	 * @see org.saga.buildings.Building#onPlayerDamagedByPlayer(org.bukkit.event.entity.EntityDamageByEntityEvent, org.saga.SagaPlayer, org.saga.SagaPlayer)
 	 */
 	@Override
-	public void onEntityDamage(SagaEntityDamageEvent event){
+	public void onDamage(SagaDamageEvent event){
 		
 		
 		// Attack from outside of the arena:

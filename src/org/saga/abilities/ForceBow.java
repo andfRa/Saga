@@ -1,7 +1,7 @@
 package org.saga.abilities;
 
 import org.bukkit.entity.Creature;
-import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent;
 import org.saga.player.SagaLiving;
 
 public class ForceBow extends Ability{
@@ -34,7 +34,7 @@ public class ForceBow extends Ability{
 	 * @see org.saga.abilities.Ability#handleAttackPreTrigger(org.saga.listeners.events.SagaEntityDamageEvent)
 	 */
 	@Override
-	public boolean handleAttackPreTrigger(SagaEntityDamageEvent event) {
+	public boolean handleAttackPreTrigger(SagaDamageEvent event) {
 		return handlePreTrigger();
 	}
 	
@@ -44,7 +44,7 @@ public class ForceBow extends Ability{
 	 * @see org.saga.abilities.Ability#onPlayerInteractPlayer(org.bukkit.event.player.PlayerInteractEntityEvent, org.saga.player.SagaPlayer)
 	 */
 	@Override
-	public boolean triggerAttack(SagaEntityDamageEvent event) {
+	public boolean triggerAttack(SagaDamageEvent event) {
 
 		
 		// Only arrow:

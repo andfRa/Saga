@@ -13,8 +13,8 @@ import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.exceptions.InvalidBuildingException;
 import org.saga.exceptions.InvalidLocationException;
-import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
+import org.saga.listeners.events.SagaDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent.PvPOverride;
 import org.saga.player.SagaPlayer;
 import org.saga.settlements.SagaChunk;
 import org.saga.utility.SagaLocation;
@@ -380,7 +380,7 @@ public class TownSquare extends Building implements SecondTicker{
 	 * @see org.saga.buildings.Building#onPlayerDamagedByPlayer(org.bukkit.event.entity.EntityDamageByEntityEvent, org.saga.SagaPlayer, org.saga.SagaPlayer)
 	 */
 	@Override
-	public void onEntityDamage(SagaEntityDamageEvent event){
+	public void onDamage(SagaDamageEvent event){
 		
 		
 		SagaPlayer attackerPlayer = null;

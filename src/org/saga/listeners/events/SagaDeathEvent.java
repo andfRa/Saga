@@ -7,7 +7,7 @@ import org.saga.metadata.SpawnerTag;
 import org.saga.statistics.StatisticsManager;
 import org.saga.utility.TwoPointFunction;
 
-public class SagaEntityDeathEvent {
+public class SagaDeathEvent {
 	
 
 	/**
@@ -18,7 +18,7 @@ public class SagaEntityDeathEvent {
 	/**
 	 * Damage event.
 	 */
-	private SagaEntityDamageEvent damEvent = null;
+	private SagaDamageEvent damEvent = null;
 	 
 	
 	/**
@@ -26,11 +26,11 @@ public class SagaEntityDeathEvent {
 	 * 
 	 * @param event event
 	 */
-	public SagaEntityDeathEvent(EntityDeathEvent event) {
+	public SagaDeathEvent(EntityDeathEvent event) {
 		
 		this.event = event;
 		
-		if(event.getEntity().getLastDamageCause() != null) damEvent = new SagaEntityDamageEvent(event.getEntity().getLastDamageCause());
+		if(event.getEntity().getLastDamageCause() != null) damEvent = new SagaDamageEvent(event.getEntity().getLastDamageCause());
 		
 	}
 
@@ -114,7 +114,7 @@ public class SagaEntityDeathEvent {
 	 * 
 	 * @return last damage event, null if none
 	 */
-	public SagaEntityDamageEvent getLastDamageEvent() {
+	public SagaDamageEvent getLastDamageEvent() {
 		return damEvent;
 	}
 	

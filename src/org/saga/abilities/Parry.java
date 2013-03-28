@@ -4,7 +4,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.util.Vector;
 import org.saga.SagaLogger;
 import org.saga.exceptions.InvalidAbilityException;
-import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent;
 import org.saga.messages.effects.StatsEffectHandler;
 import org.saga.player.SagaLiving;
 import org.saga.player.SagaPlayer;
@@ -76,7 +76,7 @@ public class Parry extends Ability{
 	 * @see org.saga.abilities.Ability#handleInteractPreTrigger(org.bukkit.event.player.PlayerInteractEvent)
 	 */
 	@Override
-	public boolean handleDefendPreTrigger(SagaEntityDamageEvent event) {
+	public boolean handleDefendPreTrigger(SagaDamageEvent event) {
 		return handlePreTrigger();
 	}
 
@@ -96,7 +96,7 @@ public class Parry extends Ability{
 	 * @see org.saga.abilities.Ability#onPlayerInteractPlayer(org.bukkit.event.player.PlayerInteractEntityEvent, org.saga.player.SagaPlayer)
 	 */
 	@Override
-	public boolean triggerDefend(SagaEntityDamageEvent event) {
+	public boolean triggerDefend(SagaDamageEvent event) {
 		
 		
 		if(event.sagaDefender == null) return false;

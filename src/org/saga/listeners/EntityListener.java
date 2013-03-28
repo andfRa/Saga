@@ -21,15 +21,14 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.saga.Saga;
 import org.saga.config.GeneralConfiguration;
 import org.saga.config.VanillaConfiguration;
 import org.saga.factions.Faction;
-import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.listeners.events.SagaEntityDeathEvent;
+import org.saga.listeners.events.SagaDamageEvent;
+import org.saga.listeners.events.SagaDeathEvent;
 import org.saga.listeners.events.SagaEventHandler;
 import org.saga.metadata.SpawnerTag;
 import org.saga.player.GuardianRune;
@@ -44,6 +43,10 @@ public class EntityListener implements Listener{
 	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onEntityDamage(EntityDamageEvent event) {
 		
+
+		// Saga disabled:
+		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
+		
 		
 		// Creative or cancelled:
 		if(event.getEntity() instanceof Player && ((Player)event.getEntity()).getGameMode() == GameMode.CREATIVE || event.isCancelled()) return;
@@ -54,15 +57,12 @@ public class EntityListener implements Listener{
 			return;
 		}
 		
-		// Disabled:
-		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
-		
 		// Dead:
 		if(event.getEntity().isDead()) return;
 
-		// Saga event:
-		SagaEntityDamageEvent damageEvent = new SagaEntityDamageEvent(event);
-		SagaEventHandler.handlePvP(damageEvent);
+		// Saga damage event:
+		SagaDamageEvent damageEvent = new SagaDamageEvent(event);
+		SagaEventHandler.handleDamage(damageEvent);
 		if(damageEvent.isCancelled()) return;
 		
 		// Forward to managers:
@@ -91,11 +91,13 @@ public class EntityListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onProjectileHit(ProjectileHitEvent event) {
 		
+		
+		// Saga disabled:
 		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
 		
-		Projectile projectile = event.getEntity();
-	
+		
 		// Shot by player:
+		Projectile projectile = event.getEntity();
 		if((projectile.getShooter() instanceof Player)){
 			
 			Player player = (Player) projectile.getShooter();
@@ -113,7 +115,10 @@ public class EntityListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityExplode(EntityExplodeEvent event) {
 		
+		
+		// Saga disabled:
 		if(GeneralConfiguration.isDisabled(event.getLocation().getWorld())) return;
+		
 		
 		// Limit player fireball destruction:
 		if(event.getEntity() instanceof Fireball && ((Fireball) event.getEntity()).getShooter() instanceof Player){
@@ -143,6 +148,8 @@ public class EntityListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityBlockForm(EntityBlockFormEvent event) {
 		
+		
+		// Saga disabled:
 		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
     	
 		
@@ -158,20 +165,21 @@ public class EntityListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onCreatureSpawn(CreatureSpawnEvent event) {
 		
+		
+		// Saga disabled:
 		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
     	
 		
-		LivingEntity entity = event.getEntity();
-		
     	// Unnatural tag:
-    	if(event.getSpawnReason() == SpawnReason.SPAWNER && !entity.hasMetadata(SpawnerTag.METADATA_KEY)){
+		LivingEntity entity = event.getEntity();
+		if(event.getSpawnReason() == SpawnReason.SPAWNER && !entity.hasMetadata(SpawnerTag.METADATA_KEY)){
     		entity.setMetadata(SpawnerTag.METADATA_KEY, SpawnerTag.METADATA_VALUE);
     	}
 		
-		// Get saga chunk:
+		// Get Saga chunk:
 		SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(event.getLocation());
 		
-		// Forward to saga chunk:
+		// Forward to Saga chunk:
 		if(sagaChunk != null) sagaChunk.onCreatureSpawn(event);
 		
 		
@@ -180,21 +188,23 @@ public class EntityListener implements Listener{
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityDeath(EntityDeathEvent event) {
 
+
+		// Saga disabled:
 		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
     	
 		
-		SagaEntityDeathEvent sagaEvent = new SagaEntityDeathEvent(event);
+		// Death event:
+		SagaDeathEvent deathEvent = new SagaDeathEvent(event);
 		
 		SagaLiving sagaDefender = null;
 		SagaLiving sagaAttacker = null;
 		Creature deadCreature = null;
 		
-		if(sagaEvent.getLastDamageEvent() != null){
-			sagaDefender = sagaEvent.getLastDamageEvent().sagaDefender;
-			sagaAttacker = sagaEvent.getLastDamageEvent().sagaAttacker;
-			deadCreature =  sagaEvent.getLastDamageEvent().creatureDefender;
+		if(deathEvent.getLastDamageEvent() != null){
+			sagaDefender = deathEvent.getLastDamageEvent().sagaDefender;
+			sagaAttacker = deathEvent.getLastDamageEvent().sagaAttacker;
+			deadCreature =  deathEvent.getLastDamageEvent().creatureDefender;
 		}
-		
 		
 		// Player got killed by a player:
 		if(sagaDefender instanceof SagaPlayer && sagaAttacker instanceof SagaPlayer){
@@ -236,24 +246,18 @@ public class EntityListener implements Listener{
 		}
 		
 		// Apply event:
-		sagaEvent.apply();
+		deathEvent.apply();
 		
 		
 	}
-
-	@EventHandler(priority = EventPriority.NORMAL)
-	public void onEntityRegainHealth(EntityRegainHealthEvent event) {
-
-		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
-    	
-		
-	}
-
+	
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onEntityTarget(EntityTargetEvent event) {
-
+		
+		
+		// Saga disabled:
 		if(GeneralConfiguration.isDisabled(event.getEntity().getWorld())) return;
-    	
+		
 		
 		// Target Player:
 		if(event.getTarget() instanceof Player){

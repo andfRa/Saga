@@ -327,6 +327,18 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 	
 	// Roles:
 	/**
+	 * Gets a player role.
+	 * 
+	 * @param playerName player name
+	 * @return player role. null if none
+	 */
+	public Proficiency getRole(String playerName) {
+		
+		return playerRoles.get(playerName);
+		
+	}
+	
+	/**
 	 * Adds a role to the player.
 	 * 
 	 * @param sagaPlayer saga player
@@ -371,19 +383,8 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 		
 		
 	}
-
-	/**
-	 * Gets a player role.
-	 * 
-	 * @param playerName player name
-	 * @return player role. null if none
-	 */
-	public Proficiency getRole(String playerName) {
-		
-		return playerRoles.get(playerName);
-		
-	}
-
+	
+	
 	/**
 	 * Gets the amount of roles used.
 	 * 
@@ -405,7 +406,7 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 		return total;
 		
 	}
-
+	
 	/**
 	 * Gets the amount of roles available.
 	 * 
@@ -438,7 +439,7 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 		return getAvailableRoles(roleName) - getUsedRoles(roleName);
 		
 	}
-
+	
 	/**
 	 * Checks if the given role is available.
 	 * 
@@ -654,8 +655,8 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 	 * 
 	 * @return used claims
 	 */
-	public Integer getUsedClaimed() {
-		return new Integer(getGroupChunks().size());
+	public Integer getUsedClaims() {
+		return getSize();
 	}
 	
 	/**
@@ -674,7 +675,7 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 	 * @return available claims
 	 */
 	public Integer getAvailableClaims() {
-		return getTotalClaims() - getUsedClaimed();
+		return getTotalClaims() - getUsedClaims();
 	}
 
 	/**
@@ -865,7 +866,7 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 		
 	}
 	
-
+	
 	
 	// Permissions:
 	/* 

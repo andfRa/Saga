@@ -33,8 +33,8 @@ import org.saga.exceptions.InvalidBuildingException;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
-import org.saga.listeners.events.SagaEntityDamageEvent;
-import org.saga.listeners.events.SagaEntityDamageEvent.PvPOverride;
+import org.saga.listeners.events.SagaDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent.PvPOverride;
 import org.saga.messages.GeneralMessages;
 import org.saga.messages.SettlementMessages;
 import org.saga.messages.colours.Colour;
@@ -273,7 +273,46 @@ public class Bundle extends SagaCustomSerialization{
 	
 	
 	
-	// Bundle management:
+	// Naming:
+	/**
+	 * Gets chunk group ID.
+	 * 
+	 * @return ID
+	 */
+	public Integer getId() {
+		return id;
+	}
+	
+	/**
+	 * Sets the ID.
+	 * 
+	 * @param id the id to set
+	 */
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	/**
+	 * Gets the name.
+	 * 
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * Sets the name
+	 * 
+	 * @param name name
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	
+	
+	// Saga chunk management:
 	/**
 	 * Adds a new chunk group.
 	 * 
@@ -292,8 +331,7 @@ public class Bundle extends SagaCustomSerialization{
 		bundle.save();
 		
 		// Refresh:
-		ArrayList<SagaChunk> sagaChunks = bundle.getGroupChunks();
-		for (SagaChunk sagaChunk : sagaChunks) {
+		for (SagaChunk sagaChunk : bundle.groupChunks) {
 			sagaChunk.refresh();
 		}
 		
@@ -323,7 +361,6 @@ public class Bundle extends SagaCustomSerialization{
 
 		
 	}
-
 	
 	/**
 	 * Deletes a chunk group
@@ -339,27 +376,26 @@ public class Bundle extends SagaCustomSerialization{
 		// Disable:
 		disable();
 		
-		// Remove all player:
-		ArrayList<String> players = getMembers();
-		for (String player : players) {
+		// Remove all members:
+		ArrayList<String> members = getMembers();
+		for (String member : members) {
 			
 			try {
 				
-				SagaPlayer sagaPlayer = Saga.plugin().forceSagaPlayer(player);
+				SagaPlayer sagaPlayer = Saga.plugin().forceSagaPlayer(member);
 				removeMember(sagaPlayer);
 				sagaPlayer.indicateRelease();
 				
 			} catch (NonExistantSagaPlayerException e) {
 				
-				SagaLogger.severe(this, "failed to remove " + player + " player");
-				removePlayer(player);
+				SagaLogger.severe(this, "failed to remove " + member + " player");
+				members.remove(member);
 				
 			}
 			
 		}
 		
 		// Remove all saga chunks:
-		ArrayList<SagaChunk> groupChunks = getGroupChunks();
 		for (SagaChunk sagaChunk : groupChunks) {
 			removeChunk(sagaChunk);
 		}
@@ -374,6 +410,42 @@ public class Bundle extends SagaCustomSerialization{
 		BundleManager.manager().removeBundle(this);
 		
 		
+	}
+	
+	/**
+	 * Checks if the bundle can be deleted.
+	 * 
+	 * @return true if can be deleted
+	 */
+	public boolean checkDetele() {
+		
+		// Too big:
+		if(groupChunks.size() >= SettlementConfiguration.config().getNoDeleteSize()) return false;
+		
+		// No delete option:
+		if(toggleOptions.contains(BundleToggleable.NO_DELETE)) return false;
+		
+		return true;
+		
+	}
+
+
+	/**
+	 * Gets all Saga chunks from the bundle.
+	 * 
+	 * @return all Saga chunks
+	 */
+	public ArrayList<SagaChunk> getSagaChunks() {
+		return new ArrayList<SagaChunk>(groupChunks);
+	}
+	
+	/**
+	 * Returns settlement size in chunks.
+	 * 
+	 * @return settlement size
+	 */
+	public int getSize() {
+		return groupChunks.size();
 	}
 	
 	/**
@@ -475,56 +547,6 @@ public class Bundle extends SagaCustomSerialization{
 	
 	
 	
-	// Naming:
-	/**
-	 * Sets the name
-	 * 
-	 * @param name name
-	 */
-	public void setName(String name) {
-		this.name = name;
-	}
-	
-	
-	
-	// Territory:
-	/**
-	 * Gets all chunks from the group.
-	 * 
-	 * @return group chunks
-	 */
-	public ArrayList<SagaChunk> getGroupChunks() {
-		return new ArrayList<SagaChunk>(groupChunks);
-	}
-	
-	/**
-	 * Returns settlement size in chunks.
-	 * 
-	 * @return settlement size
-	 */
-	public int getSize() {
-		return groupChunks.size();
-	}
-
-	/**
-	 * Checks if the bundle can be deleted.
-	 * 
-	 * @return true if can be deleted
-	 */
-	public boolean checkDetele() {
-		
-		// Too big:
-		if(groupChunks.size() >= SettlementConfiguration.config().getNoDeleteSize()) return false;
-		
-		// No delete option:
-		if(toggleOptions.contains(BundleToggleable.NO_DELETE)) return false;
-		
-		return true;
-		
-	}
-
-	
-	
 	// Buildings:
 	/**
 	 * Gets all settlement buildings.
@@ -570,7 +592,6 @@ public class Bundle extends SagaCustomSerialization{
 
 		// Total buildings:
 		Integer total = 0;
-		ArrayList<SagaChunk> groupChunks = getGroupChunks();
 		for (SagaChunk sagaChunk : groupChunks) {
 			
 			Building building = sagaChunk.getBuilding();
@@ -585,7 +606,7 @@ public class Bundle extends SagaCustomSerialization{
 		
 		
 	}
-
+	
 	/**
 	 * Gets the amount of available buildings. 
 	 * 
@@ -624,7 +645,7 @@ public class Bundle extends SagaCustomSerialization{
 		
 	}
 	
-
+	
 	/**
 	 * Gets the buildings with the given name.
 	 * 
@@ -716,88 +737,6 @@ public class Bundle extends SagaCustomSerialization{
 	
 	
 	
-	// Player and faction management:
-	/**
-	 * Adds a player.
-	 * 
-	 * @param playerName player name
-	 */
-	private void addPlayer(String playerName) {
-
-		
-		// Check if already on the list:
-		if(players.contains(playerName)){
-			SagaLogger.severe(this, "tried to add an already registered " + playerName + " player");
-			return;
-		}
-		
-		// Add player:
-		players.add(playerName);
-
-		
-	}
-
-	/**
-	 * Removes a player.
-	 * 
-	 * @param playerName player name
-	 */
-	private void removePlayer(String playerName) {
-		
-		
-		// Check if not in this settlement:
-		if(!players.contains(playerName)){
-			SagaLogger.severe(this, "tried to remove a non-member " + playerName + " player");
-			return;
-		}
-
-		// Remove player:
-		players.remove(playerName);
-
-		// Remove ownership:
-		if(isOwner(playerName)){
-			removeOwner();
-		}
-		
-		
-	}
-
-	/**
-	 * Adds and registers a player.
-	 * 
-	 * @param sagaPlayer saga player
-	 */
-	public void addMember(SagaPlayer sagaPlayer) {
-
-
-		// Add player:
-		addPlayer(sagaPlayer.getName());
-		
-		// Set chunk group ID:
-		sagaPlayer.setBundleId(getId());
-		
-		
-	}
-
-	/**
-	 * Removes and unregisters a player.
-	 * 
-	 * @param playerName saga player
-	 */
-	public void removeMember(SagaPlayer sagaPlayer) {
-		
-		
-		// Remove player:
-		removePlayer(sagaPlayer.getName());
-
-		// Remove chunk group ID:
-		sagaPlayer.removeBundleId();
-		
-		
-	}
-	
-	
-	
 	// Members:
 	/**
 	 * Gets members associated.
@@ -827,6 +766,46 @@ public class Bundle extends SagaCustomSerialization{
 	 */
 	public int getMemberCount() {
 		return players.size();
+	}
+	
+
+	/**
+	 * Adds and registers a player.
+	 * 
+	 * @param sagaPlayer saga player
+	 */
+	public void addMember(SagaPlayer sagaPlayer) {
+
+
+		// Add player:
+		players.add(sagaPlayer.getName());
+		
+		// Set bundle ID:
+		sagaPlayer.setBundleId(getId());
+		
+		
+	}
+
+	/**
+	 * Removes and unregisters a player.
+	 * 
+	 * @param playerName saga player
+	 */
+	public void removeMember(SagaPlayer sagaPlayer) {
+		
+		
+		// Remove member:
+		players.remove(sagaPlayer.getName());
+
+		// Remove chunk group ID:
+		sagaPlayer.removeBundleId();
+
+		// Remove ownership:
+		if(isOwner(sagaPlayer.getName())){
+			removeOwner();
+		}
+		
+		
 	}
 	
 	
@@ -951,7 +930,7 @@ public class Bundle extends SagaCustomSerialization{
 
 	
 	
-	// Bonuses:
+	// Options:
 	/**
 	 * Checks if the option is enabled.
 	 * 
@@ -1069,50 +1048,18 @@ public class Bundle extends SagaCustomSerialization{
 		
 	}
 	
-
-	
-	// Identification:
-	/**
-	 * Gets chunk group ID.
-	 * 
-	 * @return ID
-	 */
-	public Integer getId() {
-		return id;
-	}
-	
-	/**
-	 * Sets the ID.
-	 * 
-	 * @param id the id to set
-	 */
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	/**
-	 * Gets the name.
-	 * 
-	 * @return the name
-	 */
-	public String getName() {
-		return name;
-	}
-
 	
 	
-	// Events:
+	// Entity events:
 	/**
 	 * Called when an entity explodes on the chunk
 	 * 
 	 * @param event event
 	 */
 	void onEntityExplode(EntityExplodeEvent event, SagaChunk locationChunk) {
-
 		
 		// Cancel entity explosions:
 		event.blockList().clear();
-
 		
 	}
 
@@ -1125,9 +1072,7 @@ public class Bundle extends SagaCustomSerialization{
 	void onCreatureSpawn(CreatureSpawnEvent event, SagaChunk locationChunk) {
 		
 
-		if(event.isCancelled()){
-			return;
-		}
+		if(event.isCancelled()) return;
 		
 		// Forward to all buildings:
 		for (int i = 0; i < groupChunks.size() && !event.isCancelled(); i++) {
@@ -1138,7 +1083,6 @@ public class Bundle extends SagaCustomSerialization{
 		
 	}
 	
-
 	
 	// Block events:
 	/**
@@ -1218,7 +1162,6 @@ public class Bundle extends SagaCustomSerialization{
 		event.addBuildOverride(BuildOverride.CHUNK_GROUP_DENY);
 		
 	}
-
 	
 	
 	// Command events:
@@ -1243,7 +1186,6 @@ public class Bundle extends SagaCustomSerialization{
     	}
 
     }
-    
 	
 	
 	// Interact events:
@@ -1278,14 +1220,13 @@ public class Bundle extends SagaCustomSerialization{
     }
 
     
-    
     // Damage events:
 	/**
-	 * Called when a a entity takes damage.
+	 * Called when a living entity gets damaged.
 	 * 
 	 * @param event event
 	 */
-	public void onEntityDamage(SagaEntityDamageEvent event, SagaChunk locationChunk){
+	public void onDamage(SagaDamageEvent event, SagaChunk locationChunk){
 
 		// Deny pvp:
 		if(isOptionEnabled(BundleToggleable.PVP_PROTECTION)) event.addPvpOverride(PvPOverride.SAFE_AREA_DENY);
@@ -1303,7 +1244,6 @@ public class Bundle extends SagaCustomSerialization{
 	public void onPvpKill(SagaPlayer attacker, SagaPlayer defender, SagaChunk locationChunk){
 		
 	}
-
 	
 	
 	// Move events:
@@ -1365,14 +1305,14 @@ public class Bundle extends SagaCustomSerialization{
 	 * @param event event
 	 */
 	public void onMemberRespawn(SagaPlayer sagaPlayer, PlayerRespawnEvent event) {
-
 		
 		// Forward to all buildings:
-		for (int i = 0; i < groupChunks.size(); i++) {
-			Building building = groupChunks.get(i).getBuilding();
+		for (SagaChunk sagaChunk : groupChunks) {
+			
+			Building building = sagaChunk.getBuilding();
 			if(building != null) building.onMemberRespawn(sagaPlayer, event);
+			
 		}
-		
 		
 	}
 	
@@ -1425,45 +1365,44 @@ public class Bundle extends SagaCustomSerialization{
 
 		
 		// Load:
-		Bundle config;
+		Bundle bundle;
 		try {
 			
-			config = WriterReader.read(Directory.SETTLEMENT_DATA, id, Bundle.class);
+			bundle = WriterReader.read(Directory.SETTLEMENT_DATA, id, Bundle.class);
 			
 		} catch (FileNotFoundException e) {
 			
 			SagaLogger.info(Bundle.class, "missing data for " + id + " ID");
-			config = new Bundle("invalid");
+			bundle = new Bundle("invalid");
 			
 		} catch (IOException e) {
 			
 			SagaLogger.severe(Bundle.class, "failed to read data for " + id + " ID");
-			config = new Bundle("invalid");
-			config.disableSaving();
+			bundle = new Bundle("invalid");
+			bundle.disableSaving();
 			
 		} catch (JsonParseException e) {
 			
 			SagaLogger.severe(Bundle.class, "failed to parse data for " + id + " ID: " + e.getClass().getSimpleName() + "");
 			SagaLogger.info("Parse message: " + e.getMessage());
-			config = new Bundle("invalid");
-			config.disableSaving();
+			bundle = new Bundle("invalid");
+			bundle.disableSaving();
 			
 		}
 		
 		// Complete:
-		config.complete();
+		bundle.complete();
 		
 		// Add to manager:
-		BundleManager.manager().addBundle(config);
-		ArrayList<SagaChunk> groupChunks = config.getGroupChunks();
-		for (SagaChunk sagaChunk : groupChunks) {
+		BundleManager.manager().addBundle(bundle);
+		for (SagaChunk sagaChunk : bundle.groupChunks) {
 			BundleManager.manager().addSagaChunk(sagaChunk);
 		}
 		
 		// Enable:
-		config.enable();
+		bundle.enable();
 		
-		return config;
+		return bundle;
 		
 		
 	}
@@ -1488,7 +1427,6 @@ public class Bundle extends SagaCustomSerialization{
 		
 		
 	}
-
 
 
 }

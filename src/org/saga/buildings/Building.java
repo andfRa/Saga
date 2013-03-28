@@ -28,7 +28,7 @@ import org.saga.exceptions.InvalidLocationException;
 import org.saga.factions.SiegeManager;
 import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
-import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent;
 import org.saga.messages.BuildingMessages;
 import org.saga.messages.GeneralMessages;
 import org.saga.player.SagaPlayer;
@@ -973,11 +973,11 @@ public abstract class Building extends SagaCustomSerialization implements Daytim
 	
 	// Entity damage events:
 	/**
-	 * Called when a a entity takes damage.
+	 * Called when a living entity gets damaged.
 	 * 
 	 * @param event event
 	 */
-	public void onEntityDamage(SagaEntityDamageEvent event){
+	public void onDamage(SagaDamageEvent event){
 		
 	}
 

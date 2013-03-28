@@ -9,7 +9,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerShearEntityEvent;
 import org.saga.abilities.AbilityDefinition.ActivationAction;
-import org.saga.listeners.events.SagaEntityDamageEvent;
+import org.saga.listeners.events.SagaDamageEvent;
 import org.saga.player.SagaLiving;
 
 public class AbilityManager {
@@ -98,7 +98,7 @@ public class AbilityManager {
 	 * 
 	 * @param event event
 	 */
-	public void onAttack(SagaEntityDamageEvent event) {
+	public void onAttack(SagaDamageEvent event) {
 
 		
 		for (Ability ability : abilities) {
@@ -119,7 +119,7 @@ public class AbilityManager {
 	 * 
 	 * @param event event
 	 */
-	public void onDefend(SagaEntityDamageEvent event) {
+	public void onDefend(SagaDamageEvent event) {
 
 		
 		for (Ability ability : abilities) {
