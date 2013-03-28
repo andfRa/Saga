@@ -122,7 +122,7 @@ public class PlayerCommands {
 	
 	// Special chat:
 	@Command(
-            aliases = {"b"},
+            aliases = {"sc"},
             usage = "<message>",
             flags = "",
             desc = "Sends a message in the special chat.",
