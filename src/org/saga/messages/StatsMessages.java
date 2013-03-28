@@ -11,7 +11,6 @@ import java.util.Hashtable;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.saga.SagaLogger;
-import org.saga.abilities.Ability;
 import org.saga.abilities.AbilityDefinition;
 import org.saga.buildings.Building;
 import org.saga.buildings.BuildingDefinition;
@@ -247,42 +246,49 @@ public class StatsMessages {
 	}
 	
 	private static ChatTable abilities(SagaPlayer sagaPlayer) {
-
+		
 		
 		ChatTable table = new ChatTable(new ColourLoop().addColor(Colour.normal1).addColor(Colour.normal2));
-		HashSet<Ability> allAbilities = sagaPlayer.getAbilities();
+		
+		ArrayList<AbilityDefinition> definitions = AbilityConfiguration.config().getDefinitions();
 		
 		// Names:
 		table.addLine(new String[]{GeneralMessages.columnTitle("ability"), GeneralMessages.columnTitle("next")});
 		
     	// Add abilities:
-    	if(allAbilities.size() > 0){
+    	if(definitions.size() > 0){
     		
-    		for (Ability ability : allAbilities) {
+    		for (AbilityDefinition definition : definitions) {
     			
-    			String name = ability.getName() + " " + RomanNumeral.binaryToRoman(ability.getScore());
+    			Integer score = sagaPlayer.getAbilityScore(definition.getName());
+    			Integer nextScore = score + 1;
+    			
+    			String name = definition.getName() + " " + RomanNumeral.binaryToRoman(score);
     			String required = "";
     			
-    			Integer nextScore = sagaPlayer.getAbilityScore(ability.getName()) + 1;
-    			if(!ability.getDefinition().checkRequirements(sagaPlayer, nextScore)){
-    				name = Colour.unavailable + name;
-    				required = Colour.unavailable + required;
-    			}
-    			
-    			if(ability.getScore() < AbilityConfiguration.config().maxAbilityScore){
+    			if(score < AbilityConfiguration.config().maxAbilityScore){
     				
-    				String requirements = requirements(ability.getDefinition(), nextScore);
-    				String restrictions = restrictions(ability.getDefinition());
+    				String scores = scores(definition, nextScore);
+    				String restrictions = restrictions(definition);
     				
     				if(restrictions.length() > 0){
-    					if(requirements.length() > 0) requirements+= ", ";
-    					requirements+= restrictions;
+    					if(scores.length() > 0) scores+= ", ";
+    					scores+= restrictions;
     				}
     				
-    				required+= requirements;
+    				required+= scores;
     				
     			}else{
     				required = "-";
+    			}
+
+    			if(!definition.checkProficiencies(sagaPlayer, 1)){
+    				name = "" + Colour.unavailable + ChatColor.STRIKETHROUGH + name + ChatColor.RESET;
+    				required = "" + Colour.unavailable + ChatUtil.flatten(definition.getProfReq(1));
+    			}
+    			else if(!definition.checkRequirements(sagaPlayer, nextScore)){
+    				name = Colour.unavailable + name;
+    				required = Colour.unavailable + required;
     			}
     			
     			table.addLine(new String[]{name, required});
@@ -401,18 +407,10 @@ public class StatsMessages {
 		
 		StringBuffer result = new StringBuffer();
 		
-		// Attributes:
-		ArrayList<String> attributeNames = AttributeConfiguration.config().getAttributeNames();
-		
-		for (String attribute : attributeNames) {
-			
-			Integer reqScore = definition.getAttrReq(attribute, score);
-			if(reqScore <= 0) continue;
-			
-			if(result.length() > 0) result.append(", ");
-			
-			result.append(GeneralMessages.attrAbrev(attribute) + " " + reqScore);
-			
+		String scores = scores(definition, score);
+		if(scores.length() > 0){
+			result.append(scores);
+			result.append(",");
 		}
 		
 		// Proficiencies:
@@ -427,6 +425,31 @@ public class StatsMessages {
 		if(buildings.size() > 0){
 			if(result.length() > 0) result.append(", ");
 			result.append(ChatUtil.flatten(buildings));
+		}
+		
+		return result.toString();
+		
+		
+	}
+	
+	public static String scores(AbilityDefinition definition, Integer score){
+		
+		
+		StringBuffer result = new StringBuffer();
+		
+		// Attributes:
+		ArrayList<String> attributeNames = AttributeConfiguration.config().getAttributeNames();
+		
+		for (int i = 0; i < attributeNames.size(); i++) {
+			
+			String attribute = attributeNames.get(i);
+			
+			Integer reqScore = definition.getAttrReq(attribute, score);
+			if(reqScore <= 0) continue;
+			
+			if(result.length() > 0) result.append(", ");
+			result.append(GeneralMessages.attrAbrev(attribute) + " " + reqScore);
+			
 		}
 		
 		return result.toString();
