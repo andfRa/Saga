@@ -34,6 +34,7 @@ import org.saga.config.VanillaConfiguration;
 import org.saga.dependencies.ChatDependency;
 import org.saga.dependencies.EconomyDependency;
 import org.saga.dependencies.PermissionsDependency;
+import org.saga.dependencies.SagaMobsDependency;
 import org.saga.exceptions.NonExistantSagaPlayerException;
 import org.saga.exceptions.SagaPlayerNotLoadedException;
 import org.saga.factions.FactionClaimManager;
@@ -126,6 +127,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		PermissionsDependency.disable();
 		EconomyDependency.disable();
 		ChatDependency.disable();
+		SagaMobsDependency.disable();
 
 		// Configuration:
 		ExperienceConfiguration.unload();
@@ -188,6 +190,7 @@ public class Saga extends JavaPlugin implements MinuteTicker {
 		VanillaConfiguration.load();
 
 		// Dependencies:
+		SagaMobsDependency.enable();
 		PermissionsDependency.enable();
 		EconomyDependency.enable();
 		ChatDependency.enable();

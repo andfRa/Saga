@@ -16,6 +16,7 @@ import org.saga.Saga;
 import org.saga.attributes.DamageType;
 import org.saga.config.AttributeConfiguration;
 import org.saga.config.VanillaConfiguration;
+import org.saga.dependencies.SagaMobsDependency;
 import org.saga.factions.Faction;
 import org.saga.player.SagaLiving;
 import org.saga.player.SagaPlayer;
@@ -179,7 +180,7 @@ public class SagaDamageEvent {
 		else if(attacker instanceof Creature){
 			
 			creatureAttacker = (Creature)attacker;
-			sagaAttacker = null;
+			sagaAttacker = SagaMobsDependency.findSagaCreature(creatureAttacker);
 			tool = Material.AIR;
 			
 		}else{
@@ -193,23 +194,23 @@ public class SagaDamageEvent {
 		// Get defender saga player:
 		if(defender instanceof Player){
 
-			sagaDefender = Saga.plugin().getLoadedPlayer( ((Player) defender).getName() );
 			creatureDefender = null;
+			sagaDefender = Saga.plugin().getLoadedPlayer( ((Player) defender).getName() );
 			
 		}
 		
 		// Get defender creature:
 		else if(defender instanceof Creature){
 			
-			sagaDefender = null;
 			creatureDefender = (Creature)defender;
+			sagaDefender = SagaMobsDependency.findSagaCreature(creatureDefender);
 			
 		}
 		
 		else{
 			
-			sagaDefender = null;
 			creatureDefender = null;
+			sagaDefender = null;
 			
 		}
 		
@@ -217,7 +218,7 @@ public class SagaDamageEvent {
 		attackerChunk = (attacker != null) ? BundleManager.manager().getSagaChunk(attacker.getLocation()) : null;
 		defenderChunk = (defender != null) ? BundleManager.manager().getSagaChunk(defender.getLocation()) : null;
 		
-
+		
 	}
 	
 	
