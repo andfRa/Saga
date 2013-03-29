@@ -187,10 +187,11 @@ public class AttributeConfiguration {
 			
 		}
 		
+		// Read config:
 		AttributeConfiguration config;
 		try {
 			
-			config = WriterReader.read(Directory.ATTRIBUTE_CONFIG, AttributeConfiguration.class);
+			config = WriterReader.readConfig(Directory.ATTRIBUTE_CONFIG, AttributeConfiguration.class);
 			
 		} catch (IOException e) {
 			

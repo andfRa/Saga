@@ -1555,6 +1555,7 @@ public class Faction implements MinuteTicker, DaytimeTicker{
 	 */
 	public enum FactionPermission{
 		
+		INVALID,
 		
 		// Management:
 		DELETE,

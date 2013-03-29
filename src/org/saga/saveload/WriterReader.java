@@ -32,7 +32,7 @@ public class WriterReader {
 	
 	
 	/**
-	 * Writes a file.
+	 * Writes a data file.
 	 * 
 	 * @param dir directory
 	 * @param name name
@@ -48,7 +48,7 @@ public class WriterReader {
 		String objStr = gson.toJson(obj);
 		
 		if(objStr == null || objStr.equals("null")){
-			SagaLogger.severe(WriterReader.class, "null config for " + obj);
+			SagaLogger.severe(WriterReader.class, "null data for " + obj);
 			return;
 		}
 		
@@ -75,7 +75,7 @@ public class WriterReader {
 	}
 
 	/**
-	 * Reads a file.
+	 * Reads a data file.
 	 * 
 	 * @param dir directory
 	 * @param name name
@@ -88,7 +88,6 @@ public class WriterReader {
 		
 		// Gson:
         GsonBuilder gsonBuilder= new GsonBuilder();
-        
 		gsonBuilder.registerTypeAdapter(Bundle.class, new SagaCustomSerializer());
 		gsonBuilder.registerTypeAdapter(Building.class, new SagaCustomSerializer());
 		gsonBuilder.registerTypeAdapter(BuildingSign.class, new SagaCustomSerializer());
@@ -122,7 +121,7 @@ public class WriterReader {
 
         // Fix null and empty:
         if(objStr.length() == 0 || objStr.toString().equals("null")){
-        	SagaLogger.severe(WriterReader.class, "null or empty config for " + dir);
+        	SagaLogger.severe(WriterReader.class, "null or empty data for " + dir);
         	objStr = new StringBuffer("{ }");
         }
           
@@ -133,7 +132,7 @@ public class WriterReader {
 	
 
 	/**
-	 * Writes a file.
+	 * Writes a data file.
 	 * 
 	 * @param dir directory
 	 * @param obj object
@@ -144,7 +143,7 @@ public class WriterReader {
 	}
 
 	/**
-	 * Reads a file.
+	 * Reads a data file.
 	 * 
 	 * @param dir directory
 	 * @param type object type
@@ -153,6 +152,61 @@ public class WriterReader {
 	 */
 	public static <T> T read(Directory dir, Class<T> type) throws IOException {
         return read(dir, "", type);
+	}
+	
+	
+
+	/**
+	 * Reads a config file.
+	 * 
+	 * @param dir directory
+	 * @param name name
+	 * @param type object type
+	 * @return object
+	 * @throws IOException when read fails
+	 */
+	public static <T> T readConfig(Directory dir, Class<T> type) throws IOException {
+
+		
+		// Gson:
+        GsonBuilder gsonBuilder= new GsonBuilder();
+		gsonBuilder.registerTypeAdapterFactory(new SagaEnumSerializer());
+		
+		Gson gson = gsonBuilder.create();
+
+		// Directory:
+		File directory = new File(dir.getDirectory());
+		if(!directory.exists()){
+			directory.mkdirs();
+			SagaLogger.info("Creating " + directory + " directory.");
+		}
+		
+		// File:
+		File filedir = new File(dir.getDirectory() + dir.getFilename());
+		if(!filedir.exists()){
+			filedir.createNewFile();
+			SagaLogger.info("Creating " + filedir + " file.");
+		}
+		
+		// Read:
+        int ch;
+        StringBuffer objStr = new StringBuffer("");
+        FileInputStream fin = null;
+        fin = new FileInputStream(filedir);
+        while ((ch = fin.read()) != -1){
+            objStr.append((char) ch);
+        }
+        fin.close();
+
+        // Fix null and empty:
+        if(objStr.length() == 0 || objStr.toString().equals("null")){
+        	SagaLogger.severe(WriterReader.class, "null or empty config for " + dir);
+        	objStr = new StringBuffer("{ }");
+        }
+          
+        return gson.fromJson(objStr.toString(), type);
+
+         
 	}
 	
 

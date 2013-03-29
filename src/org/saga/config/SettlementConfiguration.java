@@ -580,10 +580,11 @@ public class SettlementConfiguration {
 			
 		}
 		
+		// Read config:
 		SettlementConfiguration config;
 		try {
 			
-			config = WriterReader.read(Directory.SETTLEMENT_CONFIG, SettlementConfiguration.class);
+			config = WriterReader.readConfig(Directory.SETTLEMENT_CONFIG, SettlementConfiguration.class);
 			
 		} catch (IOException e) {
 			

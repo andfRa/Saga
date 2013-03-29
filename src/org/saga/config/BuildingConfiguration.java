@@ -194,10 +194,11 @@ public class BuildingConfiguration {
 			
 		}
 		
+		// Read config:
 		BuildingConfiguration config;
 		try {
 			
-			config = WriterReader.read(Directory.BUILDING_CONFIG, BuildingConfiguration.class);
+			config = WriterReader.readConfig(Directory.BUILDING_CONFIG, BuildingConfiguration.class);
 			
 		} catch (IOException e) {
 			

@@ -1245,7 +1245,9 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 	 */
 	public enum SettlementPermission{
 		
+		INVALID,
 		
+		// General:
 		ACCESS_WAREHOUSE,
 		ACCESS_STORAGE,
 		ADD_COINS,

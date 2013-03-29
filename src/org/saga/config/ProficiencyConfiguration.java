@@ -227,10 +227,11 @@ public class ProficiencyConfiguration {
 			
 		}
 		
+		// Read config:
 		ProficiencyConfiguration config;
 		try {
 			
-			config = WriterReader.read(Directory.PROFICIENCY_CONFIG, ProficiencyConfiguration.class);
+			config = WriterReader.readConfig(Directory.PROFICIENCY_CONFIG, ProficiencyConfiguration.class);
 			
 		} catch (IOException e) {
 			

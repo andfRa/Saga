@@ -303,7 +303,7 @@ public class AbilityConfiguration {
 		AbilityConfiguration config;
 		try {
 			
-			config = WriterReader.read(Directory.ABILITY_CONFIG, AbilityConfiguration.class);
+			config = WriterReader.readConfig(Directory.ABILITY_CONFIG, AbilityConfiguration.class);
 			
 		} catch (IOException e) {
 			

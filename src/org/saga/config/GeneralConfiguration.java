@@ -482,10 +482,11 @@ public class GeneralConfiguration {
 			
 		}
 		
+		// Read config:
 		GeneralConfiguration config;
 		try {
 			
-			config = WriterReader.read(Directory.GENERAL_CONFIG, GeneralConfiguration.class);
+			config = WriterReader.readConfig(Directory.GENERAL_CONFIG, GeneralConfiguration.class);
 			
 		} catch (IOException e) {
 			
@@ -494,7 +495,7 @@ public class GeneralConfiguration {
 			
 		} catch (JsonParseException e) {
 
-			SagaLogger.severe(AttributeConfiguration.class, "failed to parse configuration: " + e.getClass().getSimpleName());
+			SagaLogger.severe(GeneralConfiguration.class, "failed to parse configuration: " + e.getClass().getSimpleName());
 			SagaLogger.info("message: " + e.getMessage());
 			config = new GeneralConfiguration();
 			

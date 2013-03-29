@@ -366,19 +366,20 @@ public class ExperienceConfiguration {
 			
 		}
 		
+		// Read config:
 		ExperienceConfiguration config;
 		try {
 			
-			config = WriterReader.read(Directory.EXPERIENCE_CONFIG, ExperienceConfiguration.class);
+			config = WriterReader.readConfig(Directory.EXPERIENCE_CONFIG, ExperienceConfiguration.class);
 			
 		} catch (IOException e) {
 			
-			SagaLogger.severe(SettlementConfiguration.class, "failed to read configuration: " + e.getClass().getSimpleName());
+			SagaLogger.severe(ExperienceConfiguration.class, "failed to read configuration: " + e.getClass().getSimpleName());
 			config = new ExperienceConfiguration();
 			
 		} catch (JsonParseException e) {
 
-			SagaLogger.severe(SettlementConfiguration.class, "failed to parse configuration: " + e.getClass().getSimpleName());
+			SagaLogger.severe(ExperienceConfiguration.class, "failed to parse configuration: " + e.getClass().getSimpleName());
 			SagaLogger.info("message: " + e.getMessage());
 			config = new ExperienceConfiguration();
 			

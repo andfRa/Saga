@@ -661,10 +661,11 @@ public class FactionConfiguration {
 			
 		}
 		
+		// Read config:
 		FactionConfiguration config;
 		try {
 			
-			config = WriterReader.read(Directory.FACTION_CONFIG, FactionConfiguration.class);
+			config = WriterReader.readConfig(Directory.FACTION_CONFIG, FactionConfiguration.class);
 			
 		} catch (IOException e) {
 			
