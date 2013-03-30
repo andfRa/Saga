@@ -16,7 +16,6 @@ import org.saga.config.AbilityConfiguration;
 import org.saga.exceptions.InvalidAbilityException;
 import org.saga.listeners.events.SagaDamageEvent;
 import org.saga.messages.AbilityMessages;
-import org.saga.messages.effects.StatsEffectHandler;
 import org.saga.player.SagaLiving;
 import org.saga.player.SagaPlayer;
 import org.saga.saveload.SagaCustomSerialization;
@@ -483,9 +482,6 @@ public abstract class Ability extends SagaCustomSerialization implements SecondT
 		
 		if(sagaLiving instanceof SagaPlayer){
 
-			// Ability effect:
-			StatsEffectHandler.playAbility((SagaPlayer) sagaLiving, this);
-			
 			// Statistics:
 			StatisticsManager.manager().addAbilityUse(this);
 			

@@ -95,11 +95,6 @@ public class AbilityDefinition{
 	private Hashtable<String, TwoPointFunction> functions;
 	
 	/**
-	 * Effect colour.
-	 */
-	private Integer colour;
-	
-	/**
 	 * Usage description.
 	 */
 	private String usage;
@@ -235,11 +230,6 @@ public class AbilityDefinition{
 		if(fullDescription == null){
 			fullDescription = "";
 			SagaLogger.nullField(this, "description");
-		}
-		
-		if(colour == null){
-			colour = 0;
-			SagaLogger.nullField(this, "colour");
 		}
 
 		
@@ -538,18 +528,6 @@ public class AbilityDefinition{
 		return checkAttributes(sagaLiving, abilityScore)&&
 				checkBuildings(sagaLiving, abilityScore) &&
 				checkProficiencies(sagaLiving, abilityScore);
-	}
-	
-	
-	
-	// Effect:
-	/**
-	 * Gets ability colour.
-	 * 
-	 * @return ability colour
-	 */
-	public Integer getColour() {
-		return colour;
 	}
 	
 	

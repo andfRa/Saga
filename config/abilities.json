@@ -24,7 +24,6 @@
     "buildingsRequired":{},
     "proficienciesRequired":{1:["woodcutter"]},
     "functions":{"tree size":{"x1":1,"y1":10.0,"x2":3,"y2":50.0}},
-    "colour":6304529,
     "briefDescription":"chops down a tree",
     "fullDescription":"Falls the targeted tree. Upgrading the ability allows to cut down bigger trees.",
     "usage":"rclick a tree with an axe"
@@ -48,7 +47,6 @@
       "greens size":{"x1":1,"y1":130.0,"x2":3,"y2":300.0},
       "tool damage":{"x1":1,"y1":0.80,"x2":3,"y2":0.50}
     },
-    "colour":6304529,
     "briefDescription":"trims leaves, flowers and grass",
     "fullDescription":"Allows the player to cut down tree leaves, long grass and flower patches. Upgrading allows to cut down a larger area.",
     "usage":"rclick with shears or axe"
@@ -71,7 +69,6 @@
     "buildingsRequired":{},
     "proficienciesRequired":{1:["woodcutter"]},
     "functions":{"distance multiplier":{"x1":1,"y1":0.90,"x2":3,"y2":0.60}},
-    "colour":6304529,
     "briefDescription":"decreases mob aggro range",
     "fullDescription":"Reduces the radius at which hostile mobs can spot the player.",
     "usage":"automatic"
@@ -98,7 +95,6 @@
       "radius":{"x1":1,"y1":1.0,"x2":3,"y2":2.0},
       "random block":{"x1":1,"y1":8.0,"x2":3,"y2":17.0}
     },
-    "colour":4841998,
     "briefDescription":"digs dirt and sand",
     "fullDescription":"Digs a huge hole in dirt or sand. Hole size increases as the ability is upgraded.",
     "usage":"rclick with a spade"
@@ -120,7 +116,6 @@
     "buildingsRequired":{},
     "proficienciesRequired":{1:["farmer"]},
     "functions":{"range":{"x1":1,"y1":20.0,"x2":3,"y2":60.0}},
-    "colour":4841998,
     "briefDescription":"cuts wheat and reeds",
     "fullDescription":"Cuts down wheat and reeds around the player. Affected area increases as the ability gets upgraded.",
     "usage":"rclick with a hoe"
@@ -146,7 +141,6 @@
       "bonus wool":{"x1":1,"y1":2.0,"x2":3,"y2":4.0},
       "bonus mushrooms":{"x1":1,"y1":2.5,"x2":3,"y2":5.0}
     },
-    "colour":4841998,
     "briefDescription":"shearing is more effective",
     "fullDescription":"Shearing sheep gives more wool.",
     "usage":"automatic"
@@ -172,7 +166,6 @@
       "size":{"x1":0,"y1":1.0,"x2":3,"y2":60.0},
       "crumble":{"x1":0,"y1":5.0,"x2":50,"y2":10.0}
     },
-    "colour":7566195,
     "briefDescription":"breaks stone",
     "fullDescription":"Punches a hole in stone. Hole size increases when the ability is upgraded.",
     "usage":"rclick stone with a pickaxe"
@@ -196,7 +189,6 @@
       "gain multiplier":{"x1":0,"y1":1.25,"x2":3,"y2":1.75},
       "lose multiplier":{"x1":0,"y1":0.80,"x2":3,"y2":0.60}
     },
-    "colour":7566195,
     "briefDescription":"food bar is filled faster and drained slower",
     "fullDescription":"Makes it so less food is consumed and more is gained.",
     "usage":"automatic"
@@ -220,7 +212,6 @@
     "functions":{
       "ladder height":{"x1":1,"y1":3.0,"x2":3,"y2":7.0}
     },
-    "colour":7566195,
     "briefDescription":"places a ladder",
     "fullDescription":"Places a ladder on the top of the targeted block. Upgraded version allows to place higher ladders.",
     "usage":"rclick block top"
@@ -244,7 +235,6 @@
     "functions":{
       "ladder height":{"x1":1,"y1":3.0,"x2":3,"y2":7.0}
     },
-    "colour":7566195,
     "briefDescription":"takes a ladder",
     "fullDescription":"Removes the ladder from the targeted block. Upgrading allows to remove higher ladders.",
     "usage":"rclick upper or lower block top"
@@ -268,7 +258,6 @@
       "melee disarm chance":{"x1":1,"y1":0.05,"x2":3,"y2":0.15},
       "ranged disarm chance":{"x1":1,"y1":0.10,"x2":3,"y2":0.30}
     },
-    "colour":3599321,
     "briefDescription":"shifts targets weapon",
     "fullDescription":"Switches target players weapons slot. Upgrading increases disarm chance.",
     "usage":"random chance when the target player gets hit"
@@ -287,7 +276,6 @@
     "buildingsRequired":{},
     "proficienciesRequired":{},
     "functions":{"speed":{"x1":1,"y1":2.0,"x2":3,"y2":4.0}},
-    "colour":8873510,
     "briefDescription":"shoots an arrow",
     "fullDescription":"Shoots an arrow without a bow. Speed is increased when the ability is upgraded.",
     "usage":"rclick with an arrow"
@@ -306,7 +294,6 @@
     "buildingsRequired":{},
     "proficienciesRequired":{},
     "functions":{"speed":{"x1":1,"y1":0.70,"x2":3,"y2":2.0}},
-    "colour":12724739,
     "briefDescription":"shoots a fireball",
     "fullDescription":"Shoots a fireball. Upgrading increases speed.",
     "usage":"rclick with paper"
@@ -328,7 +315,6 @@
       "radius":{"x1":1,"y1":5.0,"x2":3,"y2":9.0},
       "power":{"x1":1,"y1":1.5,"x2":3,"y2":2.0}
     },
-    "colour":16777215,
     "briefDescription":"pushes nearby targets away",
     "fullDescription":"Pushes all hostiles away. Upgrading increases radius and power.",
     "usage":"rclick with a book"
@@ -352,7 +338,6 @@
       "hits required":{"x1":1,"y1":10,"x2":3,"y2":6},
       "damage multiplier":{"x1":1,"y1":1.75,"x2":3,"y2":2.25}
     },
-    "colour":13434880,
     "briefDescription":"charges a strong hit",
     "fullDescription":"High damage attack which charges when damage is dealt and resets when damage is taken. Upgraded version deals more damage and requires less hits to charge.",
     "usage":"don't get damaged"
@@ -374,7 +359,6 @@
       "facing half angle":{"x1":1,"y1":45.0,"x2":3,"y2":100.0},
       "active time":{"x1":1,"y1":0.75,"x2":3,"y2":1.75}
     },
-    "colour":3599321,
     "briefDescription":"short immunity after block",
     "fullDescription":"Grants a short immunity to damage after a successful block. Upgrading increases the angle at which the ability is effective and immunity time.",
     "usage":"block with a sword"
@@ -395,7 +379,6 @@
     "functions":{
       "facing half angle":{"x1":1,"y1":45.0,"x2":3,"y2":100.0}
     },
-    "colour":3599322,
     "briefDescription":"redirects melee damage",
     "fullDescription":"Reflects enemy damage on successful block. Upgrading increases the angle at which the ability is effective.",
     "usage":"block with a sword"
@@ -420,7 +403,6 @@
       "push speed":{"x1":1,"y1":1.0},
       "push damage":{"x1":1,"y1":5.0} 
     },
-    "colour":3599322,
     "briefDescription":"charges towards target",
     "fullDescription":"Charges the player towards the target. Increased speed and duration when upgraded.",
     "usage":"sprint and block"
@@ -448,7 +430,6 @@
       "push speed":{"x1":1,"y1":1.0,"x2":3,"y2":3.0},
       "push damage":{"x1":1,"y1":5.0,"x2":3,"y2":5.0} 
     },
-    "colour":3599322,
     "briefDescription":"jumps and crushes hostiles",
     "fullDescription":"Falling on mobs or players damage them. Increased radius and power when upgraded.",
     "usage":"jump and block"
@@ -468,7 +449,6 @@
     "buildingsRequired":{3:["bowyer"]},
     "proficienciesRequired":{1:["archer","marksman"]},
     "functions":{"range":{"x1":1,"y1":5.0,"x2":3,"y2":8.0}},
-    "colour":8873510,
     "briefDescription":"arrows ricochet",
     "fullDescription":"Ricochets arrows off surfaces towards hostiles. Upgraded version has higher ricochet range.",
     "usage":"miss target with an arrow"
@@ -492,7 +472,6 @@
       "armour penetration":{"x1":1,"y1":0.5,"x2":3,"y2":0.5},
       "enchant penetration":{"x1":1,"y1":0.5,"x2":3,"y2":0.5}
     },
-    "colour":13434880,
     "briefDescription":"increased damage and armour penetration",
     "fullDescription":"Deals high amount of damage while ignoring some armour protection. Increased damage, attack angle and penetration when upgraded.",
     "usage":"hit from behind"
@@ -511,7 +490,6 @@
     "buildingsRequired":{3:["bowyer"]},
     "proficienciesRequired":{1:["archer","marksman"]},
     "functions":{"speed":{"x1":1,"y1":1.5,"x2":3,"y2":3.0}},
-    "colour":16777215,
     "briefDescription":"target gets pushed back by arrows",
     "fullDescription":"Makes bow push back target on successful hit. Increased power when upgraded.",
     "usage":"when arrow hits the target"
@@ -533,7 +511,6 @@
     "functions":{
       "damage multiplier":{"x1":1,"y1":0.25,"x2":3,"y2":0.75}
     },
-    "colour":16777215,
     "briefDescription":"damage resistance",
     "fullDescription":"Provides higher damage resistance.",
     "usage":"passive"
@@ -556,7 +533,6 @@
       "density multiplier":{"x1":1,"y1":0.75,"x2":3,"y2":1.5},
       "speed":{"x1":1,"y1":1.0,"x2":3,"y2":1.5}
     },
-    "colour":12724739,
     "briefDescription":"calls meteors from the sky",
     "fullDescription":"Spawns a meteor shower. Meteor speed and amount increases when upgraded.",
     "usage":"rclick with a ghast tear"
@@ -581,7 +557,6 @@
       "damage range":{"x1":1,"y1":2.5,"x2":3,"y2":3.5},
       "distance":{"x1":1,"y1":16.0,"x2":3,"y2":32.0}
     },
-    "colour":16777215,
     "briefDescription":"calls a lightning bolt",
     "fullDescription":"Spawns a lightning bolt. Upgraded version does more damage and has increased area of effect.",
     "usage":"rclick with redstone"
@@ -603,7 +578,6 @@
     "buildingsRequired":{3:["town square"]},
     "proficienciesRequired":{1:["lord"]},
     "functions":{},
-    "colour":16777215,
     "briefDescription":"claims a chunk",
     "fullDescription":"Claims a chunk for the settlement.",
     "usage":"rclick with feather"
