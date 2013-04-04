@@ -228,7 +228,7 @@ public class PlayerListener implements Listener {
 		
 	}
 	
-	@EventHandler(priority = EventPriority.NORMAL)
+	@EventHandler(priority = EventPriority.HIGHEST)
 	public void onPlayerChat(AsyncPlayerChatEvent event) {
 		
 		
