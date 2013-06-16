@@ -6,8 +6,8 @@ import java.util.Random;
 import org.bukkit.Effect;
 import org.bukkit.Material;
 import org.saga.config.AttributeConfiguration;
-import org.saga.listeners.events.SagaLootEvent;
 import org.saga.listeners.events.SagaDamageEvent;
+import org.saga.listeners.events.SagaLootEvent;
 import org.saga.player.SagaLiving;
 
 public class AttributeManager {

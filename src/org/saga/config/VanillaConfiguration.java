@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Random;
 
-import net.minecraft.server.v1_5_R2.SharedConstants;
+import net.minecraft.server.v1_5_R3.SharedConstants;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
