@@ -235,6 +235,8 @@ public class BuildingDefinition {
 	 */
 	public Integer getAvailableAmount(Integer level) {
 		
+		if(level < available.getXMin()) return 0;
+		
 		return available.intValue(level);
 
 	}
