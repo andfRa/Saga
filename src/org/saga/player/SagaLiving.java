@@ -238,6 +238,31 @@ public class SagaLiving {
 		// Update:
 		abilities = result;
 		
+	}
+	
+	/**
+	 * Creates the ability or retrieves it.
+	 * 
+	 * @param abilName ability name
+	 * @return ability, null if failed
+	 */
+	public Ability forceAbility(String abilName) {
+		
+		Ability ability = getAbility(abilName);
+		if(ability != null) return ability;
+		
+		// Create new ability:
+		try {
+			ability = AbilityConfiguration.createAbility(abilName);
+			ability.setSagaLiving(this);
+			abilities.add(ability);
+			return ability;
+		}
+		catch (InvalidAbilityException e) {
+			abilityScores.remove(abilName);
+			SagaLogger.severe(this, "failed to create " + abilName + " ability: " + e.getClass().getSimpleName() + ":" + e.getMessage());
+		}
+		return null;
 		
 	}
 	

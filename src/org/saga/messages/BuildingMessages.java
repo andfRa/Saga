@@ -390,8 +390,8 @@ public class BuildingMessages {
 		
 	}
 	
-	public static String abilityRequirementsNotMet(Ability ability, Integer score) {
-		return Colour.negative + "Requirements not met for " + ability.getName() + " " + RomanNumeral.binaryToRoman(score) + ".";
+	public static String abilityRequirementsNotMet(String abilityName, Integer score) {
+		return Colour.negative + "Requirements not met for " + abilityName + " " + RomanNumeral.binaryToRoman(score) + ".";
 	}
 	
 	public static String abilityMaxReached(String abilName) {

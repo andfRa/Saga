@@ -120,20 +120,13 @@ public class AbilitySign extends BuildingSign{
 	protected void onRightClick(SagaPlayer sagaPlayer) {
 
 		
-		String abilName = getFirstParameter();
+		String abilName = getFirstParameter().toLowerCase();
 		Integer nextScore = sagaPlayer.getAbilityScore(abilName) + 1;
+		AbilityDefinition definition = AbilityConfiguration.config().getDefinition(abilName);
 		
 		// Already maximum:
 		if(nextScore > AbilityConfiguration.config().maxAbilityScore){
 			sagaPlayer.message(BuildingMessages.abilityMaxReached(abilName));
-			return;
-		}
-		
-		// Ability:
-		Ability ability = sagaPlayer.getAbility(abilName);
-		if(ability == null){
-			SagaLogger.severe(this, "failed to retrieve " + abilName + " ability from " + sagaPlayer.getName());
-			sagaPlayer.error("Failed to find " + abilName + " ability.");
 			return;
 		}
 		
@@ -144,8 +137,8 @@ public class AbilitySign extends BuildingSign{
 		}
 		
 		// Requirements:
-		if(!ability.getDefinition().checkRequirements(sagaPlayer, nextScore)){
-			sagaPlayer.message(BuildingMessages.abilityRequirementsNotMet(ability, nextScore));
+		if(!definition.checkRequirements(sagaPlayer, nextScore)){
+			sagaPlayer.message(BuildingMessages.abilityRequirementsNotMet(abilName, nextScore));
 			return;
 		}
 
@@ -162,6 +155,14 @@ public class AbilitySign extends BuildingSign{
 		
 		// Upgrade:
 		sagaPlayer.setAblityScore(abilName, nextScore);
+		
+		// Ability:
+		Ability ability = sagaPlayer.forceAbility(abilName);
+		if(ability == null){
+			SagaLogger.severe(this, "failed to force " + abilName + " ability from " + sagaPlayer.getName());
+			sagaPlayer.error("Failed to create " + abilName + " ability.");
+			return;
+		}
 		
 		// Inform:
 		sagaPlayer.message(BuildingMessages.abilityTrained(ability, nextScore));
