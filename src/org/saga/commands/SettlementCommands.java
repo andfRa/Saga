@@ -277,6 +277,12 @@ public class SettlementCommands {
 	   		return;
 	   	}
 	   	
+	   	// Remove building:
+	   	if(selChunk.getBuilding() != null){
+	   		selChunk.getBuilding().remove();
+	   		selChunk.removeBuilding();
+	   	}
+	   	
 		// Remove chunk from the chunk bundle:
 		selBundle.removeChunk(selChunk);
 		
