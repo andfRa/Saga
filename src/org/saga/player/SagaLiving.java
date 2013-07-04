@@ -1130,12 +1130,22 @@ public class SagaLiving {
 	public ItemStack getHandItem() {
 		return new ItemStack(Material.AIR);
 	}
-	
+
 	/**
 	 * Damages living entities tool if possible.
 	 * 
 	 */
 	public void damageTool() {
+
+		return;
+		
+	}
+
+	/**
+	 * Damages living entities armour if possible.
+	 * 
+	 */
+	public void damageArmour() {
 
 		return;
 		

@@ -347,6 +347,31 @@ public class VanillaConfiguration {
 		return false;
 		
 	}
+
+	/**
+	 * Check is armour is damaged.
+	 * 
+	 * @param cause event cause
+	 * @return true if can be damaged
+	 */
+	public static boolean checkArmourDamage(DamageCause cause) {
+		
+		switch (cause) {
+		case ENTITY_ATTACK:
+		case PROJECTILE:
+		case FIRE:
+		case LAVA:
+		case CONTACT:
+			return true;
+
+		default:
+			break;
+		}
+		
+		return false;
+		
+	}
+	
 	
 	
 	/**

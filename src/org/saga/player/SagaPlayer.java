@@ -586,6 +586,27 @@ public class SagaPlayer extends SagaLiving implements Trader{
 		
 	}
 	
+	@SuppressWarnings("deprecation")
+	@Override
+	public void damageArmour() {
+		
+		if(wrapped == null) return;
+		
+		ItemStack item = wrapped.getEquipment().getHelmet();
+		if(item != null && item.getType().getMaxDurability() > 0) item.setDurability((short) (item.getDurability() + 1));
+		
+		item = wrapped.getEquipment().getChestplate();
+		if(item != null && item.getType().getMaxDurability() > 0) item.setDurability((short) (item.getDurability() + 1));
+		
+		item = wrapped.getEquipment().getLeggings();
+		if(item != null && item.getType().getMaxDurability() > 0) item.setDurability((short) (item.getDurability() + 1));
+		
+		item = wrapped.getEquipment().getBoots();
+		if(item != null && item.getType().getMaxDurability() > 0) item.setDurability((short) (item.getDurability() + 1));
+
+		getWrapped().updateInventory();
+		
+	}
 	
 	
 	// Faction:

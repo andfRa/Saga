@@ -361,6 +361,9 @@ public class SagaDamageEvent {
 		if(sagaAttacker != null) undurability = sagaAttacker.getHandItem().getDurability();
 		else undurability = 0;
 		
+		// Reduce armour durability:
+		if(sagaDefender != null && VanillaConfiguration.checkArmourDamage(event.getCause())) sagaDefender.damageArmour();
+		
 		// Schedule for next tick:
 		Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(Saga.plugin(), new Runnable() {
 			@SuppressWarnings("deprecation")
