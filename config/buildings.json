@@ -32,7 +32,7 @@
     "storageSize":1,
     "production":[
       {"type":WHEAT,"amount":18,"data":0,       "reqWork":4,  "recipe":[]},
-      {"type":POTATO,"amount":1,"data":0,       "reqWork":4,  "recipe":[]},
+      {"type":POTATO_ITEM,"amount":1,"data":0,  "reqWork":4,  "recipe":[]},
       {"type":PORK,"amount":1,"data":0,         "reqWork":12,  "recipe":[]},
       {"type":RAW_BEEF,"amount":1,"data":0,     "reqWork":12,  "recipe":[]},
       {"type":RAW_CHICKEN,"amount":1,"data":0,  "reqWork":8,  "recipe":[]}
