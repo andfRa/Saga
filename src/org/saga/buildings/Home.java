@@ -230,11 +230,12 @@ public class Home extends Building {
 		if(block == null) return;
 		
 		// Protect chests:
-		if(block.getType() == Material.CHEST){
+		Material type = block.getType();
+		if(type == Material.CHEST || type == Material.TRAPPED_CHEST || type == Material.BREWING_STAND || block.getType() == Material.FURNACE || block.getType() == Material.ENCHANTMENT_TABLE){
 			
-			if(!getChunkBundle().hasPermission(sagaPlayer, SettlementPermission.OPEN_HOME_CHESTS) && !isResident(sagaPlayer.getName())){
+			if(!getChunkBundle().hasPermission(sagaPlayer, SettlementPermission.OPEN_HOME_CONTAINERS) && !isResident(sagaPlayer.getName())){
 				event.setCancelled(true);
-				sagaPlayer.message(BuildingMessages.chestLocked());
+				sagaPlayer.message(BuildingMessages.containerLocked());
 			}
 			
 		}

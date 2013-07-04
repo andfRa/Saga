@@ -1251,7 +1251,7 @@ public class Settlement extends Bundle implements MinuteTicker, DaytimeTicker{
 		ACCESS_WAREHOUSE,
 		ACCESS_STORAGE,
 		ADD_COINS,
-		OPEN_HOME_CHESTS,
+		OPEN_HOME_CONTAINERS,
 		BUILD,
 		BUILD_BUILDING,
 		BUILDING_UPGRADE,

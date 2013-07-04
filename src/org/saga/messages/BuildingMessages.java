@@ -350,8 +350,8 @@ public class BuildingMessages {
 		return Colour.positive + "Removed " + name + " from the resident list.";
 	}
 
-	public static String chestLocked() {
-		return Colour.negative + "The chest is locked.";
+	public static String containerLocked() {
+		return Colour.negative + "The container is locked.";
 	}
 
 	
