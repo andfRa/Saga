@@ -294,7 +294,7 @@ public class SagaLiving {
 	 * 
 	 * @return entities health
 	 */
-	public Integer getHealth() {
+	public Double getHealth() {
 		
 		if(wrapped == null) return VanillaConfiguration.PLAYER_DEFAULT_HEALTH;
 		
@@ -307,7 +307,7 @@ public class SagaLiving {
 	 * 
 	 * @return entities health
 	 */
-	public Integer getTotalHealth() {
+	public Double getTotalHealth() {
 		
 		if(wrapped == null) return VanillaConfiguration.PLAYER_DEFAULT_HEALTH;
 		
@@ -320,7 +320,7 @@ public class SagaLiving {
 	 * 
 	 * @return entities maximum health
 	 */
-	public int getMaxHealth() {
+	public Double getMaxHealth() {
 		
 		return attributeManager.getHealthModifier() + VanillaConfiguration.PLAYER_DEFAULT_HEALTH;
 		
@@ -335,8 +335,8 @@ public class SagaLiving {
 		
 		if(wrapped == null) return;
 		
-		double hpRate = (double)wrapped.getHealth() / (double)wrapped.getMaxHealth();
-		int maxHealth = getMaxHealth();
+		double hpRate = wrapped.getHealth() / wrapped.getMaxHealth();
+		double maxHealth = getMaxHealth();
 		
 		wrapped.setMaxHealth(maxHealth);
 		wrapped.setHealth((int)Math.ceil(maxHealth*hpRate));

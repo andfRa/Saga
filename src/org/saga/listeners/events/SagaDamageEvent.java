@@ -326,7 +326,7 @@ public class SagaDamageEvent {
 		
 		// Modify damage:
 		double damage = calcDamage();
-		event.setDamage((int)Math.ceil(damage));
+		event.setDamage(damage);
 		
 		// Apply damage to player:
 		if(sagaDefender != null){
@@ -349,10 +349,10 @@ public class SagaDamageEvent {
 			if(VanillaConfiguration.checkBlocking(event, sagaDefender.getWrapped())) harm*= blocking;
 			
 			// Apply Saga damage:
-			sagaDefender.getWrapped().damage((int)Math.ceil(harm));
+			sagaDefender.getWrapped().damage(harm);
 			
 			// Take control:
-			event.setDamage(0);
+			event.setDamage(0.0);
 			
 		}
 		
@@ -523,7 +523,7 @@ public class SagaDamageEvent {
 	 * 
 	 * @return base damage
 	 */
-	public int getBaseDamage() {
+	public double getBaseDamage() {
 		return event.getDamage();
 	}
 	

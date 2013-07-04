@@ -4,7 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Random;
 
-import net.minecraft.server.v1_5_R3.SharedConstants;
+import net.minecraft.server.v1_6_R1.SharedConstants;
 
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -48,7 +48,7 @@ public class VanillaConfiguration {
 	/**
 	 * Player default health.
 	 */
-	public static final Integer PLAYER_DEFAULT_HEALTH = 20; 
+	public static final Double PLAYER_DEFAULT_HEALTH = 20.0; 
 	
 	/**
 	 * Maximum exhaustion.
