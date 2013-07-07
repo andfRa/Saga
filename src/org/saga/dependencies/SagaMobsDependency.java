@@ -1,8 +1,6 @@
 package org.saga.dependencies;
 
 import org.bukkit.entity.Creature;
-import org.saga.SagaLogger;
-import org.saga.mobs.SagaMobs;
 import org.saga.player.SagaLiving;
 
 public class SagaMobsDependency {
@@ -47,18 +45,18 @@ public class SagaMobsDependency {
 		
 	}
 	
-	/**
-	 * Registers the dependency.
-	 * 
-	 * @param sagaMobs saga mobs
-	 */
-	public static void register(SagaMobs sagaMobs) {
-		
-		manager.enabled = true;
-		
-		SagaLogger.info("Saga mobs registered.");
-		
-	}
+//	/**
+//	 * Registers the dependency.
+//	 * 
+//	 * @param sagaMobs saga mobs
+//	 */
+//	public static void register(SagaMobs sagaMobs) {
+//		
+//		manager.enabled = true;
+//		
+//		SagaLogger.info("Saga mobs registered.");
+//		
+//	}
 	
 
 	
@@ -74,7 +72,8 @@ public class SagaMobsDependency {
 		if(!manager.enabled) return null;
 		if(creature.getMetadata(SAGA_MOB_KEY).size() == 0) return null;
 		
-		return org.saga.mobs.SagaMobs.findSagaLiving(creature.getUniqueId());
+//		return org.saga.mobs.SagaMobs.findSagaLiving(creature.getUniqueId());
+		return null;
 		
 	}
 	
