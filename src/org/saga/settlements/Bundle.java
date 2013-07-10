@@ -396,7 +396,8 @@ public class Bundle extends SagaCustomSerialization{
 		}
 		
 		// Remove all saga chunks:
-		for (SagaChunk sagaChunk : groupChunks) {
+		ArrayList<SagaChunk> schunks = new ArrayList<SagaChunk>(groupChunks);
+		for (SagaChunk sagaChunk : schunks) {
 			removeChunk(sagaChunk);
 		}
 		
