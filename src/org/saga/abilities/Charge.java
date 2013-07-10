@@ -149,7 +149,7 @@ public class Charge extends Ability{
 				if(!(entity instanceof LivingEntity)) continue;
 				
 				LivingEntity defender = (LivingEntity) entity;
-				int damage = getDefinition().getFunction(PUSH_DAMAGE_KEY).intValue(getScore());
+				double damage = getDefinition().getFunction(PUSH_DAMAGE_KEY).value(getScore());
 				
 				// Damage event:
 				SagaDamageEvent event = new SagaDamageEvent(new EntityDamageEvent(attacker, DamageCause.FALLING_BLOCK, damage));

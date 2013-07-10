@@ -119,7 +119,7 @@ public class Lightning extends Ability{
 		}
 		
 		// Apply damage:
-		int damage = getDefinition().getFunction(DAMAGE).intValue(getScore());
+		double damage = getDefinition().getFunction(DAMAGE).value(getScore());
 		for (LivingEntity living : filteredNearby) {
 			
 			EntityDamageByEntityEvent bevent = new EntityDamageByEntityEvent(shooter, living, DamageCause.LIGHTNING, damage);

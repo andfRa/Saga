@@ -380,7 +380,7 @@ public class VanillaConfiguration {
 	 * @param material item material
 	 * @return base damage
 	 */
-	public static int getBaseDamage(Material material) {
+	public static double getBaseDamage(Material material) {
 		
 		switch (material) {
 			

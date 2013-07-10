@@ -93,7 +93,7 @@ public class Force extends Ability{
 				}
 				
 				// Pvp event:
-				EntityDamageByEntityEvent edbeEvent = new EntityDamageByEntityEvent(event.getPlayer(), entity, DamageCause.ENTITY_ATTACK, 0);
+				EntityDamageByEntityEvent edbeEvent = new EntityDamageByEntityEvent(event.getPlayer(), entity, DamageCause.ENTITY_ATTACK, 0.0);
 				Saga.plugin().getServer().getPluginManager().callEvent(edbeEvent);
 				if(edbeEvent.isCancelled()) continue;
 				
