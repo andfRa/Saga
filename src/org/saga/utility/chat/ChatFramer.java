@@ -92,7 +92,7 @@ public class ChatFramer {
 		while(ChatFiller.calcLength(labelUp.toString() + FRAME_HORIZONTAL) <= length){
 			labelUp.append(FRAME_HORIZONTAL);
 		}
-		labelUp.insert(0, TITLE_TOP_LEFT);
+		labelUp.insert(0, " " + TITLE_TOP_LEFT);
 		labelUp.append(TITLE_TOP_RIGHT);
 		labelUp.insert(0, colour);
 		labelUp.append("\n");
