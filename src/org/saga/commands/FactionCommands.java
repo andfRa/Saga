@@ -628,17 +628,7 @@ public class FactionCommands {
 		
 		// Part of a faction:
 		Faction selFaction = sagaPlayer.getFaction();
-		if(selFaction == null){
-			sagaPlayer.message(FactionMessages.notMember());
-			return;
-		}
 		
-		// Permission:
-		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.SET_RANK)){
-			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
-			return;
-		}
-
 		// Arguments:
 		 if(args.argsLength() == 3){
 			
@@ -665,6 +655,12 @@ public class FactionCommands {
 			targetName = selFaction.matchName(args.getString(0));
 			rankName = GeneralMessages.nameFromArg(args.getString(1)).toLowerCase();
 			
+		}
+
+		// Permission:
+		if(!selFaction.hasPermission(sagaPlayer, FactionPermission.SET_RANK)){
+			sagaPlayer.message(GeneralMessages.noPermission(selFaction));
+			return;
 		}
 
 		// Formed:
