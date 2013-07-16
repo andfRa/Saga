@@ -80,8 +80,10 @@ public class BuySign extends BuildingSign {
 	
 		super(sign, SIGN_NAME, secondLine, thirdLine, fourthLine, building);
 		
-		initialiseFields();
+		maxStored = 0.0;
 		stored = 0.0;
+		initialiseFields();
+		
 		
 	}
 	
@@ -245,7 +247,7 @@ public class BuySign extends BuildingSign {
 	@Override
 	public SignStatus getStatus() {
 
-		if(maxStored == null || item.getType() == null || item.getType() == Material.AIR || item.getData() == null || item.getAmount() == null || price == null) return SignStatus.INVALIDATED;
+		if(maxStored == null || item == null || item.getType() == null || item.getType() == Material.AIR || item.getData() == null || item.getAmount() == null || price == null) return SignStatus.INVALIDATED;
 		
 		if(stored <= 0 || !EconomyConfiguration.config().isEnabled()) return SignStatus.DISABLED;
 		
