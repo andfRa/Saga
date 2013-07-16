@@ -518,7 +518,7 @@ public class SagaPlayer extends SagaLiving implements Trader{
 		}
 
 		if(befAbilites < aftAbilities){
-			message(StatsMessages.gainedAbilityPoints(aftAttributes - befAttributes));
+			message(StatsMessages.gainedAbilityPoints(aftAbilities - befAbilites));
 			StatsEffectHandler.playLevelUp(this);
 		}
 		
