@@ -195,7 +195,7 @@ public class PlayerCommands {
 	}
 	
 	@Command(
-			aliases = {"ability","pabilityinfo, abilityinfo"},
+			aliases = {"ability","pabilityinfo","abilityinfo"},
 			usage = "<ability_name>",
 			flags = "",
 			desc = "Display ability information.",
