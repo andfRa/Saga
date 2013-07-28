@@ -143,7 +143,7 @@
     ],
     "performTime":"NONE",
     "functions":{},
-    "roles":{},
+    "roles":{"merchant":2},
     "ranks":{},
     "description":"produces bricks",
     "effect":"bricks"
@@ -162,7 +162,7 @@
     ],
     "performTime":"NONE",
     "functions":{},
-    "roles":{},
+    "roles":{"miner":5},
     "ranks":{},
     "description":"produces gems",
     "effect":"gems"
