@@ -506,9 +506,19 @@ public class Warehouse extends Building{
 		
 		// Permission:
 		if(!bundle.hasPermission(sagaPlayer, SettlementPermission.ACCESS_WAREHOUSE)){
-			
+
 			// Chest:
 			if(targetMaterial.equals(Material.CHEST) && event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
+				
+				event.setUseItemInHand(Result.DENY);
+				event.setUseInteractedBlock(Result.DENY);
+				
+				sagaPlayer.message(GeneralMessages.noPermission(this));
+				
+			}
+
+			// Trapped chest:
+			if(targetMaterial.equals(Material.TRAPPED_CHEST) && event.getAction().equals(Action.RIGHT_CLICK_BLOCK)){
 				
 				event.setUseItemInHand(Result.DENY);
 				event.setUseInteractedBlock(Result.DENY);

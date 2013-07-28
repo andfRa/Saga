@@ -25,10 +25,12 @@ import org.bukkit.util.Vector;
 import org.saga.Saga;
 import org.saga.SagaLogger;
 import org.saga.buildings.Building;
+import org.saga.config.SettlementConfiguration;
 import org.saga.listeners.events.SagaBuildEvent;
 import org.saga.listeners.events.SagaDamageEvent;
 import org.saga.messages.BuildingMessages;
 import org.saga.player.SagaPlayer;
+import org.saga.settlements.Settlement.SettlementPermission;
 
 public class SagaChunk {
 
@@ -679,6 +681,7 @@ public class SagaChunk {
 		// Forward to chunk group:
 		getBundle().onPlayerInteract(event, sagaPlayer, this);
 		
+		boolean storage = false;
 		if(bld != null){
 			
 			// Forward to building:
@@ -688,7 +691,23 @@ public class SagaChunk {
 			Block block = event.getClickedBlock();
 			if(event.getAction() == Action.RIGHT_CLICK_BLOCK && block != null && block.getType() == Material.CHEST && bld.checkStorageArea(block)){
 				
+				storage = true;
 				bld.handleItemStorageOpen(event, sagaPlayer);
+				
+			}
+			
+		}
+
+		// Full chest protection:
+		if(!storage && SettlementConfiguration.config().getFullChestProtection() && event.getClickedBlock() != null){
+			
+			Material type = event.getClickedBlock().getType();
+			if(type == Material.CHEST || type == Material.TRAPPED_CHEST || type == Material.BREWING_STAND || type == Material.FURNACE  || type == Material.BURNING_FURNACE || type == Material.ENCHANTMENT_TABLE){
+				
+				if(!getBundle().hasPermission(sagaPlayer, SettlementPermission.OPEN_SETTLEMENT_CONTAINERS)){
+					event.setCancelled(true);
+					sagaPlayer.message(BuildingMessages.containerLocked());
+				}
 				
 			}
 			

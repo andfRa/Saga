@@ -231,7 +231,7 @@ public class Home extends Building {
 		
 		// Protect chests:
 		Material type = block.getType();
-		if(type == Material.CHEST || type == Material.TRAPPED_CHEST || type == Material.BREWING_STAND || block.getType() == Material.FURNACE || block.getType() == Material.ENCHANTMENT_TABLE){
+		if(type == Material.CHEST || type == Material.TRAPPED_CHEST || type == Material.BREWING_STAND || block.getType() == Material.FURNACE  || type == Material.BURNING_FURNACE || block.getType() == Material.ENCHANTMENT_TABLE){
 			
 			if(!getChunkBundle().hasPermission(sagaPlayer, SettlementPermission.OPEN_HOME_CONTAINERS) && !isResident(sagaPlayer.getName())){
 				event.setCancelled(true);

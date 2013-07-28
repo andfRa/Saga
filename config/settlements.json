@@ -36,6 +36,8 @@
 "minNameLength":3,
 "maxNameLength":15,
 
+"fullChestProtection":"false",
+
 "memberOnlyCommands":["sethome"]
 
 }

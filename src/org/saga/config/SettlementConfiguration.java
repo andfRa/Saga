@@ -159,6 +159,12 @@ public class SettlementConfiguration {
 
 	
 	
+	// Protection:
+	/** All chests protected in the settlement if true. */
+	private Boolean fullChestProtection;
+	
+	
+	
 	// Initialisation:
 	/**
 	 * Completes the configuration.
@@ -269,6 +275,11 @@ public class SettlementConfiguration {
 			maxNameLength = 15;
 		}
 		
+		if(fullChestProtection == null){
+			SagaLogger.nullField(getClass(), "fullChestProtection");
+			fullChestProtection = false;
+		}
+		
 		if(memberOnlyCommands == null){
 			SagaLogger.nullField(getClass(), "memberOnlyCommands");
 			memberOnlyCommands = new HashSet<String>();
@@ -299,6 +310,18 @@ public class SettlementConfiguration {
 	 */
 	public Integer getMaxNameLength() {
 		return maxNameLength;
+	}
+	
+	
+	
+	// Protection:
+	/**
+	 * Gets whether all chests are protected.
+	 * 
+	 * @return true if all
+	 */
+	public Boolean getFullChestProtection() {
+		return fullChestProtection;
 	}
 	
 	
