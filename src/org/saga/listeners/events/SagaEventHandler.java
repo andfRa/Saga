@@ -1,6 +1,8 @@
 package org.saga.listeners.events;
 
 import org.bukkit.block.Block;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
 import org.saga.config.FactionConfiguration;
 import org.saga.dependencies.PermissionsDependency;
 import org.saga.listeners.events.SagaBuildEvent.BuildOverride;
@@ -24,11 +26,20 @@ public class SagaEventHandler {
     	
     	// Wilderness:
     	else if(!PermissionsDependency.hasPermission(sagaPlayer, PermissionsDependency.WILDERNESS_BUILD_PERMISSION)){
-    		
+    	
     		event.addBuildOverride(BuildOverride.WILDERNESS_DENY);
+        		
+    		// Place:
+    		if(event.getWrappedEvent() instanceof BlockPlaceEvent){
+        		Block block = event.getBlock();
+        		if(PermissionsDependency.hasPermission(sagaPlayer, PermissionsDependency.WILDERNESS_PLACE_PERMISSION + "." + block.getTypeId())) event.addBuildOverride(BuildOverride.WILDERNESS_SPECIFIC_BLOCK_ALLOW);
+    		}
     		
-    		Block block = event.getBlock();
-    		if(PermissionsDependency.hasPermission(sagaPlayer, PermissionsDependency.WILDERNESS_BUILD_PERMISSION + "." + block.getTypeId())) event.addBuildOverride(BuildOverride.WILDERNESS_SPECIFIC_BLOCK_ALLOW);
+    		// Destroy:
+    		else if(event.getWrappedEvent() instanceof BlockBreakEvent){
+        		Block block = event.getBlock();
+        		if(PermissionsDependency.hasPermission(sagaPlayer, PermissionsDependency.WILDERNESS_DESTROY_PERMISSION + "." + block.getTypeId())) event.addBuildOverride(BuildOverride.WILDERNESS_SPECIFIC_BLOCK_ALLOW);
+    		}
     		
     	}
 		

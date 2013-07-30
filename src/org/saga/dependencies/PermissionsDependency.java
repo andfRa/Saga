@@ -58,11 +58,21 @@ public class PermissionsDependency {
 	 */
 	public static String SPECIAL_TRIPLE_EXP_BONUS = "saga.special.bonus.exp.triple";
 	
-	
+
 	/**
 	 * Permission for building in the wilderness.
 	 */
 	public static String WILDERNESS_BUILD_PERMISSION = "saga.user.wilderness.build";
+
+	/**
+	 * Permission for placing blocks in the wilderness.
+	 */
+	public static String WILDERNESS_PLACE_PERMISSION = "saga.user.wilderness.build.place";
+
+	/**
+	 * Permission for destroying blocks in the wilderness.
+	 */
+	public static String WILDERNESS_DESTROY_PERMISSION = "saga.user.wilderness.build.destroy";
 	
 	
 	/**
@@ -73,8 +83,10 @@ public class PermissionsDependency {
 		private static final long serialVersionUID = 1L;
 
 		{
-			put(WILDERNESS_BUILD_PERMISSION, "Build outside settlements.");
-			put(WILDERNESS_BUILD_PERMISSION + ".ID", "Build outside settlements (specified block).");
+			put(WILDERNESS_PLACE_PERMISSION, "Place blocks outside settlements.");
+			put(WILDERNESS_PLACE_PERMISSION + ".ID", "Place block outside settlements (specified block).");
+			put(WILDERNESS_DESTROY_PERMISSION, "Destroy blocks outside settlements.");
+			put(WILDERNESS_DESTROY_PERMISSION + ".ID", "Destroy block outside settlements (specified block).");
 			put(SPECIAL_DOUBLE_EXP_BONUS, "Double player experience.");
 			put(SPECIAL_TRIPLE_EXP_BONUS, "Triple player experience.");
 		}
