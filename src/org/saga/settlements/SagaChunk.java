@@ -17,7 +17,6 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -743,24 +742,6 @@ public class SagaChunk {
 
 	
 	// World change events:
-	/**
-	 * Called when an entity explodes on the chunk
-	 * 
-	 * @param event event
-	 */
-	public void onEntityExplode(EntityExplodeEvent event) {
-
-		
-		// Forward to chunk group:
-		Bundle bundle = getBundle();
-		if(bundle == null){
-			return;
-		}
-		bundle.onEntityExplode(event, this);
-		
-		
-	}
-
 	/**
 	 * Called when an entity forms blocks.
 	 * 

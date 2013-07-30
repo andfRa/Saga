@@ -37,6 +37,9 @@
 "maxNameLength":15,
 
 "fullChestProtection":"false",
+"inwardSpreadProtection":true,
+"fireSpreadProtection":true,
+"explosionProtection":true,
 
 "memberOnlyCommands":["sethome"]
 

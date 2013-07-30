@@ -12,11 +12,8 @@ import org.bukkit.Material;
 import org.bukkit.craftbukkit.libs.com.google.gson.JsonParseException;
 import org.bukkit.entity.Enderman;
 import org.bukkit.event.Event.Result;
-import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockSpreadEvent;
 import org.bukkit.event.block.EntityBlockFormEvent;
 import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -1053,18 +1050,6 @@ public class Bundle extends SagaCustomSerialization{
 	
 	// Entity events:
 	/**
-	 * Called when an entity explodes on the chunk
-	 * 
-	 * @param event event
-	 */
-	void onEntityExplode(EntityExplodeEvent event, SagaChunk locationChunk) {
-		
-		// Cancel entity explosions:
-		event.blockList().clear();
-		
-	}
-
-	/**
 	 * Called when a creature spawns.
 	 * 
 	 * @param event event
@@ -1102,55 +1087,6 @@ public class Bundle extends SagaCustomSerialization{
 		
 	}
 	
-	/**
-	 * Called when a block spreads.
-	 * 
-	 * @param event event
-	 * @param sagaChunk saga chunk
-	 */
-	public void onBlockSpread(BlockSpreadEvent event, SagaChunk sagaChunk) {
-		
-		
-		// Cancel fire spread:
-		if(!fireSpread){
-			
-			if(event.getNewState().getType().equals(Material.FIRE)){
-				event.setCancelled(true);
-				return;
-			}
-			
-		}
-		
-		
-		
-	}
-	
-	/**
-	 * Called when a block forms.
-	 * 
-	 * @param event event
-	 * @param sagaChunk saga chunk
-	 */
-	public void onBlockFromTo(BlockFromToEvent event, SagaChunk sagaChunk) {
-		
-		
-		// Cancel lava spread:
-		if(!lavaSpread){
-			
-			if(event.getToBlock().getType().equals(Material.STATIONARY_LAVA) && event.getBlock().getLocation().getY() > 10){
-				event.setCancelled(true);
-				return;
-			}
-			if(event.getToBlock().getType().equals(Material.LAVA) && event.getBlock().getLocation().getY() > 10){
-				event.setCancelled(true);
-				return;
-			}
-			
-		}
-		
-		
-	}
-
 	/**
 	 * Called when a block is broken in the chunk.
 	 * 

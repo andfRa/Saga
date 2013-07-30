@@ -162,7 +162,15 @@ public class SettlementConfiguration {
 	// Protection:
 	/** All chests protected in the settlement if true. */
 	private Boolean fullChestProtection;
-	
+
+	/** Block lava, fire and water spread inward protection if true. */
+	private Boolean inwardSpreadProtection;
+
+	/** Block fire spread protection if true. */
+	private Boolean fireSpreadProtection;
+
+	/** Block explosions if true. */
+	private Boolean explosionProtection;
 	
 	
 	// Initialisation:
@@ -280,6 +288,21 @@ public class SettlementConfiguration {
 			fullChestProtection = false;
 		}
 		
+		if(inwardSpreadProtection == null){
+			SagaLogger.nullField(getClass(), "inwardSpreadProtection");
+			inwardSpreadProtection = true;
+		}
+		
+		if(fireSpreadProtection == null){
+			SagaLogger.nullField(getClass(), "fireSpreadProtection");
+			fireSpreadProtection = true;
+		}
+		
+		if(explosionProtection == null){
+			SagaLogger.nullField(getClass(), "explosionProtection");
+			explosionProtection = true;
+		}
+		
 		if(memberOnlyCommands == null){
 			SagaLogger.nullField(getClass(), "memberOnlyCommands");
 			memberOnlyCommands = new HashSet<String>();
@@ -324,6 +347,32 @@ public class SettlementConfiguration {
 		return fullChestProtection;
 	}
 	
+	/**
+	 * Gets whether block spread inward protection is enabled.
+	 * 
+	 * @return true if enabled
+	 */
+	public Boolean getInwardSpreadProtection() {
+		return inwardSpreadProtection;
+	}
+
+	/**
+	 * Gets whether fire spread protection is enabled.
+	 * 
+	 * @return true if enabled
+	 */
+	public Boolean getFireSpreadProtection() {
+		return fireSpreadProtection;
+	}
+
+	/**
+	 * Gets whether explosion protection is enabled.
+	 * 
+	 * @return true if enabled
+	 */
+	public Boolean getExplosionProtection() {
+		return explosionProtection;
+	}
 	
 	
 	// Commands:

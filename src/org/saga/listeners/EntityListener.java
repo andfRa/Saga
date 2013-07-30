@@ -1,5 +1,6 @@
 package org.saga.listeners;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.bukkit.Chunk;
@@ -25,6 +26,7 @@ import org.bukkit.event.entity.EntityTargetEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.saga.Saga;
 import org.saga.config.GeneralConfiguration;
+import org.saga.config.SettlementConfiguration;
 import org.saga.config.VanillaConfiguration;
 import org.saga.factions.Faction;
 import org.saga.listeners.events.SagaDamageEvent;
@@ -136,11 +138,14 @@ public class EntityListener implements Listener{
 			event.blockList().clear();
 		}
 		
-		// Get saga chunk:
-		SagaChunk sagaChunk = BundleManager.manager().getSagaChunk(event.getLocation());
-		
-		// Forward to saga chunk:
-		if(sagaChunk != null) sagaChunk.onEntityExplode(event);
+		// Stop explosion damage:
+		if(SettlementConfiguration.config().getExplosionProtection()){
+			List<Block> blocks = event.blockList();
+			for (Iterator<Block> it = blocks.iterator(); it.hasNext();) {
+				Block block = it.next();
+				if(BundleManager.manager().getSagaChunk(block.getLocation()) != null) it.remove();
+			}
+		}
 		
 		
 	}
