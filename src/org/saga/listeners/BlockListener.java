@@ -163,7 +163,6 @@ public class BlockListener implements Listener{
 
 	@EventHandler(priority = EventPriority.NORMAL)
 	public void onBlockBurn(BlockBurnEvent event) {
-		event.setCancelled(true);
 	}
 
 	
